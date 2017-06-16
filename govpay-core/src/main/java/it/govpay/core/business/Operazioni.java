@@ -32,7 +32,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.thread.CaricaTracciatoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 
 import java.sql.Connection;
 import java.util.ArrayList;
