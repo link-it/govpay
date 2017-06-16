@@ -27,18 +27,17 @@ import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.loader.TracciatiBD;
 import it.govpay.bd.loader.filters.TracciatoFilter;
 import it.govpay.bd.loader.model.Tracciato;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
-import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -57,8 +56,6 @@ import net.sf.json.JSONObject;
 
 public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHandler<Tracciato>{
 
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
 	public TracciatiHandler(Logger log, DarsService darsService) { 

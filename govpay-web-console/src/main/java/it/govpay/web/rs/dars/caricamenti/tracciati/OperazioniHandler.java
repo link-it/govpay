@@ -55,7 +55,6 @@ import it.govpay.web.utils.Utils;
 
 public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsHandler<Operazione>{
 
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
 
 	public OperazioniHandler(Logger log, DarsService darsService) { 

@@ -41,7 +41,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
-import it.govpay.model.Applicazione;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilta;
