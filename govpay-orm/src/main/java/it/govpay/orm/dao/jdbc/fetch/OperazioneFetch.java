@@ -54,8 +54,8 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 				Operazione object = new Operazione();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType()));
+				setParameter(object, "set_value_tipoOperazione", String.class,
+					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType())+"");
 				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "linea_elaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType()));
 				setParameter(object, "set_value_stato", String.class,
@@ -90,7 +90,7 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 				Operazione object = new Operazione();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
+				setParameter(object, "set_value_tipoOperazione", String.class,
 					this.getObjectFromMap(map,"tipoOperazione"));
 				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"lineaElaborazione"));

@@ -663,7 +663,7 @@
   <mapping name="Operazione" class="it.govpay.orm.Operazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure field="idTracciato" usage="required" map-as="it.govpay.orm.IdTracciato"/>
-    <value name="tipoOperazione" field="tipoOperazione" usage="required"/>
+    <value name="tipoOperazione" field="tipoOperazione" usage="required" enum-value-method="toString"/>
     <value name="lineaElaborazione" field="lineaElaborazione" usage="required"/>
     <value name="stato" field="stato" usage="required" enum-value-method="toString"/>
     <value name="datiRichiesta" field="datiRichiesta" usage="required"/>
