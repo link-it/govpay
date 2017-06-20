@@ -1,31 +1,22 @@
 package it.govpay.bd.model.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.model.Acl;
 import it.govpay.model.Ruolo;
 
 public class RuoloConverter {
 
 
-	public static List<Ruolo> toDTOList(List<it.govpay.orm.Ruolo> anagraficaLst) throws ServiceException {
-		List<Ruolo> lstDTO = new ArrayList<Ruolo>();
-		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
-			for(it.govpay.orm.Ruolo anagrafica: anagraficaLst){
-				lstDTO.add(toDTO(anagrafica));
-			}
-		}
-		return lstDTO;
-	}
-
-	public static Ruolo toDTO(it.govpay.orm.Ruolo vo) throws ServiceException {
+	public static Ruolo toDTO(it.govpay.orm.Ruolo vo, List<Acl> acls) throws ServiceException {
 		Ruolo dto = new Ruolo();
 		
 		dto.setId(vo.getId());
 		dto.setCodRuolo(vo.getCodRuolo());
 		dto.setDescrizione(vo.getDescrizione());
+		dto.setAcls(acls);
 		
 		return dto;
 	}

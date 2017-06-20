@@ -19,13 +19,6 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.filters.RuoloFilter;
-import it.govpay.bd.model.converter.RuoloConverter;
-import it.govpay.model.Ruolo;
-import it.govpay.orm.IdRuolo;
-import it.govpay.orm.dao.jdbc.JDBCRuoloServiceSearch;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +26,17 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.RuoloFilter;
+import it.govpay.bd.model.converter.AclConverter;
+import it.govpay.bd.model.converter.RuoloConverter;
+import it.govpay.model.Acl;
+import it.govpay.model.Ruolo;
+import it.govpay.orm.ACL;
+import it.govpay.orm.IdRuolo;
+import it.govpay.orm.dao.jdbc.JDBCRuoloServiceSearch;
 
 public class RuoliBD extends BasicBD {
 
@@ -59,9 +63,7 @@ public class RuoliBD extends BasicBD {
 
 		try {
 			it.govpay.orm.Ruolo ruoloVO = ((JDBCRuoloServiceSearch)this.getRuoloService()).get(id);
-			Ruolo ruolo = RuoloConverter.toDTO(ruoloVO);
-
-			return ruolo;
+			return getRuolo(ruoloVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -81,12 +83,34 @@ public class RuoliBD extends BasicBD {
 			IdRuolo id = new IdRuolo();
 			id.setCodRuolo(codRuolo);
 			it.govpay.orm.Ruolo ruoloVO = this.getRuoloService().get(id);
-			Ruolo ruolo = RuoloConverter.toDTO(ruoloVO);
-			return ruolo;
+			return getRuolo(ruoloVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
+	
+	/**
+	 * Recupera l'ruolo tramite l'id logico
+	 * 
+	 * @param codEnte
+	 * @return
+	 * @throws NotFoundException se l'ente non esiste.
+	 * @throws MultipleResultException in caso di duplicati.
+	 * @throws ServiceException in caso di errore DB.
+	 */
+	public Ruolo getRuolo(it.govpay.orm.Ruolo ruoloVO) throws NotFoundException, MultipleResultException, ServiceException {
+		AclBD aclBD = new AclBD(this);
+		try{
+			List<Acl> acls = aclBD.getAclRuolo(ruoloVO.getId());
+
+			Ruolo ruolo = RuoloConverter.toDTO(ruoloVO, acls);
+			return ruolo;
+
+		} catch(NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 
 	/**
 	 * Aggiorna l'ruolo con i dati forniti
@@ -96,22 +120,44 @@ public class RuoliBD extends BasicBD {
 	 */
 	public void updateRuolo(Ruolo ruolo) throws NotFoundException, ServiceException {
 		try {
-			it.govpay.orm.Ruolo vo = RuoloConverter.toVO(ruolo);
-			IdRuolo id = this.getRuoloService().convertToId(vo);
 
-			if(!this.getRuoloService().exists(id)) {
-				throw new NotFoundException("Ruolo con id ["+id+"] non esiste.");
+			it.govpay.orm.Ruolo vo = RuoloConverter.toVO(ruolo);
+			IdRuolo idRuolo = this.getRuoloService().convertToId(vo);
+
+			if(!this.getRuoloService().exists(idRuolo)) {
+				throw new NotFoundException("Ruolo con id ["+idRuolo.toJson()+"] non trovato");
+			}
+			this.getRuoloService().update(idRuolo, vo);
+
+			AclBD aclBD = new AclBD(this);
+			aclBD.deleteAclRuolo(ruolo.getId());
+			
+			if(ruolo.getAcls() != null && !ruolo.getAcls().isEmpty()) {
+				 
+				for(Acl acl: ruolo.getAcls()) {
+					try{
+						ACL aclVo = AclConverter.toVO(acl, this);
+						IdRuolo idRuoloACL = new IdRuolo();
+						idRuoloACL.setId(ruolo.getId());
+						aclVo.setIdRuolo(idRuoloACL);
+						this.getAclService().create(aclVo);
+					} catch(NotFoundException e) {
+						throw new ServiceException(e);
+					}
+				}
 			}
 
-			this.getRuoloService().update(id, vo);
+			
+			
 			ruolo.setId(vo.getId());
-
+			emitAudit(ruolo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} catch (UtilsException e) {
+			throw new ServiceException(e);
 		}
-
 	}
 
 	/**
@@ -121,9 +167,28 @@ public class RuoliBD extends BasicBD {
 	 */
 	public void insertRuolo(Ruolo ruolo) throws ServiceException{
 		try {
+
 			it.govpay.orm.Ruolo vo = RuoloConverter.toVO(ruolo);
+
 			this.getRuoloService().create(vo);
 			ruolo.setId(vo.getId());
+			
+			if(ruolo.getAcls() != null && !ruolo.getAcls().isEmpty()) {
+				 
+				for(Acl acl: ruolo.getAcls()) {
+					try{
+						ACL aclVo = AclConverter.toVO(acl, this);
+						IdRuolo idRuoloACL = new IdRuolo();
+						idRuoloACL.setId(ruolo.getId());
+						aclVo.setIdRuolo(idRuoloACL);
+						this.getAclService().create(aclVo);
+					} catch(NotFoundException e) {
+						throw new ServiceException(e);
+					}
+				}
+			}
+			
+			emitAudit(ruolo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -152,10 +217,14 @@ public class RuoliBD extends BasicBD {
 
 			List<Ruolo> dtoList = new ArrayList<Ruolo>();
 			for(it.govpay.orm.Ruolo vo: this.getRuoloService().findAll(filter.toPaginatedExpression())) {
-				dtoList.add(RuoloConverter.toDTO(vo));
+				dtoList.add(getRuolo(vo));
 			}
 			return dtoList;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}

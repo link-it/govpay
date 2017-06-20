@@ -62,11 +62,11 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 
 	@Override
 	protected List<Voce<Long>> getValues(List<RawParamValue> paramValues, Object... objects) throws ServiceException {
-		String pagamentiAttesaValue = Utils.getValue(paramValues, this.funzionalita_A_PPAId);
+		String funzionalita_A_PPAVAlue = Utils.getValue(paramValues, this.funzionalita_A_PPAId);
 		List<Voce<Long>> lst = new ArrayList<Voce<Long>>();
 
 		
-		if(StringUtils.isNotEmpty(pagamentiAttesaValue) && pagamentiAttesaValue.equalsIgnoreCase("false")){
+		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
 			return lst;
 		}
 
@@ -99,11 +99,11 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 
 	@Override
 	protected List<Long> getDefaultValue(List<RawParamValue> values, Object... objects) {
-		String pagamentiAttesaValue = Utils.getValue(values, this.funzionalita_A_PPAId);
+		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
 		String idPortale = Utils.getValue(values, this.ruoloId);
 		List<Long> lst = new ArrayList<Long>();
 
-		if(StringUtils.isNotEmpty(pagamentiAttesaValue) && pagamentiAttesaValue.equalsIgnoreCase("false")){
+		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
 			return lst;
 		}
 		if(StringUtils.isEmpty(idPortale)){
@@ -136,9 +136,9 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isRequired(List<RawParamValue> values, Object... objects) {
-		String pagamentiAttesaValue = Utils.getValue(values, this.funzionalita_A_PPAId);
+		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
 
-		if(StringUtils.isNotEmpty(pagamentiAttesaValue) && pagamentiAttesaValue.equalsIgnoreCase("false")){
+		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
 			return false;
 		}
 
@@ -146,8 +146,8 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
-		String pagamentiAttesaValue = Utils.getValue(values, this.funzionalita_A_PPAId);
-		if(StringUtils.isNotEmpty(pagamentiAttesaValue) && pagamentiAttesaValue.equalsIgnoreCase("false")){
+		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
+		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
 			return true;
 		}
 
@@ -155,8 +155,8 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
-		String pagamentiAttesaValue = Utils.getValue(values, this.funzionalita_A_PPAId);
-		if(StringUtils.isNotEmpty(pagamentiAttesaValue) && pagamentiAttesaValue.equalsIgnoreCase("false")){
+		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
+		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
 			return false;
 		}
 		return true;
