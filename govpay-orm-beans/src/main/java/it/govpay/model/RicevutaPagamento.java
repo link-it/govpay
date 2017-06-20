@@ -7,11 +7,14 @@ public class RicevutaPagamento {
 
 	private Dominio dominioCreditore;
 	private Anagrafica anagraficaCreditore;
+	private Anagrafica anagraficaVersante;
+	private Anagrafica anagraficaAttestante;
 	private Date dataScadenza;
 	private Date dataPagamento;
 	private String iuv;
 	private BigDecimal importoDovuto;
 	private BigDecimal importoPagato;
+	private BigDecimal commissioni;
 	private Anagrafica anagraficaDebitore;
 	private String causale;
 	private String codVersamento;
@@ -118,6 +121,22 @@ public class RicevutaPagamento {
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
-	
-
+	public Anagrafica getAnagraficaVersante() {
+		return anagraficaVersante;
+	}
+	public void setAnagraficaVersante(Anagrafica anagraficaVersante) {
+		this.anagraficaVersante = anagraficaVersante;
+	}
+	public Anagrafica getAnagraficaAttestante() {
+		return anagraficaAttestante;
+	}
+	public void setAnagraficaAttestante(Anagrafica anagraficaAttestante) {
+		this.anagraficaAttestante = anagraficaAttestante;
+	}
+	public BigDecimal getCommissioni() {
+		return commissioni;
+	}
+	public void setCommissioni(BigDecimal commissioni) {
+		this.commissioni = commissioni;
+	}
 }

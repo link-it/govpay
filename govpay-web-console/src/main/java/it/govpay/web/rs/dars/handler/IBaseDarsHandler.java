@@ -58,6 +58,8 @@ public interface IBaseDarsHandler<T> {
 	
 	public Object getSearchField(UriInfo uriInfo,List<RawParamValue>values, String fieldId, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public URI getUriSearchField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException;
+	public Object getExportField(UriInfo uriInfo,List<RawParamValue>values, String fieldId, BasicBD bd) throws WebApplicationException,ConsoleException;
+	public URI getUriExportField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException;
 	
 	public String getTitolo(T entry, BasicBD bd) throws ConsoleException;
 	public String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;

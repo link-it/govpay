@@ -58,6 +58,7 @@ public abstract class DarsService extends BaseDarsService {
 
 	public static final String PATH_FIELD = "field";
 	public static final String PATH_CANCELLA = "cancella";
+	public static final String PATH_DELETE_FIELD = "deleteField";
 	public static final String PATH_UPLOAD = "upload";
 	public static final String IDS_TO_DELETE_PARAMETER_ID = "ids";
 
@@ -158,6 +159,50 @@ public abstract class DarsService extends BaseDarsService {
 			bd = BasicBD.newInstance(this.codOperazione);
 			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
 			Object field = this.getDarsHandler().getField(uriInfo, rawValues, id, bd);
+
+			// Field richiesto non valido
+			if(field == null){
+				darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+				darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.fieldNonPresente", id,this.getNomeServizio()));
+				return darsResponse;
+			}
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setResponse(field);
+		} catch(WebApplicationException e){
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			if(bd != null) 
+				bd.rollback();
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.erroreGenerico", id,this.getNomeServizio()));
+		}finally {
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		this.log.info("Richiesta "+methodName +" evasa con successo");
+		return darsResponse;
+	}
+	
+	@POST
+	@Path("/deleteField/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public DarsResponse deleteField(List<RawParamValue> rawValues, 
+			@PathParam("id") String id, @Context UriInfo uriInfo) throws Exception,WebApplicationException{
+		String methodName = "deleteField " + this.getNomeServizio() + "." + id; 
+		this.initLogger(methodName);
+
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+
+		try {
+			bd = BasicBD.newInstance(this.codOperazione);
+			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
+			Object field = this.getDarsHandler().getDeleteField(uriInfo, rawValues, id, bd);
 
 			// Field richiesto non valido
 			if(field == null){

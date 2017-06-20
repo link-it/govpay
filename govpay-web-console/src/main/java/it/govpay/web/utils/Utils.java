@@ -411,6 +411,10 @@ public class Utils {
 	public static String getAbilitatoAsLabel(boolean abilitato){
 		return getBooleanAsLabel(abilitato, "commons.label.abilitato","commons.label.nonAbilitato");
 	}
+	
+	public static String getAbilitataAsLabel(boolean abilitata){
+		return getBooleanAsLabel(abilitata, "commons.label.abilitata","commons.label.nonAbilitata");
+	}
 
 	public static String getSiNoAsLabel(boolean abilitato){
 		return getBooleanAsLabel(abilitato, "commons.label.si","commons.label.no");

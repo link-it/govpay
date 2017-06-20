@@ -61,6 +61,9 @@ public interface IDarsHandler<T> extends IBaseDarsHandler<T> {
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	
+	public Object getDeleteField(UriInfo uriInfo,List<RawParamValue>values, String fieldId, BasicBD bd) throws WebApplicationException,ConsoleException;
+	public URI getUriDeleteField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException;
+	
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd,T entry) throws ConsoleException;
 	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id) throws ConsoleException;
 	

@@ -171,6 +171,20 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
+	
+	@Override
+	public abstract Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException;
+	
+	@Override
+	public URI getUriExportField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
+		try{
+			URI uri =  Utils.creaUriConPath(this.pathServizio, DarsService.PATH_EXPORT_FIELD , fieldName);
+			return uri;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
 
 	@Override
 	public  abstract String getTitolo(T entry, BasicBD bd) throws ConsoleException;
