@@ -121,6 +121,23 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			}
 		}
 
+		// Object _ruolo
+		Long id_ruolo = null;
+		it.govpay.orm.IdRuolo idLogic_ruolo = null;
+		idLogic_ruolo = acl.getIdRuolo();
+		if(idLogic_ruolo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_ruolo = ((JDBCRuoloServiceSearch)(this.getServiceManager().getRuoloServiceSearch())).findTableId(idLogic_ruolo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_ruolo = idLogic_ruolo.getId();
+				if(id_ruolo==null || id_ruolo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 		// Object _dominio
 		Long id_dominio = null;
 		it.govpay.orm.IdDominio idLogic_dominio = null;
@@ -164,6 +181,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_portale","?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
+		sqlQueryObjectInsert.addInsertField("id_ruolo","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
 
@@ -176,6 +194,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ruolo,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoTributo,Long.class)
 		);
@@ -276,6 +295,23 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			}
 		}
 
+		// Object _acl_ruolo
+		Long id_acl_ruolo = null;
+		it.govpay.orm.IdRuolo idLogic_acl_ruolo = null;
+		idLogic_acl_ruolo = acl.getIdRuolo();
+		if(idLogic_acl_ruolo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_acl_ruolo = ((JDBCRuoloServiceSearch)(this.getServiceManager().getRuoloServiceSearch())).findTableId(idLogic_acl_ruolo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_acl_ruolo = idLogic_acl_ruolo.getId();
+				if(id_acl_ruolo==null || id_acl_ruolo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 		// Object _acl_dominio
 		Long id_acl_dominio = null;
 		it.govpay.orm.IdDominio idLogic_acl_dominio = null;
@@ -332,6 +368,9 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_ruolo","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}
 		if(setIdMappingResolutionBehaviour){
@@ -345,6 +384,9 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_acl.add(new JDBCObject(id_acl_operatore, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_acl.add(new JDBCObject(id_acl_ruolo, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_acl.add(new JDBCObject(id_acl_dominio, Long.class));

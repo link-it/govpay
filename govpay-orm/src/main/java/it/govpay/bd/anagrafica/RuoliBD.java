@@ -21,8 +21,8 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
-import it.govpay.bd.model.Ruolo;
 import it.govpay.bd.model.converter.RuoloConverter;
+import it.govpay.model.Ruolo;
 import it.govpay.orm.IdRuolo;
 import it.govpay.orm.dao.jdbc.JDBCRuoloServiceSearch;
 

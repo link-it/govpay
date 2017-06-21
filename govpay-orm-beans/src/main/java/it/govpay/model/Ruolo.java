@@ -1,12 +1,20 @@
-package it.govpay.bd.model;
+package it.govpay.model;
 
+import java.util.List;
 
-public class Ruolo {
+public class Ruolo extends BasicModel {
 	
-	private long id;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private Long id;
 	private String codRuolo;
 	private String descrizione;
-	public long getId() {
+	private List<Acl> acls;
+	
+	public Long getId() {
 		return id;
 	}
 	public void setId(long id) {
@@ -24,4 +32,11 @@ public class Ruolo {
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
 	}
+	public List<Acl> getAcls() {
+		return acls;
+	}
+	public void setAcls(List<Acl> acls) {
+		this.acls = acls;
+	}
+	
 }

@@ -1026,6 +1026,16 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="idRuolo" type="id-ruolo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Ruolo" object-type="Ruolo"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="codTipo" type="String1"/>
 			<xsd:element name="diritti" type="xsd:int" minOccurs="0"/>
 			<xsd:element name="codServizio" type="String35"/>

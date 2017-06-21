@@ -1,23 +1,28 @@
 package it.govpay.web.rs.dars.model.statistiche;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
+import it.govpay.web.rs.dars.model.ElementoCorrelato;
 import it.govpay.web.rs.dars.model.InfoForm;
 
 public class PaginaGrafico {
 
 	private Grafico grafico;
 	private String titolo;
-	private URI esportazione;
+	private InfoForm infoEsportazione;
 	private InfoForm infoRicerca;
 	// indica se visualizzare il filtro specifico per date
 	private boolean attivaDate;
+	private List<ElementoCorrelato> elementiCorrelati;
 	
-	public PaginaGrafico(String titolo,URI esportazione, InfoForm infoRicerca)  {
+	public PaginaGrafico(String titolo,InfoForm infoEsportazione, InfoForm infoRicerca)  {
 		this.titolo = titolo;
 		this.infoRicerca = infoRicerca;
-		this.esportazione = esportazione;
+		this.infoEsportazione = infoEsportazione;
 		this.attivaDate = true;
+		this.elementiCorrelati = new ArrayList<ElementoCorrelato>();
 	}
 
 	public Grafico getGrafico() {
@@ -36,12 +41,12 @@ public class PaginaGrafico {
 		this.titolo = titolo;
 	}
 
-	public URI getEsportazione() {
-		return esportazione;
+	public InfoForm getInfoEsportazione() {
+		return infoEsportazione;
 	}
 
-	public void setEsportazione(URI esportazione) {
-		this.esportazione = esportazione;
+	public void setInfoEsportazione(InfoForm infoEsportazione) {
+		this.infoEsportazione = infoEsportazione;
 	}
 
 	public InfoForm getInfoRicerca() {
@@ -60,4 +65,13 @@ public class PaginaGrafico {
 		this.attivaDate = attivaDate;
 	}
 	
+	public ElementoCorrelato addElementoCorrelato(String etichetta, URI uri) {
+		ElementoCorrelato elemento = new ElementoCorrelato(etichetta, uri);
+		this.elementiCorrelati.add(elemento);
+		return elemento;
+	}
+	
+	public List<ElementoCorrelato> getElementiCorrelati() {
+		return this.elementiCorrelati;
+	}
 }

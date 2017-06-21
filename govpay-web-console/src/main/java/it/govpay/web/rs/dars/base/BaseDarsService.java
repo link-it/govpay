@@ -55,6 +55,7 @@ import net.sf.json.JSONObject;
 public abstract class BaseDarsService extends BaseRsService {
 
 	public static final String PATH_SEARCH_FIELD = "searchField";
+	public static final String PATH_EXPORT_FIELD = "exportField";
 	public static final String PATH_ESPORTA = "esporta";
 	public static final String SIMPLE_SEARCH_PARAMETER_ID = "simpleSearch";
 	public static final String IDS_TO_EXPORT_PARAMETER_ID = "ids";
@@ -66,11 +67,11 @@ public abstract class BaseDarsService extends BaseRsService {
 	}
 
 	@POST
-	@Path("/searchfield/{id}")
+	@Path("/searchField/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse searchField(List<RawParamValue> rawValues, 
 			@PathParam("id") String id, @Context UriInfo uriInfo) throws Exception,WebApplicationException{
-		String methodName = "field " + this.getNomeServizio() + "." + id; 
+		String methodName = "searchField " + this.getNomeServizio() + "." + id; 
 		this.initLogger(methodName);
 
 		BasicBD bd = null;
@@ -81,6 +82,50 @@ public abstract class BaseDarsService extends BaseRsService {
 			bd = BasicBD.newInstance(this.codOperazione);
 			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
 			Object field = this.getDarsHandler().getSearchField(uriInfo, rawValues, id, bd);
+
+			// Field richiesto non valido
+			if(field == null){
+				darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+				darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.fieldNonPresente", id,this.getNomeServizio()));
+				return darsResponse;
+			}
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setResponse(field);
+		} catch(WebApplicationException e){
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			if(bd != null) 
+				bd.rollback();
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.erroreGenerico", id,this.getNomeServizio()));
+		}finally {
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		this.log.info("Richiesta "+methodName +" evasa con successo");
+		return darsResponse;
+	}
+	
+	@POST
+	@Path("/exportField/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public DarsResponse exportField(List<RawParamValue> rawValues, 
+			@PathParam("id") String id, @Context UriInfo uriInfo) throws Exception,WebApplicationException{
+		String methodName = "exportField " + this.getNomeServizio() + "." + id; 
+		this.initLogger(methodName);
+
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+
+		try {
+			bd = BasicBD.newInstance(this.codOperazione);
+			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
+			Object field = this.getDarsHandler().getExportField(uriInfo, rawValues, id, bd);
 
 			// Field richiesto non valido
 			if(field == null){

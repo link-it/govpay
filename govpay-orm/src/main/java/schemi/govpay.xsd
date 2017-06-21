@@ -665,8 +665,11 @@
 			<xsd:element minOccurs="0" name="idOperatore" type="id-operatore">
 				
 			</xsd:element>
+			<xsd:element minOccurs="0" name="idRuolo" type="id-ruolo">
+				
+			</xsd:element>
 			<xsd:element name="codTipo" type="String1"/>
-			<xsd:element name="diritti" type="xsd:int"/>
+			<xsd:element minOccurs="0" name="diritti" type="xsd:int"/>
 			<xsd:element name="codServizio" type="String35"/>
 			<xsd:element minOccurs="0" name="idDominio" type="id-dominio">
 				
@@ -1105,7 +1108,7 @@
 			<xsd:element name="idTracciato" type="id-tracciato">
 				
 			</xsd:element>
-			<xsd:element name="tipoOperazione" type="xsd:string"/>
+			<xsd:element name="tipoOperazione" type="TipoOperazioneType"/>
 			<xsd:element name="lineaElaborazione" type="xsd:long"/>
 			<xsd:element name="stato" type="StatoOperazioneType"/>
 			<xsd:element name="datiRichiesta" type="xsd:base64Binary"/>
@@ -1147,6 +1150,14 @@
 			<xsd:enumeration value="IN_CARICAMENTO"/>
 			<xsd:enumeration value="CARICAMENTO_OK"/>
 			<xsd:enumeration value="CARICAMENTO_KO"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="TipoOperazioneType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ADD"/>
+			<xsd:enumeration value="DEL"/>
+			<xsd:enumeration value="N_V"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	

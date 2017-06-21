@@ -14,6 +14,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
+import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;
 import it.govpay.model.Pagamento;
@@ -61,19 +62,34 @@ public class RicevutaPagamentoUtils {
 			ricevuta.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 			ricevuta.setIdRiscossione(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione()); 
 			ricevuta.setCausale(v.getCausaleVersamento() != null ? v.getCausaleVersamento().getSimple() : ctDatiSingoloPagamentoRT.getCausaleVersamento()); 
+			ricevuta.setCommissioni(ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP());
 		}
 		
 		ricevuta.setDataScadenza(v.getDataScadenza());
 		ricevuta.setImportoDovuto(v.getImportoTotale());
 		
-		CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
-		ricevuta.setPsp(istitutoAttestante.getDenominazioneAttestante()); 
+		if(rt.getIstitutoAttestante() != null){
+			CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
+			Anagrafica anagraficaArttestante = new Anagrafica();
+			anagraficaArttestante.setCodUnivoco(istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
+			anagraficaArttestante.setRagioneSociale(istitutoAttestante.getDenominazioneAttestante());
+			ricevuta.setAnagraficaAttestante(anagraficaArttestante);
+			ricevuta.setPsp(istitutoAttestante.getDenominazioneAttestante());
+		}
 		
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
 		Anagrafica anagraficaDebitore = new Anagrafica();
 		anagraficaDebitore.setCodUnivoco(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
 		anagraficaDebitore.setRagioneSociale(soggettoPagatore.getAnagraficaPagatore());
 		ricevuta.setAnagraficaDebitore(anagraficaDebitore);
+		
+		if(rt.getSoggettoVersante() != null){
+			CtSoggettoVersante soggettoVersante = rt.getSoggettoVersante();
+			Anagrafica anagraficaVersante = new Anagrafica();
+			anagraficaVersante.setCodUnivoco(soggettoVersante.getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
+			anagraficaVersante.setRagioneSociale(soggettoVersante.getAnagraficaVersante());
+			ricevuta.setAnagraficaVersante(anagraficaVersante);
+		}
 		
 		return getPdfRicevutaPagamento(pathLoghi, ricevuta, osAPPdf, log);
 	}
@@ -114,20 +130,34 @@ public class RicevutaPagamentoUtils {
 			ricevuta.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 			ricevuta.setIdRiscossione(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione()); 
 			ricevuta.setCausale(ctDatiSingoloPagamentoRT.getCausaleVersamento());
+			ricevuta.setCommissioni(ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP());
 //			ricevuta.setCausale(v.getCausaleVersamento() != null ? v.getCausaleVersamento().getSimple() : ctDatiSingoloPagamentoRT.getCausaleVersamento()); 
 		}
 		
 //		ricevuta.setDataScadenza(v.getDataScadenza());
 //		ricevuta.setImportoDovuto(v.getImportoTotale());
-		
-		CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
-		ricevuta.setPsp(istitutoAttestante.getDenominazioneAttestante()); 
+		if(rt.getIstitutoAttestante() != null){
+			CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
+			Anagrafica anagraficaArttestante = new Anagrafica();
+			anagraficaArttestante.setCodUnivoco(istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
+			anagraficaArttestante.setRagioneSociale(istitutoAttestante.getDenominazioneAttestante());
+			ricevuta.setAnagraficaAttestante(anagraficaArttestante);
+			ricevuta.setPsp(istitutoAttestante.getDenominazioneAttestante());
+		}
 		
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
 		Anagrafica anagraficaDebitore = new Anagrafica();
 		anagraficaDebitore.setCodUnivoco(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
 		anagraficaDebitore.setRagioneSociale(soggettoPagatore.getAnagraficaPagatore());
 		ricevuta.setAnagraficaDebitore(anagraficaDebitore);
+		
+		if(rt.getSoggettoVersante() != null){
+			CtSoggettoVersante soggettoVersante = rt.getSoggettoVersante();
+			Anagrafica anagraficaVersante = new Anagrafica();
+			anagraficaVersante.setCodUnivoco(soggettoVersante.getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
+			anagraficaVersante.setRagioneSociale(soggettoVersante.getAnagraficaVersante());
+			ricevuta.setAnagraficaVersante(anagraficaVersante);
+		}
 		
 		return getPdfRicevutaPagamento(pathLoghi, ricevuta, osAPPdf, log);
 	}
@@ -167,19 +197,34 @@ public class RicevutaPagamentoUtils {
 			ricevuta.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 			ricevuta.setIdRiscossione(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione()); 
 			ricevuta.setCausale(chiediStatoVersamentoResponse.getCausale() != null ? chiediStatoVersamentoResponse.getCausale() : ctDatiSingoloPagamentoRT.getCausaleVersamento()); 
+			ricevuta.setCommissioni(ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP());
 		}
 		
 		ricevuta.setDataScadenza(chiediStatoVersamentoResponse.getDataScadenza());
 		ricevuta.setImportoDovuto(chiediStatoVersamentoResponse.getImportoTotale());
 		
-		CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
-		ricevuta.setPsp(istitutoAttestante.getDenominazioneAttestante()); 
+		if(rt.getIstitutoAttestante() != null){
+			CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
+			Anagrafica anagraficaArttestante = new Anagrafica();
+			anagraficaArttestante.setCodUnivoco(istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
+			anagraficaArttestante.setRagioneSociale(istitutoAttestante.getDenominazioneAttestante());
+			ricevuta.setAnagraficaAttestante(anagraficaArttestante);
+			ricevuta.setPsp(istitutoAttestante.getDenominazioneAttestante());
+		}
 		
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
 		Anagrafica anagraficaDebitore = new Anagrafica();
 		anagraficaDebitore.setCodUnivoco(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
 		anagraficaDebitore.setRagioneSociale(soggettoPagatore.getAnagraficaPagatore());
 		ricevuta.setAnagraficaDebitore(anagraficaDebitore);
+		
+		if(rt.getSoggettoVersante() != null){
+			CtSoggettoVersante soggettoVersante = rt.getSoggettoVersante();
+			Anagrafica anagraficaVersante = new Anagrafica();
+			anagraficaVersante.setCodUnivoco(soggettoVersante.getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
+			anagraficaVersante.setRagioneSociale(soggettoVersante.getAnagraficaVersante());
+			ricevuta.setAnagraficaVersante(anagraficaVersante);
+		}
 		
 		return getPdfRicevutaPagamento(pathLoghi, ricevuta, osAPPdf, log);
 	}

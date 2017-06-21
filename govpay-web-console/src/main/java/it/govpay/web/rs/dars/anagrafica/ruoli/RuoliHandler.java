@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.anagrafica.portali;
+package it.govpay.web.rs.dars.anagrafica.ruoli;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -41,16 +41,14 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PortaliBD;
-import it.govpay.bd.anagrafica.TipiTributoBD;
+import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.PortaleFilter;
-import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Acl;
+import it.govpay.model.Ruolo;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
-import it.govpay.model.Portale;
-import it.govpay.model.TipoTributo;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.portali.input.DominiPA;
@@ -58,7 +56,6 @@ import it.govpay.web.rs.dars.anagrafica.portali.input.DominiPO;
 import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPA;
 import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPO;
 import it.govpay.web.rs.dars.anagrafica.portali.input.Trusted;
-import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributoHandler;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -86,9 +83,13 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler<Portale>{
+public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruolo>{
+	
+	public static final int DIRITTI_LETTURA = 1;
+	public static final int DIRITTI_SCRITTURA = 2;
+	public static final int NO_DIRITTI = 0;
 
-	public PortaliHandler(Logger log, DarsService darsService) {
+	public RuoliHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -139,10 +140,10 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 					this.getInfoCreazione(uriInfo, bd),
 					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
-			List<Portale> findAll = portaliBD.findAll(filter);
+			List<Ruolo> findAll = null;//portaliBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
-				for (Portale entry : findAll) {
+				for (Ruolo entry : findAll) {
 					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
@@ -425,7 +426,7 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Portale entry) throws ConsoleException {
+	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Ruolo entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
 		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
@@ -448,86 +449,86 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			this.initInfoCreazione(uriInfo, bd);
 		}
 
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(portaleId);
-		idInterm.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idInterm);
-
-		InputText codPortale = (InputText) this.infoCreazioneMap.get(codPortaleId);
-		codPortale.setDefaultValue(entry.getCodPortale());
-		codPortale.setEditable(false); 
-		sezioneRoot.addField(codPortale);
-
-		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
-		principal.setDefaultValue(entry.getPrincipal());
-		sezioneRoot.addField(principal);
-
-		InputText defaultCallbackURL = (InputText) this.infoCreazioneMap.get(defaultCallbackURLId);
-		defaultCallbackURL.setDefaultValue(entry.getDefaultCallbackURL());
-		sezioneRoot.addField(defaultCallbackURL);
-
-		// versione
-		SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
-		versione.setDefaultValue(entry.getVersione().getLabel());
-		sezioneRoot.addField(versione);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
-		String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
-		Sezione sezionePA = infoModifica.addSezione(etichettaPagamentiAttesa);
-
-		List<Long> idsAclDominiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ATTESA);
-		List<Long> idsAclTributiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ATTESA);
-		boolean visualizzaPA = idsAclDominiPA.size() > 0 || idsAclTributiPA.size() > 0;
-
-		CheckButton pagamentiAttesa = (CheckButton) this.infoCreazioneMap.get(pagamentiAttesaId);
-		pagamentiAttesa.setDefaultValue(visualizzaPA); 
-		sezionePA.addField(pagamentiAttesa);
-
-		List<RawParamValue> pagamentiAttesaValues = new ArrayList<RawParamValue>();
-		pagamentiAttesaValues.add(new RawParamValue(portaleId, entry.getId()+""));
-		pagamentiAttesaValues.add(new RawParamValue(pagamentiAttesaId, (visualizzaPA? "true" : "false")));
-
-		TipiTributoPA tipiTributoPa = (TipiTributoPA) this.infoCreazioneMap.get(tipiTributoPaId);
-		tipiTributoPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
-		sezionePA.addField(tipiTributoPa);
-
-		DominiPA dominiPa = (DominiPA) this.infoCreazioneMap.get(dominiPaId);
-		dominiPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
-		sezionePA.addField(dominiPa); 
-
-		String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
-		Sezione sezionePO = infoModifica.addSezione(etichettaPagamentiOnline);
-
-		List<Long> idsAclDominiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ONLINE);
-		List<Long> idsAclTributiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ONLINE);
-		boolean visualizzaPO = idsAclDominiPO.size() > 0 || idsAclTributiPO.size() > 0 || entry.isTrusted(); 
-
-		CheckButton pagamentiOnline = (CheckButton) this.infoCreazioneMap.get(pagamentiOnlineId);
-		pagamentiOnline.setDefaultValue(visualizzaPO); 
-		sezionePO.addField(pagamentiOnline);
-
-		List<RawParamValue> pagamentiOnlineValues = new ArrayList<RawParamValue>();
-		pagamentiOnlineValues.add(new RawParamValue(portaleId, entry.getId()+""));
-		pagamentiOnlineValues.add(new RawParamValue(pagamentiOnlineId, (visualizzaPO? "true" : "false")));
-
-		Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
-		trusted.init(pagamentiOnlineValues, bd,this.getLanguage()); 
-		sezionePO.addField(trusted);
-
-		List<RawParamValue> pagamentiOnlineTrustedValues = new ArrayList<RawParamValue>();
-		pagamentiOnlineTrustedValues.addAll(pagamentiOnlineValues);
-		pagamentiOnlineTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
-
-		TipiTributoPO tipiTributoPo = (TipiTributoPO) this.infoCreazioneMap.get(tipiTributoPoId);
-		tipiTributoPo.init(pagamentiOnlineTrustedValues, bd,this.getLanguage()); 
-		sezionePO.addField(tipiTributoPo);
-
-		DominiPO dominiPo = (DominiPO) this.infoCreazioneMap.get(dominiPoId);
-		dominiPo.init(pagamentiOnlineValues, bd,this.getLanguage()); 
-		sezionePO.addField(dominiPo); 
+		//		Sezione sezioneRoot = infoModifica.getSezioneRoot();
+		//		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(portaleId);
+		//		idInterm.setDefaultValue(entry.getId());
+		//		sezioneRoot.addField(idInterm);
+		//
+		//		InputText codPortale = (InputText) this.infoCreazioneMap.get(codPortaleId);
+		//		codPortale.setDefaultValue(entry.getCodPortale());
+		//		codPortale.setEditable(false); 
+		//		sezioneRoot.addField(codPortale);
+		//
+		//		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
+		//		principal.setDefaultValue(entry.getPrincipal());
+		//		sezioneRoot.addField(principal);
+		//
+		//		InputText defaultCallbackURL = (InputText) this.infoCreazioneMap.get(defaultCallbackURLId);
+		//		defaultCallbackURL.setDefaultValue(entry.getDefaultCallbackURL());
+		//		sezioneRoot.addField(defaultCallbackURL);
+		//
+		//		// versione
+		//		SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
+		//		versione.setDefaultValue(entry.getVersione().getLabel());
+		//		sezioneRoot.addField(versione);
+		//
+		//		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+		//		abilitato.setDefaultValue(entry.isAbilitato()); 
+		//		sezioneRoot.addField(abilitato);
+		//
+		//		String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
+		//		Sezione sezionePA = infoModifica.addSezione(etichettaPagamentiAttesa);
+		//
+		//		List<Long> idsAclDominiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ATTESA);
+		//		List<Long> idsAclTributiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ATTESA);
+		//		boolean visualizzaPA = idsAclDominiPA.size() > 0 || idsAclTributiPA.size() > 0;
+		//
+		//		CheckButton pagamentiAttesa = (CheckButton) this.infoCreazioneMap.get(pagamentiAttesaId);
+		//		pagamentiAttesa.setDefaultValue(visualizzaPA); 
+		//		sezionePA.addField(pagamentiAttesa);
+		//
+		//		List<RawParamValue> pagamentiAttesaValues = new ArrayList<RawParamValue>();
+		//		pagamentiAttesaValues.add(new RawParamValue(portaleId, entry.getId()+""));
+		//		pagamentiAttesaValues.add(new RawParamValue(pagamentiAttesaId, (visualizzaPA? "true" : "false")));
+		//
+		//		TipiTributoPA tipiTributoPa = (TipiTributoPA) this.infoCreazioneMap.get(tipiTributoPaId);
+		//		tipiTributoPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
+		//		sezionePA.addField(tipiTributoPa);
+		//
+		//		DominiPA dominiPa = (DominiPA) this.infoCreazioneMap.get(dominiPaId);
+		//		dominiPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
+		//		sezionePA.addField(dominiPa); 
+		//
+		//		String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
+		//		Sezione sezionePO = infoModifica.addSezione(etichettaPagamentiOnline);
+		//
+		//		List<Long> idsAclDominiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ONLINE);
+		//		List<Long> idsAclTributiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ONLINE);
+		//		boolean visualizzaPO = idsAclDominiPO.size() > 0 || idsAclTributiPO.size() > 0 || entry.isTrusted(); 
+		//
+		//		CheckButton pagamentiOnline = (CheckButton) this.infoCreazioneMap.get(pagamentiOnlineId);
+		//		pagamentiOnline.setDefaultValue(visualizzaPO); 
+		//		sezionePO.addField(pagamentiOnline);
+		//
+		//		List<RawParamValue> pagamentiOnlineValues = new ArrayList<RawParamValue>();
+		//		pagamentiOnlineValues.add(new RawParamValue(portaleId, entry.getId()+""));
+		//		pagamentiOnlineValues.add(new RawParamValue(pagamentiOnlineId, (visualizzaPO? "true" : "false")));
+		//
+		//		Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
+		//		trusted.init(pagamentiOnlineValues, bd,this.getLanguage()); 
+		//		sezionePO.addField(trusted);
+		//
+		//		List<RawParamValue> pagamentiOnlineTrustedValues = new ArrayList<RawParamValue>();
+		//		pagamentiOnlineTrustedValues.addAll(pagamentiOnlineValues);
+		//		pagamentiOnlineTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
+		//
+		//		TipiTributoPO tipiTributoPo = (TipiTributoPO) this.infoCreazioneMap.get(tipiTributoPoId);
+		//		tipiTributoPo.init(pagamentiOnlineTrustedValues, bd,this.getLanguage()); 
+		//		sezionePO.addField(tipiTributoPo);
+		//
+		//		DominiPO dominiPo = (DominiPO) this.infoCreazioneMap.get(dominiPoId);
+		//		dominiPo.init(pagamentiOnlineValues, bd,this.getLanguage()); 
+		//		sezionePO.addField(dominiPo); 
 
 
 		return infoModifica;
@@ -537,16 +538,16 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
 
 	@Override
-	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Portale entry) throws ConsoleException {
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Ruolo entry) throws ConsoleException {
 		return null;
 	}
 
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
-	
+
 	@Override
-	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Portale entry)	throws ConsoleException {	return null;	}
-	
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Ruolo entry)	throws ConsoleException {	return null;	}
+
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
@@ -574,18 +575,19 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -597,77 +599,31 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			this.darsService.checkOperatoreAdmin(bd);
 
 			// recupero oggetto
-			PortaliBD portaliBD = new PortaliBD(bd);
-			Portale portale = portaliBD.getPortale(id);
+			RuoliBD ruoliBD = new RuoliBD(bd);
+			Ruolo ruolo = ruoliBD.getRuolo(id);
 
-			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,portale);
-			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, portale);
+			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,ruolo);
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, ruolo);
 			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(portale,bd), infoEsportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(ruolo,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati portale
-			if(StringUtils.isNotEmpty(portale.getCodPortale()))
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.label"), portale.getCodPortale());
-			if(StringUtils.isNotEmpty(portale.getPrincipal()))
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), portale.getPrincipal());
-			if(StringUtils.isNotEmpty(portale.getDefaultCallbackURL()))
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.label"), portale.getDefaultCallbackURL());
-			if(portale.getVersione() != null)
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), portale.getVersione().getLabel(), true);
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(portale.isAbilitato()));
+			if(StringUtils.isNotEmpty(ruolo.getCodRuolo()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codRuolo.label"), ruolo.getCodRuolo());
+			if(StringUtils.isNotEmpty(ruolo.getDescrizione()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), ruolo.getDescrizione());
 
-			// Elementi correlati
-			String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
-			it.govpay.web.rs.dars.model.Sezione sezionePagamentiAttesa = dettaglio.addSezione(etichettaPagamentiAttesa);
-
-			List<Acl> acls = portale.getAcls();
-
-			String etichettaTipiTributo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tipiTributo.titolo");
+			List<Acl> acls = new ArrayList<Acl>();
 			String etichettaDomini = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
-
-			List<Long> idTributi = Utils.getIdsFromAcls(acls, Tipo.TRIBUTO , Servizio.PAGAMENTI_ATTESA);
-			List<Voce<String>> listaVociTributi = new ArrayList<Voce<String>>();
 			String valore = null;
-			if(!Utils.isEmpty(idTributi)){
-				if(!idTributi.contains(-1L)){
-					TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
-					TipoTributoFilter filter = tipiTributoBD.newFilter();
-					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
-					fsw.setSortOrder(SortOrder.ASC);
-					filter.getFilterSortList().add(fsw);
-					filter.setListaIdTributi(idTributi);
-					List<TipoTributo> findAll =  tipiTributoBD.findAll(filter);
+			// Elementi correlati
+			String etichettaFunzionalita_A_PPA = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_PPA.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_A_PPA = dettaglio.addSezione(etichettaFunzionalita_A_PPA);
 
-					it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo tipiTributoDars = new it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo();
-					TipiTributoHandler tipiTributoDarsHandler = (TipiTributoHandler) tipiTributoDars.getDarsHandler();
-					if(findAll != null && findAll.size() > 0){
-						for (TipoTributo entry : findAll) {
-							Elemento elemento = tipiTributoDarsHandler.getElemento(entry, entry.getId(), tipiTributoDars.getPathServizio(),bd);
-							listaVociTributi.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
-						}
-					}
-				} else{
-					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
-				}
-			} else {
-				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
-			}
-
-			if(Utils.isEmpty(listaVociTributi)){
-				sezionePagamentiAttesa.addVoce(etichettaTipiTributo, valore); 
-			} else {
-				sezionePagamentiAttesa.addVoce(etichettaTipiTributo, null); 
-				for (Voce<String> voce : listaVociTributi) {
-					sezionePagamentiAttesa.addVoce(voce);
-				}
-			}
-
-
-			List<Long> idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.PAGAMENTI_ATTESA);
+			List<Long> idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_PagoPa);
 			List<Voce<String>> listaVociDomini = new ArrayList<Voce<String>>();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
@@ -697,62 +653,18 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			}
 
 			if(Utils.isEmpty(listaVociDomini)){
-				sezionePagamentiAttesa.addVoce(etichettaDomini, valore); 
+				sezioneFunzionalita_A_PPA.addVoce(etichettaDomini, valore); 
 			} else {
-				sezionePagamentiAttesa.addVoce(etichettaDomini, null); 
+				sezioneFunzionalita_A_PPA.addVoce(etichettaDomini, null); 
 				for (Voce<String> voce : listaVociDomini) {
-					sezionePagamentiAttesa.addVoce(voce);
+					sezioneFunzionalita_A_PPA.addVoce(voce);
 				}
 			}
 
-			String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
-			it.govpay.web.rs.dars.model.Sezione sezionePagamentiOnline = dettaglio.addSezione(etichettaPagamentiOnline);
+			String etichettaFunzionalita_A_CON = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_CON.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_A_CON = dettaglio.addSezione(etichettaFunzionalita_A_CON);
 
-
-
-			idTributi = Utils.getIdsFromAcls(acls, Tipo.TRIBUTO , Servizio.PAGAMENTI_ONLINE);
-			listaVociTributi = new ArrayList<Voce<String>>();
-			valore = null;
-			if(!Utils.isEmpty(idTributi)){
-				if(!idTributi.contains(-1L)){
-					TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
-					TipoTributoFilter filter = tipiTributoBD.newFilter();
-					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
-					fsw.setSortOrder(SortOrder.ASC);
-					filter.getFilterSortList().add(fsw);
-					filter.setListaIdTributi(idTributi);
-					List<TipoTributo> findAll =  tipiTributoBD.findAll(filter);
-
-					it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo tipiTributoDars = new it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo();
-					TipiTributoHandler tipiTributoDarsHandler = (TipiTributoHandler) tipiTributoDars.getDarsHandler();
-					if(findAll != null && findAll.size() > 0){
-						for (TipoTributo entry : findAll) {
-							Elemento elemento = tipiTributoDarsHandler.getElemento(entry, entry.getId(), tipiTributoDars.getPathServizio(),bd);
-							listaVociTributi.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
-						}
-					}
-				}else{
-					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
-				}
-			} else {
-				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
-			}
-
-			sezionePagamentiOnline.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.label"), Utils.getSiNoAsLabel(portale.isTrusted()));
-
-			if(Utils.isEmpty(listaVociTributi)){
-				if(!portale.isTrusted()) {
-					sezionePagamentiOnline.addVoce(etichettaTipiTributo, valore);
-				} 
-			} else {
-				sezionePagamentiOnline.addVoce(etichettaTipiTributo, null); 
-				for (Voce<String> voce : listaVociTributi) {
-					sezionePagamentiOnline.addVoce(voce);
-				}
-			}
-
-			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.PAGAMENTI_ONLINE);
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Contabile);
 			listaVociDomini = new ArrayList<Voce<String>>();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
@@ -782,14 +694,229 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			}
 
 			if(Utils.isEmpty(listaVociDomini)){
-				sezionePagamentiOnline.addVoce(etichettaDomini, valore); 
+				sezioneFunzionalita_A_CON.addVoce(etichettaDomini, valore); 
 			} else {
-				sezionePagamentiOnline.addVoce(etichettaDomini, null); 
+				sezioneFunzionalita_A_CON.addVoce(etichettaDomini, null); 
 				for (Voce<String> voce : listaVociDomini) {
-					sezionePagamentiOnline.addVoce(voce);
+					sezioneFunzionalita_A_CON.addVoce(voce);
 				}
 			}
 
+			String etichettaFunzionalita_A_APP = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_APP.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_A_APP = dettaglio.addSezione(etichettaFunzionalita_A_APP);
+			
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Applicazioni);
+			listaVociDomini = new ArrayList<Voce<String>>();
+			valore = null;
+			if(!Utils.isEmpty(idDomini)){
+				if(!idDomini.contains(-1L)){
+					DominiBD dominiBD = new DominiBD(bd);
+					DominioFilter filter = dominiBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setIdDomini(idDomini);
+					List<Dominio> findAll =  dominiBD.findAll(filter);
+
+					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
+					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
+					if(findAll != null && findAll.size() > 0){
+						for (Dominio entry : findAll) {
+							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
+							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+						}
+					}
+				}else{
+					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
+				}
+			} else {
+				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
+			}
+
+			if(Utils.isEmpty(listaVociDomini)){
+				sezioneFunzionalita_A_APP.addVoce(etichettaDomini, valore); 
+			} else {
+				sezioneFunzionalita_A_APP.addVoce(etichettaDomini, null); 
+				for (Voce<String> voce : listaVociDomini) {
+					sezioneFunzionalita_A_APP.addVoce(voce);
+				}
+			}
+
+			String etichettaFunzionalita_A_USR = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_USR.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_A_USR = dettaglio.addSezione(etichettaFunzionalita_A_USR);
+			
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Utenti);
+			listaVociDomini = new ArrayList<Voce<String>>();
+			valore = null;
+			if(!Utils.isEmpty(idDomini)){
+				if(!idDomini.contains(-1L)){
+					DominiBD dominiBD = new DominiBD(bd);
+					DominioFilter filter = dominiBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setIdDomini(idDomini);
+					List<Dominio> findAll =  dominiBD.findAll(filter);
+
+					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
+					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
+					if(findAll != null && findAll.size() > 0){
+						for (Dominio entry : findAll) {
+							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
+							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+						}
+					}
+				}else{
+					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
+				}
+			} else {
+				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
+			}
+
+			if(Utils.isEmpty(listaVociDomini)){
+				sezioneFunzionalita_A_USR.addVoce(etichettaDomini, valore); 
+			} else {
+				sezioneFunzionalita_A_USR.addVoce(etichettaDomini, null); 
+				for (Voce<String> voce : listaVociDomini) {
+					sezioneFunzionalita_A_USR.addVoce(voce);
+				}
+			}
+			
+
+			String etichettaFunzionalita_G_PAG = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_G_PAG.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_G_PAG = dettaglio.addSezione(etichettaFunzionalita_G_PAG);
+			
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Pagamenti);
+			listaVociDomini = new ArrayList<Voce<String>>();
+			valore = null;
+			if(!Utils.isEmpty(idDomini)){
+				if(!idDomini.contains(-1L)){
+					DominiBD dominiBD = new DominiBD(bd);
+					DominioFilter filter = dominiBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setIdDomini(idDomini);
+					List<Dominio> findAll =  dominiBD.findAll(filter);
+
+					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
+					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
+					if(findAll != null && findAll.size() > 0){
+						for (Dominio entry : findAll) {
+							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
+							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+						}
+					}
+				}else{
+					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
+				}
+			} else {
+				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
+			}
+
+			if(Utils.isEmpty(listaVociDomini)){
+				sezioneFunzionalita_G_PAG.addVoce(etichettaDomini, valore); 
+			} else {
+				sezioneFunzionalita_G_PAG.addVoce(etichettaDomini, null); 
+				for (Voce<String> voce : listaVociDomini) {
+					sezioneFunzionalita_G_PAG.addVoce(voce);
+				}
+			}
+
+			String etichettaFunzionalita_G_RND = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_G_RND.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_G_RND = dettaglio.addSezione(etichettaFunzionalita_G_RND);
+			
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Rendicontazioni);
+			listaVociDomini = new ArrayList<Voce<String>>();
+			valore = null;
+			if(!Utils.isEmpty(idDomini)){
+				if(!idDomini.contains(-1L)){
+					DominiBD dominiBD = new DominiBD(bd);
+					DominioFilter filter = dominiBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setIdDomini(idDomini);
+					List<Dominio> findAll =  dominiBD.findAll(filter);
+
+					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
+					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
+					if(findAll != null && findAll.size() > 0){
+						for (Dominio entry : findAll) {
+							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
+							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+						}
+					}
+				}else{
+					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
+				}
+			} else {
+				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
+			}
+
+			if(Utils.isEmpty(listaVociDomini)){
+				sezioneFunzionalita_G_RND.addVoce(etichettaDomini, valore); 
+			} else {
+				sezioneFunzionalita_G_RND.addVoce(etichettaDomini, null); 
+				for (Voce<String> voce : listaVociDomini) {
+					sezioneFunzionalita_G_RND.addVoce(voce);
+				}
+			}
+
+			String etichettaFunzionalita_GDE = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_GDE.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_GDE = dettaglio.addSezione(etichettaFunzionalita_GDE);
+			
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Giornale_Eventi);
+			listaVociDomini = new ArrayList<Voce<String>>();
+			valore = null;
+			if(!Utils.isEmpty(idDomini)){
+				if(!idDomini.contains(-1L)){
+					DominiBD dominiBD = new DominiBD(bd);
+					DominioFilter filter = dominiBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setIdDomini(idDomini);
+					List<Dominio> findAll =  dominiBD.findAll(filter);
+
+					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
+					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
+					if(findAll != null && findAll.size() > 0){
+						for (Dominio entry : findAll) {
+							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
+							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+						}
+					}
+				}else{
+					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
+				}
+			} else {
+				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
+			}
+
+			if(Utils.isEmpty(listaVociDomini)){
+				sezioneFunzionalita_GDE.addVoce(etichettaDomini, valore); 
+			} else {
+				sezioneFunzionalita_GDE.addVoce(etichettaDomini, null); 
+				for (Voce<String> voce : listaVociDomini) {
+					sezioneFunzionalita_GDE.addVoce(voce);
+				}
+			}
+
+			String etichettaFunzionalita_MAN = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_MAN.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_MAN = dettaglio.addSezione(etichettaFunzionalita_MAN);
+
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Manutenzione);
+			if(idDomini != null && idDomini.size() > 0){
+				sezioneFunzionalita_MAN.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(true)); 
+			}else {
+				sezioneFunzionalita_MAN.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(false)); 
+			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -811,19 +938,19 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			Portale entry = this.creaEntry(is, uriInfo, bd);
+			Ruolo entry = this.creaEntry(is, uriInfo, bd);
 
 			this.checkEntry(entry, null);
 
-			PortaliBD applicazioniBD = new PortaliBD(bd);
+			RuoliBD ruoliBD = new RuoliBD(bd);
 
 			try{
-				applicazioniBD.getPortale(entry.getCodPortale());
-				String msg = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodPortale());
+				ruoliBD.getRuolo(entry.getCodRuolo());
+				String msg = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodRuolo());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
 
-			applicazioniBD.insertPortale(entry); 
+			ruoliBD.insertRuolo(entry); 
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -840,17 +967,41 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 	}
 
 	@Override
-	public Portale creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd)
+	public Ruolo creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
 		String methodName = "creaEntry " + this.titoloServizio;
-		Portale entry = null;
-		String pagamentiAttesaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiAttesa.id");
-		String pagamentiOnlineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
-		String dominiPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPa.id");
-		String tipiTributoPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPa.id");
-		String dominiPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPo.id");
-		String tipiTributoPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPo.id");
-		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+		Ruolo entry = null;
+		
+		String funzionalita_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_PPA.id");
+		String domini_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_PPA.id");
+		String diritti_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_PPA.id");
+		
+		String funzionalita_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_CON.id");
+		String domini_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_CON.id");
+		String diritti_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_CON.id");
+		
+		String funzionalita_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_APP.id");
+		String domini_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_APP.id");
+		String diritti_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_APP.id");
+		
+		String funzionalita_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_USR.id");
+		String domini_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_USR.id");
+		String diritti_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_USR.id");
+		
+		String funzionalita_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_PAG.id");
+		String domini_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_PAG.id");
+		String diritti_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_PAG.id");
+		
+		String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
+		String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
+		String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
+		
+		String funzionalita_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_GDE.id");
+		String domini_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_GDE.id");
+		String diritti_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_GDE.id");
+		
+		String funzionalita_MANId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_MAN.id");
+
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -859,10 +1010,20 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			JsonConfig jsonConfig = new JsonConfig();
 
 			Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();
-			classMap.put(dominiPaId, Long.class); 
-			classMap.put(tipiTributoPaId, Long.class); 
-			classMap.put(dominiPoId, Long.class); 
-			classMap.put(tipiTributoPoId, Long.class); 
+			classMap.put(domini_A_PPAId, Long.class); 
+			classMap.put(diritti_A_PPAId, Long.class); 
+			classMap.put(domini_A_CONId, Long.class); 
+			classMap.put(diritti_A_CONId, Long.class); 
+			classMap.put(domini_A_APPId, Long.class); 
+			classMap.put(diritti_A_APPId, Long.class); 
+			classMap.put(domini_A_USRId, Long.class); 
+			classMap.put(diritti_A_USRId, Long.class); 
+			classMap.put(domini_G_PAGId, Long.class); 
+			classMap.put(diritti_G_PAGId, Long.class); 
+			classMap.put(domini_G_RNDId, Long.class); 
+			classMap.put(diritti_G_RNDId, Long.class); 
+			classMap.put(domini_GDEId, Long.class); 
+			classMap.put(diritti_GDEId, Long.class); 
 			jsonConfig.setClassMap(classMap);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Utils.copy(is, baos);
@@ -870,110 +1031,233 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			baos.flush();
 			baos.close();
 
-			JSONObject jsonObjectPortale = JSONObject.fromObject( baos.toString() );
+			JSONObject jsonObjectRuolo = JSONObject.fromObject( baos.toString() );
 
-			List<Acl> lstAclTributiPa = new ArrayList<Acl>();
-			List<Acl> lstAclDominiPa = new ArrayList<Acl>();
+			List<Acl> lstAclDominiFunzionalita_A_PPA = new ArrayList<Acl>();
 
-			if(jsonObjectPortale.getBoolean(pagamentiAttesaId)){
-				JSONArray jsonTributi = jsonObjectPortale.getJSONArray(tipiTributoPaId);
-
-
-				for (int i = 0; i < jsonTributi.size(); i++) {
-					long idTributo = jsonTributi.getLong(i);
-
-					Acl acl = new Acl();
-					acl.setTipo(Tipo.TRIBUTO);
-					acl.setServizio(Servizio.PAGAMENTI_ATTESA);
-					if(idTributo > 0){
-						acl.setIdTributo(idTributo);
-						lstAclTributiPa.add(acl);
-					}else {
-						lstAclTributiPa.clear();
-						lstAclTributiPa.add(acl);
-						break;
-					}
-				}
-				JSONArray jsonDomini = jsonObjectPortale.getJSONArray(dominiPaId);
+			if(jsonObjectRuolo.getBoolean(funzionalita_A_PPAId)){
+				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_A_PPAId);
+				// diritti
+				Long diritti_A_PPA = jsonObjectRuolo.getLong(diritti_A_PPAId);
 
 				for (int i = 0; i < jsonDomini.size(); i++) {
 					long idDominio = jsonDomini.getLong(i);
 
 					Acl acl = new Acl();
 					acl.setTipo(Tipo.DOMINIO);
-					acl.setServizio(Servizio.PAGAMENTI_ATTESA);
+					acl.setServizio(Servizio.Anagrafica_PagoPa);
+					acl.setDiritti(diritti_A_PPA.intValue()); 
 					if(idDominio > 0){
 						acl.setIdDominio(idDominio);
-						lstAclDominiPa.add(acl);
+						lstAclDominiFunzionalita_A_PPA.add(acl);
 					}else {
-						lstAclDominiPa.clear();
-						lstAclDominiPa.add(acl);
+						lstAclDominiFunzionalita_A_PPA.clear();
+						lstAclDominiFunzionalita_A_PPA.add(acl);
 						break;
 					}
 				}
 			}
-			// rimuovo gli oggetti della parte PA
-			jsonObjectPortale.remove(pagamentiAttesaId);
-			jsonObjectPortale.remove(tipiTributoPaId);
-			jsonObjectPortale.remove(dominiPaId);
+			// rimuovo gli oggetti della parte Funzionalita_A_PPA
+			jsonObjectRuolo.remove(funzionalita_A_PPAId);
+			jsonObjectRuolo.remove(domini_A_PPAId);
+			jsonObjectRuolo.remove(diritti_A_PPAId);
 
+			List<Acl> lstAclDominiFunzionalita_A_CON = new ArrayList<Acl>();
 
-			List<Acl> lstAclTributiPo = new ArrayList<Acl>();
-			List<Acl> lstAclDominiPo = new ArrayList<Acl>();
-
-			if(jsonObjectPortale.getBoolean(pagamentiOnlineId)){
-				JSONArray jsonTributi = jsonObjectPortale.getJSONArray(tipiTributoPoId);
-
-
-				for (int i = 0; i < jsonTributi.size(); i++) {
-					long idTributo = jsonTributi.getLong(i);
-
-					Acl acl = new Acl();
-					acl.setTipo(Tipo.TRIBUTO);
-					acl.setServizio(Servizio.PAGAMENTI_ONLINE);
-					if(idTributo > 0){
-						acl.setIdTributo(idTributo);
-						lstAclTributiPo.add(acl);
-					}else {
-						lstAclTributiPo.clear();
-						lstAclTributiPo.add(acl);
-						break;
-					}
-				}
-				JSONArray jsonDomini = jsonObjectPortale.getJSONArray(dominiPoId);
+			if(jsonObjectRuolo.getBoolean(funzionalita_A_CONId)){
+				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_A_CONId);
+				// diritti
+				Long diritti_A_CON = jsonObjectRuolo.getLong(diritti_A_CONId);
 
 				for (int i = 0; i < jsonDomini.size(); i++) {
 					long idDominio = jsonDomini.getLong(i);
 
 					Acl acl = new Acl();
 					acl.setTipo(Tipo.DOMINIO);
-					acl.setServizio(Servizio.PAGAMENTI_ONLINE);
+					acl.setServizio(Servizio.Anagrafica_Contabile);
+					acl.setDiritti(diritti_A_CON.intValue()); 
 					if(idDominio > 0){
 						acl.setIdDominio(idDominio);
-						lstAclDominiPo.add(acl);
+						lstAclDominiFunzionalita_A_CON.add(acl);
 					}else {
-						lstAclDominiPo.clear();
-						lstAclDominiPo.add(acl);
+						lstAclDominiFunzionalita_A_CON.clear();
+						lstAclDominiFunzionalita_A_CON.add(acl);
 						break;
 					}
 				}
 			}
-			// rimuovo gli oggetti della parte PA
-			jsonObjectPortale.remove(pagamentiOnlineId);
-			jsonObjectPortale.remove(tipiTributoPoId);
-			jsonObjectPortale.remove(dominiPoId);
+			// rimuovo gli oggetti della parte Funzionalita_A_CON
+			jsonObjectRuolo.remove(funzionalita_A_CONId);
+			jsonObjectRuolo.remove(domini_A_CONId);
+			jsonObjectRuolo.remove(diritti_A_CONId);
+			
+			List<Acl> lstAclDominiFunzionalita_A_APP = new ArrayList<Acl>();
 
-			Versione versione = this.getVersioneSelezionata(jsonObjectPortale, versioneId, true); 
+			if(jsonObjectRuolo.getBoolean(funzionalita_A_APPId)){
+				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_A_APPId);
+				// diritti
+				Long diritti_A_APP = jsonObjectRuolo.getLong(diritti_A_APPId);
 
-			jsonConfig.setRootClass(Portale.class);
-			entry = (Portale) JSONObject.toBean( jsonObjectPortale, jsonConfig );
+				for (int i = 0; i < jsonDomini.size(); i++) {
+					long idDominio = jsonDomini.getLong(i);
 
-			entry.setVersione(versione); 
+					Acl acl = new Acl();
+					acl.setTipo(Tipo.DOMINIO);
+					acl.setServizio(Servizio.Anagrafica_Applicazioni);
+					acl.setDiritti(diritti_A_APP.intValue()); 
+					if(idDominio > 0){
+						acl.setIdDominio(idDominio);
+						lstAclDominiFunzionalita_A_APP.add(acl);
+					}else {
+						lstAclDominiFunzionalita_A_APP.clear();
+						lstAclDominiFunzionalita_A_APP.add(acl);
+						break;
+					}
+				}
+			}
+			// rimuovo gli oggetti della parte Funzionalita_A_APP
+			jsonObjectRuolo.remove(funzionalita_A_APPId);
+			jsonObjectRuolo.remove(domini_A_APPId);
+			jsonObjectRuolo.remove(diritti_A_APPId);
+			
+			List<Acl> lstAclDominiFunzionalita_A_USR = new ArrayList<Acl>();
 
-			entry.setAcls(lstAclTributiPa);
-			entry.getAcls().addAll(lstAclDominiPa);
-			entry.getAcls().addAll(lstAclTributiPo);
-			entry.getAcls().addAll(lstAclDominiPo);
+			if(jsonObjectRuolo.getBoolean(funzionalita_A_USRId)){
+				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_A_USRId);
+				// diritti
+				Long diritti_A_USR = jsonObjectRuolo.getLong(diritti_A_USRId);
+
+				for (int i = 0; i < jsonDomini.size(); i++) {
+					long idDominio = jsonDomini.getLong(i);
+
+					Acl acl = new Acl();
+					acl.setTipo(Tipo.DOMINIO);
+					acl.setServizio(Servizio.Anagrafica_Utenti);
+					acl.setDiritti(diritti_A_USR.intValue()); 
+					if(idDominio > 0){
+						acl.setIdDominio(idDominio);
+						lstAclDominiFunzionalita_A_USR.add(acl);
+					}else {
+						lstAclDominiFunzionalita_A_USR.clear();
+						lstAclDominiFunzionalita_A_USR.add(acl);
+						break;
+					}
+				}
+			}
+			// rimuovo gli oggetti della parte Funzionalita_A_USR
+			jsonObjectRuolo.remove(funzionalita_A_USRId);
+			jsonObjectRuolo.remove(domini_A_USRId);
+			jsonObjectRuolo.remove(diritti_A_USRId);
+
+			List<Acl> lstAclDominiFunzionalita_G_PAG = new ArrayList<Acl>();
+
+			if(jsonObjectRuolo.getBoolean(funzionalita_G_PAGId)){
+				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_G_PAGId);
+				// diritti
+				Long diritti_G_PAG = jsonObjectRuolo.getLong(diritti_G_PAGId);
+
+				for (int i = 0; i < jsonDomini.size(); i++) {
+					long idDominio = jsonDomini.getLong(i);
+
+					Acl acl = new Acl();
+					acl.setTipo(Tipo.DOMINIO);
+					acl.setServizio(Servizio.Gestione_Pagamenti);
+					acl.setDiritti(diritti_G_PAG.intValue()); 
+					if(idDominio > 0){
+						acl.setIdDominio(idDominio);
+						lstAclDominiFunzionalita_G_PAG.add(acl);
+					}else {
+						lstAclDominiFunzionalita_G_PAG.clear();
+						lstAclDominiFunzionalita_G_PAG.add(acl);
+						break;
+					}
+				}
+			}
+			// rimuovo gli oggetti della parte Funzionalita_G_PAG
+			jsonObjectRuolo.remove(funzionalita_G_PAGId);
+			jsonObjectRuolo.remove(domini_G_PAGId);
+			jsonObjectRuolo.remove(diritti_G_PAGId);
+			
+			List<Acl> lstAclDominiFunzionalita_G_RND = new ArrayList<Acl>();
+
+			if(jsonObjectRuolo.getBoolean(funzionalita_G_RNDId)){
+				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_G_RNDId);
+				// diritti
+				Long diritti_G_RND = jsonObjectRuolo.getLong(diritti_G_RNDId);
+
+				for (int i = 0; i < jsonDomini.size(); i++) {
+					long idDominio = jsonDomini.getLong(i);
+
+					Acl acl = new Acl();
+					acl.setTipo(Tipo.DOMINIO);
+					acl.setServizio(Servizio.Gestione_Rendicontazioni);
+					acl.setDiritti(diritti_G_RND.intValue()); 
+					if(idDominio > 0){
+						acl.setIdDominio(idDominio);
+						lstAclDominiFunzionalita_G_RND.add(acl);
+					}else {
+						lstAclDominiFunzionalita_G_RND.clear();
+						lstAclDominiFunzionalita_G_RND.add(acl);
+						break;
+					}
+				}
+			}
+			// rimuovo gli oggetti della parte Funzionalita_G_RND
+			jsonObjectRuolo.remove(funzionalita_G_RNDId);
+			jsonObjectRuolo.remove(domini_G_RNDId);
+			jsonObjectRuolo.remove(diritti_G_RNDId);
+			
+			List<Acl> lstAclDominiFunzionalita_GDE = new ArrayList<Acl>();
+
+			if(jsonObjectRuolo.getBoolean(funzionalita_GDEId)){
+				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_GDEId);
+				// diritti
+				Long diritti_GDE = jsonObjectRuolo.getLong(diritti_GDEId);
+
+				for (int i = 0; i < jsonDomini.size(); i++) {
+					long idDominio = jsonDomini.getLong(i);
+
+					Acl acl = new Acl();
+					acl.setTipo(Tipo.DOMINIO);
+					acl.setServizio(Servizio.Giornale_Eventi);
+					acl.setDiritti(diritti_GDE.intValue()); 
+					if(idDominio > 0){
+						acl.setIdDominio(idDominio);
+						lstAclDominiFunzionalita_GDE.add(acl);
+					}else {
+						lstAclDominiFunzionalita_GDE.clear();
+						lstAclDominiFunzionalita_GDE.add(acl);
+						break;
+					}
+				}
+			}
+			// rimuovo gli oggetti della parte Funzionalita_GDE
+			jsonObjectRuolo.remove(funzionalita_GDEId);
+			jsonObjectRuolo.remove(domini_GDEId);
+			jsonObjectRuolo.remove(diritti_GDEId);
+			
+			
+			List<Acl> lstAclDominiFunzionalita_MAN = new ArrayList<Acl>();
+
+			if(jsonObjectRuolo.getBoolean(funzionalita_MANId)){
+				int diritti_MAN = RuoliHandler.DIRITTI_LETTURA;
+				Acl acl = new Acl();
+				acl.setTipo(Tipo.DOMINIO);
+				acl.setServizio(Servizio.Manutenzione);
+				acl.setDiritti(diritti_MAN);
+				lstAclDominiFunzionalita_MAN.add(acl);
+			}
+			// rimuovo gli oggetti della parte Funzionalita_GDE
+			jsonObjectRuolo.remove(funzionalita_MANId);
+
+			jsonConfig.setRootClass(Ruolo.class);
+			entry = (Ruolo) JSONObject.toBean( jsonObjectRuolo, jsonConfig );
+
+			// colleziono gli acl
+			//			entry.setAcls(lstAclTributiPa);
+			//			entry.getAcls().addAll(lstAclDominiPa);
+			//			entry.getAcls().addAll(lstAclTributiPo);
+			//			entry.getAcls().addAll(lstAclDominiPo);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
@@ -985,18 +1269,18 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 	}
 
 	@Override
-	public void checkEntry(Portale entry, Portale oldEntry) throws ValidationException {
-		if(entry == null || StringUtils.isEmpty(entry.getCodPortale())) {
-			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodPortaleObbligatorio"));
+	public void checkEntry(Ruolo entry, Ruolo oldEntry) throws ValidationException {
+		if(entry == null || StringUtils.isEmpty(entry.getCodRuolo())) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodRuoloObbligatorio"));
 		}
 
-		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty()) {
-			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.errorePrincipalObbligatorio"));
+		if(entry.getDescrizione() == null || entry.getDescrizione().isEmpty()) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDescrizioneObbligatoria"));
 		}
 
 		if(oldEntry != null) { //caso update
-			if(!oldEntry.getCodPortale().equals(entry.getCodPortale())) {
-				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodPortaleNonCoincide",oldEntry.getCodPortale(),entry.getCodPortale()));
+			if(!oldEntry.getCodRuolo().equals(entry.getCodRuolo())) {
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodRuoloNonCoincide",oldEntry.getCodRuolo(),entry.getCodRuolo()));
 			}
 		}
 	}
@@ -1011,14 +1295,14 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			Portale entry = this.creaEntry(is, uriInfo, bd);
+			Ruolo entry = this.creaEntry(is, uriInfo, bd);
 
-			PortaliBD applicazioniBD = new PortaliBD(bd);
-			Portale oldEntry = applicazioniBD.getPortale(entry.getCodPortale());
+			RuoliBD ruoliBD = new RuoliBD(bd);
+			Ruolo oldEntry = ruoliBD.getRuolo(entry.getCodRuolo());
 
 			this.checkEntry(entry, oldEntry);
 
-			applicazioniBD.updatePortale(entry); 
+			ruoliBD.updateRuolo(entry); 
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(),uriInfo,bd);
@@ -1035,24 +1319,24 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
-	public String getTitolo(Portale entry, BasicBD bd) {
+	public String getTitolo(Ruolo entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(entry.getCodPortale());
+		sb.append(entry.getCodRuolo());
 		return sb.toString();
 	}
 
 	@Override
-	public String getSottotitolo(Portale entry, BasicBD bd) {
+	public String getSottotitolo(Ruolo entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
+		sb.append(entry.getDescrizione());
 
 		return sb.toString();
 	}
 
 	@Override
-	public Map<String, Voce<String>> getVoci(Portale entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Ruolo entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

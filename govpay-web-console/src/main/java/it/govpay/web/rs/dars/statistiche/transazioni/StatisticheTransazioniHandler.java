@@ -123,8 +123,8 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
-
+			Map<String, String> params = new HashMap<String, String>();
+			
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -144,7 +144,8 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
-			PaginaGrafico paginaGrafico = new PaginaGrafico(this.titoloServizio, esportazione, infoRicerca);
+			
+			PaginaGrafico paginaGrafico = new PaginaGrafico(this.titoloServizio, this.getInfoEsportazione(uriInfo,bd,params), infoRicerca); 
 
 
 			Grafico grafico = new Grafico(TipoGrafico.bar);
@@ -553,6 +554,9 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
+	@Override
+	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+	
 	@Override
 	public String getTitolo(Versamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();

@@ -88,6 +88,13 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(ACL.model().ID_RUOLO.COD_RUOLO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_ruolo";
+			}else{
+				return "cod_ruolo";
+			}
+		}
 		if(field.equals(ACL.model().COD_TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tipo";
@@ -145,6 +152,9 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(ACL.model().ID_OPERATORE.PRINCIPAL)){
 			return this.toTable(ACL.model().ID_OPERATORE, returnAlias);
 		}
+		if(field.equals(ACL.model().ID_RUOLO.COD_RUOLO)){
+			return this.toTable(ACL.model().ID_RUOLO, returnAlias);
+		}
 		if(field.equals(ACL.model().COD_TIPO)){
 			return this.toTable(ACL.model(), returnAlias);
 		}
@@ -184,6 +194,9 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(ACL.model().ID_OPERATORE)){
 			return "operatori";
+		}
+		if(model.equals(ACL.model().ID_RUOLO)){
+			return "ruoli";
 		}
 		if(model.equals(ACL.model().ID_DOMINIO)){
 			return "domini";

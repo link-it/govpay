@@ -280,6 +280,12 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
+	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+	
+	@Override
+	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+	
+	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
 		String methodName = "dettaglio " + this.titoloServizio + ".Id "+ id;
@@ -451,11 +457,12 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+entry.getStato().name()),
 						entry.getStato().name()));
 
-		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione.id"),
+		if(entry.getTipoOperazione()!= null)
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione.label"),
 						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione." + entry.getTipoOperazione())));
-		
-		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id"),
+		if(StringUtils.isNotEmpty(entry.getCodVersamentoEnte()))
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.label"),
 						entry.getCodVersamentoEnte()));
 		try{
@@ -468,7 +475,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 		} catch(Exception e){		}
 		
 		
-		if(entry.getStato() != null && !entry.getStato().equals(StatoOperazioneType.ESEGUITO_OK)){
+		if(entry.getStato() != null && !entry.getStato().equals(StatoOperazioneType.ESEGUITO_OK) && StringUtils.isNotEmpty(entry.getDettaglioEsito())){ 
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalie.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalie.label"),
 							""));

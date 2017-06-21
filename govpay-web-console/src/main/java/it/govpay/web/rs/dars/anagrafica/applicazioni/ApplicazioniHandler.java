@@ -693,6 +693,11 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	@Override
+	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+	
+	@Override
+	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {

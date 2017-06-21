@@ -34,7 +34,8 @@ public class Elenco {
 	private InfoForm infoCreazione;
 	private InfoForm infoRicerca;
 	private boolean filtro;
-	private int numeroMassimoElementiExport;
+	private Integer numeroMassimoElementiExport;
+	private Integer numeroMassimoElementiCancellazione;
 	private String simpleSearchPlaceHolder;
 	
 	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, InfoForm esportazione, InfoForm infoCancellazione) {
@@ -51,6 +52,7 @@ public class Elenco {
 		this.elenco = (new ArrayList<Elemento>());
 		this.setFiltro(false);
 		this.numeroMassimoElementiExport = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
+		this.numeroMassimoElementiCancellazione = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 		this.simpleSearchPlaceHolder = simpleSearchPlaceHolder;
 	}
 	
@@ -90,11 +92,11 @@ public class Elenco {
 		this.filtro = filtro;
 	}
 
-	public int getNumeroMassimoElementiExport() {
+	public Integer getNumeroMassimoElementiExport() {
 		return this.numeroMassimoElementiExport;
 	}
 
-	public void setNumeroMassimoElementiExport(int numeroMassimoElementiExport) {
+	public void setNumeroMassimoElementiExport(Integer numeroMassimoElementiExport) {
 		this.numeroMassimoElementiExport = numeroMassimoElementiExport;
 	}
 
@@ -104,6 +106,14 @@ public class Elenco {
 
 	public void setSimpleSearchPlaceHolder(String simpleSearchPlaceHolder) {
 		this.simpleSearchPlaceHolder = simpleSearchPlaceHolder;
+	}
+
+	public Integer getNumeroMassimoElementiCancellazione() {
+		return numeroMassimoElementiCancellazione;
+	}
+
+	public void setNumeroMassimoElementiCancellazione(Integer numeroMassimoElementiCancellazione) {
+		this.numeroMassimoElementiCancellazione = numeroMassimoElementiCancellazione;
 	}
 	
 }

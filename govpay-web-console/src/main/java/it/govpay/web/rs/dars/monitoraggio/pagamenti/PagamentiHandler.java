@@ -156,6 +156,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,visualizzaRicerca,params),
 					this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd,params),
 					this.getInfoCancellazione(uriInfo, bd,params),simpleSearchPlaceholder); 
+			elenco.setNumeroMassimoElementiExport(null); 
 
 			List<Pagamento> pagamenti = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
 
@@ -802,7 +803,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 		int numeroZipEntries = 0;
 
-		boolean esportaCsv = false, esportaPdf = false, esportaRt = false;
+		boolean esportaCsv = false, esportaPdf = false, esportaRtPdf = false, esportaRtBase64 = false;
 
 		String fileName = "Pagamenti.zip";
 		try{
@@ -828,14 +829,20 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				esportaPdf = Boolean.parseBoolean(esportaPdfS);
 			}
 
-			String esportaRtId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.id");
-			String esportaRtS = Utils.getValue(rawValues, esportaRtId);
-			if(StringUtils.isNotEmpty(esportaRtS)){
-				esportaRt = Boolean.parseBoolean(esportaRtS);
+			String esportaRtPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtPdf.id");
+			String esportaRtPdfS = Utils.getValue(rawValues, esportaRtPdfId);
+			if(StringUtils.isNotEmpty(esportaRtPdfS)){
+				esportaRtPdf = Boolean.parseBoolean(esportaRtPdfS);
+			}
+
+			String esportaRtBase64Id = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtBase64.id");
+			String esportaRtBase64S = Utils.getValue(rawValues, esportaRtBase64Id);
+			if(StringUtils.isNotEmpty(esportaRtBase64S)){
+				esportaRtBase64 = Boolean.parseBoolean(esportaRtBase64S);
 			}
 
 			// almeno una voce deve essere selezionata
-			if(!(esportaCsv || esportaPdf || esportaRt)){
+			if(!(esportaCsv || esportaPdf || esportaRtPdf || esportaRtBase64)){
 				List<String> msg = new ArrayList<String>();
 				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.tipiExportObbligatori"));
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
@@ -862,14 +869,14 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			} 
 
-			if(esportaRt && count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+			if(esportaRtPdf && count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
 				List<String> msg = new ArrayList<String>();
 				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			}
 
 			filter.setOffset(0);
-			if(esportaRt)
+			if(esportaRtPdf)
 				filter.setLimit(limit);
 
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -882,7 +889,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			List<Long> ids = new ArrayList<Long>();
 			for (Pagamento pagamento : findAllPag) {
 				ids.add(pagamento.getIdSingoloVersamento());
-				if(esportaRt){
+				if(esportaRtPdf || esportaRtBase64){
 					// ricevuta pagamento
 					try{
 						Rpt rpt = pagamento.getRpt(bd);
@@ -890,22 +897,33 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 						if(rpt.getXmlRt() != null){
 							numeroZipEntries ++;
-							String ricevutaDir = dominio.getCodDominio() + "_" + pagamento.getIuv() + "_" +pagamento.getIur();
+							String ricevutaFileName = dominio.getCodDominio() + "_" + pagamento.getIuv() + "_" +pagamento.getIur();
+							if(esportaRtPdf){
+								// RT in formato pdf
+								String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+								byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+								ByteArrayOutputStream baos = new ByteArrayOutputStream();
+								String auxDigit = dominio.getAuxDigit() + "";
+								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
+								RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, pagamento, auxDigit, applicationCode, baos, this.log);
+								String rtPdfEntryName = ricevutaFileName + ".pdf";
+								numeroZipEntries ++;
+								ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+								zout.putNextEntry(rtPdf);
+								zout.write(baos.toByteArray());
+								zout.closeEntry();
+							}
 
-							// RT in formato pdf
-							String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-							byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
-							CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
-							ByteArrayOutputStream baos = new ByteArrayOutputStream();
-							String auxDigit = dominio.getAuxDigit() + "";
-							String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-							RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, pagamento, auxDigit, applicationCode, baos, this.log);
-							String rtPdfEntryName = ricevutaDir + "/ricevuta_pagamento.pdf";
-							numeroZipEntries ++;
-							ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
-							zout.putNextEntry(rtPdf);
-							zout.write(baos.toByteArray());
-							zout.closeEntry();
+							if(esportaRtBase64){
+								// RT in formato Base 64
+								String rtBase64EntryName = ricevutaFileName + ".txt";
+								numeroZipEntries ++;
+								ZipEntry rtPdf = new ZipEntry(rtBase64EntryName);
+								zout.putNextEntry(rtPdf);
+								zout.write(rpt.getXmlRt());
+								zout.closeEntry();
+							}
 						}
 					}catch (Exception e) {	}
 				}
@@ -1025,7 +1043,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		Printer printer  = null;
 		int numeroZipEntries = 0;
-		boolean esportaCsv = false, esportaPdf = false, esportaRt = false;
+		boolean esportaCsv = false, esportaPdf = false, esportaRtPdf = false, esportaRtBase64 = false;
 
 		try{
 			String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
@@ -1047,14 +1065,20 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				esportaPdf = Boolean.parseBoolean(esportaPdfS);
 			}
 
-			String esportaRtId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.id");
-			String esportaRtS = Utils.getValue(rawValues, esportaRtId);
-			if(StringUtils.isNotEmpty(esportaRtS)){
-				esportaRt = Boolean.parseBoolean(esportaRtS);
+			String esportaRtPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtPdf.id");
+			String esportaRtPdfS = Utils.getValue(rawValues, esportaRtPdfId);
+			if(StringUtils.isNotEmpty(esportaRtPdfS)){
+				esportaRtPdf = Boolean.parseBoolean(esportaRtPdfS);
+			}
+
+			String esportaRtBase64Id = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtBase64.id");
+			String esportaRtBase64S = Utils.getValue(rawValues, esportaRtBase64Id);
+			if(StringUtils.isNotEmpty(esportaRtBase64S)){
+				esportaRtBase64 = Boolean.parseBoolean(esportaRtBase64S);
 			}
 
 			// almeno una voce deve essere selezionata
-			if(!(esportaCsv || esportaPdf || esportaRt)){
+			if(!(esportaCsv || esportaPdf || esportaRtPdf|| esportaRtBase64)){
 				List<String> msg = new ArrayList<String>();
 				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.tipiExportObbligatori"));
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
@@ -1103,30 +1127,41 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			if(eseguiRicerca ){
 				Pagamento pagamento = pagamentiBD.getPagamento(idToExport);
 
-				if(esportaRt){
+				if(esportaRtPdf || esportaRtBase64){
 					// ricevuta pagamento
 					try{
 						Rpt rpt = pagamento.getRpt(bd);
 						Dominio dominio = pagamento.getDominio(bd);
 
 						if(rpt.getXmlRt() != null){
-							numeroZipEntries ++;
-							String ricevutaDir = dominio.getCodDominio() + "_" + pagamento.getIuv() + "_" +pagamento.getIur();
+							String ricevutaFileName = dominio.getCodDominio() + "_" + pagamento.getIuv() + "_" +pagamento.getIur();
 
-							// RT in formato pdf
-							String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-							byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
-							CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
-							ByteArrayOutputStream baos = new ByteArrayOutputStream();
-							String auxDigit = dominio.getAuxDigit() + "";
-							String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-							RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, pagamento, auxDigit, applicationCode, baos, this.log);
-							String rtPdfEntryName = ricevutaDir + "/ricevuta_pagamento.pdf";
-							numeroZipEntries ++;
-							ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
-							zout.putNextEntry(rtPdf);
-							zout.write(baos.toByteArray());
-							zout.closeEntry();
+							if(esportaRtPdf){
+								// RT in formato pdf
+								String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+								byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+								ByteArrayOutputStream baos = new ByteArrayOutputStream();
+								String auxDigit = dominio.getAuxDigit() + "";
+								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
+								RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, pagamento, auxDigit, applicationCode, baos, this.log);
+								String rtPdfEntryName = ricevutaFileName + ".pdf";
+								numeroZipEntries ++;
+								ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+								zout.putNextEntry(rtPdf);
+								zout.write(baos.toByteArray());
+								zout.closeEntry();
+							}
+
+							if(esportaRtBase64){
+								// RT in formato Base 64
+								String rtBase64EntryName = ricevutaFileName + ".txt";
+								numeroZipEntries ++;
+								ZipEntry rtPdf = new ZipEntry(rtBase64EntryName);
+								zout.putNextEntry(rtPdf);
+								zout.write(rpt.getXmlRt());
+								zout.closeEntry();
+							}
 						}
 					}catch (Exception e) {	}
 				}
@@ -1416,7 +1451,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 		String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
 		String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
-		String esportaRtId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.id");
+		String esportaRtPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtPdf.id");
+		String esportaRtBase64Id = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtBase64.id");
 
 		if(this.infoEsportazioneMap == null){
 			this.initInfoEsportazione(uriInfo, bd);
@@ -1432,9 +1468,13 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		esportaPdf.setDefaultValue(false); 
 		sezioneRoot.addField(esportaPdf);
 
-		CheckButton esportaRt = (CheckButton) this.infoEsportazioneMap.get(esportaRtId);
-		esportaRt.setDefaultValue(false); 
-		sezioneRoot.addField(esportaRt);
+		CheckButton esportaRtPdf = (CheckButton) this.infoEsportazioneMap.get(esportaRtPdfId);
+		esportaRtPdf.setDefaultValue(false); 
+		sezioneRoot.addField(esportaRtPdf);
+
+		CheckButton esportaRtBase64 = (CheckButton) this.infoEsportazioneMap.get(esportaRtBase64Id);
+		esportaRtBase64.setDefaultValue(false); 
+		sezioneRoot.addField(esportaRtBase64);
 
 		return infoEsportazione; 
 	}
@@ -1450,7 +1490,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 		String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
 		String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
-		String esportaRtId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.id");
+		String esportaRtPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtPdf.id");
+		String esportaRtBase64Id = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtBase64.id");
 
 		if(this.infoEsportazioneMap == null){
 			this.initInfoEsportazione(uriInfo, bd);
@@ -1466,9 +1507,13 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		esportaPdf.setDefaultValue(false); 
 		sezioneRoot.addField(esportaPdf);
 
-		CheckButton esportaRt = (CheckButton) this.infoEsportazioneMap.get(esportaRtId);
-		esportaRt.setDefaultValue(false); 
-		sezioneRoot.addField(esportaRt);
+		CheckButton esportaRtPdf = (CheckButton) this.infoEsportazioneMap.get(esportaRtPdfId);
+		esportaRtPdf.setDefaultValue(false); 
+		sezioneRoot.addField(esportaRtPdf);
+
+		CheckButton esportaRtBase64 = (CheckButton) this.infoEsportazioneMap.get(esportaRtBase64Id);
+		esportaRtBase64.setDefaultValue(false); 
+		sezioneRoot.addField(esportaRtBase64);
 
 		return infoEsportazione;	
 	}
@@ -1479,7 +1524,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
 			String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
-			String esportaRtId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.id");
+			String esportaRtPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtPdf.id");
+			String esportaRtBase64Id = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtBase64.id");
 
 			// esportaCsv
 			String esportaCsvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.label");
@@ -1491,10 +1537,15 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			CheckButton esportaPdf = new CheckButton(esportaPdfId, esportaPdfLabel, true, false, false, true);
 			this.infoEsportazioneMap.put(esportaPdfId, esportaPdf);
 
-			// esportaRt
-			String esportaRtLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.label");
-			CheckButton esportaRt = new CheckButton(esportaRtId, esportaRtLabel, true, false, false, true);
-			this.infoEsportazioneMap.put(esportaRtId, esportaRt);
+			// esportaRtPdf
+			String esportaRtPdfLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtPdf.label");
+			CheckButton esportaRtPdf = new CheckButton(esportaRtPdfId, esportaRtPdfLabel, true, false, false, true);
+			this.infoEsportazioneMap.put(esportaRtPdfId, esportaRtPdf);
+
+			// esportaRtBase64
+			String esportaRtBase64Label = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtBase64.label");
+			CheckButton esportaRtBase64 = new CheckButton(esportaRtBase64Id, esportaRtBase64Label, true, false, false, true);
+			this.infoEsportazioneMap.put(esportaRtBase64Id, esportaRtBase64);
 		}
 	}
 
@@ -1510,6 +1561,12 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
+	@Override
+	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+	
+	@Override
+	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+	
 	@Override
 	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 

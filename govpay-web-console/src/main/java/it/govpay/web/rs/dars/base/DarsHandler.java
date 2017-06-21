@@ -88,6 +88,18 @@ public abstract class DarsHandler<T> extends BaseDarsHandler<T> implements IDars
 	}
 	
 	@Override
+	public abstract Object getDeleteField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException ;
+	@Override
+	public URI getUriDeleteField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
+		try{
+			URI uri =  Utils.creaUriConPath(this.pathServizio, DarsService.PATH_DELETE_FIELD, fieldName);
+			return uri;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		} 
+	}
+	
+	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException {
 		return this.getInfoCancellazione(uriInfo, bd, null);
 	}
