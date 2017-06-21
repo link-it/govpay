@@ -829,8 +829,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			// recupero oggetto
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(id);
-			// [TODO] eliminare
-			dominio.setLogo(Base64.decodeBase64(Costanti.logoPagoPa));
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,dominio);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, dominio);
@@ -1097,10 +1095,9 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			if(jsonArrayFile != null && jsonArrayFile.size() == 1){
 				JSONObject jsonObjectFile = jsonArrayFile.getJSONObject(0);
-				String fileName = jsonObjectFile.getString(InputFile.FILENAME);
+//				String fileName = jsonObjectFile.getString(InputFile.FILENAME);
 				String data64 = jsonObjectFile.getString(InputFile.DATA);
 				entry.setLogo(Base64.decodeBase64(data64));
-				entry.setNomeFileLogo(fileName); 
 			}
 
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
@@ -1164,10 +1161,9 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			if(jsonArrayFile != null && jsonArrayFile.size() == 1){
 				JSONObject jsonObjectFile = jsonArrayFile.getJSONObject(0);
-				String fileName = jsonObjectFile.getString(InputFile.FILENAME);
+//				String fileName = jsonObjectFile.getString(InputFile.FILENAME);
 				String data64 = jsonObjectFile.getString(InputFile.DATA);
 				entry.setLogo(Base64.decodeBase64(data64));
-				entry.setNomeFileLogo(fileName); 
 			}
 
 			jsonConfig.setRootClass(Anagrafica.class);
