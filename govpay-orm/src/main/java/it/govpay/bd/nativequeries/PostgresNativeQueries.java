@@ -1,5 +1,13 @@
 package it.govpay.bd.nativequeries;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import it.govpay.bd.reportistica.statistiche.TipoIntervallo;
+import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
+
 public class PostgresNativeQueries extends NativeQueries {
 
 	@Override
@@ -120,6 +128,70 @@ public class PostgresNativeQueries extends NativeQueries {
 				" sum(CASE WHEN r.stato='ALTRO_INTERMEDIARIO' THEN 1 ELSE 0 END) as ALTRO_INTERMEDIARIO " +
 				" from fr left join rendicontazioni r on fr.id=r.id_fr $PLACEHOLDER_JOIN$ $PLACEHOLDER_WHERE_IN$ " +
 				" group by fr.id) as fr $PLACEHOLDER_WHERE_OUT$";
+	}
+
+	@Override
+	public String getStatisticheTransazioniPerEsitoQuery(TipoIntervallo tipoIntervallo, Date data, int limit, TransazioniFilter filtro) {
+		
+		String sql = "select date_trunc(?, rpt.data_msg_richiesta), "
+				+ "SUM(CASE WHEN stato = 'RT_ACCETTATA_PA' THEN 1 ELSE 0 END) as successo, "
+				+ "SUM(CASE WHEN stato in ('RPT_ERRORE_INVIO_A_NODO','RPT_RIFIUTATA_NODO','RPT_RIFIUTATA_PSP','RPT_ERRORE_INVIO_A_PSP','RT_RIFIUTATA_NODO','RT_RIFIUTATA_PA','RT_ESITO_SCONOSCIUTO_PA','INTERNO_NODO') THEN 1 ELSE 0 END) as errore, "
+				+ "SUM(CASE WHEN stato not in ('RPT_ERRORE_INVIO_A_NODO','RPT_RIFIUTATA_NODO','RPT_RIFIUTATA_PSP','RPT_ERRORE_INVIO_A_PSP','RT_RIFIUTATA_NODO','RT_RIFIUTATA_PA','RT_ESITO_SCONOSCIUTO_PA','INTERNO_NODO','RT_ACCETTATA_PA') THEN 1 ELSE 0 END) as in_corso, "
+				+ "from rpt right join (SELECT data FROM generate_series(?, ?, ?) as data) elencodate on date_trunc(?, rpt.data_msg_richiesta) = date_trunc(?, elencodate.data)"
+				+ "where date_trunc(?, data_msg_richiesta) <= date_trunc(?, ?) ";
+		
+		if(filtro.getCodDominio() != null) {
+			sql += "AND cod_dominio = ? ";
+		}
+		
+		if(filtro.getCodPsp() != null) {
+			sql += "AND cod_psp = ? ";
+		}
+		
+		sql += "group by data order by data desc limit ?";
+		
+		return sql;
+	}
+	
+	@Override
+	public Object[] getStatisticheTransazioniPerEsitoValues(TipoIntervallo tipoIntervallo, Date data, int limit, TransazioniFilter filtro) {
+		
+		
+		Calendar calendar = Calendar.getInstance(); // this would default to now
+		calendar.setTime(data);
+		String date_trunc = "";
+		switch (tipoIntervallo) {
+		case MENSILE:
+			date_trunc = "month";
+			calendar.add(Calendar.MONTH, -limit);
+			break;
+		case GIORNALIERO:
+			date_trunc = "day";
+			calendar.add(Calendar.DATE, -limit);
+			break;
+		case ORARIO:
+			date_trunc = "hour";
+			calendar.add(Calendar.HOUR, -limit);
+			break;
+		}	
+		
+		Date start = calendar.getTime();
+		
+		List<Object> valori = new ArrayList<Object>();
+		valori.add(date_trunc);
+		valori.add(start);
+		valori.add(data);
+		valori.add("1 " + date_trunc);
+		valori.add(date_trunc);
+		valori.add(date_trunc);
+		valori.add(date_trunc);
+		valori.add(date_trunc);
+		valori.add(data);
+		if(filtro.getCodDominio() != null) valori.add(filtro.getCodDominio());
+		if(filtro.getCodPsp() != null) valori.add(filtro.getCodPsp());
+		valori.add(limit);
+		
+		return valori.toArray(new Object[]{});
 	}
 
 }

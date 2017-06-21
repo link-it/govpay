@@ -1,5 +1,10 @@
 package it.govpay.bd.nativequeries;
 
+import java.util.Date;
+
+import it.govpay.bd.reportistica.statistiche.TipoIntervallo;
+import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
+
 public class MysqlNativeQueries extends NativeQueries {
 
 	@Override
@@ -124,5 +129,18 @@ public class MysqlNativeQueries extends NativeQueries {
 				" group by fr.id) as fr $PLACEHOLDER_WHERE_OUT$";
 	}
 
+	@Override
+	public String getStatisticheTransazioniPerEsitoQuery(TipoIntervallo tipoIntervallo, Date data, int limit,
+			TransazioniFilter filtro) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object[] getStatisticheTransazioniPerEsitoValues(TipoIntervallo tipoIntervallo, Date data, int limit,
+			TransazioniFilter filtro) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
