@@ -286,6 +286,7 @@
     <value name="ndpOperazione" field="ndpOperazione" usage="optional"/>
     <value name="ndpDescrizione" field="ndpDescrizione" usage="optional"/>
     <value name="ndpData" field="ndpData" usage="optional"/>
+    <value name="logo" field="logo" usage="optional"/>
   </mapping>
   <mapping name="Psp" class="it.govpay.orm.Psp">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

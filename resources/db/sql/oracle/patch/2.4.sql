@@ -134,3 +134,8 @@ end;
 
 ALTER TABLE acl ADD diritti NUMBER;
 ALTER TABLE acl MODIFY cod_servizio VARCHAR2(35 CHAR);
+
+ALTER TABLE acl ADD id_ruolo NUMBER;
+ALTER TABLE acl ADD CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id);
+
+ALTER TABLE domini ADD logo BLOB;

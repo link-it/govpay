@@ -192,6 +192,7 @@ CREATE TABLE domini
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
 	ndp_data TIMESTAMP,
+	logo BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,
@@ -474,6 +475,7 @@ CREATE TABLE acl
 	id_applicazione NUMBER,
 	id_portale NUMBER,
 	id_operatore NUMBER,
+	id_ruolo NUMBER,
 	id_dominio NUMBER,
 	id_tipo_tributo NUMBER,
 	-- fk/pk keys constraints
@@ -482,6 +484,7 @@ CREATE TABLE acl
 	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
+	CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
 

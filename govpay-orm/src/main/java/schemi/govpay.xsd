@@ -441,6 +441,8 @@
 			<xsd:element minOccurs="0" name="ndpOperazione" type="String256"/>
 			<xsd:element minOccurs="0" name="ndpDescrizione" type="String1024"/>
 			<xsd:element minOccurs="0" name="ndpData" type="xsd:dateTime"/>
+			
+			<xsd:element minOccurs="0" name="logo" type="xsd:base64Binary"/>
 
 		</xsd:sequence>
 	</xsd:complexType>

@@ -53,6 +53,7 @@ import java.io.Serializable;
  * 			&lt;element name="ndpOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpData" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -84,7 +85,8 @@ import java.io.Serializable;
   	"ndpStato",
   	"ndpOperazione",
   	"ndpDescrizione",
-  	"ndpData"
+  	"ndpData",
+  	"logo"
   }
 )
 
@@ -274,6 +276,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.ndpData = ndpData;
   }
 
+  public byte[] getLogo() {
+    return this.logo;
+  }
+
+  public void setLogo(byte[] logo) {
+    this.logo = logo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -371,5 +381,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="ndpData",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date ndpData;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="logo",required=false,nillable=false)
+  protected byte[] logo;
 
 }

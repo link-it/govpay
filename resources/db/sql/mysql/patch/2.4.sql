@@ -87,3 +87,8 @@ CREATE INDEX index_ruoli_1 ON ruoli (cod_ruolo);
 
 ALTER TABLE acl ADD COLUMN diritti INT;
 ALTER TABLE acl MODIFY COLUMN cod_servizio VARCHAR(35);
+
+ALTER TABLE acl ADD COLUMN id_ruolo BIGINT;
+ALTER TABLE acl ADD CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id);
+ALTER TABLE domini ADD COLUMN logo MEDIUMBLOB;
+

@@ -133,6 +133,8 @@ CREATE TABLE domini
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
 	ndp_data TIMESTAMP(3),
+	logo MEDIUMBLOB,
+
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_stazione BIGINT NOT NULL,
@@ -318,6 +320,7 @@ CREATE TABLE acl
 	id_applicazione BIGINT,
 	id_portale BIGINT,
 	id_operatore BIGINT,
+	id_ruolo BIGINT,
 	id_dominio BIGINT,
 	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
@@ -326,6 +329,7 @@ CREATE TABLE acl
 	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
+	CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
