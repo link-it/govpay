@@ -204,7 +204,7 @@ public class Menu extends BaseRsService {
 
 			menu.getSezioni().add(caricamenti);
 
-			boolean visualizzaStatistiche = false;
+			boolean visualizzaStatistiche = true;
 			
 			if(visualizzaStatistiche){
 				// sezione statistiche

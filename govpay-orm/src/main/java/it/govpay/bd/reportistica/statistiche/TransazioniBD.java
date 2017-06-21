@@ -11,6 +11,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.nativequeries.NativeQueries;
+import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
@@ -48,6 +49,10 @@ public class TransazioniBD extends BasicBD {
 
 	public TransazioniBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public TransazioniFilter newFilter() throws ServiceException {
+		return new TransazioniFilter(this.getRptService());
 	}
 
 	public List<DistribuzioneEsiti> getDistribuzioneEsiti(TipoIntervallo tipoIntervallo, Date data, int limit, TransazioniFilter filtro) throws ServiceException {

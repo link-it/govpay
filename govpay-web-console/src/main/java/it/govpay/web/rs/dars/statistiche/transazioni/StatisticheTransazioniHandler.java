@@ -66,6 +66,10 @@ import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
+import it.govpay.bd.reportistica.statistiche.TipoIntervallo;
+import it.govpay.bd.reportistica.statistiche.TransazioniBD;
+import it.govpay.bd.reportistica.statistiche.TransazioniBD.DistribuzioneEsiti;
+import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
@@ -127,9 +131,9 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			TransazioniBD transazioniBD = new TransazioniBD(bd);
 
-			VersamentoFilter filter = versamentiBD.newFilter();
+			TransazioniFilter filter = transazioniBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -137,18 +141,28 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, versamentiBD, operatore, filter);
+			Date dataInizio = new Date();
+			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
+			String dataInizioS = this.getParameter(uriInfo, dataInizioId, String.class);
+			if(StringUtils.isNotEmpty(dataInizioS)){
+				dataInizio = this.convertJsonStringToDate(dataInizioS);
+			}
+			
+			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, transazioniBD, operatore, filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd);
 			InfoForm infoGrafico = null;
 
+			try{
+				List<DistribuzioneEsiti> distribuzioneEsiti = transazioniBD.getDistribuzioneEsiti(TipoIntervallo.GIORNALIERO, dataInizio, limit, filter);
+			}catch(Exception e){
+				this.log.error(e.getMessage(),e); 
+			}
 			this.log.info("Esecuzione " + methodName + " completata.");
 
-			
 			PaginaGrafico paginaGrafico = new PaginaGrafico(this.titoloServizio, this.getInfoEsportazione(uriInfo,bd,params), infoRicerca,infoGrafico); 
-
-
+			
 			Grafico grafico = new Grafico(TipoGrafico.bar);
 
 			grafico.setLabelX("Data");
@@ -257,7 +271,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 		}
 	}
 
-	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore , VersamentoFilter filter) throws ConsoleException, Exception {
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore , TransazioniFilter filter) throws ConsoleException, Exception {
 		ProfiloOperatore profilo = operatore.getProfilo();
 		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 		AclBD aclBD = new AclBD(bd);
@@ -268,28 +282,32 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
+	
+		
 		if(StringUtils.isNotEmpty(idDominio)){
-			long idDom = -1l;
-			try{
-				idDom = Long.parseLong(idDominio);
-			}catch(Exception e){ idDom = -1l;	}
-			if(idDom > 0){
-				idDomini.add(idDom);
-				filter.setIdDomini(idDomini);
-			}
+			filter.setCodDominio(AnagraficaManager.getDominio(bd, Long.parseLong(idDominio)).getCodDominio());
+//			long idDom = -1l;
+//			try{
+//				idDom = Long.parseLong(idDominio);
+//			}catch(Exception e){ idDom = -1l;	}
+//			if(idDom > 0){
+//				idDomini.add(idDom);
+//				filter.setIdDomini(idDomini);
+//			}
 		}
 
 		String idPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.id");
 		String idPsp = this.getParameter(uriInfo, idPspId, String.class);
 		if(StringUtils.isNotEmpty(idPsp)){
-			long idPspL = -1l;
-			try{
-				idPspL = Long.parseLong(idPsp);
-			}catch(Exception e){ idPspL = -1l;	}
-			if(idPspL > 0){
-				idPsps.add(idPspL);
-				//	filter.setIdPsp(idPsps);
-			}
+//			long idPspL = -1l;
+//			try{
+//				idPspL = Long.parseLong(idPsp);
+//			}catch(Exception e){ idPspL = -1l;	}
+//			if(idPspL > 0){
+//				idPsps.add(idPspL);
+//				//	filter.setIdPsp(idPsps);
+//			}
+			filter.setCodPsp(AnagraficaManager.getPsp(bd, Long.parseLong(idPsp)).getCodPsp());
 		}
 
 		String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
@@ -304,27 +322,27 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			//			filter.setDataFine(this.convertJsonStringToDate(dataFine));
 		}
 
-		if(!isAdmin && idDomini.isEmpty()){
-			boolean vediTuttiDomini = false;
-
-			for(Acl acl: aclOperatore) {
-				if(Tipo.DOMINIO.equals(acl.getTipo())) {
-					if(acl.getIdDominio() == null) {
-						vediTuttiDomini = true;
-						break;
-					} else {
-						idDomini.add(acl.getIdDominio());
-					}
-				}
-			}
-			if(!vediTuttiDomini) {
-				if(idDomini.isEmpty()) {
-					eseguiRicerca = false;
-				} else {
-					filter.setIdDomini(idDomini);
-				}
-			}
-		}
+//		if(!isAdmin && idDomini.isEmpty()){
+//			boolean vediTuttiDomini = false;
+//
+//			for(Acl acl: aclOperatore) {
+//				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+//					if(acl.getIdDominio() == null) {
+//						vediTuttiDomini = true;
+//						break;
+//					} else {
+//						idDomini.add(acl.getIdDominio());
+//					}
+//				}
+//			}
+//			if(!vediTuttiDomini) {
+//				if(idDomini.isEmpty()) {
+//					eseguiRicerca = false;
+//				} else {
+//					filter.setIdDomini(idDomini);
+//				}
+//			}
+//		}
 
 		return eseguiRicerca ;
 	}
