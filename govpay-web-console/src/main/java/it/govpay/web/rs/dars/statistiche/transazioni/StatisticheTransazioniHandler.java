@@ -141,11 +141,12 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd);
+			InfoForm infoGrafico = null;
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			
-			PaginaGrafico paginaGrafico = new PaginaGrafico(this.titoloServizio, this.getInfoEsportazione(uriInfo,bd,params), infoRicerca); 
+			PaginaGrafico paginaGrafico = new PaginaGrafico(this.titoloServizio, this.getInfoEsportazione(uriInfo,bd,params), infoRicerca,infoGrafico); 
 
 
 			Grafico grafico = new Grafico(TipoGrafico.bar);

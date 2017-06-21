@@ -18861,6 +18861,7 @@ It will also ensure that focus remains in the dialog.
     --dark-accent-color: #f50057;
 
     /* Components */
+    --iron-overlay-backdrop-opacity: .3;
 
     /* paper-drawer-panel */
     --drawer-menu-color: #ffffff;
@@ -19089,6 +19090,10 @@ It will also ensure that focus remains in the dialog.
       vaadin-combo-box-overlay::content #selector .item {
         white-space: normal !important;
         color: red;
+      }
+
+      .paper-toast-button {
+        --paper-icon-button-ink-color: transparent;
       }
 
       /*#spinner {
@@ -32069,6 +32074,12 @@ Polymer.AppLocalizeBehavior = {
     display: block;
   }
 
+  .note-class {
+    margin: 2px 0 0 0;
+    color: #C1C1C1;
+    font-size: 13px;
+  }
+
 </style><script>
   LinkFormBehavior = {
 
@@ -32141,7 +32152,8 @@ Polymer.AppLocalizeBehavior = {
               //MultiselectionDropdown
               var msl = document.createElement('div');
               this.setMultiSelectionList(msl, obj);
-              sezioneDiv.appendChild(msl);
+              var _el = this._createNote(msl, obj);
+              sezioneDiv.appendChild(_el);
 //              msl.disabled = !obj.editable;
               break;
             case 'SelectList':
@@ -32150,49 +32162,56 @@ Polymer.AppLocalizeBehavior = {
               pdm.itemLabelPath='etichetta';
               pdm.itemValuePath='valore';
               this.setDropDownProperties(pdm, obj);
-              sezioneDiv.appendChild(pdm);
+              var _el = this._createNote(pdm, obj);
+              sezioneDiv.appendChild(_el);
               pdm.disabled = !obj.editable;
               break;
             case 'CheckButton':
               //Toggle button
               var ptb = document.createElement('paper-checkbox');
               this.setCheckboxProperties(ptb, obj);
-              sezioneDiv.appendChild(ptb);
+              var _el = this._createNote(ptb, obj);
+              sezioneDiv.appendChild(_el);
               ptb.disabled = !obj.editable;
               break;
             case 'InputText':
               //Text input
               var pti = document.createElement('paper-input');
               this.setInputProperties(pti, 'text', obj);
-              sezioneDiv.appendChild(pti);
+              var _el = this._createNote(pti, obj);
+              sezioneDiv.appendChild(_el);
               pti.disabled = !obj.editable;
               break;
             case 'InputNumber':
               //Number input
               var pin = document.createElement('paper-input');
               this.setInputProperties(pin, 'number', obj);
-              sezioneDiv.appendChild(pin);
+              var _el = this._createNote(pin, obj);
+              sezioneDiv.appendChild(_el);
               pin.disabled = !obj.editable;
               break;
             case 'InputSecret':
               //Secret input
               var pis = document.createElement('paper-input');
               this.setInputProperties(pis, 'password', obj);
-              sezioneDiv.appendChild(pis);
+              var _el = this._createNote(pis, obj);
+              sezioneDiv.appendChild(_el);
               pis.disabled = !obj.editable;
               break;
             case 'InputTextArea':
               //TEXTAREA
               var pta = document.createElement('paper-textarea');
               this.setTextareaProperties(pta, obj);
-              sezioneDiv.appendChild(pta);
+              var _el = this._createNote(pta, obj);
+              sezioneDiv.appendChild(_el);
               pta.disabled = !obj.editable;
               break;
             case 'InputDate':
               //Date input
               var pdi = document.createElement('paper-input');
               this.setDateInputProperties(pdi, obj);
-              sezioneDiv.appendChild(pdi);
+              var _el = this._createNote(pdi, obj);
+              sezioneDiv.appendChild(_el);
               pdi.disabled = !obj.editable;
               break;
             case 'InputFile':
@@ -32218,14 +32237,18 @@ Polymer.AppLocalizeBehavior = {
                 pif.appendChild(err);
               }
 
-              sezioneDiv.appendChild(pif);
+              var _el = this._createNote(pif, obj);
+              sezioneDiv.appendChild(_el);
+
               this.setFileInputProperties(vau, obj);
+
               vau.disabled = !obj.editable;
               break;
             case 'RadioButton':
               var prg = document.createElement('paper-radio-group');
               this.setRadioGroupProperties(prg, obj);
-              sezioneDiv.appendChild(prg);
+              var _el = this._createNote(prg, obj);
+              sezioneDiv.appendChild(_el);
               prg.disabled = !obj.editable;
               break;
           }
@@ -32238,6 +32261,23 @@ Polymer.AppLocalizeBehavior = {
         }
         target.appendChild(sezioneDiv);
       }
+    },
+
+    _createNote: function(_el, _data){
+      var _group = document.createElement('div');
+      var _p = document.createElement('p');
+      _p.id = _el.id + '_note';
+      _p.className += ' note-class';
+      _p.innerHTML = (_data.note)?_data.note:'';
+      _group.appendChild(_el);
+      _group.appendChild(_p);
+
+      return _group;
+    },
+
+    _updateNote: function(_el, _data){
+      var _p = this.querySelector('#'+_el.id + '_note');
+      _p.innerHTML = (_data.note)?_data.note:'';
     },
 
     _modifiedForm: function(event){
@@ -32293,7 +32333,7 @@ Polymer.AppLocalizeBehavior = {
         list.hidden = data.hidden;
       }
       var etichetta = document.createElement('div');
-      etichetta.innerHTML = data.label;
+      etichetta.innerHTML = data.suggestion?data.label:'';
       etichetta.className = 'titoloMultiselect'; //'titoloElemento';
       var sottotitoloRadio = document.createElement('div');
       sottotitoloRadio.innerHTML = data.suggestion?data.suggestion:'';
@@ -32313,7 +32353,10 @@ Polymer.AppLocalizeBehavior = {
       listBox.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if(data.refreshParamIds.length>0){
         listBox.refreshParamIds = data.refreshParamIds;
-        listBox.addEventListener('ms-selection', this.changeData.bind(this));
+        if(!listBox.hasEvent || listBox.hasEvent.length == 0) {
+          listBox.addEventListener('ms-selection', this.changeData.bind(this));
+          listBox.hasEvent = ['ms-selection'];
+        }
       }
       if (data.refreshUri){
         listBox.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32357,6 +32400,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
       Polymer.dom(target).innerHTML='';
       this.setMultiSelectionList(target, obj);
+      this._updateNote(target, obj);
       target.disabled = !obj.editable;
     },
 
@@ -32375,8 +32419,11 @@ Polymer.AppLocalizeBehavior = {
       dropdown.placeholder = data.suggestion?data.suggestion:'';
       if (data.refreshParamIds.length>0){
         dropdown.refreshParamIds = data.refreshParamIds;
-        dropdown.addEventListener('value-changed', this.changeData.bind(this));
-//        dropdown.addEventListener('iron-select', this.changeData.bind(this));
+        if(!dropdown.hasEvent || dropdown.hasEvent.length == 0) {
+          dropdown.addEventListener('value-changed', this.changeData.bind(this));
+  //        dropdown.addEventListener('iron-select', this.changeData.bind(this));
+          dropdown.hasEvent = ['value-changed'];
+        }
       }
       if (data.refreshUri){
         dropdown.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32443,6 +32490,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
       Polymer.dom(target).innerHTML='';
       this.setDropDownProperties(target, obj);
+      this._updateNote(target, obj);
       target.disabled = !obj.editable;
     },
 
@@ -32461,7 +32509,10 @@ Polymer.AppLocalizeBehavior = {
       checkbox.checked = data.defaultValue;
       if (data.refreshParamIds.length>0){
         checkbox.refreshParamIds = data.refreshParamIds;
-        checkbox.addEventListener('change', this.changeData.bind(this));
+        if(!checkbox.hasEvent || checkbox.hasEvent.length == 0) {
+          checkbox.addEventListener('change', this.changeData.bind(this));
+          checkbox.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         checkbox.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32502,6 +32553,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setCheckboxProperties(target, obj);
+      this._updateNote(target, obj);
       target.disabled = !obj.editable;
     },
 
@@ -32532,7 +32584,10 @@ Polymer.AppLocalizeBehavior = {
       paperInput.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         paperInput.refreshParamIds = data.refreshParamIds;
-        paperInput.addEventListener('change', this.changeData.bind(this));
+        if(!paperInput.hasEvent || paperInput.hasEvent.length == 0) {
+          paperInput.addEventListener('change', this.changeData.bind(this));
+          paperInput.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         paperInput.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32578,6 +32633,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setInputProperties(target, target.type, obj);
+      this._updateNote(target, obj);
       target.disabled = !obj.editable;
     },
 
@@ -32602,7 +32658,10 @@ Polymer.AppLocalizeBehavior = {
       textarea.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         textarea.refreshParamIds = data.refreshParamIds;
-        textarea.addEventListener('change', this.changeData.bind(this));
+        if(!textarea.hasEvent || textarea.hasEvent.length == 0) {
+          textarea.addEventListener('change', this.changeData.bind(this));
+          textarea.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         textarea.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32648,6 +32707,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setTextareaProperties(target, obj);
+      this._updateNote(target, obj);
       target.disabled = !obj.editable;
     },
 
@@ -32673,7 +32733,10 @@ Polymer.AppLocalizeBehavior = {
       dateInput.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         dateInput.refreshParamIds = data.refreshParamIds;
-        dateInput.addEventListener('change', this.changeData.bind(this));
+        if(!dateInput.hasEvent || dateInput.hasEvent.length == 0) {
+          dateInput.addEventListener('change', this.changeData.bind(this));
+          dateInput.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         dateInput.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32715,6 +32778,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setDateInputProperties(target, obj);
+      this._updateNote(target, obj);
       target.disabled = !obj.editable;
     },
 
@@ -32748,7 +32812,10 @@ Polymer.AppLocalizeBehavior = {
       }
       if (data.refreshParamIds.length>0){
         fileInput.refreshParamIds = data.refreshParamIds;
-        fileInput.addEventListener('change', this.changeData.bind(this));
+        if(!fileInput.hasEvent || fileInput.hasEvent.length == 0) {
+          fileInput.addEventListener('change', this.changeData.bind(this));
+          fileInput.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         fileInput.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32808,6 +32875,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setFileInputProperties(target, obj);
+      this._updateNote(target, obj);
       target.disabled = !obj.editable;
     },
 
@@ -32837,7 +32905,10 @@ Polymer.AppLocalizeBehavior = {
       radioGroup.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         radioGroup.refreshParamIds = data.refreshParamIds;
-        radioGroup.addEventListener('iron-select', this.changeData.bind(this));
+        if(!radioGroup.hasEvent || radioGroup.hasEvent.length == 0) {
+          radioGroup.addEventListener('iron-select', this.changeData.bind(this));
+          radioGroup.hasEvent = ['iron-select'];
+        }
       }
       if (data.refreshUri){
         radioGroup.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32884,6 +32955,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setRadioGroupProperties(target, obj);
+      this._updateNote(target, obj);
       target.disabled = !obj.editable;
     },
 
@@ -33809,7 +33881,7 @@ Polymer.AppLocalizeBehavior = {
           <div class="mainContent">
             <link-searchbox id="searchbox" on-append-response="appendResults" on-response="setResults" on-advanced-search-request="_onAdvRequest" hidden$="[[!advSearch]]"></link-searchbox>
             <span class="gap" hidden$="[[!advSearch]]"></span>
-            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
+            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
             <div class="noResults" hidden$="[[!noResults(results.length)]]">[[localize('nessunElemento')]]</div>
           </div>
         </div>
@@ -33954,6 +34026,10 @@ Polymer.AppLocalizeBehavior = {
         },
         maxSelections: {
           type: Number,
+          value: -1
+        },
+        maxDelete: {
+          type: Number,
           value: 0
         },
         removable: {
@@ -34004,6 +34080,9 @@ Polymer.AppLocalizeBehavior = {
         if (response.numeroMassimoElementiExport) {
           this.maxSelections = response.numeroMassimoElementiExport;
         }
+        if (response.numeroMassimoElementiCancellazione) {
+          this.maxDelete = response.numeroMassimoElementiCancellazione;
+        }
         if (response.infoCreazione){
           this.creazioneUrl = REST_URL + response.infoCreazione.uri + app.appendLangParameter(response.infoCreazione.uri);
         } else {
@@ -34036,6 +34115,7 @@ Polymer.AppLocalizeBehavior = {
           this.intestazione= response.intestazione;
         }
         this.activateFabs();
+        this.$$('#resultsBox').resetSelection();
         this.fire('data-search-view', { numResults: response.totaleRisultati, infoRicerca: response.infoRicerca, simplePlaceholder: response.simpleSearchPlaceHolder });
       },
 
@@ -34045,6 +34125,7 @@ Polymer.AppLocalizeBehavior = {
       },
 
       setResults: function(event){
+        this.$$('#resultsBox').resetSelection();
         this.numResults = event.detail.totaleRisultati;
         this.results = event.detail.elenco;
         this.useVaadin = event.detail.tabella;
@@ -34137,8 +34218,8 @@ Polymer.AppLocalizeBehavior = {
             listaId.push(obj.id);
           }
         }
-        if((listaId.length > 0 && listaId.length <= this.maxSelections) ||
-          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections)) {
+        if((listaId.length > 0 && listaId.length <= this.maxDelete) ||
+          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxDelete)) {
           var lap = document.createElement('link-alert-panel');
           lap.addEventListener('action-delete', function request(e) {
             e.currentTarget.removeEventListener('action-delete', request);
@@ -34223,7 +34304,8 @@ Polymer.AppLocalizeBehavior = {
           }
         }
         if((listaId.length > 0 && listaId.length <= this.maxSelections) ||
-          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections)) {
+          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections) ||
+          this.maxSelections == -1) {
           if(this.infoEsportazione.sezioni && this.infoEsportazione.sezioni[0].fields.length != 0) {
             var lap = document.createElement('link-alert-panel');
             lap.addEventListener('action-export', function request(e) {
@@ -35866,6 +35948,18 @@ Polymer.AppLocalizeBehavior = {
         width: calc(var(--voce-basis, 50%) - 16px);
       }
 
+      .voce-image-group {
+        display: table;
+      }
+
+      .voce-image {
+        vertical-align: top;
+      }
+
+      .img-class {
+        margin-left: 5px;
+      }
+
       .card-content .etichetta {
         color: var(--secondary-text-color);
         font-weight: 500;
@@ -35959,9 +36053,14 @@ Polymer.AppLocalizeBehavior = {
               <paper-card class="sezione" heading="[[item.etichetta]]" elevation="0" hidden$="[[_checkSessioni(item, avanzata)]]">
                 <div class="card-content">
                   <template is="dom-repeat" items="[[item.voci]]" as="voce">
-                    <div class="voce ellipsis-text" style$="[[_setClassAndOrder(index)]]" hidden$="[[_checkVoci(voce, avanzata)]]">
+                    <div class$="[[classeEtichettaGroup(voce)]]" style$="[[_setClassAndOrder(index)]]" hidden$="[[_checkVoci(voce, avanzata)]]">
                       <span class$="[[classeEtichetta(voce)]]">[[getEtichetta(voce)]]</span>
-                      <span class$="[[classeValore(voce)]]" on-tap="getReference">[[voce.valore]]</span>
+                      <template is="dom-if" if="[[_isVisibleType(voce.tipo, 'TEXT')]]">
+                        <span class$="[[classeValore(voce)]]" on-tap="getReference">[[voce.valore]]</span>
+                      </template>
+                      <template is="dom-if" if="[[_isVisibleType(voce.tipo, 'IMAGE')]]">
+                        <img class="img-class" src="[[getImgValore(voce)]]" width="[[voce.width]]" height="[[voce.height]]">
+                      </template>
                       
                     </div>
                   </template>
@@ -36222,17 +36321,52 @@ Polymer.AppLocalizeBehavior = {
       },
 
       getEtichetta: function(voce){
-        if (voce.valore){
-          return voce.etichetta+':';
+        if (voce.etichetta){
+          if (voce.valore){
+            return voce.etichetta+':';
+          }
+          return voce.etichetta;
         }
-        return voce.etichetta;
+        return '';
       },
 
-      classeEtichetta: function(voce){
-        if ((voce.riferimento || voce.downloadLink) && !voce.valore){
-          return 'etichettaRiferimento';
+      getImgValore: function(_voce){
+        return (_voce.tipo == 'IMAGE')?_voce.valore:'';
+      },
+
+      _isVisibleType: function(_tipo, _srcType){
+        switch(_tipo){
+          case 'TEXT': {
+            return (_tipo == _srcType);
+          }
+          case 'IMAGE': {
+            return (_tipo ==_srcType);
+          }
+          default:
+            return false;
         }
+      },
+
+      classeEtichetta: function(_voce){
+        switch(_voce.tipo) {
+          case 'TEXT':
+            if ((_voce.riferimento || _voce.downloadLink) && !_voce.valore){
+              return 'etichettaRiferimento';
+            }
+            break;
+          case 'IMAGE':
+            return 'etichetta voce-image';
+            break;
+        }
+
         return 'etichetta';
+      },
+
+      classeEtichettaGroup: function(_voce){
+        if (_voce.tipo && _voce.tipo == 'IMAGE'){
+          return 'voce voce-image-group ellipsis-text';
+        }
+        return 'voce ellipsis-text';
       },
 
       getTabLabel: function(item){
@@ -37473,10 +37607,6 @@ event and do your own custom submission:
           type: Number,
           value: 0
         },
-        maxSelections: {
-          type: Number,
-          value: 0
-        },
         swipeVelocity: {
           type: Number,
           value: 0
@@ -37520,15 +37650,15 @@ event and do your own custom submission:
       },
 
       isVisible: function (item) {
-        item.checked = false;
-        var index = this.$.listTemplate.items.indexOf(item);
-        var el = this.querySelector('#item_'+index+' paper-item-body');
-        if(el) {
-          this.toggleClass('item-selected', false, el);
-          this.toggleClass('layout-item-box-translate', false, el);
-          this.selections = 0;
-        }
-        if (this.filtro) {
+        if (this.filtro && item.checked) {
+          item.checked = false;
+          var index = this.$.listTemplate.items.indexOf(item);
+          var el = this.querySelector('#item_'+index+' paper-item-body');
+          if(el) {
+            this.toggleClass('item-selected', false, el);
+            this.toggleClass('layout-item-box-translate', false, el);
+            this.selections = 0;
+          }
           return !!(item.titolo.toLowerCase().indexOf(this.filtro.toLowerCase()) != -1 ||
           item.sottotitolo.toLowerCase().indexOf(this.filtro.toLowerCase()) != -1);
         }
@@ -37571,25 +37701,23 @@ event and do your own custom submission:
 
       _onswipe: function(e) {
         if(this.selectable) {
-          if(this.selections < this.maxSelections) {
-            switch(e.detail.state) {
-              case 'start':
-                this.swipeVelocity = new Date().getTime();
-                break;
-              case 'track':
-                break;
-              case 'end':
-                var dt = (new Date()).getTime() - this.swipeVelocity;
-                if(e.detail.dx >= 100 && dt < 500) {
-                  var pib = e.currentTarget.querySelector('paper-item-body');
-                  if(pib.className.indexOf('item-selected') == -1) {
-                    pib.className += ' layout-item-box-translate item-selected';
-                    this.dataProvider[e.model.index].checked = true;
-                    this.selections = (this.selections < 0)?1:this.selections + 1;
-                  }
+          switch(e.detail.state) {
+            case 'start':
+              this.swipeVelocity = new Date().getTime();
+              break;
+            case 'track':
+              break;
+            case 'end':
+              var dt = (new Date()).getTime() - this.swipeVelocity;
+              if(e.detail.dx >= 100 && dt < 500) {
+                var pib = e.currentTarget.querySelector('paper-item-body');
+                if(pib.className.indexOf('item-selected') == -1) {
+                  pib.className += ' layout-item-box-translate item-selected';
+                  this.dataProvider[e.model.index].checked = true;
+                  this.selections = (this.selections < 0)?1:this.selections + 1;
                 }
-                break;
-            }
+              }
+              break;
           }
         }
       }
@@ -37673,7 +37801,7 @@ event and do your own custom submission:
     <paper-menu-button id="pmb" vertical-align="top" horizontal-align="right">
       <paper-icon-button icon="face" class="dropdown-trigger" tabindex="-1"></paper-icon-button>
       <div id="menu" class="dropdown-content">
-        <paper-item class="userName">[[user.nome]]</paper-item>
+        <paper-item on-tap="openProfilo">[[localize('profilo')]]</paper-item>
         <paper-item on-tap="openPrefs">[[localize('preferenze')]]</paper-item>
         <paper-item on-tap="logout">[[localize('esci')]]</paper-item>
       </div>
@@ -38469,6 +38597,7 @@ event and do your own custom submission:
 
       .paper-title {
         @apply(--layout-flex);
+        color: #9e9e9e;
       }
 
       .multi-selector {
@@ -40805,10 +40934,11 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         display: block;
       }
 
-      .buttons {
+      .head-dialog {
         @apply(--layout-horizontal);
         @apply(--layout-flex);
         @apply(--layout-end-justified);
+        margin-top: 16px;
       }
 
       .ellipsis-text {
@@ -40835,7 +40965,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
     </style>
 
-    <paper-dialog id="profilo" entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+    <paper-dialog id="profilo" modal="">
+      <div class="head-dialog">
+        <paper-icon-button class="icon-dismiss" icon="icons:clear" tabindex="-1" on-tap="close"></paper-icon-button>
+      </div>
       <h2 class="wrapped-text">[[userInfo.principal]]</h2>
       <div class="user-roles">
         <template is="dom-repeat" items="[[userInfo.ruoli]]" as="ruolo">
@@ -40857,10 +40990,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       ],
 
       properties: {
-            userInfo: {
-            type: Object,
-            value: null
-          }
+        userInfo: {
+          type: Object,
+          value: null
+        }
       },
 
       show: function(){
@@ -40868,8 +41001,6 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           this.userInfo = app.USER_LOGGED;
           this.$.profilo.open();
         }
-
-
       },
 
       close: function(){

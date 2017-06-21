@@ -19,19 +19,25 @@
  */
 package it.govpay.web.rs.dars.anagrafica.domini;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.ImageIO;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -62,6 +68,7 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
+import it.govpay.stampe.pdf.Costanti;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.input.ModalitaIntermediazione;
 import it.govpay.web.rs.dars.anagrafica.iban.Iban;
@@ -83,13 +90,16 @@ import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.model.VoceImage;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
+import it.govpay.web.rs.dars.model.input.base.InputFile;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -300,6 +310,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
 		String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+		String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 
 		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio,this.getLanguage());
 		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
@@ -431,6 +442,10 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		for (ParamField<?> par : infoCreazioneAnagrafica) { 
 			sezioneAnagrafica.addField(par); 	
 		}
+		
+		InputFile logo = (InputFile) this.infoCreazioneMap.get(logoId);
+		logo.setDefaultValue(null); 
+		sezioneAnagrafica.addField(logo);
 
 		return infoCreazione;
 	}
@@ -461,6 +476,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
 			String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 			String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+			String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 
 			// codDominio
 			String codDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
@@ -543,6 +559,22 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			segregationCode.setValidation("[0-9]{2}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.errorMessage"));
 			segregationCode.setAvanzata(true); 
 			this.infoCreazioneMap.put(segregationCodeId, segregationCode);
+			
+			// logo
+			String logoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.label");
+			
+			String maxWidthS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxWidth");
+			String maxHeightS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxHeight");
+			String logoAccTypes = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.acceptedMimeTypes");
+			List<String> acceptedMimeTypes =new ArrayList<String>();
+			acceptedMimeTypes.addAll(Arrays.asList(logoAccTypes.split(",")));  
+			String maxByteSizeS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxByteSize");
+			long maxByteSize = Long.parseLong(maxByteSizeS);
+			maxByteSizeS = Utils.fileSizeConverter(maxByteSize);
+			String logoNote = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".logo.note", (maxWidthS+"x" + maxHeightS),maxByteSizeS);
+			InputFile logo = new InputFile(logoId, logoLabel, false, false, true, acceptedMimeTypes , maxByteSize , 1, null);
+			logo.setNote(logoNote);
+			this.infoCreazioneMap.put(logoId, logo);
 
 		}
 	}
@@ -567,7 +599,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
 		String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
-
+		String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 
 		UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
 		UnitaOperativa unitaOperativa = null;
@@ -712,6 +744,10 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		for (ParamField<?> par : infoCreazioneAnagrafica) { 
 			sezioneAnagrafica.addField(par); 	
 		}
+		
+		InputFile logo = (InputFile) this.infoCreazioneMap.get(logoId);
+		logo.setDefaultValue(null); 
+		sezioneAnagrafica.addField(logo);
 
 		return infoModifica;
 	}
@@ -792,6 +828,8 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			// recupero oggetto
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(id);
+			// [TODO] eliminare
+			dominio.setLogo(Base64.decodeBase64(Costanti.logoPagoPa));
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,dominio);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, dominio);
@@ -896,6 +934,18 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				sezioneAnomalia.addVoce(dominio.getNdpDescrizione() , "");
 			}
 
+			//sezione logo 
+			it.govpay.web.rs.dars.model.Sezione sezioneLogo = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneLogo"));
+			String etichettaLogo = "";
+			String logoBase64 = Base64.encodeBase64String(dominio.getLogo()); 
+			BufferedImage image = ImageIO.read(new ByteArrayInputStream(dominio.getLogo()));
+			// String mimeTypeFromExt = ""; [TODO] implementare decodifica mime dal nome file
+			String mimeTypeFromExt = "image/png";
+			String htmlLogo64 = "data:" + mimeTypeFromExt + ";base64," + logoBase64;
+			VoceImage<String> voceLogo = new VoceImage<String>(etichettaLogo, htmlLogo64);
+			voceLogo.setWidth(image.getWidth());
+			voceLogo.setHeight(image.getHeight());
+			sezioneLogo.addVoce(voceLogo);
 
 			// Elementi correlati
 			String etichettaUnitaOperative = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.unitaOperative.titolo");
@@ -1013,7 +1063,8 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		String methodName = "creaEntry " + this.titoloServizio;
 		Dominio entry = null;
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
-
+		String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
+		
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -1030,12 +1081,23 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			String segregationCode = jsonObjectDominio.getString(segregationCodeId);
 			jsonObjectDominio.remove(segregationCodeId);
-
+			
+			JSONArray jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
+			jsonObjectDominio.remove(logoId);
+			
 			jsonConfig.setRootClass(Dominio.class);
 			entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
 
 			if(StringUtils.isNotEmpty(segregationCode)){
 				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
+			}
+			
+			if(jsonArrayFile != null && jsonArrayFile.size() == 1){
+				JSONObject jsonObjectFile = jsonArrayFile.getJSONObject(0);
+				String fileName = jsonObjectFile.getString(InputFile.FILENAME);
+				String data64 = jsonObjectFile.getString(InputFile.DATA);
+				entry.setLogo(Base64.decodeBase64(data64));
+				entry.setNomeFileLogo(fileName); 
 			}
 
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
@@ -1053,6 +1115,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		String methodName = "creaDominioEAnagrafica " + this.titoloServizio;
 		List<Object> list = new ArrayList<Object>();
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+		String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -1077,6 +1140,9 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			String segregationCode = jsonObjectDominio.getString(segregationCodeId);
 			jsonObjectDominio.remove(segregationCodeId);
+			
+			JSONArray jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
+			jsonObjectDominio.remove(logoId);
 
 			jsonConfig.setRootClass(Dominio.class);
 
@@ -1091,6 +1157,14 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			if(StringUtils.isNotEmpty(segregationCode)){
 				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
+			}
+			
+			if(jsonArrayFile != null && jsonArrayFile.size() == 1){
+				JSONObject jsonObjectFile = jsonArrayFile.getJSONObject(0);
+				String fileName = jsonObjectFile.getString(InputFile.FILENAME);
+				String data64 = jsonObjectFile.getString(InputFile.DATA);
+				entry.setLogo(Base64.decodeBase64(data64));
+				entry.setNomeFileLogo(fileName); 
 			}
 
 			jsonConfig.setRootClass(Anagrafica.class);
@@ -1146,10 +1220,54 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		if(entry.getRagioneSociale() == null || entry.getRagioneSociale().isEmpty()) {
 			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreRagioneSocialeObbligatoria"));
 		}
+		
+		String maxWidthS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxWidth");
+		String maxHeightS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxHeight");
+		String maxByteSizeS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxByteSize");
+		long maxByteSize = Long.parseLong(maxByteSizeS);
+		maxByteSizeS = Utils.fileSizeConverter(maxByteSize);
+		int maxWidth = Integer.parseInt(maxWidthS), maxHeight  = Integer.parseInt(maxHeightS);  
+		// validazione immagine in creazione
+		if(entry.getLogo() != null && entry.getLogo().length > 0) {
+			if(entry.getLogo().length > maxByteSize)
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreLogoSizeErrata",maxByteSizeS));
+			
+			try {
+				BufferedImage image = ImageIO.read(new ByteArrayInputStream(entry.getLogo()));
+				
+				if(image.getWidth() > maxWidth || image.getHeight() > maxHeight){
+					String msg = maxWidth + "x" + maxHeight;
+					throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreLogoDimensioniErrate",msg));
+				}
+				
+			} catch (IOException e) { 
+				this.log.error(e.getMessage());
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDecodificaLogo"));
+			}
+		}
 
 		if(oldEntry != null) { //caso update
 			if(!oldEntry.getCodDominio().equals(entry.getCodDominio())) {
-				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreCodDominioNonCoincide",oldEntry.getCodDominio(),entry.getCodDominio()));
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodDominioNonCoincide",oldEntry.getCodDominio(),entry.getCodDominio()));
+			}
+			
+			// validazione immagine in update
+			if(entry.getLogo() != null && entry.getLogo().length > 0) {
+				if(entry.getLogo().length > maxByteSize)
+					throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreLogoSizeErrata",maxByteSizeS));
+				
+				try {
+					BufferedImage image = ImageIO.read(new ByteArrayInputStream(entry.getLogo()));
+					
+					if(image.getWidth() > maxWidth || image.getHeight() > maxHeight){
+						String msg = maxWidth + "x" + maxHeight;
+						throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreLogoDimensioniErrate",msg));
+					}
+					
+				} catch (IOException e) { 
+					this.log.error(e.getMessage());
+					throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreDecodificaLogo"));
+				}
 			}
 		}
 	}

@@ -43,6 +43,7 @@ import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
 import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
 import it.govpay.web.rs.dars.anagrafica.portali.Portali;
 import it.govpay.web.rs.dars.anagrafica.psp.Psp;
+import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo;
 import it.govpay.web.rs.dars.caricamenti.tracciati.Tracciati;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -141,6 +142,11 @@ public class Menu extends BaseRsService {
 				Operatori operatoriDars = new Operatori();
 				URI operatoriURI = new URI(operatoriDars.getPathServizio());
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".titolo"), operatoriURI, VoceMenu.VOCE_ANAGRAFICA));
+				
+				Ruoli ruoliDars = new Ruoli();
+				URI ruoliURI = new URI(ruoliDars.getPathServizio());
+				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(ruoliDars.getNomeServizio() + ".titolo"), ruoliURI, VoceMenu.VOCE_ANAGRAFICA));
+				
 				
 				menu.getSezioni().add(anagrafica);
 			}

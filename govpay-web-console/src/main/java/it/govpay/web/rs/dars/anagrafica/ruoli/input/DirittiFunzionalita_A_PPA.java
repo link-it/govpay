@@ -26,24 +26,20 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.RuoliBD;
-import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.model.Acl;
-import it.govpay.bd.model.Dominio;
-import it.govpay.model.Ruolo;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Ruolo;
+import it.govpay.web.rs.dars.anagrafica.ruoli.RuoliHandler;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
-import it.govpay.web.rs.dars.model.input.dinamic.MultiSelectList;
+import it.govpay.web.rs.dars.model.input.dinamic.SelectList;
 import it.govpay.web.utils.Utils;
 
-public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
+public class DirittiFunzionalita_A_PPA extends SelectList<Long>{
 
 	private String funzionalita_A_PPAId= null;
 	private String ruoloId = null;
@@ -51,7 +47,7 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 	private Servizio servizio = Servizio.Anagrafica_PagoPa;
 	private Tipo tipo = Tipo.DOMINIO;
 
-	public DominiFunzionalita_A_PPA(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
+	public DirittiFunzionalita_A_PPA(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			 Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
 		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
@@ -64,50 +60,30 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 	protected List<Voce<Long>> getValues(List<RawParamValue> paramValues, Object... objects) throws ServiceException {
 		String funzionalita_A_PPAVAlue = Utils.getValue(paramValues, this.funzionalita_A_PPAId);
 		List<Voce<Long>> lst = new ArrayList<Voce<Long>>();
-
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		
 		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
 			return lst;
 		}
 
-		try {
-			BasicBD bd = (BasicBD) objects[0];
-			DominiBD applicazioniBD = new DominiBD(bd);
-
-			DominioFilter filter = applicazioniBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Dominio> findAll = applicazioniBD.findAll(filter);
-
-			lst.add(Utils.getVoceTutti());
-			for(Dominio dominio : findAll) {
-				StringBuilder sb = new StringBuilder();
-
-				sb.append(dominio.getRagioneSociale());
-				sb.append(" (").append(dominio.getCodDominio()).append(")");
-				
-				lst.add(new Voce<Long>(sb.toString(), dominio.getId()));
-			}
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
+		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label"), (long) RuoliHandler.NO_DIRITTI));
+		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label"), (long)  RuoliHandler.DIRITTI_LETTURA));
+		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label"), (long)  RuoliHandler.DIRITTI_SCRITTURA));
 
 		return lst;
 	}
 
 	@Override
-	protected List<Long> getDefaultValue(List<RawParamValue> values, Object... objects) {
+	protected Long getDefaultValue(List<RawParamValue> values, Object... objects) {
 		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
 		String idRuolo = Utils.getValue(values, this.ruoloId);
-		List<Long> lst = new ArrayList<Long>();
+		List<Integer> lst = new ArrayList<Integer>();
 
 		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
-			return lst;
+			return (long) RuoliHandler.NO_DIRITTI;
 		}
 		if(StringUtils.isEmpty(idRuolo)){
-			return lst;
+			return (long) RuoliHandler.NO_DIRITTI;
 		}
 
 		try {
@@ -119,20 +95,17 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 			for (Acl acl : acls) {
 				Tipo tipo = acl.getTipo();
 				if(acl.getServizio().equals(this.servizio) && tipo.equals(this.tipo)){
-					if(acl.getIdDominio() == null){
-						lst.clear();
-						lst.add(-1L);
-						break;
-					}else{
-						lst.add(acl.getIdDominio());
-					}
+					lst.add(acl.getDiritti());
 				}
 			}
 			
 		} catch (Exception e) {
 		}
 
-		return lst;
+		if(lst.size() > 0 )
+			return lst.get(0).longValue();
+		else 
+			return (long) RuoliHandler.NO_DIRITTI;
 	}
 	@Override
 	protected boolean isRequired(List<RawParamValue> values, Object... objects) {

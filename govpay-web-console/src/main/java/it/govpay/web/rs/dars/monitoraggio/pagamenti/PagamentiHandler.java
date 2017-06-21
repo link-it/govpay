@@ -94,10 +94,12 @@ import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputDate;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.input.EsportaRtPdf;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Revoche;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.RevocheHandler;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Transazioni;
@@ -1468,8 +1470,10 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		esportaPdf.setDefaultValue(false); 
 		sezioneRoot.addField(esportaPdf);
 
-		CheckButton esportaRtPdf = (CheckButton) this.infoEsportazioneMap.get(esportaRtPdfId);
-		esportaRtPdf.setDefaultValue(false); 
+		EsportaRtPdf esportaRtPdf = (EsportaRtPdf) this.infoEsportazioneMap.get(esportaRtPdfId);
+		List<RawParamValue> esportaRtPdfValues = new ArrayList<RawParamValue>();
+		esportaRtPdfValues.add(new RawParamValue(esportaRtPdfId, "false"));
+		esportaRtPdf.init(esportaRtPdfValues, bd,this.getLanguage());  
 		sezioneRoot.addField(esportaRtPdf);
 
 		CheckButton esportaRtBase64 = (CheckButton) this.infoEsportazioneMap.get(esportaRtBase64Id);
@@ -1507,8 +1511,10 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		esportaPdf.setDefaultValue(false); 
 		sezioneRoot.addField(esportaPdf);
 
-		CheckButton esportaRtPdf = (CheckButton) this.infoEsportazioneMap.get(esportaRtPdfId);
-		esportaRtPdf.setDefaultValue(false); 
+		EsportaRtPdf esportaRtPdf = (EsportaRtPdf) this.infoEsportazioneMap.get(esportaRtPdfId);
+		List<RawParamValue> esportaRtPdfValues = new ArrayList<RawParamValue>();
+		esportaRtPdfValues.add(new RawParamValue(esportaRtPdfId, "false"));
+		esportaRtPdf.init(esportaRtPdfValues, bd,this.getLanguage());  
 		sezioneRoot.addField(esportaRtPdf);
 
 		CheckButton esportaRtBase64 = (CheckButton) this.infoEsportazioneMap.get(esportaRtBase64Id);
@@ -1539,8 +1545,14 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			// esportaRtPdf
 			String esportaRtPdfLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtPdf.label");
-			CheckButton esportaRtPdf = new CheckButton(esportaRtPdfId, esportaRtPdfLabel, true, false, false, true);
+			URI esportaRtPdfURI = this.getUriExportField(uriInfo, bd, esportaRtPdfId); 
+			List<RawParamValue> esportaRtPdfValues = new ArrayList<RawParamValue>();
+			esportaRtPdfValues.add(new RawParamValue(esportaRtPdfId, "false"));
+			
+			
+			EsportaRtPdf esportaRtPdf = new EsportaRtPdf(this.nomeServizio,	esportaRtPdfId, esportaRtPdfLabel, esportaRtPdfURI, esportaRtPdfValues,this.getLanguage());
 			this.infoEsportazioneMap.put(esportaRtPdfId, esportaRtPdf);
+			esportaRtPdf.addDependencyField(esportaRtPdf);
 
 			// esportaRtBase64
 			String esportaRtBase64Label = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRtBase64.label");
@@ -1565,7 +1577,33 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
 	
 	@Override
-	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { 
+		this.log.debug("Richiesto export field ["+fieldId+"]");
+		try{
+			// Operazione consentita solo all'amministratore
+			this.darsService.checkOperatoreAdmin(bd);
+
+			if(this.infoEsportazioneMap == null){
+				this.initInfoEsportazione(uriInfo, bd);
+			}
+
+			if(this.infoEsportazioneMap.containsKey(fieldId)){
+				RefreshableParamField<?> paramField = (RefreshableParamField<?>) this.infoEsportazioneMap.get(fieldId);
+
+				paramField.aggiornaParametro(values,bd, this.getLanguage());
+
+				return paramField;
+
+			}
+
+			this.log.debug("Field ["+fieldId+"] non presente.");
+
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+		return null;
+	
+	}
 	
 	@Override
 	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}

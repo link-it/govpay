@@ -43,30 +43,30 @@ import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.dinamic.MultiSelectList;
 import it.govpay.web.utils.Utils;
 
-public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
+public class DominiFunzionalita_GDE extends MultiSelectList<Long, List<Long>>{
 
-	private String funzionalita_A_PPAId= null;
+	private String funzionalita_GDEId= null;
 	private String ruoloId = null;
 	private String nomeServizio = null;
-	private Servizio servizio = Servizio.Anagrafica_PagoPa;
+	private Servizio servizio = Servizio.Giornale_Eventi;
 	private Tipo tipo = Tipo.DOMINIO;
 
-	public DominiFunzionalita_A_PPA(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
+	public DominiFunzionalita_GDE(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			 Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
 		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		this.nomeServizio = nomeServizio;
-		this.funzionalita_A_PPAId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_PPA.id");
+		this.funzionalita_GDEId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_GDE.id");
 		this.ruoloId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override
 	protected List<Voce<Long>> getValues(List<RawParamValue> paramValues, Object... objects) throws ServiceException {
-		String funzionalita_A_PPAVAlue = Utils.getValue(paramValues, this.funzionalita_A_PPAId);
+		String funzionalita_GDEVAlue = Utils.getValue(paramValues, this.funzionalita_GDEId);
 		List<Voce<Long>> lst = new ArrayList<Voce<Long>>();
 
 		
-		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
+		if(StringUtils.isNotEmpty(funzionalita_GDEVAlue) && funzionalita_GDEVAlue.equalsIgnoreCase("false")){
 			return lst;
 		}
 
@@ -99,11 +99,11 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 
 	@Override
 	protected List<Long> getDefaultValue(List<RawParamValue> values, Object... objects) {
-		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
+		String funzionalita_GDEVAlue = Utils.getValue(values, this.funzionalita_GDEId);
 		String idRuolo = Utils.getValue(values, this.ruoloId);
 		List<Long> lst = new ArrayList<Long>();
 
-		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
+		if(StringUtils.isNotEmpty(funzionalita_GDEVAlue) && funzionalita_GDEVAlue.equalsIgnoreCase("false")){
 			return lst;
 		}
 		if(StringUtils.isEmpty(idRuolo)){
@@ -136,9 +136,9 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isRequired(List<RawParamValue> values, Object... objects) {
-		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
+		String funzionalita_GDEVAlue = Utils.getValue(values, this.funzionalita_GDEId);
 
-		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
+		if(StringUtils.isNotEmpty(funzionalita_GDEVAlue) && funzionalita_GDEVAlue.equalsIgnoreCase("false")){
 			return false;
 		}
 
@@ -146,8 +146,8 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
-		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
-		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
+		String funzionalita_GDEVAlue = Utils.getValue(values, this.funzionalita_GDEId);
+		if(StringUtils.isNotEmpty(funzionalita_GDEVAlue) && funzionalita_GDEVAlue.equalsIgnoreCase("false")){
 			return true;
 		}
 
@@ -155,8 +155,8 @@ public class DominiFunzionalita_A_PPA extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
-		String funzionalita_A_PPAVAlue = Utils.getValue(values, this.funzionalita_A_PPAId);
-		if(StringUtils.isNotEmpty(funzionalita_A_PPAVAlue) && funzionalita_A_PPAVAlue.equalsIgnoreCase("false")){
+		String funzionalita_GDEVAlue = Utils.getValue(values, this.funzionalita_GDEId);
+		if(StringUtils.isNotEmpty(funzionalita_GDEVAlue) && funzionalita_GDEVAlue.equalsIgnoreCase("false")){
 			return false;
 		}
 		return true;

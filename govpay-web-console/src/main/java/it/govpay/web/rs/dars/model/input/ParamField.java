@@ -36,6 +36,7 @@ public abstract class ParamField<T> {
 	protected boolean avanzata;
 	protected String errorMessage;
 	protected String pattern;
+	protected String note;
 
 	protected ParamField(String id, String label, T defaultValue, boolean required, boolean hidden, boolean editable, FieldType paramType) {
 		this.id = id;
@@ -46,6 +47,7 @@ public abstract class ParamField<T> {
 		this.defaultValue = defaultValue;
 		this.refreshParamIds = new ArrayList<String>();
 		this.paramType = paramType;
+		this.note = null;
 	}
 	
 	protected ParamField(String id, String label, FieldType paramType) {
@@ -53,6 +55,7 @@ public abstract class ParamField<T> {
 		this.label = label;
 		this.paramType = paramType;
 		this.refreshParamIds = new ArrayList<String>();
+		this.note = null;
 	}
 	
 	public String getId() {
@@ -132,5 +135,11 @@ public abstract class ParamField<T> {
 	}
 	public String getErrorMessage() {
 		return this.errorMessage;
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
 	}
 }

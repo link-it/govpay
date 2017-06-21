@@ -13,13 +13,15 @@ public class PaginaGrafico {
 	private String titolo;
 	private InfoForm infoEsportazione;
 	private InfoForm infoRicerca;
+	private InfoForm infoGrafico;
 	// indica se visualizzare il filtro specifico per date
 	private boolean attivaDate;
 	private List<ElementoCorrelato> elementiCorrelati;
 	
-	public PaginaGrafico(String titolo,InfoForm infoEsportazione, InfoForm infoRicerca)  {
+	public PaginaGrafico(String titolo,InfoForm infoEsportazione, InfoForm infoRicerca, InfoForm infoGrafico)  {
 		this.titolo = titolo;
 		this.infoRicerca = infoRicerca;
+		this.infoGrafico = infoGrafico;
 		this.infoEsportazione = infoEsportazione;
 		this.attivaDate = true;
 		this.elementiCorrelati = new ArrayList<ElementoCorrelato>();
@@ -74,4 +76,14 @@ public class PaginaGrafico {
 	public List<ElementoCorrelato> getElementiCorrelati() {
 		return this.elementiCorrelati;
 	}
+
+	public InfoForm getInfoGrafico() {
+		return infoGrafico;
+	}
+
+	public void setInfoGrafico(InfoForm infoGrafico) {
+		this.infoGrafico = infoGrafico;
+	}
+	
+	
 }
