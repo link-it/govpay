@@ -901,6 +901,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 							numeroZipEntries ++;
 							String ricevutaFileName = dominio.getCodDominio() + "_" + pagamento.getIuv() + "_" +pagamento.getIur();
 							if(esportaRtPdf){
+								Versamento versamento = rpt.getVersamento(bd);
 								// RT in formato pdf
 								String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
 								byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
@@ -908,7 +909,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 								ByteArrayOutputStream baos = new ByteArrayOutputStream();
 								String auxDigit = dominio.getAuxDigit() + "";
 								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-								RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, pagamento, auxDigit, applicationCode, baos, this.log);
+								RicevutaPagamentoUtils.getPdfRicevutaPagamento(dominio.getLogo(), versamento.getCausaleVersamento(), rt, pagamento, auxDigit, applicationCode, baos, this.log);
 								String rtPdfEntryName = ricevutaFileName + ".pdf";
 								numeroZipEntries ++;
 								ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
@@ -1139,6 +1140,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 							String ricevutaFileName = dominio.getCodDominio() + "_" + pagamento.getIuv() + "_" +pagamento.getIur();
 
 							if(esportaRtPdf){
+								Versamento versamento = rpt.getVersamento(bd);
 								// RT in formato pdf
 								String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
 								byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
@@ -1146,7 +1148,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 								ByteArrayOutputStream baos = new ByteArrayOutputStream();
 								String auxDigit = dominio.getAuxDigit() + "";
 								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-								RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, pagamento, auxDigit, applicationCode, baos, this.log);
+								RicevutaPagamentoUtils.getPdfRicevutaPagamento(dominio.getLogo(), versamento.getCausaleVersamento(), rt, pagamento, auxDigit, applicationCode, baos, this.log);
 								String rtPdfEntryName = ricevutaFileName + ".pdf";
 								numeroZipEntries ++;
 								ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);

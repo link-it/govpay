@@ -38,51 +38,25 @@ public class TemplateRt {
 	 * @param log
 	 * @return
 	 */
-	public static ComponentBuilder<?, ?> createTitleComponent(String pathLoghi, RicevutaPagamento ricevuta,  List<String> errList, Logger log){
+	public static ComponentBuilder<?, ?> createTitleComponent(RicevutaPagamento ricevuta,  List<String> errList, Logger log){
 		String sezione = "Sezione Titolo";
 		try{
-			//			StringBuilder errMsg = new StringBuilder();
 			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
 			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(Costanti.logoPagoPa));
-			//			Dominio dominio = ricevuta.getDominioCreditore();
-			//			String logoDominio = dominio.getCodDominio() + ".png";
-			//			File fEnte = new File(pathLoghi+"/"+logoDominio);
-
-
-			//			if(fEnte.exists()){
-			//				InputStream resourceLogoEnte = new FileInputStream(fEnte);
-			//				lst.add(cmp.image(resourceLogoEnte).setFixedDimension(90, 90).setHorizontalImageAlignment(HorizontalImageAlignment.LEFT));
-			//			}else {
-			//				if(errMsg.length() >0)
-			//					errMsg.append(", ");
-			//
-			//				errMsg.append("Il PDF non contiene il logo del dominio poiche' il file ["+logoDominio+"] non e' stato trovato nella directory dei loghi");
-			//			}
-			//
-			//			if(errMsg.length() >0){
-			//				errList.add(errMsg.toString());
-			//			}
-
-			//			List<ComponentBuilder<?, ?>> lstTitolo = new ArrayList<ComponentBuilder<?,?>>();
-
-			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.LEFT;
-			//			VerticalTextAlignment verticalTextAlignment = VerticalTextAlignment.TOP;
-			//			StyleBuilder style = stl.style(TemplateBase.fontStyle12).setVerticalTextAlignment(verticalTextAlignment);  
-			//			StyleBuilder headerStyle = stl.style(TemplateBase.bold16LeftStyle); 
-
-			//			ComponentBuilder<?, ?> createDatiDominio = TemplateBase.createDatiDominio(ricevuta.getDominioCreditore(), ricevuta.getAnagraficaCreditore(), horizontalTextAlignment,
-			//					verticalTextAlignment, headerStyle, style, log);
-			//			lstTitolo.add(createDatiDominio);
-
-
-			//			lst.add(cmp.verticalList(lstTitolo.toArray(new ComponentBuilder[lstTitolo.size()])));
 			StyleBuilder headerStyle = stl.style(TemplateBase.bold18LeftStyle); 
-			lst.add(cmp.text(Costanti.LABEL_RICEVUTA_PAGAMENTO).setHorizontalTextAlignment(horizontalTextAlignment).setStyle(headerStyle.setLeftPadding(10))); 
+			
+			if(ricevuta.getLogoDominioCreditore()!=null && ricevuta.getLogoDominioCreditore().length > 0){
+				lst.add(cmp.image(new ByteArrayInputStream(ricevuta.getLogoDominioCreditore())).setFixedDimension(90, 90).setHorizontalImageAlignment(HorizontalImageAlignment.LEFT)); 
+			}else {
+				lst.add(cmp.text("   ").setHorizontalTextAlignment(HorizontalTextAlignment.LEFT).setStyle(headerStyle.setLeftPadding(10)));
+			}
+
+			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.CENTER;
+
+			lst.add(cmp.text(Costanti.LABEL_RICEVUTA_PAGAMENTO).setHorizontalTextAlignment(horizontalTextAlignment).setStyle(headerStyle)); 
 			lst.add(cmp.image(resourceLogoPagoPa).setFixedDimension(90, 90).setHorizontalImageAlignment(HorizontalImageAlignment.RIGHT));
 
-			return cmp.horizontalList(lst.toArray(new ComponentBuilder[lst.size()])).newRow().add(cmp.verticalGap(20)).newRow()
-					//					.add(cmp.line()).newRow()
-					;
+			return cmp.horizontalList(lst.toArray(new ComponentBuilder[lst.size()])).newRow().add(cmp.verticalGap(20)).newRow();
 
 		}catch(Exception e){
 			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
@@ -353,8 +327,10 @@ public class TemplateRt {
 				sb.append("<br/>");
 				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_CAUSALE, ricevuta.getCausale()));
 			}
-
-
+			if(StringUtils.isNotEmpty(ricevuta.getDescrizioneCausale())){
+				sb.append("<br/>");
+				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_DESCRIZIONE_CAUSALE, ricevuta.getDescrizioneCausale()));
+			}
 
 			values.add(sb.toString());
 			verticalList.add(TemplateBase.getTabella(Costanti.LABEL_ESTREMI_DI_PAGAMENTO,values, errList,150, columnStyle,horizontalTextAlignment,log));

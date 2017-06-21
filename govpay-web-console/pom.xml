@@ -69,6 +69,12 @@
 		    <version>2.3.2.Final</version>
 		    <scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-core</artifactId>
+		    <version>1.15</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<filters>

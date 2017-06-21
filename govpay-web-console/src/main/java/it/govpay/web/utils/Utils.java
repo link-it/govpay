@@ -489,6 +489,16 @@ public class Utils {
 		}
 		return lst;
 	}
+	
+	public static List<Acl> getAcls(List<Acl> listaAcl, Tipo tipo, Servizio servizio){
+		List<Acl> lst = new ArrayList<Acl>();
+		for (Acl acl : listaAcl) {
+			if(acl.getServizio().equals(servizio) && acl.getTipo().equals(tipo)){
+				lst.add(acl);
+			}
+		}
+		return lst;
+	}
 
 	public static String getFileName(MultivaluedMap<String, String> header) {
 

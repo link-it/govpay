@@ -20,6 +20,6 @@ public interface IRicevutaPagamento {
 	 * 
 	 * @throws Exception
 	 */
-	public String getPdfRicevutaPagamento(String pathLoghi, RicevutaPagamento ricevuta, Properties properties, OutputStream os, Logger log) throws Exception;
+	public String getPdfRicevutaPagamento(RicevutaPagamento ricevuta, Properties properties, OutputStream os, Logger log) throws Exception;
 		
 }

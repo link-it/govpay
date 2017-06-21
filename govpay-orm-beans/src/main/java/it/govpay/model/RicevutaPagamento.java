@@ -17,6 +17,7 @@ public class RicevutaPagamento {
 	private BigDecimal commissioni;
 	private Anagrafica anagraficaDebitore;
 	private String causale;
+	private String descrizioneCausale;
 	private String codVersamento;
 	private String codAvviso;
 	private String ccp;
@@ -24,6 +25,7 @@ public class RicevutaPagamento {
 	private String canale;
 	private String idRiscossione;
 	private String codDominio;
+	private byte[] logoDominioCreditore=null;
 	
 	public Dominio getDominioCreditore() {
 		return dominioCreditore;
@@ -139,4 +141,17 @@ public class RicevutaPagamento {
 	public void setCommissioni(BigDecimal commissioni) {
 		this.commissioni = commissioni;
 	}
+	public String getDescrizioneCausale() {
+		return descrizioneCausale;
+	}
+	public void setDescrizioneCausale(String descrizioneCausale) {
+		this.descrizioneCausale = descrizioneCausale;
+	}
+	public byte[] getLogoDominioCreditore() {
+		return logoDominioCreditore;
+	}
+	public void setLogoDominioCreditore(byte[] logoDominioCreditore) {
+		this.logoDominioCreditore = logoDominioCreditore;
+	}
+	
 }
