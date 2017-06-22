@@ -6,7 +6,6 @@ import java.util.Set;
 
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Operatore;
 import it.govpay.model.Ruolo;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;

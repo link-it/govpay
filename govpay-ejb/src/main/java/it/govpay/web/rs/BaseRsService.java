@@ -44,10 +44,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.model.Applicazione;
-import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.web.handler.MessageLoggingHandlerUtils;
 import net.sf.json.JSONObject;
 
@@ -79,12 +78,17 @@ public abstract class BaseRsService {
 	}
 
 
-	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,ByteArrayOutputStream baos) {
+	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) {
+		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
+				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, false);
+	}
+	
+	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, false);
 	}
 
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,ByteArrayOutputStream baos) {
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, true);
 	}
@@ -169,15 +173,15 @@ public abstract class BaseRsService {
 			log.info("Invalidate Session completata.");
 	}
 
-	protected Applicazione getApplicazioneAutenticata(BasicBD bd) throws GovPayException, ServiceException {
+	protected Applicazione getApplicazioneAutenticata(BasicBD bd) throws NotAuthenticatedException, ServiceException {
 		if(getPrincipal() == null) {
-			throw new GovPayException(EsitoOperazione.AUT_000);
+			throw new NotAuthenticatedException();
 		}
 
 		try {
 			return AnagraficaManager.getApplicazioneByPrincipal(bd,getPrincipal());
 		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.AUT_001, getPrincipal());
+			throw new NotAuthenticatedException();
 		}
 	}
 
