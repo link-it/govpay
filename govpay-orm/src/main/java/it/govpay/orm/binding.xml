@@ -286,6 +286,7 @@
     <value name="ndpOperazione" field="ndpOperazione" usage="optional"/>
     <value name="ndpDescrizione" field="ndpDescrizione" usage="optional"/>
     <value name="ndpData" field="ndpData" usage="optional"/>
+    <value name="logo" field="logo" usage="optional"/>
   </mapping>
   <mapping name="Psp" class="it.govpay.orm.Psp">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -675,7 +676,8 @@
   </mapping>
   <mapping name="Tracciato" class="it.govpay.orm.Tracciato">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idOperatore" field="idOperatore" usage="required" map-as="_IdOperatore_Type"/>
+    <structure name="idOperatore" field="idOperatore" usage="optional" map-as="_IdOperatore_Type"/>
+    <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="dataCaricamento" field="dataCaricamento" usage="required"/>
     <value name="dataUltimoAggiornamento" field="dataUltimoAggiornamento" usage="required"/>
     <value name="stato" field="stato" usage="required" enum-value-method="toString"/>

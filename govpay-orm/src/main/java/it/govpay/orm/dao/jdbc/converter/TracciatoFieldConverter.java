@@ -74,6 +74,13 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(Tracciato.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
 		if(field.equals(Tracciato.model().DATA_CARICAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_caricamento";
@@ -167,6 +174,9 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tracciato.model().ID_OPERATORE.PRINCIPAL)){
 			return this.toTable(Tracciato.model().ID_OPERATORE, returnAlias);
 		}
+		if(field.equals(Tracciato.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Tracciato.model().ID_APPLICAZIONE, returnAlias);
+		}
 		if(field.equals(Tracciato.model().DATA_CARICAMENTO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
@@ -218,6 +228,9 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Tracciato.model().ID_OPERATORE)){
 			return "operatori";
+		}
+		if(model.equals(Tracciato.model().ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 

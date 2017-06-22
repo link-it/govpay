@@ -133,6 +133,7 @@ CREATE TABLE domini
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
 	ndp_data TIMESTAMP(3),
+	logo MEDIUMBLOB,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_stazione BIGINT NOT NULL,
@@ -181,7 +182,7 @@ CREATE TABLE operatori
 (
 	principal VARCHAR(255) NOT NULL,
 	nome VARCHAR(35) NOT NULL,
-	profilo VARCHAR(16) NOT NULL,
+	profilo VARCHAR(1024) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -318,6 +319,7 @@ CREATE TABLE acl
 	id_applicazione BIGINT,
 	id_portale BIGINT,
 	id_operatore BIGINT,
+	id_ruolo BIGINT,
 	id_dominio BIGINT,
 	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
@@ -326,6 +328,7 @@ CREATE TABLE acl
 	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
+	CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -746,11 +749,13 @@ CREATE TABLE tracciati
 	raw_data_risposta MEDIUMBLOB,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_operatore BIGINT NOT NULL,
+	id_operatore BIGINT,
+	id_applicazione BIGINT,
 	-- check constraints
 	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_tracciati_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_tracciati_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 

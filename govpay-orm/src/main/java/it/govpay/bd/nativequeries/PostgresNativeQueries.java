@@ -137,18 +137,22 @@ public class PostgresNativeQueries extends NativeQueries {
 				+ " SUM(CASE WHEN stato = 'RT_ACCETTATA_PA' THEN 1 ELSE 0 END) as successo, "
 				+ " SUM(CASE WHEN stato in ('RPT_ERRORE_INVIO_A_NODO','RPT_RIFIUTATA_NODO','RPT_RIFIUTATA_PSP','RPT_ERRORE_INVIO_A_PSP','RT_RIFIUTATA_NODO','RT_RIFIUTATA_PA','RT_ESITO_SCONOSCIUTO_PA','INTERNO_NODO') THEN 1 ELSE 0 END) as errore, "
 				+ " SUM(CASE WHEN stato not in ('RPT_ERRORE_INVIO_A_NODO','RPT_RIFIUTATA_NODO','RPT_RIFIUTATA_PSP','RPT_ERRORE_INVIO_A_PSP','RT_RIFIUTATA_NODO','RT_RIFIUTATA_PA','RT_ESITO_SCONOSCIUTO_PA','INTERNO_NODO','RT_ACCETTATA_PA') THEN 1 ELSE 0 END) as in_corso "
-				+ " from rpt right join (SELECT data FROM generate_series(?::timestamp, ?::timestamp, ?::interval) as data) elencodate on date_trunc(?, rpt.data_msg_richiesta) = date_trunc(?, elencodate.data) "
-				+ " where date_trunc(?, data_msg_richiesta) <= date_trunc(?, ?::timestamp) ";
+				+ " from rpt right join (SELECT data FROM generate_series(?::timestamp, ?::timestamp, ?::interval) as data) elencodate on date_trunc(?, rpt.data_msg_richiesta) = date_trunc(?, elencodate.data) ";
 		
+		boolean where = false;
 		if(filtro.getCodDominio() != null) {
-			sql += " AND cod_dominio = ? ";
+			sql += " WHERE cod_dominio = ? ";
+			where = true;
 		}
 		
 		if(filtro.getCodPsp() != null) {
-			sql += " AND cod_psp = ? ";
+			if(where)
+				sql += " AND cod_psp = ? ";
+			else
+				sql += " WHERE cod_psp = ? ";
 		}
 		
-		sql += " group by data order by data desc limit ?";
+		sql += " group by data order by data asc limit ?";
 		
 		return sql;
 	}
@@ -183,9 +187,6 @@ public class PostgresNativeQueries extends NativeQueries {
 		valori.add("1 " + date_trunc);
 		valori.add(date_trunc);
 		valori.add(date_trunc);
-		valori.add(date_trunc);
-		valori.add(date_trunc);
-		valori.add(data);
 		if(filtro.getCodDominio() != null) valori.add(filtro.getCodDominio());
 		if(filtro.getCodPsp() != null) valori.add(filtro.getCodPsp());
 		valori.add(limit);

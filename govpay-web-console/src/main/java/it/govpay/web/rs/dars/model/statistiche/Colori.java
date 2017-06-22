@@ -7,16 +7,22 @@ import java.util.List;
 
 public class Colori {
 
-	public static final Color colorBluRgb = Color.BLUE;
-	public static final Color colorRedRgb = Color.RED;
-	public static final Color colorGreenRgb = Color.GREEN;
-	public static final Color colorBlackRgb = Color.BLACK;
+	public final static String CODE_ERROR = "CD4A50";
+	public final static String CODE_OK = "95B964";
+	public final static String CODE_TOTALE = "3B83B7";
+	
+	public final static String CSS_COLOR_ERROR = "#"+CODE_ERROR;
+	public final static String CSS_COLOR_OK = "#"+CODE_OK;
+	public final static String CSS_COLOR_TOTALE = "#"+CODE_TOTALE;
+	
+	public final static Color COLOR_ERROR = Color.decode(CSS_COLOR_ERROR);
+	public final static Color COLOR_OK = Color.decode(CSS_COLOR_OK);
+	public final static Color COLOR_TOTALE = Color.decode(CSS_COLOR_TOTALE);
 
 	public static final String [] coloriTransazioni = {
-			getRgbString(Colori.colorBluRgb),
-			getRgbString(Colori.colorGreenRgb),
-			getRgbString(Colori.colorRedRgb),
-			getRgbString(Colori.colorBlackRgb)
+			getRgbString(Colori.COLOR_OK),
+			getRgbString(Colori.COLOR_ERROR),
+			getRgbString(Colori.COLOR_TOTALE)
 	};
 
 	public static List<String> getColoriTransazioni(){

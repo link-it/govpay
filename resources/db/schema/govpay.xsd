@@ -535,6 +535,8 @@
 			<xsd:element name="ndpOperazione" type="String256" minOccurs="0"/>
 			<xsd:element name="ndpDescrizione" type="String1024" minOccurs="0"/>
 			<xsd:element name="ndpData" type="xsd:dateTime" minOccurs="0"/>
+			
+			<xsd:element name="logo" type="xsd:base64Binary" minOccurs="0"/>
 
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1080,7 +1082,7 @@
 		<xsd:sequence>
 			<xsd:element name="principal" type="xsd:string"/>
 			<xsd:element name="nome" type="String35"/>
-			<xsd:element name="profilo" type="String16"/>
+			<xsd:element name="profilo" type="String1024"/>
 			<xsd:element name="abilitato" type="xsd:boolean" default="true"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1979,12 +1981,22 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idOperatore" type="id-operatore">
+			<xsd:element name="idOperatore" type="id-operatore" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="Operatore"
 								object-type="Operatore" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Applicazione"
+								object-type="Applicazione" relationship="reversed" />
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>

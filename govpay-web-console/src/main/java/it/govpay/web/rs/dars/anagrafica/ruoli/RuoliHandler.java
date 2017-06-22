@@ -48,7 +48,6 @@ import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Ruolo;
-import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_APP;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_CON;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_PPA;
@@ -72,13 +71,11 @@ import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
-import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
-import it.govpay.web.rs.dars.model.VoceRiferimento;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
@@ -946,15 +943,34 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 
 			List<Acl> acls = ruolo.getAcls();
 			String etichettaDomini = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
+			String etichettaDiritti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.diritti.titolo");
 			String valore = null;
 			// Elementi correlati
 			String etichettaFunzionalita_A_PPA = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_PPA.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_A_PPA = dettaglio.addSezione(etichettaFunzionalita_A_PPA);
 
 			List<Long> idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_PagoPa);
-			List<Voce<String>> listaVociDomini = new ArrayList<Voce<String>>();
+			StringBuilder listaVociDomini = new StringBuilder();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
+				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_PagoPa);
+				int diritti = aclsFiltrate.get(0).getDiritti();
+				String dirittiValore = "";
+				switch (diritti) {
+				case RuoliHandler.DIRITTI_SCRITTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
+					break;
+				case RuoliHandler.DIRITTI_LETTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
+					break;
+				case RuoliHandler.NO_DIRITTI:
+				default:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
+					break;
+				}
+				
+				sezioneFunzionalita_A_PPA.addVoce(etichettaDiritti, dirittiValore); 
+				
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -965,13 +981,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					filter.setIdDomini(idDomini);
 					List<Dominio> findAll =  dominiBD.findAll(filter);
 
-					
-					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
-					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
-							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+							if(listaVociDomini.length() > 0) {
+								listaVociDomini.append(", ");
+							}
+							listaVociDomini.append(entry.getRagioneSociale());
 						}
 					}
 				}else{
@@ -981,22 +996,37 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
-			if(Utils.isEmpty(listaVociDomini)){
+			if(listaVociDomini.length() == 0){
 				sezioneFunzionalita_A_PPA.addVoce(etichettaDomini, valore); 
 			} else {
-				sezioneFunzionalita_A_PPA.addVoce(etichettaDomini, null); 
-				for (Voce<String> voce : listaVociDomini) {
-					sezioneFunzionalita_A_PPA.addVoce(voce);
-				}
+				sezioneFunzionalita_A_PPA.addVoce(etichettaDomini, listaVociDomini.toString()); 
 			}
 
 			String etichettaFunzionalita_A_CON = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_CON.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_A_CON = dettaglio.addSezione(etichettaFunzionalita_A_CON);
 
 			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Contabile);
-			listaVociDomini = new ArrayList<Voce<String>>();
+			listaVociDomini = new StringBuilder();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
+				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Contabile);
+				int diritti = aclsFiltrate.get(0).getDiritti();
+				String dirittiValore = "";
+				switch (diritti) {
+				case RuoliHandler.DIRITTI_SCRITTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
+					break;
+				case RuoliHandler.DIRITTI_LETTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
+					break;
+				case RuoliHandler.NO_DIRITTI:
+				default:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
+					break;
+				}
+				
+				sezioneFunzionalita_A_CON.addVoce(etichettaDiritti, dirittiValore); 
+				
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1007,12 +1037,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					filter.setIdDomini(idDomini);
 					List<Dominio> findAll =  dominiBD.findAll(filter);
 
-					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
-					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
-							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+							if(listaVociDomini.length() > 0) {
+								listaVociDomini.append(", ");
+							}
+							listaVociDomini.append(entry.getRagioneSociale());
 						}
 					}
 				}else{
@@ -1022,22 +1052,37 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
-			if(Utils.isEmpty(listaVociDomini)){
+			if(listaVociDomini.length() == 0){
 				sezioneFunzionalita_A_CON.addVoce(etichettaDomini, valore); 
 			} else {
-				sezioneFunzionalita_A_CON.addVoce(etichettaDomini, null); 
-				for (Voce<String> voce : listaVociDomini) {
-					sezioneFunzionalita_A_CON.addVoce(voce);
-				}
+				sezioneFunzionalita_A_CON.addVoce(etichettaDomini, listaVociDomini.toString()); 
 			}
 
 			String etichettaFunzionalita_A_APP = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_APP.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_A_APP = dettaglio.addSezione(etichettaFunzionalita_A_APP);
 
 			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Applicazioni);
-			listaVociDomini = new ArrayList<Voce<String>>();
+			listaVociDomini = new StringBuilder();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
+				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Applicazioni);
+				int diritti = aclsFiltrate.get(0).getDiritti();
+				String dirittiValore = "";
+				switch (diritti) {
+				case RuoliHandler.DIRITTI_SCRITTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
+					break;
+				case RuoliHandler.DIRITTI_LETTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
+					break;
+				case RuoliHandler.NO_DIRITTI:
+				default:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
+					break;
+				}
+				
+				sezioneFunzionalita_A_APP.addVoce(etichettaDiritti, dirittiValore); 
+				
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1048,12 +1093,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					filter.setIdDomini(idDomini);
 					List<Dominio> findAll =  dominiBD.findAll(filter);
 
-					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
-					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
-							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+							if(listaVociDomini.length() > 0) {
+								listaVociDomini.append(", ");
+							}
+							listaVociDomini.append(entry.getRagioneSociale());
 						}
 					}
 				}else{
@@ -1063,22 +1108,37 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
-			if(Utils.isEmpty(listaVociDomini)){
+			if(listaVociDomini.length() == 0){
 				sezioneFunzionalita_A_APP.addVoce(etichettaDomini, valore); 
 			} else {
-				sezioneFunzionalita_A_APP.addVoce(etichettaDomini, null); 
-				for (Voce<String> voce : listaVociDomini) {
-					sezioneFunzionalita_A_APP.addVoce(voce);
-				}
+				sezioneFunzionalita_A_APP.addVoce(etichettaDomini, listaVociDomini.toString());
 			}
 
 			String etichettaFunzionalita_A_USR = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_USR.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_A_USR = dettaglio.addSezione(etichettaFunzionalita_A_USR);
 
 			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Utenti);
-			listaVociDomini = new ArrayList<Voce<String>>();
+			listaVociDomini = new StringBuilder();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
+				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Utenti);
+				int diritti = aclsFiltrate.get(0).getDiritti();
+				String dirittiValore = "";
+				switch (diritti) {
+				case RuoliHandler.DIRITTI_SCRITTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
+					break;
+				case RuoliHandler.DIRITTI_LETTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
+					break;
+				case RuoliHandler.NO_DIRITTI:
+				default:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
+					break;
+				}
+				
+				sezioneFunzionalita_A_USR.addVoce(etichettaDiritti, dirittiValore); 
+				
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1089,12 +1149,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					filter.setIdDomini(idDomini);
 					List<Dominio> findAll =  dominiBD.findAll(filter);
 
-					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
-					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
-							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+							if(listaVociDomini.length() > 0) {
+								listaVociDomini.append(", ");
+							}
+							listaVociDomini.append(entry.getRagioneSociale());
 						}
 					}
 				}else{
@@ -1104,13 +1164,10 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
-			if(Utils.isEmpty(listaVociDomini)){
+			if(listaVociDomini.length() == 0){
 				sezioneFunzionalita_A_USR.addVoce(etichettaDomini, valore); 
 			} else {
-				sezioneFunzionalita_A_USR.addVoce(etichettaDomini, null); 
-				for (Voce<String> voce : listaVociDomini) {
-					sezioneFunzionalita_A_USR.addVoce(voce);
-				}
+				sezioneFunzionalita_A_USR.addVoce(etichettaDomini, listaVociDomini.toString());
 			}
 
 
@@ -1118,9 +1175,27 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_G_PAG = dettaglio.addSezione(etichettaFunzionalita_G_PAG);
 
 			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Pagamenti);
-			listaVociDomini = new ArrayList<Voce<String>>();
+			listaVociDomini = new StringBuilder();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
+				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Pagamenti);
+				int diritti = aclsFiltrate.get(0).getDiritti();
+				String dirittiValore = "";
+				switch (diritti) {
+				case RuoliHandler.DIRITTI_SCRITTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
+					break;
+				case RuoliHandler.DIRITTI_LETTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
+					break;
+				case RuoliHandler.NO_DIRITTI:
+				default:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
+					break;
+				}
+				
+				sezioneFunzionalita_G_PAG.addVoce(etichettaDiritti, dirittiValore); 
+				
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1131,12 +1206,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					filter.setIdDomini(idDomini);
 					List<Dominio> findAll =  dominiBD.findAll(filter);
 
-					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
-					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
-							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+							if(listaVociDomini.length() > 0) {
+								listaVociDomini.append(", ");
+							}
+							listaVociDomini.append(entry.getRagioneSociale());
 						}
 					}
 				}else{
@@ -1146,22 +1221,37 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
-			if(Utils.isEmpty(listaVociDomini)){
+			if(listaVociDomini.length() == 0){
 				sezioneFunzionalita_G_PAG.addVoce(etichettaDomini, valore); 
 			} else {
-				sezioneFunzionalita_G_PAG.addVoce(etichettaDomini, null); 
-				for (Voce<String> voce : listaVociDomini) {
-					sezioneFunzionalita_G_PAG.addVoce(voce);
-				}
+				sezioneFunzionalita_G_PAG.addVoce(etichettaDomini, listaVociDomini.toString());
 			}
 
 			String etichettaFunzionalita_G_RND = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_G_RND.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_G_RND = dettaglio.addSezione(etichettaFunzionalita_G_RND);
 
 			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Rendicontazioni);
-			listaVociDomini = new ArrayList<Voce<String>>();
+			listaVociDomini = new StringBuilder();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
+				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Rendicontazioni);
+				int diritti = aclsFiltrate.get(0).getDiritti();
+				String dirittiValore = "";
+				switch (diritti) {
+				case RuoliHandler.DIRITTI_SCRITTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
+					break;
+				case RuoliHandler.DIRITTI_LETTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
+					break;
+				case RuoliHandler.NO_DIRITTI:
+				default:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
+					break;
+				}
+				
+				sezioneFunzionalita_G_RND.addVoce(etichettaDiritti, dirittiValore); 
+				
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1172,12 +1262,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					filter.setIdDomini(idDomini);
 					List<Dominio> findAll =  dominiBD.findAll(filter);
 
-					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
-					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
-							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+							if(listaVociDomini.length() > 0) {
+								listaVociDomini.append(", ");
+							}
+							listaVociDomini.append(entry.getRagioneSociale());
 						}
 					}
 				}else{
@@ -1187,22 +1277,36 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
-			if(Utils.isEmpty(listaVociDomini)){
+			if(listaVociDomini.length() == 0){
 				sezioneFunzionalita_G_RND.addVoce(etichettaDomini, valore); 
 			} else {
-				sezioneFunzionalita_G_RND.addVoce(etichettaDomini, null); 
-				for (Voce<String> voce : listaVociDomini) {
-					sezioneFunzionalita_G_RND.addVoce(voce);
-				}
+				sezioneFunzionalita_G_RND.addVoce(etichettaDomini, listaVociDomini.toString());
 			}
 
 			String etichettaFunzionalita_GDE = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_GDE.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_GDE = dettaglio.addSezione(etichettaFunzionalita_GDE);
 
 			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Giornale_Eventi);
-			listaVociDomini = new ArrayList<Voce<String>>();
+			listaVociDomini = new StringBuilder();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
+				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Giornale_Eventi);
+				int diritti = aclsFiltrate.get(0).getDiritti();
+				String dirittiValore = "";
+				switch (diritti) {
+				case RuoliHandler.DIRITTI_SCRITTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
+					break;
+				case RuoliHandler.DIRITTI_LETTURA:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
+					break;
+				case RuoliHandler.NO_DIRITTI:
+				default:
+					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
+					break;
+				}
+				sezioneFunzionalita_GDE.addVoce(etichettaDiritti, dirittiValore); 
+				
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1213,12 +1317,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					filter.setIdDomini(idDomini);
 					List<Dominio> findAll =  dominiBD.findAll(filter);
 
-					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
-					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
-							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
+							if(listaVociDomini.length() > 0) {
+								listaVociDomini.append(", ");
+							}
+							listaVociDomini.append(entry.getRagioneSociale());
 						}
 					}
 				}else{
@@ -1228,13 +1332,10 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
-			if(Utils.isEmpty(listaVociDomini)){
+			if(listaVociDomini.length() == 0){
 				sezioneFunzionalita_GDE.addVoce(etichettaDomini, valore); 
 			} else {
-				sezioneFunzionalita_GDE.addVoce(etichettaDomini, null); 
-				for (Voce<String> voce : listaVociDomini) {
-					sezioneFunzionalita_GDE.addVoce(voce);
-				}
+				sezioneFunzionalita_GDE.addVoce(etichettaDomini, listaVociDomini.toString());
 			}
 
 			String etichettaFunzionalita_MAN = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_MAN.titolo");

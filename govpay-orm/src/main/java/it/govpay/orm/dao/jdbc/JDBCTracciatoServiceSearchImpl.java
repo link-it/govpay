@@ -163,6 +163,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(new CustomField("id_operatore", Long.class, "id_operatore", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
+			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
             fields.add(new CustomField("id", Long.class, "id", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
     		fields.add(Tracciato.model().DATA_CARICAMENTO);
     		fields.add(Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO);
@@ -180,24 +181,39 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 			for(Map<String, Object> map: returnMap) {
                 Object idOperatoreObject = map.remove("id_operatore");
+                Object idApplicazioneObject = map.remove("id_applicazione");
+
                 Tracciato tracciato = (Tracciato)this.getTracciatoFetch().fetch(jdbcProperties.getDatabase(), Tracciato.model(), map);
 
         		if(idMappingResolutionBehaviour==null ||
         				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
         			){
 
-        				if(idOperatoreObject instanceof Long) {
-	        				Long idFK_tracciato_operatore = (Long) idOperatoreObject;
-	        				
-	        				it.govpay.orm.IdOperatore id_tracciato_operatore = null;
-	        				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	        					id_tracciato_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idFK_tracciato_operatore, false);
-	        				}else{
-	        					id_tracciato_operatore = new it.govpay.orm.IdOperatore();
-	        				}
-	        				id_tracciato_operatore.setId(idFK_tracciato_operatore);
-	        				tracciato.setIdOperatore(id_tracciato_operatore);
+    				if(idOperatoreObject instanceof Long) {
+        				Long idFK_tracciato_operatore = (Long) idOperatoreObject;
+        				
+        				it.govpay.orm.IdOperatore id_tracciato_operatore = null;
+        				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+        					id_tracciato_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idFK_tracciato_operatore, false);
+        				}else{
+        					id_tracciato_operatore = new it.govpay.orm.IdOperatore();
         				}
+        				id_tracciato_operatore.setId(idFK_tracciato_operatore);
+        				tracciato.setIdOperatore(id_tracciato_operatore);
+    				}
+
+    				if(idApplicazioneObject instanceof Long) {
+        				Long idFK_tracciato_applicazione = (Long) idApplicazioneObject;
+        				
+        				it.govpay.orm.IdApplicazione id_tracciato_applicazione = null;
+        				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+        					id_tracciato_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_tracciato_applicazione, false);
+        				}else{
+        					id_tracciato_applicazione = new it.govpay.orm.IdApplicazione();
+        				}
+        				id_tracciato_applicazione.setId(idFK_tracciato_applicazione);
+        				tracciato.setIdApplicazione(id_tracciato_applicazione);
+    				}
         			}
 
                 list.add(tracciato);

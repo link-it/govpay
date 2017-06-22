@@ -20,7 +20,7 @@ import net.sf.dynamicreports.report.constant.PageType;
 
 public class RicevutaPagamentoPdf implements IRicevutaPagamento{
 
-	public String getPdfRicevutaPagamento(String pathLoghi, RicevutaPagamento ricevuta, Properties prop, OutputStream os ,Logger log) throws Exception {
+	public String getPdfRicevutaPagamento(RicevutaPagamento ricevuta, Properties prop, OutputStream os ,Logger log) throws Exception {
 		String msg = null;
 		List<String> errList = new ArrayList<String>();
 
@@ -30,7 +30,7 @@ public class RicevutaPagamentoPdf implements IRicevutaPagamento{
 
 			List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
 
-			ComponentBuilder<?, ?> createTitleComponent = TemplateRt.createTitleComponent(pathLoghi,ricevuta,errList,log);
+			ComponentBuilder<?, ?> createTitleComponent = TemplateRt.createTitleComponent(ricevuta,errList,log);
 			if(createTitleComponent != null) {
 				cl.add(createTitleComponent);
 

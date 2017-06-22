@@ -441,6 +441,8 @@
 			<xsd:element minOccurs="0" name="ndpOperazione" type="String256"/>
 			<xsd:element minOccurs="0" name="ndpDescrizione" type="String1024"/>
 			<xsd:element minOccurs="0" name="ndpData" type="xsd:dateTime"/>
+			
+			<xsd:element minOccurs="0" name="logo" type="xsd:base64Binary"/>
 
 		</xsd:sequence>
 	</xsd:complexType>
@@ -686,7 +688,7 @@
 		<xsd:sequence>
 			<xsd:element name="principal" type="xsd:string"/>
 			<xsd:element name="nome" type="String35"/>
-			<xsd:element name="profilo" type="String16"/>
+			<xsd:element name="profilo" type="String1024"/>
 			<xsd:element default="true" name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1126,7 +1128,10 @@
 	<xsd:complexType name="Tracciato">
 		
 		<xsd:sequence>
-			<xsd:element name="idOperatore" type="id-operatore">
+			<xsd:element minOccurs="0" name="idOperatore" type="id-operatore">
+				
+			</xsd:element>
+			<xsd:element minOccurs="0" name="idApplicazione" type="id-applicazione">
 				
 			</xsd:element>
 			<xsd:element name="dataCaricamento" type="xsd:dateTime"/>

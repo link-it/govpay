@@ -49,7 +49,6 @@ public class Dominio extends BasicModel {
 	private String iuvPrefix;
 	private boolean iuvPrefixStrict;
 	private transient byte[] logo;
-	private String nomeFileLogo;
 	
 	public Long getId() {
 		return id;
@@ -209,14 +208,5 @@ public class Dominio extends BasicModel {
 	public void setLogo(byte[] logo) {
 		this.logo = logo;
 	}
-
-	public String getNomeFileLogo() {
-		return nomeFileLogo;
-	}
-
-	public void setNomeFileLogo(String nomeFileLogo) {
-		this.nomeFileLogo = nomeFileLogo;
-	}
-	
 }
 

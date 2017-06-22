@@ -87,6 +87,23 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 			}
 		}
 
+		// Object _applicazione
+		Long id_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_applicazione = null;
+		idLogic_applicazione = tracciato.getIdApplicazione();
+		if(idLogic_applicazione!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_applicazione, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_applicazione = idLogic_applicazione.getId();
+				if(id_applicazione==null || id_applicazione<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object tracciato
 		sqlQueryObjectInsert.addInsertTable(this.getTracciatoFieldConverter().toTable(Tracciato.model()));
@@ -102,6 +119,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RICHIESTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RISPOSTA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
+		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 
 		// Insert tracciato
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getTracciatoFetch().getKeyGeneratorObject(Tracciato.model());
@@ -117,7 +135,8 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNomeFile(),Tracciato.model().NOME_FILE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawDataRichiesta(),Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawDataRisposta(),Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
 		tracciato.setId(id);
 
@@ -182,6 +201,23 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 			}
 		}
 
+		// Object _tracciato_applicazione
+		Long id_tracciato_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_tracciato_applicazione = null;
+		idLogic_tracciato_applicazione = tracciato.getIdApplicazione();
+		if(idLogic_tracciato_applicazione!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_tracciato_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_tracciato_applicazione, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_tracciato_applicazione = idLogic_tracciato_applicazione.getId();
+				if(id_tracciato_applicazione==null || id_tracciato_applicazione<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object tracciato
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -214,7 +250,13 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_tracciato.add(new JDBCObject(id_tracciato_operatore, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_tracciato.add(new JDBCObject(id_tracciato_applicazione, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_tracciato.add(new JDBCObject(tableId, Long.class));

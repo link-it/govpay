@@ -81,7 +81,6 @@ import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.stampe.pdf.er.ErPdf;
-import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.psp.PspHandler;
@@ -112,6 +111,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
+	private SimpleDateFormat sdfGiorno = new SimpleDateFormat("dd/MM/yyyy");  
 
 	public StatisticheTransazioniHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
@@ -154,113 +154,48 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd);
 			InfoForm infoGrafico = null;
 
-			try{
-				List<DistribuzioneEsiti> distribuzioneEsiti = transazioniBD.getDistribuzioneEsiti(TipoIntervallo.GIORNALIERO, dataInizio, limit, filter);
-			}catch(Exception e){
-				this.log.error(e.getMessage(),e); 
-			}
+			List<DistribuzioneEsiti> distribuzioneEsiti = transazioniBD.getDistribuzioneEsiti(TipoIntervallo.GIORNALIERO, dataInizio, limit, filter);
+			
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			PaginaGrafico paginaGrafico = new PaginaGrafico(this.titoloServizio, this.getInfoEsportazione(uriInfo,bd,params), infoRicerca,infoGrafico); 
 			
 			Grafico grafico = new Grafico(TipoGrafico.bar);
-
+			
 			grafico.setLabelX("Data");
 			grafico.setLabelY("Numero Transazioni");
 			grafico.setTitolo("Numero Transazioni");
 			grafico.setSottotitolo("Dal 23 Maggio al 28 Maggio"); 
 			grafico.getColori().addAll(Colori.getColoriTransazioni());
-			grafico.getCategorie().add("Transazioni completate senza Pagamento");
-			grafico.getCategorie().add("Transazioni completate con un Pagamento");
+			grafico.getCategorie().add("Transazioni completate");
 			grafico.getCategorie().add("Transazioni rifiutate");
 			grafico.getCategorie().add("Transazioni in corso");
-			grafico.getValoriX().add("23 Maggio");
-			grafico.getValoriX().add("24 Maggio");
-			grafico.getValoriX().add("25 Maggio");
-			grafico.getValoriX().add("26 Maggio");
-			grafico.getValoriX().add("27 Maggio");
-			grafico.getValoriX().add("28 Maggio");
-
-			Serie<Integer> serie1 = new Serie<Integer>();
-			serie1.getDati().add(10);
-			serie1.getDati().add(3);
-			serie1.getDati().add(4);
-
-			serie1.getDati().add(10);
-			serie1.getDati().add(3);
-			serie1.getDati().add(4);
-
-			serie1.getTooltip().add("10 Transazioni completate senza Pagamento");
-			serie1.getTooltip().add("3 Transazioni completate senza Pagamento");
-			serie1.getTooltip().add("4 Transazioni completate senza Pagamento");
-
-			serie1.getTooltip().add("10 Transazioni completate senza Pagamento");
-			serie1.getTooltip().add("3 Transazioni completate senza Pagamento");
-			serie1.getTooltip().add("4 Transazioni completate senza Pagamento");
-
-
-			grafico.getSerie().add(serie1);
-
-			Serie<Integer> serie2 = new Serie<Integer>(); 
-			serie2.getDati().add(1);
-			serie2.getDati().add(4);
-			serie2.getDati().add(6);
-
-			serie2.getDati().add(1);
-			serie2.getDati().add(4);
-			serie2.getDati().add(6);
-
-			serie2.getTooltip().add("1 Transazioni completate con un Pagamento");
-			serie2.getTooltip().add("4 Transazioni completate con un Pagamento");
-			serie2.getTooltip().add("6 Transazioni completate con un Pagamento");
-
-			serie2.getTooltip().add("1 Transazioni completate con un Pagamento");
-			serie2.getTooltip().add("4 Transazioni completate con un Pagamento");
-			serie2.getTooltip().add("6 Transazioni completate con un Pagamento");
-
-
-			grafico.getSerie().add(serie2);
-
-			Serie<Integer> serie3 = new Serie<Integer>(); 
-
-			serie3.getDati().add(5);
-			serie3.getDati().add(13);
-			serie3.getDati().add(1);
-
-			serie3.getDati().add(5);
-			serie3.getDati().add(13);
-			serie3.getDati().add(1);
-
-			serie3.getTooltip().add("5 Transazioni rifiutate");
-			serie3.getTooltip().add("13 Transazioni rifiutate");
-			serie3.getTooltip().add("1 Transazioni rifiutate");
-
-			serie3.getTooltip().add("5 Transazioni rifiutate");
-			serie3.getTooltip().add("13 Transazioni rifiutate");
-			serie3.getTooltip().add("1 Transazioni rifiutate");
-
-			grafico.getSerie().add(serie3);
-
-			Serie<Integer> serie4 = new Serie<Integer>(); 
-
-			serie4.getDati().add(2);
-			serie4.getDati().add(6);
-			serie4.getDati().add(8);
-
-			serie4.getDati().add(2);
-			serie4.getDati().add(6);
-			serie4.getDati().add(8);
-
-			serie4.getTooltip().add("2 Transazioni in corso");
-			serie4.getTooltip().add("6 Transazioni in corso");
-			serie4.getTooltip().add("8 Transazioni in corso");
-
-			serie4.getTooltip().add("2 Transazioni in corso");
-			serie4.getTooltip().add("6 Transazioni in corso");
-			serie4.getTooltip().add("8 Transazioni in corso");
-
-			grafico.getSerie().add(serie4);
-
+			
+			if (distribuzioneEsiti != null && distribuzioneEsiti.size() > 0) {
+				Serie<Long> serie1 = new Serie<Long>();
+				Serie<Long> serie2 = new Serie<Long>();
+				Serie<Long> serie3 = new Serie<Long>();
+				for (DistribuzioneEsiti elemento : distribuzioneEsiti) {
+					String dataElemento = this.sdfGiorno.format(elemento.getData());
+					long serie1Val = elemento.getEseguiti();
+					long serie2Val = elemento.getErrori();
+					long serie3Val = elemento.getIn_corso();
+					
+					grafico.getValoriX().add(dataElemento);
+					
+					serie1.getDati().add(serie1Val);
+					serie2.getDati().add(serie2Val);
+					serie3.getDati().add(serie3Val);
+					serie1.getTooltip().add(serie1Val + "Transazioni completate");
+					serie2.getTooltip().add(serie2Val + "Transazioni rifiutate");
+					serie3.getTooltip().add(serie3Val + "Transazioni in corso");
+				}
+				
+				grafico.getSerie().add(serie1);
+				grafico.getSerie().add(serie2);
+				grafico.getSerie().add(serie3);
+			}
+			
 			paginaGrafico.setGrafico(grafico );
 
 			return paginaGrafico;
@@ -285,29 +220,30 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	
 		
 		if(StringUtils.isNotEmpty(idDominio)){
-			filter.setCodDominio(AnagraficaManager.getDominio(bd, Long.parseLong(idDominio)).getCodDominio());
-//			long idDom = -1l;
-//			try{
-//				idDom = Long.parseLong(idDominio);
-//			}catch(Exception e){ idDom = -1l;	}
-//			if(idDom > 0){
-//				idDomini.add(idDom);
+			
+			long idDom = -1l;
+			try{
+				idDom = Long.parseLong(idDominio);
+				filter.setCodDominio(AnagraficaManager.getDominio(bd, idDom).getCodDominio());
+			}catch(Exception e){ idDom = -1l;	}
+			if(idDom > 0){
+				idDomini.add(idDom);
 //				filter.setIdDomini(idDomini);
-//			}
+			}
 		}
 
 		String idPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.id");
 		String idPsp = this.getParameter(uriInfo, idPspId, String.class);
 		if(StringUtils.isNotEmpty(idPsp)){
-//			long idPspL = -1l;
-//			try{
-//				idPspL = Long.parseLong(idPsp);
-//			}catch(Exception e){ idPspL = -1l;	}
-//			if(idPspL > 0){
-//				idPsps.add(idPspL);
-//				//	filter.setIdPsp(idPsps);
-//			}
-			filter.setCodPsp(AnagraficaManager.getPsp(bd, Long.parseLong(idPsp)).getCodPsp());
+			long idPspL = -1l;
+			try{
+				idPspL = Long.parseLong(idPsp);
+				filter.setCodPsp(AnagraficaManager.getPsp(bd, idPspL).getCodPsp());
+			}catch(Exception e){ idPspL = -1l;	}
+			if(idPspL > 0){
+				idPsps.add(idPspL);
+				//	filter.setIdPsp(idPsps);
+			}
 		}
 
 		String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
@@ -762,7 +698,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 							ByteArrayOutputStream baos = new ByteArrayOutputStream();
 							String auxDigit = dominio.getAuxDigit() + "";
 							String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-							RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, this.log);
+						//	RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, this.log);
 							String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
 							numeroZipEntries ++;
 							ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);

@@ -42,6 +42,7 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 		super();
 	
 		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new Field("idOperatore",it.govpay.orm.IdOperatore.class,"Tracciato",Tracciato.class));
+		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Tracciato",Tracciato.class));
 		this.DATA_CARICAMENTO = new Field("dataCaricamento",java.util.Date.class,"Tracciato",Tracciato.class);
 		this.DATA_ULTIMO_AGGIORNAMENTO = new Field("dataUltimoAggiornamento",java.util.Date.class,"Tracciato",Tracciato.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Tracciato",Tracciato.class);
@@ -61,6 +62,7 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 		super(father);
 	
 		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new ComplexField(father,"idOperatore",it.govpay.orm.IdOperatore.class,"Tracciato",Tracciato.class));
+		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Tracciato",Tracciato.class));
 		this.DATA_CARICAMENTO = new ComplexField(father,"dataCaricamento",java.util.Date.class,"Tracciato",Tracciato.class);
 		this.DATA_ULTIMO_AGGIORNAMENTO = new ComplexField(father,"dataUltimoAggiornamento",java.util.Date.class,"Tracciato",Tracciato.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Tracciato",Tracciato.class);
@@ -78,6 +80,8 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 	
 
 	public it.govpay.orm.model.IdOperatoreModel ID_OPERATORE = null;
+	 
+	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 	public IField DATA_CARICAMENTO = null;
 	 

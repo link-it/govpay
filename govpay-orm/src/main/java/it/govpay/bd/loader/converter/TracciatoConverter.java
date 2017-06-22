@@ -27,6 +27,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdOperatore;
 
 public class TracciatoConverter {
@@ -49,7 +50,11 @@ public class TracciatoConverter {
 			dto.setStato(StatoTracciatoType.valueOf(vo.getStato().name()));
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 
-		dto.setIdOperatore(vo.getIdOperatore().getId());
+		if(vo.getIdOperatore()!= null)
+			dto.setIdOperatore(vo.getIdOperatore().getId());
+
+		if(vo.getIdApplicazione()!= null)
+			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 		
 		dto.setNomeFile(vo.getNomeFile());
 		dto.setDataCaricamento(vo.getDataCaricamento());
@@ -74,10 +79,19 @@ public class TracciatoConverter {
 			vo.setStato(it.govpay.orm.constants.StatoTracciatoType.valueOf(dto.getStato().name()));
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 
-		IdOperatore idOperatore = new IdOperatore();
-		idOperatore.setId(dto.getIdOperatore());
-		
-		vo.setIdOperatore(idOperatore);
+		if(dto.getIdOperatore() != null) {
+			IdOperatore idOperatore = new IdOperatore();
+			idOperatore.setId(dto.getIdOperatore());
+			
+			vo.setIdOperatore(idOperatore);
+		}
+
+		if(dto.getIdApplicazione() != null) {
+			IdApplicazione idApplicazione = new IdApplicazione();
+			idApplicazione.setId(dto.getIdApplicazione());
+			
+			vo.setIdApplicazione(idApplicazione);
+		}
 		
 		vo.setNomeFile(dto.getNomeFile());
 		vo.setDataCaricamento(dto.getDataCaricamento());

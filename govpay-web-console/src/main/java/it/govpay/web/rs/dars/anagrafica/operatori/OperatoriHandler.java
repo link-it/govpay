@@ -41,8 +41,10 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
+import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
+import it.govpay.bd.anagrafica.filters.RuoloFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
@@ -71,6 +73,7 @@ import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.InputText;
+import it.govpay.web.rs.dars.model.input.base.MultiSelectList;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
 import net.sf.json.JSONArray;
@@ -227,6 +230,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
 		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String dominiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
+		String ruoliId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 		//String tipiTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
 
 
@@ -248,6 +252,34 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		InputText nome = (InputText) this.infoCreazioneMap.get(nomeId);
 		nome.setDefaultValue(null);
 		sezioneRoot.addField(nome);
+		
+		MultiSelectList<String, List<String>> ruoli = (MultiSelectList<String, List<String>>) this.infoCreazioneMap.get(ruoliId);
+		List<Voce<String>> listaRuoli = new ArrayList<Voce<String>>();
+		try{
+			RuoliBD ruoliBD = new RuoliBD(bd);
+			RuoloFilter ruoliFilter = ruoliBD.newFilter();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
+			fsw.setSortOrder(SortOrder.ASC);
+			ruoliFilter.getFilterSortList().add(fsw);
+			
+			List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
+
+			if(findAll != null && findAll.size() > 0){
+				for (it.govpay.model.Ruolo ruolo : findAll) {
+					listaRuoli.add(new Voce<String>(ruolo.getCodRuolo(), ruolo.getCodRuolo()));  
+				}
+				listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.ACQUISITO_DA_SISTEMA.label"),
+							"ACQUISITO_DA_SISTEMA"));
+			}
+			
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+		ruoli.setValues(listaRuoli);
+		ruoli.setDefaultValue(null);
+		
+		sezioneRoot.addField(ruoli);
 
 		SelectList<String> profilo = (SelectList<String>) this.infoCreazioneMap.get(profiloId);
 		String profiloOperatoreValue = PROFILO_OPERATORE_VALUE_ADMIN;
@@ -281,6 +313,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 			String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
+			String ruoliId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 			String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
 			String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 			String dominiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
@@ -301,6 +334,13 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			InputText nome = new InputText(nomeId, nomeLabel, null, true, false, true, 1, 255);
 			nome.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.errorMessage"));
 			this.infoCreazioneMap.put(nomeId, nome);
+			
+			// ruoli
+			List<Voce<String>> ruoliValues = new ArrayList<Voce<String>>();
+			String ruoliLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.label");
+			MultiSelectList<String, List<String>> ruoli = new MultiSelectList<String, List<String>>(ruoliId, ruoliLabel, null, true, false, true, ruoliValues );
+			ruoli.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.errorMessage"));
+			this.infoCreazioneMap.put(ruoliId, ruoli);
 
 			// profilo
 			// tipo autenticazione
@@ -351,6 +391,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
 		String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 		String dominiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
+		String ruoliId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 		//String tipiTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
 
 		if(this.infoCreazioneMap == null){
@@ -370,6 +411,35 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		InputText nome = (InputText) this.infoCreazioneMap.get(nomeId);
 		nome.setDefaultValue(entry.getNome());
 		sezioneRoot.addField(nome);
+		
+		MultiSelectList<String, List<String>> ruoli = (MultiSelectList<String, List<String>>) this.infoCreazioneMap.get(ruoliId);
+		
+		List<Voce<String>> listaRuoli = new ArrayList<Voce<String>>();
+		try{
+			RuoliBD ruoliBD = new RuoliBD(bd);
+			RuoloFilter ruoliFilter = ruoliBD.newFilter();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
+			fsw.setSortOrder(SortOrder.ASC);
+			ruoliFilter.getFilterSortList().add(fsw);
+			
+			List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
+
+			if(findAll != null && findAll.size() > 0){
+				for (it.govpay.model.Ruolo ruolo : findAll) {
+					listaRuoli.add(new Voce<String>(ruolo.getCodRuolo(), ruolo.getCodRuolo()));  
+				}
+				listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.ACQUISITO_DA_SISTEMA.label"),
+							"ACQUISITO_DA_SISTEMA"));
+			}
+			
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+		ruoli.setValues(listaRuoli);
+		ruoli.setDefaultValue(entry.getRuoli());
+		
+		sezioneRoot.addField(ruoli);
 
 		SelectList<String> profilo = (SelectList<String>) this.infoCreazioneMap.get(profiloId);
 		String profiloOperatoreValue = null;
