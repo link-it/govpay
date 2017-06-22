@@ -17,11 +17,13 @@ CREATE TABLE tracciati
        raw_data_risposta BLOB,
        -- fk/pk columns
        id NUMBER NOT NULL,
-       id_operatore NUMBER NOT NULL,
+       id_operatore NUMBER,
+       id_applicazione NUMBER,
        -- check constraints
        CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
        -- fk/pk keys constraints
        CONSTRAINT fk_tracciati_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+       CONSTRAINT fk_tracciati_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
        CONSTRAINT pk_tracciati PRIMARY KEY (id)
 );
 
@@ -139,3 +141,5 @@ ALTER TABLE acl ADD id_ruolo NUMBER;
 ALTER TABLE acl ADD CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id);
 
 ALTER TABLE domini ADD logo BLOB;
+
+ALTER TABLE operatori MODIFY profilo VARCHAR2(1024 CHAR);

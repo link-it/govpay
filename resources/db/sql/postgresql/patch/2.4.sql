@@ -17,11 +17,13 @@ CREATE TABLE tracciati
        raw_data_risposta BYTEA,
        -- fk/pk columns
        id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
-       id_operatore BIGINT NOT NULL,
+       id_operatore BIGINT,
+       id_applicazione BIGINT,
        -- check constraints
        CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
        -- fk/pk keys constraints
        CONSTRAINT fk_tracciati_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+       CONSTRAINT fk_tracciati_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
        CONSTRAINT pk_tracciati PRIMARY KEY (id)
 );
 
@@ -91,3 +93,5 @@ ALTER TABLE acl ALTER COLUMN cod_servizio TYPE VARCHAR(35);
 ALTER TABLE acl ADD COLUMN id_ruolo BIGINT;
 ALTER TABLE acl ADD CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id);
 ALTER TABLE domini ADD COLUMN logo BYTEA;
+
+ALTER TABLE operatori ALTER COLUMN profilo VARCHAR(1024);

@@ -36,7 +36,8 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Tracciato">
  * 		&lt;sequence>
- * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataCaricamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataUltimoAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}StatoTracciatoType" minOccurs="1" maxOccurs="1"/>
@@ -63,6 +64,7 @@ import java.io.Serializable;
 @XmlType(name = "Tracciato", 
   propOrder = {
   	"idOperatore",
+  	"idApplicazione",
   	"dataCaricamento",
   	"dataUltimoAggiornamento",
   	"stato",
@@ -103,6 +105,14 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setIdOperatore(IdOperatore idOperatore) {
     this.idOperatore = idOperatore;
+  }
+
+  public IdApplicazione getIdApplicazione() {
+    return this.idApplicazione;
+  }
+
+  public void setIdApplicazione(IdApplicazione idApplicazione) {
+    this.idApplicazione = idApplicazione;
   }
 
   public java.util.Date getDataCaricamento() {
@@ -224,8 +234,11 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   }
 
 
-  @XmlElement(name="idOperatore",required=true,nillable=false)
+  @XmlElement(name="idOperatore",required=false,nillable=false)
   protected IdOperatore idOperatore;
+
+  @XmlElement(name="idApplicazione",required=false,nillable=false)
+  protected IdApplicazione idApplicazione;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

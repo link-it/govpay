@@ -10,7 +10,8 @@ public class Tracciato {
 	
 	
 	private long id;
-	private long idOperatore;
+	private Long idOperatore;
+	private Long idApplicazione;
 	private Date dataCaricamento;
 	private Date dataUltimoAggiornamento;
 	private StatoTracciatoType stato;
@@ -23,10 +24,10 @@ public class Tracciato {
 	private byte[] rawDataRichiesta;
 	private byte[] rawDataRisposta;
 	
-	public long getIdOperatore() {
+	public Long getIdOperatore() {
 		return idOperatore;
 	}
-	public void setIdOperatore(long idOperatore) {
+	public void setIdOperatore(Long idOperatore) {
 		this.idOperatore = idOperatore;
 	}
 	public Date getDataCaricamento() {
@@ -101,6 +102,12 @@ public class Tracciato {
 	}
 	public void setRawDataRisposta(byte[] rawDataRisposta) {
 		this.rawDataRisposta = rawDataRisposta;
+	}
+	public Long getIdApplicazione() {
+		return idApplicazione;
+	}
+	public void setIdApplicazione(Long idApplicazione) {
+		this.idApplicazione = idApplicazione;
 	}
 	
 

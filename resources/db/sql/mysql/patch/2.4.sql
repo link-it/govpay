@@ -17,11 +17,13 @@ CREATE TABLE tracciati
        raw_data_risposta MEDIUMBLOB,
        -- fk/pk columns
        id BIGINT AUTO_INCREMENT,
-       id_operatore BIGINT NOT NULL,
+       id_operatore BIGINT,
+       id_applicazione BIGINT,
        -- check constraints
        CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
        -- fk/pk keys constraints
        CONSTRAINT fk_tracciati_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+       CONSTRAINT fk_tracciati_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
        CONSTRAINT pk_tracciati PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -92,3 +94,4 @@ ALTER TABLE acl ADD COLUMN id_ruolo BIGINT;
 ALTER TABLE acl ADD CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id);
 ALTER TABLE domini ADD COLUMN logo MEDIUMBLOB;
 
+ALTER TABLE operatori MODIFY COLUMN profilo VARCHAR(1024);

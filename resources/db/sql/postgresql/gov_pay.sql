@@ -183,7 +183,7 @@ CREATE TABLE operatori
 (
 	principal VARCHAR(255) NOT NULL,
 	nome VARCHAR(35) NOT NULL,
-	profilo VARCHAR(16) NOT NULL,
+	profilo VARCHAR(1024) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_operatori') NOT NULL,
@@ -733,11 +733,13 @@ CREATE TABLE tracciati
 	raw_data_risposta BYTEA,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
-	id_operatore BIGINT NOT NULL,
+	id_operatore BIGINT,
+	id_applicazione BIGINT,
 	-- check constraints
 	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_tracciati_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_tracciati_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 );
 

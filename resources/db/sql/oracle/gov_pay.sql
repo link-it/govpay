@@ -267,7 +267,7 @@ CREATE TABLE operatori
 (
 	principal VARCHAR2(255 CHAR) NOT NULL,
 	nome VARCHAR2(35 CHAR) NOT NULL,
-	profilo VARCHAR2(16 CHAR) NOT NULL,
+	profilo VARCHAR2(1024 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -1032,11 +1032,13 @@ CREATE TABLE tracciati
 	raw_data_risposta BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_operatore NUMBER NOT NULL,
+	id_operatore NUMBER,
+	id_applicazione NUMBER,
 	-- check constraints
 	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_tracciati_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_tracciati_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 );
 
