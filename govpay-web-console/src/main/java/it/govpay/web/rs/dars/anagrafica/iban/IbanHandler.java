@@ -37,6 +37,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -86,8 +87,8 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 		String methodName = "getElenco " + this.titoloServizio;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
@@ -106,7 +107,7 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 
 
 			long count = ibanAccreditoBD.count(filter);
-			
+
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(idDominioId, this.idDominio + "");
 
@@ -142,71 +143,78 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String ibanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String codIbanId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIban.id");
-		String codIbanAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.id");
-		String codBicAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.id");
-		String codBicAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.id");
-		String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
-		String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String attivatoObepId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
-		String postaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
-		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				String ibanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String codIbanId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIban.id");
+				String codIbanAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.id");
+				String codBicAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.id");
+				String codBicAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.id");
+				String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
+				String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String attivatoObepId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
+				String postaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+				InputNumber idIbanAccredito = (InputNumber) this.infoCreazioneMap.get(ibanAccreditoId);
+				idIbanAccredito.setDefaultValue(null);
+				sezioneRoot.addField(idIbanAccredito);
+
+				InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
+				idDominio.setDefaultValue(this.idDominio);
+				sezioneRoot.addField(idDominio);
+
+				InputText codIban = (InputText) this.infoCreazioneMap.get(codIbanId);
+				codIban.setDefaultValue(null);
+				codIban.setEditable(true);     
+				sezioneRoot.addField(codIban);
+
+				InputText codIbanAppoggio = (InputText) this.infoCreazioneMap.get(codIbanAppoggioId);
+				codIbanAppoggio.setDefaultValue(null);
+				sezioneRoot.addField(codIbanAppoggio);
+
+				InputText codBicAccredito = (InputText) this.infoCreazioneMap.get(codBicAccreditoId);
+				codBicAccredito.setDefaultValue(null);
+				sezioneRoot.addField(codBicAccredito);
+
+				InputText codBicAppoggio = (InputText) this.infoCreazioneMap.get(codBicAppoggioId);
+				codBicAppoggio.setDefaultValue(null);
+				sezioneRoot.addField(codBicAppoggio);
+
+				IdNegozio idNegozio = (IdNegozio) this.infoCreazioneMap.get(idNegozioId);
+				idNegozio.setDefaultValue(null);
+				sezioneRoot.addField(idNegozio);
+
+				IdSellerBank idSellerBank = (IdSellerBank) this.infoCreazioneMap.get(idSellerBankId);
+				idSellerBank.setDefaultValue(null);
+				sezioneRoot.addField(idSellerBank);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(true); 
+				sezioneRoot.addField(abilitato);
+
+				CheckButton attivatoObep = (CheckButton) this.infoCreazioneMap.get(attivatoObepId);
+				attivatoObep.setDefaultValue(false); 
+				sezioneRoot.addField(attivatoObep);
+
+				CheckButton postale = (CheckButton) this.infoCreazioneMap.get(postaleId);
+				postale.setDefaultValue(false); 
+				sezioneRoot.addField(postale);
+
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-		InputNumber idIbanAccredito = (InputNumber) this.infoCreazioneMap.get(ibanAccreditoId);
-		idIbanAccredito.setDefaultValue(null);
-		sezioneRoot.addField(idIbanAccredito);
-
-		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
-		idDominio.setDefaultValue(this.idDominio);
-		sezioneRoot.addField(idDominio);
-
-		InputText codIban = (InputText) this.infoCreazioneMap.get(codIbanId);
-		codIban.setDefaultValue(null);
-		codIban.setEditable(true);     
-		sezioneRoot.addField(codIban);
-
-		InputText codIbanAppoggio = (InputText) this.infoCreazioneMap.get(codIbanAppoggioId);
-		codIbanAppoggio.setDefaultValue(null);
-		sezioneRoot.addField(codIbanAppoggio);
-
-		InputText codBicAccredito = (InputText) this.infoCreazioneMap.get(codBicAccreditoId);
-		codBicAccredito.setDefaultValue(null);
-		sezioneRoot.addField(codBicAccredito);
-
-		InputText codBicAppoggio = (InputText) this.infoCreazioneMap.get(codBicAppoggioId);
-		codBicAppoggio.setDefaultValue(null);
-		sezioneRoot.addField(codBicAppoggio);
-
-		IdNegozio idNegozio = (IdNegozio) this.infoCreazioneMap.get(idNegozioId);
-		idNegozio.setDefaultValue(null);
-		sezioneRoot.addField(idNegozio);
-
-		IdSellerBank idSellerBank = (IdSellerBank) this.infoCreazioneMap.get(idSellerBankId);
-		idSellerBank.setDefaultValue(null);
-		sezioneRoot.addField(idSellerBank);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(true); 
-		sezioneRoot.addField(abilitato);
-
-		CheckButton attivatoObep = (CheckButton) this.infoCreazioneMap.get(attivatoObepId);
-		attivatoObep.setDefaultValue(false); 
-		sezioneRoot.addField(attivatoObep);
-
-		CheckButton postale = (CheckButton) this.infoCreazioneMap.get(postaleId);
-		postale.setDefaultValue(false); 
-		sezioneRoot.addField(postale);
-
 		return infoCreazione;
 	}
 
@@ -370,18 +378,18 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 		sezioneRoot.addField(postale);
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, IbanAccredito entry) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
-	
+
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,IbanAccredito entry)	throws ConsoleException {	return null;	}
 
@@ -389,9 +397,9 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
-			
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
+
 			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
@@ -412,19 +420,19 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -432,8 +440,8 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			// recupero oggetto
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
@@ -490,8 +498,8 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			IbanAccredito entry = this.creaEntry(is, uriInfo, bd);
 
@@ -526,8 +534,8 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 		IbanAccredito entry = null;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			JsonConfig jsonConfig = new JsonConfig();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -575,10 +583,10 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.formatoIbanAppoggioErrato"));
 			}
 		}
-		
+
 		// validazione dei bic
 		Pattern bicPattern= Pattern.compile(patternBIC); //[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}
-		
+
 		if(StringUtils.isNotEmpty(entry.getCodBicAccredito())){
 			if(entry.getCodBicAccredito().length() < 8 || entry.getCodBicAccredito().length() > 11) {
 				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.lunghezzaBicAccreditoErrata", entry.getCodBicAccredito().length()));
@@ -589,7 +597,7 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.formatoBicAccreditoErrato"));
 			}
 		}
-		
+
 		if(StringUtils.isNotEmpty(entry.getCodBicAppoggio())){
 			if(entry.getCodBicAppoggio().length() < 8 || entry.getCodBicAppoggio().length() > 11) {
 				throw new ValidationException(
@@ -617,8 +625,8 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			IbanAccredito entry = this.creaEntry(is, uriInfo, bd);
 
@@ -658,7 +666,7 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
-	
+
 	@Override
 	public Map<String, Voce<String>> getVoci(IbanAccredito entry, BasicBD bd) throws ConsoleException { return null; }
 
@@ -667,7 +675,7 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 			throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
-	
+
 	@Override
 	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		return null;

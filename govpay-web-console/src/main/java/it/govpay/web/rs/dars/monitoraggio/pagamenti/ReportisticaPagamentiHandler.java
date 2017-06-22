@@ -38,14 +38,12 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.csv.Printer;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
@@ -57,11 +55,7 @@ import it.govpay.bd.pagamento.SingoliVersamentiBD;
 import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.core.utils.CSVUtils;
-import it.govpay.model.Acl;
-import it.govpay.model.Acl.Tipo;
 import it.govpay.model.EstrattoConto;
-import it.govpay.model.Operatore;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
@@ -102,19 +96,14 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			AclBD aclBD = new AclBD(bd);
-			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			List<Long> idDomini = new ArrayList<Long>();
 
 			EstrattiContoBD pagamentiBD = new EstrattiContoBD(bd);
@@ -162,27 +151,27 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
-			if(!isAdmin && idDomini.isEmpty()){
-				boolean vediTuttiDomini = false;
-
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(toListCodDomini(idDomini, bd));
-					}
-				}
-			}
+//			if(!isAdmin && idDomini.isEmpty()){
+//				boolean vediTuttiDomini = false;
+//
+//				for(Acl acl: aclOperatore) {
+//					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+//						if(acl.getIdDominio() == null) {
+//							vediTuttiDomini = true;
+//							break;
+//						} else {
+//							idDomini.add(acl.getIdDominio());
+//						}
+//					}
+//				}
+//				if(!vediTuttiDomini) {
+//					if(idDomini.isEmpty()) {
+//						eseguiRicerca = false;
+//					} else {
+//						filter.setIdDomini(toListCodDomini(idDomini, bd));
+//					}
+//				}
+//			}
 
 			long count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
@@ -234,9 +223,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 			try{
 
-				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-				ProfiloOperatore profilo = operatore.getProfilo();
-				boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+//				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
 				// idDominio
 				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -246,32 +233,32 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 				try {
 					filter = dominiBD.newFilter();
 					boolean eseguiRicerca = true;
-					if(isAdmin){
-
-					} else {
-						AclBD aclBD = new AclBD(bd);
-						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-						boolean vediTuttiDomini = false;
-						List<Long> idDomini = new ArrayList<Long>();
-						for(Acl acl: aclOperatore) {
-							if(Tipo.DOMINIO.equals(acl.getTipo())) {
-								if(acl.getIdDominio() == null) {
-									vediTuttiDomini = true;
-									break;
-								} else {
-									idDomini.add(acl.getIdDominio());
-								}
-							}
-						}
-						if(!vediTuttiDomini) {
-							if(idDomini.isEmpty()) {
-								eseguiRicerca = false;
-							} else {
-								filter.setIdDomini(idDomini);
-							}
-						}
-					}
+//					if(isAdmin){
+//
+//					} else {
+//						AclBD aclBD = new AclBD(bd);
+//						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+//
+//						boolean vediTuttiDomini = false;
+//						List<Long> idDomini = new ArrayList<Long>();
+//						for(Acl acl: aclOperatore) {
+//							if(Tipo.DOMINIO.equals(acl.getTipo())) {
+//								if(acl.getIdDominio() == null) {
+//									vediTuttiDomini = true;
+//									break;
+//								} else {
+//									idDomini.add(acl.getIdDominio());
+//								}
+//							}
+//						}
+//						if(!vediTuttiDomini) {
+//							if(idDomini.isEmpty()) {
+//								eseguiRicerca = false;
+//							} else {
+//								filter.setIdDomini(idDomini);
+//							}
+//						}
+//					}
 
 					if(eseguiRicerca) {
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
@@ -398,10 +385,8 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			// idDominio
 			EstrattiContoBD pagamentiBD = new EstrattiContoBD(bd);
@@ -410,37 +395,37 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 			List<Long> ids = new ArrayList<Long>();
 			ids.add(id);
 
-			if(!isAdmin){
-
-				AclBD aclBD = new AclBD(bd);
-				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-				boolean vediTuttiDomini = false;
-				List<Long> idDomini = new ArrayList<Long>();
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(toListCodDomini(idDomini, bd));
-					}
-				}
-
-				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
-				if(eseguiRicerca){
-					filter.setIdSingoloVersamento(ids);
-					eseguiRicerca = eseguiRicerca && pagamentiBD.count(filter) > 0;
-				}
-			}
+//			if(!isAdmin){
+//
+//				AclBD aclBD = new AclBD(bd);
+//				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+//
+//				boolean vediTuttiDomini = false;
+//				List<Long> idDomini = new ArrayList<Long>();
+//				for(Acl acl: aclOperatore) {
+//					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+//						if(acl.getIdDominio() == null) {
+//							vediTuttiDomini = true;
+//							break;
+//						} else {
+//							idDomini.add(acl.getIdDominio());
+//						}
+//					}
+//				}
+//				if(!vediTuttiDomini) {
+//					if(idDomini.isEmpty()) {
+//						eseguiRicerca = false;
+//					} else {
+//						filter.setIdDomini(toListCodDomini(idDomini, bd));
+//					}
+//				}
+//
+//				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
+//				if(eseguiRicerca){
+//					filter.setIdSingoloVersamento(ids);
+//					eseguiRicerca = eseguiRicerca && pagamentiBD.count(filter) > 0;
+//				}
+//			}
 			// recupero oggetto
 			filter.setIdSingoloVersamento(ids);
 			List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>();
@@ -610,9 +595,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+//			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
 			SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
 			EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
@@ -620,37 +603,37 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 			boolean eseguiRicerca = true;
 			List<Long> ids = idsToExport;
 
-			if(!isAdmin){
-
-				AclBD aclBD = new AclBD(bd);
-				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-				boolean vediTuttiDomini = false;
-				List<Long> idDomini = new ArrayList<Long>();
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(toListCodDomini(idDomini, bd));
-					}
-				}
-
-				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
-				if(eseguiRicerca){
-					filter.setIdSingoloVersamento(ids);
-					eseguiRicerca = eseguiRicerca && estrattiContoBD.count(filter) > 0;
-				}
-			}
+//			if(!isAdmin){
+//
+//				AclBD aclBD = new AclBD(bd);
+//				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+//
+//				boolean vediTuttiDomini = false;
+//				List<Long> idDomini = new ArrayList<Long>();
+//				for(Acl acl: aclOperatore) {
+//					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+//						if(acl.getIdDominio() == null) {
+//							vediTuttiDomini = true;
+//							break;
+//						} else {
+//							idDomini.add(acl.getIdDominio());
+//						}
+//					}
+//				}
+//				if(!vediTuttiDomini) {
+//					if(idDomini.isEmpty()) {
+//						eseguiRicerca = false;
+//					} else {
+//						filter.setIdDomini(toListCodDomini(idDomini, bd));
+//					}
+//				}
+//
+//				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
+//				if(eseguiRicerca){
+//					filter.setIdSingoloVersamento(ids);
+//					eseguiRicerca = eseguiRicerca && estrattiContoBD.count(filter) > 0;
+//				}
+//			}
 
 			if(eseguiRicerca){
 				Map<String, List<Long>> mappaInputEstrattoConto = new HashMap<String, List<Long>>();
@@ -762,9 +745,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 		try{
 			String fileName = "Pagamenti.zip";
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+//			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
 			it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
 			EstrattiContoBD pagamentiBD = new EstrattiContoBD(bd);
@@ -774,37 +755,37 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 			ids.add(idToExport);
 			SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
 
-			if(!isAdmin){
-
-				AclBD aclBD = new AclBD(bd);
-				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-				boolean vediTuttiDomini = false;
-				List<Long> idDomini = new ArrayList<Long>();
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(toListCodDomini(idDomini, bd));
-					}
-				}
-
-				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
-				if(eseguiRicerca){
-					filter.setIdSingoloVersamento(ids);
-					eseguiRicerca = eseguiRicerca && pagamentiBD.count(filter) > 0;
-				}
-			}
+//			if(!isAdmin){
+//
+//				AclBD aclBD = new AclBD(bd);
+//				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+//
+//				boolean vediTuttiDomini = false;
+//				List<Long> idDomini = new ArrayList<Long>();
+//				for(Acl acl: aclOperatore) {
+//					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+//						if(acl.getIdDominio() == null) {
+//							vediTuttiDomini = true;
+//							break;
+//						} else {
+//							idDomini.add(acl.getIdDominio());
+//						}
+//					}
+//				}
+//				if(!vediTuttiDomini) {
+//					if(idDomini.isEmpty()) {
+//						eseguiRicerca = false;
+//					} else {
+//						filter.setIdDomini(toListCodDomini(idDomini, bd));
+//					}
+//				}
+//
+//				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
+//				if(eseguiRicerca){
+//					filter.setIdSingoloVersamento(ids);
+//					eseguiRicerca = eseguiRicerca && pagamentiBD.count(filter) > 0;
+//				}
+//			}
 
 			if(eseguiRicerca ){
 				// recupero oggetto
@@ -885,14 +866,6 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
-	}
-
-	private List<String > toListCodDomini(List<Long> lstCodDomini, BasicBD bd) throws ServiceException, NotFoundException {
-		List<String > lst = new ArrayList<String >();
-		for(Long codDominio: lstCodDomini) {
-			lst.add(AnagraficaManager.getDominio(bd, codDominio).getCodDominio());
-		}
-		return lst;
 	}
 	/* Creazione/Update non consentiti**/
 

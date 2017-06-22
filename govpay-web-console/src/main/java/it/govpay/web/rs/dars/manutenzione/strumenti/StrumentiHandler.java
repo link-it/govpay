@@ -41,8 +41,8 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 		String methodName =  this.titoloServizio + ": getElencoOperazioni";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 			long count = 0;
 
 			Elenco elenco = new Elenco(this.titoloServizio, 
@@ -84,8 +84,8 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 			String nomeMetodo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".nomeMetodo");
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = null;

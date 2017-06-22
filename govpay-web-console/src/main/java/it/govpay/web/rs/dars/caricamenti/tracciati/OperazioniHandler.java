@@ -27,21 +27,20 @@ import it.govpay.bd.loader.model.OperazioneCaricamento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.model.Applicazione;
-import it.govpay.model.Operatore;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
 import it.govpay.model.loader.Operazione.TipoOperazioneType;
-import it.govpay.web.rs.dars.base.DarsHandler;
-import it.govpay.web.rs.dars.base.DarsService;
-import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
 import it.govpay.web.rs.dars.anagrafica.tributi.TributiHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -66,7 +65,9 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 		String methodName = "getElenco " + this.titoloServizio;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
+			
 			Map<String, String> params = new HashMap<String, String>();
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -82,7 +83,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, operazioniBD, operatore, simpleSearch, filter,params);
+			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, operazioniBD, simpleSearch, filter,params);
 
 			long count = eseguiRicerca ? operazioniBD.count(filter) : 0;
 			// visualizza la ricerca solo se i risultati sono > del limit
@@ -116,7 +117,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 	}
 
 
-	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd,  Operatore operatore, boolean simpleSearch, OperazioneFilter filter,Map<String, String> params) throws ConsoleException, Exception {
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd,  boolean simpleSearch, OperazioneFilter filter,Map<String, String> params) throws ConsoleException, Exception {
 		boolean elementoCorrelato = false;
 		boolean eseguiRicerca = true;
 		//		List<Long> idDomini = new ArrayList<Long>();
@@ -291,7 +292,8 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 		String methodName = "dettaglio " + this.titoloServizio + ".Id "+ id;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-		    this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo all'operatore con ruolo autorizzato
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita); 
 			
 			OperazioniBD operazioniBD = new OperazioniBD(bd);
 			Operazione entry = operazioniBD.getOperazione(id);

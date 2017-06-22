@@ -88,8 +88,8 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita agli utenti registrati
-			this.darsService.checkOperatoreAdmin(bd); 
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -420,7 +420,8 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 			ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 			Map<String, String> params = new HashMap<String, String>();
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.checkOperatoreAdmin(bd); 
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			EventiBD eventiBD = new EventiBD(bd);
 
@@ -634,16 +635,30 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 	
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
-		URI esportazione = this.getUriEsportazione(uriInfo, bd);
-		InfoForm infoEsportazione = new InfoForm(esportazione);
-		return infoEsportazione; 
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return infoEsportazione;
 	}
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Evento entry)	throws ConsoleException {	
-		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-		InfoForm infoEsportazione = new InfoForm(esportazione);
-		return infoEsportazione;	
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return infoEsportazione;
 	}
 
 	@Override

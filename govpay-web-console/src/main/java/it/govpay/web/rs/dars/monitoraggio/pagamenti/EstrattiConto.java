@@ -2,10 +2,10 @@ package it.govpay.web.rs.dars.monitoraggio.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+//import javax.ws.rs.GET;
+//import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+//import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
@@ -24,7 +25,7 @@ import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.utils.Utils;
 
-@Path("/dars/reportisticaEstrattiConto")
+//@Path("/dars/reportisticaEstrattiConto")
 public class EstrattiConto extends DarsService {
 
 	public EstrattiConto() {
@@ -48,9 +49,14 @@ public class EstrattiConto extends DarsService {
 		return "/dars/" + this.getNomeServizio();
 	}
 	
-	@GET
-	@Path("/{id}/estrattoConto")
-	@Produces({MediaType.TEXT_PLAIN,MediaType.APPLICATION_OCTET_STREAM})
+	@Override
+	public Servizio getFunzionalita() {
+		return Servizio.Gestione_Pagamenti;
+	}
+	
+//	@GET
+//	@Path("/{id}/estrattoConto")
+//	@Produces({MediaType.TEXT_PLAIN,MediaType.APPLICATION_OCTET_STREAM})
 	public Response getContenutoEstrattoConto(
 			@PathParam("id") long id,
 			@Context UriInfo uriInfo) throws ConsoleException,WebApplicationException {

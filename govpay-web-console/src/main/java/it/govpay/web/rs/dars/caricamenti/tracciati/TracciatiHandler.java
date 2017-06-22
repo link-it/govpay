@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -19,6 +20,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -28,7 +30,6 @@ import it.govpay.bd.loader.TracciatiBD;
 import it.govpay.bd.loader.filters.TracciatoFilter;
 import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.model.Operatore;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
@@ -67,8 +68,8 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 		String methodName = "getElenco " + this.titoloServizio;
 
 		try{	
-			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -84,7 +85,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, tracciatiBD, operatore, simpleSearch, filter);
+			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, tracciatiBD, simpleSearch, filter);
 
 			long count = eseguiRicerca ? tracciatiBD.count(filter) : 0;
 			// visualizza la ricerca solo se i risultati sono > del limit
@@ -117,13 +118,10 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 		}
 	}
 
-	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore , boolean simpleSearch, TracciatoFilter filter) throws ConsoleException, Exception {
-		ProfiloOperatore profilo = operatore.getProfilo();
-		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-		//		AclBD aclBD = new AclBD(bd);
-		//		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, boolean simpleSearch, TracciatoFilter filter) throws ConsoleException, Exception {
+		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		//		List<Long> idDomini = new ArrayList<Long>();
-		boolean eseguiRicerca = true; // isAdmin;
+		boolean eseguiRicerca = !setDomini.isEmpty(); // isAdmin;
 
 		if(simpleSearch){
 			// simplesearch
@@ -143,31 +141,17 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 		// [TODO] momentaneamente vede tutti i domini ma aggiungiamo solo il vincolo sui suoi tracciati.
 		// filtro per l'operatore non admin
-		if(!isAdmin){
-			filter.setIdOperatore(operatore.getId()); 
-		}
-
-		//		if(!isAdmin && idDomini.isEmpty()){
-		//			boolean vediTuttiDomini = false;
-		//
-		//			for(Acl acl: aclOperatore) {
-		//				if(Tipo.DOMINIO.equals(acl.getTipo())) {
-		//					if(acl.getIdDominio() == null) {
-		//						vediTuttiDomini = true;
-		//						break;
-		//					} else {
-		//						idDomini.add(acl.getIdDominio());
-		//					}
-		//				}
-		//			}
-		//			if(!vediTuttiDomini) {
-		//				if(idDomini.isEmpty()) {
-		//					eseguiRicerca = false;
-		//				} else {
-		//					filter.setIdDomini(idDomini);
-		//				}
-		//			}
+		//		if(!isAdmin){
+		//			filter.setIdOperatore(operatore.getId()); 
 		//		}
+
+		//		if(!setDomini.contains(-1L)){
+		//		idDomini.addAll(setDomini);
+		//	}
+		//	
+		//	if(!idDomini.isEmpty())
+		//		filter.setIdDomini(idDomini);
+
 		return eseguiRicerca;
 	}
 
@@ -222,21 +206,28 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
 
-		String fileTracciatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.id");
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				String fileTracciatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.id");
+
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+
+				InputFile fileTracciato = (InputFile) this.infoCreazioneMap.get(fileTracciatoId);
+				fileTracciato.setDefaultValue(null);
+				sezioneRoot.addField(fileTracciato);
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-
-		InputFile fileTracciato = (InputFile) this.infoCreazioneMap.get(fileTracciatoId);
-		fileTracciato.setDefaultValue(null);
-		sezioneRoot.addField(fileTracciato);
-
 		return infoCreazione;
 	}
 
@@ -279,15 +270,22 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
-	
+
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tracciato entry)	throws ConsoleException {	
-		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-		InfoForm infoEsportazione = new InfoForm(esportazione);
-		return infoEsportazione;	
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return infoEsportazione;
 	}
 
 	@Override
@@ -295,8 +293,8 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			throws WebApplicationException, ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
-
-			this.darsService.getOperatoreByPrincipal(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
@@ -318,16 +316,16 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
@@ -335,9 +333,9 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			Operatore operatoreLoggato = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore ruolo = operatoreLoggato.getProfilo();
-			boolean isAdmin = ruolo.equals(ProfiloOperatore.ADMIN);
+
+			// Operazione consentita solo all'operatore con ruolo autorizzato
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita); 
 
 			// recupero oggetto
 			TracciatiBD tracciatiBD = new TracciatiBD(bd);
@@ -366,7 +364,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			//			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".lineaElaborazione.label"), tracciato.getLineaElaborazione() + "");
 			long idOperatore = tracciato.getIdOperatore();
 			// solo l'amministratore vede chi ha caricato il tracciato, un utente "user" vede solo i suoi.
-			if(idOperatore > 0 && isAdmin){
+			if(idOperatore > 0){
 				OperatoriBD operatoriBD = new OperatoriBD(bd);
 				Operatore operatore = operatoriBD.getOperatore(idOperatore);
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".operatore.label"), operatore.getNome());
@@ -414,8 +412,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 		Tracciato entry = null;
 		String fileTracciatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.id");
 		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
-
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
 			//			JsonConfig jsonConfig = new JsonConfig();
@@ -467,7 +464,8 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
-			this.darsService.getOperatoreByPrincipal(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			Tracciato entry = this.creaEntry(is, uriInfo, bd);
 
@@ -533,7 +531,6 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 	@Override
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd,
 			ZipOutputStream zout) throws WebApplicationException, ConsoleException, ExportException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -545,7 +542,8 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 		int numeroZipEntries = 0;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita); 
 
 			TracciatiBD tracciatiBD = new TracciatiBD(bd);
 			Tracciato tracciato = tracciatiBD.getTracciato(idToExport);

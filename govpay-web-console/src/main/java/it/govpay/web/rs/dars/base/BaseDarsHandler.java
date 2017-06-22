@@ -34,12 +34,15 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.csv.Format;
 import org.openspcoop2.utils.csv.FormatReader;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.CSVSerializerProperties;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.ExportException;
@@ -64,6 +67,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	protected BaseDarsService darsService = null;
 	protected Integer limit = null;
 	protected Format formatW= null;
+	protected Servizio funzionalita;
 	
 	protected Map<String, ParamField<?>> infoRicercaMap = null;
 	protected Map<String, ParamField<?>> infoCancellazioneMap = null;
@@ -75,6 +79,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 		this.darsService = darsService;
 		this.nomeServizio = this.darsService.getNomeServizio();
 		this.pathServizio = this.darsService.getPathServizio();
+		this.funzionalita = this.darsService.getFunzionalita();
 		this.titoloServizio = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".titolo");
 		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
 
@@ -332,5 +337,13 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	@Override
 	public Locale getLanguage(){
 		return this.darsService.getLanguage();
+	}
+	
+	public List<String > toListCodDomini(List<Long> lstCodDomini, BasicBD bd) throws ServiceException, NotFoundException {
+		List<String > lst = new ArrayList<String >();
+		for(Long codDominio: lstCodDomini) {
+			lst.add(AnagraficaManager.getDominio(bd, codDominio).getCodDominio());
+		}
+		return lst;
 	}
 }

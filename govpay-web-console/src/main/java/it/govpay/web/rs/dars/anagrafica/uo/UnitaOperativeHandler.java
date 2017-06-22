@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -80,8 +81,8 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 	public Elenco getElenco(UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -89,7 +90,7 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
-			
+
 			UnitaOperativeBD unitaOperativaBD = new UnitaOperativeBD(bd);
 			UnitaOperativaFilter filter = unitaOperativaBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -101,26 +102,26 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 			boolean visualizzaRicerca = true;
 			Map<String, String> params = new HashMap<String, String>();
-			
+
 			// tutte le unita' con codice uo = 'EC' sono nascoste
 			filter.setExcludeEC(true); 
 
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 			filter.setDominioFilter(this.idDominio);
-			
+
 			if(simpleSearch) {
 				// simplesearch
 				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 				params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
-				
+
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
 			} else {
 				String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
 				String codUo = this.getParameter(uriInfo, codUoId, String.class);
-				
+
 				if(StringUtils.isNotEmpty(codUo)){
 					filter.setCodUo(codUo);
 					params.put(codUoId, codUo);
@@ -128,9 +129,9 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 			}
 
 			long count = unitaOperativaBD.count(filter);
-			
+
 			params.put(idDominioId, this.idDominio + "");
-			
+
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca =this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
@@ -195,47 +196,53 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String unitaOperativaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String unitaOperativaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
-		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio,this.getLanguage());
-		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaUO(uriInfo, bd);
+				AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio,this.getLanguage());
+				List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaUO(uriInfo, bd);
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
 
+				}
+
+				Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(unitaOperativaId);
+				idInterm.setDefaultValue(null);
+				sezioneRoot.addField(idInterm);
+
+				InputText codUnitaOperativa = (InputText) this.infoCreazioneMap.get(codUoId);
+				codUnitaOperativa.setDefaultValue(null);
+				sezioneRoot.addField(codUnitaOperativa);
+
+				// idDominio
+				InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
+				idDominio.setDefaultValue(this.idDominio);
+				sezioneRoot.addField(idDominio);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(true); 
+				sezioneRoot.addField(abilitato);
+
+				Sezione sezioneAnagrafica = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
+
+				for (ParamField<?> par : infoCreazioneAnagrafica) { 
+					sezioneAnagrafica.addField(par); 	
+				}
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(unitaOperativaId);
-		idInterm.setDefaultValue(null);
-		sezioneRoot.addField(idInterm);
-
-		InputText codUnitaOperativa = (InputText) this.infoCreazioneMap.get(codUoId);
-		codUnitaOperativa.setDefaultValue(null);
-		sezioneRoot.addField(codUnitaOperativa);
-
-		// idDominio
-		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
-		idDominio.setDefaultValue(this.idDominio);
-		sezioneRoot.addField(idDominio);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(true); 
-		sezioneRoot.addField(abilitato);
-
-		Sezione sezioneAnagrafica = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
-
-		for (ParamField<?> par : infoCreazioneAnagrafica) { 
-			sezioneAnagrafica.addField(par); 	
-		}
-
 		return infoCreazione;
 	}
 
@@ -317,18 +324,18 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
-	
+
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry)	throws ConsoleException {	return null;	}
 
@@ -336,8 +343,8 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
@@ -359,19 +366,19 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -379,8 +386,8 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			// recupero oggetto
 			UnitaOperativeBD unitaOperativaBD = new UnitaOperativeBD(bd);
@@ -427,8 +434,8 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			UnitaOperativa entry = this.creaEntry(is, uriInfo, bd);
 
@@ -465,8 +472,8 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 		UnitaOperativa entry = null;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			JsonConfig jsonConfig = new JsonConfig();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -528,8 +535,8 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			UnitaOperativa entry = this.creaEntry(is, uriInfo, bd);
 

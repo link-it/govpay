@@ -40,7 +40,8 @@ public class Acl extends BasicModel {
 		Gestione_Pagamenti("G_PAG"),
 		Gestione_Rendicontazioni("G_RND"),
 		Giornale_Eventi("GDE"),
-		Manutenzione("MAN");
+		Manutenzione("MAN"),
+		Statistiche("STAT");
 		
 		private String codifica;
 

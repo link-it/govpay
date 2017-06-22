@@ -33,7 +33,6 @@ import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Ruolo;
-import it.govpay.web.rs.dars.anagrafica.ruoli.RuoliHandler;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.dinamic.SelectList;
@@ -66,9 +65,9 @@ public class DirittiFunzionalita_GDE extends SelectList<Long>{
 			return lst;
 		}
 
-		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label"), (long) RuoliHandler.NO_DIRITTI));
-		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label"), (long)  RuoliHandler.DIRITTI_LETTURA));
-//		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label"), (long)  RuoliHandler.DIRITTI_SCRITTURA));
+		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label"), (long) Ruolo.NO_DIRITTI));
+		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label"), (long)  Ruolo.DIRITTI_LETTURA));
+//		lst.add(new Voce<Long>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label"), (long)  Ruolo.DIRITTI_SCRITTURA));
 		return lst;
 	}
 
@@ -79,10 +78,10 @@ public class DirittiFunzionalita_GDE extends SelectList<Long>{
 		List<Integer> lst = new ArrayList<Integer>();
 
 		if(StringUtils.isNotEmpty(funzionalita_GDEVAlue) && funzionalita_GDEVAlue.equalsIgnoreCase("false")){
-			return (long) RuoliHandler.NO_DIRITTI;
+			return (long) Ruolo.NO_DIRITTI;
 		}
 		if(StringUtils.isEmpty(idRuolo)){
-			return (long) RuoliHandler.NO_DIRITTI;
+			return (long) Ruolo.NO_DIRITTI;
 		}
 
 		try {
@@ -104,7 +103,7 @@ public class DirittiFunzionalita_GDE extends SelectList<Long>{
 		if(lst.size() > 0 )
 			return lst.get(0).longValue();
 		else 
-			return (long) RuoliHandler.NO_DIRITTI;
+			return (long) Ruolo.NO_DIRITTI;
 	}
 	@Override
 	protected boolean isRequired(List<RawParamValue> values, Object... objects) {

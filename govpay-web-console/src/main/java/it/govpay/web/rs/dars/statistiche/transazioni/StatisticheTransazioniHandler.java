@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -44,7 +45,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PspBD;
@@ -73,12 +73,8 @@ import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
-import it.govpay.model.Acl;
-import it.govpay.model.Acl.Tipo;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.Evento;
-import it.govpay.model.Operatore;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.stampe.pdf.er.ErPdf;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
@@ -122,8 +118,8 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	public PaginaGrafico getGrafico(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		String methodName = "getGrafico " + this.titoloServizio;
 		try{	
-			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -148,7 +144,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 				dataInizio = this.convertJsonStringToDate(dataInizioS);
 			}
 			
-			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, transazioniBD, operatore, filter);
+			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, transazioniBD, filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd);
@@ -206,14 +202,11 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 		}
 	}
 
-	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore , TransazioniFilter filter) throws ConsoleException, Exception {
-		ProfiloOperatore profilo = operatore.getProfilo();
-		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-		AclBD aclBD = new AclBD(bd);
-		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, TransazioniFilter filter) throws ConsoleException, Exception {
+		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		List<Long> idDomini = new ArrayList<Long>();
 		List<Long> idPsps = new ArrayList<Long>();
-		boolean eseguiRicerca = true; // isAdmin;
+		boolean eseguiRicerca = !setDomini.isEmpty(); // isAdmin;
 
 		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
@@ -258,39 +251,22 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			//			filter.setDataFine(this.convertJsonStringToDate(dataFine));
 		}
 
-//		if(!isAdmin && idDomini.isEmpty()){
-//			boolean vediTuttiDomini = false;
-//
-//			for(Acl acl: aclOperatore) {
-//				if(Tipo.DOMINIO.equals(acl.getTipo())) {
-//					if(acl.getIdDominio() == null) {
-//						vediTuttiDomini = true;
-//						break;
-//					} else {
-//						idDomini.add(acl.getIdDominio());
-//					}
-//				}
-//			}
-//			if(!vediTuttiDomini) {
-//				if(idDomini.isEmpty()) {
-//					eseguiRicerca = false;
-//				} else {
-//					filter.setIdDomini(idDomini);
-//				}
-//			}
+		// se l'utente ha un numero ristretto di domini da visualizzare li imposto nel filtro
+//		if(!setDomini.contains(-1L)){
+//			idDomini.addAll(setDomini);
 //		}
+//		
+//		if(!idDomini.isEmpty())
+//			filter.setIdDomini(idDomini);
 
 		return eseguiRicerca ;
 	}
 
-	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd, Operatore operatore , VersamentoFilter filter) throws ConsoleException, Exception {
-		ProfiloOperatore profilo = operatore.getProfilo();
-		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-		AclBD aclBD = new AclBD(bd);
-		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-		List<Long> idDomini = new ArrayList<Long>();
+	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd, VersamentoFilter filter) throws ConsoleException, Exception {
+		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		List<Long> idPsps = new ArrayList<Long>();
-		boolean eseguiRicerca = true; // isAdmin;
+		List<Long> idDomini = new ArrayList<Long>();
+		boolean eseguiRicerca = true;  
 
 		String idPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.id");
 		String idPsp = Utils.getValue(rawValues, idPspId);
@@ -314,7 +290,6 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			}catch(Exception e){ idDom = -1l;	}
 			if(idDom > 0){
 				idDomini.add(idDom);
-				filter.setIdDomini(idDomini);
 			}
 		}
 
@@ -330,27 +305,13 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			//				filter.setDataFine(this.convertJsonStringToDate(dataFine));
 		}
 
-		if(!isAdmin && idDomini.isEmpty()){
-			boolean vediTuttiDomini = false;
-
-			for(Acl acl: aclOperatore) {
-				if(Tipo.DOMINIO.equals(acl.getTipo())) {
-					if(acl.getIdDominio() == null) {
-						vediTuttiDomini = true;
-						break;
-					} else {
-						idDomini.add(acl.getIdDominio());
-					}
-				}
-			}
-			if(!vediTuttiDomini) {
-				if(idDomini.isEmpty()) {
-					eseguiRicerca = false;
-				} else {
-					filter.setIdDomini(idDomini);
-				}
-			}
+		// se l'utente ha un numero ristretto di domini da visualizzare li imposto nel filtro
+		if(!setDomini.contains(-1L)){
+			idDomini.addAll(setDomini);
 		}
+		
+		if(!idDomini.isEmpty())
+			filter.setIdDomini(idDomini);
 
 		return eseguiRicerca  ;
 	}
@@ -372,10 +333,8 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
 			try{
-
-				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-				ProfiloOperatore profilo = operatore.getProfilo();
-				boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+				// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+				this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 				// idDominio
 				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -385,36 +344,6 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 				try {
 					filter = dominiBD.newFilter();
 					boolean eseguiRicerca = true;
-					if(isAdmin){
-
-					} else {
-						AclBD aclBD = new AclBD(bd);
-						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-						boolean vediTuttiDomini = false;
-						List<Long> idDomini = new ArrayList<Long>();
-						for(Acl acl: aclOperatore) {
-							if(Tipo.DOMINIO.equals(acl.getTipo())) {
-								if(acl.getIdDominio() == null) {
-									vediTuttiDomini = true;
-									break;
-								} else {
-									idDomini.add(acl.getIdDominio());
-								}
-							}
-						}
-						if(!vediTuttiDomini) {
-							if(idDomini.isEmpty()) {
-								eseguiRicerca = false;
-							} else {
-								filter.setIdDomini(idDomini);
-							}
-						}
-					}
-
-
-
-					if(eseguiRicerca) {
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();
 						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
@@ -430,9 +359,6 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
 							}
 						}
-					}else {
-						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-					}
 				} catch (ServiceException e) {
 					throw new ConsoleException(e);
 				}
@@ -539,13 +465,31 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	}
 
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return infoEsportazione;
+	 }
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry)	throws ConsoleException {	
-		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-		InfoForm infoEsportazione = new InfoForm(esportazione);
-		return infoEsportazione;	
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return infoEsportazione;		
 	}
 	
 	@Override
@@ -576,7 +520,8 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 		String fileName = "Export.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -595,7 +540,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			if(idsToExport != null && idsToExport.size() > 0) 
 				filter.setIdVersamento(idsToExport);
 
-			boolean eseguiRicerca = this.popolaFiltroRicerca(rawValues, bd, operatore, filter);
+			boolean eseguiRicerca = this.popolaFiltroRicerca(rawValues, bd, filter);
 
 			if(!eseguiRicerca){
 				List<String> msg = new ArrayList<String>();

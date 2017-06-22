@@ -72,8 +72,8 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 			Integer limit = this.getLimit(uriInfo);
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
@@ -233,8 +233,8 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			// recupero oggetto
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);

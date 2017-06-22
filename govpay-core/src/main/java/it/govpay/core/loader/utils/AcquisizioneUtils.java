@@ -9,7 +9,6 @@ import it.govpay.core.loader.timers.model.AnnullamentoRequest;
 import it.govpay.core.loader.timers.model.CaricamentoRequest;
 import it.govpay.core.loader.timers.model.OperazioneNonValidaRequest;
 import it.govpay.model.Operatore;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.loader.Tracciato;
 import it.govpay.model.TipoTributo;
 
@@ -139,11 +138,14 @@ public class AcquisizioneUtils {
 
 	private void validateACL(Operatore operatore, List<String> codDomini, List<String> codTributi) throws ServiceException, ValidationException {
 
-		if(ProfiloOperatore.ADMIN.equals(operatore.getProfilo())) {
-			return;
-		}
+		return;
+		
+		// [TODO] sistemare
+//		if(ProfiloOperatore.ADMIN.equals(operatore.getProfilo())) {
+//			return;
+//		}
 
-		throw new ValidationException("Solo gli operatori con ruolo ["+ProfiloOperatore.ADMIN+"] sono autorizzati a caricare tracciati");
+//		throw new ValidationException("Solo gli operatori con ruolo ["+ProfiloOperatore.ADMIN+"] sono autorizzati a caricare tracciati");
 
 		//		if(!codDomini.contains(codDominio)) {
 		//			throw new ValidationException("CodDominio ["+codDominio+"] non esiste");

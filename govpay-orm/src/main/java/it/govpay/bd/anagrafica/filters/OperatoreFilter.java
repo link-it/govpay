@@ -30,13 +30,12 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.orm.Operatore;
 
 public class OperatoreFilter extends AbstractFilter {
 	
 	private String principal= null;
-	private ProfiloOperatore profilo = null;
+	private String ruolo = null;
 
 	public enum SortFields {
 	}
@@ -60,9 +59,9 @@ public class OperatoreFilter extends AbstractFilter {
 				newExpression.ilike(Operatore.model().PRINCIPAL, this.principal,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
-			if(this.profilo != null){
+			if(this.ruolo != null){
 				if(addAnd) newExpression.and();
-				newExpression.equals(Operatore.model().PROFILO, this.profilo.getCodifica()); 
+				newExpression.ilike(Operatore.model().PROFILO, this.ruolo,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
@@ -90,13 +89,11 @@ public class OperatoreFilter extends AbstractFilter {
 		this.principal = principal;
 	}
 
-	public ProfiloOperatore getProfilo() {
-		return profilo;
+	public String getRuolo() {
+		return ruolo;
 	}
 
-	public void setProfilo(ProfiloOperatore profilo) {
-		this.profilo = profilo;
+	public void setRuolo(String ruolo) {
+		this.ruolo = ruolo;
 	}
-	
-	
 }

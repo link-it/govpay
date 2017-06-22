@@ -19,9 +19,6 @@
  */
 package it.govpay.web.rs.dars.anagrafica.operatori;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -32,8 +29,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Operatore;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -64,6 +61,11 @@ public class Operatori extends DarsService {
 	public String getPathServizio() {
 		return "/dars/" + this.getNomeServizio();
 	}
+	
+	@Override
+	public Servizio getFunzionalita() {
+		return Servizio.Anagrafica_Utenti;
+	}
 
 	@GET
 	@Path("/user")
@@ -83,22 +85,6 @@ public class Operatori extends DarsService {
 			// Reset ID DB
 			operatore.setId(null);
 			
-			List<String> ruoli = new ArrayList<String>();
-			ProfiloOperatore profilo = operatore.getProfilo();
-			if(profilo.equals(ProfiloOperatore.ADMIN)) {
-				ruoli.add("Amministratore");
-			} else {
-				ruoli.add("Operatore");
-			}
-			
-			// ruoli custom
-			ruoli.add("APP_GOVPAY_VISUALIZZA");
-			ruoli.add("APP_GOVPAY_AFC_OPE");
-			ruoli.add("APP_GOVPAY_SI_AMM");
-			
-//			operatore.setRuoli(ruoli);
-			
-
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(operatore);
 		} catch(WebApplicationException e){

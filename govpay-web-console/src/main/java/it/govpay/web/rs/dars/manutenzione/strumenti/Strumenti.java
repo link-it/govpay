@@ -2,6 +2,7 @@ package it.govpay.web.rs.dars.manutenzione.strumenti;
 
 import javax.ws.rs.Path;
 
+import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
 
@@ -25,5 +26,10 @@ public class Strumenti extends DarsService {
 	@Override
 	public String getPathServizio() {
 		return "/dars/" + this.getNomeServizio();
+	}
+	
+	@Override
+	public Servizio getFunzionalita() {
+		return Servizio.Manutenzione;
 	}
 }

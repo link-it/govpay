@@ -45,6 +45,7 @@ public class RptFilter extends AbstractFilter {
 	private List<String> idDomini;
 	private Boolean conservato;
 	private StatoRpt stato;
+	private List<Long> idRpt= null;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -81,6 +82,15 @@ public class RptFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(RPT.model().COD_DOMINIO, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(this.idRpt != null && !this.idRpt.isEmpty()){
+				if(addAnd)
+					newExpression.and();
+				RPTFieldConverter converter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(RPT.model()));
+				newExpression.in(cf, this.idRpt);
 				addAnd = true;
 			}
 
@@ -164,5 +174,11 @@ public class RptFilter extends AbstractFilter {
 		this.conservato = conservato;
 	}
 
+	public List<Long> getIdRpt() {
+		return idRpt;
+	}
 
+	public void setIdRpt(List<Long> idRpt) {
+		this.idRpt = idRpt;
+	}
 }
