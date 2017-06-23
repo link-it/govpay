@@ -70,4 +70,12 @@ public class TracciatoExt extends Tracciato {
 		return operazioni;
 	}
 
+	public void setEsito(byte[] esito) {
+		this.esito = esito;
+	}
+
+	public void setOperazioni(List<Operazione> operazioni) {
+		this.operazioni = operazioni;
+	}
+	
 }

@@ -20,8 +20,12 @@
 package it.govpay.web.rs.v1;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -35,21 +39,25 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
+import com.sun.istack.Nullable;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
 import it.govpay.core.business.model.LeggiTracciatoDTOResponse;
+import it.govpay.core.business.model.ListaTracciatiDTO;
+import it.govpay.core.business.model.ListaTracciatiDTOResponse;
 import it.govpay.core.business.model.LeggiTracciatoDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+import it.govpay.web.rs.v1.beans.Tracciato;
 import it.govpay.web.rs.v1.beans.TracciatoExt;
 
 @Path("/v1/caricamenti")
-public class CaricamentiMassivi extends BaseRsServiceV1 {
+public class Tracciati extends BaseRsServiceV1 {
 
 	public static final String NOME_SERVIZIO = "caricamenti";
 
@@ -69,17 +77,18 @@ public class CaricamentiMassivi extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			Tracciati tracciati = new Tracciati(bd);
+			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
 			InserisciTracciatoDTO inserisciTracciatoDTO = new InserisciTracciatoDTO();
 			inserisciTracciatoDTO.setNomeTracciato(nome);
 			inserisciTracciatoDTO.setTracciato(incomingCsv.getBytes());
 			inserisciTracciatoDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
 			InserisciTracciatoDTOResponse inserisciTracciatoResponse = tracciati.inserisciTracciato(inserisciTracciatoDTO);
 			
-			String jsonResponse = "{ \"id\": " + inserisciTracciatoResponse.getTracciato().getId()+" }";
-			this.logResponse(uriInfo, httpHeaders, methodName, jsonResponse);
+			Tracciato tracciato = new Tracciato(inserisciTracciatoResponse.getTracciato());
+			this.logResponse(uriInfo, httpHeaders, methodName, tracciato);
 			
-			return Response.status(Status.CREATED).entity(jsonResponse).build();
+			
+			return Response.status(Status.CREATED).entity(tracciato).build();
 			
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
@@ -100,7 +109,7 @@ public class CaricamentiMassivi extends BaseRsServiceV1 {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response caricamentoCSV(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam(value="id") int id) throws IOException {
+	public Response leggiTracciato(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam(value="id") int id) throws IOException {
 		String methodName = "leggiTracciato"; 
 		
 		BasicBD bd = null;
@@ -112,7 +121,7 @@ public class CaricamentiMassivi extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			Tracciati tracciati = new Tracciati(bd);
+			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO();
 			leggiTracciatoDTO.setId(id);
 			leggiTracciatoDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
@@ -121,7 +130,62 @@ public class CaricamentiMassivi extends BaseRsServiceV1 {
 			TracciatoExt tracciato = new TracciatoExt(leggiTracciatoDTOResponse.getTracciato(), bd);
 			this.logResponse(uriInfo, httpHeaders, methodName, tracciato);
 			
-			return Response.status(Status.CREATED).entity(tracciato).build();
+			return Response.status(Status.OK).entity(tracciato).build();
+			
+		} catch (NotAuthorizedException e) {
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			return Response.status(Status.UNAUTHORIZED).build();
+		} catch (NotAuthenticatedException e) {
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			return Response.status(Status.FORBIDDEN).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante la lettura del tracciato", e);
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
+		}
+	}
+	
+	@GET
+	@Path("/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response cercaTracciati(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, 
+			@QueryParam(value="data_inizio") @Nullable Date inizio,
+			@QueryParam(value="data_fine") @Nullable Date fine,
+			@QueryParam(value="stato") @Nullable StatoTracciatoType stato,
+			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
+			@QueryParam(value="limit") @DefaultValue(value="25") int limit) throws IOException {
+		String methodName = "cercaTracciati"; 
+		
+		BasicBD bd = null;
+		GpContext ctx = null; 
+		
+		try{
+			this.logRequest(uriInfo, httpHeaders, methodName, new byte[0]);
+
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			ctx =  GpThreadLocal.get();
+			
+			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
+			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO();
+			listaTracciatiDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
+			listaTracciatiDTO.setInizio(inizio);
+			listaTracciatiDTO.setFine(fine);
+			listaTracciatiDTO.setLimit(limit);
+			listaTracciatiDTO.setOffset(offset);
+			listaTracciatiDTO.setStato(stato);
+			ListaTracciatiDTOResponse listaTracciatiDTOResponse = tracciati.listaTracciati(listaTracciatiDTO);
+			
+			List<Tracciato> listaTracciati = new ArrayList<Tracciato>();
+			for(it.govpay.bd.loader.model.Tracciato t : listaTracciatiDTOResponse.getTracciati()) {
+				listaTracciati.add(new Tracciato(t));
+			}
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, listaTracciati);
+			
+			return Response.status(Status.OK).entity(listaTracciati).build();
 			
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);

@@ -19,6 +19,7 @@
  */
 package it.govpay.core.business;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -51,7 +52,12 @@ public class Tracciati extends BasicBD {
 	}
 
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws NotAuthorizedException, ServiceException {
-		return null;
+		ListaTracciatiDTOResponse inserisciTracciatoDTOResponse = new ListaTracciatiDTOResponse();
+		Tracciato tracciato = new Tracciato();
+		tracciato.setId(1);
+		inserisciTracciatoDTOResponse.setTracciati(new ArrayList<Tracciato>());
+		inserisciTracciatoDTOResponse.getTracciati().add(tracciato);
+		return inserisciTracciatoDTOResponse;
 	}
 	
 	public LeggiTracciatoDTOResponse leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws NotAuthorizedException, ServiceException {

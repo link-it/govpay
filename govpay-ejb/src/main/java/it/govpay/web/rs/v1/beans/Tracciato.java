@@ -48,7 +48,7 @@ public class Tracciato {
 
 	}
 	
-	public Tracciato(it.govpay.model.loader.Tracciato tracciato) throws ServiceException {
+	public Tracciato(it.govpay.bd.loader.model.Tracciato tracciato) throws ServiceException {
 		this.id = tracciato.getId();
 		this.idApplicazione = tracciato.getIdApplicazione();
 		this.dataCaricamento = tracciato.getDataCaricamento();
@@ -64,8 +64,36 @@ public class Tracciato {
 		return (Tracciato) JSONObject.toBean( jsonObject, jsonConfig );
 	}
 
-	public static JsonConfig getJsonConfig() {
-		return jsonConfig;
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public void setIdApplicazione(Long idApplicazione) {
+		this.idApplicazione = idApplicazione;
+	}
+
+	public void setDataCaricamento(Date dataCaricamento) {
+		this.dataCaricamento = dataCaricamento;
+	}
+
+	public void setDataUltimoAggiornamento(Date dataUltimoAggiornamento) {
+		this.dataUltimoAggiornamento = dataUltimoAggiornamento;
+	}
+
+	public void setStato(StatoTracciatoType stato) {
+		this.stato = stato;
+	}
+
+	public void setLineaElaborazione(long lineaElaborazione) {
+		this.lineaElaborazione = lineaElaborazione;
+	}
+
+	public void setDescrizioneStato(String descrizioneStato) {
+		this.descrizioneStato = descrizioneStato;
+	}
+
+	public void setNomeFile(String nomeFile) {
+		this.nomeFile = nomeFile;
 	}
 
 	public long getId() {
