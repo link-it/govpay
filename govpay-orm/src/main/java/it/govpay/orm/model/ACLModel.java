@@ -48,6 +48,7 @@ public class ACLModel extends AbstractModel<ACL> {
 		this.COD_TIPO = new Field("codTipo",java.lang.String.class,"ACL",ACL.class);
 		this.DIRITTI = new Field("diritti",int.class,"ACL",ACL.class);
 		this.COD_SERVIZIO = new Field("codServizio",java.lang.String.class,"ACL",ACL.class);
+		this.ADMIN = new Field("admin",boolean.class,"ACL",ACL.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"ACL",ACL.class));
 		this.ID_TIPO_TRIBUTO = new it.govpay.orm.model.IdTipoTributoModel(new Field("idTipoTributo",it.govpay.orm.IdTipoTributo.class,"ACL",ACL.class));
 	
@@ -64,6 +65,7 @@ public class ACLModel extends AbstractModel<ACL> {
 		this.COD_TIPO = new ComplexField(father,"codTipo",java.lang.String.class,"ACL",ACL.class);
 		this.DIRITTI = new ComplexField(father,"diritti",int.class,"ACL",ACL.class);
 		this.COD_SERVIZIO = new ComplexField(father,"codServizio",java.lang.String.class,"ACL",ACL.class);
+		this.ADMIN = new ComplexField(father,"admin",boolean.class,"ACL",ACL.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"ACL",ACL.class));
 		this.ID_TIPO_TRIBUTO = new it.govpay.orm.model.IdTipoTributoModel(new ComplexField(father,"idTipoTributo",it.govpay.orm.IdTipoTributo.class,"ACL",ACL.class));
 	
@@ -84,6 +86,8 @@ public class ACLModel extends AbstractModel<ACL> {
 	public IField DIRITTI = null;
 	 
 	public IField COD_SERVIZIO = null;
+	 
+	public IField ADMIN = null;
 	 
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 

@@ -42,6 +42,7 @@ import java.io.Serializable;
  * 			&lt;element name="codTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="diritti" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codServizio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="admin" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idTipoTributo" type="{http://www.govpay.it/orm}id-tipo-tributo" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -65,6 +66,7 @@ import java.io.Serializable;
   	"codTipo",
   	"diritti",
   	"codServizio",
+  	"admin",
   	"idDominio",
   	"idTipoTributo"
   }
@@ -146,6 +148,18 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.codServizio = codServizio;
   }
 
+  public boolean isAdmin() {
+    return this.admin;
+  }
+
+  public boolean getAdmin() {
+    return this.admin;
+  }
+
+  public void setAdmin(boolean admin) {
+    this.admin = admin;
+  }
+
   public IdDominio getIdDominio() {
     return this.idDominio;
   }
@@ -204,6 +218,10 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codServizio",required=true,nillable=false)
   protected java.lang.String codServizio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="admin",required=true,nillable=false,defaultValue="false")
+  protected boolean admin = false;
 
   @XmlElement(name="idDominio",required=false,nillable=false)
   protected IdDominio idDominio;
