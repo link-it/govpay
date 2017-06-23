@@ -314,6 +314,7 @@ CREATE TABLE acl
 	cod_tipo VARCHAR(1) NOT NULL,
 	diritti INT,
 	cod_servizio VARCHAR(35) NOT NULL,
+	admin BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT,

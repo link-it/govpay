@@ -470,6 +470,7 @@ CREATE TABLE acl
 	cod_tipo VARCHAR2(1 CHAR) NOT NULL,
 	diritti NUMBER,
 	cod_servizio VARCHAR2(35 CHAR) NOT NULL,
+	admin NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
@@ -487,6 +488,9 @@ CREATE TABLE acl
 	CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
+
+
+ALTER TABLE acl MODIFY admin DEFAULT 0;
 
 CREATE TRIGGER trg_acl
 BEFORE
