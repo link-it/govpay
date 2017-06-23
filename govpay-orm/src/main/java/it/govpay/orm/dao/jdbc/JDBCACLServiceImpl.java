@@ -178,6 +178,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().ADMIN,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_portale","?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
@@ -191,6 +192,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodTipo(),ACL.model().COD_TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getDiritti(),ACL.model().DIRITTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodServizio(),ACL.model().COD_SERVIZIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getAdmin(),ACL.model().ADMIN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class),
@@ -358,6 +360,8 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		lstObjects_acl.add(new JDBCObject(acl.getDiritti(), ACL.model().DIRITTI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getCodServizio(), ACL.model().COD_SERVIZIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().ADMIN,false), "?");
+		lstObjects_acl.add(new JDBCObject(acl.getAdmin(), ACL.model().ADMIN.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}

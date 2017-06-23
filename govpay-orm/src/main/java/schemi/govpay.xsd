@@ -673,6 +673,7 @@
 			<xsd:element name="codTipo" type="String1"/>
 			<xsd:element minOccurs="0" name="diritti" type="xsd:int"/>
 			<xsd:element name="codServizio" type="String35"/>
+			<xsd:element default="false" name="admin" type="xsd:boolean"/>
 			<xsd:element minOccurs="0" name="idDominio" type="id-dominio">
 				
 			</xsd:element>

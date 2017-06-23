@@ -423,6 +423,7 @@
     <value name="codTipo" field="codTipo" usage="required"/>
     <value name="diritti" field="diritti" usage="optional"/>
     <value name="codServizio" field="codServizio" usage="required"/>
+    <value name="admin" field="admin" default="false" usage="required"/>
     <structure name="idDominio" field="idDominio" usage="optional" map-as="_IdDominio_Type"/>
     <structure name="idTipoTributo" field="idTipoTributo" usage="optional" map-as="_IdTipoTributo_Type"/>
   </mapping>
