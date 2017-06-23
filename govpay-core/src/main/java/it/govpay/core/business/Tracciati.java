@@ -19,18 +19,21 @@
  */
 package it.govpay.core.business;
 
+import java.util.Date;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
-import it.govpay.core.business.model.LeggiTracciatiDTO;
-import it.govpay.core.business.model.LeggiTracciatiDTOResponse;
+import it.govpay.core.business.model.LeggiTracciatoDTO;
+import it.govpay.core.business.model.LeggiTracciatoDTOResponse;
 import it.govpay.core.business.model.ListaTracciatiDTO;
 import it.govpay.core.business.model.ListaTracciatiDTOResponse;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.model.loader.Tracciato;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 
 
 public class Tracciati extends BasicBD {
@@ -47,12 +50,27 @@ public class Tracciati extends BasicBD {
 		return inserisciTracciatoDTOResponse;
 	}
 
-	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaIncassoDTO) throws NotAuthorizedException, ServiceException {
+	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws NotAuthorizedException, ServiceException {
 		return null;
 	}
 	
-	public LeggiTracciatiDTOResponse leggiTracciato(LeggiTracciatiDTO leggiIncassoDTO) throws NotAuthorizedException, ServiceException {
-		return null;
+	public LeggiTracciatoDTOResponse leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws NotAuthorizedException, ServiceException {
+		LeggiTracciatoDTOResponse leggiTracciatoDTOResponse = new LeggiTracciatoDTOResponse();
+		Tracciato tracciato = new Tracciato();
+		tracciato.setId(1);
+		tracciato.setDataCaricamento(new Date());
+		tracciato.setDataUltimoAggiornamento(new Date());
+		tracciato.setIdApplicazione(leggiTracciatoDTO.getApplicazione().getId());
+		tracciato.setLineaElaborazione(2);
+		tracciato.setStato(StatoTracciatoType.CARICAMENTO_OK);
+		tracciato.setNomeFile("testfile");
+		tracciato.setNumLineeTotali(2);
+		tracciato.setNumOperazioniKo(0);
+		tracciato.setNumOperazioniOk(2);
+		tracciato.setRawDataRichiesta("aaaaa".getBytes());
+		tracciato.setRawDataRisposta("bbbbb".getBytes());
+		leggiTracciatoDTOResponse.setTracciato(tracciato);
+		return leggiTracciatoDTOResponse;
 	}
 }
 

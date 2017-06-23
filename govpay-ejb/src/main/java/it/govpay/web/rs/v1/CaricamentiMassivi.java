@@ -22,8 +22,10 @@ package it.govpay.web.rs.v1;
 import java.io.IOException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -38,10 +40,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
+import it.govpay.core.business.model.LeggiTracciatoDTOResponse;
+import it.govpay.core.business.model.LeggiTracciatoDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.web.rs.v1.beans.TracciatoExt;
 
 @Path("/v1/caricamenti")
 public class CaricamentiMassivi extends BaseRsServiceV1 {
@@ -52,8 +57,8 @@ public class CaricamentiMassivi extends BaseRsServiceV1 {
 	@Path("/")
 	@Consumes("text/plain")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response caricamentoCSV(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value="nome") String nome, String incomingCsv) throws IOException {
-		String methodName = "caricamentoCSV"; 
+	public Response caricamentoTracciato(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value="nome") String nome, String incomingCsv) throws IOException {
+		String methodName = "caricamentoTracciato"; 
 		
 		BasicBD bd = null;
 		GpContext ctx = null; 
@@ -84,6 +89,48 @@ public class CaricamentiMassivi extends BaseRsServiceV1 {
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il caricamento del tracciato", e);
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
+		}
+	}
+	
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response caricamentoCSV(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam(value="id") int id) throws IOException {
+		String methodName = "leggiTracciato"; 
+		
+		BasicBD bd = null;
+		GpContext ctx = null; 
+		
+		try{
+			this.logRequest(uriInfo, httpHeaders, methodName, new byte[0]);
+
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			ctx =  GpThreadLocal.get();
+			
+			Tracciati tracciati = new Tracciati(bd);
+			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO();
+			leggiTracciatoDTO.setId(id);
+			leggiTracciatoDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
+			LeggiTracciatoDTOResponse leggiTracciatoDTOResponse = tracciati.leggiTracciato(leggiTracciatoDTO);
+			
+			TracciatoExt tracciato = new TracciatoExt(leggiTracciatoDTOResponse.getTracciato(), bd);
+			this.logResponse(uriInfo, httpHeaders, methodName, tracciato);
+			
+			return Response.status(Status.CREATED).entity(tracciato).build();
+			
+		} catch (NotAuthorizedException e) {
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			return Response.status(Status.UNAUTHORIZED).build();
+		} catch (NotAuthenticatedException e) {
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			return Response.status(Status.FORBIDDEN).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante la lettura del tracciato", e);
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
