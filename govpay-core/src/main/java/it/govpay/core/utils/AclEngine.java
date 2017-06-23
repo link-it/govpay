@@ -174,4 +174,17 @@ public class AclEngine {
 		}
 		return domini;
 	}
+	
+	public static boolean isAdminDirittiOperatore(List<Ruolo> ruoli, Servizio servizio) {
+		boolean admin = false;
+		for(Ruolo ruolo : ruoli) {
+			for(Acl acl : ruolo.getAcls()) {
+				if(acl.getServizio().equals(servizio)) {
+					if(acl.isAdmin())
+						return true;
+				}
+			}
+		}
+		return admin;
+	}
 }

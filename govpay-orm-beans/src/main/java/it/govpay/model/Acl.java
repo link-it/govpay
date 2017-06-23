@@ -91,6 +91,7 @@ public class Acl extends BasicModel {
 	private Long idDominio;
 	private Long idTributo;
 	private int diritti;
+	private boolean admin;
 	
 	public Tipo getTipo() {
 		return tipo;
@@ -133,5 +134,11 @@ public class Acl extends BasicModel {
 	}
 	public void setDiritti(int diritti) {
 		this.diritti = diritti;
+	}
+	public boolean isAdmin() {
+		return admin;
+	}
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 }

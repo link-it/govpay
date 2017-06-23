@@ -139,18 +139,11 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			}
 		}
 
-		// [TODO] momentaneamente vede tutti i domini ma aggiungiamo solo il vincolo sui suoi tracciati.
-		// filtro per l'operatore non admin
-		//		if(!isAdmin){
-		//			filter.setIdOperatore(operatore.getId()); 
-		//		}
-
-		//		if(!setDomini.contains(-1L)){
-		//		idDomini.addAll(setDomini);
-		//	}
-		//	
-		//	if(!idDomini.isEmpty())
-		//		filter.setIdDomini(idDomini);
+		// l'utente che non e' admin per il servizio vede solo i suoi tracciati
+		if(!this.darsService.isOperatoreAdminServizio(bd, this.funzionalita)){
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);
+			filter.setIdOperatore(operatore.getId());
+		}
 
 		return eseguiRicerca;
 	}

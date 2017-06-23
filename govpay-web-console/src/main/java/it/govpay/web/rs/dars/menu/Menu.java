@@ -197,24 +197,24 @@ public class Menu extends BaseRsService {
 
 				vociMenuMonitoraggio.add(voceMenuIncassi);
 			}
-
+			
 			if(this.checkDirittiServizioOperatore(bd, Servizio.Giornale_Eventi)){
 				Eventi eventiDars = new Eventi();
 				URI eventiURI = new URI(eventiDars.getPathServizio());
 				VoceMenu voceMenuEventi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".titolo"),	eventiURI, VoceMenu.VOCE_MONITORAGGIO);
 				vociMenuMonitoraggio.add(voceMenuEventi);
-
-				if(vociMenuMonitoraggio.size() > 0){	
-					monitoraggio.getVociMenu().addAll(vociMenuMonitoraggio);
-					menu.getSezioni().add(monitoraggio);
-				}
+			}
+			
+			if(vociMenuMonitoraggio.size() > 0){	
+				monitoraggio.getVociMenu().addAll(vociMenuMonitoraggio);
+				menu.getSezioni().add(monitoraggio);
 			}
 
 			// sezione caricamenti
 			SezioneMenu caricamenti = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".operazioniMassive"));
 			List<VoceMenu> vociMenuCaricamenti = new ArrayList<VoceMenu>();
 
-			if(this.checkDirittiServizioOperatore(bd, Servizio.Gestione_Pagamenti)){
+			if(this.isServizioAbilitatoScrittura(bd, Servizio.Gestione_Pagamenti) || this.isOperatoreAdminServizio(bd, Servizio.Gestione_Pagamenti)){ 
 				Tracciati caricamentoTracciatiDars = new Tracciati();
 				URI caricamentoTracciatiURI = new URI(caricamentoTracciatiDars.getPathServizio());
 				VoceMenu voceMenuCaricamentoTracciati = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(caricamentoTracciatiDars.getNomeServizio() + ".titolo"),	caricamentoTracciatiURI, VoceMenu.VOCE_OPERAZIONIMASSIVE);

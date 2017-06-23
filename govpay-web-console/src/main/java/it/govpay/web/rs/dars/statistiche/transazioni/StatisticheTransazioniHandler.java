@@ -416,6 +416,10 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 			String idPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.id");
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.id");
+			String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".colonne.id");
+			String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".avanzamento.id");
+			String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoIntervallo.id");
 
 			List<Voce<Long>> psp  = new ArrayList<Voce<Long>>();
 			// idDominio
@@ -431,6 +435,13 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 		}
 	}
+
+	@Override
+	public InfoForm getInfoGrafico(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca,
+			Map<String, String> parameters) throws ConsoleException {
+		return null;
+	}
+	
 
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }

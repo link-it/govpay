@@ -103,8 +103,14 @@ public abstract class BaseRsService {
 	}
 	
 	public void checkDirittiServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException,WebApplicationException{
-		if(!this.checkDirittiServizioOperatore(bd, servizio))
-			throw new WebApplicationException(this.getUnauthorizedResponse());
+		if(!this.isOperatoreAdminServizio(bd, servizio))
+			if(!this.checkDirittiServizioOperatore(bd, servizio))
+				throw new WebApplicationException(this.getUnauthorizedResponse());
+	}
+	
+	public boolean isOperatoreAdminServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
+		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
+		return AclEngine.isAdminDirittiOperatore(ruoliUtente, servizio);
 	}
 	
 	public boolean checkDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
