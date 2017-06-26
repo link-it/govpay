@@ -20,11 +20,9 @@
 package it.govpay.bd.model.converter;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.model.Acl;
 import it.govpay.model.Operatore;
 
 public class OperatoreConverter {

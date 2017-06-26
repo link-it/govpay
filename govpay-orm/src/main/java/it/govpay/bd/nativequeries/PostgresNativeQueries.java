@@ -193,5 +193,49 @@ public class PostgresNativeQueries extends NativeQueries {
 		
 		return valori.toArray(new Object[]{});
 	}
+	
+	
+	@Override
+	public String getStatisticheTransazioniPerPspQuery(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro) {
+		
+		String sql = "select psp.ragione_sociale, count(*) as totali"
+				+ " from rpt join canali on canali.id = rpt.id_canale"
+				+ " join psp on psp.id = canali.id_psp "
+				+ " where date_trunc(?, data_msg_richiesta) = date_trunc(?, ?) "
+				+ " group by psp.ragione_sociale order by totali desc ";
+		
+		if(filtro.getCodDominio() != null) {
+			sql += " AND cod_dominio = ? ";
+		}
+		
+		sql += " group by psp.ragione_sociale order by totali asc";
+		
+		return sql;
+	}
+	
+	@Override
+	public Object[] getStatisticheTransazioniPerPspValues(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro) {
+		
+		String date_trunc = "";
+		switch (tipoIntervallo) {
+		case MENSILE:
+			date_trunc = "month";
+			break;
+		case GIORNALIERO:
+			date_trunc = "day";
+			break;
+		case ORARIO:
+			date_trunc = "hour";
+			break;
+		}	
+		
+		List<Object> valori = new ArrayList<Object>();
+		valori.add(date_trunc);
+		valori.add(date_trunc);
+		valori.add(data);
+		if(filtro.getCodDominio() != null) valori.add(filtro.getCodDominio());
+		
+		return valori.toArray(new Object[]{});
+	}
 
 }
