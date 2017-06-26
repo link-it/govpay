@@ -93,7 +93,7 @@ public class TransazioniBD extends BasicBD {
 			for(int i=0; i<distribuzioniTmp.size(); i++) {
 				DistribuzionePsp distribuzione = distribuzioniTmp.get(i);
 				
-				double percentuale = distribuzione.getTransazioni() / totale;
+				double percentuale = ((double) distribuzione.getTransazioni()) / totale;
 				if(percentuale >= filtro.getSoglia()) {
 					distribuzione.setPercentuale(percentuale);
 					distribuzioniFinal.add(distribuzione);

@@ -164,7 +164,6 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 
 	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, TransazioniFilter filter) throws ConsoleException, Exception {
 		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
-		List<Long> idDomini = new ArrayList<Long>();
 		boolean eseguiRicerca = !setDomini.isEmpty(); // isAdmin;
 
 		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
@@ -176,10 +175,9 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 			long idDom = -1l;
 			try{
 				idDom = Long.parseLong(idDominio);
-				filter.setCodDominio(AnagraficaManager.getDominio(bd, idDom).getCodDominio());
 			}catch(Exception e){ idDom = -1l;	}
 			if(idDom > 0){
-				idDomini.add(idDom);
+				filter.setCodDominio(AnagraficaManager.getDominio(bd, idDom).getCodDominio());
 				//				filter.setIdDomini(idDomini);
 			}
 		}
@@ -224,7 +222,8 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 		filter.setTipoIntervallo(tipoIntervallo);
 		
 		// soglia minima percentuale
-		filter.setSoglia(ConsoleProperties.getInstance().getSogliaPercentualeMinimaGraficoTorta());
+		double soglia = ConsoleProperties.getInstance().getSogliaPercentualeMinimaGraficoTorta() / 100;
+		filter.setSoglia(soglia);
 		
 
 		return eseguiRicerca ;

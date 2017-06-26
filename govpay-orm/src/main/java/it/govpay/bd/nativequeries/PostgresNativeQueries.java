@@ -201,14 +201,14 @@ public class PostgresNativeQueries extends NativeQueries {
 		String sql = "select psp.ragione_sociale, count(*) as totali"
 				+ " from rpt join canali on canali.id = rpt.id_canale"
 				+ " join psp on psp.id = canali.id_psp "
-				+ " where date_trunc(?, data_msg_richiesta) = date_trunc(?, ?) "
-				+ " group by psp.ragione_sociale order by totali desc ";
+				+ " where date_trunc(?, data_msg_richiesta) = date_trunc(?, ?::timestamp) ";
+//				+ " group by psp.ragione_sociale order by totali desc ";
 		
 		if(filtro.getCodDominio() != null) {
 			sql += " AND cod_dominio = ? ";
 		}
 		
-		sql += " group by psp.ragione_sociale order by totali asc";
+		sql += " group by psp.ragione_sociale order by totali desc";
 		
 		return sql;
 	}

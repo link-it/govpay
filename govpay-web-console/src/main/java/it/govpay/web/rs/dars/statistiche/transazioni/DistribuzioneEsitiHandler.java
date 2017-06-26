@@ -188,8 +188,6 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 
 	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, TransazioniFilter filter) throws ConsoleException, Exception {
 		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
-		List<Long> idDomini = new ArrayList<Long>();
-		List<Long> idPsps = new ArrayList<Long>();
 		boolean eseguiRicerca = !setDomini.isEmpty(); // isAdmin;
 
 		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
@@ -197,15 +195,12 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 
 
 		if(StringUtils.isNotEmpty(idDominio)){
-
 			long idDom = -1l;
 			try{
 				idDom = Long.parseLong(idDominio);
-				filter.setCodDominio(AnagraficaManager.getDominio(bd, idDom).getCodDominio());
 			}catch(Exception e){ idDom = -1l;	}
 			if(idDom > 0){
-				idDomini.add(idDom);
-				//				filter.setIdDomini(idDomini);
+				filter.setCodDominio(AnagraficaManager.getDominio(bd, idDom).getCodDominio());
 			}
 		}
 
@@ -215,11 +210,9 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 			long idPspL = -1l;
 			try{
 				idPspL = Long.parseLong(idPsp);
-				filter.setCodPsp(AnagraficaManager.getPsp(bd, idPspL).getCodPsp());
 			}catch(Exception e){ idPspL = -1l;	}
 			if(idPspL > 0){
-				idPsps.add(idPspL);
-				//	filter.setIdPsp(idPsps);
+				filter.setCodPsp(AnagraficaManager.getPsp(bd, idPspL).getCodPsp());
 			}
 		}
 		
