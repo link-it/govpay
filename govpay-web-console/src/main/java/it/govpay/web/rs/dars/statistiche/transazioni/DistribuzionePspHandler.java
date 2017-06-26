@@ -42,18 +42,14 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.PspBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.anagrafica.filters.PspFilter;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.reportistica.statistiche.TransazioniBD;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.model.reportistica.statistiche.DistribuzionePsp;
 import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
-import it.govpay.web.rs.dars.anagrafica.psp.PspHandler;
 import it.govpay.web.rs.dars.base.BaseDarsService;
 import it.govpay.web.rs.dars.base.StatisticaDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -72,6 +68,7 @@ import it.govpay.web.rs.dars.model.statistiche.Grafico;
 import it.govpay.web.rs.dars.model.statistiche.Grafico.TipoGrafico;
 import it.govpay.web.rs.dars.model.statistiche.PaginaGrafico;
 import it.govpay.web.rs.dars.model.statistiche.Serie;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 public class DistribuzionePspHandler extends StatisticaDarsHandler<DistribuzionePsp> implements IStatisticaDarsHandler<DistribuzionePsp>{
@@ -168,7 +165,6 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, TransazioniFilter filter) throws ConsoleException, Exception {
 		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		List<Long> idDomini = new ArrayList<Long>();
-		List<Long> idPsps = new ArrayList<Long>();
 		boolean eseguiRicerca = !setDomini.isEmpty(); // isAdmin;
 
 		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
@@ -187,20 +183,49 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 				//				filter.setIdDomini(idDomini);
 			}
 		}
+		
+		Date data = new Date();
+		String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
+		String dataS = this.getParameter(uriInfo, dataId, String.class);
+		if(StringUtils.isNotEmpty(dataS)){
+			data = this.convertJsonStringToDate(dataS);
+		}
+		filter.setData(data);
 
-		String idPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.id");
-		String idPsp = this.getParameter(uriInfo, idPspId, String.class);
-		if(StringUtils.isNotEmpty(idPsp)){
-			long idPspL = -1l;
+		String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.colonne.id");
+		String colonneS = this.getParameter(uriInfo, colonneId, String.class);
+		int colonne = 0;
+		if(StringUtils.isNotEmpty(colonneS)){
 			try{
-				idPspL = Long.parseLong(idPsp);
-				filter.setCodPsp(AnagraficaManager.getPsp(bd, idPspL).getCodPsp());
-			}catch(Exception e){ idPspL = -1l;	}
-			if(idPspL > 0){
-				idPsps.add(idPspL);
-				//	filter.setIdPsp(idPsps);
+				colonne = Integer.parseInt(colonneS);
+			}catch(Exception e){
+
 			}
 		}
+		filter.setLimit(colonne);
+		
+//		String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.avanzamento.id");
+//		String avanzamentoS = this.getParameter(uriInfo, avanzamentoId, String.class);
+//		int avanzamento = 0;
+//		if(StringUtils.isNotEmpty(avanzamentoS)){
+//			try{
+//				avanzamento = Integer.parseInt(avanzamentoS);
+//			}catch(Exception e){
+//
+//			}
+//		}
+		
+		String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
+		String tipoIntervalloS = this.getParameter(uriInfo, tipoIntervalloId, String.class);
+		TipoIntervallo tipoIntervallo= TipoIntervallo.GIORNALIERO;
+		if(StringUtils.isNotEmpty(tipoIntervalloS)){
+			tipoIntervallo = TipoIntervallo.valueOf(tipoIntervalloS);
+		}
+		filter.setTipoIntervallo(tipoIntervallo);
+		
+		// soglia minima percentuale
+		filter.setSoglia(ConsoleProperties.getInstance().getSogliaPercentualeMinimaGraficoTorta());
+		
 
 		return eseguiRicerca ;
 	}
@@ -246,7 +271,6 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		if(visualizzaRicerca) {
-			String idPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.id");
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
 			if(this.infoRicercaMap == null){
@@ -292,42 +316,6 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 			}catch(Exception e){
 				throw new ConsoleException(e);
 			}
-
-			try{
-				// idDominio
-				List<Voce<Long>> psp  = new ArrayList<Voce<Long>>();
-
-				PspBD pspBD = new PspBD(bd);
-				PspFilter filter;
-				try {
-					filter = pspBD.newFilter();
-					psp.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.Psp.model().RAGIONE_SOCIALE);
-					fsw.setSortOrder(SortOrder.ASC);
-					filter.getFilterSortList().add(fsw);
-					List<Psp> findAll = pspBD.findAll(filter );
-
-					it.govpay.web.rs.dars.anagrafica.psp.Psp pspDars = new it.govpay.web.rs.dars.anagrafica.psp.Psp();
-					PspHandler pspHandler = (PspHandler) pspDars.getDarsHandler();
-
-					if(findAll != null && findAll.size() > 0){
-						for (Psp _psp : findAll) {
-							psp.add(new Voce<Long>(pspHandler.getTitolo(_psp,bd), _psp.getId()));  
-						}
-					}
-				} catch (ServiceException e) {
-					throw new ConsoleException(e);
-				}
-				SelectList<Long> idPsp = (SelectList<Long>) this.infoRicercaMap.get(idPspId);
-				idPsp.setDefaultValue(-1L);
-				idPsp.setValues(psp); 
-				sezioneRoot.addField(idPsp);
-
-			}catch(Exception e){
-				throw new ConsoleException(e);
-			}
-
 		}
 		return infoRicerca;
 	}
@@ -336,18 +324,11 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 		if(this.infoRicercaMap == null){
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String idPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.id");
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
 			String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.colonne.id");
 			String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.avanzamento.id");
 			String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
-
-			List<Voce<Long>> psp  = new ArrayList<Voce<Long>>();
-			// idDominio
-			String idPspLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.label");
-			SelectList<Long> idPsp = new SelectList<Long>(idPspId, idPspLabel, null, false, false, true, psp);
-			this.infoRicercaMap.put(idPspId, idPsp);
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			// idDominio

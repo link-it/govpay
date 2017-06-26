@@ -44,6 +44,8 @@ public class ConsoleProperties {
 	
 	private Long dimensioneMassimaFileTracciato =0L;
 	
+	private double sogliaPercentualeMinimaGraficoTorta ;
+	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
 			init();
@@ -151,7 +153,10 @@ public class ConsoleProperties {
 			
 			String dim = ConsoleProperties.getProperty("it.govpay.console.caricamentoTracciati.dimensioneMassimaFile", props, false);
 			this.dimensioneMassimaFileTracciato = num != null ? Long.parseLong(dim) : 10485760;
-						
+			
+			String sogliaPercentualeMinimaGraficoTortaS = ConsoleProperties.getProperty("it.govpay.console.statistiche.percentualeMinimaGraficoTorta", props, false);
+			this.sogliaPercentualeMinimaGraficoTorta = num != null ? Double.parseDouble(sogliaPercentualeMinimaGraficoTortaS) : 1D;			
+			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
@@ -273,4 +278,9 @@ public class ConsoleProperties {
 	public Long getDimensioneMassimaFileTracciato() {
 		return dimensioneMassimaFileTracciato;
 	}
+
+	public double getSogliaPercentualeMinimaGraficoTorta() {
+		return sogliaPercentualeMinimaGraficoTorta;
+	}
+	
 }

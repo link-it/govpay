@@ -44,7 +44,7 @@ public class DistribuzionePsp extends StatisticaDarsService {
 
 	@Override
 	public IStatisticaDarsHandler<?> getDarsHandler() {
-		return new DistribuzioneEsitiHandler(this.log, this);
+		return new DistribuzionePspHandler(this.log, this);
 	}
 	
 	@Override
