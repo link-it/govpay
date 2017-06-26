@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -79,8 +80,8 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 	public Elenco getElenco(UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -236,54 +237,61 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		try{
-			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
-			String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
-			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+				try{
+					String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+					String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+					String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+					String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+					String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+					String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 
-			if(this.infoCreazioneMap == null){
-				this.initInfoCreazione(uriInfo, bd);
+					if(this.infoCreazioneMap == null){
+						this.initInfoCreazione(uriInfo, bd);
+
+					}
+
+					Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+
+					InputNumber idITributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
+					idITributo.setDefaultValue(null);
+					sezioneRoot.addField(idITributo);
+
+					InputText codTributo = (InputText) this.infoCreazioneMap.get(codTributoId);
+					codTributo.setDefaultValue(null);
+					codTributo.setEditable(true);
+					sezioneRoot.addField(codTributo);
+
+					InputText descrizione = (InputText) this.infoCreazioneMap.get(descrizioneId);
+					descrizione.setDefaultValue(null);
+					descrizione.setEditable(true);
+					sezioneRoot.addField(descrizione);
+
+					SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId);
+					tipoContabilita.setDefaultValue(null);
+					sezioneRoot.addField(tipoContabilita);
+
+					InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId);
+					codContabilita.setDefaultValue(null);
+					sezioneRoot.addField(codContabilita);
+
+					InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId);
+					codificaTributoInIuv.setDefaultValue(null);
+					sezioneRoot.addField(codificaTributoInIuv);
+
+				}catch (Exception e) {
+					throw new ConsoleException(e);
+				}
 
 			}
-
-			Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-
-			InputNumber idITributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
-			idITributo.setDefaultValue(null);
-			sezioneRoot.addField(idITributo);
-
-			InputText codTributo = (InputText) this.infoCreazioneMap.get(codTributoId);
-			codTributo.setDefaultValue(null);
-			codTributo.setEditable(true);
-			sezioneRoot.addField(codTributo);
-
-			InputText descrizione = (InputText) this.infoCreazioneMap.get(descrizioneId);
-			descrizione.setDefaultValue(null);
-			descrizione.setEditable(true);
-			sezioneRoot.addField(descrizione);
-
-			SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId);
-			tipoContabilita.setDefaultValue(null);
-			sezioneRoot.addField(tipoContabilita);
-
-			InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId);
-			codContabilita.setDefaultValue(null);
-			sezioneRoot.addField(codContabilita);
-
-			InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId);
-			codificaTributoInIuv.setDefaultValue(null);
-			sezioneRoot.addField(codificaTributoInIuv);
-
-		}catch (Exception e) {
+		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-
 		return infoCreazione;
 	}
 
@@ -402,10 +410,10 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, TipoTributo entry) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
-	
+
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, TipoTributo entry)	throws ConsoleException {	return null;	}
 
@@ -413,8 +421,8 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
@@ -436,19 +444,19 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -456,8 +464,8 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			// recupero oggetto
 			TipiTributoBD tributiBD = new TipiTributoBD(bd);
@@ -517,8 +525,8 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			TipoTributo entry = this.creaEntry(is, uriInfo, bd);
 
@@ -555,8 +563,8 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 		TipoTributo entry = null;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			JsonConfig jsonConfig = new JsonConfig();
 
@@ -617,8 +625,8 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			TipoTributo entry = this.creaEntry(is, uriInfo, bd);
 

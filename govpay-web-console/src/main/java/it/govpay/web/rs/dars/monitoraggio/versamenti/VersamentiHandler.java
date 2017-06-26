@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -45,7 +46,6 @@ import org.openspcoop2.utils.csv.Printer;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
@@ -62,30 +62,26 @@ import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.core.utils.CSVUtils;
-import it.govpay.model.Acl;
-import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Iuv;
-import it.govpay.model.Operatore;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.comparator.EstrattoContoComparator;
-import it.govpay.web.rs.dars.base.DarsHandler;
-import it.govpay.web.rs.dars.base.DarsService;
-import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
@@ -114,8 +110,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -132,7 +128,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, versamentiBD, operatore, simpleSearch, filter);
+			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, versamentiBD, simpleSearch, filter);
 
 			long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
 
@@ -167,13 +163,10 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 		}
 	}
 
-	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore , boolean simpleSearch, VersamentoFilter filter) throws ConsoleException, Exception {
-		ProfiloOperatore profilo = operatore.getProfilo();
-		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-		AclBD aclBD = new AclBD(bd);
-		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, boolean simpleSearch, VersamentoFilter filter) throws ConsoleException, Exception {
+		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<Long> idDomini = new ArrayList<Long>();
-		boolean eseguiRicerca = true; // isAdmin;
 		// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
 		boolean iuvNonEsistente = false;
 
@@ -239,38 +232,19 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			}
 		}
 
-		if(!isAdmin && idDomini.isEmpty()){
-			boolean vediTuttiDomini = false;
-
-			for(Acl acl: aclOperatore) {
-				if(Tipo.DOMINIO.equals(acl.getTipo())) {
-					if(acl.getIdDominio() == null) {
-						vediTuttiDomini = true;
-						break;
-					} else {
-						idDomini.add(acl.getIdDominio());
-					}
-				}
-			}
-			if(!vediTuttiDomini) {
-				if(idDomini.isEmpty()) {
-					eseguiRicerca = false;
-				} else {
-					filter.setIdDomini(idDomini);
-				}
-			}
+		if(eseguiRicerca &&!setDomini.contains(-1L)){
+			List<Long> lstCodDomini = new ArrayList<Long>();
+			lstCodDomini.addAll(setDomini);
+			idDomini.addAll(setDomini);
+			filter.setIdDomini(idDomini);
 		}
-
 		return eseguiRicerca && !iuvNonEsistente;
 	}
 
-	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd, Operatore operatore , boolean simpleSearch, VersamentoFilter filter) throws ConsoleException, Exception {
-		ProfiloOperatore profilo = operatore.getProfilo();
-		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-		AclBD aclBD = new AclBD(bd);
-		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd , boolean simpleSearch, VersamentoFilter filter) throws ConsoleException, Exception {
+		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<Long> idDomini = new ArrayList<Long>();
-		boolean eseguiRicerca = true; // isAdmin;
 		// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
 		boolean iuvNonEsistente = false;
 
@@ -336,26 +310,11 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			}
 		}
 
-		if(!isAdmin && idDomini.isEmpty()){
-			boolean vediTuttiDomini = false;
-
-			for(Acl acl: aclOperatore) {
-				if(Tipo.DOMINIO.equals(acl.getTipo())) {
-					if(acl.getIdDominio() == null) {
-						vediTuttiDomini = true;
-						break;
-					} else {
-						idDomini.add(acl.getIdDominio());
-					}
-				}
-			}
-			if(!vediTuttiDomini) {
-				if(idDomini.isEmpty()) {
-					eseguiRicerca = false;
-				} else {
-					filter.setIdDomini(idDomini);
-				}
-			}
+		if(eseguiRicerca &&!setDomini.contains(-1L)){
+			List<Long> lstCodDomini = new ArrayList<Long>();
+			lstCodDomini.addAll(setDomini);
+			idDomini.addAll(setDomini);
+			filter.setIdDomini(idDomini);
 		}
 
 		return eseguiRicerca && !iuvNonEsistente;
@@ -386,9 +345,9 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 			try{
 
-				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-				ProfiloOperatore profilo = operatore.getProfilo();
-				boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+				boolean eseguiRicerca = !setDomini.isEmpty();
+				List<Long> idDomini = new ArrayList<Long>();
 
 				// idDominio
 				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -397,37 +356,12 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 				DominioFilter filter;
 				try {
 					filter = dominiBD.newFilter();
-					boolean eseguiRicerca = true;
-					if(isAdmin){
+					if(eseguiRicerca &&!setDomini.contains(-1L)){
+						List<Long> lstCodDomini = new ArrayList<Long>();
+						lstCodDomini.addAll(setDomini);
+						idDomini.addAll(setDomini);
+						filter.setIdDomini(idDomini);
 
-					} else {
-						AclBD aclBD = new AclBD(bd);
-						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-						boolean vediTuttiDomini = false;
-						List<Long> idDomini = new ArrayList<Long>();
-						for(Acl acl: aclOperatore) {
-							if(Tipo.DOMINIO.equals(acl.getTipo())) {
-								if(acl.getIdDominio() == null) {
-									vediTuttiDomini = true;
-									break;
-								} else {
-									idDomini.add(acl.getIdDominio());
-								}
-							}
-						}
-						if(!vediTuttiDomini) {
-							if(idDomini.isEmpty()) {
-								eseguiRicerca = false;
-							} else {
-								filter.setIdDomini(idDomini);
-							}
-						}
-					}
-
-
-
-					if(eseguiRicerca) {
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();
 						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
@@ -526,16 +460,16 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
@@ -543,53 +477,30 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
-			boolean eseguiRicerca = true; //isAdmin;
-			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
-			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
-			if(!isAdmin){
-				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
-				VersamentiBD versamentiBD = new VersamentiBD(bd);
+			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			boolean eseguiRicerca = !setDomini.isEmpty();
+			List<Long> idDomini = new ArrayList<Long>();
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			if(eseguiRicerca && !setDomini.contains(-1L)){
 				VersamentoFilter filter = versamentiBD.newFilter();
 
+				List<Long> lstCodDomini = new ArrayList<Long>();
+				lstCodDomini.addAll(setDomini);
+				idDomini.addAll(setDomini);
+				filter.setIdDomini(idDomini);
 				List<Long> idVersamentoL = new ArrayList<Long>();
 				idVersamentoL.add(id);
 				filter.setIdVersamento(idVersamentoL);
-
-				List<Long> idDomini = new ArrayList<Long>();
-				boolean vediTuttiDomini = false;
-
-				AclBD aclBD = new AclBD(bd);
-				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(idDomini);
-					}
-				}
 
 				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
 				eseguiRicerca = eseguiRicerca && count > 0;
 			}
 
 			// recupero oggetto
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = eseguiRicerca ? versamentiBD.getVersamento(id) : null;
 
 			InfoForm infoModifica = null;
@@ -691,7 +602,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 								if(ibanAccredito != null)
 									sezioneSingoloVersamento.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(svDars.getNomeServizio() + ".ibanAccredito.label"),
 											ibanAccredito.getCodIban());
-								
+
 								StringBuilder sb = new StringBuilder();
 
 								TipoContabilta tipoContabilita = entry.getTipoContabilita(bd) != null ? entry.getTipoContabilita(bd) : TipoContabilta.CAPITOLO;
@@ -713,7 +624,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 								}
 
 								String codContabilitaValue = StringUtils.isNotEmpty(entry.getCodContabilita(bd)) ? entry.getCodContabilita(bd) : "--";
-								
+
 								sb.append(tipoContabilitaValue).append("/").append(codContabilitaValue);
 
 								sezioneSingoloVersamento.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(svDars.getNomeServizio() + ".contabilita.label"),
@@ -916,7 +827,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 		String fileName = "Export.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -931,7 +843,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			if(idsToExport != null && idsToExport.size() > 0) 
 				filter.setIdVersamento(idsToExport);
 
-			boolean eseguiRicerca = this.popolaFiltroRicerca(rawValues, bd, operatore, simpleSearch, filter);
+			boolean eseguiRicerca = this.popolaFiltroRicerca(rawValues, bd, simpleSearch, filter);
 
 			if(!eseguiRicerca){
 				List<String> msg = new ArrayList<String>();
@@ -1067,44 +979,24 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 		try{
 			int numeroZipEntries = 0;
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
-			boolean eseguiRicerca = true;
+			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			boolean eseguiRicerca = !setDomini.isEmpty();
+
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
 			it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
 			VersamentoFilter filter = versamentiBD.newFilter();
 
-
 			List<Long> ids = new ArrayList<Long>();
 			ids.add(idToExport);
 
-			if(!isAdmin){
-
-				AclBD aclBD = new AclBD(bd);
-				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-				boolean vediTuttiDomini = false;
-				List<Long> idDomini = new ArrayList<Long>();
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(idDomini);
-					}
-				}
+			if(!setDomini.contains(-1L)){
+				List<Long> lstCodDomini = new ArrayList<Long>();
+				lstCodDomini.addAll(setDomini);
+				filter.setIdDomini(lstCodDomini);
 
 				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
 				if(eseguiRicerca){
@@ -1112,6 +1004,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 					eseguiRicerca = eseguiRicerca && versamentiBD.count(filter) > 0;
 				}
 			}
+
 			Versamento versamento = eseguiRicerca ? versamentiBD.getVersamento(idToExport) : null;
 			String fileName = "Export.zip";  
 
@@ -1198,25 +1091,32 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
-		URI cancellazione = this.getUriCancellazione(uriInfo, bd);
-		InfoForm infoCancellazione = new InfoForm(cancellazione);
-		List<String> titoli = new ArrayList<String>();
-		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.singolo.titolo"));
-		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.multiplo.titolo"));
-		infoCancellazione.setTitolo(titoli); 
+		InfoForm infoCancellazione = null;
 
-		String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
+		try{
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI cancellazione = this.getUriCancellazione(uriInfo, bd);
+				infoCancellazione = new InfoForm(cancellazione);
+				List<String> titoli = new ArrayList<String>();
+				titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.singolo.titolo"));
+				titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.multiplo.titolo"));
+				infoCancellazione.setTitolo(titoli); 
 
-		if(this.infoCancellazioneMap == null){
-			this.initInfoCancellazione(uriInfo, bd);
+				String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
+
+				if(this.infoCancellazioneMap == null){
+					this.initInfoCancellazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoCancellazione.getSezioneRoot();
+
+				InputTextArea motivoCancellazione = (InputTextArea) this.infoCancellazioneMap.get(motivoCancellazioneId);
+				motivoCancellazione.setDefaultValue(null);
+				sezioneRoot.addField(motivoCancellazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCancellazione.getSezioneRoot();
-
-		InputTextArea motivoCancellazione = (InputTextArea) this.infoCancellazioneMap.get(motivoCancellazioneId);
-		motivoCancellazione.setDefaultValue(null);
-		sezioneRoot.addField(motivoCancellazione);
-
 		return infoCancellazione;
 	}
 
@@ -1255,18 +1155,32 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 		return infoCancellazione;
 	}
-	
+
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
-		URI esportazione = this.getUriEsportazione(uriInfo, bd);
-		InfoForm infoEsportazione = new InfoForm(esportazione);
-		return infoEsportazione; 
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return infoEsportazione;
 	}
-	
+
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry)	throws ConsoleException {	
-		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-		InfoForm infoEsportazione = new InfoForm(esportazione);
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
 		return infoEsportazione;	
 	}
 
@@ -1298,8 +1212,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamentiBD.setAutoCommit(false);

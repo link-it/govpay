@@ -22,6 +22,7 @@ package it.govpay.web.rs.v1.beans;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -68,14 +69,6 @@ public class TracciatoExt extends Tracciato {
 
 	public List<Operazione> getOperazioni() {
 		return operazioni;
-	}
-
-	public void setEsito(byte[] esito) {
-		this.esito = esito;
-	}
-
-	public void setOperazioni(List<Operazione> operazioni) {
-		this.operazioni = operazioni;
 	}
 	
 }

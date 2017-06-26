@@ -4,6 +4,10 @@ import java.util.List;
 
 public class Ruolo extends BasicModel {
 	
+	public static final int DIRITTI_LETTURA = 1;
+	public static final int DIRITTI_SCRITTURA = 2;
+	public static final int NO_DIRITTI = 0;
+	
 	/**
 	 * 
 	 */

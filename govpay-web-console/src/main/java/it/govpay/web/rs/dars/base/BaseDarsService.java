@@ -41,6 +41,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.handler.IBaseDarsHandler;
@@ -283,6 +284,8 @@ public abstract class BaseDarsService extends BaseRsService {
 	public abstract String getNomeServizio();
 
 	public abstract String getPathServizio();
+	
+	public abstract Servizio getFunzionalita();
 	
 	public abstract IBaseDarsHandler<?> getDarsHandler();
 

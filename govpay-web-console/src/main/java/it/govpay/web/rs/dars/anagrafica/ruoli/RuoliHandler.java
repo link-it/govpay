@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -48,6 +49,7 @@ import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Ruolo;
+import it.govpay.web.rs.dars.anagrafica.ruoli.input.AdminFunzionalita_G_PAG;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_APP;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_CON;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_PPA;
@@ -88,10 +90,6 @@ import net.sf.json.JsonConfig;
 
 public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruolo>{
 
-	public static final int DIRITTI_LETTURA = 1;
-	public static final int DIRITTI_SCRITTURA = 2;
-	public static final int NO_DIRITTI = 0;
-
 	public RuoliHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
@@ -100,8 +98,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 	public Elenco getElenco(UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -194,221 +192,224 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 		}
 	}
 
-	/***
-	 * Form Creazione 
-	 * 
-	 * sez ROOT:
-	 * codIntermediario
-	 * denominazione
-	 * 
-	 * sez Connettore Pdd
-	 * URL
-	 * tipo autenticazione
-	 * -- auth = basic
-	 * username / password
-	 * -- auth = ssl
-	 * parametri ssl: 
-	 * 
-	 */
-
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String codRuoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codRuolo.id");
-		String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+				String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String codRuoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codRuolo.id");
+				String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
 
-		String funzionalita_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_PPA.id");
-		String domini_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_PPA.id");
-		String diritti_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_PPA.id");
+				String funzionalita_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_PPA.id");
+				String domini_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_PPA.id");
+				String diritti_A_PPAId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_PPA.id");
 
-		String funzionalita_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_CON.id");
-		String domini_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_CON.id");
-		String diritti_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_CON.id");
+				String funzionalita_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_CON.id");
+				String domini_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_CON.id");
+				String diritti_A_CONId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_CON.id");
 
-		String funzionalita_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_APP.id");
-		String domini_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_APP.id");
-		String diritti_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_APP.id");
+				String funzionalita_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_APP.id");
+				String domini_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_APP.id");
+				String diritti_A_APPId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_APP.id");
 
-		String funzionalita_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_USR.id");
-		String domini_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_USR.id");
-		String diritti_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_USR.id");
+				String funzionalita_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_A_USR.id");
+				String domini_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_A_USR.id");
+				String diritti_A_USRId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_A_USR.id");
 
-		String funzionalita_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_PAG.id");
-		String domini_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_PAG.id");
-		String diritti_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_PAG.id");
+				String funzionalita_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_PAG.id");
+				String domini_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_PAG.id");
+				String diritti_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_PAG.id");
+				String admin_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_PAG.id");
 
-		String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
-		String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
-		String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
+				String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
+				String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
+				String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
 
-		String funzionalita_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_GDE.id");
-		String domini_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_GDE.id");
-		String diritti_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_GDE.id");
+				String funzionalita_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_GDE.id");
+				String domini_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_GDE.id");
+				String diritti_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_GDE.id");
 
-		String funzionalita_MANId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_MAN.id");
+				String funzionalita_MANId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_MAN.id");
+				String funzionalita_STATId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_STAT.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(ruoloId);
+				idInterm.setDefaultValue(null);
+				sezioneRoot.addField(idInterm);
+
+				InputText codRuolo = (InputText) this.infoCreazioneMap.get(codRuoloId);
+				codRuolo.setDefaultValue(null);
+				codRuolo.setEditable(true); 
+				sezioneRoot.addField(codRuolo);
+
+				InputText descrizione = (InputText) this.infoCreazioneMap.get(descrizioneId);
+				descrizione.setDefaultValue(null);
+				sezioneRoot.addField(descrizione);
+
+				String etichettaFunzionalita_A_PPA = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_PPA.titolo");
+				Sezione sezioneFunzionalita_A_PPA = infoCreazione.addSezione(etichettaFunzionalita_A_PPA);
+
+				CheckButton funzionalita_A_PPA = (CheckButton) this.infoCreazioneMap.get(funzionalita_A_PPAId);
+				funzionalita_A_PPA.setDefaultValue(false); 
+				sezioneFunzionalita_A_PPA.addField(funzionalita_A_PPA);
+
+				List<RawParamValue> funzionalita_A_PPAValues = new ArrayList<RawParamValue>();
+				funzionalita_A_PPAValues.add(new RawParamValue(ruoloId, null));
+				funzionalita_A_PPAValues.add(new RawParamValue(funzionalita_A_PPAId, "false"));
+
+				DirittiFunzionalita_A_PPA diritti_A_PPA = (DirittiFunzionalita_A_PPA) this.infoCreazioneMap.get(diritti_A_PPAId);
+				diritti_A_PPA.init(funzionalita_A_PPAValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_A_PPA.addField(diritti_A_PPA);
+
+				DominiFunzionalita_A_PPA domini_A_PPA = (DominiFunzionalita_A_PPA) this.infoCreazioneMap.get(domini_A_PPAId);
+				domini_A_PPA.init(funzionalita_A_PPAValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_A_PPA.addField(domini_A_PPA); 
+
+				String etichettaFunzionalita_A_CON = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_CON.titolo");
+				Sezione sezioneFunzionalita_A_CON = infoCreazione.addSezione(etichettaFunzionalita_A_CON);
+
+				CheckButton funzionalita_A_CON = (CheckButton) this.infoCreazioneMap.get(funzionalita_A_CONId);
+				funzionalita_A_CON.setDefaultValue(false); 
+				sezioneFunzionalita_A_CON.addField(funzionalita_A_CON);
+
+				List<RawParamValue> funzionalita_A_CONValues = new ArrayList<RawParamValue>();
+				funzionalita_A_CONValues.add(new RawParamValue(ruoloId, null));
+				funzionalita_A_CONValues.add(new RawParamValue(funzionalita_A_CONId, "false"));
+
+				DirittiFunzionalita_A_CON diritti_A_CON = (DirittiFunzionalita_A_CON) this.infoCreazioneMap.get(diritti_A_CONId);
+				diritti_A_CON.init(funzionalita_A_CONValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_A_CON.addField(diritti_A_CON);
+
+				DominiFunzionalita_A_CON domini_A_CON = (DominiFunzionalita_A_CON) this.infoCreazioneMap.get(domini_A_CONId);
+				domini_A_CON.init(funzionalita_A_CONValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_A_CON.addField(domini_A_CON); 
+
+				String etichettaFunzionalita_A_APP = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_APP.titolo");
+				Sezione sezioneFunzionalita_A_APP = infoCreazione.addSezione(etichettaFunzionalita_A_APP);
+
+				CheckButton funzionalita_A_APP = (CheckButton) this.infoCreazioneMap.get(funzionalita_A_APPId);
+				funzionalita_A_APP.setDefaultValue(false); 
+				sezioneFunzionalita_A_APP.addField(funzionalita_A_APP);
+
+				List<RawParamValue> funzionalita_A_APPValues = new ArrayList<RawParamValue>();
+				funzionalita_A_APPValues.add(new RawParamValue(ruoloId, null));
+				funzionalita_A_APPValues.add(new RawParamValue(funzionalita_A_APPId, "false"));
+
+				DirittiFunzionalita_A_APP diritti_A_APP = (DirittiFunzionalita_A_APP) this.infoCreazioneMap.get(diritti_A_APPId);
+				diritti_A_APP.init(funzionalita_A_APPValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_A_APP.addField(diritti_A_APP);
+
+				DominiFunzionalita_A_APP domini_A_APP = (DominiFunzionalita_A_APP) this.infoCreazioneMap.get(domini_A_APPId);
+				domini_A_APP.init(funzionalita_A_APPValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_A_APP.addField(domini_A_APP); 
+
+				String etichettaFunzionalita_A_USR = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_USR.titolo");
+				Sezione sezioneFunzionalita_A_USR = infoCreazione.addSezione(etichettaFunzionalita_A_USR);
+
+				CheckButton funzionalita_A_USR = (CheckButton) this.infoCreazioneMap.get(funzionalita_A_USRId);
+				funzionalita_A_USR.setDefaultValue(false); 
+				sezioneFunzionalita_A_USR.addField(funzionalita_A_USR);
+
+				List<RawParamValue> funzionalita_A_USRValues = new ArrayList<RawParamValue>();
+				funzionalita_A_USRValues.add(new RawParamValue(ruoloId, null));
+				funzionalita_A_USRValues.add(new RawParamValue(funzionalita_A_USRId, "false"));
+
+				DirittiFunzionalita_A_USR diritti_A_USR = (DirittiFunzionalita_A_USR) this.infoCreazioneMap.get(diritti_A_USRId);
+				diritti_A_USR.init(funzionalita_A_USRValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_A_USR.addField(diritti_A_USR);
+
+				DominiFunzionalita_A_USR domini_A_USR = (DominiFunzionalita_A_USR) this.infoCreazioneMap.get(domini_A_USRId);
+				domini_A_USR.init(funzionalita_A_USRValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_A_USR.addField(domini_A_USR); 
+
+				String etichettaFunzionalita_G_PAG = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_G_PAG.titolo");
+				Sezione sezioneFunzionalita_G_PAG = infoCreazione.addSezione(etichettaFunzionalita_G_PAG);
+
+				CheckButton funzionalita_G_PAG = (CheckButton) this.infoCreazioneMap.get(funzionalita_G_PAGId);
+				funzionalita_G_PAG.setDefaultValue(false); 
+				sezioneFunzionalita_G_PAG.addField(funzionalita_G_PAG);
+
+				List<RawParamValue> funzionalita_G_PAGValues = new ArrayList<RawParamValue>();
+				funzionalita_G_PAGValues.add(new RawParamValue(ruoloId, null));
+				funzionalita_G_PAGValues.add(new RawParamValue(funzionalita_G_PAGId, "false"));
+				
+				AdminFunzionalita_G_PAG admin_G_PAG = (AdminFunzionalita_G_PAG) this.infoCreazioneMap.get(admin_G_PAGId);
+				admin_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage());
+				sezioneFunzionalita_G_PAG.addField(admin_G_PAG);
+
+				DirittiFunzionalita_G_PAG diritti_G_PAG = (DirittiFunzionalita_G_PAG) this.infoCreazioneMap.get(diritti_G_PAGId);
+				diritti_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_G_PAG.addField(diritti_G_PAG);
+
+				DominiFunzionalita_G_PAG domini_G_PAG = (DominiFunzionalita_G_PAG) this.infoCreazioneMap.get(domini_G_PAGId);
+				domini_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_G_PAG.addField(domini_G_PAG); 
+				
+				String etichettaFunzionalita_G_RND = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_G_RND.titolo");
+				Sezione sezioneFunzionalita_G_RND = infoCreazione.addSezione(etichettaFunzionalita_G_RND);
+
+				CheckButton funzionalita_G_RND = (CheckButton) this.infoCreazioneMap.get(funzionalita_G_RNDId);
+				funzionalita_G_RND.setDefaultValue(false); 
+				sezioneFunzionalita_G_RND.addField(funzionalita_G_RND);
+
+				List<RawParamValue> funzionalita_G_RNDValues = new ArrayList<RawParamValue>();
+				funzionalita_G_RNDValues.add(new RawParamValue(ruoloId, null));
+				funzionalita_G_RNDValues.add(new RawParamValue(funzionalita_G_RNDId, "false"));
+
+				DirittiFunzionalita_G_RND diritti_G_RND = (DirittiFunzionalita_G_RND) this.infoCreazioneMap.get(diritti_G_RNDId);
+				diritti_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_G_RND.addField(diritti_G_RND);
+
+				DominiFunzionalita_G_RND domini_G_RND = (DominiFunzionalita_G_RND) this.infoCreazioneMap.get(domini_G_RNDId);
+				domini_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_G_RND.addField(domini_G_RND); 
+
+
+				String etichettaFunzionalita_GDE = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_GDE.titolo");
+				Sezione sezioneFunzionalita_GDE = infoCreazione.addSezione(etichettaFunzionalita_GDE);
+
+				CheckButton funzionalita_GDE = (CheckButton) this.infoCreazioneMap.get(funzionalita_GDEId);
+				funzionalita_GDE.setDefaultValue(false); 
+				sezioneFunzionalita_GDE.addField(funzionalita_GDE);
+
+				List<RawParamValue> funzionalita_GDEValues = new ArrayList<RawParamValue>();
+				funzionalita_GDEValues.add(new RawParamValue(ruoloId, null));
+				funzionalita_GDEValues.add(new RawParamValue(funzionalita_GDEId, "false"));
+
+				DirittiFunzionalita_GDE diritti_GDE = (DirittiFunzionalita_GDE) this.infoCreazioneMap.get(diritti_GDEId);
+				diritti_GDE.init(funzionalita_GDEValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_GDE.addField(diritti_GDE);
+
+				DominiFunzionalita_GDE domini_GDE = (DominiFunzionalita_GDE) this.infoCreazioneMap.get(domini_GDEId);
+				domini_GDE.init(funzionalita_GDEValues, bd,this.getLanguage()); 
+				sezioneFunzionalita_GDE.addField(domini_GDE); 
+
+				String etichettaFunzionalita_MAN = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_MAN.titolo");
+				Sezione sezioneFunzionalita_MAN = infoCreazione.addSezione(etichettaFunzionalita_MAN);
+
+				CheckButton funzionalita_MAN = (CheckButton) this.infoCreazioneMap.get(funzionalita_MANId);
+				funzionalita_MAN.setDefaultValue(false); 
+				sezioneFunzionalita_MAN.addField(funzionalita_MAN);
+				
+				String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
+				Sezione sezioneFunzionalita_STAT = infoCreazione.addSezione(etichettaFunzionalita_STAT);
+
+				CheckButton funzionalita_STAT = (CheckButton) this.infoCreazioneMap.get(funzionalita_STATId);
+				funzionalita_STAT.setDefaultValue(false); 
+				sezioneFunzionalita_STAT.addField(funzionalita_STAT);
+
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(ruoloId);
-		idInterm.setDefaultValue(null);
-		sezioneRoot.addField(idInterm);
-
-		InputText codRuolo = (InputText) this.infoCreazioneMap.get(codRuoloId);
-		codRuolo.setDefaultValue(null);
-		codRuolo.setEditable(true); 
-		sezioneRoot.addField(codRuolo);
-
-		InputText descrizione = (InputText) this.infoCreazioneMap.get(descrizioneId);
-		descrizione.setDefaultValue(null);
-		sezioneRoot.addField(descrizione);
-
-		String etichettaFunzionalita_A_PPA = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_PPA.titolo");
-		Sezione sezioneFunzionalita_A_PPA = infoCreazione.addSezione(etichettaFunzionalita_A_PPA);
-
-		CheckButton funzionalita_A_PPA = (CheckButton) this.infoCreazioneMap.get(funzionalita_A_PPAId);
-		funzionalita_A_PPA.setDefaultValue(false); 
-		sezioneFunzionalita_A_PPA.addField(funzionalita_A_PPA);
-
-		List<RawParamValue> funzionalita_A_PPAValues = new ArrayList<RawParamValue>();
-		funzionalita_A_PPAValues.add(new RawParamValue(ruoloId, null));
-		funzionalita_A_PPAValues.add(new RawParamValue(funzionalita_A_PPAId, "false"));
-
-		DirittiFunzionalita_A_PPA diritti_A_PPA = (DirittiFunzionalita_A_PPA) this.infoCreazioneMap.get(diritti_A_PPAId);
-		diritti_A_PPA.init(funzionalita_A_PPAValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_A_PPA.addField(diritti_A_PPA);
-
-		DominiFunzionalita_A_PPA domini_A_PPA = (DominiFunzionalita_A_PPA) this.infoCreazioneMap.get(domini_A_PPAId);
-		domini_A_PPA.init(funzionalita_A_PPAValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_A_PPA.addField(domini_A_PPA); 
-
-		String etichettaFunzionalita_A_CON = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_CON.titolo");
-		Sezione sezioneFunzionalita_A_CON = infoCreazione.addSezione(etichettaFunzionalita_A_CON);
-
-		CheckButton funzionalita_A_CON = (CheckButton) this.infoCreazioneMap.get(funzionalita_A_CONId);
-		funzionalita_A_CON.setDefaultValue(false); 
-		sezioneFunzionalita_A_CON.addField(funzionalita_A_CON);
-
-		List<RawParamValue> funzionalita_A_CONValues = new ArrayList<RawParamValue>();
-		funzionalita_A_CONValues.add(new RawParamValue(ruoloId, null));
-		funzionalita_A_CONValues.add(new RawParamValue(funzionalita_A_CONId, "false"));
-
-		DirittiFunzionalita_A_CON diritti_A_CON = (DirittiFunzionalita_A_CON) this.infoCreazioneMap.get(diritti_A_CONId);
-		diritti_A_CON.init(funzionalita_A_CONValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_A_CON.addField(diritti_A_CON);
-
-		DominiFunzionalita_A_CON domini_A_CON = (DominiFunzionalita_A_CON) this.infoCreazioneMap.get(domini_A_CONId);
-		domini_A_CON.init(funzionalita_A_CONValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_A_CON.addField(domini_A_CON); 
-
-		String etichettaFunzionalita_A_APP = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_APP.titolo");
-		Sezione sezioneFunzionalita_A_APP = infoCreazione.addSezione(etichettaFunzionalita_A_APP);
-
-		CheckButton funzionalita_A_APP = (CheckButton) this.infoCreazioneMap.get(funzionalita_A_APPId);
-		funzionalita_A_APP.setDefaultValue(false); 
-		sezioneFunzionalita_A_APP.addField(funzionalita_A_APP);
-
-		List<RawParamValue> funzionalita_A_APPValues = new ArrayList<RawParamValue>();
-		funzionalita_A_APPValues.add(new RawParamValue(ruoloId, null));
-		funzionalita_A_APPValues.add(new RawParamValue(funzionalita_A_APPId, "false"));
-
-		DirittiFunzionalita_A_APP diritti_A_APP = (DirittiFunzionalita_A_APP) this.infoCreazioneMap.get(diritti_A_APPId);
-		diritti_A_APP.init(funzionalita_A_APPValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_A_APP.addField(diritti_A_APP);
-
-		DominiFunzionalita_A_APP domini_A_APP = (DominiFunzionalita_A_APP) this.infoCreazioneMap.get(domini_A_APPId);
-		domini_A_APP.init(funzionalita_A_APPValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_A_APP.addField(domini_A_APP); 
-
-		String etichettaFunzionalita_A_USR = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_USR.titolo");
-		Sezione sezioneFunzionalita_A_USR = infoCreazione.addSezione(etichettaFunzionalita_A_USR);
-
-		CheckButton funzionalita_A_USR = (CheckButton) this.infoCreazioneMap.get(funzionalita_A_USRId);
-		funzionalita_A_USR.setDefaultValue(false); 
-		sezioneFunzionalita_A_USR.addField(funzionalita_A_USR);
-
-		List<RawParamValue> funzionalita_A_USRValues = new ArrayList<RawParamValue>();
-		funzionalita_A_USRValues.add(new RawParamValue(ruoloId, null));
-		funzionalita_A_USRValues.add(new RawParamValue(funzionalita_A_USRId, "false"));
-
-		DirittiFunzionalita_A_USR diritti_A_USR = (DirittiFunzionalita_A_USR) this.infoCreazioneMap.get(diritti_A_USRId);
-		diritti_A_USR.init(funzionalita_A_USRValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_A_USR.addField(diritti_A_USR);
-
-		DominiFunzionalita_A_USR domini_A_USR = (DominiFunzionalita_A_USR) this.infoCreazioneMap.get(domini_A_USRId);
-		domini_A_USR.init(funzionalita_A_USRValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_A_USR.addField(domini_A_USR); 
-
-		String etichettaFunzionalita_G_PAG = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_G_PAG.titolo");
-		Sezione sezioneFunzionalita_G_PAG = infoCreazione.addSezione(etichettaFunzionalita_G_PAG);
-
-		CheckButton funzionalita_G_PAG = (CheckButton) this.infoCreazioneMap.get(funzionalita_G_PAGId);
-		funzionalita_G_PAG.setDefaultValue(false); 
-		sezioneFunzionalita_G_PAG.addField(funzionalita_G_PAG);
-
-		List<RawParamValue> funzionalita_G_PAGValues = new ArrayList<RawParamValue>();
-		funzionalita_G_PAGValues.add(new RawParamValue(ruoloId, null));
-		funzionalita_G_PAGValues.add(new RawParamValue(funzionalita_G_PAGId, "false"));
-
-		DirittiFunzionalita_G_PAG diritti_G_PAG = (DirittiFunzionalita_G_PAG) this.infoCreazioneMap.get(diritti_G_PAGId);
-		diritti_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_G_PAG.addField(diritti_G_PAG);
-
-		DominiFunzionalita_G_PAG domini_G_PAG = (DominiFunzionalita_G_PAG) this.infoCreazioneMap.get(domini_G_PAGId);
-		domini_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_G_PAG.addField(domini_G_PAG); 
-
-		String etichettaFunzionalita_G_RND = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_G_RND.titolo");
-		Sezione sezioneFunzionalita_G_RND = infoCreazione.addSezione(etichettaFunzionalita_G_RND);
-
-		CheckButton funzionalita_G_RND = (CheckButton) this.infoCreazioneMap.get(funzionalita_G_RNDId);
-		funzionalita_G_RND.setDefaultValue(false); 
-		sezioneFunzionalita_G_RND.addField(funzionalita_G_RND);
-
-		List<RawParamValue> funzionalita_G_RNDValues = new ArrayList<RawParamValue>();
-		funzionalita_G_RNDValues.add(new RawParamValue(ruoloId, null));
-		funzionalita_G_RNDValues.add(new RawParamValue(funzionalita_G_RNDId, "false"));
-
-		DirittiFunzionalita_G_RND diritti_G_RND = (DirittiFunzionalita_G_RND) this.infoCreazioneMap.get(diritti_G_RNDId);
-		diritti_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_G_RND.addField(diritti_G_RND);
-
-		DominiFunzionalita_G_RND domini_G_RND = (DominiFunzionalita_G_RND) this.infoCreazioneMap.get(domini_G_RNDId);
-		domini_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_G_RND.addField(domini_G_RND); 
-
-
-		String etichettaFunzionalita_GDE = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_GDE.titolo");
-		Sezione sezioneFunzionalita_GDE = infoCreazione.addSezione(etichettaFunzionalita_GDE);
-
-		CheckButton funzionalita_GDE = (CheckButton) this.infoCreazioneMap.get(funzionalita_GDEId);
-		funzionalita_GDE.setDefaultValue(false); 
-		sezioneFunzionalita_GDE.addField(funzionalita_GDE);
-
-		List<RawParamValue> funzionalita_GDEValues = new ArrayList<RawParamValue>();
-		funzionalita_GDEValues.add(new RawParamValue(ruoloId, null));
-		funzionalita_GDEValues.add(new RawParamValue(funzionalita_GDEId, "false"));
-
-		DirittiFunzionalita_GDE diritti_GDE = (DirittiFunzionalita_GDE) this.infoCreazioneMap.get(diritti_GDEId);
-		diritti_GDE.init(funzionalita_GDEValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_GDE.addField(diritti_GDE);
-
-		DominiFunzionalita_GDE domini_GDE = (DominiFunzionalita_GDE) this.infoCreazioneMap.get(domini_GDEId);
-		domini_GDE.init(funzionalita_GDEValues, bd,this.getLanguage()); 
-		sezioneFunzionalita_GDE.addField(domini_GDE); 
-
-		String etichettaFunzionalita_MAN = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_MAN.titolo");
-		Sezione sezioneFunzionalita_MAN = infoCreazione.addSezione(etichettaFunzionalita_MAN);
-
-		CheckButton funzionalita_MAN = (CheckButton) this.infoCreazioneMap.get(funzionalita_MANId);
-		funzionalita_MAN.setDefaultValue(false); 
-		sezioneFunzionalita_MAN.addField(funzionalita_MAN);
-
 		return infoCreazione;
 	}
 
@@ -439,7 +440,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			String funzionalita_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_PAG.id");
 			String domini_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_PAG.id");
 			String diritti_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_PAG.id");
-
+			String admin_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_PAG.id");
+			
 			String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
 			String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
 			String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
@@ -449,6 +451,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			String diritti_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_GDE.id");
 
 			String funzionalita_MANId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_MAN.id");
+			String funzionalita_STATId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_STAT.id");
 
 			// id 
 			InputNumber id = new InputNumber(ruoloId, null, null, true, true, false, 1, 20);
@@ -586,6 +589,13 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			domini_G_PAG.addDependencyField(funzionalita_G_PAG);
 			domini_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage()); 
 			this.infoCreazioneMap.put(domini_G_PAGId, domini_G_PAG);
+			
+			String admin_G_PAGLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_PAG.label");
+			URI admin_G_PAGRefreshUri = this.getUriField(uriInfo, bd, domini_G_PAGId); 
+			AdminFunzionalita_G_PAG admin_G_PAG = new AdminFunzionalita_G_PAG(this.nomeServizio, admin_G_PAGId, admin_G_PAGLabel, admin_G_PAGRefreshUri, funzionalita_G_PAGValues, this.getLanguage());
+			admin_G_PAG.addDependencyField(funzionalita_G_PAG);
+			admin_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage()); 
+			this.infoCreazioneMap.put(admin_G_PAGId, admin_G_PAG);
 
 			//seziona funzionalita_G_RND
 			// abilitato
@@ -640,6 +650,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			String funzionalita_MANLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_MAN.label");
 			CheckButton funzionalita_MAN = new CheckButton(funzionalita_MANId, funzionalita_MANLabel, true, false, false, true);
 			this.infoCreazioneMap.put(funzionalita_MANId, funzionalita_MAN);
+			
+			//seziona funzionalita_STAT
+			// abilitato
+			String funzionalita_STATLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_STAT.label");
+			CheckButton funzionalita_STAT = new CheckButton(funzionalita_STATId, funzionalita_STATLabel, true, false, false, true);
+			this.infoCreazioneMap.put(funzionalita_STATId, funzionalita_STAT);
 		}
 	}
 
@@ -670,6 +686,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 		String funzionalita_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_PAG.id");
 		String domini_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_PAG.id");
 		String diritti_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_PAG.id");
+		String admin_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_PAG.id");
 
 		String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
 		String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
@@ -680,6 +697,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 		String diritti_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_GDE.id");
 
 		String funzionalita_MANId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_MAN.id");
+		String funzionalita_STATId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_STAT.id");
 
 		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -795,6 +813,10 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 		List<RawParamValue> funzionalita_G_PAGValues = new ArrayList<RawParamValue>();
 		funzionalita_G_PAGValues.add(new RawParamValue(ruoloId, entry.getId()+""));
 		funzionalita_G_PAGValues.add(new RawParamValue(funzionalita_G_PAGId, (visualizzaG_PAG ? "true" : "false")));
+		
+		AdminFunzionalita_G_PAG admin_G_PAG = (AdminFunzionalita_G_PAG) this.infoCreazioneMap.get(admin_G_PAGId);
+		admin_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage());
+		sezioneFunzionalita_G_PAG.addField(admin_G_PAG);
 
 		DirittiFunzionalita_G_PAG diritti_G_PAG = (DirittiFunzionalita_G_PAG) this.infoCreazioneMap.get(diritti_G_PAGId);
 		diritti_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage()); 
@@ -855,6 +877,15 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 		CheckButton funzionalita_MAN = (CheckButton) this.infoCreazioneMap.get(funzionalita_MANId);
 		funzionalita_MAN.setDefaultValue(visualizzaMAN); 
 		sezioneFunzionalita_MAN.addField(funzionalita_MAN);
+		
+		String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
+		Sezione sezioneFunzionalita_STAT = infoModifica.addSezione(etichettaFunzionalita_STAT);
+		List<Long> idsAclFunzionalita_STAT = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.Statistiche);
+		boolean visualizzaSTAT = idsAclFunzionalita_STAT.size() > 0;
+
+		CheckButton funzionalita_STAT = (CheckButton) this.infoCreazioneMap.get(funzionalita_STATId);
+		funzionalita_STAT.setDefaultValue(visualizzaSTAT); 
+		sezioneFunzionalita_STAT.addField(funzionalita_STAT);
 
 		return infoModifica;
 	}
@@ -877,8 +908,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
@@ -920,8 +951,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			// recupero oggetto
 			RuoliBD ruoliBD = new RuoliBD(bd);
@@ -944,6 +975,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			List<Acl> acls = ruolo.getAcls();
 			String etichettaDomini = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
 			String etichettaDiritti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.diritti.titolo");
+			String etichettaAdmin = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.admin.titolo");
 			String valore = null;
 			// Elementi correlati
 			String etichettaFunzionalita_A_PPA = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_A_PPA.titolo");
@@ -957,20 +989,20 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				int diritti = aclsFiltrate.get(0).getDiritti();
 				String dirittiValore = "";
 				switch (diritti) {
-				case RuoliHandler.DIRITTI_SCRITTURA:
+				case Ruolo.DIRITTI_SCRITTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
 					break;
-				case RuoliHandler.DIRITTI_LETTURA:
+				case Ruolo.DIRITTI_LETTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
 					break;
-				case RuoliHandler.NO_DIRITTI:
+				case Ruolo.NO_DIRITTI:
 				default:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
 					break;
 				}
-				
+
 				sezioneFunzionalita_A_PPA.addVoce(etichettaDiritti, dirittiValore); 
-				
+
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1013,20 +1045,20 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				int diritti = aclsFiltrate.get(0).getDiritti();
 				String dirittiValore = "";
 				switch (diritti) {
-				case RuoliHandler.DIRITTI_SCRITTURA:
+				case Ruolo.DIRITTI_SCRITTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
 					break;
-				case RuoliHandler.DIRITTI_LETTURA:
+				case Ruolo.DIRITTI_LETTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
 					break;
-				case RuoliHandler.NO_DIRITTI:
+				case Ruolo.NO_DIRITTI:
 				default:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
 					break;
 				}
-				
+
 				sezioneFunzionalita_A_CON.addVoce(etichettaDiritti, dirittiValore); 
-				
+
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1069,20 +1101,20 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				int diritti = aclsFiltrate.get(0).getDiritti();
 				String dirittiValore = "";
 				switch (diritti) {
-				case RuoliHandler.DIRITTI_SCRITTURA:
+				case Ruolo.DIRITTI_SCRITTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
 					break;
-				case RuoliHandler.DIRITTI_LETTURA:
+				case Ruolo.DIRITTI_LETTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
 					break;
-				case RuoliHandler.NO_DIRITTI:
+				case Ruolo.NO_DIRITTI:
 				default:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
 					break;
 				}
-				
+
 				sezioneFunzionalita_A_APP.addVoce(etichettaDiritti, dirittiValore); 
-				
+
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1125,20 +1157,20 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				int diritti = aclsFiltrate.get(0).getDiritti();
 				String dirittiValore = "";
 				switch (diritti) {
-				case RuoliHandler.DIRITTI_SCRITTURA:
+				case Ruolo.DIRITTI_SCRITTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
 					break;
-				case RuoliHandler.DIRITTI_LETTURA:
+				case Ruolo.DIRITTI_LETTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
 					break;
-				case RuoliHandler.NO_DIRITTI:
+				case Ruolo.NO_DIRITTI:
 				default:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
 					break;
 				}
-				
+
 				sezioneFunzionalita_A_USR.addVoce(etichettaDiritti, dirittiValore); 
-				
+
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1180,22 +1212,24 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			if(!Utils.isEmpty(idDomini)){
 				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Pagamenti);
 				int diritti = aclsFiltrate.get(0).getDiritti();
+				boolean admin = aclsFiltrate.get(0).isAdmin();
 				String dirittiValore = "";
 				switch (diritti) {
-				case RuoliHandler.DIRITTI_SCRITTURA:
+				case Ruolo.DIRITTI_SCRITTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
 					break;
-				case RuoliHandler.DIRITTI_LETTURA:
+				case Ruolo.DIRITTI_LETTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
 					break;
-				case RuoliHandler.NO_DIRITTI:
+				case Ruolo.NO_DIRITTI:
 				default:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
 					break;
 				}
-				
+
 				sezioneFunzionalita_G_PAG.addVoce(etichettaDiritti, dirittiValore); 
-				
+				sezioneFunzionalita_G_PAG.addVoce(etichettaAdmin, Utils.getSiNoAsLabel(admin));  
+
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1238,20 +1272,20 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				int diritti = aclsFiltrate.get(0).getDiritti();
 				String dirittiValore = "";
 				switch (diritti) {
-				case RuoliHandler.DIRITTI_SCRITTURA:
+				case Ruolo.DIRITTI_SCRITTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
 					break;
-				case RuoliHandler.DIRITTI_LETTURA:
+				case Ruolo.DIRITTI_LETTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
 					break;
-				case RuoliHandler.NO_DIRITTI:
+				case Ruolo.NO_DIRITTI:
 				default:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
 					break;
 				}
-				
+
 				sezioneFunzionalita_G_RND.addVoce(etichettaDiritti, dirittiValore); 
-				
+
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1294,19 +1328,19 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				int diritti = aclsFiltrate.get(0).getDiritti();
 				String dirittiValore = "";
 				switch (diritti) {
-				case RuoliHandler.DIRITTI_SCRITTURA:
+				case Ruolo.DIRITTI_SCRITTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.SCRITTURA.label");
 					break;
-				case RuoliHandler.DIRITTI_LETTURA:
+				case Ruolo.DIRITTI_LETTURA:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.LETTURA.label");
 					break;
-				case RuoliHandler.NO_DIRITTI:
+				case Ruolo.NO_DIRITTI:
 				default:
 					dirittiValore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritto.NESSUNO.label");
 					break;
 				}
 				sezioneFunzionalita_GDE.addVoce(etichettaDiritti, dirittiValore); 
-				
+
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
 					DominioFilter filter = dominiBD.newFilter();
@@ -1347,6 +1381,16 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			}else {
 				sezioneFunzionalita_MAN.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(false)); 
 			}
+			
+			String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
+			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_STAT = dettaglio.addSezione(etichettaFunzionalita_STAT);
+
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Statistiche);
+			if(idDomini != null && idDomini.size() > 0){
+				sezioneFunzionalita_STAT.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(true)); 
+			}else {
+				sezioneFunzionalita_STAT.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(false)); 
+			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -1365,8 +1409,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			Ruolo entry = this.creaEntry(is, uriInfo, bd);
 
@@ -1421,7 +1465,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 		String funzionalita_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_PAG.id");
 		String domini_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_PAG.id");
 		String diritti_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_PAG.id");
-
+		String admin_G_PAGId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_PAG.id");
+		
 		String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
 		String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
 		String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
@@ -1431,11 +1476,12 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 		String diritti_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_GDE.id");
 
 		String funzionalita_MANId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_MAN.id");
+		String funzionalita_STATId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_STAT.id");
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			JsonConfig jsonConfig = new JsonConfig();
 
@@ -1583,6 +1629,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 
 			if(jsonObjectRuolo.getBoolean(funzionalita_G_PAGId)){
 				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_G_PAGId);
+				boolean admin = jsonObjectRuolo.getBoolean(admin_G_PAGId);
 				// diritti
 				Long diritti_G_PAG = jsonObjectRuolo.getLong(diritti_G_PAGId);
 
@@ -1592,7 +1639,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					Acl acl = new Acl();
 					acl.setTipo(Tipo.DOMINIO);
 					acl.setServizio(Servizio.Gestione_Pagamenti);
-					acl.setDiritti(diritti_G_PAG.intValue()); 
+					acl.setDiritti(diritti_G_PAG.intValue());
+					acl.setAdmin(admin);
 					if(idDominio > 0){
 						acl.setIdDominio(idDominio);
 						lstAclDominiFunzionalita_G_PAG.add(acl);
@@ -1607,6 +1655,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			jsonObjectRuolo.remove(funzionalita_G_PAGId);
 			jsonObjectRuolo.remove(domini_G_PAGId);
 			jsonObjectRuolo.remove(diritti_G_PAGId);
+			jsonObjectRuolo.remove(admin_G_PAGId);
 
 			List<Acl> lstAclDominiFunzionalita_G_RND = new ArrayList<Acl>();
 
@@ -1670,15 +1719,28 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			List<Acl> lstAclDominiFunzionalita_MAN = new ArrayList<Acl>();
 
 			if(jsonObjectRuolo.getBoolean(funzionalita_MANId)){
-				int diritti_MAN = RuoliHandler.DIRITTI_LETTURA;
+				int diritti_MAN = Ruolo.DIRITTI_LETTURA;
 				Acl acl = new Acl();
 				acl.setTipo(Tipo.DOMINIO);
 				acl.setServizio(Servizio.Manutenzione);
 				acl.setDiritti(diritti_MAN);
 				lstAclDominiFunzionalita_MAN.add(acl);
 			}
-			// rimuovo gli oggetti della parte Funzionalita_GDE
+			// rimuovo gli oggetti della parte Funzionalita_MAN
 			jsonObjectRuolo.remove(funzionalita_MANId);
+			
+			List<Acl> lstAclDominiFunzionalita_STAT = new ArrayList<Acl>();
+
+			if(jsonObjectRuolo.getBoolean(funzionalita_STATId)){
+				int diritti_STAT = Ruolo.DIRITTI_LETTURA;
+				Acl acl = new Acl();
+				acl.setTipo(Tipo.DOMINIO);
+				acl.setServizio(Servizio.Statistiche);
+				acl.setDiritti(diritti_STAT);
+				lstAclDominiFunzionalita_STAT.add(acl);
+			}
+			// rimuovo gli oggetti della parte Funzionalita_STAT
+			jsonObjectRuolo.remove(funzionalita_STATId);
 
 			jsonConfig.setRootClass(Ruolo.class);
 			entry = (Ruolo) JSONObject.toBean( jsonObjectRuolo, jsonConfig );
@@ -1692,6 +1754,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			entry.getAcls().addAll(lstAclDominiFunzionalita_G_RND);
 			entry.getAcls().addAll(lstAclDominiFunzionalita_GDE);
 			entry.getAcls().addAll(lstAclDominiFunzionalita_MAN);
+			entry.getAcls().addAll(lstAclDominiFunzionalita_STAT);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
@@ -1726,8 +1789,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			Ruolo entry = this.creaEntry(is, uriInfo, bd);
 

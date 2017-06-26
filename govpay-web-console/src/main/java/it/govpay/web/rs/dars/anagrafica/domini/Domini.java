@@ -44,6 +44,7 @@ import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.core.utils.DominioUtils;
 import it.govpay.model.Dominio;
 import it.govpay.model.IbanAccredito;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
@@ -71,6 +72,11 @@ public class Domini extends DarsService {
 	public String getPathServizio() {
 		return "/dars/" + this.getNomeServizio();
 	}
+	
+	@Override
+	public Servizio getFunzionalita() {
+		return Servizio.Anagrafica_PagoPa;
+	}
 
 	@GET
 	@Path("/{id}/contiAccredito")
@@ -84,6 +90,9 @@ public class Domini extends DarsService {
 
 		try{
 			bd = BasicBD.newInstance(this.codOperazione);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.checkDirittiServizioLettura(bd, this.getFunzionalita());
+			
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(id);
 
@@ -133,6 +142,8 @@ public class Domini extends DarsService {
 
 		try{
 			bd = BasicBD.newInstance(this.codOperazione);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.checkDirittiServizioLettura(bd, this.getFunzionalita());
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(id);
 

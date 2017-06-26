@@ -92,7 +92,30 @@ ALTER TABLE acl ALTER COLUMN cod_servizio TYPE VARCHAR(35);
 
 ALTER TABLE acl ADD COLUMN id_ruolo BIGINT;
 ALTER TABLE acl ADD CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id);
+<<<<<<< HEAD
 ALTER TABLE domini ADD COLUMN logo BYTEA;
+=======
+ALTER TABLE domini ADD COLUMN logo TYPE BYTEA;
+>>>>>>> a72aa5055b6c8dfb08b2fbe63b9fb661f2803d14
 
 ALTER TABLE operatori ALTER COLUMN profilo TYPE VARCHAR(1024);
 ALTER TABLE acl ADD COLUMN admin BOOLEAN NOT NULL DEFAULT false;
+
+UPDATE operatori SET profilo = 'Amministratore' where profilo = 'A';
+UPDATE operatori SET profilo = 'Operatore' where profilo = 'E';
+
+INSERT INTO ruoli (cod_ruolo,descrizione) VALUES ('Amministratore', 'Ruolo Amministratore');
+INSERT INTO ruoli (cod_ruolo,descrizione) VALUES ('Operatore', 'Ruolo Operatore');
+
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_PPA', 2, id from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_CON', 2, id from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_APP', 2, id from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_USR', 2, id from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo,admin) select 'D', 'G_PAG', 2, id, true from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'G_RND', 2, id from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'GDE', 2, id from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'MAN', 2, id from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'STAT', 2, id from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'G_PAG', 1, id from ruoli where cod_ruolo ='Operatore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'G_RND', 1, id from ruoli where cod_ruolo ='Operatore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'GDE', 1, id from ruoli where cod_ruolo ='Operatore';

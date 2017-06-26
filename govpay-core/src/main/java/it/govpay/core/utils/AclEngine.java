@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import it.govpay.model.Acl;
-import it.govpay.model.IAutorizzato;
-import it.govpay.model.Ruolo;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
+import it.govpay.model.IAutorizzato;
+import it.govpay.model.Ruolo;
 
 public class AclEngine {
 
@@ -50,7 +50,7 @@ public class AclEngine {
 			for(Acl acl : ruolo.getAcls()) {
 				if(acl.getServizio().equals(servizio)) {
 					if(diritti < acl.getDiritti()) diritti = acl.getDiritti();
-					if(diritti == 2) return diritti;
+					if(diritti == Ruolo.DIRITTI_SCRITTURA) return diritti;
 				}
 			}
 		}
@@ -63,7 +63,7 @@ public class AclEngine {
 			for(Acl acl : ruolo.getAcls()) {
 				if(acl.getServizio().equals(servizio) && acl.getTipo().equals(Tipo.DOMINIO) && (acl.getCodDominio() == null || acl.getCodDominio().equals(codDominio))) {
 					if(diritti < acl.getDiritti()) diritti = acl.getDiritti();
-					if(diritti == 2) return diritti;
+					if(diritti == Ruolo.DIRITTI_SCRITTURA) return diritti;
 				}
 			}
 		}
@@ -132,15 +132,21 @@ public class AclEngine {
 					if(acl.getDiritti() >= diritto && acl.getTipo().equals(Tipo.DOMINIO) && (acl.getServizio().equals(Servizio.PAGAMENTI_ONLINE) || acl.getServizio().equals(Servizio.PAGAMENTI_ATTESA))) {
 						if(acl.getIdDominio() != null)
 							domini.add(acl.getIdDominio());
-						else 
-							return null;
+						else {
+							domini.clear();
+							domini.add(-1L);
+							return domini;
+						}
 					}
 
 				if(acl.getDiritti() >= diritto && acl.getTipo().equals(Tipo.DOMINIO) && acl.getServizio().equals(servizio)) {
 					if(acl.getIdDominio() != null)
 						domini.add(acl.getIdDominio());
-					else 
-						return null;
+					else {
+						domini.clear();
+						domini.add(-1L);
+						return domini;
+					}
 				}
 			}
 		}
@@ -160,12 +166,25 @@ public class AclEngine {
 				}
 
 			if(acl.getTipo().equals(Tipo.DOMINIO) && acl.getServizio().equals(servizio)) {
-				if(acl.getIdDominio() != null && acl.getDiritti() > 0)
+				if(acl.getIdDominio() != null && acl.getDiritti() > Ruolo.NO_DIRITTI)
 					domini.add(acl.getIdDominio());
 				else 
 					return null;
 			}
 		}
 		return domini;
+	}
+	
+	public static boolean isAdminDirittiOperatore(List<Ruolo> ruoli, Servizio servizio) {
+		boolean admin = false;
+		for(Ruolo ruolo : ruoli) {
+			for(Acl acl : ruolo.getAcls()) {
+				if(acl.getServizio().equals(servizio)) {
+					if(acl.isAdmin())
+						return true;
+				}
+			}
+		}
+		return admin;
 	}
 }

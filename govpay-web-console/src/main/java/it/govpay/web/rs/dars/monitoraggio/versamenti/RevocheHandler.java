@@ -53,8 +53,8 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita agli utenti registrati
-			this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
@@ -103,8 +103,8 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita agli utenti registrati
-			this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			RrBD rrBD = new RrBD(bd);
 			Rr rr = rrBD.getRr(id);
@@ -276,7 +276,8 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 		String fileName = "RichiesteRevoca.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			RrBD rrBD = new RrBD(bd);
 
@@ -317,7 +318,8 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			RrBD rrBD = new RrBD(bd);
 			Rr rr = rrBD.getRr(idToExport);

@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -81,8 +82,8 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 		String methodName = "getElenco " + this.titoloServizio;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 			Integer offset = this.getOffset(uriInfo);
 
 			Intermediari intermediariDars = new Intermediari();
@@ -137,52 +138,59 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String stazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String codStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
-		String passwordId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String applicationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
-		Intermediari intermediariDars = new Intermediari();
-		String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
+				String stazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String codStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
+				String passwordId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String applicationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
+				Intermediari intermediariDars = new Intermediari();
+				String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 
-		if(infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+				InputNumber idStaz = (InputNumber) infoCreazioneMap.get(stazioneId);
+				idStaz.setDefaultValue(null);
+				sezioneRoot.addField(idStaz);
+
+				InputText codIntermediario = (InputText) infoCreazioneMap.get(codIntermediarioId);
+				codIntermediario.setDefaultValue(this.codIntermediario);
+				sezioneRoot.addField(codIntermediario);
+
+				InputText codStazione = (InputText) infoCreazioneMap.get(codStazioneId);
+				String codStazioneSuggestion = this.codIntermediario + "_[0-9]{2}"; 
+				codStazione.setDefaultValue(this.codIntermediario + "_");
+				String codStazionePattern = this.codIntermediario + "[_]{1,1}[0-9]{2,2}";
+				String codStazioneErrorMessage = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.errorMessage") +" "+  codStazioneSuggestion;
+				codStazione.setValidation(codStazionePattern, codStazioneErrorMessage); 
+				codStazione.setSuggestion(codStazioneSuggestion);
+				codStazione.setEditable(true);     
+				sezioneRoot.addField(codStazione);
+
+				InputSecret password = (InputSecret) infoCreazioneMap.get(passwordId);
+				password.setDefaultValue(null);
+				sezioneRoot.addField(password);
+
+				InputNumber applicationCode = (InputNumber) infoCreazioneMap.get(applicationCodeId);
+				applicationCode.setDefaultValue(null);
+				sezioneRoot.addField(applicationCode);
+
+				CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(true); 
+				sezioneRoot.addField(abilitato);
+
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-		InputNumber idStaz = (InputNumber) infoCreazioneMap.get(stazioneId);
-		idStaz.setDefaultValue(null);
-		sezioneRoot.addField(idStaz);
-
-		InputText codIntermediario = (InputText) infoCreazioneMap.get(codIntermediarioId);
-		codIntermediario.setDefaultValue(this.codIntermediario);
-		sezioneRoot.addField(codIntermediario);
-
-		InputText codStazione = (InputText) infoCreazioneMap.get(codStazioneId);
-		String codStazioneSuggestion = this.codIntermediario + "_[0-9]{2}"; 
-		codStazione.setDefaultValue(this.codIntermediario + "_");
-		String codStazionePattern = this.codIntermediario + "[_]{1,1}[0-9]{2,2}";
-		String codStazioneErrorMessage = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.errorMessage") +" "+  codStazioneSuggestion;
-		codStazione.setValidation(codStazionePattern, codStazioneErrorMessage); 
-		codStazione.setSuggestion(codStazioneSuggestion);
-		codStazione.setEditable(true);     
-		sezioneRoot.addField(codStazione);
-
-		InputSecret password = (InputSecret) infoCreazioneMap.get(passwordId);
-		password.setDefaultValue(null);
-		sezioneRoot.addField(password);
-
-		InputNumber applicationCode = (InputNumber) infoCreazioneMap.get(applicationCodeId);
-		applicationCode.setDefaultValue(null);
-		sezioneRoot.addField(applicationCode);
-
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(true); 
-		sezioneRoot.addField(abilitato);
-
 		return infoCreazione;
 	}
 
@@ -280,18 +288,18 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String,String> parameters) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Stazione entry) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String,String> parameters) throws ConsoleException { return null; }
-	
+
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Stazione entry)	throws ConsoleException {	return null;	}
 
@@ -299,13 +307,13 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
@@ -318,8 +326,8 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 			boolean mostraAnomalia = false;
 
 			// recupero oggetto
@@ -383,8 +391,8 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			Stazione entry = this.creaEntry(is, uriInfo, bd);
 
@@ -426,8 +434,8 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 		Stazione entry = null;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			JsonConfig jsonConfig = new JsonConfig();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -491,8 +499,8 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			Stazione entry = this.creaEntry(is, uriInfo, bd);
 
@@ -540,7 +548,7 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id"),
 				new Voce<String>(entry.getCodStazione(),entry.getCodStazione()));
-		
+
 		// stato della stazione
 		// 
 		if(!entry.isAbilitato()) {
@@ -559,21 +567,21 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok")));
 				} else {
 					String statoErrore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore.label");
-					
+
 					if(StringUtils.isNotEmpty(entry.getNdpDescrizione())){
 						statoErrore = entry.getNdpDescrizione();
 					}
 					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 							new Voce<String>(statoErrore,
 									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore")));
-					
+
 					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.id"),
 							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.label"),statoErrore));
 				}
 			}
 		}
-		
-		
+
+
 		return valori; 
 	}
 
