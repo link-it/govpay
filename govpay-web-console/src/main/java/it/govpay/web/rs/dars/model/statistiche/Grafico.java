@@ -15,7 +15,8 @@ public class Grafico {
 	private List<Serie<?>> serie;
 	private List<String> colori;
 	private List<String> categorie;
-	private List<String> valoriX;	
+	private List<String> valoriX;
+	private boolean coloriAutomatici;
 	
 	public Grafico(TipoGrafico tipo) {
 		this.serie = new ArrayList<Serie<?>>();
@@ -23,6 +24,7 @@ public class Grafico {
 		this.categorie = new ArrayList<String>();
 		this.valoriX = new ArrayList<String>();
 		this.tipo = tipo;
+		this.coloriAutomatici = false;
 	}
 
 	public String getTitolo() {
@@ -92,6 +94,12 @@ public class Grafico {
 	public void setValoriX(List<String> valoriX) {
 		this.valoriX = valoriX;
 	}
-	
-	
+
+	public boolean isColoriAutomatici() {
+		return coloriAutomatici;
+	}
+
+	public void setColoriAutomatici(boolean coloriAutomatici) {
+		this.coloriAutomatici = coloriAutomatici;
+	}
 }

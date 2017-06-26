@@ -14,7 +14,6 @@ import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.model.reportistica.statistiche.DistribuzioneEsiti;
 import it.govpay.model.reportistica.statistiche.DistribuzionePsp;
-import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 public class TransazioniBD extends BasicBD {
@@ -28,7 +27,7 @@ public class TransazioniBD extends BasicBD {
 		return new TransazioniFilter(this.getRptService());
 	}
 
-	public List<DistribuzioneEsiti> getDistribuzionePsp(TipoIntervallo tipoIntervallo, Date data, int limit, TransazioniFilter filtro) throws ServiceException {
+	public List<DistribuzioneEsiti> getDistribuzioneEsiti(TransazioniFilter filtro) throws ServiceException {
 		try {
 			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
 
@@ -37,10 +36,10 @@ public class TransazioniBD extends BasicBD {
 			lstReturnType.add(Long.class);
 			lstReturnType.add(Long.class);
 
-			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoQuery(tipoIntervallo, data, limit, filtro);
+			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoQuery(filtro.getTipoIntervallo(), filtro.getData(), filtro.getLimit(), filtro);
 			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
 
-			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoValues(tipoIntervallo, data, limit, filtro);
+			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoValues(filtro.getTipoIntervallo(), filtro.getData(), filtro.getLimit(), filtro);
 			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
 			for(Object obj: array) {
 				Logger.getLogger(JDBCServiceManager.class).debug(obj);
@@ -61,17 +60,17 @@ public class TransazioniBD extends BasicBD {
 		}
 	}
 	
-	public List<DistribuzionePsp> getDistribuzioneEsiti(TipoIntervallo tipoIntervallo, Date data, double soglia, TransazioniFilter filtro) throws ServiceException {
+	public List<DistribuzionePsp> getDistribuzionePsp(TransazioniFilter filtro) throws ServiceException {
 		try {
 			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
 
 			lstReturnType.add(String.class);
 			lstReturnType.add(Long.class);
 
-			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerPspQuery(tipoIntervallo, data, filtro);
+			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerPspQuery(filtro.getTipoIntervallo(), filtro.getData(), filtro);
 			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
 
-			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerPspValues(tipoIntervallo, data, filtro);
+			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerPspValues(filtro.getTipoIntervallo(), filtro.getData(), filtro);
 			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
 			for(Object obj: array) {
 				Logger.getLogger(JDBCServiceManager.class).debug(obj);
@@ -95,7 +94,7 @@ public class TransazioniBD extends BasicBD {
 				DistribuzionePsp distribuzione = distribuzioniTmp.get(i);
 				
 				double percentuale = distribuzione.getTransazioni() / totale;
-				if(percentuale >= soglia) {
+				if(percentuale >= filtro.getSoglia()) {
 					distribuzione.setPercentuale(percentuale);
 					distribuzioniFinal.add(distribuzione);
 					percentualeOccupata += percentuale;
