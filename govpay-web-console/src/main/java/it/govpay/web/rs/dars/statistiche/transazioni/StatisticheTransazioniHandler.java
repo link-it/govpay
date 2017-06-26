@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -87,11 +88,14 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.handler.IStatisticaDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
+import it.govpay.web.rs.dars.model.ElementoCorrelato;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.base.InputDate;
+import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.model.statistiche.Colori;
 import it.govpay.web.rs.dars.model.statistiche.Grafico;
@@ -107,7 +111,8 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
-	private SimpleDateFormat sdfGiorno = new SimpleDateFormat("dd/MM/yyyy");  
+	private SimpleDateFormat sdfGiorno = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdfMese = new SimpleDateFormat("MMMMM");  
 
 	public StatisticheTransazioniHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
@@ -124,7 +129,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			Map<String, String> params = new HashMap<String, String>();
-			
+
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			TransazioniBD transazioniBD = new TransazioniBD(bd);
@@ -132,67 +137,117 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			TransazioniFilter filter = transazioniBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
-			fsw.setSortOrder(SortOrder.DESC);
-			filter.getFilterSortList().add(fsw);
 
-			Date dataInizio = new Date();
-			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
-			String dataInizioS = this.getParameter(uriInfo, dataInizioId, String.class);
-			if(StringUtils.isNotEmpty(dataInizioS)){
-				dataInizio = this.convertJsonStringToDate(dataInizioS);
+			Date data = new Date();
+			String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.id");
+			String dataS = this.getParameter(uriInfo, dataId, String.class);
+			if(StringUtils.isNotEmpty(dataS)){
+				data = this.convertJsonStringToDate(dataS);
 			}
-			
-			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, transazioniBD, filter);
+
+			String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".colonne.id");
+			String colonneS = this.getParameter(uriInfo, colonneId, String.class);
+			int colonne = 0;
+			if(StringUtils.isNotEmpty(colonneS)){
+				try{
+					colonne = Integer.parseInt(colonneS);
+				}catch(Exception e){
+
+				}
+			}
+			String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".avanzamento.id");
+			String avanzamentoS = this.getParameter(uriInfo, avanzamentoId, String.class);
+			int avanzamento = 0;
+			if(StringUtils.isNotEmpty(avanzamentoS)){
+				try{
+					avanzamento = Integer.parseInt(avanzamentoS);
+				}catch(Exception e){
+
+				}
+			}
+			String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoIntervallo.id");
+			String tipoIntervalloS = this.getParameter(uriInfo, tipoIntervalloId, String.class);
+			TipoIntervallo tipoIntervallo= TipoIntervallo.GIORNALIERO;
+			if(StringUtils.isNotEmpty(tipoIntervalloS)){
+				tipoIntervallo = TipoIntervallo.valueOf(tipoIntervalloS);
+			}
+
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(data);
+			SimpleDateFormat _sdf = null;
+			switch (tipoIntervallo) {
+			case MENSILE:
+				calendar.add(Calendar.MONTH, -colonne);
+				_sdf = this.sdfMese;
+				break;
+			case GIORNALIERO:
+				calendar.add(Calendar.DATE, -colonne);
+				_sdf= this.sdfGiorno;
+				break;
+			case ORARIO:
+				calendar.add(Calendar.HOUR, -colonne);
+				_sdf = this.sdf;
+				break;
+			}
+			Date start = calendar.getTime();
+			String sottoTitolo = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",_sdf.format(start),_sdf.format(data));
+
+			this.popolaFiltroRicerca(uriInfo, transazioniBD, filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd);
-			InfoForm infoGrafico = null;
+			InfoForm infoGrafico = this.getInfoGrafico(uriInfo, bd); 
 
-			List<DistribuzioneEsiti> distribuzioneEsiti = transazioniBD.getDistribuzioneEsiti(TipoIntervallo.GIORNALIERO, dataInizio, limit, filter);
-			
+			List<DistribuzioneEsiti> distribuzioneEsiti = transazioniBD.getDistribuzioneEsiti(tipoIntervallo, data, colonne, filter);
+
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			PaginaGrafico paginaGrafico = new PaginaGrafico(this.titoloServizio, this.getInfoEsportazione(uriInfo,bd,params), infoRicerca,infoGrafico); 
-			
+
 			Grafico grafico = new Grafico(TipoGrafico.bar);
-			
-			grafico.setLabelX("Data");
-			grafico.setLabelY("Numero Transazioni");
-			grafico.setTitolo("Numero Transazioni");
-			grafico.setSottotitolo("Dal 23 Maggio al 28 Maggio"); 
+
+			grafico.setLabelX(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".xAxis.label"));
+			grafico.setLabelY(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".yAxis.label"));
+			grafico.setTitolo(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".label.titolo"));
+			grafico.setSottotitolo(sottoTitolo); 
 			grafico.getColori().addAll(Colori.getColoriTransazioni());
-			grafico.getCategorie().add("Transazioni completate");
-			grafico.getCategorie().add("Transazioni rifiutate");
-			grafico.getCategorie().add("Transazioni in corso");
-			
+			grafico.getCategorie().add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".transazioniCompletate.label"));
+			grafico.getCategorie().add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".transazioniRifiutate.label"));
+			grafico.getCategorie().add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".transazioniInCorso.label"));
+
 			if (distribuzioneEsiti != null && distribuzioneEsiti.size() > 0) {
 				Serie<Long> serie1 = new Serie<Long>();
 				Serie<Long> serie2 = new Serie<Long>();
 				Serie<Long> serie3 = new Serie<Long>();
 				for (DistribuzioneEsiti elemento : distribuzioneEsiti) {
-					String dataElemento = this.sdfGiorno.format(elemento.getData());
+					String dataElemento = _sdf.format(elemento.getData());
 					long serie1Val = elemento.getEseguiti();
 					long serie2Val = elemento.getErrori();
 					long serie3Val = elemento.getIn_corso();
-					
+
 					grafico.getValoriX().add(dataElemento);
-					
+
 					serie1.getDati().add(serie1Val);
 					serie2.getDati().add(serie2Val);
 					serie3.getDati().add(serie3Val);
-					serie1.getTooltip().add(serie1Val + "Transazioni completate");
-					serie2.getTooltip().add(serie2Val + "Transazioni rifiutate");
-					serie3.getTooltip().add(serie3Val + "Transazioni in corso");
+					serie1.getTooltip().add(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".transazioniCompletate.tooltip", dataElemento, serie1Val));
+					serie2.getTooltip().add(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".transazioniCompletate.tooltip", dataElemento, serie2Val));
+					serie3.getTooltip().add(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".transazioniCompletate.tooltip", dataElemento, serie3Val));
 				}
-				
+
 				grafico.getSerie().add(serie1);
 				grafico.getSerie().add(serie2);
 				grafico.getSerie().add(serie3);
 			}
 			
 			paginaGrafico.setGrafico(grafico );
+			
+			URI grafico2 = Utils.creaUriConParametri(this.pathServizio, params );
+			ElementoCorrelato graficoTorta = new ElementoCorrelato(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistichePsp.titolo"), grafico2);
+			// elementi correlati
+			paginaGrafico.getElementiCorrelati().add(graficoTorta );
+			
 
 			return paginaGrafico;
 		}catch(WebApplicationException e){
@@ -210,10 +265,10 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 
 		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
-	
-		
+
+
 		if(StringUtils.isNotEmpty(idDominio)){
-			
+
 			long idDom = -1l;
 			try{
 				idDom = Long.parseLong(idDominio);
@@ -221,7 +276,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			}catch(Exception e){ idDom = -1l;	}
 			if(idDom > 0){
 				idDomini.add(idDom);
-//				filter.setIdDomini(idDomini);
+				//				filter.setIdDomini(idDomini);
 			}
 		}
 
@@ -239,31 +294,11 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			}
 		}
 
-		String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
-		String dataInizio = this.getParameter(uriInfo, dataInizioId, String.class);
-		if(StringUtils.isNotEmpty(dataInizio)){
-			//			filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
-		}
-
-		String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
-		String dataFine = this.getParameter(uriInfo, dataFineId, String.class);
-		if(StringUtils.isNotEmpty(dataFine)){
-			//			filter.setDataFine(this.convertJsonStringToDate(dataFine));
-		}
-
-		// se l'utente ha un numero ristretto di domini da visualizzare li imposto nel filtro
-//		if(!setDomini.contains(-1L)){
-//			idDomini.addAll(setDomini);
-//		}
-//		
-//		if(!idDomini.isEmpty())
-//			filter.setIdDomini(idDomini);
-
 		return eseguiRicerca ;
 	}
 
 	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd, VersamentoFilter filter) throws ConsoleException, Exception {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		//		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		List<Long> idPsps = new ArrayList<Long>();
 		List<Long> idDomini = new ArrayList<Long>();
 		boolean eseguiRicerca = true;  
@@ -292,26 +327,6 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 				idDomini.add(idDom);
 			}
 		}
-
-		String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
-		String dataInizio = Utils.getValue(rawValues, dataInizioId);
-		if(StringUtils.isNotEmpty(dataInizio)){
-			//				filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
-		}
-
-		String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
-		String dataFine = Utils.getValue(rawValues, dataFineId);
-		if(StringUtils.isNotEmpty(dataFine)){
-			//				filter.setDataFine(this.convertJsonStringToDate(dataFine));
-		}
-
-		// se l'utente ha un numero ristretto di domini da visualizzare li imposto nel filtro
-		if(!setDomini.contains(-1L)){
-			idDomini.addAll(setDomini);
-		}
-		
-		if(!idDomini.isEmpty())
-			filter.setIdDomini(idDomini);
 
 		return eseguiRicerca  ;
 	}
@@ -344,21 +359,21 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 				try {
 					filter = dominiBD.newFilter();
 					boolean eseguiRicerca = true;
-						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-						FilterSortWrapper fsw = new FilterSortWrapper();
-						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-						fsw.setSortOrder(SortOrder.ASC);
-						filter.getFilterSortList().add(fsw);
-						List<Dominio> findAll = dominiBD.findAll(filter );
+					domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					List<Dominio> findAll = dominiBD.findAll(filter );
 
-						Domini dominiDars = new Domini();
-						DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+					Domini dominiDars = new Domini();
+					DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
 
-						if(findAll != null && findAll.size() > 0){
-							for (Dominio dominio : findAll) {
-								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
-							}
+					if(findAll != null && findAll.size() > 0){
+						for (Dominio dominio : findAll) {
+							domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
 						}
+					}
 				} catch (ServiceException e) {
 					throw new ConsoleException(e);
 				}
@@ -433,22 +448,68 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
 			this.infoRicercaMap.put(idDominioId, idDominio);
 
+			InputNumber colonne = new InputNumber(colonneId, null, null, true, true, false, 1, 20);
+			this.infoRicercaMap.put(colonneId, colonne);
+
+			InputNumber avanzamento = new InputNumber(avanzamentoId, null, null, true, true, false, 1, 20);
+			this.infoRicercaMap.put(avanzamentoId, avanzamento);
+
+			InputDate data = new InputDate(dataId, null, new Date(), false, false, true, null, null);
+			this.infoRicercaMap.put(dataId, data);
+
+			List<Voce<String>> tipiIntervallo = new ArrayList<Voce<String>>(); //tipoIntervallo.ORARIO.label
+			tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoIntervallo."+TipoIntervallo.ORARIO.name()+".label"),TipoIntervallo.ORARIO.name()));
+			tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".label"),TipoIntervallo.GIORNALIERO.name()));
+			tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoIntervallo."+TipoIntervallo.MENSILE.name()+".label"),TipoIntervallo.MENSILE.name()));
+			String tipoIntervalloLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoIntervallo.label");
+			SelectList<String> tipoIntervallo = new SelectList<String>(tipoIntervalloId, tipoIntervalloLabel, TipoIntervallo.GIORNALIERO.name(), false, false, true, tipiIntervallo );
+			this.infoRicercaMap.put(tipoIntervalloId, tipoIntervallo);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoGrafico(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca,
 			Map<String, String> parameters) throws ConsoleException {
-		return null;
+		URI ricerca = this.getUriRicerca(uriInfo, bd);
+		InfoForm infoGrafico = new InfoForm(ricerca);
+
+		if(this.infoRicercaMap == null){
+			this.initInfoRicerca(uriInfo, bd);
+		}
+
+		String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.id");
+		String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".colonne.id");
+		String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".avanzamento.id");
+		String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoIntervallo.id");
+
+		Sezione sezioneRoot = infoGrafico.getSezioneRoot();
+		InputNumber colonne = (InputNumber) this.infoRicercaMap.get(colonneId);
+		colonne.setDefaultValue(null);
+		sezioneRoot.addField(colonne);
+
+		InputNumber avanzamento = (InputNumber) this.infoRicercaMap.get(avanzamentoId);
+		avanzamento.setDefaultValue(null);
+		sezioneRoot.addField(avanzamento);
+
+		InputDate data = (InputDate) this.infoRicercaMap.get(dataId);
+		data.setDefaultValue(new Date());
+		sezioneRoot.addField(data);
+
+		SelectList<String> tipoIntervallo = (SelectList<String>) this.infoRicercaMap.get(tipoIntervalloId);
+		tipoIntervallo.setDefaultValue(TipoIntervallo.GIORNALIERO.name());
+		sezioneRoot.addField(tipoIntervallo); 
+
+		return infoGrafico;
 	}
-	
+
 
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
-	
+
 	@Override
 	public String getTitolo(Versamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
@@ -487,8 +548,8 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 			throw new ConsoleException(e);
 		}
 		return infoEsportazione;
-	 }
-	
+	}
+
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry)	throws ConsoleException {	
 		InfoForm infoEsportazione = null;
@@ -502,7 +563,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 		}
 		return infoEsportazione;		
 	}
-	
+
 	@Override
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
@@ -654,7 +715,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 							ByteArrayOutputStream baos = new ByteArrayOutputStream();
 							String auxDigit = dominio.getAuxDigit() + "";
 							String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-						//	RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, this.log);
+							//	RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, this.log);
 							String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
 							numeroZipEntries ++;
 							ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);

@@ -30,7 +30,7 @@ import it.govpay.model.Operatore;
 public class OperatoreConverter {
 
 
-	public static Operatore toDTO(it.govpay.orm.Operatore vo, List<Acl> acls) throws ServiceException {
+	public static Operatore toDTO(it.govpay.orm.Operatore vo) throws ServiceException {
 		Operatore dto = new Operatore();
 		dto.setId(vo.getId());
 		dto.setPrincipal(vo.getPrincipal());
@@ -39,7 +39,6 @@ public class OperatoreConverter {
 		String[] split = profilo.split(Operatore.SEPARATORE_RUOLO);
 		dto.setRuoli(Arrays.asList(split));  
 		dto.setAbilitato(vo.isAbilitato());
-		dto.setAcls(acls);
 		return dto;
 	}
 

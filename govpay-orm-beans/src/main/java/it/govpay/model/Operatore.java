@@ -22,7 +22,7 @@ package it.govpay.model;
 
 import java.util.List;
 
-public class Operatore extends BasicModel implements IAutorizzato {
+public class Operatore extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -33,7 +33,6 @@ public class Operatore extends BasicModel implements IAutorizzato {
 	private String principal;
 	private String nome;
 	private boolean abilitato;
-	private List<Acl> acls;
 	private List<String> ruoli;
 	
 	public Long getId() {
@@ -54,14 +53,6 @@ public class Operatore extends BasicModel implements IAutorizzato {
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
 	}
-	
-	public List<Acl> getAcls() {
-		return acls;
-	}
-	public void setAcls(List<Acl> acls) {
-		this.acls = acls;
-	}
-
 	public String getNome() {
 		return nome;
 	}
