@@ -17,23 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.v1;
+package it.govpay.core.exceptions;
 
-import java.io.IOException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+public class NotAuthenticatedException extends Exception {
 
-@Path("/v1/caricamenti")
-public class CaricamentiMassivi extends BaseRsServiceV1 {
-
-	public static final String NOME_SERVIZIO = "caricamenti";
-
-	@POST
-	@Path("/")
-	@Consumes("text/plain")
-	public String respondToPost(String incomingCsv) throws IOException {
-	   return incomingCsv;
-	}
+	private static final long serialVersionUID = 1L;
+	
 }
-
