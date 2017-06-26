@@ -5,8 +5,8 @@ import java.util.Date;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.GovpayConfig;
-import it.govpay.bd.reportistica.statistiche.TipoIntervallo;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
+import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 
 public abstract class NativeQueries {
 	

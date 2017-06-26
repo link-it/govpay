@@ -2,8 +2,8 @@ package it.govpay.bd.nativequeries;
 
 import java.util.Date;
 
-import it.govpay.bd.reportistica.statistiche.TipoIntervallo;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
+import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 
 public class OracleNativeQueries extends NativeQueries {
 
