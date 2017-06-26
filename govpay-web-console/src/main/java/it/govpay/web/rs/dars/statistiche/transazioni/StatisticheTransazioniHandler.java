@@ -67,9 +67,7 @@ import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
-import it.govpay.bd.reportistica.statistiche.TipoIntervallo;
 import it.govpay.bd.reportistica.statistiche.TransazioniBD;
-import it.govpay.bd.reportistica.statistiche.TransazioniBD.DistribuzioneEsiti;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
@@ -77,6 +75,8 @@ import it.govpay.core.utils.RtUtils;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.Evento;
 import it.govpay.model.comparator.EstrattoContoComparator;
+import it.govpay.model.reportistica.statistiche.DistribuzioneEsiti;
+import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 import it.govpay.stampe.pdf.er.ErPdf;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
@@ -107,7 +107,7 @@ import it.govpay.web.rs.dars.monitoraggio.eventi.EventiHandler;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versamento> implements IStatisticaDarsHandler<Versamento>{
+public class StatisticheTransazioniHandler extends StatisticaDarsHandler<DistribuzioneEsiti> implements IStatisticaDarsHandler<DistribuzioneEsiti>{
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
@@ -511,7 +511,7 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
 
 	@Override
-	public String getTitolo(Versamento entry,BasicBD bd) {
+	public String getTitolo(DistribuzioneEsiti entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo"));
@@ -520,18 +520,13 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	}
 
 	@Override
-	public String getSottotitolo(Versamento entry,BasicBD bd) {
+	public String getSottotitolo(DistribuzioneEsiti entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
-
-		Date dataUltimoAggiornamento = entry.getDataUltimoAggiornamento();
-
-		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo", this.sdf.format(dataUltimoAggiornamento), this.sdf.format(dataUltimoAggiornamento)));
-
 		return sb.toString();
 	} 
 
 	@Override
-	public Map<String, Voce<String>> getVoci(Versamento entry, BasicBD bd) throws ConsoleException {
+	public Map<String, Voce<String>> getVoci(DistribuzioneEsiti entry, BasicBD bd) throws ConsoleException {
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
 		return voci; 
 	}
@@ -551,16 +546,8 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	}
 
 	@Override
-	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry)	throws ConsoleException {	
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, DistribuzioneEsiti entry)	throws ConsoleException {	
 		InfoForm infoEsportazione = null;
-		try{
-			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-				infoEsportazione = new InfoForm(esportazione);
-			}
-		}catch(ServiceException e){
-			throw new ConsoleException(e);
-		}
 		return infoEsportazione;		
 	}
 

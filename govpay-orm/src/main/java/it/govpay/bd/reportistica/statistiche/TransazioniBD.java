@@ -12,69 +12,14 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
+import it.govpay.model.reportistica.statistiche.DistribuzioneEsiti;
+import it.govpay.model.reportistica.statistiche.DistribuzionePsp;
+import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 public class TransazioniBD extends BasicBD {
 
-	public class DistribuzioneEsiti {
-		private Date data;
-		private long eseguiti;
-		private long errori;
-		private long in_corso;
-
-		public DistribuzioneEsiti(Date data, Long eseguiti, Long errori, Long in_corso) {
-			this.data = data;
-			this.eseguiti = eseguiti;
-			this.errori = errori;
-			this.in_corso = in_corso;
-		}
-
-		public Date getData() {
-			return data;
-		}
-
-		public long getEseguiti() {
-			return eseguiti;
-		}
-
-		public long getErrori() {
-			return errori;
-		}
-
-		public long getIn_corso() {
-			return in_corso;
-		}
-	}
 	
-	public class DistribuzionePsp {
-		private String psp;
-		private long transazioni;
-		private double percentuale;
-
-		public DistribuzionePsp(String psp, long transazioni) {
-			this.psp = psp;
-			this.transazioni = transazioni;
-		}
-
-		public String getPsp() {
-			return psp;
-		}
-
-		public long getTransazioni() {
-			return transazioni;
-		}
-
-		public double getPercentuale() {
-			return percentuale;
-		}
-
-		public void setPercentuale(double percentuale) {
-			this.percentuale = percentuale;
-		}
-
-	}
-
-
 	public TransazioniBD(BasicBD basicBD) {
 		super(basicBD);
 	}

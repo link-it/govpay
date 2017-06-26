@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import it.govpay.bd.reportistica.statistiche.TipoIntervallo;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
+import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 
 public class PostgresNativeQueries extends NativeQueries {
 
