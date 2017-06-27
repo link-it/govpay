@@ -70,6 +70,7 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
+import it.govpay.web.rs.dars.anagrafica.domini.input.Logo;
 import it.govpay.web.rs.dars.anagrafica.domini.input.ModalitaIntermediazione;
 import it.govpay.web.rs.dars.anagrafica.iban.Iban;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
@@ -314,6 +315,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 				String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 				String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
+				String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
 
 				AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio,this.getLanguage());
 				List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
@@ -397,6 +399,22 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				idApplicazioneDefault.setDefaultValue(-1L);
 				idApplicazioneDefault.setValues(applicazioni);
 				sezioneRoot.addField(idApplicazioneDefault); 
+				
+//				Sezione sezioneLogo = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneLogo"));
+				
+				CheckButton abilitaModificaLogo  = (CheckButton) this.infoCreazioneMap.get(abilitaModificaLogoId);
+				abilitaModificaLogo.setDefaultValue(true);
+				abilitaModificaLogo.setHidden(true);
+				abilitaModificaLogo.setEditable(false);
+				sezioneRoot.addField(abilitaModificaLogo); 
+				
+				List<RawParamValue> abilitaModificaLogoValues = new ArrayList<RawParamValue>();
+				abilitaModificaLogoValues.add(new RawParamValue(dominioId, null)); 
+				abilitaModificaLogoValues.add(new RawParamValue(abilitaModificaLogoId, "true"));
+
+				Logo logo = (Logo) this.infoCreazioneMap.get(logoId);
+				logo.init(abilitaModificaLogoValues, bd,this.getLanguage());  
+				sezioneRoot.addField(logo);
 
 				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 				abilitato.setDefaultValue(true); 
@@ -446,9 +464,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 					sezioneAnagrafica.addField(par); 	
 				}
 
-				InputFile logo = (InputFile) this.infoCreazioneMap.get(logoId);
-				logo.setDefaultValue(null); 
-				sezioneAnagrafica.addField(logo);
 			}
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
@@ -483,7 +498,8 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 			String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 			String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
-
+			String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
+			
 			// codDominio
 			String codDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
 			InputText codDominio = new InputText(codDominioId, codDominioLabel, null, true, false, true, 11, 11);
@@ -566,9 +582,19 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			segregationCode.setAvanzata(true); 
 			this.infoCreazioneMap.put(segregationCodeId, segregationCode);
 
-			// logo
-			String logoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.label");
+			
+			// abilita modifica logo
+			String abilitaModificaLogoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.label");
+			CheckButton abilitaModificaLogo = new CheckButton(abilitaModificaLogoId, abilitaModificaLogoLabel, true, false, false, true);
+			this.infoCreazioneMap.put(abilitaModificaLogoId, abilitaModificaLogo);
 
+			List<RawParamValue> abilitaModificaLogoValues = new ArrayList<RawParamValue>();
+			abilitaModificaLogoValues.add(new RawParamValue(dominioId, null));
+			abilitaModificaLogoValues.add(new RawParamValue(abilitaModificaLogoId, "true"));
+			
+			// logo
+			URI logoRefreshUri = this.getUriField(uriInfo, bd, logoId); 
+			String logoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.label");
 			String maxWidthS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxWidth");
 			String maxHeightS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxHeight");
 			String logoAccTypes = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.acceptedMimeTypes");
@@ -578,8 +604,13 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			long maxByteSize = Long.parseLong(maxByteSizeS);
 			maxByteSizeS = Utils.fileSizeConverter(maxByteSize);
 			String logoNote = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".logo.note", (maxWidthS+"x" + maxHeightS),maxByteSizeS);
-			InputFile logo = new InputFile(logoId, logoLabel, false, false, true, acceptedMimeTypes , maxByteSize , 1, null);
+			Logo logo = new Logo(this.nomeServizio,	logoId, logoLabel, acceptedMimeTypes , maxByteSize , 1, logoRefreshUri,abilitaModificaLogoValues,bd,this.getLanguage());
 			logo.setNote(logoNote);
+			logo.setErrorMessageFileSize(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.errorMessageFileSize"));
+			logo.setErrorMessageFileType(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.errorMessageFileType"));
+			logo.addDependencyField(abilitaModificaLogo);
+			logo.init(abilitaModificaLogoValues, bd,this.getLanguage()); 
+			
 			this.infoCreazioneMap.put(logoId, logo);
 
 		}
@@ -606,6 +637,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 		String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
+		String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
 
 		UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
 		UnitaOperativa unitaOperativa = null;
@@ -704,6 +736,22 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
 
+		// sezione logo
+		Sezione sezioneLogo = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneLogo"));
+		
+		CheckButton abilitaModificaLogo  = (CheckButton) this.infoCreazioneMap.get(abilitaModificaLogoId);
+		abilitaModificaLogo.setDefaultValue(false);
+		abilitaModificaLogo.setHidden(false);
+		abilitaModificaLogo.setEditable(true);
+		sezioneLogo.addField(abilitaModificaLogo); 
+		
+		List<RawParamValue> abilitaModificaLogoValues = new ArrayList<RawParamValue>();
+		abilitaModificaLogoValues.add(new RawParamValue(dominioId, entry.getId() + "")); 
+		abilitaModificaLogoValues.add(new RawParamValue(abilitaModificaLogoId, "false"));
+
+		Logo logo = (Logo) this.infoCreazioneMap.get(logoId);
+		logo.init(abilitaModificaLogoValues, bd,this.getLanguage());  
+		sezioneLogo.addField(logo);
 
 		// sezione Gestione IUV
 
@@ -750,11 +798,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		for (ParamField<?> par : infoCreazioneAnagrafica) { 
 			sezioneAnagrafica.addField(par); 	
 		}
-
-		InputFile logo = (InputFile) this.infoCreazioneMap.get(logoId);
-		logo.setDefaultValue(null); 
-		sezioneAnagrafica.addField(logo);
-
+		
 		return infoModifica;
 	}
 
@@ -1135,6 +1179,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		List<Object> list = new ArrayList<Object>();
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 		String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
+		String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo ai ruoli con diritto di scrittura
@@ -1160,8 +1205,15 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			String segregationCode = jsonObjectDominio.getString(segregationCodeId);
 			jsonObjectDominio.remove(segregationCodeId);
 
-			JSONArray jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
+			Boolean abilitaModificaLogo = false;
+			JSONArray jsonArrayFile =  null;
+			if(jsonObjectDominio.getBoolean(abilitaModificaLogoId)){
+				jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
+				abilitaModificaLogo = true;
+			}
+			
 			jsonObjectDominio.remove(logoId);
+			jsonObjectDominio.remove(abilitaModificaLogoId);
 
 			jsonConfig.setRootClass(Dominio.class);
 
@@ -1212,6 +1264,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			list.add(entry);
 			list.add(uo);
+			list.add(abilitaModificaLogo);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return list;
@@ -1302,12 +1355,18 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			List<Object> lista = this.creaDominioEAnagrafica(is, uriInfo, bd);
 
-
 			Dominio entry = (Dominio) lista.get(0);
-			UnitaOperativa uo = (UnitaOperativa) lista.get(1); 
+			UnitaOperativa uo = (UnitaOperativa) lista.get(1);
+			Boolean abilitaModificaLogo = (Boolean) lista.get(2); 
 
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio oldEntry = dominiBD.getDominio(entry.getCodDominio());
+			
+			// se l'utente non ha modificato il logo reimposto quello originale
+			if(!abilitaModificaLogo) {
+				entry.setLogo(oldEntry.getLogo());
+			}
+
 			this.checkEntry(entry, oldEntry);
 
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);

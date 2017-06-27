@@ -17,14 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.model.input.base;
+package it.govpay.web.rs.dars.model.input.dinamic;
 
+import java.net.URI;
 import java.util.List;
 
+import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.input.FieldType;
-import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 
-public class InputFile extends ParamField<byte[]> {
+public abstract class InputFile extends RefreshableParamField<byte[]> {
 	
 	public static final String FILENAME = "filename";
 	public static final String DATA = "data";
@@ -36,8 +38,8 @@ public class InputFile extends ParamField<byte[]> {
 	private String errorMessageFileType;
 
 	
-	public InputFile(String id, String label, boolean required, boolean hidden, boolean editable, List<String> acceptedMimeTypes, long maxByteSize, int maxFiles) {
-		super(id, label, null, required, hidden, editable, FieldType.INPUT_FILE);
+	public InputFile(String id, String label, List<String> acceptedMimeTypes, long maxByteSize, int maxFiles,URI refreshUri, List<RawParamValue> values) {
+		super(id, label, refreshUri, values, FieldType.INPUT_FILE);
 		this.acceptedMimeTypes = acceptedMimeTypes;
 		this.maxFileSize = maxByteSize;
 		this.maxFiles = maxFiles;
@@ -70,5 +72,4 @@ public class InputFile extends ParamField<byte[]> {
 	public void setErrorMessageFileType(String errorMessageFileType) {
 		this.errorMessageFileType = errorMessageFileType;
 	}
-	
 }

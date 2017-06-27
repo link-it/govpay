@@ -216,44 +216,7 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 			}
 		}
 		
-		Date data = new Date();
-		String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
-		String dataS = this.getParameter(uriInfo, dataId, String.class);
-		if(StringUtils.isNotEmpty(dataS)){
-			data = this.convertJsonStringToDate(dataS);
-		}
-		filter.setData(data);
-
-		String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.colonne.id");
-		String colonneS = this.getParameter(uriInfo, colonneId, String.class);
-		int colonne = 0;
-		if(StringUtils.isNotEmpty(colonneS)){
-			try{
-				colonne = Integer.parseInt(colonneS);
-			}catch(Exception e){
-
-			}
-		}
-		filter.setLimit(colonne);
-		
-//		String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.avanzamento.id");
-//		String avanzamentoS = this.getParameter(uriInfo, avanzamentoId, String.class);
-//		int avanzamento = 0;
-//		if(StringUtils.isNotEmpty(avanzamentoS)){
-//			try{
-//				avanzamento = Integer.parseInt(avanzamentoS);
-//			}catch(Exception e){
-//
-//			}
-//		}
-		
-		String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
-		String tipoIntervalloS = this.getParameter(uriInfo, tipoIntervalloId, String.class);
-		TipoIntervallo tipoIntervallo= TipoIntervallo.GIORNALIERO;
-		if(StringUtils.isNotEmpty(tipoIntervalloS)){
-			tipoIntervallo = TipoIntervallo.valueOf(tipoIntervalloS);
-		}
-		filter.setTipoIntervallo(tipoIntervallo);
+		filter = (TransazioniFilter) popoloFiltroStatistiche(uriInfo, bd, filter);
 
 		return eseguiRicerca ;
 	}

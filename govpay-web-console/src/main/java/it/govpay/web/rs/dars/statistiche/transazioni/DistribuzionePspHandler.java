@@ -45,6 +45,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.reportistica.statistiche.TransazioniBD;
+import it.govpay.bd.reportistica.statistiche.filters.StatisticaFilter;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.model.reportistica.statistiche.DistribuzionePsp;
 import it.govpay.model.reportistica.statistiche.TipoIntervallo;
@@ -178,48 +179,7 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 			}
 		}
 		
-		Date data = new Date();
-		String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
-		String dataS = this.getParameter(uriInfo, dataId, String.class);
-		if(StringUtils.isNotEmpty(dataS)){
-			data = this.convertJsonStringToDate(dataS);
-		}
-		filter.setData(data);
-
-		String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.colonne.id");
-		String colonneS = this.getParameter(uriInfo, colonneId, String.class);
-		int colonne = 0;
-		if(StringUtils.isNotEmpty(colonneS)){
-			try{
-				colonne = Integer.parseInt(colonneS);
-			}catch(Exception e){
-
-			}
-		}
-		filter.setLimit(colonne);
-		
-//		String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.avanzamento.id");
-//		String avanzamentoS = this.getParameter(uriInfo, avanzamentoId, String.class);
-//		int avanzamento = 0;
-//		if(StringUtils.isNotEmpty(avanzamentoS)){
-//			try{
-//				avanzamento = Integer.parseInt(avanzamentoS);
-//			}catch(Exception e){
-//
-//			}
-//		}
-		
-		String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
-		String tipoIntervalloS = this.getParameter(uriInfo, tipoIntervalloId, String.class);
-		TipoIntervallo tipoIntervallo= TipoIntervallo.GIORNALIERO;
-		if(StringUtils.isNotEmpty(tipoIntervalloS)){
-			tipoIntervallo = TipoIntervallo.valueOf(tipoIntervalloS);
-		}
-		filter.setTipoIntervallo(tipoIntervallo);
-		
-		// soglia minima percentuale
-		double soglia = ConsoleProperties.getInstance().getSogliaPercentualeMinimaGraficoTorta() / 100;
-		filter.setSoglia(soglia);
+		filter = (TransazioniFilter) popoloFiltroStatistiche(uriInfo, bd, filter);
 		
 
 		return eseguiRicerca ;

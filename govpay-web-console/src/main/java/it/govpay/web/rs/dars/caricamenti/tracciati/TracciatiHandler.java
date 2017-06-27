@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -232,15 +233,21 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				String fileTracciatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.id");
 				String fileTracciatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.label");
 
-				List<String> mt = new ArrayList<String>();
-				mt.add(".csv");
+				String tracciatoAccTypes = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.acceptedMimeTypes");
+				List<String> acceptedMimeTypes =new ArrayList<String>();
+				acceptedMimeTypes.addAll(Arrays.asList(tracciatoAccTypes.split(",")));  
 
 				Long dimensioneMassimaFileTracciato = ConsoleProperties.getInstance().getDimensioneMassimaFileTracciato();
+				String maxByteSizeS =Utils.fileSizeConverter(dimensioneMassimaFileTracciato);
 				int numeroFileTracciato = 1;
-
-				InputFile fileTracciato = new InputFile(fileTracciatoId,fileTracciatoLabel, true, false, true, mt , dimensioneMassimaFileTracciato ,numeroFileTracciato,null);
+				String fileTracciatoNote = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".fileTracciato.note", maxByteSizeS);
+				InputFile fileTracciato = new InputFile(fileTracciatoId,fileTracciatoLabel, true, false, true, acceptedMimeTypes , dimensioneMassimaFileTracciato ,numeroFileTracciato);
 				fileTracciato.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.suggestion"));
 				fileTracciato.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.errorMessage"));
+				fileTracciato.setErrorMessageFileSize(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.errorMessageFileSize"));
+				fileTracciato.setErrorMessageFileType(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.errorMessageFileType"));
+				fileTracciato.setNote(fileTracciatoNote);
+				
 				this.infoCreazioneMap.put(fileTracciatoId, fileTracciato);
 			} catch(Exception e ){
 				throw new ConsoleException(e); 
