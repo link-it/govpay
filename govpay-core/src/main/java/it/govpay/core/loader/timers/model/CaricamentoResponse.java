@@ -32,7 +32,7 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	protected byte[] createDati() {
 		switch(this.getStato()) {
 		case ESEGUITO_KO: return this.getDescrizioneEsito().getBytes();
-		case ESEGUITO_OK: return ("OK;" + this.iuv + ";" + this.qrCode + ";" + this.barCode).getBytes();
+		case ESEGUITO_OK: return ("OK;" + this.iuv + ";" + new String(this.qrCode) + ";" + new String(this.barCode)).getBytes();
 		default: return "".getBytes();
 		}
 	}

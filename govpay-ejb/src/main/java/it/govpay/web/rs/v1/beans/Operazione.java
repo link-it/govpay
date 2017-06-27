@@ -22,6 +22,7 @@ package it.govpay.web.rs.v1.beans;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.model.Applicazione;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
 import it.govpay.model.loader.Operazione.TipoOperazioneType;
 
@@ -30,7 +31,6 @@ public class Operazione {
 	private long linea_elaborazione;
 	private StatoOperazioneType stato;
 	private String dettaglio_esito;
-	private String id_operazione;
 	private TipoOperazioneType tipo_operazione;
 	private String cod_applicazione;
 	private String cod_versamento_ente;
@@ -42,9 +42,12 @@ public class Operazione {
 		this.linea_elaborazione = o.getLineaElaborazione();
 		this.stato = o.getStato();
 		this.dettaglio_esito = o.getDettaglioEsito();
-		this.id_operazione = o.getIdOperazione();
 		this.tipo_operazione = o.getTipoOperazione();
-		this.cod_applicazione = o.getApplicazione(bd).getCodApplicazione();
+		
+		Applicazione applicazione = o.getApplicazione(bd);
+		if(applicazione != null)
+			this.cod_applicazione = applicazione.getCodApplicazione();
+		
 		this.cod_versamento_ente = o.getCodVersamentoEnte();
 	}
 
@@ -58,10 +61,6 @@ public class Operazione {
 
 	public String getDettaglio_esito() {
 		return dettaglio_esito;
-	}
-
-	public String getId_operazione() {
-		return id_operazione;
 	}
 
 	public TipoOperazioneType getTipo_operazione() {

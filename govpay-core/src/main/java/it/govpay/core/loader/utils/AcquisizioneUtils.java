@@ -78,7 +78,7 @@ public class AcquisizioneUtils {
 
 			validateACL(operatore, domini, tributi);
 			
-			String op = linea.toString().split(this.formatW.getCsvFormat().getRecordSeparator())[0]; //TODO trovare modo elegante
+			String op = new String(linea).split(this.formatW.getCsvFormat().getDelimiter()+"")[0]; //TODO trovare modo elegante
 
 			ParserResult parsed = null;
 			try {
@@ -95,7 +95,13 @@ public class AcquisizioneUtils {
 
 			request = acquisisci(parsed.getRecords().get(0));
 		} catch(ValidationException e) {
-			request = new OperazioneNonValidaRequest();
+			logger.error("Errore di acquisizione: " + e.getMessage(), e);
+			try {
+				request = new OperazioneNonValidaRequest();
+				((OperazioneNonValidaRequest)request).setDettaglioErrore(e.getMessage());
+			} catch (ValidationException e1) {
+				logger.error("Errore durante l'inizializzazione di una operazione non valida: " + e.getMessage(), e);	
+			}
 		} finally {
 			request.setIdTracciato(tracciato.getId());
 			request.setLinea(numLinea);

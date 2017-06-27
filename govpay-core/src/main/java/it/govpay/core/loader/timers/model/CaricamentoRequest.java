@@ -11,27 +11,24 @@ import org.openspcoop2.utils.csv.Record;
 
 public class CaricamentoRequest extends AbstractOperazioneRequest {
 
-	public CaricamentoRequest(Record record) {
+	public CaricamentoRequest(Record record) throws ValidationException {
 		super(TipoOperazioneType.ADD, record);
+		this.setCodDominio(validaESettaRecord(record, "codDominio", 35, null, false));
+		this.setCfDebitore(validaESettaRecord(record, "cfDebitore", 35, null, false));
+		this.setAnagraficaDebitore(validaESettaRecord(record, "anagraficaDebitore", 70, null, false));
+		this.setCodTributo(validaESettaRecord(record, "codTributo", 35, null, false));
 		try {
-			this.setCodDominio(validaESettaRecord(record, "codDominio", 35, null, false));
-			this.setCfDebitore(validaESettaRecord(record, "cfDebitore", 35, null, false));
-			this.setAnagraficaDebitore(validaESettaRecord(record, "anagraficaDebitore", 70, null, false));
-			this.setCodTributo(validaESettaRecord(record, "codTributo", 35, null, false));
-			try {
-				this.setImporto(validaESettaDouble("importo", record.getMap().get("importo"), null, null, false));
-				this.setScadenza(validaESettaDate("dataScadenza", record.getMap().get("dataScadenza"), true));
-			} catch(UtilsException e) {
-				throw new ValidationException(e);
-			}
-			this.setCausale(validaESettaRecord(record, "causale", 256, null, true));
-			this.setBundleKey(validaESettaRecord(record, "bundleKey", 256, null, true));
-			this.setIdDebito(validaESettaRecord(record, "idDebito", 35, null, true));
-			this.setNote(validaESettaRecord(record, "note", 512, null, true));
-		} catch(ValidationException e) {
-			this.setValid(false);
+			this.setImporto(validaESettaDouble("importo", record.getMap().get("importo"), null, null, false));
+			this.setScadenza(validaESettaDate("dataScadenza", record.getMap().get("dataScadenza"), true));
+		} catch(UtilsException e) {
+			throw new ValidationException(e);
 		}
-		
+		this.setCausale(validaESettaRecord(record, "causale", 256, null, true));
+		this.setBundleKey(validaESettaRecord(record, "bundleKey", 256, null, true));
+		this.setIdDebito(validaESettaRecord(record, "idDebito", 35, null, true));
+		this.setNote(validaESettaRecord(record, "note", 512, null, true));
+		this.setCodApplicazione(validaESettaRecord(record, "codApplicazione", 35, null, false));
+		this.setCodVersamentoEnte(validaESettaRecord(record, "codiceVersamentoEnte", 35, null, false));
 	}
 	
 	public String getCodDominio() {
@@ -97,6 +94,20 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 	public Versamento getVersamento() {
 		return versamento;
 	}
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
 	private String codDominio;
 	private String cfDebitore;
 	private String anagraficaDebitore;
@@ -107,7 +118,9 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 	private String bundleKey;
 	private String idDebito;
 	private String note;
-	
+	private String codApplicazione;
+	private String codVersamentoEnte;
+
 	private Versamento versamento;
 	
 }

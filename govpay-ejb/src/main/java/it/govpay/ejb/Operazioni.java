@@ -73,7 +73,7 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.spedizioneNotifiche("Batch");
 	}
 
-	@Schedule(hour="*", minute="*", persistent=false)
+	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
 	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
 	public static String caricamentoTracciati(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {

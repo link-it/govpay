@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.model.Operatore;
+import it.govpay.bd.model.Operatore;
 
 public class OperatoreConverter {
 

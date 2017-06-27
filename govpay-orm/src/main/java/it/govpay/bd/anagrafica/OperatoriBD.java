@@ -31,7 +31,7 @@ import org.openspcoop2.utils.UtilsException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.converter.OperatoreConverter;
-import it.govpay.model.Operatore;
+import it.govpay.bd.model.Operatore;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
 

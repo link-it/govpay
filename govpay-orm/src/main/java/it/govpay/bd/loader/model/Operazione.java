@@ -32,14 +32,14 @@ public class Operazione extends it.govpay.model.loader.Operazione{
 	private transient Applicazione applicazione;
 	
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(applicazione == null) {
-			applicazione = AnagraficaManager.getApplicazione(bd, getIdApplicazione());
+		if(this.applicazione == null && this.getIdApplicazione() != null) {
+			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
 		} 
-		return applicazione;
+		return this.applicazione;
 	}
 	
 	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
-		applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
-		this.setIdApplicazione(applicazione.getId());
+		this.applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+		this.setIdApplicazione(this.applicazione.getId());
 	}
 }

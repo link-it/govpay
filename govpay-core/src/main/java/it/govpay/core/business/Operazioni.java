@@ -403,8 +403,7 @@ public class Operazioni{
 				log.info("Trovati ["+tracciati.size()+"] tracciati da caricare");
 				for(Tracciato tracciato: tracciati) {
 					CaricaTracciatoThread sender = new CaricaTracciatoThread(tracciato, bd);
-					ThreadExecutorManager.getClientPoolExecutor().execute(sender);
-					threads.add(sender);
+					sender.run();
 				}
 				log.info("Processi di caricamento avviati.");
 
@@ -422,12 +421,13 @@ public class Operazioni{
 					}
 
 					if(completed) {
+						BasicBD bd2 = null;
 						try {
-							bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-							BatchManager.stopEsecuzione(bd, trac);
+							bd2 = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+							BatchManager.stopEsecuzione(bd2, trac);
 						} catch (ServiceException e) {
 						} finally {
-							if(bd != null) bd.closeConnection();
+							if(bd2 != null) bd2.closeConnection();
 						}
 						aggiornaSondaOK(trac, bd);
 

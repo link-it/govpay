@@ -5,25 +5,39 @@ import it.govpay.bd.loader.model.Tracciato;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class TimerCaricamentoTracciatoSmistatore {
 
+	private BasicBD singleConnectionBD;
 	
-	public int smista(List<List<byte[]>> lst, Tracciato tracciato) throws Exception {
+	public TimerCaricamentoTracciatoSmistatore(BasicBD bd) {
+		this.singleConnectionBD = bd;
+	}
+	
+	public TimerCaricamentoTracciatoSmistatore() {
+	}
+	
+	public int smista(List<List<byte[]>> lst, Tracciato tracciato, long lineaIniziale) throws Exception {
 		List<BasicBD> bdList = new ArrayList<BasicBD>();
 		
 		List<TimerCaricamentoTracciatoCore> threadList = new ArrayList<TimerCaricamentoTracciatoCore>();
 		try {
 			for(List<byte[]> lstWrapper: lst) {
-				BasicBD newInstance = BasicBD.newInstance("");
-				bdList.add(newInstance);
+
 				TimerCaricamentoTracciatoCore timer = new TimerCaricamentoTracciatoCore();
-				timer.setBd(newInstance);
+
+				BasicBD newInstance = null;
+				if(this.singleConnectionBD == null) {
+					newInstance = BasicBD.newInstance("");
+					newInstance.setAutoCommit(false);
+					bdList.add(newInstance);
+					timer.setBd(newInstance);
+				} else {
+					timer.setBd(this.singleConnectionBD);
+				}
 				timer.setLineaLst(lstWrapper);
 				timer.setTracciato(tracciato);
+				timer.setLineaIniziale(lineaIniziale);
 				threadList.add(timer);
 			}
 		} catch(Exception e) {
@@ -38,33 +52,41 @@ public class TimerCaricamentoTracciatoSmistatore {
 
         List<Integer> returnLst = new ArrayList<Integer>();        
 
-        ExecutorService executor = null;
+//        ExecutorService executor = null;
         try {
-	        executor = Executors.newFixedThreadPool(lst.size());
+//	        executor = Executors.newFixedThreadPool(lst.size());
 	
 	
 	
-	        List<Future<Integer>> lstFuture = new ArrayList<Future<Integer>>(); 
 	        for(TimerCaricamentoTracciatoCore thread: threadList) {
-	        	lstFuture.add(executor.submit(thread));
-	        }
-	
-	        for(Future<Integer> future: lstFuture) {
-	        	returnLst.add(future.get());
+	        	returnLst.add(thread.call());
 	        }
 
-        	for(BasicBD bd: bdList) {
+	        if(this.singleConnectionBD != null) {
 				try{
-					bd.commit();
+					this.singleConnectionBD.commit();
 				} catch(Exception e1) {}
-			}
+	        	
+	        } else {
+	        	for(BasicBD bd: bdList) {
+					try{
+						bd.commit();
+					} catch(Exception e1) {}
+				}
+	        }
 
         } catch(Exception e) {
-        	for(BasicBD bd: bdList) {
+	        if(this.singleConnectionBD != null) {
 				try{
-					bd.rollback();
+					this.singleConnectionBD.rollback();
 				} catch(Exception e1) {}
-			}
+	        } else {
+	        	for(BasicBD bd: bdList) {
+					try{
+						bd.rollback();
+					} catch(Exception e1) {}
+				}
+	        }
         	throw new Exception("Eccezione durante l'esecuzione dei job: " + e.getMessage(), e);
         } finally {
         	for(BasicBD bd: bdList) {
@@ -73,8 +95,8 @@ public class TimerCaricamentoTracciatoSmistatore {
 				} catch(Exception e1) {}
 			}
         	
-        	if(executor != null)
-        		executor.shutdown();
+//        	if(executor != null)
+//        		executor.shutdown();
         }	        
         
         
@@ -86,4 +108,5 @@ public class TimerCaricamentoTracciatoSmistatore {
         return returned;
 		
 	}
+
 }
