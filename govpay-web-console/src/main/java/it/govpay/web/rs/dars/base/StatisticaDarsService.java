@@ -49,7 +49,7 @@ public abstract class StatisticaDarsService extends BaseDarsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".elenco.erroreGenerico"));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".grafico.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();

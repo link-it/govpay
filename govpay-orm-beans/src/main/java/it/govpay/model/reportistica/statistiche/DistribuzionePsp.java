@@ -19,40 +19,29 @@
  */
 package it.govpay.model.reportistica.statistiche;
 
-import java.io.Serializable;
-import java.util.Date;
+public class DistribuzionePsp {
+	private String psp;
+	private long transazioni;
+	private double percentuale;
 
-public class DistribuzioneEsiti implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L; 
-	private Date data;
-	private long eseguiti;
-	private long errori;
-	private long in_corso;
-
-	public DistribuzioneEsiti(Date data, Long eseguiti, Long errori, Long in_corso) {
-		this.data = data;
-		this.eseguiti = eseguiti;
-		this.errori = errori;
-		this.in_corso = in_corso;
+	public DistribuzionePsp(String psp, long transazioni) {
+		this.psp = psp;
+		this.transazioni = transazioni;
 	}
 
-	public Date getData() {
-		return data;
+	public String getPsp() {
+		return psp;
 	}
 
-	public long getEseguiti() {
-		return eseguiti;
+	public long getTransazioni() {
+		return transazioni;
 	}
 
-	public long getErrori() {
-		return errori;
+	public double getPercentuale() {
+		return percentuale;
 	}
 
-	public long getIn_corso() {
-		return in_corso;
+	public void setPercentuale(double percentuale) {
+		this.percentuale = percentuale;
 	}
 }

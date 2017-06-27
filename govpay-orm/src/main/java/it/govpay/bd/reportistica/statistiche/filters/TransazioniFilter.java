@@ -5,9 +5,7 @@ import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 
-import it.govpay.bd.AbstractFilter;
-
-public class TransazioniFilter extends AbstractFilter {
+public class TransazioniFilter extends StatisticaFilter {
 	
 	public TransazioniFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);

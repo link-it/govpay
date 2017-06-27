@@ -600,7 +600,7 @@ public class Pagamento extends BasicBD {
 				
 				for(Rpt rpt : rpts) {
 					
-					// WORKAROUND CONCORRENZA CON INVIO RPT DAL NODO
+					// WORKAROUND CONCORRENZA CON INVIO RT DAL NODO
 					// SKIPPO LE RPT PENDENTI CREATE MENO DI MEZZ'ORA FA
 					
 					if(rpt.getDataMsgRichiesta().after(mezzorafa)) {

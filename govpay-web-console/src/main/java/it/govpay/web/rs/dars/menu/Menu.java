@@ -61,7 +61,7 @@ import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Fr;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Transazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
-import it.govpay.web.rs.dars.statistiche.transazioni.StatisticheTransazioni;
+import it.govpay.web.rs.dars.statistiche.transazioni.DistribuzioneEsiti;
 import it.govpay.web.utils.Utils;
 
 @Path("/dars/")
@@ -231,7 +231,7 @@ public class Menu extends BaseRsService {
 			List<VoceMenu> vociMenuStatistiche = new ArrayList<VoceMenu>();
 
 			if(this.checkDirittiServizioOperatore(bd, Servizio.Statistiche)){
-				StatisticheTransazioni statTransazioniDars = new StatisticheTransazioni();
+				DistribuzioneEsiti statTransazioniDars = new DistribuzioneEsiti();
 				URI statTransazioniURI = new URI(statTransazioniDars.getPathServizio());
 				VoceMenu voceMenuStatTransazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(statTransazioniDars.getNomeServizio() + ".titolo"),	statTransazioniURI, VoceMenu.VOCE_STATISTICA);
 				vociMenuStatistiche.add(voceMenuStatTransazioni);

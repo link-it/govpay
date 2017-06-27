@@ -150,5 +150,17 @@ public class OracleNativeQueries extends NativeQueries {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getStatisticheTransazioniPerPspQuery(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object[] getStatisticheTransazioniPerPspValues(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -13,11 +13,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.model.reportistica.statistiche.DistribuzioneEsiti;
-import it.govpay.model.reportistica.statistiche.TipoIntervallo;
+import it.govpay.model.reportistica.statistiche.DistribuzionePsp;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 public class TransazioniBD extends BasicBD {
 
+	
 	public TransazioniBD(BasicBD basicBD) {
 		super(basicBD);
 	}
@@ -26,7 +27,7 @@ public class TransazioniBD extends BasicBD {
 		return new TransazioniFilter(this.getRptService());
 	}
 
-	public List<DistribuzioneEsiti> getDistribuzioneEsiti(TipoIntervallo tipoIntervallo, Date data, int limit, TransazioniFilter filtro) throws ServiceException {
+	public List<DistribuzioneEsiti> getDistribuzioneEsiti(TransazioniFilter filtro) throws ServiceException {
 		try {
 			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
 
@@ -35,10 +36,10 @@ public class TransazioniBD extends BasicBD {
 			lstReturnType.add(Long.class);
 			lstReturnType.add(Long.class);
 
-			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoQuery(tipoIntervallo, data, limit, filtro);
+			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoQuery(filtro.getTipoIntervallo(), filtro.getData(), filtro.getLimit(), filtro);
 			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
 
-			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoValues(tipoIntervallo, data, limit, filtro);
+			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoValues(filtro.getTipoIntervallo(), filtro.getData(), filtro.getLimit(), filtro);
 			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
 			for(Object obj: array) {
 				Logger.getLogger(JDBCServiceManager.class).debug(obj);
@@ -56,6 +57,61 @@ public class TransazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return new ArrayList<DistribuzioneEsiti>();
+		}
+	}
+	
+	public List<DistribuzionePsp> getDistribuzionePsp(TransazioniFilter filtro) throws ServiceException {
+		try {
+			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+
+			lstReturnType.add(String.class);
+			lstReturnType.add(Long.class);
+
+			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerPspQuery(filtro.getTipoIntervallo(), filtro.getData(), filtro);
+			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
+
+			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerPspValues(filtro.getTipoIntervallo(), filtro.getData(), filtro);
+			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
+			for(Object obj: array) {
+				Logger.getLogger(JDBCServiceManager.class).debug(obj);
+			}
+
+			List<List<Object>> lstRecords = this.getRptService().nativeQuery(nativeQueryString, lstReturnType, array);
+
+			List<DistribuzionePsp> distribuzioniTmp = new ArrayList<DistribuzionePsp>();
+			List<DistribuzionePsp> distribuzioniFinal = new ArrayList<DistribuzionePsp>();
+
+			long totale = 0;
+			for(List<Object> record: lstRecords) {
+				distribuzioniTmp.add(new DistribuzionePsp((String) record.get(0), (Long) record.get(1)));
+				totale += (Long) record.get(1);
+			}
+			
+			// Calcolo le percentuali
+			double percentualeOccupata = 0;
+			long totaleOccupato = 0;
+			for(int i=0; i<distribuzioniTmp.size(); i++) {
+				DistribuzionePsp distribuzione = distribuzioniTmp.get(i);
+				
+				double percentuale = ((double) distribuzione.getTransazioni()) / totale;
+				if(percentuale >= filtro.getSoglia()) {
+					distribuzione.setPercentuale(percentuale);
+					distribuzioniFinal.add(distribuzione);
+					percentualeOccupata += percentuale;
+					totaleOccupato += distribuzione.getTransazioni();
+				} else {
+					DistribuzionePsp distribuzioneAltro = new DistribuzionePsp("Altri", totale - totaleOccupato);
+					distribuzioneAltro.setPercentuale(1 - percentualeOccupata);
+					distribuzioniFinal.add(distribuzioneAltro);
+					break;
+				}
+			}
+			
+			return distribuzioniFinal;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return new ArrayList<DistribuzionePsp>();
 		}
 	}
 }

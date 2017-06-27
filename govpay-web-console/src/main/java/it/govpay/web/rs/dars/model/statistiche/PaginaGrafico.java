@@ -3,9 +3,11 @@ package it.govpay.web.rs.dars.model.statistiche;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import it.govpay.web.rs.dars.model.ElementoCorrelato;
 import it.govpay.web.rs.dars.model.InfoForm;
+import it.govpay.web.rs.dars.model.input.ParamField;
 
 public class PaginaGrafico {
 
@@ -13,12 +15,12 @@ public class PaginaGrafico {
 	private String titolo;
 	private InfoForm infoEsportazione;
 	private InfoForm infoRicerca;
-	private InfoForm infoGrafico;
+	private Map<String, ParamField<?>> infoGrafico;
 	// indica se visualizzare il filtro specifico per date
 	private boolean attivaDate;
 	private List<ElementoCorrelato> elementiCorrelati;
 	
-	public PaginaGrafico(String titolo,InfoForm infoEsportazione, InfoForm infoRicerca, InfoForm infoGrafico)  {
+	public PaginaGrafico(String titolo,InfoForm infoEsportazione, InfoForm infoRicerca, Map<String, ParamField<?>> infoGrafico)  {
 		this.titolo = titolo;
 		this.infoRicerca = infoRicerca;
 		this.infoGrafico = infoGrafico;
@@ -77,11 +79,11 @@ public class PaginaGrafico {
 		return this.elementiCorrelati;
 	}
 
-	public InfoForm getInfoGrafico() {
+	public Map<String, ParamField<?>> getInfoGrafico() {
 		return infoGrafico;
 	}
 
-	public void setInfoGrafico(InfoForm infoGrafico) {
+	public void setInfoGrafico(Map<String, ParamField<?>> infoGrafico) {
 		this.infoGrafico = infoGrafico;
 	}
 	
