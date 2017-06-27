@@ -5,12 +5,14 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.loader.OperazioniBD;
 import it.govpay.bd.loader.model.Operazione;
 import it.govpay.bd.loader.model.Tracciato;
+import it.govpay.core.business.PagamentiAttesa;
+import it.govpay.core.business.model.CaricaVersamentoDTO;
 import it.govpay.core.loader.timers.model.AbstractOperazioneRequest;
 import it.govpay.core.loader.timers.model.AbstractOperazioneResponse;
 import it.govpay.core.loader.timers.model.AnnullamentoRequest;
 import it.govpay.core.loader.timers.model.CaricamentoRequest;
 import it.govpay.core.loader.timers.model.OperazioneNonValidaRequest;
-import it.govpay.model.Applicazione;
+import it.govpay.core.loader.timers.model.OperazioneNonValidaResponse;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class TimerCaricamentoTracciatoCore implements Callable<Integer> {
 	private CaricamentoUtils caricamentoUtils;
 	private AcquisizioneUtils acquisizioneUtils;
 	private List<byte[]> lineaLst;
+	private long lineaIniziale;
 	private Tracciato tracciato;
 	private BasicBD bd;
 	
@@ -33,49 +36,46 @@ public class TimerCaricamentoTracciatoCore implements Callable<Integer> {
 		int numLineeElaborate = 0;
 		List<String> tributi = this.acquisizioneUtils.getTributi(bd);
 		List<String> domini = this.acquisizioneUtils.getDomini(bd);
+		long numLinea = this.lineaIniziale;
 		for(byte[] linea: this.lineaLst) {
-			AbstractOperazioneRequest request = this.acquisizioneUtils.acquisisci(linea, this.tracciato, this.tracciato.getOperatore(this.bd), this.tracciato.getLineaElaborazione(), domini, tributi);
+			AbstractOperazioneRequest request = this.acquisizioneUtils.acquisisci(linea, this.tracciato, this.tracciato.getOperatore(this.bd), numLinea++, domini, tributi);
 			if(request != null) {
 				AbstractOperazioneResponse response =  null;
+				String codApplicazione = null;
+				String codVersamentoEnte = null;
 				if(request instanceof CaricamentoRequest) {
-					response = this.caricamentoUtils.caricaVersamento((CaricamentoRequest) request, this.bd);
+					CaricamentoRequest caricamentoRequest = (CaricamentoRequest) request;
+					response = this.caricamentoUtils.caricaVersamento(this.tracciato, caricamentoRequest, this.bd);
+					codApplicazione = caricamentoRequest.getCodApplicazione();
+					codVersamentoEnte = caricamentoRequest.getCodVersamentoEnte();
 				} else if(request instanceof AnnullamentoRequest) {
-					response = this.caricamentoUtils.annullaVersamento((AnnullamentoRequest) request, this.bd);
+					AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) request;
+					response = this.caricamentoUtils.annullaVersamento(this.tracciato, annullamentoRequest, this.bd);
+					codApplicazione = annullamentoRequest.getCodApplicazione();
+					codVersamentoEnte = annullamentoRequest.getCodVersamentoEnte();
 				} else  if(request instanceof OperazioneNonValidaRequest) {
-					OperazioniBD op = new OperazioniBD(bd);
-					Operazione operazione = new Operazione();
-					operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
-					operazione.setDatiRichiesta(linea);
-					operazione.setStato(StatoOperazioneType.NON_VALIDO);
-					if(request.getCodApplicazione() != null) {
-						Applicazione applicazione = AnagraficaManager.getApplicazione(bd, request.getCodApplicazione());
-						if(applicazione != null) {
-							operazione.setIdApplicazione(applicazione.getId());
-						}
-					}
-					operazione.setIdTracciato(request.getIdTracciato());
-					operazione.setLineaElaborazione(request.getLinea());
-					operazione.setTipoOperazione(request.getTipoOperazione());
-					op.insertOperazione(operazione);
-					numLineeElaborate++;
+					OperazioneNonValidaRequest operazioneNonValidaRequest = (OperazioneNonValidaRequest) request;
+					response = new OperazioneNonValidaResponse();
+					response.setStato(StatoOperazioneType.NON_VALIDO);
+					response.setDescrizioneEsito(operazioneNonValidaRequest.getDettaglioErrore());
 				}
 				
-				if(response != null) {
-					OperazioniBD op = new OperazioniBD(bd);
-					Operazione operazione = new Operazione();
-					operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
-					operazione.setDatiRichiesta(linea);
-					operazione.setDatiRisposta(response.getDati());
-					
-					operazione.setStato(response.getStato());
-					operazione.setDettaglioEsito(response.getDescrizioneEsito());
-					operazione.setIdApplicazione(AnagraficaManager.getApplicazione(bd, request.getCodApplicazione()).getId());
-					operazione.setIdTracciato(request.getIdTracciato());
-					operazione.setLineaElaborazione(request.getLinea());
-					operazione.setTipoOperazione(request.getTipoOperazione());
-					op.insertOperazione(operazione);
-					numLineeElaborate++;
-				}
+				OperazioniBD op = new OperazioniBD(bd);
+				Operazione operazione = new Operazione();
+				operazione.setCodVersamentoEnte(codVersamentoEnte);
+				operazione.setDatiRichiesta(linea);
+				operazione.setDatiRisposta(response.getDati());
+				operazione.setStato(response.getStato());
+				operazione.setDettaglioEsito(response.getDescrizioneEsito());
+				
+				if(codApplicazione != null)
+					operazione.setIdApplicazione(AnagraficaManager.getApplicazione(bd, codApplicazione).getId());
+				
+				operazione.setIdTracciato(request.getIdTracciato());
+				operazione.setLineaElaborazione(request.getLinea());
+				operazione.setTipoOperazione(request.getTipoOperazione());
+				op.insertOperazione(operazione);
+				numLineeElaborate++;
 				
 			}
 		}
@@ -92,6 +92,14 @@ public class TimerCaricamentoTracciatoCore implements Callable<Integer> {
 
 	public void setTracciato(Tracciato tracciato) {
 		this.tracciato = tracciato;
+	}
+
+	public long getLineaIniziale() {
+		return lineaIniziale;
+	}
+
+	public void setLineaIniziale(long lineaIniziale) {
+		this.lineaIniziale = lineaIniziale;
 	}
 	
 }

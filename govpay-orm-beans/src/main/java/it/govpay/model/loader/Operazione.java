@@ -38,7 +38,7 @@ public class Operazione {
 	private String dettaglioEsito;
 	private String idOperazione;
 	private TipoOperazioneType tipoOperazione;
-	private long idApplicazione;
+	private Long idApplicazione;
 	private String codVersamentoEnte;
 	
 	public long getId() {
@@ -89,10 +89,10 @@ public class Operazione {
 	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
-	public long getIdApplicazione() {
+	public Long getIdApplicazione() {
 		return idApplicazione;
 	}
-	public void setIdApplicazione(long idApplicazione) {
+	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
 	public String getCodVersamentoEnte() {

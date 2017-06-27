@@ -46,8 +46,7 @@ public class TracciatoConverter {
 		Tracciato dto = new Tracciato();
 
 		dto.setId(vo.getId());
-		if(vo.getStato()!= null)
-			dto.setStato(StatoTracciatoType.valueOf(vo.getStato().name()));
+		dto.setStato(StatoTracciatoType.valueOf(vo.getStato().name()));
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 
 		if(vo.getIdOperatore()!= null)

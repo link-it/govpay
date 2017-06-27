@@ -1,13 +1,15 @@
 package it.govpay.core.business.model;
 
-import java.util.Date;
-
 import it.govpay.model.Applicazione;
+import it.govpay.model.Operatore;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+
+import java.util.Date;
 
 public class ListaTracciatiDTO {
 	
 	private Applicazione applicazione; // filtro applicazione proprietaria del tracciato
+	private Operatore operatore; // filtro operatore proprietaria del tracciato
 	private Date inizio; // filtro Data caricamento
 	private Date fine; // Data caricamento
 	private int offset;
@@ -49,6 +51,12 @@ public class ListaTracciatiDTO {
 	}
 	public void setStato(StatoTracciatoType stato) {
 		this.stato = stato;
+	}
+	public Operatore getOperatore() {
+		return operatore;
+	}
+	public void setOperatore(Operatore operatore) {
+		this.operatore = operatore;
 	}
 
 }

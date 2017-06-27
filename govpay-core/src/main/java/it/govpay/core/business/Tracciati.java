@@ -19,12 +19,9 @@
  */
 package it.govpay.core.business;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.loader.TracciatiBD;
+import it.govpay.bd.loader.filters.TracciatoFilter;
 import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
@@ -34,7 +31,15 @@ import it.govpay.core.business.model.ListaTracciatiDTO;
 import it.govpay.core.business.model.ListaTracciatiDTOResponse;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Operatore;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+
+import java.util.Date;
+import java.util.List;
+
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 
 public class Tracciati extends BasicBD {
@@ -44,39 +49,99 @@ public class Tracciati extends BasicBD {
 	}
 
 	public InserisciTracciatoDTOResponse inserisciTracciato(InserisciTracciatoDTO inserisciTracciatoDTO) throws NotAuthorizedException, InternalException {
-		InserisciTracciatoDTOResponse inserisciTracciatoDTOResponse = new InserisciTracciatoDTOResponse();
-		Tracciato tracciato = new Tracciato();
-		tracciato.setId(1);
-		inserisciTracciatoDTOResponse.setTracciato(tracciato);
-		return inserisciTracciatoDTOResponse;
+		try {
+			InserisciTracciatoDTOResponse inserisciTracciatoDTOResponse = new InserisciTracciatoDTOResponse();
+
+			TracciatiBD tracciatiBd = new TracciatiBD(this);
+			
+			Tracciato tracciato = new Tracciato();
+			
+			tracciato.setDataCaricamento(new Date());
+			tracciato.setDataUltimoAggiornamento(new Date());
+			
+			if(inserisciTracciatoDTO.getApplicazione() != null)
+				tracciato.setIdApplicazione(inserisciTracciatoDTO.getApplicazione().getId());
+			
+			if(inserisciTracciatoDTO.getOperatore() != null)
+				tracciato.setIdOperatore(inserisciTracciatoDTO.getOperatore().getId());
+			
+			tracciato.setNomeFile(inserisciTracciatoDTO.getNomeTracciato());
+			tracciato.setRawDataRichiesta(inserisciTracciatoDTO.getTracciato());
+			tracciato.setStato(StatoTracciatoType.NUOVO);
+			tracciatiBd.insertTracciato(tracciato);
+
+			inserisciTracciatoDTOResponse.setTracciato(tracciato);
+			return inserisciTracciatoDTOResponse;
+		} catch (ServiceException e) {
+			throw new InternalException(e);
+		}
 	}
 
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws NotAuthorizedException, ServiceException {
-		ListaTracciatiDTOResponse inserisciTracciatoDTOResponse = new ListaTracciatiDTOResponse();
-		Tracciato tracciato = new Tracciato();
-		tracciato.setId(1);
-		inserisciTracciatoDTOResponse.setTracciati(new ArrayList<Tracciato>());
-		inserisciTracciatoDTOResponse.getTracciati().add(tracciato);
-		return inserisciTracciatoDTOResponse;
+		ListaTracciatiDTOResponse listaTracciatiDTOResponse = new ListaTracciatiDTOResponse();
+
+		TracciatiBD tracciatiBd = new TracciatiBD(this);
+		TracciatoFilter filter = tracciatiBd.newFilter();
+		
+		if(listaTracciatiDTO.getApplicazione() != null)
+			filter.setIdApplicazione(listaTracciatiDTO.getApplicazione().getId());
+		
+		if(listaTracciatiDTO.getOperatore() != null)
+			filter.setIdOperatore(listaTracciatiDTO.getOperatore().getId());
+		
+		if(listaTracciatiDTO.getFine() != null)
+			filter.setDataUltimoAggiornamentoMax(listaTracciatiDTO.getFine());
+		
+		if(listaTracciatiDTO.getInizio() != null)
+			filter.setDataUltimoAggiornamentoMin(listaTracciatiDTO.getInizio());
+		
+		filter.setOffset(listaTracciatiDTO.getOffset());
+		filter.setLimit(listaTracciatiDTO.getLimit());
+		
+		List<Tracciato> tracciati = tracciatiBd.findAll(filter);
+		listaTracciatiDTOResponse.setTracciati(tracciati);
+
+		return listaTracciatiDTOResponse;
 	}
 	
 	public LeggiTracciatoDTOResponse leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws NotAuthorizedException, ServiceException {
-		LeggiTracciatoDTOResponse leggiTracciatoDTOResponse = new LeggiTracciatoDTOResponse();
-		Tracciato tracciato = new Tracciato();
-		tracciato.setId(1);
-		tracciato.setDataCaricamento(new Date());
-		tracciato.setDataUltimoAggiornamento(new Date());
-		tracciato.setIdApplicazione(leggiTracciatoDTO.getApplicazione().getId());
-		tracciato.setLineaElaborazione(2);
-		tracciato.setStato(StatoTracciatoType.CARICAMENTO_OK);
-		tracciato.setNomeFile("testfile");
-		tracciato.setNumLineeTotali(2);
-		tracciato.setNumOperazioniKo(0);
-		tracciato.setNumOperazioniOk(2);
-		tracciato.setRawDataRichiesta("aaaaa".getBytes());
-		tracciato.setRawDataRisposta("bbbbb".getBytes());
-		leggiTracciatoDTOResponse.setTracciato(tracciato);
-		return leggiTracciatoDTOResponse;
+		try {
+			LeggiTracciatoDTOResponse leggiTracciatoDTOResponse = new LeggiTracciatoDTOResponse();
+
+			TracciatiBD tracciatiBd = new TracciatiBD(this);
+			Tracciato tracciato = tracciatiBd.getTracciato(leggiTracciatoDTO.getId());
+
+			if(leggiTracciatoDTO.getApplicazione() != null)
+				authorizeByApplicazione(tracciato, leggiTracciatoDTO.getApplicazione());
+			
+			if(leggiTracciatoDTO.getOperatore() != null)
+				authorizeByOperatore(tracciato, leggiTracciatoDTO.getOperatore());
+			
+			leggiTracciatoDTOResponse.setTracciato(tracciato);
+			return leggiTracciatoDTOResponse;
+		} catch (NotFoundException e) {
+			return null;
+		} 
+	}
+
+	/**
+	 * @param tracciato 
+	 * @param operatore
+	 */
+	private void authorizeByOperatore(Tracciato tracciato, Operatore operatore) throws NotAuthorizedException {
+		if(tracciato.getIdOperatore() == null || !tracciato.getIdOperatore().equals(operatore.getId())) {
+			throw new NotAuthorizedException();
+		}
+	}
+
+	/**
+	 * @param tracciato 
+	 * @param applicazione
+	 */
+	private void authorizeByApplicazione(Tracciato tracciato, Applicazione applicazione) throws NotAuthorizedException {
+		if(tracciato.getIdApplicazione() == null || !tracciato.getIdApplicazione().equals(applicazione.getId())) {
+			throw new NotAuthorizedException();
+		}
 	}
 }
 

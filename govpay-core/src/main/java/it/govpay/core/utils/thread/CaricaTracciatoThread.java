@@ -27,7 +27,6 @@ import it.govpay.bd.loader.filters.OperazioneFilter.SortFields;
 import it.govpay.bd.loader.model.Operazione;
 import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.core.loader.utils.TimerCaricamentoTracciatoSmistatore;
-import it.govpay.core.utils.GpContext;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 
@@ -48,21 +47,16 @@ public class CaricaTracciatoThread implements Runnable {
 	private static Logger log = LogManager.getLogger();
 	private Tracciato tracciato;
 	private boolean completed = false;
-//	private BasicBD bd;
-
+	private BasicBD bd;
+	
 	public CaricaTracciatoThread(Tracciato tracciato, BasicBD bd) throws ServiceException {
 		this.tracciato = tracciato;
-//		this.bd = bd;
+		this.bd = bd;
 	}
 
 	@Override
 	public void run() {
-		BasicBD bd = null;
-		GpContext ctx = null;
 		try {
-			
-			bd = BasicBD.newInstance("BATTCH");
-			bd.setAutoCommit(false);
 			
 			TracciatiBD tracciatiBD = new TracciatiBD(bd);
 			OperazioniBD operazioniBD = new OperazioniBD(bd);
@@ -78,12 +72,12 @@ public class CaricaTracciatoThread implements Runnable {
 			}
 
 			try {
-				TimerCaricamentoTracciatoSmistatore smist = new TimerCaricamentoTracciatoSmistatore();
+				TimerCaricamentoTracciatoSmistatore smist = new TimerCaricamentoTracciatoSmistatore(bd);
 				List<List<List<byte[]>>> lstLst = splitCSV(tracciato);
 
 
 				for(List<List<byte[]>> lst: lstLst) {
-					int numLineeElaborate = smist.smista(lst, tracciato);
+					int numLineeElaborate = smist.smista(lst, tracciato, tracciato.getLineaElaborazione());
 					tracciato.setLineaElaborazione(tracciato.getLineaElaborazione() + numLineeElaborate);
 					tracciatiBD.updateTracciato(tracciato);
 					bd.commit();
@@ -111,6 +105,9 @@ public class CaricaTracciatoThread implements Runnable {
 					
 					baos.write("\n".getBytes());
 				}
+				
+				tracciato.setRawDataRisposta(baos.toByteArray());
+
 				tracciato.setNumOperazioniKo(countErrori);
 				if(countErrori > 0) {
 					tracciato.setStato(StatoTracciatoType.CARICAMENTO_KO);
@@ -138,8 +135,6 @@ public class CaricaTracciatoThread implements Runnable {
 			try {bd.rollback();} catch(Exception ex) {}
 		} finally {
 			completed = true;
-			if(bd != null) bd.closeConnection(); 
-			if(ctx != null) ctx.log();
 		}
 	}
 
@@ -155,54 +150,15 @@ public class CaricaTracciatoThread implements Runnable {
 
 		br.skip(tracciato.getLineaElaborazione()); //skip prime n linee gia' lette
 		
-		int nFinestre = (int) ((tracciato.getNumLineeTotali() - tracciato.getLineaElaborazione()) / 100);
-		if(nFinestre == 0)
-			nFinestre = 1;
-
-		int lineePerThread = (int) (nFinestre / 10);
-		if(lineePerThread == 0)
-			lineePerThread = 1;
-
-		return getListListList(br, lineePerThread, nFinestre);
-	}
-
-	private List<byte[]> getNextList(BufferedReader br, int limit) throws Exception {
-		List<byte[]> lst = new ArrayList<byte[]>();
-
-		while(br.ready() && lst.size() < limit) {
-			lst.add(br.readLine().getBytes());
-		}
-
-		if(lst.isEmpty()) return null;
-		return lst;
-
-	}
-
-	private List<List<byte[]>> getNextListList(BufferedReader br, int limit1, int limit2) throws Exception {
-		List<List<byte[]>> lst = new ArrayList<List<byte[]>>();
-
-		while(br.ready() && lst.size() < limit2) {
-			List<byte[]> nextList = getNextList(br, limit1);
-			if(nextList != null)
-				lst.add(nextList);
-		}
-
-		if(lst.isEmpty()) return null;
-		return lst;
-
-	}
-
-	private List<List<List<byte[]>>> getListListList(BufferedReader br, int limit1, int limit2) throws Exception {
 		List<List<List<byte[]>>> lst = new ArrayList<List<List<byte[]>>>();
-
+		List<List<byte[]>> lstLst = new ArrayList<List<byte[]>>();
+		List<byte[]> lstLstLst = new ArrayList<byte[]>(); 
 		while(br.ready()) {
-			List<List<byte[]>> nextListList = getNextListList(br, limit1, limit2);
-			if(nextListList != null)
-				lst.add(nextListList);
+			lstLstLst.add(br.readLine().getBytes());
 		}
-
+		lstLst.add(lstLstLst);
+		lst.add(lstLst);
 		return lst;
-
 	}
 
 }

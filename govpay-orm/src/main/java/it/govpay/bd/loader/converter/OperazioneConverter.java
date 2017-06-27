@@ -3,6 +3,7 @@ package it.govpay.bd.loader.converter;
 import it.govpay.bd.loader.model.Operazione;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
 import it.govpay.model.loader.Operazione.TipoOperazioneType;
+import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdTracciato;
 
 import java.util.ArrayList;
@@ -64,8 +65,11 @@ public class OperazioneConverter {
 		idTracciato.setId(dto.getIdTracciato());
 		vo.setIdTracciato(idTracciato);
 
-		if(vo.getIdApplicazione() != null)
-			dto.setIdApplicazione(vo.getIdApplicazione().getId());
+		if(dto.getIdApplicazione() != null) {
+			IdApplicazione idApp = new IdApplicazione();
+			idApp.setId(dto.getIdApplicazione());
+			vo.setIdApplicazione(idApp);
+		}
 
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
 		
@@ -88,8 +92,11 @@ public class OperazioneConverter {
 
 		dto.setIdTracciato(vo.getIdTracciato().getIdTracciato());
 		
-		if(vo.getIdApplicazione() != null)
-			dto.setIdApplicazione(vo.getIdApplicazione().getId());
+		if(dto.getIdApplicazione() != null) {
+			IdApplicazione idApp = new IdApplicazione();
+			idApp.setId(dto.getIdApplicazione());
+			vo.setIdApplicazione(idApp);
+		}
 		
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 

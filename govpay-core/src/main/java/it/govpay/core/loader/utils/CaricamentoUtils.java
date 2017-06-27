@@ -1,10 +1,11 @@
 package it.govpay.core.loader.utils;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.exception.VersamentoException;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.loader.model.Tracciato;
+import it.govpay.core.business.PagamentiAttesa;
+import it.govpay.core.business.model.AnnullaVersamentoDTO;
+import it.govpay.core.business.model.CaricaVersamentoDTO;
+import it.govpay.core.business.model.CaricaVersamentoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.loader.timers.model.AnnullamentoRequest;
 import it.govpay.core.loader.timers.model.AnnullamentoResponse;
@@ -13,25 +14,31 @@ import it.govpay.core.loader.timers.model.CaricamentoResponse;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
-
 public class CaricamentoUtils {
 
-	public CaricamentoResponse caricaVersamento(CaricamentoRequest request, BasicBD basicBD) throws Exception {
+	public CaricamentoResponse caricaVersamento(Tracciato tracciato, CaricamentoRequest request, BasicBD basicBD) throws Exception {
 
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
-
-		if(!request.isValid()) {
-			caricamentoResponse.setStato(StatoOperazioneType.NON_VALIDO);
-			caricamentoResponse.setDescrizioneEsito("VAL_902 : ");
-			return caricamentoResponse;
-		}
-
-		VersamentiBD versamentiBD = new VersamentiBD(basicBD);
 		
 		try {
-			Versamento versamento = VersamentoUtils.toVersamentoModel(request, basicBD);
-			versamentiBD.insertVersamento(versamento);
+			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request, basicBD);
+			CaricaVersamentoDTO caricaVersamentoDTO = null;
+
+			if(tracciato.getApplicazione(basicBD) != null) {
+				caricaVersamentoDTO = new CaricaVersamentoDTO(tracciato.getApplicazione(basicBD), versamentoModel);
+			} else {
+				caricaVersamentoDTO = new CaricaVersamentoDTO(tracciato.getOperatore(basicBD), versamentoModel);
+			}
+			caricaVersamentoDTO.setAggiornaSeEsiste(true);
+			caricaVersamentoDTO.setGeneraIuv(true);
+
+			PagamentiAttesa pagamentiAttesa = new PagamentiAttesa(basicBD);
+			CaricaVersamentoDTOResponse caricaVersamento = pagamentiAttesa.caricaVersamento(caricaVersamentoDTO);
+			caricamentoResponse.setBarCode(caricaVersamento.getBarCode());
+			caricamentoResponse.setQrCode(caricaVersamento.getQrCode());
+			caricamentoResponse.setIuv(caricaVersamento.getIuv());
+
+			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
 		} catch(GovPayException e) {
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			caricamentoResponse.setDescrizioneEsito(e.getCodEsito() + " : " + e.getMessage());
@@ -40,28 +47,24 @@ public class CaricamentoUtils {
 		return caricamentoResponse;
 	}
 	
-	public AnnullamentoResponse annullaVersamento(AnnullamentoRequest request, BasicBD basicBD) throws Exception {
+	public AnnullamentoResponse annullaVersamento(Tracciato tracciato, AnnullamentoRequest request, BasicBD basicBD) throws Exception {
 
+		
 		AnnullamentoResponse annullamentoResponse = new AnnullamentoResponse();
 
-		if(!request.isValid()) {
-			annullamentoResponse.setStato(StatoOperazioneType.NON_VALIDO);
-			annullamentoResponse.setDescrizioneEsito("VAL_902 : ");
-			return annullamentoResponse;
-		}
-
-		VersamentiBD versamentiBD = new VersamentiBD(basicBD);
-
 		try {
-			Versamento versamento = null;
-			try {
-				versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(basicBD, request.getCodApplicazione()).getId(), request.getCodVersamentoEnte());
-			} catch(NotFoundException e) {
-				throw new VersamentoException(request.getCodVersamentoEnte(), VersamentoException.VER_008, "Versamento inesistente", e);
+			PagamentiAttesa pagamentiAttesa = new PagamentiAttesa(basicBD);
+			AnnullaVersamentoDTO annullaVersamentoDTO = null;
+			if(tracciato.getApplicazione(basicBD) != null) {
+				annullaVersamentoDTO = new AnnullaVersamentoDTO(tracciato.getApplicazione(basicBD), request.getCodApplicazione(), request.getCodVersamentoEnte());
+			} else {
+				annullaVersamentoDTO = new AnnullaVersamentoDTO(tracciato.getOperatore(basicBD), request.getCodApplicazione(), request.getCodVersamentoEnte());
 			}
-			versamentiBD.annullaVersamento(versamento, request.getMotivoAnnullamento());
+
+			pagamentiAttesa.annullaVersamento(annullaVersamentoDTO);
+			
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
-		} catch(VersamentoException e) {
+		} catch(GovPayException e) {
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			annullamentoResponse.setDescrizioneEsito(e.getCodEsito() + " : " + e.getMessage());
 		}

@@ -46,7 +46,9 @@ public class TracciatoFilter extends AbstractFilter {
 	
 	private List<StatoTracciatoType> statoTracciato;
 	private Long idOperatore = null;
+	private Long idApplicazione = null;
 	private Date dataUltimoAggiornamentoMax;
+	private Date dataUltimoAggiornamentoMin;
 	
 	public enum SortFields {
 	}
@@ -86,18 +88,29 @@ public class TracciatoFilter extends AbstractFilter {
 				newExpression.in(cf, idTracciati);
 				addAnd = true;
 			}
-			
+
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+
 			if(this.idOperatore != null){
 				if(addAnd)
 					newExpression.and();
-				TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField idOperatoreCustomField = new CustomField("id_operatore",  Long.class, "id_operatore",converter.toTable(it.govpay.orm.Tracciato.model()));
-				
 				newExpression.equals(idOperatoreCustomField, this.idOperatore);
+			}
+			
+			if(this.idApplicazione != null){
+				if(addAnd)
+					newExpression.and();
+				CustomField idOperatoreCustomField = new CustomField("id_applicazione",  Long.class, "id_applicazione",converter.toTable(it.govpay.orm.Tracciato.model()));
+				newExpression.equals(idOperatoreCustomField, this.idApplicazione);
 			}
 			
 			if(this.dataUltimoAggiornamentoMax != null) {
 				newExpression.lessEquals(it.govpay.orm.Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, this.dataUltimoAggiornamentoMax);
+			}
+			
+			if(this.dataUltimoAggiornamentoMin != null) {
+				newExpression.greaterEquals(it.govpay.orm.Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, this.dataUltimoAggiornamentoMin);
 			}
 			
 			return newExpression;
@@ -160,6 +173,22 @@ public class TracciatoFilter extends AbstractFilter {
 
 	public void setDataUltimoAggiornamentoMax(Date dataUltimoAggiornamentoMax) {
 		this.dataUltimoAggiornamentoMax = dataUltimoAggiornamentoMax;
+	}
+
+	public Long getIdApplicazione() {
+		return idApplicazione;
+	}
+
+	public void setIdApplicazione(Long idApplicazione) {
+		this.idApplicazione = idApplicazione;
+	}
+
+	public Date getDataUltimoAggiornamentoMin() {
+		return dataUltimoAggiornamentoMin;
+	}
+
+	public void setDataUltimoAggiornamentoMin(Date dataUltimoAggiornamentoMin) {
+		this.dataUltimoAggiornamentoMin = dataUltimoAggiornamentoMin;
 	}
 
 	

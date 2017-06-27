@@ -17,29 +17,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.bd.loader.model;
+
+package it.govpay.bd.model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Applicazione;
+import it.govpay.model.Ruolo;
 
-public class Operazione extends it.govpay.model.loader.Operazione{
-
-	// BUSINESS
-	private transient Applicazione applicazione;
+public class Operatore extends it.govpay.model.Operatore {
+	private static final long serialVersionUID = 1L;
 	
-	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(this.applicazione == null && this.getIdApplicazione() != null) {
-			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+	// Business
+	
+	private transient List<Ruolo> ruoli;
+	
+
+	public List<Ruolo> getRuoli(BasicBD bd) throws ServiceException {
+		if(ruoli == null && super.getRuoli() != null) {
+			ruoli = new ArrayList<Ruolo>();
+			for(String codRuolo : super.getRuoli()) {
+				try {
+					ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
+				} catch (NotFoundException e) {
+					throw new ServiceException(e);
+				}
+			}
 		} 
-		return this.applicazione;
+		return ruoli;
 	}
-	
-	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
-		this.applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
-		this.setIdApplicazione(this.applicazione.getId());
-	}
+
 }
+

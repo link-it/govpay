@@ -48,7 +48,7 @@ public class Dominio extends BasicModel {
 	
 	private String iuvPrefix;
 	private boolean iuvPrefixStrict;
-	private transient byte[] logo;
+	private byte[] logo;
 	
 	public Long getId() {
 		return id;

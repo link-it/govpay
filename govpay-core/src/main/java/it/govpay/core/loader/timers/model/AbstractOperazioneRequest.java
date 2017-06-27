@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.csv.Record;
@@ -16,21 +15,11 @@ public abstract class AbstractOperazioneRequest {
 
 	private Long idTracciato;
 	private Long linea;
-	private String codApplicazione;
-	private String codVersamentoEnte;
 	private byte[] dati;
 	private TipoOperazioneType tipoOperazione;
-	private boolean isValid;
 	
-	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione, Record record) {
-		this.isValid = true;
-		try {
-			this.tipoOperazione = tipoOperazione;
-			this.setCodApplicazione(validaESettaRecord(record, "codApplicazione", 35, null, false));
-			this.setCodVersamentoEnte(validaESettaRecord(record, "codiceVersamentoEnte", 35, null, false));
-		} catch(ValidationException e) {
-			this.isValid = false;
-		}
+	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione, Record record) throws ValidationException {
+		this.tipoOperazione = tipoOperazione;
 	}
 
 	public Long getLinea() {
@@ -50,18 +39,6 @@ public abstract class AbstractOperazioneRequest {
 	}
 	public void setIdTracciato(Long idTracciato) {
 		this.idTracciato = idTracciato;
-	}
-	public String getCodApplicazione() {
-		return codApplicazione;
-	}
-	public void setCodApplicazione(String codApplicazione) {
-		this.codApplicazione = codApplicazione;
-	}
-	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
-	}
-	public void setCodVersamentoEnte(String codVersamentoEnte) {
-		this.codVersamentoEnte = codVersamentoEnte;
 	}
 
 	public TipoOperazioneType getTipoOperazione() {
@@ -157,19 +134,11 @@ public abstract class AbstractOperazioneRequest {
 		}
 
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
 			return sdf.parse(validaESetta(nomeCampo, campo, null, null, nullable));
 		} catch (ParseException e) {
-			throw new ValidationException("Campo "+nomeValoreCampo+" non e' una data espressa in formato " + DateFormatUtils.ISO_DATE_FORMAT);
+			throw new ValidationException("Campo "+nomeValoreCampo+" non e' una data espressa in formato dd/MM/YYYY");
 		}
 	}
 
-	public boolean isValid() {
-		return isValid;
-	}
-
-	public void setValid(boolean isValid) {
-		this.isValid = isValid;
-	}
-	
 }

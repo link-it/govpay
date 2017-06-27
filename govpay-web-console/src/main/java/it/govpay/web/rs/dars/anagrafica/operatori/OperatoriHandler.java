@@ -44,7 +44,7 @@ import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
-import it.govpay.model.Operatore;
+import it.govpay.bd.model.Operatore;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
