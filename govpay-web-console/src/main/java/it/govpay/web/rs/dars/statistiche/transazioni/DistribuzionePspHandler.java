@@ -63,7 +63,6 @@ import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputDate;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
-import it.govpay.web.rs.dars.model.statistiche.Colori;
 import it.govpay.web.rs.dars.model.statistiche.Grafico;
 import it.govpay.web.rs.dars.model.statistiche.Grafico.TipoGrafico;
 import it.govpay.web.rs.dars.model.statistiche.PaginaGrafico;
@@ -130,12 +129,9 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 
 			Grafico grafico = new Grafico(TipoGrafico.pie);
 
-			grafico.setLabelX(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".xAxis.label"));
-			grafico.setLabelY(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".yAxis.label"));
 			grafico.setTitolo(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".label.titolo"));
 			grafico.setSottotitolo(sottoTitolo); 
 			grafico.setColoriAutomatici(true);
-			grafico.getColori().addAll(Colori.getColoriTransazioni());
 
 			if (distribuzioneEsiti != null && distribuzioneEsiti.size() > 0) {
 				Serie<Long> serie1 = new Serie<Long>();

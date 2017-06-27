@@ -33613,7 +33613,7 @@ Polymer.AppLocalizeBehavior = {
         if(ok) {
           var vaadinUps = this.querySelectorAll('vaadin-upload');
           for (var v = 0; v < vaadinUps.length; v++) {
-            if(!vaadinUps[v].validate()){
+            if(vaadinUps[v].required && !vaadinUps[v].validate()){
                 ok = false;
                 break;
             }
