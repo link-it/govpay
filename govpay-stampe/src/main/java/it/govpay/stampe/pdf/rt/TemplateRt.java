@@ -48,7 +48,7 @@ public class TemplateRt {
 			if(ricevuta.getLogoDominioCreditore()!=null && ricevuta.getLogoDominioCreditore().length > 0){
 				lst.add(cmp.image(new ByteArrayInputStream(ricevuta.getLogoDominioCreditore())).setFixedDimension(90, 90).setHorizontalImageAlignment(HorizontalImageAlignment.LEFT)); 
 			}else {
-				lst.add(cmp.text("   ").setHorizontalTextAlignment(HorizontalTextAlignment.LEFT).setStyle(headerStyle.setLeftPadding(10)));
+				lst.add(cmp.text("   ").setFixedDimension(90, 90).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT).setStyle(headerStyle.setLeftPadding(10)));
 			}
 
 			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.CENTER;
@@ -325,11 +325,11 @@ public class TemplateRt {
 			//			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_PSP, ricevuta.getPsp()));
 			if(StringUtils.isNotEmpty(ricevuta.getCausale())){
 				sb.append("<br/>");
-				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_CAUSALE, ricevuta.getCausale()));
+				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_CAUSALE_BONIFICIO, ricevuta.getCausale()));
 			}
 			if(StringUtils.isNotEmpty(ricevuta.getDescrizioneCausale())){
 				sb.append("<br/>");
-				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_DESCRIZIONE_CAUSALE, ricevuta.getDescrizioneCausale()));
+				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_CAUSALE_VERSAMENTO, ricevuta.getDescrizioneCausale()));
 			}
 
 			values.add(sb.toString());

@@ -72,6 +72,8 @@ public class Costanti {
 	public static final String LABEL_ISTITUTO_ATTESTANTE = "Istituto attestante";
 	
 	public static final String LABEL_CAUSALE = "Causale";
+	public static final String LABEL_CAUSALE_BONIFICIO = "Causale Bonifico";
+	public static final String LABEL_CAUSALE_VERSAMENTO = "Causale Versamento";
 	public static final String LABEL_DESCRIZIONE_CAUSALE = "Descrizione Causale";
 	public static final String LABEL_TERMINE_PAGAMENTO = "Termine di pagamento";
 	

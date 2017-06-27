@@ -138,6 +138,9 @@ public class RicevutaPagamentoUtils {
 		
 //		ricevuta.setDataScadenza(v.getDataScadenza());
 //		ricevuta.setImportoDovuto(v.getImportoTotale());
+		
+		ricevuta.setDescrizioneCausale(causale != null ? causale.getSimple() : ""); 
+		
 		if(rt.getIstitutoAttestante() != null){
 			CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
 			Anagrafica anagraficaArttestante = new Anagrafica();
