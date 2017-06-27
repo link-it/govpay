@@ -16,7 +16,6 @@ public abstract class StatisticaFilter extends AbstractFilter {
 	private Date data;
 	private TipoIntervallo tipoIntervallo;
 	private Double soglia;
-	private int avanzamento;
 	
 	public Date getData() {
 		return data;
@@ -36,11 +35,4 @@ public abstract class StatisticaFilter extends AbstractFilter {
 	public void setSoglia(Double soglia) {
 		this.soglia = soglia;
 	}
-	public int getAvanzamento() {
-		return avanzamento;
-	}
-	public void setAvanzamento(int avanzamento) {
-		this.avanzamento = avanzamento;
-	}
-	
 }

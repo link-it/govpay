@@ -50,7 +50,6 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.reportistica.statistiche.TransazioniBD;
 import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
 import it.govpay.model.reportistica.statistiche.DistribuzioneEsiti;
-import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.psp.PspHandler;
@@ -65,8 +64,6 @@ import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
-import it.govpay.web.rs.dars.model.input.base.InputDate;
-import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.model.statistiche.Colori;
 import it.govpay.web.rs.dars.model.statistiche.Grafico;
@@ -121,11 +118,12 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 			Date start = calendar.getTime();
 			String sottoTitolo = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",_sdf.format(start),_sdf.format(filter.getData()));
 
-			
-
 			// visualizza la ricerca solo se i risultati sono > del limit
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd);
 			Map<String, ParamField<?>> infoGrafico = this.getInfoGrafico(uriInfo, bd); 
+			
+			// valorizzo i valori da restitire al client
+			infoGrafico = this.valorizzaInfoGrafico(uriInfo, bd, filter, infoGrafico);
 
 			List<DistribuzioneEsiti> distribuzioneEsiti = transazioniBD.getDistribuzioneEsiti(filter);
 
@@ -354,10 +352,6 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 
 			String idPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPsp.id");
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-			String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
-			String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.colonne.id");
-			String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.avanzamento.id");
-			String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
 
 			List<Voce<Long>> psp  = new ArrayList<Voce<Long>>();
 			// idDominio
@@ -371,59 +365,9 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
 			this.infoRicercaMap.put(idDominioId, idDominio);
 
-			InputNumber colonne = new InputNumber(colonneId, null, null, true, true, false, 1, 20);
-			this.infoRicercaMap.put(colonneId, colonne);
-
-			InputNumber avanzamento = new InputNumber(avanzamentoId, null, null, true, true, false, 1, 20);
-			this.infoRicercaMap.put(avanzamentoId, avanzamento);
-
-			InputDate data = new InputDate(dataId, null, new Date(), false, false, true, null, null);
-			this.infoRicercaMap.put(dataId, data);
-
-			List<Voce<String>> tipiIntervallo = new ArrayList<Voce<String>>(); //tipoIntervallo.ORARIO.label
-			tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.ORARIO.name()+".label"),TipoIntervallo.ORARIO.name()));
-			tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".label"),TipoIntervallo.GIORNALIERO.name()));
-			tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.MENSILE.name()+".label"),TipoIntervallo.MENSILE.name()));
-			String tipoIntervalloLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.label");
-			SelectList<String> tipoIntervallo = new SelectList<String>(tipoIntervalloId, tipoIntervalloLabel, TipoIntervallo.GIORNALIERO.name(), false, false, true, tipiIntervallo );
-			this.infoRicercaMap.put(tipoIntervalloId, tipoIntervallo);
+			this.initInfoGrafico(uriInfo,bd);
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Map<String, ParamField<?>> getInfoGrafico(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca,
-			Map<String, String> parameters) throws ConsoleException {
-		Map<String, ParamField<?>> infoGrafico = new HashMap<String, ParamField<?>>();
-
-		if(this.infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
-		}
-
-		String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
-		String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.colonne.id");
-		String avanzamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.avanzamento.id");
-		String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
-
-		InputNumber colonne = (InputNumber) this.infoRicercaMap.get(colonneId);
-		colonne.setDefaultValue(null);
-		infoGrafico.put(colonneId, colonne);
-
-		InputNumber avanzamento = (InputNumber) this.infoRicercaMap.get(avanzamentoId);
-		avanzamento.setDefaultValue(null);
-		infoGrafico.put(avanzamentoId,avanzamento);
-
-		InputDate data = (InputDate) this.infoRicercaMap.get(dataId);
-		data.setDefaultValue(new Date());
-		infoGrafico.put(dataId,data);
-
-		SelectList<String> tipoIntervallo = (SelectList<String>) this.infoRicercaMap.get(tipoIntervalloId);
-		tipoIntervallo.setDefaultValue(TipoIntervallo.GIORNALIERO.name());
-		infoGrafico.put(tipoIntervalloId,tipoIntervallo); 
-
-		return infoGrafico;
-	}
-
 
 	@Override
 	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }

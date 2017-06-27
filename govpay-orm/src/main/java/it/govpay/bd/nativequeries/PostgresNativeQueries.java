@@ -164,18 +164,19 @@ public class PostgresNativeQueries extends NativeQueries {
 		Calendar calendar = Calendar.getInstance(); // this would default to now
 		calendar.setTime(data);
 		String date_trunc = "";
+		int realLimit = limit - 1;
 		switch (tipoIntervallo) {
 		case MENSILE:
 			date_trunc = "month";
-			calendar.add(Calendar.MONTH, -limit);
+			calendar.add(Calendar.MONTH, -realLimit);
 			break;
 		case GIORNALIERO:
 			date_trunc = "day";
-			calendar.add(Calendar.DATE, -limit);
+			calendar.add(Calendar.DATE, -realLimit);
 			break;
 		case ORARIO:
 			date_trunc = "hour";
-			calendar.add(Calendar.HOUR, -limit);
+			calendar.add(Calendar.HOUR, -realLimit);
 			break;
 		}	
 		
