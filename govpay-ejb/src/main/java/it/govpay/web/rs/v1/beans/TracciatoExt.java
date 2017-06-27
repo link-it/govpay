@@ -41,7 +41,7 @@ public class TracciatoExt extends Tracciato {
 	}
 	
 	public TracciatoExt() {
-
+		this.operazioni = new ArrayList<Operazione>();
 	}
 	
 	public TracciatoExt(it.govpay.bd.loader.model.Tracciato tracciato, BasicBD bd) throws ServiceException {
@@ -69,5 +69,10 @@ public class TracciatoExt extends Tracciato {
 	public List<Operazione> getOperazioni() {
 		return operazioni;
 	}
+
+	public void setEsito(byte[] esito) {
+		this.esito = esito;
+	}
+	
 	
 }
