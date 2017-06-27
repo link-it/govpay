@@ -60,6 +60,7 @@ public class Versamento extends BasicBD {
 		super(basicBD);
 	}
 	
+	@Deprecated
 	public it.govpay.model.Iuv caricaVersamento(Applicazione applicazioneAutenticata, it.govpay.bd.model.Versamento versamentoModel, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException { 
 		try {
 			return caricaVersamento(versamentoModel, generaIuv, aggiornaSeEsiste);
@@ -71,6 +72,7 @@ public class Versamento extends BasicBD {
 		}
 	}
 	
+	@Deprecated
 	public it.govpay.model.Iuv caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException {
 		// Indica se devo gestire la transazione oppure se e' gestita dal chiamante
 		boolean doCommit = false;
@@ -134,6 +136,7 @@ public class Versamento extends BasicBD {
 		}
 	}
 
+	@Deprecated
 	public void annullaVersamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte) throws GovPayException {
 		try {
 			VersamentiBD versamentiBD = new VersamentiBD(this);
