@@ -7,8 +7,7 @@ public class OperazioneNonValidaResponse extends AbstractOperazioneResponse {
 	@Override
 	protected byte[] createDati() {
 		switch(this.getStato()) {
-		case ESEGUITO_KO: return this.getDescrizioneEsito().getBytes();
-		case ESEGUITO_OK: return "OK".getBytes();
+		case NON_VALIDO: return (this.getEsito() + this.getDelim() + this.getDescrizioneEsito()).getBytes();
 		default: return "".getBytes();
 		}
 	}

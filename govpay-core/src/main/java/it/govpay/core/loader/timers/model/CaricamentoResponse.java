@@ -31,8 +31,8 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	@Override
 	protected byte[] createDati() {
 		switch(this.getStato()) {
-		case ESEGUITO_KO: return this.getDescrizioneEsito().getBytes();
-		case ESEGUITO_OK: return ("OK;" + this.iuv + ";" + new String(this.qrCode) + ";" + new String(this.barCode)).getBytes();
+		case ESEGUITO_KO: return (this.getEsito() + this.getDelim() + this.getDescrizioneEsito()).getBytes();
+		case ESEGUITO_OK: return ("OK" + this.getDelim() + this.iuv + this.getDelim() + new String(this.qrCode) + this.getDelim() + new String(this.barCode)).getBytes();
 		default: return "".getBytes();
 		}
 	}

@@ -362,9 +362,9 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataUltimoAggiornamento.label"), this.sdf.format(tracciato.getDataUltimoAggiornamento()));
 
 			//			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".lineaElaborazione.label"), tracciato.getLineaElaborazione() + "");
-			long idOperatore = tracciato.getIdOperatore();
+			Long idOperatore = tracciato.getIdOperatore();
 			// solo l'amministratore vede chi ha caricato il tracciato, un utente "user" vede solo i suoi.
-			if(idOperatore > 0){
+			if(idOperatore != null && idOperatore > 0){
 				OperatoriBD operatoriBD = new OperatoriBD(bd);
 				Operatore operatore = operatoriBD.getOperatore(idOperatore);
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".operatore.label"), operatore.getNome());

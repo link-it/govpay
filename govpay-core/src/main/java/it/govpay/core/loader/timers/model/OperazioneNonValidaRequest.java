@@ -7,6 +7,7 @@ import it.govpay.model.loader.Operazione.TipoOperazioneType;
 
 public class OperazioneNonValidaRequest extends AbstractOperazioneRequest {
 
+	private String codiceErrore;
 	private String dettaglioErrore;
 	
 	public OperazioneNonValidaRequest() throws ValidationException {
@@ -19,6 +20,14 @@ public class OperazioneNonValidaRequest extends AbstractOperazioneRequest {
 
 	public void setDettaglioErrore(String dettaglioErrore) {
 		this.dettaglioErrore = dettaglioErrore;
+	}
+
+	public String getCodiceErrore() {
+		return codiceErrore;
+	}
+
+	public void setCodiceErrore(String codiceErrore) {
+		this.codiceErrore = codiceErrore;
 	}
 	
 }

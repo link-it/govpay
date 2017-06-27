@@ -5,22 +5,14 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.loader.OperazioniBD;
 import it.govpay.bd.loader.model.Operazione;
 import it.govpay.bd.loader.model.Tracciato;
-import it.govpay.core.business.PagamentiAttesa;
-import it.govpay.core.business.model.CaricaVersamentoDTO;
 import it.govpay.core.loader.timers.model.AbstractOperazioneRequest;
 import it.govpay.core.loader.timers.model.AbstractOperazioneResponse;
-import it.govpay.core.loader.timers.model.AnnullamentoRequest;
-import it.govpay.core.loader.timers.model.CaricamentoRequest;
-import it.govpay.core.loader.timers.model.OperazioneNonValidaRequest;
-import it.govpay.core.loader.timers.model.OperazioneNonValidaResponse;
-import it.govpay.model.loader.Operazione.StatoOperazioneType;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 public class TimerCaricamentoTracciatoCore implements Callable<Integer> {
 
-	private CaricamentoUtils caricamentoUtils;
 	private AcquisizioneUtils acquisizioneUtils;
 	private List<byte[]> lineaLst;
 	private long lineaIniziale;
@@ -28,56 +20,39 @@ public class TimerCaricamentoTracciatoCore implements Callable<Integer> {
 	private BasicBD bd;
 	
 	public TimerCaricamentoTracciatoCore() {
-		this.caricamentoUtils = new CaricamentoUtils();
 		this.acquisizioneUtils = new AcquisizioneUtils();
 	}
 
 	public Integer call() throws Exception {
 		int numLineeElaborate = 0;
-		List<String> tributi = this.acquisizioneUtils.getTributi(bd);
-		List<String> domini = this.acquisizioneUtils.getDomini(bd);
 		long numLinea = this.lineaIniziale;
 		for(byte[] linea: this.lineaLst) {
-			AbstractOperazioneRequest request = this.acquisizioneUtils.acquisisci(linea, this.tracciato, this.tracciato.getOperatore(this.bd), numLinea++, domini, tributi);
+			AbstractOperazioneRequest request = this.acquisizioneUtils.acquisisci(linea, this.tracciato, numLinea++);
+
 			if(request != null) {
-				AbstractOperazioneResponse response =  null;
-				String codApplicazione = null;
-				String codVersamentoEnte = null;
-				if(request instanceof CaricamentoRequest) {
-					CaricamentoRequest caricamentoRequest = (CaricamentoRequest) request;
-					response = this.caricamentoUtils.caricaVersamento(this.tracciato, caricamentoRequest, this.bd);
-					codApplicazione = caricamentoRequest.getCodApplicazione();
-					codVersamentoEnte = caricamentoRequest.getCodVersamentoEnte();
-				} else if(request instanceof AnnullamentoRequest) {
-					AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) request;
-					response = this.caricamentoUtils.annullaVersamento(this.tracciato, annullamentoRequest, this.bd);
-					codApplicazione = annullamentoRequest.getCodApplicazione();
-					codVersamentoEnte = annullamentoRequest.getCodVersamentoEnte();
-				} else  if(request instanceof OperazioneNonValidaRequest) {
-					OperazioneNonValidaRequest operazioneNonValidaRequest = (OperazioneNonValidaRequest) request;
-					response = new OperazioneNonValidaResponse();
-					response.setStato(StatoOperazioneType.NON_VALIDO);
-					response.setDescrizioneEsito(operazioneNonValidaRequest.getDettaglioErrore());
-				}
+				AbstractOperazioneResponse response = this.acquisizioneUtils.acquisisciResponse(request, this.tracciato, this.bd);
+				String codApplicazione = this.acquisizioneUtils.getCodiceApplicazione(request);
+				String codVersamentoEnte = this.acquisizioneUtils.getCodVersamentoEnte(request);
 				
-				OperazioniBD op = new OperazioniBD(bd);
+				OperazioniBD op = new OperazioniBD(this.bd);
 				Operazione operazione = new Operazione();
 				operazione.setCodVersamentoEnte(codVersamentoEnte);
 				operazione.setDatiRichiesta(linea);
 				operazione.setDatiRisposta(response.getDati());
 				operazione.setStato(response.getStato());
-				operazione.setDettaglioEsito(response.getDescrizioneEsito());
+				if(response.getDescrizioneEsito() != null)
+					operazione.setDettaglioEsito(response.getDescrizioneEsito().length() > 255 ? response.getDescrizioneEsito().substring(0, 255) : response.getDescrizioneEsito());
 				
 				if(codApplicazione != null)
-					operazione.setIdApplicazione(AnagraficaManager.getApplicazione(bd, codApplicazione).getId());
+					operazione.setIdApplicazione(AnagraficaManager.getApplicazione(this.bd, codApplicazione).getId());
 				
 				operazione.setIdTracciato(request.getIdTracciato());
 				operazione.setLineaElaborazione(request.getLinea());
 				operazione.setTipoOperazione(request.getTipoOperazione());
 				op.insertOperazione(operazione);
-				numLineeElaborate++;
-				
 			}
+			numLineeElaborate++;
+
 		}
 		return numLineeElaborate;
 	}

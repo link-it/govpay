@@ -55,7 +55,7 @@ public class PagamentiAttesa extends BasicBD {
 	public CaricaVersamentoDTOResponse caricaVersamento(CaricaVersamentoDTO caricaVersamentoDTO) throws GovPayException, NotAuthorizedException, ServiceException {
 		
 		// AUTORIZZAZIONE
-		if(caricaVersamentoDTO.getApplicazione() != null && !caricaVersamentoDTO.getApplicazione().equals(caricaVersamentoDTO.getVersamento().getApplicazione(this).getCodApplicazione())) {
+		if(caricaVersamentoDTO.getApplicazione() != null && !caricaVersamentoDTO.getApplicazione().getCodApplicazione().equals(caricaVersamentoDTO.getVersamento().getApplicazione(this).getCodApplicazione())) {
 			throw new NotAuthorizedException();
 		}
 		
@@ -141,7 +141,7 @@ public class PagamentiAttesa extends BasicBD {
 
 	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException, ServiceException{
 		
-		if(annullaVersamentoDTO.getApplicazione() != null && !annullaVersamentoDTO.getApplicazione().equals(annullaVersamentoDTO.getCodApplicazione())) {
+		if(annullaVersamentoDTO.getApplicazione() != null && !annullaVersamentoDTO.getApplicazione().getCodApplicazione().equals(annullaVersamentoDTO.getCodApplicazione())) {
 			throw new NotAuthorizedException();
 		}
 		
