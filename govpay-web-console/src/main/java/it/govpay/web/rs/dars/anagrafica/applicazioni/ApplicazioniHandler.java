@@ -505,150 +505,156 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Applicazione entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String applicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String firmaRichiestaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
-		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+				String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String applicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String firmaRichiestaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
+				String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 
-		String versamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
-		String rendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
-		String dominiVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
-		String tipiTributoVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
-		String dominiRendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
-		String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
-		String codificaApplicazioneInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
+				String versamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
+				String rendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
+				String dominiVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
+				String tipiTributoVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
+				String dominiRendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
+				String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+				String codificaApplicazioneInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
 
-		String incassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".incassi.id");
-		String dominiIncassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiIncassi.id");
+				String incassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".incassi.id");
+				String dominiIncassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiIncassi.id");
 
-		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
-		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica(),entry.getId(),true);
+				ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
+				List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica(),entry.getId(),true);
 
-		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
-		List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica(),entry.getId(),true);
+				ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
+				List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica(),entry.getId(),true);
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(applicazioneId);
+				idInterm.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idInterm);
+
+				InputText codApplicazione = (InputText) this.infoCreazioneMap.get(codApplicazioneId);
+				codApplicazione.setDefaultValue(entry.getCodApplicazione());
+				codApplicazione.setEditable(false); 
+				sezioneRoot.addField(codApplicazione);
+
+				InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
+				principal.setDefaultValue(entry.getPrincipal());
+				sezioneRoot.addField(principal);
+
+				FirmaRichiesta firmaRichiestaValue = entry.getFirmaRichiesta() != null ? entry.getFirmaRichiesta() : FirmaRichiesta.NESSUNA;
+				SelectList<String> firmaRichiesta = (SelectList<String>) this.infoCreazioneMap.get(firmaRichiestaId);
+				firmaRichiesta.setDefaultValue(firmaRichiestaValue.getCodifica());
+				sezioneRoot.addField(firmaRichiesta);
+
+				InputText codificaApplicazioneInIuv = (InputText) this.infoCreazioneMap.get(codificaApplicazioneInIuvId);
+				codificaApplicazioneInIuv.setDefaultValue(entry.getCodApplicazioneIuv());
+				sezioneRoot.addField(codificaApplicazioneInIuv);
+
+				// versione
+				SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
+				versione.setDefaultValue(entry.getVersione().getLabel());
+				sezioneRoot.addField(versione);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+
+				String etichettaVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
+				Sezione sezioneVersamenti = infoModifica.addSezione(etichettaVersamenti);
+
+				List<Long> idsAclDominiVersamenti = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.VERSAMENTI);
+				List<Long> idsAclTributiVersamenti = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.VERSAMENTI);
+				boolean visualizzaVersamenti = idsAclDominiVersamenti.size() > 0 || idsAclTributiVersamenti.size() > 0 || entry.isTrusted(); 
+
+				CheckButton versamenti = (CheckButton) this.infoCreazioneMap.get(versamentiId);
+				versamenti.setDefaultValue(visualizzaVersamenti); 
+				sezioneVersamenti.addField(versamenti);
+
+				List<RawParamValue> versamentiValues = new ArrayList<RawParamValue>();
+				versamentiValues.add(new RawParamValue(applicazioneId, entry.getId() + ""));
+				versamentiValues.add(new RawParamValue(versamentiId, (visualizzaVersamenti? "true" : "false")));
+
+				Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
+				trusted.init(versamentiValues, bd, this.getLanguage()); 
+				sezioneVersamenti.addField(trusted);
+
+				List<RawParamValue> versamentiTrustedValues = new ArrayList<RawParamValue>();
+				versamentiTrustedValues.addAll(versamentiValues);
+				versamentiTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
+
+				TipiTributoVersamenti tipiTributoVersamenti = (TipiTributoVersamenti) this.infoCreazioneMap.get(tipiTributoVersamentiId);
+				tipiTributoVersamenti.init(versamentiTrustedValues, bd, this.getLanguage()); 
+				sezioneVersamenti.addField(tipiTributoVersamenti);
+
+				DominiVersamenti dominiVersamenti = (DominiVersamenti) this.infoCreazioneMap.get(dominiVersamentiId);
+				dominiVersamenti.init(versamentiValues, bd, this.getLanguage()); 
+				sezioneVersamenti.addField(dominiVersamenti); 
+
+				String etichettaRendicontazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
+				Sezione sezioneRendicontazione = infoModifica.addSezione(etichettaRendicontazione);
+
+				List<Long> idsAclDominiRendicontazione = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.RENDICONTAZIONE);
+				boolean visualizzaRendicontazione = idsAclDominiRendicontazione.size() > 0 ;
+
+				CheckButton rendicontazione = (CheckButton) this.infoCreazioneMap.get(rendicontazioneId);
+				rendicontazione.setDefaultValue(visualizzaRendicontazione); 
+				sezioneRendicontazione.addField(rendicontazione);
+
+				List<RawParamValue> rendicontazioneValues = new ArrayList<RawParamValue>();
+				rendicontazioneValues.add(new RawParamValue(applicazioneId, entry.getId() + ""));
+				rendicontazioneValues.add(new RawParamValue(rendicontazioneId,  (visualizzaRendicontazione? "true" : "false")));
+
+				DominiRendicontazione dominiRendicontazione = (DominiRendicontazione) this.infoCreazioneMap.get(dominiRendicontazioneId);
+				dominiRendicontazione.init(rendicontazioneValues, bd, this.getLanguage()); 
+				sezioneRendicontazione.addField(dominiRendicontazione);
+
+				// sezione incassi
+				List<Long> idsAclDominiIncassi = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.INCASSI);
+				boolean visualizzaIncassi = idsAclDominiIncassi.size() > 0 ;
+
+				String etichettaIncassi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.incassi.titolo");
+				Sezione sezioneIncassi = infoModifica.addSezione(etichettaIncassi);
+
+				CheckButton incassi = (CheckButton) this.infoCreazioneMap.get(incassiId);
+				incassi.setDefaultValue(visualizzaIncassi); 
+				sezioneIncassi.addField(incassi);
+
+				List<RawParamValue> incassiValues = new ArrayList<RawParamValue>();
+				incassiValues.add(new RawParamValue(applicazioneId, entry.getId() + ""));
+				incassiValues.add(new RawParamValue(incassiId,  (visualizzaIncassi? "true" : "false")));
+
+				DominiIncassi dominiIncassi = (DominiIncassi) this.infoCreazioneMap.get(dominiIncassiId);
+				dominiIncassi.init(incassiValues, bd, this.getLanguage()); 
+				sezioneIncassi.addField(dominiIncassi); 
+
+
+				Sezione sezioneConnettoreVerifica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
+
+				for (ParamField<?> par : infoModificaConnettoreVerifica) { 
+					sezioneConnettoreVerifica.addField(par); 	
+				}
+
+				Sezione sezioneConnettoreNotifica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
+
+				for (ParamField<?> par : infoModificaConnettoreNotifica) { 
+					sezioneConnettoreNotifica.addField(par); 	
+				}
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(applicazioneId);
-		idInterm.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idInterm);
-
-		InputText codApplicazione = (InputText) this.infoCreazioneMap.get(codApplicazioneId);
-		codApplicazione.setDefaultValue(entry.getCodApplicazione());
-		codApplicazione.setEditable(false); 
-		sezioneRoot.addField(codApplicazione);
-
-		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
-		principal.setDefaultValue(entry.getPrincipal());
-		sezioneRoot.addField(principal);
-
-		FirmaRichiesta firmaRichiestaValue = entry.getFirmaRichiesta() != null ? entry.getFirmaRichiesta() : FirmaRichiesta.NESSUNA;
-		SelectList<String> firmaRichiesta = (SelectList<String>) this.infoCreazioneMap.get(firmaRichiestaId);
-		firmaRichiesta.setDefaultValue(firmaRichiestaValue.getCodifica());
-		sezioneRoot.addField(firmaRichiesta);
-
-		InputText codificaApplicazioneInIuv = (InputText) this.infoCreazioneMap.get(codificaApplicazioneInIuvId);
-		codificaApplicazioneInIuv.setDefaultValue(entry.getCodApplicazioneIuv());
-		sezioneRoot.addField(codificaApplicazioneInIuv);
-
-		// versione
-		SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
-		versione.setDefaultValue(entry.getVersione().getLabel());
-		sezioneRoot.addField(versione);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
-		String etichettaVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
-		Sezione sezioneVersamenti = infoModifica.addSezione(etichettaVersamenti);
-
-		List<Long> idsAclDominiVersamenti = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.VERSAMENTI);
-		List<Long> idsAclTributiVersamenti = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.VERSAMENTI);
-		boolean visualizzaVersamenti = idsAclDominiVersamenti.size() > 0 || idsAclTributiVersamenti.size() > 0 || entry.isTrusted(); 
-
-		CheckButton versamenti = (CheckButton) this.infoCreazioneMap.get(versamentiId);
-		versamenti.setDefaultValue(visualizzaVersamenti); 
-		sezioneVersamenti.addField(versamenti);
-
-		List<RawParamValue> versamentiValues = new ArrayList<RawParamValue>();
-		versamentiValues.add(new RawParamValue(applicazioneId, entry.getId() + ""));
-		versamentiValues.add(new RawParamValue(versamentiId, (visualizzaVersamenti? "true" : "false")));
-
-		Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
-		trusted.init(versamentiValues, bd, this.getLanguage()); 
-		sezioneVersamenti.addField(trusted);
-
-		List<RawParamValue> versamentiTrustedValues = new ArrayList<RawParamValue>();
-		versamentiTrustedValues.addAll(versamentiValues);
-		versamentiTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
-
-		TipiTributoVersamenti tipiTributoVersamenti = (TipiTributoVersamenti) this.infoCreazioneMap.get(tipiTributoVersamentiId);
-		tipiTributoVersamenti.init(versamentiTrustedValues, bd, this.getLanguage()); 
-		sezioneVersamenti.addField(tipiTributoVersamenti);
-
-		DominiVersamenti dominiVersamenti = (DominiVersamenti) this.infoCreazioneMap.get(dominiVersamentiId);
-		dominiVersamenti.init(versamentiValues, bd, this.getLanguage()); 
-		sezioneVersamenti.addField(dominiVersamenti); 
-
-		String etichettaRendicontazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
-		Sezione sezioneRendicontazione = infoModifica.addSezione(etichettaRendicontazione);
-
-		List<Long> idsAclDominiRendicontazione = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.RENDICONTAZIONE);
-		boolean visualizzaRendicontazione = idsAclDominiRendicontazione.size() > 0 ;
-
-		CheckButton rendicontazione = (CheckButton) this.infoCreazioneMap.get(rendicontazioneId);
-		rendicontazione.setDefaultValue(visualizzaRendicontazione); 
-		sezioneRendicontazione.addField(rendicontazione);
-
-		List<RawParamValue> rendicontazioneValues = new ArrayList<RawParamValue>();
-		rendicontazioneValues.add(new RawParamValue(applicazioneId, entry.getId() + ""));
-		rendicontazioneValues.add(new RawParamValue(rendicontazioneId,  (visualizzaRendicontazione? "true" : "false")));
-
-		DominiRendicontazione dominiRendicontazione = (DominiRendicontazione) this.infoCreazioneMap.get(dominiRendicontazioneId);
-		dominiRendicontazione.init(rendicontazioneValues, bd, this.getLanguage()); 
-		sezioneRendicontazione.addField(dominiRendicontazione);
-
-		// sezione incassi
-		List<Long> idsAclDominiIncassi = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.INCASSI);
-		boolean visualizzaIncassi = idsAclDominiIncassi.size() > 0 ;
-
-		String etichettaIncassi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.incassi.titolo");
-		Sezione sezioneIncassi = infoModifica.addSezione(etichettaIncassi);
-
-		CheckButton incassi = (CheckButton) this.infoCreazioneMap.get(incassiId);
-		incassi.setDefaultValue(visualizzaIncassi); 
-		sezioneIncassi.addField(incassi);
-
-		List<RawParamValue> incassiValues = new ArrayList<RawParamValue>();
-		incassiValues.add(new RawParamValue(applicazioneId, entry.getId() + ""));
-		incassiValues.add(new RawParamValue(incassiId,  (visualizzaIncassi? "true" : "false")));
-
-		DominiIncassi dominiIncassi = (DominiIncassi) this.infoCreazioneMap.get(dominiIncassiId);
-		dominiIncassi.init(incassiValues, bd, this.getLanguage()); 
-		sezioneIncassi.addField(dominiIncassi); 
-
-
-		Sezione sezioneConnettoreVerifica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
-
-		for (ParamField<?> par : infoModificaConnettoreVerifica) { 
-			sezioneConnettoreVerifica.addField(par); 	
-		}
-
-		Sezione sezioneConnettoreNotifica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
-
-		for (ParamField<?> par : infoModificaConnettoreNotifica) { 
-			sezioneConnettoreNotifica.addField(par); 	
-		}
-
 		return infoModifica;
 	}
 

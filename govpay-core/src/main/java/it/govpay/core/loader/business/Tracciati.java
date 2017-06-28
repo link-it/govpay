@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business;
+package it.govpay.core.loader.business;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.loader.TracciatiBD;

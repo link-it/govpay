@@ -45,6 +45,8 @@ import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
 import it.govpay.bd.model.Operatore;
+import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
+import it.govpay.web.rs.dars.anagrafica.ruoli.RuoliHandler;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -265,8 +267,10 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 					List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
 					listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
 					if(findAll != null && findAll.size() > 0){
+						Ruoli ruoliDars = new Ruoli();
+						RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
 						for (it.govpay.model.Ruolo ruolo : findAll) {
-							listaRuoli.add(new Voce<String>(ruolo.getCodRuolo(), ruolo.getCodRuolo()));  
+							listaRuoli.add(new Voce<String>(ruoliDarsHandler.getTitolo(ruolo, bd), ruolo.getCodRuolo()));   
 						}
 						listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"),
 								Operatore.RUOLO_SYSTEM));
@@ -334,66 +338,75 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Operatore entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
-		String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String ruoliId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+				String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
+				String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String ruoliId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
-		}
-
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(operatoreId);
-		idInterm.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idInterm);
-
-		InputText principal  = (InputText) this.infoCreazioneMap.get(principalId);
-		principal.setDefaultValue(entry.getPrincipal());
-		principal.setEditable(false); 
-		sezioneRoot.addField(principal);
-
-		InputText nome = (InputText) this.infoCreazioneMap.get(nomeId);
-		nome.setDefaultValue(entry.getNome());
-		sezioneRoot.addField(nome);
-
-		MultiSelectList<String, List<String>> ruoli = (MultiSelectList<String, List<String>>) this.infoCreazioneMap.get(ruoliId);
-
-		List<Voce<String>> listaRuoli = new ArrayList<Voce<String>>();
-		try{
-			RuoliBD ruoliBD = new RuoliBD(bd);
-			RuoloFilter ruoliFilter = ruoliBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
-			fsw.setSortOrder(SortOrder.ASC);
-			ruoliFilter.getFilterSortList().add(fsw);
-
-			List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
-
-			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.model.Ruolo ruolo : findAll) {
-					listaRuoli.add(new Voce<String>(ruolo.getCodRuolo(), ruolo.getCodRuolo()));  
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
 				}
-				listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"),
-						Operatore.RUOLO_SYSTEM));
-			}
 
-		}catch(Exception e){
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(operatoreId);
+				idInterm.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idInterm);
+
+				InputText principal  = (InputText) this.infoCreazioneMap.get(principalId);
+				principal.setDefaultValue(entry.getPrincipal());
+				principal.setEditable(false); 
+				sezioneRoot.addField(principal);
+
+				InputText nome = (InputText) this.infoCreazioneMap.get(nomeId);
+				nome.setDefaultValue(entry.getNome());
+				sezioneRoot.addField(nome);
+
+				MultiSelectList<String, List<String>> ruoli = (MultiSelectList<String, List<String>>) this.infoCreazioneMap.get(ruoliId);
+
+				List<Voce<String>> listaRuoli = new ArrayList<Voce<String>>();
+				try{
+					RuoliBD ruoliBD = new RuoliBD(bd);
+					RuoloFilter ruoliFilter = ruoliBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
+					fsw.setSortOrder(SortOrder.ASC);
+					ruoliFilter.getFilterSortList().add(fsw);
+
+					List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
+
+					if(findAll != null && findAll.size() > 0){
+						Ruoli ruoliDars = new Ruoli();
+						RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
+						for (it.govpay.model.Ruolo ruolo : findAll) {
+							listaRuoli.add(new Voce<String>(ruoliDarsHandler.getTitolo(ruolo, bd), ruolo.getCodRuolo()));   
+						}
+						listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"),
+								Operatore.RUOLO_SYSTEM));
+					}
+
+				}catch(Exception e){
+					throw new ConsoleException(e);
+				}
+				ruoli.setValues(listaRuoli);
+				ruoli.setDefaultValue(entry.getRuoli() != null ? entry.getRuoli() : new ArrayList<String>());
+
+				sezioneRoot.addField(ruoli);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+
+			}
+		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-		ruoli.setValues(listaRuoli);
-		ruoli.setDefaultValue(entry.getRuoli() != null ? entry.getRuoli() : new ArrayList<String>());
-
-		sezioneRoot.addField(ruoli);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
 		return infoModifica;
 	}
 

@@ -59,7 +59,9 @@ public class PagamentiAttesa extends BasicBD {
 			throw new NotAuthorizedException();
 		}
 		
-		if(caricaVersamentoDTO.getOperatore() != null && AclEngine.getTopDirittiOperatore(caricaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()) == 2) {
+		if(caricaVersamentoDTO.getOperatore() != null && 
+				!(AclEngine.getTopDirittiOperatore(caricaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()) == 2 ||
+				AclEngine.isAdminDirittiOperatore(caricaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()))) {
 			throw new NotAuthorizedException();
 		}
 		
@@ -157,7 +159,9 @@ public class PagamentiAttesa extends BasicBD {
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
 			
-				if(annullaVersamentoDTO.getOperatore() != null && AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2) {
+				if(annullaVersamentoDTO.getOperatore() != null && 
+						!(AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti,versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2 ||
+						AclEngine.isAdminDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()))) {
 					throw new NotAuthorizedException();
 				}
 				// Se è già annullato non devo far nulla.
@@ -169,6 +173,7 @@ public class PagamentiAttesa extends BasicBD {
 				// Se è in stato NON_ESEGUITO lo annullo
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 					versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
+					versamentoLetto.setDescrizioneStato(annullaVersamentoDTO.getMotivoAnnullamento()); 
 					versamentiBD.updateVersamento(versamentoLetto);
 					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") annullato.");
 					return;

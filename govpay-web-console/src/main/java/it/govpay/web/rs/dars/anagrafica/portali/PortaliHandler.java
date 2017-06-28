@@ -434,110 +434,116 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Portale entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
-		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String portaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String defaultCallbackURLId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.id");
-		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+				String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
+				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String portaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String defaultCallbackURLId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.id");
+				String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 
-		String pagamentiAttesaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiAttesa.id");
-		String pagamentiOnlineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
-		String dominiPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPa.id");
-		String tipiTributoPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPa.id");
-		String dominiPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPo.id");
-		String tipiTributoPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPo.id");
-		String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+				String pagamentiAttesaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiAttesa.id");
+				String pagamentiOnlineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
+				String dominiPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPa.id");
+				String tipiTributoPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPa.id");
+				String dominiPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPo.id");
+				String tipiTributoPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPo.id");
+				String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(portaleId);
+				idInterm.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idInterm);
+
+				InputText codPortale = (InputText) this.infoCreazioneMap.get(codPortaleId);
+				codPortale.setDefaultValue(entry.getCodPortale());
+				codPortale.setEditable(false); 
+				sezioneRoot.addField(codPortale);
+
+				InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
+				principal.setDefaultValue(entry.getPrincipal());
+				sezioneRoot.addField(principal);
+
+				InputText defaultCallbackURL = (InputText) this.infoCreazioneMap.get(defaultCallbackURLId);
+				defaultCallbackURL.setDefaultValue(entry.getDefaultCallbackURL());
+				sezioneRoot.addField(defaultCallbackURL);
+
+				// versione
+				SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
+				versione.setDefaultValue(entry.getVersione().getLabel());
+				sezioneRoot.addField(versione);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+
+				String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
+				Sezione sezionePA = infoModifica.addSezione(etichettaPagamentiAttesa);
+
+				List<Long> idsAclDominiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ATTESA);
+				List<Long> idsAclTributiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ATTESA);
+				boolean visualizzaPA = idsAclDominiPA.size() > 0 || idsAclTributiPA.size() > 0;
+
+				CheckButton pagamentiAttesa = (CheckButton) this.infoCreazioneMap.get(pagamentiAttesaId);
+				pagamentiAttesa.setDefaultValue(visualizzaPA); 
+				sezionePA.addField(pagamentiAttesa);
+
+				List<RawParamValue> pagamentiAttesaValues = new ArrayList<RawParamValue>();
+				pagamentiAttesaValues.add(new RawParamValue(portaleId, entry.getId()+""));
+				pagamentiAttesaValues.add(new RawParamValue(pagamentiAttesaId, (visualizzaPA? "true" : "false")));
+
+				TipiTributoPA tipiTributoPa = (TipiTributoPA) this.infoCreazioneMap.get(tipiTributoPaId);
+				tipiTributoPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
+				sezionePA.addField(tipiTributoPa);
+
+				DominiPA dominiPa = (DominiPA) this.infoCreazioneMap.get(dominiPaId);
+				dominiPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
+				sezionePA.addField(dominiPa); 
+
+				String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
+				Sezione sezionePO = infoModifica.addSezione(etichettaPagamentiOnline);
+
+				List<Long> idsAclDominiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ONLINE);
+				List<Long> idsAclTributiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ONLINE);
+				boolean visualizzaPO = idsAclDominiPO.size() > 0 || idsAclTributiPO.size() > 0 || entry.isTrusted(); 
+
+				CheckButton pagamentiOnline = (CheckButton) this.infoCreazioneMap.get(pagamentiOnlineId);
+				pagamentiOnline.setDefaultValue(visualizzaPO); 
+				sezionePO.addField(pagamentiOnline);
+
+				List<RawParamValue> pagamentiOnlineValues = new ArrayList<RawParamValue>();
+				pagamentiOnlineValues.add(new RawParamValue(portaleId, entry.getId()+""));
+				pagamentiOnlineValues.add(new RawParamValue(pagamentiOnlineId, (visualizzaPO? "true" : "false")));
+
+				Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
+				trusted.init(pagamentiOnlineValues, bd,this.getLanguage()); 
+				sezionePO.addField(trusted);
+
+				List<RawParamValue> pagamentiOnlineTrustedValues = new ArrayList<RawParamValue>();
+				pagamentiOnlineTrustedValues.addAll(pagamentiOnlineValues);
+				pagamentiOnlineTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
+
+				TipiTributoPO tipiTributoPo = (TipiTributoPO) this.infoCreazioneMap.get(tipiTributoPoId);
+				tipiTributoPo.init(pagamentiOnlineTrustedValues, bd,this.getLanguage()); 
+				sezionePO.addField(tipiTributoPo);
+
+				DominiPO dominiPo = (DominiPO) this.infoCreazioneMap.get(dominiPoId);
+				dominiPo.init(pagamentiOnlineValues, bd,this.getLanguage()); 
+				sezionePO.addField(dominiPo); 
+
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(portaleId);
-		idInterm.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idInterm);
-
-		InputText codPortale = (InputText) this.infoCreazioneMap.get(codPortaleId);
-		codPortale.setDefaultValue(entry.getCodPortale());
-		codPortale.setEditable(false); 
-		sezioneRoot.addField(codPortale);
-
-		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
-		principal.setDefaultValue(entry.getPrincipal());
-		sezioneRoot.addField(principal);
-
-		InputText defaultCallbackURL = (InputText) this.infoCreazioneMap.get(defaultCallbackURLId);
-		defaultCallbackURL.setDefaultValue(entry.getDefaultCallbackURL());
-		sezioneRoot.addField(defaultCallbackURL);
-
-		// versione
-		SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
-		versione.setDefaultValue(entry.getVersione().getLabel());
-		sezioneRoot.addField(versione);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
-		String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
-		Sezione sezionePA = infoModifica.addSezione(etichettaPagamentiAttesa);
-
-		List<Long> idsAclDominiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ATTESA);
-		List<Long> idsAclTributiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ATTESA);
-		boolean visualizzaPA = idsAclDominiPA.size() > 0 || idsAclTributiPA.size() > 0;
-
-		CheckButton pagamentiAttesa = (CheckButton) this.infoCreazioneMap.get(pagamentiAttesaId);
-		pagamentiAttesa.setDefaultValue(visualizzaPA); 
-		sezionePA.addField(pagamentiAttesa);
-
-		List<RawParamValue> pagamentiAttesaValues = new ArrayList<RawParamValue>();
-		pagamentiAttesaValues.add(new RawParamValue(portaleId, entry.getId()+""));
-		pagamentiAttesaValues.add(new RawParamValue(pagamentiAttesaId, (visualizzaPA? "true" : "false")));
-
-		TipiTributoPA tipiTributoPa = (TipiTributoPA) this.infoCreazioneMap.get(tipiTributoPaId);
-		tipiTributoPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
-		sezionePA.addField(tipiTributoPa);
-
-		DominiPA dominiPa = (DominiPA) this.infoCreazioneMap.get(dominiPaId);
-		dominiPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
-		sezionePA.addField(dominiPa); 
-
-		String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
-		Sezione sezionePO = infoModifica.addSezione(etichettaPagamentiOnline);
-
-		List<Long> idsAclDominiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ONLINE);
-		List<Long> idsAclTributiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ONLINE);
-		boolean visualizzaPO = idsAclDominiPO.size() > 0 || idsAclTributiPO.size() > 0 || entry.isTrusted(); 
-
-		CheckButton pagamentiOnline = (CheckButton) this.infoCreazioneMap.get(pagamentiOnlineId);
-		pagamentiOnline.setDefaultValue(visualizzaPO); 
-		sezionePO.addField(pagamentiOnline);
-
-		List<RawParamValue> pagamentiOnlineValues = new ArrayList<RawParamValue>();
-		pagamentiOnlineValues.add(new RawParamValue(portaleId, entry.getId()+""));
-		pagamentiOnlineValues.add(new RawParamValue(pagamentiOnlineId, (visualizzaPO? "true" : "false")));
-
-		Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
-		trusted.init(pagamentiOnlineValues, bd,this.getLanguage()); 
-		sezionePO.addField(trusted);
-
-		List<RawParamValue> pagamentiOnlineTrustedValues = new ArrayList<RawParamValue>();
-		pagamentiOnlineTrustedValues.addAll(pagamentiOnlineValues);
-		pagamentiOnlineTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
-
-		TipiTributoPO tipiTributoPo = (TipiTributoPO) this.infoCreazioneMap.get(tipiTributoPoId);
-		tipiTributoPo.init(pagamentiOnlineTrustedValues, bd,this.getLanguage()); 
-		sezionePO.addField(tipiTributoPo);
-
-		DominiPO dominiPo = (DominiPO) this.infoCreazioneMap.get(dominiPoId);
-		dominiPo.init(pagamentiOnlineValues, bd,this.getLanguage()); 
-		sezionePO.addField(dominiPo); 
-
-
 		return infoModifica;
 	}
 

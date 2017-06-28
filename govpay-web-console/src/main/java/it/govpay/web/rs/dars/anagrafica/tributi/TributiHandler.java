@@ -421,129 +421,135 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-		String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-		String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-		String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+				String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+				String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+				String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
-		}
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
 
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idTributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
-		idTributo.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idTributo);
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idTributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
+				idTributo.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idTributo);
 
-		InputNumber idTipoTributo = new InputNumber(idTipoTributoId, null, null, true, true, false, 1, 255);
-		idTipoTributo.setDefaultValue(entry.getIdTipoTributo());
-		sezioneRoot.addField(idTipoTributo);
+				InputNumber idTipoTributo = new InputNumber(idTipoTributoId, null, null, true, true, false, 1, 255);
+				idTipoTributo.setDefaultValue(entry.getIdTipoTributo());
+				sezioneRoot.addField(idTipoTributo);
 
-		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
-		idDominio.setDefaultValue(entry.getIdDominio());
-		sezioneRoot.addField(idDominio);
+				InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
+				idDominio.setDefaultValue(entry.getIdDominio());
+				sezioneRoot.addField(idDominio);
 
-		SelectList<Long> idIbanAccredito  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoId);
-		List<Voce<Long>> listaIban = new ArrayList<Voce<Long>>();
+				SelectList<Long> idIbanAccredito  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoId);
+				List<Voce<Long>> listaIban = new ArrayList<Voce<Long>>();
 
-		if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)){
-			try{
-				DominiBD dominiBD = new DominiBD(bd);
-				IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
-				IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
-				fsw.setSortOrder(SortOrder.ASC);
-				filterIban.getFilterSortList().add(fsw);
-				filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
-				List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+				if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)){
+					try{
+						DominiBD dominiBD = new DominiBD(bd);
+						IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+						IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
+						fsw.setSortOrder(SortOrder.ASC);
+						filterIban.getFilterSortList().add(fsw);
+						filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
+						List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
-				if(findAll != null && findAll.size() > 0){
-					for (it.govpay.model.IbanAccredito ib : findAll) {
-						listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+						if(findAll != null && findAll.size() > 0){
+							for (it.govpay.model.IbanAccredito ib : findAll) {
+								listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+							}
+						}
+
+					}catch(Exception e){
+						throw new ConsoleException(e);
+					}
+					idIbanAccredito.setEditable(true);
+					idIbanAccredito.setHidden(false);
+					idIbanAccredito.setRequired(true);
+				} else {
+					idIbanAccredito.setEditable(false);
+					idIbanAccredito.setHidden(true);
+					idIbanAccredito.setRequired(false);
+				}
+
+				idIbanAccredito.setValues(listaIban);
+				idIbanAccredito.setDefaultValue(entry.getIdIbanAccredito());
+				sezioneRoot.addField(idIbanAccredito);
+
+				// prelevo le versioni statiche per l'update
+				SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId+"_update");
+
+				TipoContabilta tipoContabilitaCustom = entry.getTipoContabilitaCustom();
+				TipoContabilta tipoContabilitaDefault = entry.getTipoContabilitaDefault();
+
+				List<Voce<String>> lst = new ArrayList<Voce<String>>();
+				if(tipoContabilitaDefault != null){
+					switch(tipoContabilitaDefault){
+					case ALTRO:
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
+						break;
+					case SIOPE:
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
+						break;
+					case SPECIALE:
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
+						break;
+					case CAPITOLO:
+					default:
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
+						break;
 					}
 				}
 
-			}catch(Exception e){
-				throw new ConsoleException(e);
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+
+
+				if(tipoContabilitaCustom == null) {
+					tipoContabilita.setDefaultValue(tipoContabilitaDefault.getCodifica() + "_p");
+				} else {
+					tipoContabilita.setDefaultValue(tipoContabilitaCustom.getCodifica());
+				}
+
+				tipoContabilita.setValues(lst); 
+				sezioneRoot.addField(tipoContabilita);
+
+				InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId+"_update");
+				String codContabilitaLabel = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ?	Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codContabilita.label.default.form",entry.getCodContabilitaDefault()) :	Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
+				codContabilita.setLabel(codContabilitaLabel);
+				codContabilita.setDefaultValue(entry.getCodContabilitaCustom());
+				sezioneRoot.addField(codContabilita);
+
+				InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId+"_update");
+				String codificaTributoInIuvLabel = StringUtils.isNotEmpty(entry.getCodTributoIuvDefault()) ? Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default.form",entry.getCodTributoIuvDefault()) : Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
+
+				codificaTributoInIuv.setLabel(codificaTributoInIuvLabel);
+				codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvCustom());
+				sezioneRoot.addField(codificaTributoInIuv);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
 			}
-			idIbanAccredito.setEditable(true);
-			idIbanAccredito.setHidden(false);
-			idIbanAccredito.setRequired(true);
-		} else {
-			idIbanAccredito.setEditable(false);
-			idIbanAccredito.setHidden(true);
-			idIbanAccredito.setRequired(false);
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		idIbanAccredito.setValues(listaIban);
-		idIbanAccredito.setDefaultValue(entry.getIdIbanAccredito());
-		sezioneRoot.addField(idIbanAccredito);
-
-		// prelevo le versioni statiche per l'update
-		SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId+"_update");
-
-		TipoContabilta tipoContabilitaCustom = entry.getTipoContabilitaCustom();
-		TipoContabilta tipoContabilitaDefault = entry.getTipoContabilitaDefault();
-
-		List<Voce<String>> lst = new ArrayList<Voce<String>>();
-		if(tipoContabilitaDefault != null){
-			switch(tipoContabilitaDefault){
-			case ALTRO:
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
-				break;
-			case SIOPE:
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
-				break;
-			case SPECIALE:
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
-				break;
-			case CAPITOLO:
-			default:
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
-				break;
-			}
-		}
-
-		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
-
-
-		if(tipoContabilitaCustom == null) {
-			tipoContabilita.setDefaultValue(tipoContabilitaDefault.getCodifica() + "_p");
-		} else {
-			tipoContabilita.setDefaultValue(tipoContabilitaCustom.getCodifica());
-		}
-
-		tipoContabilita.setValues(lst); 
-		sezioneRoot.addField(tipoContabilita);
-
-		InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId+"_update");
-		String codContabilitaLabel = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ?	Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codContabilita.label.default.form",entry.getCodContabilitaDefault()) :	Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
-		codContabilita.setLabel(codContabilitaLabel);
-		codContabilita.setDefaultValue(entry.getCodContabilitaCustom());
-		sezioneRoot.addField(codContabilita);
-
-		InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId+"_update");
-		String codificaTributoInIuvLabel = StringUtils.isNotEmpty(entry.getCodTributoIuvDefault()) ? Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default.form",entry.getCodTributoIuvDefault()) : Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
-
-		codificaTributoInIuv.setLabel(codificaTributoInIuvLabel);
-		codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvCustom());
-		sezioneRoot.addField(codificaTributoInIuv);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
 		return infoModifica;
 	}
 

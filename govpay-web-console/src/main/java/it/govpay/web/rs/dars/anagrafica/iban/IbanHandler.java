@@ -312,70 +312,77 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, IbanAccredito entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String ibanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String codIbanId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIban.id");
-		String codIbanAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.id");
-		String codBicAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.id");
-		String codBicAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.id");
-		String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
-		String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String attivatoObepId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
-		String postaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
-		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				String ibanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String codIbanId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIban.id");
+				String codIbanAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.id");
+				String codBicAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.id");
+				String codBicAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.id");
+				String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
+				String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String attivatoObepId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
+				String postaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idIbanAccredito = (InputNumber) this.infoCreazioneMap.get(ibanAccreditoId);
+				idIbanAccredito.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idIbanAccredito);
+
+				InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
+				idDominio.setDefaultValue(entry.getIdDominio()); 
+				sezioneRoot.addField(idDominio);
+
+				InputText codIban = (InputText) this.infoCreazioneMap.get(codIbanId);
+				codIban.setDefaultValue(entry.getCodIban());
+				codIban.setEditable(false);     
+				sezioneRoot.addField(codIban);
+
+				InputText codIbanAppoggio = (InputText) this.infoCreazioneMap.get(codIbanAppoggioId);
+				codIbanAppoggio.setDefaultValue(entry.getCodIbanAppoggio());
+				sezioneRoot.addField(codIbanAppoggio);
+
+				InputText codBicAccredito = (InputText) this.infoCreazioneMap.get(codBicAccreditoId);
+				codBicAccredito.setDefaultValue(entry.getCodBicAccredito());
+				sezioneRoot.addField(codBicAccredito);
+
+				InputText codBicAppoggio = (InputText) this.infoCreazioneMap.get(codBicAppoggioId);
+				codBicAppoggio.setDefaultValue(entry.getCodBicAppoggio());
+				sezioneRoot.addField(codBicAppoggio);
+
+				IdNegozio idNegozio = (IdNegozio) this.infoCreazioneMap.get(idNegozioId);
+				idNegozio.setDefaultValue(entry.getIdNegozio());
+				sezioneRoot.addField(idNegozio);
+
+				IdSellerBank idSellerBank = (IdSellerBank) this.infoCreazioneMap.get(idSellerBankId);
+				idSellerBank.setDefaultValue(entry.getIdSellerBank());
+				sezioneRoot.addField(idSellerBank);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+
+				CheckButton attivatoObep = (CheckButton) this.infoCreazioneMap.get(attivatoObepId);
+				attivatoObep.setDefaultValue(entry.isAttivatoObep()); 
+				sezioneRoot.addField(attivatoObep);
+
+				CheckButton postale = (CheckButton) this.infoCreazioneMap.get(postaleId);
+				postale.setDefaultValue(entry.isPostale()); 
+				sezioneRoot.addField(postale);
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idIbanAccredito = (InputNumber) this.infoCreazioneMap.get(ibanAccreditoId);
-		idIbanAccredito.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idIbanAccredito);
-
-		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
-		idDominio.setDefaultValue(entry.getIdDominio()); 
-		sezioneRoot.addField(idDominio);
-
-		InputText codIban = (InputText) this.infoCreazioneMap.get(codIbanId);
-		codIban.setDefaultValue(entry.getCodIban());
-		codIban.setEditable(false);     
-		sezioneRoot.addField(codIban);
-
-		InputText codIbanAppoggio = (InputText) this.infoCreazioneMap.get(codIbanAppoggioId);
-		codIbanAppoggio.setDefaultValue(entry.getCodIbanAppoggio());
-		sezioneRoot.addField(codIbanAppoggio);
-
-		InputText codBicAccredito = (InputText) this.infoCreazioneMap.get(codBicAccreditoId);
-		codBicAccredito.setDefaultValue(entry.getCodBicAccredito());
-		sezioneRoot.addField(codBicAccredito);
-
-		InputText codBicAppoggio = (InputText) this.infoCreazioneMap.get(codBicAppoggioId);
-		codBicAppoggio.setDefaultValue(entry.getCodBicAppoggio());
-		sezioneRoot.addField(codBicAppoggio);
-
-		IdNegozio idNegozio = (IdNegozio) this.infoCreazioneMap.get(idNegozioId);
-		idNegozio.setDefaultValue(entry.getIdNegozio());
-		sezioneRoot.addField(idNegozio);
-
-		IdSellerBank idSellerBank = (IdSellerBank) this.infoCreazioneMap.get(idSellerBankId);
-		idSellerBank.setDefaultValue(entry.getIdSellerBank());
-		sezioneRoot.addField(idSellerBank);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
-		CheckButton attivatoObep = (CheckButton) this.infoCreazioneMap.get(attivatoObepId);
-		attivatoObep.setDefaultValue(entry.isAttivatoObep()); 
-		sezioneRoot.addField(attivatoObep);
-
-		CheckButton postale = (CheckButton) this.infoCreazioneMap.get(postaleId);
-		postale.setDefaultValue(entry.isPostale()); 
-		sezioneRoot.addField(postale);
 		return infoModifica;
 	}
 

@@ -244,48 +244,54 @@ public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandl
 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Stazione entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String stazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String codStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
-		String passwordId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String applicationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
-		Intermediari intermediariDars = new Intermediari();
-		String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
+				String stazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String codStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
+				String passwordId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String applicationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
+				Intermediari intermediariDars = new Intermediari();
+				String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 
-		if(infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idStaz = (InputNumber) infoCreazioneMap.get(stazioneId);
+				idStaz.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idStaz);
+
+				InputText codIntermediario = (InputText) infoCreazioneMap.get(codIntermediarioId);
+				String codIntermediarioValue = entry.getCodStazione().substring(0, entry.getCodStazione().indexOf("_"));
+				codIntermediario.setDefaultValue(codIntermediarioValue);
+				sezioneRoot.addField(codIntermediario);
+
+				InputText codStazione = (InputText) infoCreazioneMap.get(codStazioneId);
+				codStazione.setDefaultValue(entry.getCodStazione());
+				codStazione.setEditable(false);
+				sezioneRoot.addField(codStazione);
+
+				InputSecret password = (InputSecret) infoCreazioneMap.get(passwordId);
+				password.setDefaultValue(entry.getPassword());
+				sezioneRoot.addField(password);
+
+				InputNumber applicationCode = (InputNumber) infoCreazioneMap.get(applicationCodeId);
+				applicationCode.setDefaultValue(entry.getApplicationCode());
+				sezioneRoot.addField(applicationCode);
+
+				CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idStaz = (InputNumber) infoCreazioneMap.get(stazioneId);
-		idStaz.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idStaz);
-
-		InputText codIntermediario = (InputText) infoCreazioneMap.get(codIntermediarioId);
-		String codIntermediarioValue = entry.getCodStazione().substring(0, entry.getCodStazione().indexOf("_"));
-		codIntermediario.setDefaultValue(codIntermediarioValue);
-		sezioneRoot.addField(codIntermediario);
-
-		InputText codStazione = (InputText) infoCreazioneMap.get(codStazioneId);
-		codStazione.setDefaultValue(entry.getCodStazione());
-		codStazione.setEditable(false);
-		sezioneRoot.addField(codStazione);
-
-		InputSecret password = (InputSecret) infoCreazioneMap.get(passwordId);
-		password.setDefaultValue(entry.getPassword());
-		sezioneRoot.addField(password);
-
-		InputNumber applicationCode = (InputNumber) infoCreazioneMap.get(applicationCodeId);
-		applicationCode.setDefaultValue(entry.getApplicationCode());
-		sezioneRoot.addField(applicationCode);
-
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
 		return infoModifica;
 	}
 

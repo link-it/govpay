@@ -1,5 +1,6 @@
 package it.govpay.core.loader.timers.model;
 
+import it.govpay.core.utils.Utils;
 import it.govpay.model.loader.Operazione.TipoOperazioneType;
 
 import org.openspcoop2.generic_project.exception.ValidationException;
@@ -14,9 +15,9 @@ public class AnnullamentoRequest extends AbstractOperazioneRequest {
 
 	public AnnullamentoRequest(Record record) throws ValidationException{
 		super(TipoOperazioneType.DEL, record);
-		this.setMotivoAnnullamento(validaESettaRecord(record, "motivoAnnullamento", 35, null, false));
-		this.setCodApplicazione(validaESettaRecord(record, "codApplicazione", 35, null, false));
-		this.setCodVersamentoEnte(validaESettaRecord(record, "codiceVersamentoEnte", 35, null, false));
+		this.setMotivoAnnullamento(Utils.validaESettaRecord(record, "motivoAnnullamento", 35, null, false));
+		this.setCodApplicazione(Utils.validaESettaRecord(record, "codApplicazione", 35, null, false));
+		this.setCodVersamentoEnte(Utils.validaESettaRecord(record, "codiceVersamentoEnte", 35, null, false));
 	}
 
 	public String getMotivoAnnullamento() {

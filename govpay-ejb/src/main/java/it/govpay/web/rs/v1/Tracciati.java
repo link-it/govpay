@@ -77,7 +77,7 @@ public class Tracciati extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
+			it.govpay.core.loader.business.Tracciati tracciati = new it.govpay.core.loader.business.Tracciati(bd);
 			InserisciTracciatoDTO inserisciTracciatoDTO = new InserisciTracciatoDTO();
 			inserisciTracciatoDTO.setNomeTracciato(nome);
 			inserisciTracciatoDTO.setTracciato(incomingCsv.getBytes());
@@ -121,7 +121,7 @@ public class Tracciati extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
+			it.govpay.core.loader.business.Tracciati tracciati = new it.govpay.core.loader.business.Tracciati(bd);
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO();
 			leggiTracciatoDTO.setId(id);
 			leggiTracciatoDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
@@ -168,7 +168,7 @@ public class Tracciati extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
+			it.govpay.core.loader.business.Tracciati tracciati = new it.govpay.core.loader.business.Tracciati(bd);
 			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO();
 			listaTracciatiDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
 			listaTracciatiDTO.setInizio(inizio);

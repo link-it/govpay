@@ -282,46 +282,52 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String unitaOperativaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String unitaOperativaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
 
-		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio,this.getLanguage());
-		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaUO(uriInfo, bd,entry.getAnagrafica());
+				AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio,this.getLanguage());
+				List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaUO(uriInfo, bd,entry.getAnagrafica());
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(unitaOperativaId);
+				idInterm.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idInterm);
+
+				InputText codUnitaOperativa = (InputText) this.infoCreazioneMap.get(codUoId);
+				codUnitaOperativa.setDefaultValue(entry.getCodUo());
+				sezioneRoot.addField(codUnitaOperativa);
+
+				InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
+				idDominio.setDefaultValue(entry.getIdDominio());
+				sezioneRoot.addField(idDominio);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+
+
+				Sezione sezioneAnagrafica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
+
+				for (ParamField<?> par : infoCreazioneAnagrafica) { 
+					sezioneAnagrafica.addField(par); 	
+				}
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(unitaOperativaId);
-		idInterm.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idInterm);
-
-		InputText codUnitaOperativa = (InputText) this.infoCreazioneMap.get(codUoId);
-		codUnitaOperativa.setDefaultValue(entry.getCodUo());
-		sezioneRoot.addField(codUnitaOperativa);
-
-		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
-		idDominio.setDefaultValue(entry.getIdDominio());
-		sezioneRoot.addField(idDominio);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
-
-		Sezione sezioneAnagrafica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
-
-		for (ParamField<?> par : infoCreazioneAnagrafica) { 
-			sezioneAnagrafica.addField(par); 	
-		}
-
 		return infoModifica;
 	}
 
