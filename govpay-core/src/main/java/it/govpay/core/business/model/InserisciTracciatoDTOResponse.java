@@ -1,6 +1,6 @@
 package it.govpay.core.business.model;
 
-import it.govpay.bd.loader.model.Tracciato;
+import it.govpay.bd.model.Tracciato;
 
 public class InserisciTracciatoDTOResponse {
 

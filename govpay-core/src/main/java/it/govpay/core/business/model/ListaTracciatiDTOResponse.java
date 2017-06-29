@@ -2,7 +2,7 @@ package it.govpay.core.business.model;
 
 import java.util.List;
 
-import it.govpay.bd.loader.model.Tracciato;
+import it.govpay.bd.model.Tracciato;
 
 public class ListaTracciatiDTOResponse {
 

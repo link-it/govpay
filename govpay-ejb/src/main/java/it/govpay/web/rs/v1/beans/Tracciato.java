@@ -23,7 +23,7 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -48,7 +48,7 @@ public class Tracciato {
 
 	}
 	
-	public Tracciato(it.govpay.bd.loader.model.Tracciato tracciato) throws ServiceException {
+	public Tracciato(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
 		this.id = tracciato.getId();
 		this.idApplicazione = tracciato.getIdApplicazione();
 		this.dataCaricamento = tracciato.getDataCaricamento();

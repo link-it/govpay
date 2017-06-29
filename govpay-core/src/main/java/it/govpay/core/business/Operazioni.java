@@ -21,24 +21,24 @@ package it.govpay.core.business;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.loader.TracciatiBD;
-import it.govpay.bd.loader.filters.TracciatoFilter;
-import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.business.IConservazione.EsitoConservazione;
+import it.govpay.core.business.model.ElaboraTracciatoDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.thread.CaricaTracciatoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Rpt.StatoConservazione;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -72,16 +72,16 @@ public class Operazioni{
 	public static final String conservazione_esito = "cons-esito";
 
 	
-	private static boolean forzaCaricamentoTracciati;
+	private static boolean eseguiElaborazioneTracciati;
 	
-	public static synchronized void setForzaCaricamentoTracciati() {
-		forzaCaricamentoTracciati = true;
+	public static synchronized void setEseguiElaborazioneTracciati() {
+		eseguiElaborazioneTracciati = true;
 	}
 	
-	public static synchronized boolean getAndResetForzaCaricamentoTracciati() {
-		boolean value = forzaCaricamentoTracciati;
-		if(forzaCaricamentoTracciati) {
-			forzaCaricamentoTracciati = false;
+	public static synchronized boolean getAndResetEseguiElaborazioneTracciati() {
+		boolean value = eseguiElaborazioneTracciati;
+		if(eseguiElaborazioneTracciati) {
+			eseguiElaborazioneTracciati = false;
 		}
 		return value;
 	}
@@ -384,13 +384,12 @@ public class Operazioni{
 		}
 	}
 
-	public static String caricamentoTracciati(String serviceName){
+	public static String elaborazioneTracciati(String serviceName){
 		BasicBD bd = null;
-		List<CaricaTracciatoThread> threads = new ArrayList<CaricaTracciatoThread>();
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "CaricaTracciato");
+			ThreadContext.put("cmd", "ElaborazioneTracciati");
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
@@ -403,62 +402,40 @@ public class Operazioni{
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			bd.setAutoCommit(false);
 			if(BatchManager.startEsecuzione(bd, batch_tracciati)) {
-				log.trace("Caricamento tracciati");
+				log.trace("Elaborazione tracciati");
 				TracciatiBD tracciatiBD = new TracciatiBD(bd);
 				TracciatoFilter filter = tracciatiBD.newFilter();
 				filter.addStatoTracciato(StatoTracciatoType.NUOVO);
 				filter.addStatoTracciato(StatoTracciatoType.IN_CARICAMENTO);
-				
 				filter.setDataUltimoAggiornamentoMax(new Date());
 
 				List<Tracciato> tracciati  = tracciatiBD.findAll(filter);
 				if(tracciati.size() == 0) {
 					BatchManager.stopEsecuzione(bd, batch_tracciati);
-					return "Nessun tracciato da caricare.";
+					return "Nessun tracciato da elaborare.";
 				}
 
 				log.info("Trovati ["+tracciati.size()+"] tracciati da caricare");
+				
+				Tracciati tracciatiBusiness = new Tracciati(bd);
 				for(Tracciato tracciato: tracciati) {
-					CaricaTracciatoThread sender = new CaricaTracciatoThread(tracciato, bd);
-					sender.run();
+					log.info("Avvio elaborazione tracciato "  + tracciato.getId());
+					ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
+					elaboraTracciatoDTO.setTracciato(tracciato);
+					tracciatiBusiness.elaboraTracciato(elaboraTracciatoDTO);
+					log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
 				}
-				log.info("Processi di caricamento avviati.");
-
-				// Aspetto che abbiano finito tutti
-				while(true){
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-
-					}
-					boolean completed = true;
-					for(CaricaTracciatoThread sender : threads) {
-						if(!sender.isCompleted()) 
-							completed = false;
-					}
-
-					if(completed) {
-						BasicBD bd2 = null;
-						try {
-							bd2 = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-							BatchManager.stopEsecuzione(bd2, batch_tracciati);
-						} catch (ServiceException e) {
-						} finally {
-							if(bd2 != null) bd2.closeConnection();
-						}
-						aggiornaSondaOK(batch_tracciati, bd);
-
-						return "Caricamento tracciati completato.";
-					}
-				}
-
+				aggiornaSondaOK(batch_tracciati, bd);
+				BatchManager.stopEsecuzione(bd, batch_tracciati);
+				log.info("Elaborazione tracciati terminata.");
+				return "Elaborazione tracciati terminata.";
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
-			log.error("Non è stato possibile avviare il caricamento dei tracciati", e);
+			log.error("Non è stato possibile eseguire l'elaborazione dei tracciati", e);
 			aggiornaSondaKO(batch_tracciati, e, bd); 
-			return "Non è stato possibile avviare il caricamento dei tracciati: " + e;
+			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}

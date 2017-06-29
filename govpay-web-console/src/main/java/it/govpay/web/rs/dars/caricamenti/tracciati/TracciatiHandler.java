@@ -27,14 +27,14 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.OperatoriBD;
-import it.govpay.bd.loader.TracciatiBD;
-import it.govpay.bd.loader.filters.TracciatoFilter;
-import it.govpay.bd.loader.model.Tracciato;
+import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.pagamento.TracciatiBD;
+import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
-import it.govpay.core.loader.business.Tracciati;
+import it.govpay.core.business.Tracciati;
 import it.govpay.model.Operatore;
-import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -474,7 +474,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 			this.checkEntry(entry, null);
 
-			it.govpay.core.loader.business.Tracciati tracciatiBd = new Tracciati(bd);
+			Tracciati tracciatiBd = new Tracciati(bd);
 			InserisciTracciatoDTO inserisciTracciatoDTO = new InserisciTracciatoDTO();
 
 			inserisciTracciatoDTO.setNomeTracciato(entry.getNomeFile());

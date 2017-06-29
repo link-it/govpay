@@ -2,7 +2,7 @@ package it.govpay.core.business.model;
 
 import it.govpay.bd.model.Tracciato;
 
-public class LeggiTracciatoDTOResponse {
+public class ElaboraTracciatoDTO {
 	
 	private Tracciato tracciato;
 

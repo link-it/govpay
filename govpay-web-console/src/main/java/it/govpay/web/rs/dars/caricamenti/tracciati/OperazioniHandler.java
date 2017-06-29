@@ -19,18 +19,19 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.loader.OperazioniBD;
-import it.govpay.bd.loader.filters.OperazioneFilter;
-import it.govpay.bd.loader.model.Operazione;
-import it.govpay.bd.loader.model.OperazioneAnnullamento;
-import it.govpay.bd.loader.model.OperazioneCaricamento;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Operazione;
+import it.govpay.bd.model.OperazioneAnnullamento;
+import it.govpay.bd.model.OperazioneCaricamento;
 import it.govpay.bd.model.Tributo;
+import it.govpay.bd.pagamento.OperazioniBD;
+import it.govpay.bd.pagamento.filters.OperazioneFilter;
+import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.model.LeggiOperazioneDTO;
 import it.govpay.core.business.model.LeggiOperazioneDTOResponse;
 import it.govpay.model.Applicazione;
-import it.govpay.model.loader.Operazione.StatoOperazioneType;
-import it.govpay.model.loader.Operazione.TipoOperazioneType;
+import it.govpay.model.Operazione.StatoOperazioneType;
+import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
@@ -297,7 +298,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			// Operazione consentita solo all'operatore con ruolo autorizzato
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita); 
 
-			it.govpay.core.loader.business.Operazioni operazioniBD = new it.govpay.core.loader.business.Operazioni(bd);
+			Tracciati operazioniBD = new Tracciati(bd);
 			LeggiOperazioneDTO leggiOperazioneDTO = new LeggiOperazioneDTO();
 			leggiOperazioneDTO.setId(id);
 			leggiOperazioneDTO.setOperatore(this.darsService.getOperatoreByPrincipal(bd));

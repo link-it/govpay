@@ -52,7 +52,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.web.rs.v1.beans.Tracciato;
 import it.govpay.web.rs.v1.beans.TracciatoExt;
 
@@ -77,7 +77,7 @@ public class Tracciati extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			it.govpay.core.loader.business.Tracciati tracciati = new it.govpay.core.loader.business.Tracciati(bd);
+			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
 			InserisciTracciatoDTO inserisciTracciatoDTO = new InserisciTracciatoDTO();
 			inserisciTracciatoDTO.setNomeTracciato(nome);
 			inserisciTracciatoDTO.setTracciato(incomingCsv.getBytes());
@@ -121,7 +121,7 @@ public class Tracciati extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			it.govpay.core.loader.business.Tracciati tracciati = new it.govpay.core.loader.business.Tracciati(bd);
+			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO();
 			leggiTracciatoDTO.setId(id);
 			leggiTracciatoDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
@@ -168,7 +168,7 @@ public class Tracciati extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			it.govpay.core.loader.business.Tracciati tracciati = new it.govpay.core.loader.business.Tracciati(bd);
+			it.govpay.core.business.Tracciati tracciati = new it.govpay.core.business.Tracciati(bd);
 			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO();
 			listaTracciatiDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
 			listaTracciatiDTO.setInizio(inizio);
@@ -179,7 +179,7 @@ public class Tracciati extends BaseRsServiceV1 {
 			ListaTracciatiDTOResponse listaTracciatiDTOResponse = tracciati.listaTracciati(listaTracciatiDTO);
 			
 			List<Tracciato> listaTracciati = new ArrayList<Tracciato>();
-			for(it.govpay.bd.loader.model.Tracciato t : listaTracciatiDTOResponse.getTracciati()) {
+			for(it.govpay.bd.model.Tracciato t : listaTracciatiDTOResponse.getTracciati()) {
 				listaTracciati.add(new Tracciato(t));
 			}
 			

@@ -1,6 +1,6 @@
 package it.govpay.core.business.model;
 
-import it.govpay.bd.loader.model.Operazione;
+import it.govpay.bd.model.Operazione;
 
 public class LeggiOperazioneDTOResponse {
 	

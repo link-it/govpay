@@ -23,8 +23,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Applicazione;
-import it.govpay.model.loader.Operazione.StatoOperazioneType;
-import it.govpay.model.loader.Operazione.TipoOperazioneType;
+import it.govpay.model.Operazione.StatoOperazioneType;
+import it.govpay.model.Operazione.TipoOperazioneType;
 
 public class Operazione {
 	
@@ -38,7 +38,7 @@ public class Operazione {
 	public Operazione() {
 	}
 	
-	public Operazione(it.govpay.bd.loader.model.Operazione o, BasicBD bd) throws ServiceException {
+	public Operazione(it.govpay.bd.model.Operazione o, BasicBD bd) throws ServiceException {
 		this.linea_elaborazione = o.getLineaElaborazione();
 		this.stato = o.getStato();
 		this.dettaglio_esito = o.getDettaglioEsito();

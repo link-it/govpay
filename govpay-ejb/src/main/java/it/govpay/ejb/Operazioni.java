@@ -75,25 +75,25 @@ public class Operazioni{
 
 	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
 	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
-	public static String caricamentoTracciatiRealTime(){
+	public static String elaborazioneTracciati(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
 		}
 
-		if(!it.govpay.core.business.Operazioni.getAndResetForzaCaricamentoTracciati()) {
+		if(!it.govpay.core.business.Operazioni.getAndResetEseguiElaborazioneTracciati()) {
 			return "";
 		}
 		
-		return it.govpay.core.business.Operazioni.caricamentoTracciati("Batch");
+		return it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
 	}
 
 	@Schedule(hour="*", minute="*/30", persistent=false)
 	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
-	public static String caricamentoTracciatiSchedule(){
+	public static String recuperoTracciatiPendentiSchedule(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
 		}
-		return it.govpay.core.business.Operazioni.caricamentoTracciati("Batch");
+		return it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
 	}
 
 	public static String resetCacheAnagrafica(){

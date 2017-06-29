@@ -44,11 +44,11 @@ public class TracciatoExt extends Tracciato {
 		this.operazioni = new ArrayList<Operazione>();
 	}
 	
-	public TracciatoExt(it.govpay.bd.loader.model.Tracciato tracciato, BasicBD bd) throws ServiceException {
+	public TracciatoExt(it.govpay.bd.model.Tracciato tracciato, BasicBD bd) throws ServiceException {
 		super(tracciato);
 		this.esito = tracciato.getRawDataRisposta();
 		this.operazioni = new ArrayList<Operazione>();
-		for(it.govpay.bd.loader.model.Operazione o : tracciato.getOperazioni(bd)) {
+		for(it.govpay.bd.model.Operazione o : tracciato.getOperazioni(bd)) {
 			getOperazioni().add(new Operazione(o, bd));
 		}
 	}
