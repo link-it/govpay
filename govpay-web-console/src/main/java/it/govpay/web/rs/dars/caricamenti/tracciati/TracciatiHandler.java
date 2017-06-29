@@ -85,7 +85,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO);
+			fsw.setField(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 

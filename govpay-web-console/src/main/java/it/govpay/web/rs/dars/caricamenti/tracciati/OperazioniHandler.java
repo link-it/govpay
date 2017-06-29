@@ -82,8 +82,8 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Operazione.model().COD_VERSAMENTO_ENTE);
-			fsw.setSortOrder(SortOrder.DESC);
+			fsw.setField(it.govpay.orm.Operazione.model().LINEA_ELABORAZIONE);
+			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
 			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, operazioniBD, simpleSearch, filter,params);
