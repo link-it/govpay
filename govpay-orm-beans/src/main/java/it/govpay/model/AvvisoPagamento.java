@@ -6,14 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class AvvisoPagamento extends BasicModel {
+public class AvvisoPagamento {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	
 	byte[] qrCode= null; 
 	byte[] barCode= null;
 	private Dominio dominioCreditore;

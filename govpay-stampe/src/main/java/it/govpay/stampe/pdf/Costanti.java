@@ -33,6 +33,7 @@ public class Costanti {
 	public static final String LABEL_DUE_PUNTI = ":";
 	public static final String LABEL_P_IVA = "P.IVA";
 	public static final String PATTERN_NOME_DUE_PUNTI_VALORE = "{0}: {1}";
+	public static final String LABEL_COMMISSIONI_PSP = "Commissioni PSP";
 	
 	
 	
@@ -71,6 +72,9 @@ public class Costanti {
 	public static final String LABEL_ISTITUTO_ATTESTANTE = "Istituto attestante";
 	
 	public static final String LABEL_CAUSALE = "Causale";
+	public static final String LABEL_CAUSALE_BONIFICIO = "Causale Bonifico";
+	public static final String LABEL_CAUSALE_VERSAMENTO = "Causale Versamento";
+	public static final String LABEL_DESCRIZIONE_CAUSALE = "Descrizione Causale";
 	public static final String LABEL_TERMINE_PAGAMENTO = "Termine di pagamento";
 	
 	public static final String LABEL_IN_CORSO = "In Corso"; 
@@ -109,6 +113,11 @@ public class Costanti {
 	public static final String LABEL_CCP = "Ccp";
 	public static final String LABEL_ID_RISCOSSIONE = "Id Riscossione";
 	public static final String LABEL_PSP = "Psp";
+	
+	public static final String LABEL_ATTESTANTE = "Attestante";
+	public static final String LABEL_PAGATORE = "Pagatore";
+	public static final String LABEL_VERSANTE = "Versante";
+	public static final String LABEL_DEBITORE = "Debitore";
 	
 	
 	/** LABEL AVVISO PAGAMENTO **/

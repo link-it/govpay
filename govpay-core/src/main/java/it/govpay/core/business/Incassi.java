@@ -293,7 +293,7 @@ public class Incassi extends BasicBD {
 		Set<String> domini = null;
 		try {
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, listaIncassoDTO.getPrincipal());
-			domini = AclEngine.getAuthorizedInc(applicazione);
+			domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
 			if(domini != null && domini.size() == 0) {
 				throw new NotAuthorizedException();
 			}
@@ -325,7 +325,7 @@ public class Incassi extends BasicBD {
 		try {
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getTrn());
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, leggiIncassoDTO.getPrincipal());
-			Set<String> domini = AclEngine.getAuthorizedInc(applicazione);
+			Set<String> domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
 			if(!domini.contains(incasso.getCodDominio())) {
 				throw new NotAuthorizedException();
 			}

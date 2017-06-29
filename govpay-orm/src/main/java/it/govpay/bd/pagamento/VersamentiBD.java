@@ -306,6 +306,7 @@ public class VersamentiBD extends BasicBD {
 				versamento.setStatoVersamento(StatoVersamento.ANNULLATO);
 				versamento.setDescrizioneStato(descrizioneStato); 
 				this.updateVersamento(versamento);
+				emitAudit(versamento);
 				return;
 			}
 			// Se non è ne ANNULLATO ne NON_ESEGUITO non lo posso annullare

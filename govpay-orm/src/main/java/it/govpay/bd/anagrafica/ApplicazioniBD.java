@@ -186,8 +186,7 @@ public class ApplicazioniBD extends BasicBD {
 				}
 			}
 
-			AnagraficaManager.removeFromCache(applicazione);
-
+			emitAudit(applicazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -248,7 +247,7 @@ public class ApplicazioniBD extends BasicBD {
 					}
 				}
 			}
-
+			emitAudit(applicazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

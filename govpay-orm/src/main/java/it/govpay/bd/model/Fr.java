@@ -35,13 +35,13 @@ public class Fr extends it.govpay.model.Fr {
 	private static final long serialVersionUID = 1L;
 
 	// Business
-	private Dominio dominio;
-	private Psp psp;
-	private List<Rendicontazione> rendicontazioni;
+	private transient Dominio dominio;
+	private transient Psp psp;
+	private transient List<Rendicontazione> rendicontazioni;
 	
-	private long numOk;
-	private long numAnomale;
-	private long numAltroIntermediario;
+	private transient long numOk;
+	private transient long numAnomale;
+	private transient long numAltroIntermediario;
 	
 	public long getNumOk() {
 		return numOk;

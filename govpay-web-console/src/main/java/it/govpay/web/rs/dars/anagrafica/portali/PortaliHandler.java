@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -52,9 +53,6 @@ import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Portale;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Versionabile.Versione;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.portali.input.DominiPA;
 import it.govpay.web.rs.dars.anagrafica.portali.input.DominiPO;
@@ -62,11 +60,14 @@ import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPA;
 import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPO;
 import it.govpay.web.rs.dars.anagrafica.portali.input.Trusted;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributoHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -86,12 +87,9 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHandler<Portale>{
+public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler<Portale>{
 
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
-
-	public PortaliHandler(Logger log, BaseDarsService darsService) {
+	public PortaliHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -99,16 +97,15 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	public Elenco getElenco(UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			PortaliBD portaliBD = new PortaliBD(bd);
 			PortaleFilter filter = portaliBD.newFilter(simpleSearch);
@@ -121,7 +118,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			if(simpleSearch){
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
@@ -141,7 +138,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Portale> findAll = portaliBD.findAll(filter);
 
@@ -214,102 +211,109 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
-		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String portaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String defaultCallbackURLId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.id");
-		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+				String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
+				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String portaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String defaultCallbackURLId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.id");
+				String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 
-		String pagamentiAttesaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiAttesa.id");
-		String pagamentiOnlineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
-		String dominiPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPa.id");
-		String tipiTributoPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPa.id");
-		String dominiPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPo.id");
-		String tipiTributoPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPo.id");
-		String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+				String pagamentiAttesaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiAttesa.id");
+				String pagamentiOnlineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
+				String dominiPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPa.id");
+				String tipiTributoPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPa.id");
+				String dominiPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPo.id");
+				String tipiTributoPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPo.id");
+				String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(portaleId);
+				idInterm.setDefaultValue(null);
+				sezioneRoot.addField(idInterm);
+
+				InputText codPortale = (InputText) this.infoCreazioneMap.get(codPortaleId);
+				codPortale.setDefaultValue(null);
+				codPortale.setEditable(true); 
+				sezioneRoot.addField(codPortale);
+
+				InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
+				principal.setDefaultValue(null);
+				sezioneRoot.addField(principal);
+
+				InputText defaultCallbackURL = (InputText) this.infoCreazioneMap.get(defaultCallbackURLId);
+				defaultCallbackURL.setDefaultValue(null);
+				sezioneRoot.addField(defaultCallbackURL);
+
+				// versione
+				SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
+				versione.setDefaultValue(Versione.getUltimaVersione().getLabel());
+				sezioneRoot.addField(versione);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(true); 
+				sezioneRoot.addField(abilitato);
+
+				String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
+				Sezione sezionePA = infoCreazione.addSezione(etichettaPagamentiAttesa);
+
+				CheckButton pagamentiAttesa = (CheckButton) this.infoCreazioneMap.get(pagamentiAttesaId);
+				pagamentiAttesa.setDefaultValue(false); 
+				sezionePA.addField(pagamentiAttesa);
+
+
+				List<RawParamValue> pagamentiAttesaValues = new ArrayList<RawParamValue>();
+				pagamentiAttesaValues.add(new RawParamValue(portaleId, null));
+				pagamentiAttesaValues.add(new RawParamValue(pagamentiAttesaId, "false"));
+
+				TipiTributoPA tipiTributoPa = (TipiTributoPA) this.infoCreazioneMap.get(tipiTributoPaId);
+				tipiTributoPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
+				sezionePA.addField(tipiTributoPa);
+
+				DominiPA dominiPa = (DominiPA) this.infoCreazioneMap.get(dominiPaId);
+				dominiPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
+				sezionePA.addField(dominiPa); 
+
+				String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
+				Sezione sezionePO = infoCreazione.addSezione(etichettaPagamentiOnline);
+
+				CheckButton pagamentiOnline = (CheckButton) this.infoCreazioneMap.get(pagamentiOnlineId);
+				pagamentiOnline.setDefaultValue(false); 
+				sezionePO.addField(pagamentiOnline);
+
+				List<RawParamValue> pagamentiOnlineValues = new ArrayList<RawParamValue>();
+				pagamentiOnlineValues.add(new RawParamValue(portaleId, null));
+				pagamentiOnlineValues.add(new RawParamValue(pagamentiOnlineId, "false"));
+
+				Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
+				trusted.init(pagamentiOnlineValues, bd,this.getLanguage()); 
+				sezionePO.addField(trusted);
+
+				List<RawParamValue> pagamentiOnlineTrustedValues = new ArrayList<RawParamValue>();
+				pagamentiOnlineTrustedValues.addAll(pagamentiOnlineValues);
+				pagamentiOnlineTrustedValues.add(new RawParamValue(trustedId, "false"));
+
+				TipiTributoPO tipiTributoPo = (TipiTributoPO) this.infoCreazioneMap.get(tipiTributoPoId);
+				tipiTributoPo.init(pagamentiOnlineTrustedValues, bd,this.getLanguage()); 
+				sezionePO.addField(tipiTributoPo);
+
+				DominiPO dominiPo = (DominiPO) this.infoCreazioneMap.get(dominiPoId);
+				dominiPo.init(pagamentiOnlineValues, bd,this.getLanguage()); 
+				sezionePO.addField(dominiPo); 
+
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(portaleId);
-		idInterm.setDefaultValue(null);
-		sezioneRoot.addField(idInterm);
-
-		InputText codPortale = (InputText) this.infoCreazioneMap.get(codPortaleId);
-		codPortale.setDefaultValue(null);
-		codPortale.setEditable(true); 
-		sezioneRoot.addField(codPortale);
-
-		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
-		principal.setDefaultValue(null);
-		sezioneRoot.addField(principal);
-
-		InputText defaultCallbackURL = (InputText) this.infoCreazioneMap.get(defaultCallbackURLId);
-		defaultCallbackURL.setDefaultValue(null);
-		sezioneRoot.addField(defaultCallbackURL);
-
-		// versione
-		SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
-		versione.setDefaultValue(Versione.getUltimaVersione().getLabel());
-		sezioneRoot.addField(versione);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(true); 
-		sezioneRoot.addField(abilitato);
-
-		String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
-		Sezione sezionePA = infoCreazione.addSezione(etichettaPagamentiAttesa);
-
-		CheckButton pagamentiAttesa = (CheckButton) this.infoCreazioneMap.get(pagamentiAttesaId);
-		pagamentiAttesa.setDefaultValue(false); 
-		sezionePA.addField(pagamentiAttesa);
-
-
-		List<RawParamValue> pagamentiAttesaValues = new ArrayList<RawParamValue>();
-		pagamentiAttesaValues.add(new RawParamValue(portaleId, null));
-		pagamentiAttesaValues.add(new RawParamValue(pagamentiAttesaId, "false"));
-
-		TipiTributoPA tipiTributoPa = (TipiTributoPA) this.infoCreazioneMap.get(tipiTributoPaId);
-		tipiTributoPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
-		sezionePA.addField(tipiTributoPa);
-
-		DominiPA dominiPa = (DominiPA) this.infoCreazioneMap.get(dominiPaId);
-		dominiPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
-		sezionePA.addField(dominiPa); 
-
-		String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
-		Sezione sezionePO = infoCreazione.addSezione(etichettaPagamentiOnline);
-
-		CheckButton pagamentiOnline = (CheckButton) this.infoCreazioneMap.get(pagamentiOnlineId);
-		pagamentiOnline.setDefaultValue(false); 
-		sezionePO.addField(pagamentiOnline);
-
-		List<RawParamValue> pagamentiOnlineValues = new ArrayList<RawParamValue>();
-		pagamentiOnlineValues.add(new RawParamValue(portaleId, null));
-		pagamentiOnlineValues.add(new RawParamValue(pagamentiOnlineId, "false"));
-
-		Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
-		trusted.init(pagamentiOnlineValues, bd,this.getLanguage()); 
-		sezionePO.addField(trusted);
-
-		List<RawParamValue> pagamentiOnlineTrustedValues = new ArrayList<RawParamValue>();
-		pagamentiOnlineTrustedValues.addAll(pagamentiOnlineValues);
-		pagamentiOnlineTrustedValues.add(new RawParamValue(trustedId, "false"));
-
-		TipiTributoPO tipiTributoPo = (TipiTributoPO) this.infoCreazioneMap.get(tipiTributoPoId);
-		tipiTributoPo.init(pagamentiOnlineTrustedValues, bd,this.getLanguage()); 
-		sezionePO.addField(tipiTributoPo);
-
-		DominiPO dominiPo = (DominiPO) this.infoCreazioneMap.get(dominiPoId);
-		dominiPo.init(pagamentiOnlineValues, bd,this.getLanguage()); 
-		sezionePO.addField(dominiPo); 
-
 		return infoCreazione;
 	}
 
@@ -430,115 +434,121 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Portale entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
-		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String portaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String defaultCallbackURLId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.id");
-		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+				String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
+				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String portaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String defaultCallbackURLId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.id");
+				String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 
-		String pagamentiAttesaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiAttesa.id");
-		String pagamentiOnlineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
-		String dominiPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPa.id");
-		String tipiTributoPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPa.id");
-		String dominiPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPo.id");
-		String tipiTributoPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPo.id");
-		String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+				String pagamentiAttesaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiAttesa.id");
+				String pagamentiOnlineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
+				String dominiPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPa.id");
+				String tipiTributoPaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPa.id");
+				String dominiPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiPo.id");
+				String tipiTributoPoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoPo.id");
+				String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(portaleId);
+				idInterm.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idInterm);
+
+				InputText codPortale = (InputText) this.infoCreazioneMap.get(codPortaleId);
+				codPortale.setDefaultValue(entry.getCodPortale());
+				codPortale.setEditable(false); 
+				sezioneRoot.addField(codPortale);
+
+				InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
+				principal.setDefaultValue(entry.getPrincipal());
+				sezioneRoot.addField(principal);
+
+				InputText defaultCallbackURL = (InputText) this.infoCreazioneMap.get(defaultCallbackURLId);
+				defaultCallbackURL.setDefaultValue(entry.getDefaultCallbackURL());
+				sezioneRoot.addField(defaultCallbackURL);
+
+				// versione
+				SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
+				versione.setDefaultValue(entry.getVersione().getLabel());
+				sezioneRoot.addField(versione);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+
+				String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
+				Sezione sezionePA = infoModifica.addSezione(etichettaPagamentiAttesa);
+
+				List<Long> idsAclDominiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ATTESA);
+				List<Long> idsAclTributiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ATTESA);
+				boolean visualizzaPA = idsAclDominiPA.size() > 0 || idsAclTributiPA.size() > 0;
+
+				CheckButton pagamentiAttesa = (CheckButton) this.infoCreazioneMap.get(pagamentiAttesaId);
+				pagamentiAttesa.setDefaultValue(visualizzaPA); 
+				sezionePA.addField(pagamentiAttesa);
+
+				List<RawParamValue> pagamentiAttesaValues = new ArrayList<RawParamValue>();
+				pagamentiAttesaValues.add(new RawParamValue(portaleId, entry.getId()+""));
+				pagamentiAttesaValues.add(new RawParamValue(pagamentiAttesaId, (visualizzaPA? "true" : "false")));
+
+				TipiTributoPA tipiTributoPa = (TipiTributoPA) this.infoCreazioneMap.get(tipiTributoPaId);
+				tipiTributoPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
+				sezionePA.addField(tipiTributoPa);
+
+				DominiPA dominiPa = (DominiPA) this.infoCreazioneMap.get(dominiPaId);
+				dominiPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
+				sezionePA.addField(dominiPa); 
+
+				String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
+				Sezione sezionePO = infoModifica.addSezione(etichettaPagamentiOnline);
+
+				List<Long> idsAclDominiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ONLINE);
+				List<Long> idsAclTributiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ONLINE);
+				boolean visualizzaPO = idsAclDominiPO.size() > 0 || idsAclTributiPO.size() > 0 || entry.isTrusted(); 
+
+				CheckButton pagamentiOnline = (CheckButton) this.infoCreazioneMap.get(pagamentiOnlineId);
+				pagamentiOnline.setDefaultValue(visualizzaPO); 
+				sezionePO.addField(pagamentiOnline);
+
+				List<RawParamValue> pagamentiOnlineValues = new ArrayList<RawParamValue>();
+				pagamentiOnlineValues.add(new RawParamValue(portaleId, entry.getId()+""));
+				pagamentiOnlineValues.add(new RawParamValue(pagamentiOnlineId, (visualizzaPO? "true" : "false")));
+
+				Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
+				trusted.init(pagamentiOnlineValues, bd,this.getLanguage()); 
+				sezionePO.addField(trusted);
+
+				List<RawParamValue> pagamentiOnlineTrustedValues = new ArrayList<RawParamValue>();
+				pagamentiOnlineTrustedValues.addAll(pagamentiOnlineValues);
+				pagamentiOnlineTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
+
+				TipiTributoPO tipiTributoPo = (TipiTributoPO) this.infoCreazioneMap.get(tipiTributoPoId);
+				tipiTributoPo.init(pagamentiOnlineTrustedValues, bd,this.getLanguage()); 
+				sezionePO.addField(tipiTributoPo);
+
+				DominiPO dominiPo = (DominiPO) this.infoCreazioneMap.get(dominiPoId);
+				dominiPo.init(pagamentiOnlineValues, bd,this.getLanguage()); 
+				sezionePO.addField(dominiPo); 
+
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(portaleId);
-		idInterm.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idInterm);
-
-		InputText codPortale = (InputText) this.infoCreazioneMap.get(codPortaleId);
-		codPortale.setDefaultValue(entry.getCodPortale());
-		codPortale.setEditable(false); 
-		sezioneRoot.addField(codPortale);
-
-		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
-		principal.setDefaultValue(entry.getPrincipal());
-		sezioneRoot.addField(principal);
-
-		InputText defaultCallbackURL = (InputText) this.infoCreazioneMap.get(defaultCallbackURLId);
-		defaultCallbackURL.setDefaultValue(entry.getDefaultCallbackURL());
-		sezioneRoot.addField(defaultCallbackURL);
-
-		// versione
-		SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
-		versione.setDefaultValue(entry.getVersione().getLabel());
-		sezioneRoot.addField(versione);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
-		String etichettaPagamentiAttesa = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiAttesa.titolo");
-		Sezione sezionePA = infoModifica.addSezione(etichettaPagamentiAttesa);
-
-		List<Long> idsAclDominiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ATTESA);
-		List<Long> idsAclTributiPA = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ATTESA);
-		boolean visualizzaPA = idsAclDominiPA.size() > 0 || idsAclTributiPA.size() > 0;
-
-		CheckButton pagamentiAttesa = (CheckButton) this.infoCreazioneMap.get(pagamentiAttesaId);
-		pagamentiAttesa.setDefaultValue(visualizzaPA); 
-		sezionePA.addField(pagamentiAttesa);
-
-		List<RawParamValue> pagamentiAttesaValues = new ArrayList<RawParamValue>();
-		pagamentiAttesaValues.add(new RawParamValue(portaleId, entry.getId()+""));
-		pagamentiAttesaValues.add(new RawParamValue(pagamentiAttesaId, (visualizzaPA? "true" : "false")));
-
-		TipiTributoPA tipiTributoPa = (TipiTributoPA) this.infoCreazioneMap.get(tipiTributoPaId);
-		tipiTributoPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
-		sezionePA.addField(tipiTributoPa);
-
-		DominiPA dominiPa = (DominiPA) this.infoCreazioneMap.get(dominiPaId);
-		dominiPa.init(pagamentiAttesaValues, bd,this.getLanguage()); 
-		sezionePA.addField(dominiPa); 
-
-		String etichettaPagamentiOnline = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamentiOnline.titolo");
-		Sezione sezionePO = infoModifica.addSezione(etichettaPagamentiOnline);
-
-		List<Long> idsAclDominiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.PAGAMENTI_ONLINE);
-		List<Long> idsAclTributiPO = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.PAGAMENTI_ONLINE);
-		boolean visualizzaPO = idsAclDominiPO.size() > 0 || idsAclTributiPO.size() > 0 || entry.isTrusted(); 
-
-		CheckButton pagamentiOnline = (CheckButton) this.infoCreazioneMap.get(pagamentiOnlineId);
-		pagamentiOnline.setDefaultValue(visualizzaPO); 
-		sezionePO.addField(pagamentiOnline);
-
-		List<RawParamValue> pagamentiOnlineValues = new ArrayList<RawParamValue>();
-		pagamentiOnlineValues.add(new RawParamValue(portaleId, entry.getId()+""));
-		pagamentiOnlineValues.add(new RawParamValue(pagamentiOnlineId, (visualizzaPO? "true" : "false")));
-
-		Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
-		trusted.init(pagamentiOnlineValues, bd,this.getLanguage()); 
-		sezionePO.addField(trusted);
-
-		List<RawParamValue> pagamentiOnlineTrustedValues = new ArrayList<RawParamValue>();
-		pagamentiOnlineTrustedValues.addAll(pagamentiOnlineValues);
-		pagamentiOnlineTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
-
-		TipiTributoPO tipiTributoPo = (TipiTributoPO) this.infoCreazioneMap.get(tipiTributoPoId);
-		tipiTributoPo.init(pagamentiOnlineTrustedValues, bd,this.getLanguage()); 
-		sezionePO.addField(tipiTributoPo);
-
-		DominiPO dominiPo = (DominiPO) this.infoCreazioneMap.get(dominiPoId);
-		dominiPo.init(pagamentiOnlineValues, bd,this.getLanguage()); 
-		sezionePO.addField(dominiPo); 
-
-
 		return infoModifica;
 	}
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
 
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Portale entry) throws ConsoleException {
@@ -546,11 +556,17 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 
 	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
+
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Portale entry)	throws ConsoleException {	return null;	}
+
+	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
@@ -574,13 +590,25 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 
 	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+
+	@Override
+	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+
+	@Override
+	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+
+	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			// recupero oggetto
 			PortaliBD portaliBD = new PortaliBD(bd);
@@ -588,9 +616,9 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,portale);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, portale);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(portale,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(portale,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -794,8 +822,8 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			Portale entry = this.creaEntry(is, uriInfo, bd);
 
@@ -839,8 +867,8 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			JsonConfig jsonConfig = new JsonConfig();
 
@@ -994,8 +1022,8 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			Portale entry = this.creaEntry(is, uriInfo, bd);
 
@@ -1047,7 +1075,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
 

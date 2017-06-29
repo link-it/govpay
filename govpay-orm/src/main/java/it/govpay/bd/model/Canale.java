@@ -32,7 +32,7 @@ public class Canale extends it.govpay.model.Canale {
 	
 	// Business
 	
-	private Psp psp;
+	private transient Psp psp;
 	
 	public Psp getPsp(BasicBD bd) throws ServiceException {
 		if(psp == null) {

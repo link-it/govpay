@@ -24,11 +24,12 @@ import javax.ws.rs.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.web.rs.dars.base.DarsService;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 
 @Path("/dars/incassi")
-public class Incassi extends BaseDarsService {
+public class Incassi extends DarsService {
 
 	public Incassi() {
 		super();
@@ -49,5 +50,10 @@ public class Incassi extends BaseDarsService {
 	@Override
 	public String getPathServizio() {
 		return "/dars/" + this.getNomeServizio();
+	}
+	
+	@Override
+	public Servizio getFunzionalita() {
+		return Servizio.Gestione_Rendicontazioni;
 	}
 }

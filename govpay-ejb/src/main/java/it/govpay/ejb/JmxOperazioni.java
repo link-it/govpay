@@ -46,6 +46,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 	public final static String AGGIORNAMENTO_REGISTRO_PSP = "aggiornamentoRegistroPsp";
 	public final static String RECUPERO_RPT_PENDENTI = "recuperoRptPendenti";
 	public final static String SPEDIZIONE_NOTIFICHE = "spedizioneNotifiche";
+	public final static String CARICAMENTO_TRACCIATI = "caricamentoTracciati";
 	public final static String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
 	public final static String ESTRATTO_CONTO = "estrattoConto";
 
@@ -117,6 +118,10 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 		
 		if(actionName.equals(SPEDIZIONE_NOTIFICHE)){
 			return it.govpay.core.business.Operazioni.spedizioneNotifiche("JmxCall");
+		}
+
+		if(actionName.equals(CARICAMENTO_TRACCIATI)){
+			return it.govpay.core.business.Operazioni.caricamentoTracciati("JmxCall");
 		}
 
 		throw new UnsupportedOperationException("Operazione "+actionName+" sconosciuta");

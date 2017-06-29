@@ -26,6 +26,7 @@ import it.govpay.orm.ACL;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.IdPortale;
+import it.govpay.orm.IdRuolo;
 import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
 
 import java.util.ArrayList;
@@ -207,5 +208,53 @@ public class AclBD extends BasicBD {
 	}
 
 	
+	/*
+	 * RUOLO
+	 */
+
+	public void insertAclRuolo(Long id, List<Acl> acls) throws ServiceException {
+		for(Acl acl: acls) {
+			try{
+				ACL aclVo = AclConverter.toVO(acl, this);
+				IdRuolo idRuolo = new IdRuolo();
+				idRuolo.setId(id);
+				aclVo.setIdRuolo(idRuolo);
+				this.getAclService().create(aclVo);
+			} catch(NotImplementedException e) {
+				throw new ServiceException(e);
+			} catch (NotFoundException e) {
+				throw new ServiceException(e);
+			}
+		}
+	}
 	
+	public List<Acl> getAclRuolo(long idRuolo) throws ServiceException, NotFoundException {
+		try{
+			IPaginatedExpression exp = this.getAclService().newPaginatedExpression();
+			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
+			exp.equals(new CustomField("id_ruolo", Long.class, "id_ruolo", aclFC.toAliasTable(ACL.model())), idRuolo);
+			return findAll(exp);
+		} catch(ExpressionException e) {
+			throw new ServiceException(e);
+		} catch(ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public void deleteAclRuolo(long idRuolo) throws ServiceException {
+		try {
+			IExpression exp = this.getAclService().newExpression();
+			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
+			exp.equals(new CustomField("id_ruolo", Long.class, "id_ruolo", aclFC.toAliasTable(ACL.model())), idRuolo);
+			this.getAclService().deleteAll(exp);
+		} catch(ExpressionException e) {
+			throw new ServiceException(e);
+		} catch(ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
 }

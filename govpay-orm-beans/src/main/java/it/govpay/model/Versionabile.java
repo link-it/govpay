@@ -3,7 +3,7 @@ package it.govpay.model;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class Versionabile extends BasicModel {
+public abstract class Versionabile extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
 	

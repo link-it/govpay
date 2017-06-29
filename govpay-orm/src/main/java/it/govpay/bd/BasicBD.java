@@ -19,13 +19,17 @@
  */
 package it.govpay.bd;
 
+import it.govpay.bd.anagrafica.AuditBD;
+import it.govpay.model.BasicModel;
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
+import it.govpay.orm.dao.IAuditService;
 import it.govpay.orm.dao.IBatchService;
 import it.govpay.orm.dao.ICanaleService;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
+import it.govpay.orm.dao.IDBAuditService;
 import it.govpay.orm.dao.IDBBatchService;
 import it.govpay.orm.dao.IDBCanaleService;
 import it.govpay.orm.dao.IDBConnettoreService;
@@ -38,15 +42,18 @@ import it.govpay.orm.dao.IDBIncassoService;
 import it.govpay.orm.dao.IDBIntermediarioService;
 import it.govpay.orm.dao.IDBNotificaService;
 import it.govpay.orm.dao.IDBOperatoreService;
+import it.govpay.orm.dao.IDBOperazioneService;
 import it.govpay.orm.dao.IDBPagamentoService;
 import it.govpay.orm.dao.IDBPortaleService;
 import it.govpay.orm.dao.IDBPspService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
+import it.govpay.orm.dao.IDBRuoloService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
+import it.govpay.orm.dao.IDBTracciatoService;
 import it.govpay.orm.dao.IDBTributoService;
 import it.govpay.orm.dao.IDBUoService;
 import it.govpay.orm.dao.IDBVersamentoService;
@@ -59,6 +66,7 @@ import it.govpay.orm.dao.IIncassoService;
 import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IOperatoreService;
+import it.govpay.orm.dao.IOperazioneService;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IPspService;
@@ -66,9 +74,11 @@ import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
+import it.govpay.orm.dao.IRuoloService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
+import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IVersamentoService;
@@ -89,6 +99,7 @@ public class BasicBD {
 	
 	private IApplicazioneService applicazioneService;
 	private IACLService aclService;
+	private IAuditService auditService;
 	private IBatchService batchService;
 	private ICanaleService canaleService;
 	private IConnettoreService connettoreService;
@@ -100,6 +111,7 @@ public class BasicBD {
 	private IIUVService iuvService;
 	private INotificaService notificaService;
 	private IOperatoreService operatoreService;
+	private IOperazioneService operazioneService;
 	private IPagamentoService pagamentoService;
 	private IPortaleService portaleService;
 	private IPspService pspService;
@@ -107,10 +119,12 @@ public class BasicBD {
 	private IRendicontazioneService rendicontazioneService;
 	private IRPTService rptService;
 	private IRRService rrService;
+	private IRuoloService ruoloService;
 	private ISingoloVersamentoService singoloVersamentoService;
 	private IStazioneService stazioneService;
 	private ITipoTributoService tipoTributoService;
 	private ITributoService tributoService;
+	private ITracciatoService tracciatoService;
 	private IUoService uoService;
 	private IVersamentoService versamentoService;
 	private IIncassoService incassoService;
@@ -121,6 +135,7 @@ public class BasicBD {
 	private Connection connection;
 	private boolean isClosed;
 	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
+	private Long idOperatore;
 	
 	BasicBD father;
 	
@@ -157,6 +172,7 @@ public class BasicBD {
 			try {
 				this.applicazioneService = this.serviceManager.getApplicazioneService();
 				this.aclService = this.serviceManager.getACLService();
+				this.auditService = this.serviceManager.getAuditService();
 				this.batchService = this.serviceManager.getBatchService();
 				this.canaleService = this.serviceManager.getCanaleService();
 				this.connettoreService = this.serviceManager.getConnettoreService();
@@ -168,6 +184,7 @@ public class BasicBD {
 				this.iuvService = this.serviceManager.getIUVService();
 				this.notificaService = this.serviceManager.getNotificaService();
 				this.operatoreService = this.serviceManager.getOperatoreService();
+				this.operazioneService = this.serviceManager.getOperazioneService();
 				this.portaleService = this.serviceManager.getPortaleService();
 				this.pagamentoService = this.serviceManager.getPagamentoService();
 				this.pspService = this.serviceManager.getPspService();
@@ -175,10 +192,12 @@ public class BasicBD {
 				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
 				this.rptService = this.serviceManager.getRPTService();
 				this.rrService = this.serviceManager.getRRService();
+				this.ruoloService = this.serviceManager.getRuoloService();
 				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
 				this.stazioneService = this.serviceManager.getStazioneService();
 				this.tipoTributoService = this.serviceManager.getTipoTributoService();
 				this.tributoService = this.serviceManager.getTributoService();
+				this.tracciatoService = this.serviceManager.getTracciatoService();
 				this.uoService = this.serviceManager.getUoService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
 				this.incassoService = this.serviceManager.getIncassoService();
@@ -198,6 +217,7 @@ public class BasicBD {
 		try {
 			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
 			((IDBACLService)this.aclService).enableSelectForUpdate();
+			((IDBAuditService)this.auditService).enableSelectForUpdate();
 			((IDBBatchService)this.batchService).enableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).enableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
@@ -209,16 +229,19 @@ public class BasicBD {
 			((IDBIUVService)this.iuvService).enableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).enableSelectForUpdate();
+			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).enableSelectForUpdate();
 			((IDBPspService)this.pspService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
 			((IDBRRService)this.rrService).enableSelectForUpdate();
+			((IDBRuoloService)this.ruoloService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
 			((IDBRendicontazioneService)this.rendicontazioneService).enableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).enableSelectForUpdate();
 			((IDBTipoTributoService)this.tipoTributoService).enableSelectForUpdate();
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
+			((IDBTracciatoService)this.tracciatoService).enableSelectForUpdate();
 			((IDBUoService)this.uoService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).enableSelectForUpdate();
@@ -235,6 +258,7 @@ public class BasicBD {
 		try {
 			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
 			((IDBACLService)this.aclService).disableSelectForUpdate();
+			((IDBAuditService)this.auditService).disableSelectForUpdate();
 			((IDBBatchService)this.batchService).disableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).disableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
@@ -246,16 +270,19 @@ public class BasicBD {
 			((IDBIUVService)this.iuvService).disableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).disableSelectForUpdate();
+			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).disableSelectForUpdate();
 			((IDBPspService)this.pspService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
 			((IDBRRService)this.rrService).disableSelectForUpdate();
+			((IDBRuoloService)this.ruoloService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
 			((IDBRendicontazioneService)this.rendicontazioneService).disableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).disableSelectForUpdate();
 			((IDBTipoTributoService)this.tipoTributoService).disableSelectForUpdate();
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
+			((IDBTracciatoService)this.tracciatoService).disableSelectForUpdate();
 			((IDBUoService)this.uoService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).disableSelectForUpdate();
@@ -284,6 +311,13 @@ public class BasicBD {
 			return father.getAclService();
 		}
 		return aclService;
+	}
+
+	public IAuditService getAuditService() {
+		if(father != null) {
+			return father.getAuditService();
+		}
+		return auditService;
 	}
 
 	public IBatchService getBatchService() {
@@ -364,6 +398,13 @@ public class BasicBD {
 		return operatoreService;
 	}
 	
+	public IOperazioneService getOperazioneService() {
+		if(father != null) {
+			return father.getOperazioneService();
+		}
+		return operazioneService;
+	}
+	
 	public IPagamentoService getPagamentoService() {
 		if(father != null) {
 			return father.getPagamentoService();
@@ -413,6 +454,13 @@ public class BasicBD {
 		return rrService;
 	}
 
+	public IRuoloService getRuoloService() {
+		if(father != null) {
+			return father.getRuoloService();
+		}
+		return ruoloService;
+	}
+
 	public ISingoloVersamentoService getSingoloVersamentoService() {
 		if(father != null) {
 			return father.getSingoloVersamentoService();
@@ -439,6 +487,12 @@ public class BasicBD {
 			return father.getTributoService();
 		}
 		return tributoService;
+	}
+	public ITracciatoService getTracciatoService() {
+		if(father != null) {
+			return father.getTracciatoService();
+		}
+		return tracciatoService;
 	}
 	
 	public IUoService getUoService() {
@@ -557,6 +611,25 @@ public class BasicBD {
 			return father.isClosed();
 		}
 		return isClosed;
+	}
+	
+	protected void emitAudit(BasicModel model){
+		if(father != null) {
+			father.emitAudit(model);
+		} else {
+			if(idOperatore != null) {
+				AuditBD db = new AuditBD(this);
+				db.insertAudit(getIdOperatore(), model);
+			}
+		}
+	}
+
+	public long getIdOperatore() {
+		return idOperatore;
+	}
+
+	public void setIdOperatore(long idOperatore) {
+		this.idOperatore = idOperatore;
 	}
 }
 

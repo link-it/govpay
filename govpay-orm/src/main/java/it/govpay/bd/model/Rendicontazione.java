@@ -10,9 +10,9 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Fr fr;
-	private Pagamento pagamento;
-	private boolean pagamentoDaCreare = false;
+	private transient Fr fr;
+	private transient Pagamento pagamento;
+	private transient boolean pagamentoDaCreare = false;
 	
 	public Fr getFr(BasicBD bd) throws ServiceException {
 		if(this.fr == null) {

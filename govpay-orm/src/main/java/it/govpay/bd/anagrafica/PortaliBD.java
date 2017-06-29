@@ -143,7 +143,7 @@ public class PortaliBD extends BasicBD {
 			aclBD.insertAclPortale(portale.getId(), portale.getAcls());
 			this.getPortaleService().update(idPortale, vo);
 			portale.setId(vo.getId());
-			AnagraficaManager.removeFromCache(portale);
+			emitAudit(portale);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -166,7 +166,8 @@ public class PortaliBD extends BasicBD {
 			portale.setId(vo.getId());
 
 			AclBD aclBD = new AclBD(this);
-			aclBD.insertAclPortale(portale.getId(), portale.getAcls());	
+			aclBD.insertAclPortale(portale.getId(), portale.getAcls());
+			emitAudit(portale);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

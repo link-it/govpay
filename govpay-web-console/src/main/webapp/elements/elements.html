@@ -18861,6 +18861,7 @@ It will also ensure that focus remains in the dialog.
     --dark-accent-color: #f50057;
 
     /* Components */
+    --iron-overlay-backdrop-opacity: .3;
 
     /* paper-drawer-panel */
     --drawer-menu-color: #ffffff;
@@ -19064,6 +19065,12 @@ It will also ensure that focus remains in the dialog.
         --paper-toast-color: #9F6000;
       }
 
+      .paper-toast-button {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+      }
+
       .buttonBar {
         padding-top: 24px;
         @apply(--layout-horizontal);
@@ -19083,6 +19090,10 @@ It will also ensure that focus remains in the dialog.
       vaadin-combo-box-overlay::content #selector .item {
         white-space: normal !important;
         color: red;
+      }
+
+      .paper-toast-button {
+        --paper-icon-button-ink-color: transparent;
       }
 
       /*#spinner {
@@ -21590,7 +21601,8 @@ this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,th
       is: 'link-module',
 
       observers: [
-        'setAbsoluteResource(resource)'
+        'setAbsoluteResource(resource)',
+        'setChartResource(chart)'
       ],
 
       properties: {
@@ -21613,11 +21625,25 @@ this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,th
         detailObj: {
           type: Object,
           value: null
+        },
+        chart: {
+          type: Object
         }
       },
 
       setAbsoluteResource: function(resource){
         this.absoluteResource=REST_URL+resource + app.appendLangParameter(resource);
+      },
+
+      setChartResource: function(chart){
+        if(chart) {
+          var _chart = document.createElement('link-chart');
+          _chart.titolo = chart.label;
+          _chart.uri = chart.uri;
+          _chart.language = app.LANGUAGE;
+          Polymer.dom(this.$.pages).appendChild(_chart);
+          this.async(this.toChart);
+        }
       },
 
       showDetail: function(event){
@@ -21653,6 +21679,20 @@ this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,th
             app.showPaperToast(_msg, 'error');
           }
         }
+      },
+
+      toChart: function(){
+        this.$.pages.entryAnimation=undefined;
+        this.$.pages.exitAnimation=undefined;
+        this.$.pages.selectNext();
+      },
+
+      fromChart: function(){
+        this.chart = null;
+        this.$.pages.entryAnimation=undefined;
+        this.$.pages.exitAnimation=undefined;
+        this.$.pages.selectPrevious();
+        this.async(this.removeLastElement);
       },
 
       goNext: function(event){
@@ -27522,6 +27562,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         transition: height 0.1s;
         width: 1px;
         color: var(--disabled-text-color, gray);
+        overflow: hidden;
         @apply(--vaadin-upload-file-meta);
       }
 
@@ -27605,6 +27646,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         @apply(--vaadin-upload-file-progress-complete);
       }
 
+      paper-icon-button[hidden] {
+        display: none;
+      }
+
       :host(.fade-out) {
         animation-name: fade-out;
         animation-duration: 0.6s;
@@ -27615,17 +27660,20 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         0% {
           max-height: 38px;
         }
-        33%  {
+
+        33% {
           max-height: 38px;
           margin: 4px 0 0;
           padding: 6px 0 4px;
           opacity: 0.25;
         }
+
         67% {
           opacity: 0;
         }
+
         100% {
-          max-height: 0px;
+          max-height: 0;
           margin: 0;
           padding: 0;
           opacity: 0;
@@ -27742,7 +27790,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
       :host(:not([nodrop])) {
         border: 1px dashed;
-        border-color: var(--divider-color,  #666);
+        border-color: var(--divider-color, #666);
         border-radius: 3px;
         overflow: hidden;
         padding: 16px;
@@ -27762,6 +27810,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         display: none;
         z-index: 10;
       }
+
       :host([dragover])::before {
         display: block;
       }
@@ -27812,14 +27861,18 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
 
       #addFiles {
+        @apply(--vaadin-upload-button-add-wrapper);
+      }
+
+      #addButton {
         @apply(--paper-font-button);
         padding: .43em .57em;
         background: var(--primary-color, #00B4F0);
-        color: var(--primary-font-color, #FFFFFF);
+        color: var(--primary-font-color, #FFF);
         @apply(--vaadin-upload-button-add);
       }
 
-      #addFiles[disabled] {
+      #addButton[disabled] {
         background: var(--divider-color, #e0e0e0);
         color: var(--disabled-text-color, gray);
         @apply(--vaadin-upload-button-add-disabled);
@@ -27828,7 +27881,13 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     <div id="buttons">
       <div id="buttonsPrimary">
-        <paper-button id="addFiles" on-tap="_onAddFilesClick" disabled="[[_maxFilesAdded(maxFiles, files.length)]]">[[_i18nPlural(maxFiles, i18n.addFiles, i18n.addFiles.*)]]</paper-button>
+        <div id="addFiles" on-tap="_onAddFilesClick">
+          <slot name="add-button">
+            <paper-button id="addButton" disabled$="[[maxFilesReached]]">
+              [[_i18nPlural(maxFiles, i18n.addFiles, i18n.addFiles.*)]]
+            </paper-button>
+          </slot>
+        </div>
         <div id="dropLabel" hidden$="[[nodrop]]">
           <content select=".drop-label">
             <iron-icon icon="vaadin-upload:file-upload"></iron-icon>
@@ -27957,10 +28016,21 @@ is separate from validation, and `allowed-pattern` does not affect how the input
        * Limit of files to upload, by default it is unlimited. If the value is
        * set to one, native file browser will prevent selecting multiple files.
        */
-       maxFiles: {
-         type: Number,
-         value: Infinity
-       },
+      maxFiles: {
+        type: Number,
+        value: Infinity
+      },
+
+      /**
+       * Specifies if the maximum number of files have been uploaded
+       */
+      maxFilesReached: {
+        type: Boolean,
+        value: false,
+        notify: true,
+        readOnly: true,
+        computed: '_maxFilesAdded(maxFiles, files.length)'
+      },
 
       /**
        * Specifies the types of files that the server accepts.
@@ -27997,6 +28067,23 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       },
 
       /**
+       * Specifies the 'name' property at Content-Disposition
+       */
+      formDataName: {
+        type: String,
+        value: 'file'
+      },
+
+      /**
+       * Prevents upload(s) from immediately uploading upon adding file(s).
+       * When set, you must manually trigger uploads using the `uploadFiles` method
+       */
+      noAuto: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
        * The object used to localize this component.
        * For changing the default localization, change the entire
        * _i18n_ object or just the property you want to modify.
@@ -28022,7 +28109,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
        status: {
          connecting: 'Connecting...',
          stalled: 'Stalled.',
-         processing: 'Processing File...'
+         processing: 'Processing File...',
+         held: 'Queued'
        },
        remainingTime: {
          prefix: 'remaining time: ',
@@ -28070,7 +28158,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
               status: {
                 connecting: 'Connecting...',
                 stalled: 'Stalled.',
-                processing: 'Processing File...'
+                processing: 'Processing File...',
+                held: 'Queued'
               },
               remainingTime: {
                 prefix: 'remaining time: ',
@@ -28091,9 +28180,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     listeners: {
-      dragover: '_onDragover',
-      dragleave: '_onDragleave',
-      drop: '_onDrop',
+      'dragover': '_onDragover',
+      'dragleave': '_onDragleave',
+      'drop': '_onDrop',
       'file-retry': '_onFileRetry',
       'file-abort': '_onFileAbort',
       'file-remove': '_onFileRemove',
@@ -28116,7 +28205,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       var unitSizes = [60, 60, 24, Infinity];
       var timeValues = [0];
 
-      for (var i = 0, unitSize; i < unitSizes.length && time > 0; i++) {
+      for (var i = 0; i < unitSizes.length && time > 0; i++) {
         timeValues[i] = time % unitSizes[i];
         time = Math.floor(time / unitSizes[i]);
       }
@@ -28151,8 +28240,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           ')';
     },
 
-    _maxFilesAdded: function() {
-      return this.maxFiles >= 0 && this.files.length >= this.maxFiles;
+    _maxFilesAdded: function(maxFiles, numFiles) {
+      return maxFiles >= 0 && numFiles >= maxFiles;
     },
 
     _dragRippleAction: function(action, event) {
@@ -28203,14 +28292,14 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     _onDragover: function(event) {
       event.preventDefault();
-      if (!this._dragover) {
-        this._dragoverValid = !this._maxFilesAdded();
-      }
-      if (this._dragoverValid && !this._dragover && !this.nodrop) {
-        this._dragRippleAction('down', event);
+      if (!this.nodrop && !this._dragover) {
+        this._dragoverValid = !this.maxFilesReached;
+        if (this._dragoverValid) {
+          this._dragRippleAction('down', event);
+        }
+        this._dragover = true;
       }
       event.dataTransfer.dropEffect = !this._dragoverValid || this.nodrop ? 'none' : 'copy';
-      this._dragover = true;
     },
 
     _onDragleave: function(event) {
@@ -28236,7 +28325,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     // Override for tests
-    _createXhr: function(file) {
+    _createXhr: function() {
       return new XMLHttpRequest();
     },
 
@@ -28256,7 +28345,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
     },
 
-    _setStatus: function(file, total, loaded, elapsed, progress) {
+    _setStatus: function(file, total, loaded, elapsed) {
       file.elapsed = elapsed;
       file.elapsedStr = this._formatTime(file.elapsed, this._splitTimeByUnits(file.elapsed));
       file.remaining = Math.ceil(elapsed * (total / loaded - 1));
@@ -28265,6 +28354,19 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       file.totalStr = this._formatSize(total);
       file.loadedStr = this._formatSize(loaded);
       file.status = this._formatFileProgress(file);
+    },
+
+    /**
+     * Triggers the upload of any files that are not completed
+     *
+     * @param {Array} [files] - Files being uploaded. Defaults to all outstanding files
+     */
+    uploadFiles: function(files) {
+      files = files || this.files;
+      files = files.filter(function(file) {
+        return !file.complete;
+      });
+      Array.prototype.forEach.call(files, this._uploadFile.bind(this));
     },
 
     _uploadFile: function(file) {
@@ -28308,7 +28410,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }.bind(this);
 
       // More reliable than xhr.onload
-      xhr.onreadystatechange = function(e) {
+      xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
           clearTimeout(stalledId);
           file.indeterminate = file.uploading = false;
@@ -28338,13 +28440,15 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }.bind(this);
 
       var formData = new FormData();
-      formData.append('file', file, file.name);
 
       file.uploadTarget = this.target || '';
+      file.formDataName = this.formDataName;
       var evt = this.fire('upload-before', {file: file, xhr: xhr}, {cancelable: true});
       if (evt.defaultPrevented) {
         return;
       }
+
+      formData.append(file.formDataName, file, file.name);
 
       xhr.open(this.method, file.uploadTarget, true);
       this._configureXhr(xhr);
@@ -28374,15 +28478,15 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     _abortFileUpload: function(file) {
-       var evt = this.fire('upload-abort', {file: file, xhr: file.xhr}, {cancelable: true});
-       if (!evt.defaultPrevented) {
-         file.abort = true;
-         if (file.xhr) {
-           file.xhr.abort();
-         }
-         this._notifyFileChanges(file);
-       }
-     },
+      var evt = this.fire('upload-abort', {file: file, xhr: file.xhr}, {cancelable: true});
+      if (!evt.defaultPrevented) {
+        file.abort = true;
+        if (file.xhr) {
+          file.xhr.abort();
+        }
+        this._notifyFileChanges(file);
+      }
+    },
 
     _notifyFileChanges: function(file) {
       var p = 'files.' + this.files.indexOf(file) + '.';
@@ -28403,7 +28507,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
      * @param {File} file File being added
      */
     _addFile: function(file) {
-      if (this._maxFilesAdded()) {
+      if (this.maxFilesReached) {
         this.fire('file-reject', {file: file, error: this.i18n.error.tooManyFiles});
         return;
       }
@@ -28412,14 +28516,18 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         return;
       }
       var fileExt = file.name.match(/\.[^\.]*$|$/)[0];
-      var re = new RegExp('^(' + this.accept.replace(/[, ]+/g, '|').replace('/*', '/.*') + ')$', 'i');
+      var re = new RegExp('^(' + this.accept.replace(/[, ]+/g, '|').replace(/\/\*/g, '/.*') + ')$', 'i');
       if (this.accept && !(re.test(file.type) || re.test(fileExt))) {
         this.fire('file-reject', {file: file, error: this.i18n.error.incorrectFileType});
         return;
       }
       file.loaded = 0;
+      file.status = this.i18n.uploading.status.held;
       this.unshift('files', file);
-      this._uploadFile(file);
+
+      if (!this.noAuto) {
+        this._uploadFile(file);
+      }
     },
 
     /**
@@ -28430,11 +28538,19 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       this.splice('files', this.files.indexOf(file), 1);
     },
 
-    _onAddFilesClick: function(event) {
-      if (document.createEvent) {
-        this.$.fileInput.value = '';
-        this.$.fileInput.click();
+    _onAddFilesClick: function() {
+      if (Polymer.Gestures.resetMouseCanceller) {
+        /*
+          With Polymer v1.7.1, the ghost-click prevention cancels the synthetic
+          file input click in iOS Safari. This prevents the cancelling.
+
+          See also: https://github.com/Polymer/polymer/issues/4242
+        */
+        Polymer.Gestures.resetMouseCanceller();
       }
+
+      this.$.fileInput.value = '';
+      this.$.fileInput.click();
     },
 
     _onFileInputChange: function(event) {
@@ -28477,8 +28593,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event file-reject
    * @param {Object} detail
-   *  @param {Object} detail.file the file added
-   *  @param {Object} detail.error the cause
+   * @param {Object} detail.file the file added
+   * @param {Object} detail.error the cause
    */
 
   /**
@@ -28487,9 +28603,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-before
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
-   *   @param {Object} detail.file.uploadTarget the upload request URL, initialized with the value of vaadin-upload `target` property
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.file.uploadTarget the upload request URL, initialized with the value of vaadin-upload `target` property
    */
 
   /**
@@ -28500,9 +28616,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-request
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
-   *  @param {Object} detail.formData the FormData object
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.formData the FormData object
    */
 
   /**
@@ -28510,8 +28626,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-start
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
   /**
@@ -28519,8 +28635,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-progress
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded with loaded info
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded with loaded info
    */
 
   /**
@@ -28535,8 +28651,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-response
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
   /**
@@ -28544,8 +28660,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-success
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded with loaded info
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded with loaded info
    */
 
   /**
@@ -28553,8 +28669,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-error
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
   /**
@@ -28563,8 +28679,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-retry
    * @param {Object} detail
-   *  @param {Object} detail.xhr the previous upload xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the previous upload xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
   /**
@@ -28573,8 +28689,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-abort
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
 </script>
@@ -31948,6 +32064,22 @@ Polymer.AppLocalizeBehavior = {
     color: #9e9e9e;
   }
 
+  .vaadin-upload-required {
+    position: relative;
+    display: none;
+    visibility: visible;
+  }
+
+  .vaadin-upload-required-error {
+    display: block;
+  }
+
+  .note-class {
+    margin: 2px 0 0 0;
+    color: #C1C1C1;
+    font-size: 13px;
+  }
+
 </style><script>
   LinkFormBehavior = {
 
@@ -32018,10 +32150,25 @@ Polymer.AppLocalizeBehavior = {
           switch (obj.paramType) {
             case 'MultiSelectList':
               //MultiselectionDropdown
-              var msl = document.createElement('div');
+              var gmsl = document.createElement('div');
+
+              var etichetta = document.createElement('div');
+              etichetta.innerHTML = data.suggestion?data.label:'';
+              etichetta.className = 'titoloMultiselect'; //'titoloElemento';
+              var sottotitoloRadio = document.createElement('div');
+              sottotitoloRadio.innerHTML = data.suggestion?data.suggestion:'';
+              sottotitoloRadio.className = 'sottotitoloElemento';
+              etichetta.appendChild(sottotitoloRadio);
+
+              gmsl.appendChild(etichetta);
+              var msl = document.createElement('link-multi-select');
+              gmsl.appendChild(msl);
+
+              var _el = this._createNote(gmsl, obj);
+              (obj.avanzata)?_el.hidden = !this.avanzata:_el.hidden = obj.hidden;
+              sezioneDiv.appendChild(_el);
+
               this.setMultiSelectionList(msl, obj);
-              sezioneDiv.appendChild(msl);
-//              msl.disabled = !obj.editable;
               break;
             case 'SelectList':
               //Dropdown
@@ -32029,49 +32176,56 @@ Polymer.AppLocalizeBehavior = {
               pdm.itemLabelPath='etichetta';
               pdm.itemValuePath='valore';
               this.setDropDownProperties(pdm, obj);
-              sezioneDiv.appendChild(pdm);
+              var _el = this._createNote(pdm, obj);
+              sezioneDiv.appendChild(_el);
               pdm.disabled = !obj.editable;
               break;
             case 'CheckButton':
               //Toggle button
               var ptb = document.createElement('paper-checkbox');
               this.setCheckboxProperties(ptb, obj);
-              sezioneDiv.appendChild(ptb);
+              var _el = this._createNote(ptb, obj);
+              sezioneDiv.appendChild(_el);
               ptb.disabled = !obj.editable;
               break;
             case 'InputText':
               //Text input
               var pti = document.createElement('paper-input');
               this.setInputProperties(pti, 'text', obj);
-              sezioneDiv.appendChild(pti);
+              var _el = this._createNote(pti, obj);
+              sezioneDiv.appendChild(_el);
               pti.disabled = !obj.editable;
               break;
             case 'InputNumber':
               //Number input
               var pin = document.createElement('paper-input');
               this.setInputProperties(pin, 'number', obj);
-              sezioneDiv.appendChild(pin);
+              var _el = this._createNote(pin, obj);
+              sezioneDiv.appendChild(_el);
               pin.disabled = !obj.editable;
               break;
             case 'InputSecret':
               //Secret input
               var pis = document.createElement('paper-input');
               this.setInputProperties(pis, 'password', obj);
-              sezioneDiv.appendChild(pis);
+              var _el = this._createNote(pis, obj);
+              sezioneDiv.appendChild(_el);
               pis.disabled = !obj.editable;
               break;
             case 'InputTextArea':
               //TEXTAREA
               var pta = document.createElement('paper-textarea');
               this.setTextareaProperties(pta, obj);
-              sezioneDiv.appendChild(pta);
+              var _el = this._createNote(pta, obj);
+              sezioneDiv.appendChild(_el);
               pta.disabled = !obj.editable;
               break;
             case 'InputDate':
               //Date input
               var pdi = document.createElement('paper-input');
               this.setDateInputProperties(pdi, obj);
-              sezioneDiv.appendChild(pdi);
+              var _el = this._createNote(pdi, obj);
+              sezioneDiv.appendChild(_el);
               pdi.disabled = !obj.editable;
               break;
             case 'InputFile':
@@ -32089,14 +32243,25 @@ Polymer.AppLocalizeBehavior = {
               }
 
               pif.appendChild(vau);
-              sezioneDiv.appendChild(pif);
+
+              if(obj.required) {
+                var err = document.createElement('paper-input-error');
+                err.textContent = (obj.errorMessage)?obj.errorMessage:this.localize('campoObbligatorio');
+                err.className = 'vaadin-upload-required';
+                pif.appendChild(err);
+              }
+
+              var _el = this._createNote(pif, obj);
+              (obj.avanzata)?_el.hidden = !this.avanzata:_el.hidden = obj.hidden;
+              sezioneDiv.appendChild(_el);
+
               this.setFileInputProperties(vau, obj);
-              vau.disabled = !obj.editable;
               break;
             case 'RadioButton':
               var prg = document.createElement('paper-radio-group');
               this.setRadioGroupProperties(prg, obj);
-              sezioneDiv.appendChild(prg);
+              var _el = this._createNote(prg, obj);
+              sezioneDiv.appendChild(_el);
               prg.disabled = !obj.editable;
               break;
           }
@@ -32108,6 +32273,33 @@ Polymer.AppLocalizeBehavior = {
           sezioneDiv.hidden = false;
         }
         target.appendChild(sezioneDiv);
+      }
+    },
+
+    _createNote: function(_el, _data){
+      var _group = document.createElement('div');
+      _group.id = _data.id + '_group';
+      var _p = document.createElement('p');
+      _p.id = _data.id + '_note';
+      _p.className += ' note-class';
+      _p.innerHTML = (_data.note)?_data.note:'';
+      _group.appendChild(_el);
+      _group.appendChild(_p);
+
+      return _group;
+    },
+
+    _updateNote: function(_data){
+      var _p = this.querySelector('#'+_data.id + '_note');
+      _p.innerHTML = (_data.note)?_data.note:'';
+    },
+
+    _setVisibilityGroup: function(_data){
+      var _group = this.querySelector('#'+_data.id + '_group');
+      if (_data.avanzata){
+        _group.hidden = !this.avanzata;
+      } else {
+        _group.hidden = _data.hidden;
       }
     },
 
@@ -32157,22 +32349,7 @@ Polymer.AppLocalizeBehavior = {
       return temp;
     },
 
-    setMultiSelectionList: function(list, data){
-      if (data.avanzata){
-        list.hidden = !this.ptoggleb.checked;
-      } else {
-        list.hidden = data.hidden;
-      }
-      var etichetta = document.createElement('div');
-      etichetta.innerHTML = data.label;
-      etichetta.className = 'titoloMultiselect'; //'titoloElemento';
-      var sottotitoloRadio = document.createElement('div');
-      sottotitoloRadio.innerHTML = data.suggestion?data.suggestion:'';
-      sottotitoloRadio.className = 'sottotitoloElemento';
-      Polymer.dom(etichetta).appendChild(sottotitoloRadio);
-      Polymer.dom(list).appendChild(etichetta);
-
-      var listBox = document.createElement('link-multi-select');
+    setMultiSelectionList: function(listBox, data){
       listBox.id = data.id;
       listBox.label = data.label;
       listBox.labelAttribute = 'etichetta';
@@ -32184,7 +32361,10 @@ Polymer.AppLocalizeBehavior = {
       listBox.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if(data.refreshParamIds.length>0){
         listBox.refreshParamIds = data.refreshParamIds;
-        listBox.addEventListener('ms-selection', this.changeData.bind(this));
+        if(!listBox.hasEvent || listBox.hasEvent.length == 0) {
+          listBox.addEventListener('ms-selection', this.changeData.bind(this));
+          listBox.hasEvent = ['ms-selection'];
+        }
       }
       if (data.refreshUri){
         listBox.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32192,8 +32372,7 @@ Polymer.AppLocalizeBehavior = {
         listBox.refresh = this.refreshMultiSelectionDropdownData.bind(this, listBox);
         listBox.addEventListener('ms-selection', this._modifiedForm);
       }
-      Polymer.dom(list).appendChild(listBox);
-
+      listBox.disabled = !data.editable;
     },
 
     refreshMultiSelectionDropdownData: function(target){
@@ -32216,7 +32395,7 @@ Polymer.AppLocalizeBehavior = {
         getNewData.contentType="application/json";
         getNewData.body = JSON.stringify(query);
         getNewData.url = target.refreshUri;
-        getNewData.addEventListener('response', this.refreshMultiSelectionDropdown_success.bind(this, target.parentNode));
+        getNewData.addEventListener('response', this.refreshMultiSelectionDropdown_success.bind(this, target));
         getNewData.addEventListener('error', this.refresh_error);
         getNewData.generateRequest();
       } else {
@@ -32226,8 +32405,10 @@ Polymer.AppLocalizeBehavior = {
 
     refreshMultiSelectionDropdown_success: function(target, event){
       var obj = event.detail.response.response;
-      Polymer.dom(target).innerHTML='';
+      //Polymer.dom(target).innerHTML='';
       this.setMultiSelectionList(target, obj);
+      this._updateNote(obj);
+      this._setVisibilityGroup(obj);
       target.disabled = !obj.editable;
     },
 
@@ -32246,8 +32427,11 @@ Polymer.AppLocalizeBehavior = {
       dropdown.placeholder = data.suggestion?data.suggestion:'';
       if (data.refreshParamIds.length>0){
         dropdown.refreshParamIds = data.refreshParamIds;
-        dropdown.addEventListener('value-changed', this.changeData.bind(this));
-//        dropdown.addEventListener('iron-select', this.changeData.bind(this));
+        if(!dropdown.hasEvent || dropdown.hasEvent.length == 0) {
+          dropdown.addEventListener('value-changed', this.changeData.bind(this));
+  //        dropdown.addEventListener('iron-select', this.changeData.bind(this));
+          dropdown.hasEvent = ['value-changed'];
+        }
       }
       if (data.refreshUri){
         dropdown.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32314,6 +32498,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
       Polymer.dom(target).innerHTML='';
       this.setDropDownProperties(target, obj);
+      this._updateNote(obj);
       target.disabled = !obj.editable;
     },
 
@@ -32332,7 +32517,10 @@ Polymer.AppLocalizeBehavior = {
       checkbox.checked = data.defaultValue;
       if (data.refreshParamIds.length>0){
         checkbox.refreshParamIds = data.refreshParamIds;
-        checkbox.addEventListener('change', this.changeData.bind(this));
+        if(!checkbox.hasEvent || checkbox.hasEvent.length == 0) {
+          checkbox.addEventListener('change', this.changeData.bind(this));
+          checkbox.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         checkbox.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32373,6 +32561,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setCheckboxProperties(target, obj);
+      this._updateNote(obj);
       target.disabled = !obj.editable;
     },
 
@@ -32403,7 +32592,10 @@ Polymer.AppLocalizeBehavior = {
       paperInput.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         paperInput.refreshParamIds = data.refreshParamIds;
-        paperInput.addEventListener('change', this.changeData.bind(this));
+        if(!paperInput.hasEvent || paperInput.hasEvent.length == 0) {
+          paperInput.addEventListener('change', this.changeData.bind(this));
+          paperInput.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         paperInput.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32449,6 +32641,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setInputProperties(target, target.type, obj);
+      this._updateNote(obj);
       target.disabled = !obj.editable;
     },
 
@@ -32473,7 +32666,10 @@ Polymer.AppLocalizeBehavior = {
       textarea.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         textarea.refreshParamIds = data.refreshParamIds;
-        textarea.addEventListener('change', this.changeData.bind(this));
+        if(!textarea.hasEvent || textarea.hasEvent.length == 0) {
+          textarea.addEventListener('change', this.changeData.bind(this));
+          textarea.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         textarea.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32519,6 +32715,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setTextareaProperties(target, obj);
+      this._updateNote(obj);
       target.disabled = !obj.editable;
     },
 
@@ -32544,7 +32741,10 @@ Polymer.AppLocalizeBehavior = {
       dateInput.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         dateInput.refreshParamIds = data.refreshParamIds;
-        dateInput.addEventListener('change', this.changeData.bind(this));
+        if(!dateInput.hasEvent || dateInput.hasEvent.length == 0) {
+          dateInput.addEventListener('change', this.changeData.bind(this));
+          dateInput.hasEvent = ['change'];
+        }
       }
       if (data.refreshUri){
         dateInput.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32586,11 +32786,14 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setDateInputProperties(target, obj);
+      this._updateNote(obj);
       target.disabled = !obj.editable;
     },
 
     setFileInputProperties: function(fileInput, data){
       fileInput.type = 'file';
+      fileInput.noAuto = true;
+      fileInput.i18n.uploading.status.held = this.localize('uploadingStatus');
       fileInput.avanzata = data.avanzata;
       if (data.avanzata){
         fileInput.hidden = !this.avanzata;
@@ -32599,6 +32802,13 @@ Polymer.AppLocalizeBehavior = {
         fileInput.hidden = data.hidden;
       }
       fileInput.required = data.required;
+      if(data.required) {
+        fileInput.validate = function() {
+            var e = this.parentElement.querySelector('.vaadin-upload-required');
+            this.toggleClass('vaadin-upload-required-error', (this.files.length == 0), e);
+            return this.files.length != 0;
+        }
+      }
       //fileInput.label = data.label;
       fileInput.name = data.id;
       fileInput.id = data.id;
@@ -32608,10 +32818,19 @@ Polymer.AppLocalizeBehavior = {
       if (data.pattern){
         fileInput.pattern = data.pattern;
       }
-      fileInput.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
+      fileInput.hasEvent = [];
+      if (fileInput.hasEvent.indexOf('file-reject') == -1) {
+        fileInput.addEventListener('file-reject', this.fileReject);
+        fileInput.i18n.error.fileIsTooBig = data.toString();
+        fileInput.i18n.error.incorrectFileType = data.toString();
+        fileInput.hasEvent.push('file-reject');
+      }
       if (data.refreshParamIds.length>0){
         fileInput.refreshParamIds = data.refreshParamIds;
-        fileInput.addEventListener('change', this.changeData.bind(this));
+        if(fileInput.hasEvent.indexOf('change') == -1) {
+          fileInput.addEventListener('change', this.changeData.bind(this));
+          fileInput.hasEvent.push('change');
+        }
       }
       if (data.refreshUri){
         fileInput.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32620,7 +32839,7 @@ Polymer.AppLocalizeBehavior = {
       }
 
       // vaadin properties
-      //      var fu = fu || this.$$('#'+fileInput.id);
+      // var fu = fu || this.$$('#'+fileInput.id);
       if(data.maxFileSize) {
         fileInput.maxFileSize = data.maxFileSize;
       }
@@ -32638,76 +32857,11 @@ Polymer.AppLocalizeBehavior = {
         fileInput.accept = acc;
       }
       fileInput.nodrop = true;
-      if(data.target) {
-        fileInput.target = REST_URL + data.target + app.appendLangParameter(data.target);
-      }
-      fileInput.addEventListener('file-reject', function(event){
-        console.log(event.detail);
-      });
-      fileInput.addEventListener('upload-success', function(event) {
-        console.log("Upload Success: ");
-        if(event.detail){
-          if(event.detail.xhr){
-            if(event.detail.xhr.response){
-              var jsonResponse = JSON.parse(event.detail.xhr.response);
+      fileInput.disabled = !data.editable;
+    },
 
-              var isOk = false;
-              if (jsonResponse.dettaglioEsito){
-                switch (jsonResponse.esitoOperazione){
-                  case 'ESEGUITA':
-                    isOk = true;
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'success');
-                    break;
-                  case 'NONESEGUITA':
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'warning');
-                    break;
-                  case 'ERRORE':
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'error');
-                    break;
-                }
-              } else {
-                switch (jsonResponse.esitoOperazione){
-                  case 'ESEGUITA':
-                    isOk = true;
-                    app.showPaperToast(this.localize('okUpload'), 'success');
-                    break;
-                  case 'NONESEGUITA':
-                    app.showPaperToast(this.localize('warningUpload') + jsonResponse.codOperazione, 'warning');
-                    break;
-                  case 'ERRORE':
-                    app.showPaperToast(this.localize('errorUpload') + jsonResponse.codOperazione, 'error');
-                    break;
-                }
-              }
-
-              if(isOk){
-                var form = event.target.parentElement.parentElement.parentElement;
-                var formChildren = form.children;
-                var response = jsonResponse.response;
-
-                for (var s = 0; s < formChildren.length; s ++) {
-                  var dd = formChildren[s];
-                  if(dd.tagName == 'DIV' && dd.className == 'sezioneForm') {
-                    var chSezione = dd.children;
-                    for (var g = 0; g < chSezione.length; g ++) {
-                      var elemento = chSezione[g];
-                      for (var i = 0 ; i < response.length; i ++) {
-                        var toUpdate = response[i];
-                        var idElemento = toUpdate.etichetta;
-                        var valoreElemento = toUpdate.valore;
-                        //   var elemento = document.querySelector('#'+idElemento);
-                        if(elemento.id == idElemento)
-                          elemento.value = ''+valoreElemento;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }.bind(this));
-
+    fileReject: function(e){
+      app.showPaperToast(e.detail.file.name+': '+e.detail.error, 'warning');
     },
 
     refreshFileInputData: function(target){
@@ -32741,6 +32895,8 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setFileInputProperties(target, obj);
+      this._updateNote(obj);
+      this._setVisibilityGroup(obj);
       target.disabled = !obj.editable;
     },
 
@@ -32770,7 +32926,10 @@ Polymer.AppLocalizeBehavior = {
       radioGroup.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         radioGroup.refreshParamIds = data.refreshParamIds;
-        radioGroup.addEventListener('iron-select', this.changeData.bind(this));
+        if(!radioGroup.hasEvent || radioGroup.hasEvent.length == 0) {
+          radioGroup.addEventListener('iron-select', this.changeData.bind(this));
+          radioGroup.hasEvent = ['iron-select'];
+        }
       }
       if (data.refreshUri){
         radioGroup.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
@@ -32817,6 +32976,7 @@ Polymer.AppLocalizeBehavior = {
       var obj = event.detail.response.response;
 //      Polymer.dom(target).innerHTML='';
       this.setRadioGroupProperties(target, obj);
+      this._updateNote(obj);
       target.disabled = !obj.editable;
     },
 
@@ -32927,6 +33087,38 @@ Polymer.AppLocalizeBehavior = {
         }
       }
       return false;
+    },
+
+    _serializeFields: function(form) {
+      var temp = this.serializeForm(form);
+      var ms = this.querySelectorAll('link-multi-select');
+      for (var lb = 0; lb < ms.length; lb++) {
+        temp[ms[lb].id] = ms[lb].selectedValues;
+      }
+      var lista = Object.keys(temp);
+      var query = [];
+      for (var i = 0; i < lista.length; i++) {
+        var obj = lista[i];
+        var newValue = temp[obj];
+        if (this.$$('#'+obj)){
+          switch (this.$$('#'+obj).localName){
+            case 'vaadin-combo-box':
+              if (this.$$('#'+obj).selectedItem){
+                newValue=this.$$('#'+obj).selectedItem.valore;
+              } else {
+                newValue = null;
+              }
+              break;
+            default:
+              break;
+          }
+        }
+        if (newValue){
+          query.push(obj+'='+newValue);
+        }
+      }
+
+      return query.join('&');
     }
   };
 </script>
@@ -33471,41 +33663,130 @@ Polymer.AppLocalizeBehavior = {
 
       edit: function(event){
         var ok = this.$.editForm.validate();
-          if (ok){
+        if(ok) {
+          var vaadinUps = this.querySelectorAll('vaadin-upload');
+          for (var v = 0; v < vaadinUps.length; v++) {
+            if(vaadinUps[v].required && !vaadinUps[v].validate()){
+              ok = false;
+              break;
+            }
+          }
+        }
+        if (ok) {
           var temp = this.serializeForm(this.$.editForm);
           var ms = this.querySelectorAll('link-multi-select');
           for (var lb = 0; lb < ms.length; lb++) {
             temp[ms[lb].id] = ms[lb].selectedValues;
           }
-          var lista = Object.keys(temp);
-          for (var i = 0; i < lista.length; i++) {
-            var obj = lista[i];
-            var newValue = temp[obj];
-            switch (this.$$('#'+obj).localName){
-              case 'paper-dropdown-menu':
-                if (this.$$('#'+obj).selectedItem){
-                  newValue=this.$$('#'+obj).selectedItem.value;
-                } else {
-                  newValue = null;
-                }
-                break;
-              default:
-                break;
-            }
-            if (newValue!=null){
-              temp[obj]=newValue;
-            }
+
+          //Vaadin-upload files
+          if (vaadinUps && vaadinUps.length > 0) {
+            app.showSpinner();
+            this._nextVaadinUp(vaadinUps[vaadinUps.length-1], vaadinUps.length-1, vaadinUps, temp);
           }
-          //console.log(temp);
-          this.$.editResource.url = this.editUrl;
-          this.$.editResource.method = this.method;
-          this.$.editResource.contentType="application/json";
-          this.$.editResource.body = JSON.stringify(temp);
-          app.showSpinner();
-          this.$.editResource.generateRequest();
+          else {
+              this.postEdit(temp);
+          }
         } else {
-          app.showPaperToast('Errori di compilazione');
+          app.showPaperToast(this.localize('erroriCompilazione')  , 'error');
         }
+      },
+      /** *********** Vaadin-upload files ************ **/
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *       vsl: indice elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextVaadinUp: function(_vaadin, vsl, _vaadins, temp){
+          if(vsl >= 0){
+              var vfl = _vaadin.files.length - 1;
+              this._nextFile(_vaadin, vsl, vfl, _vaadins, temp);
+          } else {
+            app.hideSpinner();
+            this.postEdit(temp);
+          }
+      },
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *         k: indice elemento vaadin-upload
+       *         i: indice .files per elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextFile: function(_vaadin, k, i, _vaadins, temp){
+        if(i >= 0){
+            this._nextReader(_vaadin, k, i, _vaadins, temp);
+        } else {
+          k--;
+          this._nextVaadinUp(_vaadin, k, _vaadins, temp);
+        }
+      },
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *         k: indice elemento vaadin-upload
+       *         i: indice .files per elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextReader: function(_vaadin, k, i, _vaadins, temp){
+        var r = new FileReader();
+        var f = _vaadin.files[i];
+        r.onload = function(_f, e) {
+            var _b64 = this._bufferToB64(e.target.result);
+            if(!temp.hasOwnProperty(_vaadins[k].id) || temp[_vaadins[k].id] == null) {
+              temp[_vaadins[k].id] = [{ data: _b64, filename: _f.name }];
+            } else {
+              temp[_vaadins[k].id].push({ data: _b64, filename: _f.name });
+            }
+            i--;
+            this._nextFile(_vaadin, k, i, _vaadins, temp);
+        }.bind(this, f);
+
+        r.readAsArrayBuffer(f);
+      },
+      _bufferToB64: function(buffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+
+        return btoa(binary);
+      },
+      /** ***************************** **/
+
+      postEdit: function(temp) {
+        var lista = Object.keys(temp);
+        for (var i = 0; i < lista.length; i++) {
+          var obj = lista[i];
+          var newValue = temp[obj];
+          switch (this.$$('#'+obj).localName){
+            case 'paper-dropdown-menu':
+              if (this.$$('#'+obj).selectedItem){
+                newValue=this.$$('#'+obj).selectedItem.value;
+              } else {
+                newValue = null;
+              }
+              break;
+            default:
+              break;
+          }
+          if (newValue!=null){
+            temp[obj]=newValue;
+          }
+        }
+        //console.log(temp);
+        this.$.editResource.url = this.editUrl;
+        this.$.editResource.method = this.method;
+        this.$.editResource.contentType="application/json";
+        this.$.editResource.body = JSON.stringify(temp);
+        app.showSpinner();
+        this.$.editResource.generateRequest();
       },
 
       editResource_responseHandler: function(event){
@@ -33653,7 +33934,7 @@ Polymer.AppLocalizeBehavior = {
           <div class="mainContent">
             <link-searchbox id="searchbox" on-append-response="appendResults" on-response="setResults" on-advanced-search-request="_onAdvRequest" hidden$="[[!advSearch]]"></link-searchbox>
             <span class="gap" hidden$="[[!advSearch]]"></span>
-            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
+            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
             <div class="noResults" hidden$="[[!noResults(results.length)]]">[[localize('nessunElemento')]]</div>
           </div>
         </div>
@@ -33776,6 +34057,10 @@ Polymer.AppLocalizeBehavior = {
           type: Object,
           value: null
         },
+        infoEsportazione: {
+          type: Object,
+          value: null
+        },
         simplePlaceholder: {
           type: String,
           value: ''
@@ -33793,6 +34078,10 @@ Polymer.AppLocalizeBehavior = {
           value: false
         },
         maxSelections: {
+          type: Number,
+          value: -1
+        },
+        maxDelete: {
           type: Number,
           value: 0
         },
@@ -33844,6 +34133,9 @@ Polymer.AppLocalizeBehavior = {
         if (response.numeroMassimoElementiExport) {
           this.maxSelections = response.numeroMassimoElementiExport;
         }
+        if (response.numeroMassimoElementiCancellazione) {
+          this.maxDelete = response.numeroMassimoElementiCancellazione;
+        }
         if (response.infoCreazione){
           this.creazioneUrl = REST_URL + response.infoCreazione.uri + app.appendLangParameter(response.infoCreazione.uri);
         } else {
@@ -33856,8 +34148,9 @@ Polymer.AppLocalizeBehavior = {
           this.cancellazioneUrl = '';
         }
         this.filtrabile = (response.filtro);
-        if (response.esportazione) {
-          this.esportazioneUrl = REST_URL + response.esportazione + app.appendLangParameter(response.esportazione);
+        if (response.infoEsportazione) {
+          this.infoEsportazione = response.infoEsportazione;
+          this.esportazioneUrl = REST_URL + response.infoEsportazione.uri + app.appendLangParameter(response.infoEsportazione.uri);
         } else {
           this.esportazioneUrl = '';
         }
@@ -33875,6 +34168,7 @@ Polymer.AppLocalizeBehavior = {
           this.intestazione= response.intestazione;
         }
         this.activateFabs();
+        this.$$('#resultsBox').resetSelection();
         this.fire('data-search-view', { numResults: response.totaleRisultati, infoRicerca: response.infoRicerca, simplePlaceholder: response.simpleSearchPlaceHolder });
       },
 
@@ -33884,6 +34178,7 @@ Polymer.AppLocalizeBehavior = {
       },
 
       setResults: function(event){
+        this.$$('#resultsBox').resetSelection();
         this.numResults = event.detail.totaleRisultati;
         this.results = event.detail.elenco;
         this.useVaadin = event.detail.tabella;
@@ -33976,8 +34271,8 @@ Polymer.AppLocalizeBehavior = {
             listaId.push(obj.id);
           }
         }
-        if((listaId.length > 0 && listaId.length <= this.maxSelections) ||
-          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections)) {
+        if((listaId.length > 0 && listaId.length <= this.maxDelete) ||
+          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxDelete)) {
           var lap = document.createElement('link-alert-panel');
           lap.addEventListener('action-delete', function request(e) {
             e.currentTarget.removeEventListener('action-delete', request);
@@ -34010,6 +34305,7 @@ Polymer.AppLocalizeBehavior = {
             document.body.removeChild(e.currentTarget);
           });
           lap.qta = listaId.length;
+          lap.isExport = false;
           lap.template = this.infoCancellazione;
           document.body.appendChild(lap);
         } else {
@@ -34061,28 +34357,56 @@ Polymer.AppLocalizeBehavior = {
           }
         }
         if((listaId.length > 0 && listaId.length <= this.maxSelections) ||
-          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections)) {
-          this.$$('#resultsBox').resetSelection();
+          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections) ||
+          this.maxSelections == -1) {
+          if(this.infoEsportazione.sezioni && this.infoEsportazione.sezioni[0].fields.length != 0) {
+            var lap = document.createElement('link-alert-panel');
+            lap.addEventListener('action-export', function request(e) {
+              e.currentTarget.removeEventListener('action-export', request);
+              var params = e.detail.fields;
+              params['ids'] = listaId;
+              this._doExportCall(params);
 
-          var params = {};
-          var sbox = this.$$('#searchbox');
-          if(sbox.isSimpleQuery.active) {
-            params['simpleSearch'] = sbox.isSimpleQuery.value;
+            }.bind(this));
+            lap.addEventListener('iron-overlay-closed', function closing(e) {
+              e.currentTarget.removeEventListener('iron-overlay-closed', closing);
+              document.body.removeChild(e.currentTarget);
+            });
+            lap.qta = listaId.length;
+            lap.isExport = true;
+            lap.template = this.infoEsportazione;
+            document.body.appendChild(lap);
           } else {
-            params = sbox.serialization_fields();
+            var params = {};
+            params['ids'] = listaId;
+            this._doExportCall(params);
           }
-          params['ids'] = listaId;
-
-          this.$.esportaDati.body = JSON.stringify(params);
-          this.$.esportaDati.url = this.esportazioneUrl;
-
-          this.$.esportaDati.contentType = 'application/json';
-
-          app.showSpinner();
-          this.$.esportaDati.generateRequest();
         } else {
           app.showPaperToast(this.localize('exportSogliaSuperata'), 'error');
         }
+      },
+
+      _doExportCall: function(params){
+        this.$$('#resultsBox').resetSelection();
+        var sbox = this.$$('#searchbox');
+        if(sbox.isSimpleQuery.active) {
+          params['simpleSearch'] = sbox.isSimpleQuery.value;
+        } else {
+          var sbox_params = sbox.serialization_fields();
+          for (var f in sbox_params) {
+            if (sbox_params.hasOwnProperty(f)) {
+              params[f] = sbox_params[f];
+            }
+          }
+        }
+
+        this.$.esportaDati.body = JSON.stringify(params);
+        this.$.esportaDati.url = this.esportazioneUrl;
+
+        this.$.esportaDati.contentType = 'application/json';
+
+        app.showSpinner();
+        this.$.esportaDati.generateRequest();
       },
 
       esportaDati_responseHandler: function(event){
@@ -35671,9 +35995,22 @@ Polymer.AppLocalizeBehavior = {
 
       .voce {
         min-height: 24px;
-        padding-bottom: 8px;
-        flex-basis: 50%;
-        width: 50%;
+        padding: 0 16px 8px 0;
+        box-sizing: border-box;
+        flex-basis: calc(var(--voce-basis, 50%) - 16px);
+        width: calc(var(--voce-basis, 50%) - 16px);
+      }
+
+      .voce-image-group {
+        display: table;
+      }
+
+      .voce-image {
+        vertical-align: top;
+      }
+
+      .img-class {
+        margin-left: 5px;
       }
 
       .card-content .etichetta {
@@ -35727,6 +36064,20 @@ Polymer.AppLocalizeBehavior = {
         .mobile-space {
           width: 100%;
         }
+
+        .card-content {
+          @apply(--layout-vertical);
+          flex-basis: 50%;
+          font-size: 12px;
+          padding: 0;
+          position:relative;
+        }
+
+        .voce {
+          min-height: 24px;
+          padding-bottom: 8px;
+          width: 100%;
+        }
       }
 
     </style>
@@ -35755,9 +36106,14 @@ Polymer.AppLocalizeBehavior = {
               <paper-card class="sezione" heading="[[item.etichetta]]" elevation="0" hidden$="[[_checkSessioni(item, avanzata)]]">
                 <div class="card-content">
                   <template is="dom-repeat" items="[[item.voci]]" as="voce">
-                    <div class="voce ellipsis-text" hidden$="[[_checkVoci(voce, avanzata)]]">
+                    <div class$="[[classeEtichettaGroup(voce)]]" style$="[[_setClassAndOrder(index)]]" hidden$="[[_checkVoci(voce, avanzata)]]">
                       <span class$="[[classeEtichetta(voce)]]">[[getEtichetta(voce)]]</span>
-                      <span class$="[[classeValore(voce)]]" on-tap="getReference">[[voce.valore]]</span>
+                      <template is="dom-if" if="[[_isVisibleType(voce.tipo, 'TEXT')]]">
+                        <span class$="[[classeValore(voce)]]" on-tap="getReference">[[voce.valore]]</span>
+                      </template>
+                      <template is="dom-if" if="[[_isVisibleType(voce.tipo, 'IMAGE')]]">
+                        <img class="img-class" src="[[getImgValore(voce)]]" width="[[voce.width]]" height="[[voce.height]]">
+                      </template>
                       
                     </div>
                   </template>
@@ -35782,7 +36138,7 @@ Polymer.AppLocalizeBehavior = {
 
     <iron-ajax id="getDetail" handle-as="json" on-response="getDetail_responseHandler" on-error="getDetail_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="downloadDati" url="[[downloadUrl]]" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="downloadDati_responseHandler" on-error="downloadDati_errorHandler" debounce-duration="300"></iron-ajax>
-    <iron-ajax id="esportaDati" url="[[uriEsportazione]]" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="esportaDati" url="[[uriEsportazione]]" method="POST" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="elimina" url="[[uriCancellazione]]" method="POST" handle-as="json" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="elimina_responseHandler" on-error="elimina_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
   <script>
@@ -35840,6 +36196,10 @@ Polymer.AppLocalizeBehavior = {
           value: ''
         },
         infoCancellazione: {
+          type: Object,
+          value: null
+        },
+        infoEsportazione: {
           type: Object,
           value: null
         },
@@ -35906,7 +36266,11 @@ Polymer.AppLocalizeBehavior = {
 
       setUri: function(obj){
         if (obj){
-          this.uriEsportazione = (obj.esportazione)? REST_URL + obj.esportazione + app.appendLangParameter(obj.esportazione) : '';
+          this.uriEsportazione = '';
+          if(obj.infoEsportazione) {
+            this.infoEsportazione = obj.infoEsportazione;
+            this.uriEsportazione = (obj.infoEsportazione.uri)?REST_URL + obj.infoEsportazione.uri + app.appendLangParameter(obj.infoEsportazione.uri):'';
+          }
           this.uriCancellazione = '';
           if(obj.infoCancellazione) {
             this.infoCancellazione = obj.infoCancellazione;
@@ -35919,6 +36283,7 @@ Polymer.AppLocalizeBehavior = {
           this.simpleSearchHidden = true;
 
           this.fabsMenu();
+          this._updateBasis(obj);
         }
       },
 
@@ -35928,6 +36293,18 @@ Polymer.AppLocalizeBehavior = {
             this.uriEsportazione || this.uriCancellazione)) {
           this.showFabMenu = true;
         }
+      },
+
+      _updateBasis: function(_obj) {
+        this.customStyle['--voce-basis'] = '50%';
+        this.updateStyles();
+      },
+
+      _setClassAndOrder: function(_index) {
+        var st = 'order: '+ parseInt(_index + 1)+'; ';
+        st += '-webkit-order: '+ parseInt(_index + 1)+'; ';
+        st += '-ms-order: '+ parseInt(_index + 1)+';';
+        return st;
       },
 
       _setVisibility: function(url){
@@ -35997,17 +36374,52 @@ Polymer.AppLocalizeBehavior = {
       },
 
       getEtichetta: function(voce){
-        if (voce.valore){
-          return voce.etichetta+':';
+        if (voce.etichetta){
+          if (voce.valore){
+            return voce.etichetta+':';
+          }
+          return voce.etichetta;
         }
-        return voce.etichetta;
+        return '';
       },
 
-      classeEtichetta: function(voce){
-        if ((voce.riferimento || voce.downloadLink) && !voce.valore){
-          return 'etichettaRiferimento';
+      getImgValore: function(_voce){
+        return (_voce.tipo == 'IMAGE')?_voce.valore:'';
+      },
+
+      _isVisibleType: function(_tipo, _srcType){
+        switch(_tipo){
+          case 'TEXT': {
+            return (_tipo == _srcType);
+          }
+          case 'IMAGE': {
+            return (_tipo ==_srcType);
+          }
+          default:
+            return false;
         }
+      },
+
+      classeEtichetta: function(_voce){
+        switch(_voce.tipo) {
+          case 'TEXT':
+            if ((_voce.riferimento || _voce.downloadLink) && !_voce.valore){
+              return 'etichettaRiferimento';
+            }
+            break;
+          case 'IMAGE':
+            return 'etichetta voce-image';
+            break;
+        }
+
         return 'etichetta';
+      },
+
+      classeEtichettaGroup: function(_voce){
+        if (_voce.tipo && _voce.tipo == 'IMAGE'){
+          return 'voce voce-image-group ellipsis-text';
+        }
+        return 'voce ellipsis-text';
       },
 
       getTabLabel: function(item){
@@ -36168,6 +36580,7 @@ Polymer.AppLocalizeBehavior = {
           e.currentTarget.removeEventListener('iron-overlay-closed', closing);
           document.body.removeChild(e.currentTarget);
         });
+        lap.isExport = false;
         lap.template = this.infoCancellazione;
         document.body.appendChild(lap);
       },
@@ -36203,8 +36616,29 @@ Polymer.AppLocalizeBehavior = {
       },
 
       export: function(event){
-        this.$.esportaDati.url = this.uriEsportazione;
+        if(this.infoEsportazione.sezioni && this.infoEsportazione.sezioni[0].fields.length != 0) {
+          var lap = document.createElement('link-alert-panel');
+          lap.addEventListener('action-export', function request(e) {
+            e.currentTarget.removeEventListener('action-export', request);
+            this._doExportCall(e.detail.fields);
+          }.bind(this));
+          lap.addEventListener('iron-overlay-closed', function closing(e) {
+            e.currentTarget.removeEventListener('iron-overlay-closed', closing);
+            document.body.removeChild(e.currentTarget);
+          });
+          lap.isExport = true;
+          lap.template = this.infoEsportazione;
+          document.body.appendChild(lap);
+        } else {
+          this._doExportCall(null);
+        }
+      },
 
+      _doExportCall: function(params){
+        if(params) {
+          this.$.esportaDati.body = JSON.stringify(params);
+        }
+        this.$.esportaDati.url = this.uriEsportazione;
         this.$.esportaDati.contentType = 'application/json';
         app.showSpinner();
         this.$.esportaDati.generateRequest();
@@ -37226,10 +37660,6 @@ event and do your own custom submission:
           type: Number,
           value: 0
         },
-        maxSelections: {
-          type: Number,
-          value: 0
-        },
         swipeVelocity: {
           type: Number,
           value: 0
@@ -37273,15 +37703,15 @@ event and do your own custom submission:
       },
 
       isVisible: function (item) {
-        item.checked = false;
-        var index = this.$.listTemplate.items.indexOf(item);
-        var el = this.querySelector('#item_'+index+' paper-item-body');
-        if(el) {
-          this.toggleClass('item-selected', false, el);
-          this.toggleClass('layout-item-box-translate', false, el);
-          this.selections = 0;
-        }
-        if (this.filtro) {
+        if (this.filtro && item.checked) {
+          item.checked = false;
+          var index = this.$.listTemplate.items.indexOf(item);
+          var el = this.querySelector('#item_'+index+' paper-item-body');
+          if(el) {
+            this.toggleClass('item-selected', false, el);
+            this.toggleClass('layout-item-box-translate', false, el);
+            this.selections = 0;
+          }
           return !!(item.titolo.toLowerCase().indexOf(this.filtro.toLowerCase()) != -1 ||
           item.sottotitolo.toLowerCase().indexOf(this.filtro.toLowerCase()) != -1);
         }
@@ -37324,25 +37754,23 @@ event and do your own custom submission:
 
       _onswipe: function(e) {
         if(this.selectable) {
-          if(this.selections < this.maxSelections) {
-            switch(e.detail.state) {
-              case 'start':
-                this.swipeVelocity = new Date().getTime();
-                break;
-              case 'track':
-                break;
-              case 'end':
-                var dt = (new Date()).getTime() - this.swipeVelocity;
-                if(e.detail.dx >= 100 && dt < 500) {
-                  var pib = e.currentTarget.querySelector('paper-item-body');
-                  if(pib.className.indexOf('item-selected') == -1) {
-                    pib.className += ' layout-item-box-translate item-selected';
-                    this.dataProvider[e.model.index].checked = true;
-                    this.selections = (this.selections < 0)?1:this.selections + 1;
-                  }
+          switch(e.detail.state) {
+            case 'start':
+              this.swipeVelocity = new Date().getTime();
+              break;
+            case 'track':
+              break;
+            case 'end':
+              var dt = (new Date()).getTime() - this.swipeVelocity;
+              if(e.detail.dx >= 100 && dt < 500) {
+                var pib = e.currentTarget.querySelector('paper-item-body');
+                if(pib.className.indexOf('item-selected') == -1) {
+                  pib.className += ' layout-item-box-translate item-selected';
+                  this.dataProvider[e.model.index].checked = true;
+                  this.selections = (this.selections < 0)?1:this.selections + 1;
                 }
-                break;
-            }
+              }
+              break;
           }
         }
       }
@@ -37426,7 +37854,7 @@ event and do your own custom submission:
     <paper-menu-button id="pmb" vertical-align="top" horizontal-align="right">
       <paper-icon-button icon="face" class="dropdown-trigger" tabindex="-1"></paper-icon-button>
       <div id="menu" class="dropdown-content">
-        <paper-item class="userName">[[user.nome]]</paper-item>
+        <paper-item on-tap="openProfilo">[[localize('profilo')]]</paper-item>
         <paper-item on-tap="openPrefs">[[localize('preferenze')]]</paper-item>
         <paper-item on-tap="logout">[[localize('esci')]]</paper-item>
       </div>
@@ -37464,6 +37892,15 @@ event and do your own custom submission:
         lpp.advanced = app.ADVANCED_MODE;
         lpp.openPreferences();
         document.body.appendChild(lpp);
+      },
+
+      openProfilo: function(){
+        this.$.pmb.close();
+        var _profilo = document.createElement('link-profilo-panel');
+        document.body.appendChild(_profilo);
+        this.async(function(){
+          _profilo.show();
+        });
       },
 
       logout: function(event){
@@ -37889,11 +38326,16 @@ event and do your own custom submission:
         <div class="ellipsis-text">[[_titlePanel(template.titolo)]]</div>
         <paper-icon-button class="icon-dismiss" icon="icons:clear" tabindex="-1" on-tap="closePanel"></paper-icon-button>
       </paper-toolbar>
-      <form is="iron-form" id="delForm">
+      <form is="iron-form" id="alertForm">
       </form>
     </paper-scroll-header-panel>
     <div class="footer">
-      <paper-button class="accentColor" on-tap="validate">[[localize('cancella')]]</paper-button>
+      <template is="dom-if" if="[[isExport]]">
+        <paper-button class="accentColor" on-tap="validate">[[localize('esporta')]]</paper-button>
+      </template>
+      <template is="dom-if" if="[[!isExport]]">
+        <paper-button class="accentColor" on-tap="validate">[[localize('cancella')]]</paper-button>
+      </template>
     </div>
 
   </template>
@@ -37932,6 +38374,9 @@ event and do your own custom submission:
           value: function() {
             return this;
           }
+        },
+        isExport: {
+          type: Boolean
         }
       },
 
@@ -37940,7 +38385,7 @@ event and do your own custom submission:
 
       build: function(template){
         if (template){
-          this.buildForm(template, this.$.delForm);
+          this.buildForm(template, this.$.alertForm);
           this.openPanel();
         }
       },
@@ -37960,15 +38405,15 @@ event and do your own custom submission:
       },
 
       validate: function(){
-        var ok = this.$.delForm.validate();
+        var ok = this.$.alertForm.validate();
         if (ok) {
-          this.fire('action-delete', { fields: this.serialization() });
+          this.fire((this.isExport)?'action-export':'action-delete', { fields: this.serialization() });
           this.closePanel();
         }
       },
 
       serialization: function() {
-        var temp = this.serializeForm(this.$.delForm);
+        var temp = this.serializeForm(this.$.alertForm);
         var ms = this.querySelectorAll('link-multi-select');
         for (var lb = 0; lb < ms.length; lb++) {
           temp[ms[lb].id] = ms[lb].selectedValues;
@@ -38086,8 +38531,10 @@ event and do your own custom submission:
         },
 
         showAbout: function(event){
-          this.aboutInfo = app.consoleInfo.about;
-          this.$.animated.open();
+          if(app.consoleInfo && app.consoleInfo.about) {
+            this.aboutInfo = app.consoleInfo.about;
+            this.$.animated.open();
+          }
         },
 
         close: function(){
@@ -38203,6 +38650,7 @@ event and do your own custom submission:
 
       .paper-title {
         @apply(--layout-flex);
+        color: #9e9e9e;
       }
 
       .multi-selector {
@@ -38537,10 +38985,11 @@ event and do your own custom submission:
           var ref = e.currentTarget.getAttribute('data-selection');
           if(ref){
             var isOptionsValues = (this.optionsValues.indexOf(parseInt(ref)) != -1 || this.hasElement(this.selectedValues, this.optionsValues));
+            var _val = isNaN(parseInt(ref))?ref:parseInt(ref);
             if(isOptionsValues) {
-              this.set('selectedValues', [ parseInt(ref) ]);
+              this.set('selectedValues', [ _val ]);
             }
-            else this.push('selectedValues', parseInt(ref));
+            else this.push('selectedValues', _val);
             this.valid = true;
             this.fire('ms-selection', { item: ref });
           }
@@ -38549,7 +38998,8 @@ event and do your own custom submission:
         _deselectMe: function(e) {
           var ref = e.currentTarget.getAttribute('data-selection');
           if(ref){
-            var index = this.selectedValues.indexOf(parseInt(ref));
+            var _val = isNaN(parseInt(ref))?ref:parseInt(ref);
+            var index = this.selectedValues.indexOf(_val);
             if(index != -1) {
               this.splice('selectedValues', index, 1);
             }
@@ -38858,7 +39308,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         availableDates: Array,
         monthFormat: {
           type: String,
-          value: 'YYYY-MM',
+          value: 'YYYY-MM'
         },
         multidate: Boolean,
         selectedDates: {
@@ -39356,6 +39806,11 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
           node.createMonthView();
         }
 
+      },
+
+      refresh: function(){
+        var node = this.$$('link-month-view');
+        node.createMonthView();
       }
 
     });
@@ -39390,21 +39845,29 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         background-color: #eeeeee;
         border-radius: 50%;
         border: 1px solid #eeeeee;
+        margin-left: 16px;
       }
+
+      vaadin-combo-box {
+        margin: 0 0 16px 0;
+      }
+
 
     </style>
 
-    <paper-dialog id="dialog" with-backdrop="" on-iron-overlay-opened="_datePickerDialogOpened" on-iron-overlay-closed="_datePickerDialogClosed">
+    <paper-dialog id="dialog" with-backdrop="" on-iron-overlay-opened="_datePickerDialogOpened" on-iron-overlay-closed="_datePickerDialogClosed" no-cancel-on-outside-click="" no-cancel-on-esc-key="">
       <paper-dialog-scrollable>
 
-        <link-datepicker locale="[[locale]]" date="{{date}}" m-date="{{mDate}}" date-format="{{dateFormat}}" m-date-trigger="{{mDateTrigger}}" is-selected="{{isSelected}}" min-date="{{minDate}}" max-date="{{maxDate}}" available-dates="{{availableDates}}" multidate="[[multidate]]" selected-dates="{{selectedDates}}" rangedate="[[rangedate]]" ,="" selected-range="{{selectedRange}}" heading-not-selected-format="{{headingNotSelectedFormat}}" heading-selected-format="{{headingSelectedFormat}}"></link-datepicker>
+        <link-datepicker locale="[[locale]]" date="{{date}}" m-date="{{mDate}}" date-format="{{dateFormat}}" m-date-trigger="{{mDateTrigger}}" is-selected="{{isSelected}}" min-date="{{minDate}}" max-date="{{maxDate}}" available-dates="{{availableDates}}" multidate="[[multidate]]" selected-dates="{{selectedDates}}" rangedate="[[rangedate]]" selected-range="{{selectedRange}}" heading-not-selected-format="{{headingNotSelectedFormat}}" heading-selected-format="{{headingSelectedFormat}}"></link-datepicker>
 
         <hr>
 
       </paper-dialog-scrollable>
+      <form is="iron-form" id="formParams"></form>
       <div class="buttons">
         
-        <paper-icon-button class="icon-dialog" dialog-confirm="" icon="icons:check"></paper-icon-button>
+        <paper-icon-button class="icon-dialog" on-tap="_reset" icon="icons:clear"></paper-icon-button>
+        <paper-icon-button class="icon-dialog" on-tap="_confirm" icon="icons:check"></paper-icon-button>
       </div>
     </paper-dialog>
 
@@ -39415,9 +39878,15 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
     Polymer({
 
       is: 'link-datepicker-dialog',
+      behaviors: [
+        LinkFormBehavior
+      ],
       listeners: {
         'openDatepicker': 'openDatepicker'
       },
+      observers: [
+        '_setElement(tipoIntervallo)'
+      ],
       properties: {
         locale: {
           type: String
@@ -39476,6 +39945,13 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         maxDate: {
           type: String,
           notify: true
+        },
+        tipoIntervallo: {
+          type: Object
+        },
+        isCancelled: {
+          type: Boolean,
+          value: false
         }
       },
       openDatepicker: function(e){
@@ -39487,11 +39963,48 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         event.currentTarget.querySelector('.scrollable').setAttribute('style', s+' overflow:hidden;');
       },
       _datePickerDialogClosed: function(event){
-        if(event.detail.confirmed) {
-          if(this.selectedRange.start != '' && this.selectedRange.end != '') {
-            event.currentTarget.querySelector('#monthView').selectedDates = [];
-            this.fire('dialog-closed', { range: this.selectedRange });
-          }
+        if(!this.isCancelled && this.date && this.date != '') {
+          var _form = this._serializeFields(this.$.formParams);
+          _form = _form.split('&').reduce(function(_el, _cv){
+            _el[_cv.split('=')[0]] = _cv.split('=')[1];
+              return _el;
+          }, {});
+          this.fire('dialog-closed', { selectedDate: this.date , form: _form });
+        }
+      },
+      _reset: function() {
+        var _el = this.$.formParams.querySelector('vaadin-combo-box');
+        _el.value = this.tipoIntervallo.defaultValue;
+        this.isCancelled = true;
+        this.$.dialog.close();
+      },
+      _confirm: function() {
+        var isValid = this.$.formParams.validate();
+        if(isValid) {
+          this.isCancelled = false;
+          this.$.dialog.close();
+        }
+      },
+      _setElement: function(_config) {
+        this.$.formParams.innerHTML = '';
+        var _el = document.createElement('vaadin-combo-box');
+        _el.required = true;
+        _el.itemLabelPath='etichetta';
+        _el.itemValuePath='valore';
+        _el.label = _config.label;
+        _el.id = _config.id;
+        _el.name = _config.id;
+        _el.items = _config.values;
+        _el.value = _config.defaultValue;
+        this.$.formParams.appendChild(_el);
+      },
+
+      refresh: function(){
+        var ldp = this.querySelector('link-datepicker');
+        if(ldp) {
+          ldp.isSelected = false;
+          ldp.mDateTrigger = ldp.mDateTrigger + 1;
+          ldp.refresh();
         }
       }
 
@@ -40012,7 +40525,7 @@ var xb=["جنوری","فروری","مارچ","اپریل","مئی","جون","ج�
 //! author : Chris Lam : https://github.com/hehachris
 return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:yb,weekdaysMin:yb,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd، D MMMM YYYY HH:mm"},meridiemParse:/صبح|شام/,isPM:function(a){return"شام"===a},meridiem:function(a,b,c){return a<12?"صبح":"شام"},calendar:{sameDay:"[آج بوقت] LT",nextDay:"[کل بوقت] LT",nextWeek:"dddd [بوقت] LT",lastDay:"[گذشتہ روز بوقت] LT",lastWeek:"[گذشتہ] dddd [بوقت] LT",sameElse:"L"},relativeTime:{future:"%s بعد",past:"%s قبل",s:"چند سیکنڈ",m:"ایک منٹ",mm:"%d منٹ",h:"ایک گھنٹہ",hh:"%d گھنٹے",d:"ایک دن",dd:"%d دن",M:"ایک ماہ",MM:"%d ماہ",y:"ایک سال",yy:"%d سال"},preparse:function(a){return a.replace(/،/g,",")},postformat:function(a){return a.replace(/,/g,"،")},week:{dow:1,doy:4}}),a.defineLocale("uz-latn",{months:"Yanvar_Fevral_Mart_Aprel_May_Iyun_Iyul_Avgust_Sentabr_Oktabr_Noyabr_Dekabr".split("_"),monthsShort:"Yan_Fev_Mar_Apr_May_Iyun_Iyul_Avg_Sen_Okt_Noy_Dek".split("_"),weekdays:"Yakshanba_Dushanba_Seshanba_Chorshanba_Payshanba_Juma_Shanba".split("_"),weekdaysShort:"Yak_Dush_Sesh_Chor_Pay_Jum_Shan".split("_"),weekdaysMin:"Ya_Du_Se_Cho_Pa_Ju_Sha".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[Bugun soat] LT [da]",nextDay:"[Ertaga] LT [da]",nextWeek:"dddd [kuni soat] LT [da]",lastDay:"[Kecha soat] LT [da]",lastWeek:"[O'tgan] dddd [kuni soat] LT [da]",sameElse:"L"},relativeTime:{future:"Yaqin %s ichida",past:"Bir necha %s oldin",s:"soniya",m:"bir daqiqa",mm:"%d daqiqa",h:"bir soat",hh:"%d soat",d:"bir kun",dd:"%d kun",M:"bir oy",MM:"%d oy",y:"bir yil",yy:"%d yil"},week:{dow:1,doy:7}}),a.defineLocale("uz",{months:"январ_феврал_март_апрел_май_июн_июл_август_сентябр_октябр_ноябр_декабр".split("_"),monthsShort:"янв_фев_мар_апр_май_июн_июл_авг_сен_окт_ноя_дек".split("_"),weekdays:"Якшанба_Душанба_Сешанба_Чоршанба_Пайшанба_Жума_Шанба".split("_"),weekdaysShort:"Якш_Душ_Сеш_Чор_Пай_Жум_Шан".split("_"),weekdaysMin:"Як_Ду_Се_Чо_Па_Жу_Ша".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[Бугун соат] LT [да]",nextDay:"[Эртага] LT [да]",nextWeek:"dddd [куни соат] LT [да]",lastDay:"[Кеча соат] LT [да]",lastWeek:"[Утган] dddd [куни соат] LT [да]",sameElse:"L"},relativeTime:{future:"Якин %s ичида",past:"Бир неча %s олдин",s:"фурсат",m:"бир дакика",mm:"%d дакика",h:"бир соат",hh:"%d соат",d:"бир кун",dd:"%d кун",M:"бир ой",MM:"%d ой",y:"бир йил",yy:"%d йил"},week:{dow:1,doy:7}}),a.defineLocale("vi",{months:"tháng 1_tháng 2_tháng 3_tháng 4_tháng 5_tháng 6_tháng 7_tháng 8_tháng 9_tháng 10_tháng 11_tháng 12".split("_"),monthsShort:"Th01_Th02_Th03_Th04_Th05_Th06_Th07_Th08_Th09_Th10_Th11_Th12".split("_"),monthsParseExact:!0,weekdays:"chủ nhật_thứ hai_thứ ba_thứ tư_thứ năm_thứ sáu_thứ bảy".split("_"),weekdaysShort:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysMin:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysParseExact:!0,meridiemParse:/sa|ch/i,isPM:function(a){return/^ch$/i.test(a)},meridiem:function(a,b,c){return a<12?c?"sa":"SA":c?"ch":"CH"},longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM [năm] YYYY",LLL:"D MMMM [năm] YYYY HH:mm",LLLL:"dddd, D MMMM [năm] YYYY HH:mm",l:"DD/M/YYYY",ll:"D MMM YYYY",lll:"D MMM YYYY HH:mm",llll:"ddd, D MMM YYYY HH:mm"},calendar:{sameDay:"[Hôm nay lúc] LT",nextDay:"[Ngày mai lúc] LT",nextWeek:"dddd [tuần tới lúc] LT",lastDay:"[Hôm qua lúc] LT",lastWeek:"dddd [tuần rồi lúc] LT",sameElse:"L"},relativeTime:{future:"%s tới",past:"%s trước",s:"vài giây",m:"một phút",mm:"%d phút",h:"một giờ",hh:"%d giờ",d:"một ngày",dd:"%d ngày",M:"một tháng",MM:"%d tháng",y:"một năm",yy:"%d năm"},dayOfMonthOrdinalParse:/\d{1,2}/,ordinal:function(a){return a},week:{dow:1,doy:4}}),a.defineLocale("x-pseudo",{months:"J~áñúá~rý_F~ébrú~árý_~Márc~h_Áp~ríl_~Máý_~Júñé~_Júl~ý_Áú~gúst~_Sép~témb~ér_Ó~ctób~ér_Ñ~óvém~bér_~Décé~mbér".split("_"),monthsShort:"J~áñ_~Féb_~Már_~Ápr_~Máý_~Júñ_~Júl_~Áúg_~Sép_~Óct_~Ñóv_~Déc".split("_"),monthsParseExact:!0,weekdays:"S~úñdá~ý_Mó~ñdáý~_Túé~sdáý~_Wéd~ñésd~áý_T~húrs~dáý_~Fríd~áý_S~átúr~dáý".split("_"),weekdaysShort:"S~úñ_~Móñ_~Túé_~Wéd_~Thú_~Frí_~Sát".split("_"),weekdaysMin:"S~ú_Mó~_Tú_~Wé_T~h_Fr~_Sá".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[T~ódá~ý át] LT",nextDay:"[T~ómó~rró~w át] LT",nextWeek:"dddd [át] LT",lastDay:"[Ý~ést~érdá~ý át] LT",lastWeek:"[L~ást] dddd [át] LT",sameElse:"L"},relativeTime:{future:"í~ñ %s",past:"%s á~gó",s:"á ~féw ~sécó~ñds",m:"á ~míñ~úté",mm:"%d m~íñú~tés",h:"á~ñ hó~úr",hh:"%d h~óúrs",d:"á ~dáý",dd:"%d d~áýs",M:"á ~móñ~th",MM:"%d m~óñt~hs",y:"á ~ýéár",yy:"%d ý~éárs"},dayOfMonthOrdinalParse:/\d{1,2}(th|st|nd|rd)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c},week:{dow:1,doy:4}}),a.defineLocale("yo",{months:"Sẹ́rẹ́_Èrèlè_Ẹrẹ̀nà_Ìgbé_Èbibi_Òkùdu_Agẹmo_Ògún_Owewe_Ọ̀wàrà_Bélú_Ọ̀pẹ̀̀".split("_"),monthsShort:"Sẹ́r_Èrl_Ẹrn_Ìgb_Èbi_Òkù_Agẹ_Ògú_Owe_Ọ̀wà_Bél_Ọ̀pẹ̀̀".split("_"),weekdays:"Àìkú_Ajé_Ìsẹ́gun_Ọjọ́rú_Ọjọ́bọ_Ẹtì_Àbámẹ́ta".split("_"),weekdaysShort:"Àìk_Ajé_Ìsẹ́_Ọjr_Ọjb_Ẹtì_Àbá".split("_"),weekdaysMin:"Àì_Aj_Ìs_Ọr_Ọb_Ẹt_Àb".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[Ònì ni] LT",nextDay:"[Ọ̀la ni] LT",nextWeek:"dddd [Ọsẹ̀ tón'bọ] [ni] LT",lastDay:"[Àna ni] LT",lastWeek:"dddd [Ọsẹ̀ tólọ́] [ni] LT",sameElse:"L"},relativeTime:{future:"ní %s",past:"%s kọjá",s:"ìsẹjú aayá die",m:"ìsẹjú kan",mm:"ìsẹjú %d",h:"wákati kan",hh:"wákati %d",d:"ọjọ́ kan",dd:"ọjọ́ %d",M:"osù kan",MM:"osù %d",y:"ọdún kan",yy:"ọdún %d"},dayOfMonthOrdinalParse:/ọjọ́\s\d{1,2}/,ordinal:"ọjọ́ %d",week:{dow:1,doy:4}}),a.defineLocale("zh-cn",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"周日_周一_周二_周三_周四_周五_周六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日Ah点mm分",LLLL:"YYYY年MMMD日ddddAh点mm分",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"下午"===b||"晚上"===b?a+12:a>=11?a:a+12},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|周)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"周";default:return a}},relativeTime:{future:"%s内",past:"%s前",s:"几秒",m:"1 分钟",mm:"%d 分钟",h:"1 小时",hh:"%d 小时",d:"1 天",dd:"%d 天",M:"1 个月",MM:"%d 个月",y:"1 年",yy:"%d 年"},week:{dow:1,doy:4}}),a.defineLocale("zh-hk",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"週日_週一_週二_週三_週四_週五_週六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日 HH:mm",LLLL:"YYYY年MMMD日dddd HH:mm",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"中午"===b?a>=11?a:a+12:"下午"===b||"晚上"===b?a+12:void 0},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|週)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"週";default:return a}},relativeTime:{future:"%s內",past:"%s前",s:"幾秒",m:"1 分鐘",mm:"%d 分鐘",h:"1 小時",hh:"%d 小時",d:"1 天",dd:"%d 天",M:"1 個月",MM:"%d 個月",y:"1 年",yy:"%d 年"}}),a.defineLocale("zh-tw",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"週日_週一_週二_週三_週四_週五_週六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日 HH:mm",LLLL:"YYYY年MMMD日dddd HH:mm",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"中午"===b?a>=11?a:a+12:"下午"===b||"晚上"===b?a+12:void 0},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|週)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"週";default:return a}},relativeTime:{future:"%s內",past:"%s前",s:"幾秒",m:"1 分鐘",mm:"%d 分鐘",h:"1 小時",hh:"%d 小時",d:"1 天",dd:"%d 天",M:"1 個月",MM:"%d 個月",y:"1 年",yy:"%d 年"}}),a.locale("en"),a});</script>
 
-<dom-module id="link-chart-bar" assetpath="link-chart-bar/">
+<dom-module id="link-chart" assetpath="link-chart/">
 
   <template>
     <style include="shared-styles">
@@ -40040,9 +40553,9 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         padding-bottom: 24px;
       }
 
-      chart-bar {
-        @apply(--layout-flex);
-        margin: 24px;
+      .chart-bar {
+        margin: 0;
+        padding: 0;
       }
 
       .ellipsis-text {
@@ -40063,7 +40576,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         @apply(--layout-vertical);
         width: 240px;
         min-width: 200px;
-        height: 240px;
+        padding: 16px;
         margin: 0 24px 0 0;
       }
 
@@ -40099,37 +40612,41 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
     <paper-header-panel>
       <paper-toolbar class="medium-tall">
         <paper-icon-button icon="menu" on-tap="goBack"></paper-icon-button>
-        <div class="ellipsis-text">Nome statistica</div>
+        <div class="ellipsis-text">[[titolo]]</div>
         <link-user-action id="userAction" user="[[user]]"></link-user-action>
-        <paper-tabs class="bottom fit" selected="0" no-slide="" on-iron-select="switchView">
-          <paper-tab>NOME VISTA</paper-tab>
-          <paper-tab>NOME VISTA</paper-tab>
-          <paper-tab>NOME VISTA</paper-tab>
+        <paper-tabs class="bottom fit" selected="0" no-slide="" on-iron-select="switchView" selected-class="tab-selected">
+          <paper-tab data-arg="[[uri]]">[[titoloTab]]</paper-tab>
+          <template is="dom-repeat" items="[[_elementiCorrelati]]">
+            <paper-tab data-arg="[[item.uri]]">[[item.etichetta]]</paper-tab>
+          </template>
         </paper-tabs>
       </paper-toolbar>
       <div class="content">
         <paper-material class="filter-group hidden-filter" elevation="0">
-          <form is="iron-form" class="form">
+          <form id="filterForm" is="iron-form" class="form">
           </form>
           <div class="buttonBar">
             <paper-button class="accentColor" on-tap="search">[[localize('cerca')]]</paper-button>
           </div>
         </paper-material>
-        <div class="chart-group user-select">
-          <div class="fixed-icons" on-tap="_slides" data-arg="false"><iron-icon icon="chevron-left"></iron-icon></div>
+        <div class="chart-group user-select" hidden$="[[_hideChart]]">
+          <div class="fixed-icons" on-tap="_navigateChart" data-arg="false"><iron-icon icon="chevron-left"></iron-icon></div>
           <div class="chart-bar">
             <canvas></canvas>
           </div>
-          <div class="fixed-icons" on-tap="_slides" data-arg="true"><iron-icon icon="chevron-right" class="fixed-size"></iron-icon></div>
+          <div class="fixed-icons" on-tap="_navigateChart" data-arg="true"><iron-icon icon="chevron-right" class="fixed-size"></iron-icon></div>
         </div>
       </div>
     </paper-header-panel>
     <link-fab-menu show="">
-      <paper-fab icon="icons:file-download" class="fab-item" mini=""></paper-fab>
-      <paper-fab icon="icons:date-range" class="fab-item" mini="" on-tap="_openRange"></paper-fab>
+      <paper-fab icon="icons:file-download" class="fab-item" mini="" on-tap="_exportData"></paper-fab>
+      <paper-fab icon="icons:date-range" class="fab-item" mini="" on-tap="_openDialog" hidden$="[[_hideDatepicker]]"></paper-fab>
       <paper-fab icon="icons:filter-list" class="fab-item" mini="" on-tap="_toggleFilter"></paper-fab>
     </link-fab-menu>
-    <link-datepicker-dialog id="dialog" locale="it" rangedate="true" heading-selected-format="MMM YYYY" heading-not-selected-format="MMM YYYY" on-dialog-closed="_rangeSelected"></link-datepicker-dialog>
+    <link-datepicker-dialog id="dialog" locale="it" heading-selected-format="MMM YYYY" tipo-intervallo="[[_datepickerConfig]]" heading-not-selected-format="MMM YYYY" on-dialog-closed="_daySelected"></link-datepicker-dialog>
+
+    <iron-ajax id="getChartInfo" handle-as="json" on-response="getChartInfo_responseHandler" on-error="getChartInfo_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="navigationChart" handle-as="json" on-response="navigationChart_responseHandler" on-error="getChartInfo_errorHandler" debounce-duration="300"></iron-ajax>
 
   </template>
   <script>
@@ -40137,31 +40654,72 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       'use strict';
 
       Polymer({
-        is: 'link-chart-bar',
+        is: 'link-chart',
 
         behaviors: [
+          LinkFormBehavior,
           LinkLocalizeBehavior
         ],
 
+        observers: [
+          'requestChartInfo(uri)',
+          'languageLoad(language)'
+        ],
+
         properties: {
+          _currentLanguage: {
+            type: String,
+            value: function() {
+              return app.LANGUAGE;
+            }
+          },
           titolo: {
+            type: String
+          },
+          titoloTab: {
+            type: String,
+            value: ''
+          },
+          uri: {
             type: String
           },
           data: {
             type: Object
           },
+          svgChart: {
+            type: Object
+          },
           options: {
             type: Object
+          },
+          _response: {
+            type: Object
+          },
+          _hideChart: {
+            type: Boolean,
+            value: true
+          },
+          _elementiCorrelati: {
+            type: Array,
+            value: []
           },
           labelsInterval: {
             type: Array,
             value: []
           },
-          dataSeries: {
-            type: Object
+          _baseURL: {
+            type: String,
+            value: ''
           },
-          _maxY: {
-            type: Number
+          serviceParameters: {
+            type: Object,
+            value: null
+          },
+          _hideDatepicker: {
+            type: Boolean
+          },
+          _datepickerConfig: {
+            type: Object
           },
           _canvas: {
             type: Object
@@ -40174,276 +40732,726 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           }
         },
 
-        ready: function() {
-          this.listen(window, 'resize', '_resizeChart');
-
-          this._canvas = this.querySelector('canvas');
-
-          this.labelsInterval = ['Lun', 'Mar', 'Mer'];
-
-          this.createChart();
+        languageLoad: function(language){
+          if(this.getBoundingClientRect().height != 0) {
+            if(this._currentLanguage && this._currentLanguage != language) {
+              this._currentLanguage = language;
+              console.log('TODO - refresh for language');
+              /* TODO - refresh for language
+              if(this.svgChart) {
+                this.svgChart.destroy();
+                this.requestChartInfo(this.uri);
+              }
+              */
+            }
+          }
         },
 
-        attached: function() {
-          this.async(function(){
-            this._resizeChart();
-          });
+        ready: function() {
+          this.listen(window, 'resize', '_resizeChart');
+          this._canvas = this.querySelector('canvas');
         },
 
         goBack: function(event){
           this.fire('open-drawer', null, true);
         },
 
-        createChart: function () {
-          /*var simplePlugin = {
-            afterEvent: function(chartInstance, event) {
-                if(event.type == 'mouseout') {
-                  this.onHover = false
+        _calcColumns: function(){
+          var _cols = 2;
+          switch(true) {
+            case(window.innerWidth <= 320):
+              _cols = 4;
+              break;
+            case(window.innerWidth > 320 && window.innerWidth <= 480):
+              _cols = 6;
+              break;
+            case(window.innerWidth > 480 && window.innerWidth <= 768):
+              _cols = 8;
+              break;
+            case(window.innerWidth > 768 && window.innerWidth <= 992):
+              _cols = 10;
+              break;
+            case(window.innerWidth > 992 && window.innerWidth <= 1200):
+              _cols = 12;
+              break;
+            case(window.innerWidth > 1200):
+              _cols = 16;
+              break;
+          }
+          return _cols;
+        },
+
+        requestChartInfo: function(_uri, _forwardNavigation){
+          if (_uri != '') {
+            this._baseURL = REST_URL + _uri + app.appendLangParameter(_uri);
+            this.retrieveChartData(this._baseURL, _forwardNavigation);
+          }
+        },
+
+        retrieveChartData: function(_uri, _forwardNavigation){
+          if (_uri != '') {
+            app.showSpinner();
+            var _queryForm = this._serializeFields(this.$.filterForm);
+
+            var chartParams = '';
+            if(this.serviceParameters){
+              chartParams = this._mapParameters();
+            } else {
+              chartParams = "&colonne="+this._calcColumns();
+            }
+
+            _uri = _uri + chartParams;
+            if(_forwardNavigation != undefined) {
+              this.$.navigationChart.url = (_queryForm && _queryForm.length != 0)?_uri+'&'+_queryForm:_uri;
+              this.$.navigationChart._forwardNavigation = _forwardNavigation;
+              this.$.navigationChart.generateRequest();
+            } else {
+              this.$.getChartInfo.url = (_queryForm && _queryForm.length != 0)?_uri+'&'+_queryForm:_uri;
+              this.$.getChartInfo.generateRequest();
+            }
+          }
+        },
+
+        _mapParameters: function() {
+          if(this.data.type != 'pie') {
+            this.serviceParameters.colonne = this._calcColumns();
+          } else {
+            this.serviceParameters.colonne = '';
+          }
+          var _params = "";
+          if(this.serviceParameters.colonne && this.serviceParameters.colonne != '') {
+            _params += "&colonne="+this.serviceParameters.colonne;
+          }
+          if(this.serviceParameters.data && this.serviceParameters.data != '') {
+            _params += "&data="+this.serviceParameters.data;
+          }
+          if(this.serviceParameters.tipoIntervallo && this.serviceParameters.tipoIntervallo != '') {
+            _params += "&tipoIntervallo="+this.serviceParameters.tipoIntervallo;
+          }
+          return _params;
+        },
+
+        navigationChart_responseHandler: function(event) {
+          app.hideSpinner();
+          var _response = event.detail.response.response;
+          if (_response){
+            var _grafico;
+            switch(_response.grafico.tipo.toLowerCase()) {
+              case 'bar':
+                _grafico = this._configBarChart(_response);
+                if(_grafico) {
+                  var _newData = {valori: [], tips: [], x: []};
+                  _newData.valori = _grafico.datasetsData.map(function (_el) {
+                    return _el.data;
+                  });
+                  _newData.tips = _grafico.datasetsData.map(function (_el) {
+                    return _el.tips;
+                  });
+                  _newData.x = _grafico.labelsInterval;
+
+                  for(var i=0; i<_newData.valori.length; i++) {
+                    var _el = _newData.valori[i];
+                    var _nel = _el.filter(function (_e, _index, _array) {
+                      var _limit = (this.serviceParameters.avanzamento > 0)?(_array.length - 1 - this.serviceParameters.avanzamento):this.serviceParameters.avanzamento;
+                      if(_limit>=0){
+                        return (_index > _limit);
+                      }
+                      return (_index < -_limit);
+                    }.bind(this));
+                    _newData.valori[i] = _nel;
+                  }
+
+                  for(i=0; i<_newData.tips.length; i++) {
+                    _el = _newData.tips[i];
+                    _nel = _el.filter(function (_e, _index, _array) {
+                      var _limit = (this.serviceParameters.avanzamento > 0)?(_array.length - 1 - this.serviceParameters.avanzamento):this.serviceParameters.avanzamento;
+                      if(_limit>=0){
+                        return (_index > _limit);
+                      }
+                      return (_index < -_limit);
+                    }.bind(this));
+                    _el = _nel;
+                    _newData.tips[i] = _nel;
+                  }
+
+                  _newData.x = _newData.x.filter(function (_e, _index, _array) {
+                    var _limit = (this.serviceParameters.avanzamento > 0)?(_array.length - 1 - this.serviceParameters.avanzamento):this.serviceParameters.avanzamento;
+                    if(_limit>=0){
+                      return (_index > _limit);
+                    }
+                    return (_index < -_limit);
+                  }.bind(this));
+
+                  this._updateNavigation(this.svgChart, _newData, event.currentTarget._forwardNavigation);
                 }
-            }.bind(this)
-          };
+                break;
+              case 'pie':
+                _grafico = this._configPieChart(_response);
+                this._configChartOptions(_grafico);
+                this.svgChart.destroy();
+                this._createChart(_grafico);
+                break;
+            }
+          } else {
+            if(event.detail.response) {
+              var _msg = (event.detail.response.dettaglioEsito)?event.detail.response.dettaglioEsito:'Error';
+              app.showPaperToast(_msg, 'error');
+            }
+          }
+        },
 
-          // Let Chart.js know about the new plugin
-          Chart.pluginService.register(simplePlugin);*/
+        getChartInfo_responseHandler: function(event) {
+          app.hideSpinner();
+          var _response = event.detail.response.response;
+          if (_response){
+            this.setResponse(_response);
+          } else {
+            if(event.detail.response) {
+              var _msg = (event.detail.response.dettaglioEsito)?event.detail.response.dettaglioEsito:'Error';
+              app.showPaperToast(_msg, 'error');
+            }
+          }
+        },
 
-          var ctx = this._canvas.getContext('2d');
+        getChartInfo_errorHandler: function(event){
+          app.hideSpinner();
+          app.dars_errorHandler(event);
+        },
 
-          //this._generateRandomValues();
+        setResponse: function(_response){
+          this.buildForm(_response.infoRicerca, this.$.filterForm);
 
+          this._hideChart = false;
+          this._hideDatepicker = !_response.attivaDate;
+          this.titoloTab = _response.grafico.titolo;
+
+          if(!this.serviceParameters){
+            this.serviceParameters = {};
+            if(this._elementiCorrelati.length == 0) {
+              this._elementiCorrelati = _response.elementiCorrelati;
+            }
+          }
+          this.serviceParameters.data = (_response.infoGrafico.data.defaultValue)?moment(_response.infoGrafico.data.defaultValue).format('YYYY-MM-DD'):'';
+          this.serviceParameters.tipoIntervallo = _response.infoGrafico.tipoIntervallo.defaultValue;
+
+          this._datepickerConfig = (_response.infoGrafico.tipoIntervallo)?_response.infoGrafico.tipoIntervallo:{};
+          this._datepickerConfig.mDate = moment(this.serviceParameters.data);
+          //this._datepickerConfig.defaultSelection = [ this.serviceParameters.data ];
+
+          var _grafico = { datasetsData: [], labelsInterval: [], tooltip: [] };
+
+          switch(_response.grafico.tipo.toLowerCase()) {
+            case 'bar':
+              _grafico = this._configBarChart(_response);
+              break;
+            case 'pie':
+              _grafico = this._configPieChart(_response);
+              break;
+          }
+          this._configChartOptions(_grafico);
+
+          this._createChart(_grafico);
+        },
+
+        _configBarChart: function(_data) {
+          var _barConfig = {};
+          _barConfig.type = _data.grafico.tipo.toLowerCase();
+          _barConfig.coloriAutomatici = _data.grafico.coloriAutomatici;
+          _barConfig.chartSubtitle = _data.grafico.sottotitolo;
+          _barConfig.xLabelString = _data.grafico.labelX;
+          _barConfig.yLabelString = _data.grafico.labelY;
+          _barConfig.xAxesVisible = (_data.grafico.labelX != null && _data.grafico.labelX != '');
+          _barConfig.yAxesVisible = (_data.grafico.labelY != null && _data.grafico.labelY != '');
+          _barConfig.labelsInterval = _data.grafico.valoriX;
+          _barConfig.datasetsData = _data.grafico.serie.map(function (item, index) {
+            return {
+              label: '',
+              data: item.dati,
+              tips: item.tooltip,
+              backgroundColor: 'rgba(255,0,0,1)',
+              borderColor: 'rgba(255,0,0,1)',
+              borderWidth: 1,
+              stack: 1
+            };
+          });
+          for (var i = 0; i < _barConfig.datasetsData.length; i++) {
+            var item = _barConfig.datasetsData[i];
+            item.label = _data.grafico.categorie[i];
+            item.backgroundColor = _data.grafico.colori[i];
+            item.borderColor = _data.grafico.colori[i];
+          }
+
+          return _barConfig;
+        },
+
+        _configPieChart: function(_data) {
+          var _pieConfig = {};
+          _pieConfig.type = _data.grafico.tipo.toLowerCase();
+          _pieConfig.coloriAutomatici = _data.grafico.coloriAutomatici;
+          _pieConfig.chartSubtitle = _data.grafico.sottotitolo;
+          _pieConfig.labelsInterval = _data.grafico.categorie;
+          _pieConfig.colori = _data.grafico.colori;
+          _pieConfig.datasetsData = _data.grafico.serie.map(function (item) {
+            return {
+              data: item.dati,
+              tips: item.tooltip
+            };
+          })[0];
+          return _pieConfig;
+        },
+
+        _configChartOptions: function(_configData) {
+          this.data = {};
+          switch (_configData.type) {
+            case 'bar':
+                this._configBarOptions(_configData);
+              break;
+            case 'pie':
+                this._configPieOptions(_configData);
+              break
+          }
+        },
+
+        _configBarOptions: function(_data) {
           this.data = {
-            type: 'bar',
-            data: {
-              labels: this.labelsInterval,
-              datasets: [
-                {
-                  label: 'Transazioni completate',
-                  data: [],
-                  backgroundColor: 'rgba(190, 30, 30, .35)',
-                  borderColor: 'rgba(190, 30, 30, 1)',
-                  borderWidth: 1,
-                  stack: 1
-                },
-                {
-                  label: 'Transazioni con errore',
-                  data: [],
-                  backgroundColor: 'rgba(30, 190, 30, .35)',
-                  borderColor: 'rgba(30, 190, 30, 1)',
-                  borderWidth: 1,
-                  stack: 1
-                }
-              ]
-            },
+            type: _data.type,
+            data: { labels: _data.labelsInterval, datasets: _data.datasetsData },
             options: {
-              hover: {
-                animationDuration: 0,
-                onHover: function(event, serie){
-                  this.onHover = (serie.length != 0);
-                }.bind(this)
-              },
               maintainAspectRatio: false,
-              title: {
-                display: true,
-                fontSize: 20,
-                padding: 30,
-                text: 'Numero Transazioni'
+              title: { display: true, fontSize: 14, fontStyle: 'normal', padding: 20, text: _data.chartSubtitle }, //subtitle
+              legend: { display: true, position: 'bottom', fullWidth: true,
+                onClick: function(event, legendItem) {
+                  var _item = this.chart.legend.legendItems[legendItem.index];
+                  _item.hidden = !_item.hidden;
+                  this.chart.getDatasetMeta(legendItem.index).hidden = _item.hidden?true:null;
+                  this.chart.update();
+                },
+                labels: {
+                  generateLabels: function (_chart) {
+                    _chart.legend.afterFit = function () {
+                      var width = this.width;
+                      this.lineWidths = this.lineWidths.map(function () {
+                        return width;
+                      });
+                    };
+                    var data = _chart.data;
+                    if (data.datasets.length) {
+                      var _dataLabels = data.datasets.map(function(_ds) {
+                          return {label: _ds.label, color: _ds.backgroundColor};
+                      });
+                      return _dataLabels.map(function (_obj, i) {
+                        var metadata = _chart.getDatasetMeta(i);
+                        var ds = data.datasets[i];
+
+                        return {
+                          text: _obj.label,
+                          fillStyle: _obj.color,
+                          strokeStyle: _obj.color,
+                          lineWidth: 1,
+                          hidden: metadata.hidden,
+                          index: i
+                        };
+                      });
+                    }
+
+                    return [];
+                  }
+                }
               },
-              legend: {
-                display: true,
-                position: 'bottom'
-              },
-              tooltips: {
-                enaable: true,
-                mode: 'index',
+              tooltips: { enable: true, mode: 'index',
                 callbacks: {
                   label: function(tooltipItem, data) {
-                    return data.datasets[tooltipItem.datasetIndex].label + ": " + tooltipItem.yLabel;
+                    return data.datasets[tooltipItem.datasetIndex].tips[tooltipItem.index];
                   }
                 }
               },
               scales: {
-                xAxes: [{
-                  scaleLabel: {
-                    display: true,
-                    fontSize: 16,
-                    labelString: 'Tempo'
-                  }
-                }],
-                yAxes: [
-                  {
-                    scaleLabel: {
-                      display: true,
-                      fontSize: 16,
-                      labelString: 'Numero Transazioni'
-                    },
-                    ticks: {
-                      beginAtZero:true
-                    }
-                  }
-                ]
+                xAxes: [ { scaleLabel: { display: _data.xAxesVisible, fontSize: 16, labelString: _data.xLabelString } } ],
+                yAxes: [ { scaleLabel: { display: _data.yAxesVisible, fontSize: 16, labelString: _data.yLabelString },
+                                ticks: { beginAtZero:true } } ]
               }
             }
           };
+        },
 
-          this.stackedChart = new Chart(ctx, this.data);
-          this.stackedChart.options.animation.duration = 500;
-          /*this.stackedChart.options.animation.onComplete = function(){
-            if(!this.onHover) {
-              var chartInstance = this.stackedChart.chart,
-              ctx = chartInstance.ctx;
-              ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'bottom';
-
-              this.stackedChart.data.datasets.forEach(function(dataset, i, _datasets) {
-                var meta = chartInstance.controller.getDatasetMeta(i);
-                meta.data.forEach(function(bar, index) {
-                  var data = dataset.data[index];
-                  if(bar._datasetIndex == (_datasets.length - 1)) {
-                    ctx.fillText(data, bar._model.x, bar._model.y - 5);
-                  } else {
-                    ctx.fillText(data, bar._model.x, bar._model.y + Math.abs(bar._model.base - bar._model.y)/2 + Chart.defaults.global.defaultFontSize/2);
+        _configPieOptions: function(_data) {
+          this.data = {
+            type: _data.type,
+            data: {
+                labels: _data.labelsInterval,
+                datasets: [ { data: _data.datasetsData.data, tips:_data.datasetsData.tips, backgroundColor: _data.colori } ]
+            },
+            options: {
+              title: { display: true, fontSize: 20, padding: 30, text: _data.chartSubtitle },
+              legend: { display: true, position: 'bottom' },
+              tooltips: { enabled: true, mode: 'index',
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                    return data.datasets[tooltipItem.datasetIndex].tips[tooltipItem.index];
                   }
-                });
+                }
+              }
+            }
+          };
+        },
+
+        _createChart: function () {
+          var ctx = this._canvas.getContext('2d');
+
+          this.svgChart = new Chart(ctx, this.data);
+          this.svgChart.options.animation.duration = 500;
+          this.async(function(){
+            this._resizeChart();
+          });
+        },
+
+        _resizeChart: function (e) {
+          var _cnt = this.querySelector('#mainContainer').getBoundingClientRect();
+          var _cbGroup = this.querySelector('.chart-bar');
+          var _fg = this.querySelector('.filter-group');
+          var _hasFg = (_fg.className.indexOf('hidden-filter') == -1);
+          var _fgWidth = (_hasFg && _cnt.width > 600)?(_fg.getBoundingClientRect().width + 24):0;
+          var _fi = this.querySelector('.fixed-icons').getBoundingClientRect();
+          var _header = this.querySelector('paper-toolbar').getBoundingClientRect();
+          var _hh = _header.height + (24*3);
+          _cbGroup.setAttribute('style', 'width:'+ (_cnt.width - _fgWidth - 2*(_fi.width) - 48) +'px; height: '+(window.innerHeight - _hh)+'px;');
+        },
+
+        _navigateChart: function(event) {
+          var _forward = event.currentTarget.getAttribute('data-arg') == 'true';
+          var _link = this.querySelector('paper-tab.tab-selected').dataArg;
+          if(_link) {
+            this._setNewDate(_forward);
+            this.requestChartInfo(_link, _forward);
+          } else {
+              console.log('Paper-tab: uri not found.');
+          }
+        },
+
+        _setNewDate: function(_direction) {
+          _direction = _direction?1:-1;
+          this.serviceParameters.avanzamento = _direction*this._calcColumns()/2;
+
+          var nmd = moment(this.serviceParameters.data).add(this.serviceParameters.avanzamento, 'd');
+
+          this.serviceParameters.data = nmd.format('YYYY-MM-DD');
+        },
+
+        _updateNavigation: function(_chart, _newData, _isForward) {
+          if(_isForward) {
+            _chart.data.labels = _chart.data.labels.concat(_newData.x);
+          } else {
+            _newData.x = _newData.x.reverse();
+            _newData.x.forEach(function(label) {
+              _chart.data.labels.unshift(label);
+            });
+          }
+          _chart.data.datasets.forEach(function(dataset, index) {
+            if(_isForward) {
+              dataset.data = dataset.data.concat(_newData.valori[index]);
+              dataset.tips = dataset.tips.concat(_newData.tips[index]);
+            } else {
+              _newData.valori[index] = _newData.valori[index].reverse();
+              _newData.tips[index] = _newData.tips[index].reverse();
+              _newData.valori[index].forEach(function(_valore) {
+                dataset.data.unshift(_valore);
+              });
+              _newData.tips[index].forEach(function(_valore) {
+                dataset.tips.unshift(_valore);
               });
             }
-          }.bind(this);*/
+          });
+
+          _chart.update();
+
+          if(_isForward){
+              _chart.data.labels.splice(0, _newData.x.length);
+          } else {
+              _chart.data.labels.splice(_chart.data.labels.length - _newData.x.length, _newData.x.length);
+          }
+          _chart.data.datasets.forEach(function(dataset) {
+            (_isForward)?dataset.data.splice(0, _newData.x.length):dataset.data.slice(dataset.data.length - _newData.x.length, _newData.x.length);
+            (_isForward)?dataset.tips.splice(0, _newData.x.length):dataset.tips.slice(dataset.tips.length - _newData.x.length, _newData.x.length);
+          });
+
+          _chart.update();
         },
 
-        _openRange: function() {
-          this.$.dialog.openDatepicker();
+        updateChart: function() {
+          this.svgChart.update();
         },
 
-        _rangeSelected: function(event) {
-          console.log(event.detail.range);
+        switchView: function(e) {
+          if(this.svgChart) {
+            this.svgChart.destroy();
+            this.serviceParameters = null;
+            this.requestChartInfo(e.detail.item.dataArg);
+            /*if(e.currentTarget.selected != 0) {
+              var _link = this._elementiCorrelati[e.currentTarget.selected - 1].uri;
+              this.requestChartInfo(_link);
+            } else {
+              this.requestChartInfo(this.uri);
+            }*/
+          }
+
         },
 
         _toggleFilter: function(){
           var _fg = this.querySelector('.filter-group');
           this.toggleClass('hidden-filter', _fg.className.indexOf('hidden-filter') == -1, _fg);
           this._resizeChart();
-          this.stackedChart.resize();
+          this.svgChart.resize();
         },
 
-        _resizeChart: function (e) {
-          var _cnt = this.querySelector('.content').getBoundingClientRect();
-          var _cbGroup = this.querySelector('.chart-bar');
-          var _fg = this.querySelector('.filter-group');
-          var _hasFg = (_fg.className.indexOf('hidden-filter') == -1);
-          var _fgWidth = (_hasFg && _cnt.width > 600)?(_fg.getBoundingClientRect().width + 24):0;
-          var _fi = this.querySelector('.fixed-icons').getBoundingClientRect();
-          _cbGroup.setAttribute('style', 'width:'+ (_cnt.width - _fgWidth - 2*(_fi.width) - 48) +'px; height: '+window.innerHeight/2+'px;');
-        },
-
-        _slides: function(event) {
-          var _forward = event.currentTarget.getAttribute('data-arg') == 'true';
-          this._slideChart_fwd(this.stackedChart, [10, 5], _forward);
-          //this.async(function(){this._slideChart_fwd(this.stackedChart, [20, 10], _forward)}, 500);
-        },
-
-        _slideChart_fwd: function(_chart, _newData, _isForward) {
-          (_isForward)?_chart.data.labels.push('Gio'):_chart.data.labels.unshift('Gio');
-          _chart.data.datasets.forEach(function(dataset, index) {
-            (_isForward)?dataset.data.push(_newData[index]):dataset.data.unshift(_newData[index]);
-          });
-
-          _chart.update();
-
-          (_isForward)?_chart.data.labels.splice(0, 1):_chart.data.labels.pop();
-          _chart.data.datasets.forEach(function(dataset) {
-            (_isForward)?dataset.data.splice(0, 1):dataset.data.pop();
-          });
-
-          _chart.update();
-        },
-
-        _generateRandomValues: function() {
-          this.dataSeries = { a: [], b: [] };
-
-          this.dataSeries.a.push(Math.floor((Math.random() * 40) + 1));
-          this.dataSeries.a.push(Math.floor((Math.random() * 40) + 1));
-          this.dataSeries.a.push(Math.floor((Math.random() * 40) + 1));
-
-          this.dataSeries.b.push(Math.floor((Math.random() * 40) + 1));
-          this.dataSeries.b.push(Math.floor((Math.random() * 40) + 1));
-          this.dataSeries.b.push(Math.floor((Math.random() * 40) + 1));
-
-          var _allSeries = this.dataSeries.a.map(function (value, i) {
-            return value + this.dataSeries.b[i];
-          }.bind(this));
-
-          this._maxY = 10 + parseInt((Math.max.apply(null, _allSeries)/10)) * 10;
-        },
-
-        updateChart: function() {
-          this.stackedChart.update();
-        },
-
-        switchView: function(e) {
-          switch(e.currentTarget.selected){
-            case 0:
-              this.labelsInterval = ['Lun', 'Mar', 'Mer'];
-                break;
-            case 1:
-              this.labelsInterval = ['1 Maggio', '2 Maggio', '3 Maggio'];
-                break;
-            case 2:
-              this.labelsInterval = ["Gennaio '17", "Febbraio '17", "Marzo '17"];
-                break;
+        _openDialog: function() {
+          this.$.dialog.mDate = this._datepickerConfig.mDate;
+          if(this.$.dialog.date && this.$.dialog.date != '') {
+            this.$.dialog.selectedDates = [ this.$.dialog.date ];
+            this.$.dialog.mDate = moment(this.$.dialog.date);
           }
-          if(e.currentTarget.selected < 3) {
-            this.stackedChart.type = 'bar';
-            this.stackedChart.data.labels = this.labelsInterval;
-            this._generateRandomValues();
-            this.stackedChart.data.datasets[0].data = this.dataSeries.a;
-            this.stackedChart.data.datasets[1].data = this.dataSeries.b;
-            this.stackedChart.options.scales.yAxes[0].ticks.max = this._maxY;
-            this.updateChart();
-          }
-          else {
-            var ctx = this.querySelector('canvas').getContext('2d');
-            var pieData = this._setPieChart();
-            pieData.type = 'pie';
-            this.stackedChart.destroy();
-            this.stackedChart = new Chart(ctx, pieData);
-            //this.stackedChart.data.labels = pieData.labels;
-          }
-
+          this.$.dialog.refresh();
+          this.$.dialog.openDatepicker();
         },
 
-        _setPieChart: function() {
-          return {
-            type: 'pie',
-            data: {
-              labels: ['Transazioni completate', 'Transazioni con errore'],
-              datasets: [
-                {
-                  data: [300, 120],
-                  backgroundColor: [
-                    'rgba(30, 190, 30, .35)',
-                    'rgba(190, 30, 30, .35)'
-                  ]
-                }]
-            },
-            options: {
-              title: {
-                display: true,
-                fontSize: 20,
-                padding: 30,
-                text: 'Numero Transazioni'
-              },
-              legend: {
-                display: true,
-                position: 'bottom'
-              },
-              tooltips: {
-                enabled: true
-              }
-            }
-          };
+        _exportData: function() {
+          console.log('export');
+        },
+
+        _daySelected: function(event) {
+          if(event.detail.hasOwnProperty('selectedDate') && event.detail.selectedDate != '' &&
+            event.detail.hasOwnProperty('form') && event.detail.form.hasOwnProperty('tipoIntervallo') &&
+            event.detail.form.tipoIntervallo != '') {
+            this.serviceParameters.data = event.detail.selectedDate;
+            this.serviceParameters.avanzamento = 0;
+            this.serviceParameters.tipoIntervallo = event.detail.form.tipoIntervallo;
+            this.requestChartInfo(this.uri);
+          }
         }
 
       });
     })();
+  </script>
+</dom-module>
+<dom-module id="link-profilo-panel" assetpath="link-profilo-panel/">
+  <template>
+    <style include="shared-styles">
+
+      :host {
+        display: block;
+        --paper-card-header-text: {
+          padding: 0;
+          padding-bottom: 24px;
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+          color: var(--secondary-text-color);
+        };
+        position: fixed;
+        left: var(--link-pref-left, 25%);
+        top: var(--link-pref-top, 25%);
+        width: var(--link-pref-width, 50%);
+        height: var(--link-pref-height, 50%);
+        box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+      }
+
+      @media (max-width: 450px) {
+        :host {
+          display: block;
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .block {
+        display: block;
+        background-color: rgba(0,0,0,0);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      paper-header-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--paper-dialog-background-color, --primary-background-color);
+        color: var(--paper-dialog-color, --primary-text-color);
+      }
+
+      paper-radio-group {
+        margin: 16px 0;
+      }
+
+      .sezione {
+        width: 100%;
+        padding: 24px;
+        padding-bottom: 16px;
+        margin-bottom: 2px;
+      }
+
+      .card-content {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        flex-basis: 50%;
+        /*font-size: 12px;*/
+        padding: 0;
+        position:relative;
+      }
+
+      .content {
+        padding: 0 24px;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+
+      .card-content .etichetta {
+        color: var(--secondary-text-color);
+        font-weight: 500;
+      }
+
+      .card-content .valore {
+        color: var(--primary-text-color);
+      }
+
+      .head-dialog {
+      }
+
+      .ellipsis-text {
+        width: 100%;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow-x: hidden;
+      }
+
+      .ruolo {
+        min-height: 24px;
+        padding: 0 16px 8px 0;
+        box-sizing: border-box;
+        /*flex-basis: calc(var(--voce-basis, 50%) - 16px);*/
+        /*width: calc(var(--voce-basis, 50%) - 16px);*/
+      }
+
+      .user-roles{
+
+      }
+
+      .wrapped-text {
+        white-space: normal;
+      }
+
+      .icon-dismiss {
+        margin: 0 -8px 0 0;
+      }
+
+      @media (max-width: 600px) {
+        .mobile-space {
+          width: 100%;
+        }
+
+        .card-content {
+          @apply(--layout-vertical);
+          flex-basis: 50%;
+          font-size: 12px;
+          padding: 0;
+          position:relative;
+        }
+
+        .ruolo {
+          min-height: 24px;
+          padding-bottom: 8px;
+          width: 100%;
+        }
+      }
+
+    </style>
+
+    <div class="block"></div>
+    <paper-header-panel fixed="" id="profilo">
+      <paper-toolbar class="head-dialog">
+        <div class="ellipsis-text">[[localize('profilo')]]</div>
+        <paper-icon-button class="icon-dismiss" icon="icons:clear" tabindex="-1" on-tap="close"></paper-icon-button>
+      </paper-toolbar>
+      <div class="content">
+        <paper-card class="sezione" elevation="0">
+          <div class="card-content">
+              <div class="ruolo ellipsis-text">
+                <span class="etichetta">[[localize('utenteCollegato')]]:</span>
+                <span class="valore">[[userInfo.principal]]</span>
+              </div>
+              <div class="ruolo ellipsis-text">
+               <span class="etichetta">[[localize('ruoli')]]:</span>
+               <span class="valore">[[_getRuoli(userInfo.ruoli)]]</span>
+              </div>
+          </div>
+        </paper-card>
+      </div>
+    </paper-header-panel>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'link-profilo-panel',
+
+      listeners: {
+        'iron-overlay-opened': '_refit'
+      },
+
+      behaviors: [
+        LinkLocalizeBehavior
+      ],
+
+      properties: {
+        userInfo: {
+          type: Object,
+          value: null
+        }
+      },
+
+      show: function(){
+        if(app.USER_LOGGED) {
+          this.userInfo = app.USER_LOGGED;
+          this.listen(window, 'resize', '_refit');
+        }
+      },
+
+      close: function(){
+        this.unlisten(window, 'resize', '_refit');
+        document.body.removeChild(this);
+      },
+
+      _getRuoli: function(_ruoli){
+        var ruoli = '';
+        if(_ruoli){
+          for(var i =0; i < _ruoli.length; i++){
+            if(i > 0)
+              ruoli += ', ';
+
+            ruoli += _ruoli[i];
+          }
+        }
+
+        return ruoli;
+      },
+
+      _refit: function(){
+        this.customStyle['--link-pref-height'] = window.innerHeight / 2 +'px';
+        this.customStyle['--link-pref-width'] = window.innerWidth / 2 +'px';
+        this.customStyle['--link-pref-left'] = (window.innerWidth / 4) +'px';
+        this.customStyle['--link-pref-top'] = (window.innerHeight / 4) +'px';
+        this.updateStyles();
+      }
+
+    });
+  })();
   </script>
 </dom-module>
 </div></body></html>

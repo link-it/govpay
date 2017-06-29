@@ -146,6 +146,12 @@
         --paper-toast-color: #9F6000;
       }
 
+      .paper-toast-button {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+      }
+
       .buttonBar {
         padding-top: 24px;
         @apply(--layout-horizontal);
@@ -165,6 +171,10 @@
       vaadin-combo-box-overlay::content #selector .item {
         white-space: normal !important;
         color: red;
+      }
+
+      .paper-toast-button {
+        --paper-icon-button-ink-color: transparent;
       }
 
       /*#spinner {

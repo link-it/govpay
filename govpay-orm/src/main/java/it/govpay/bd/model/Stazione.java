@@ -31,7 +31,7 @@ public class Stazione extends it.govpay.model.Stazione {
 
 	// Business
 	
-	private Intermediario intermediario;
+	private transient Intermediario intermediario;
 	
 	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
 		if(intermediario == null) {
