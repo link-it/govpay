@@ -36,7 +36,7 @@ public class Operazioni{
 
 	@Resource
 	TimerService timerservice;
-
+	
 	@Schedule(hour="4,12,18", persistent=false)
 	@AccessTimeout(value=30, unit=TimeUnit.MINUTES)
 	public static String acquisizioneRendicontazioni(){
@@ -75,7 +75,21 @@ public class Operazioni{
 
 	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
 	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
-	public static String caricamentoTracciati(){
+	public static String caricamentoTracciatiRealTime(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+
+		if(!it.govpay.core.business.Operazioni.getAndResetForzaCaricamentoTracciati()) {
+			return "";
+		}
+		
+		return it.govpay.core.business.Operazioni.caricamentoTracciati("Batch");
+	}
+
+	@Schedule(hour="*", minute="*/30", persistent=false)
+	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
+	public static String caricamentoTracciatiSchedule(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
 		}

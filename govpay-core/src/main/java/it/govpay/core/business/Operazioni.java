@@ -64,10 +64,27 @@ public class Operazioni{
 	public static final String psp = "update-psp";
 	public static final String pnd = "update-pnd";
 	public static final String ntfy = "update-ntfy";
-	public static final String trac = "trac";
+	public static final String check_ntfy = "check-ntfy";
+	public static final String batch_tracciati = "caricamento-tracciati";
+	public static final String check_tracciati = "check-tracciati";
 	public static final String conto = "update-conto";
 	public static final String conservazione_req = "cons-req";
 	public static final String conservazione_esito = "cons-esito";
+
+	
+	private static boolean forzaCaricamentoTracciati;
+	
+	public static synchronized void setForzaCaricamentoTracciati() {
+		forzaCaricamentoTracciati = true;
+	}
+	
+	public static synchronized boolean getAndResetForzaCaricamentoTracciati() {
+		boolean value = forzaCaricamentoTracciati;
+		if(forzaCaricamentoTracciati) {
+			forzaCaricamentoTracciati = false;
+		}
+		return value;
+	}
 
 	public static String acquisizioneRendicontazioni(String serviceName){
 
@@ -385,7 +402,7 @@ public class Operazioni{
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			bd.setAutoCommit(false);
-			if(BatchManager.startEsecuzione(bd, trac)) {
+			if(BatchManager.startEsecuzione(bd, batch_tracciati)) {
 				log.trace("Caricamento tracciati");
 				TracciatiBD tracciatiBD = new TracciatiBD(bd);
 				TracciatoFilter filter = tracciatiBD.newFilter();
@@ -396,7 +413,7 @@ public class Operazioni{
 
 				List<Tracciato> tracciati  = tracciatiBD.findAll(filter);
 				if(tracciati.size() == 0) {
-					BatchManager.stopEsecuzione(bd, trac);
+					BatchManager.stopEsecuzione(bd, batch_tracciati);
 					return "Nessun tracciato da caricare.";
 				}
 
@@ -424,12 +441,12 @@ public class Operazioni{
 						BasicBD bd2 = null;
 						try {
 							bd2 = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-							BatchManager.stopEsecuzione(bd2, trac);
+							BatchManager.stopEsecuzione(bd2, batch_tracciati);
 						} catch (ServiceException e) {
 						} finally {
 							if(bd2 != null) bd2.closeConnection();
 						}
-						aggiornaSondaOK(trac, bd);
+						aggiornaSondaOK(batch_tracciati, bd);
 
 						return "Caricamento tracciati completato.";
 					}
@@ -440,7 +457,7 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare il caricamento dei tracciati", e);
-			aggiornaSondaKO(trac, e, bd); 
+			aggiornaSondaKO(batch_tracciati, e, bd); 
 			return "Non è stato possibile avviare il caricamento dei tracciati: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();

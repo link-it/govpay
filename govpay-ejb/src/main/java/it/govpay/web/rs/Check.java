@@ -23,13 +23,17 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.loader.TracciatiBD;
+import it.govpay.bd.loader.filters.TracciatoFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.wrapper.StatoNdP;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 import it.govpay.web.rs.sonde.CheckSonda;
 import it.govpay.web.rs.sonde.DettaglioSonda;
 import it.govpay.web.rs.sonde.DettaglioSonda.TipoSonda;
@@ -38,6 +42,7 @@ import it.govpay.web.rs.sonde.SommarioSonda;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -116,9 +121,20 @@ public class Check {
 			throw new NotFoundException("Sonda con nome ["+checkSonda.getName()+"] non configurata");
 		if(checkSonda.isCoda()) {
 			long num = -1;
-			if("check-ntfy".equals(checkSonda.getName())) {
+			if(Operazioni.check_ntfy.equals(checkSonda.getName())) {
 				NotificheBD notBD = new NotificheBD(bd);
 				num = notBD.countNotificheInAttesa();
+			} else if(Operazioni.check_tracciati.equals(checkSonda.getName())) {
+				TracciatiBD tracciatiBD = new TracciatiBD(bd);
+				TracciatoFilter filter = tracciatiBD.newFilter();
+				
+				filter.addStatoTracciato(StatoTracciatoType.IN_CARICAMENTO);
+				filter.addStatoTracciato(StatoTracciatoType.NUOVO);
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.HOUR, -6); //TODO parametrizzare
+				
+				filter.setDataCaricamentoMax(cal.getTime());
+				num = tracciatiBD.count(filter);
 			}
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}

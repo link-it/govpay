@@ -49,6 +49,8 @@ public class TracciatoFilter extends AbstractFilter {
 	private Long idApplicazione = null;
 	private Date dataUltimoAggiornamentoMax;
 	private Date dataUltimoAggiornamentoMin;
+	private Date dataCaricamentoMax;
+	private Date dataCaricamentoMin;
 	
 	public enum SortFields {
 	}
@@ -111,6 +113,14 @@ public class TracciatoFilter extends AbstractFilter {
 			
 			if(this.dataUltimoAggiornamentoMin != null) {
 				newExpression.greaterEquals(it.govpay.orm.Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, this.dataUltimoAggiornamentoMin);
+			}
+			
+			if(this.dataCaricamentoMax != null) {
+				newExpression.lessEquals(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO, this.dataCaricamentoMax);
+			}
+			
+			if(this.dataCaricamentoMin != null) {
+				newExpression.greaterEquals(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO, this.dataCaricamentoMin);
 			}
 			
 			return newExpression;
@@ -189,6 +199,22 @@ public class TracciatoFilter extends AbstractFilter {
 
 	public void setDataUltimoAggiornamentoMin(Date dataUltimoAggiornamentoMin) {
 		this.dataUltimoAggiornamentoMin = dataUltimoAggiornamentoMin;
+	}
+
+	public Date getDataCaricamentoMin() {
+		return dataCaricamentoMin;
+	}
+
+	public void setDataCaricamentoMin(Date dataCaricamentoMin) {
+		this.dataCaricamentoMin = dataCaricamentoMin;
+	}
+
+	public Date getDataCaricamentoMax() {
+		return dataCaricamentoMax;
+	}
+
+	public void setDataCaricamentoMax(Date dataCaricamentoMax) {
+		this.dataCaricamentoMax = dataCaricamentoMax;
 	}
 
 	
