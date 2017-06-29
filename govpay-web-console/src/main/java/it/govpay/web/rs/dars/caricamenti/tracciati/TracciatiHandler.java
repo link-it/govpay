@@ -483,6 +483,10 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 			InserisciTracciatoDTOResponse inserisciTracciatoDTOResponse = tracciatiBd.inserisciTracciato(inserisciTracciatoDTO);
 			entry = inserisciTracciatoDTOResponse.getTracciato();
+			
+			// invocare jmx
+			
+			
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
