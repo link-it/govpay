@@ -83,6 +83,7 @@ import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.InputText;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -399,12 +400,17 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				funzionalita_MAN.setDefaultValue(false); 
 				sezioneFunzionalita_MAN.addField(funzionalita_MAN);
 
-				String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
-				Sezione sezioneFunzionalita_STAT = infoCreazione.addSezione(etichettaFunzionalita_STAT);
-
 				CheckButton funzionalita_STAT = (CheckButton) this.infoCreazioneMap.get(funzionalita_STATId);
 				funzionalita_STAT.setDefaultValue(false); 
-				sezioneFunzionalita_STAT.addField(funzionalita_STAT);
+				funzionalita_STAT.setHidden(!ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche());
+
+				if(ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche()){
+					String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
+					Sezione sezioneFunzionalita_STAT = infoCreazione.addSezione(etichettaFunzionalita_STAT);
+					sezioneFunzionalita_STAT.addField(funzionalita_STAT);
+				}else {
+					sezioneRoot.addField(funzionalita_STAT);
+				}
 
 			}
 		} catch (ServiceException e) {
@@ -881,14 +887,20 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				funzionalita_MAN.setDefaultValue(visualizzaMAN); 
 				sezioneFunzionalita_MAN.addField(funzionalita_MAN);
 
-				String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
-				Sezione sezioneFunzionalita_STAT = infoModifica.addSezione(etichettaFunzionalita_STAT);
+
 				List<Long> idsAclFunzionalita_STAT = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.Statistiche);
 				boolean visualizzaSTAT = idsAclFunzionalita_STAT.size() > 0;
-
 				CheckButton funzionalita_STAT = (CheckButton) this.infoCreazioneMap.get(funzionalita_STATId);
 				funzionalita_STAT.setDefaultValue(visualizzaSTAT); 
-				sezioneFunzionalita_STAT.addField(funzionalita_STAT);
+				funzionalita_STAT.setHidden(!ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche()); 
+
+				if(ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche()){
+					String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
+					Sezione sezioneFunzionalita_STAT = infoModifica.addSezione(etichettaFunzionalita_STAT);
+					sezioneFunzionalita_STAT.addField(funzionalita_STAT);
+				} else 
+					sezioneRoot.addField(funzionalita_STAT);
+
 			}
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
@@ -1388,14 +1400,16 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				sezioneFunzionalita_MAN.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(false)); 
 			}
 
-			String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
-			it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_STAT = dettaglio.addSezione(etichettaFunzionalita_STAT);
+			if(ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche()) {
+				String etichettaFunzionalita_STAT = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.funzionalita_STAT.titolo");
+				it.govpay.web.rs.dars.model.Sezione sezioneFunzionalita_STAT = dettaglio.addSezione(etichettaFunzionalita_STAT);
 
-			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Statistiche);
-			if(idDomini != null && idDomini.size() > 0){
-				sezioneFunzionalita_STAT.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(true)); 
-			}else {
-				sezioneFunzionalita_STAT.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(false)); 
+				idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Statistiche);
+				if(idDomini != null && idDomini.size() > 0){
+					sezioneFunzionalita_STAT.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(true)); 
+				}else {
+					sezioneFunzionalita_STAT.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.funzionalita"), Utils.getAbilitataAsLabel(false)); 
+				}
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -1887,11 +1901,13 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Manutenzione.getCodifica()));
 		}
 
-		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Statistiche);
-		if(idDomini != null && idDomini.size() > 0){
-			if(sb.length() > 0) sb.append(", ");
+		if(ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche()){
+			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Statistiche);
+			if(idDomini != null && idDomini.size() > 0){
+				if(sb.length() > 0) sb.append(", ");
 
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Statistiche.getCodifica()));
+				sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Statistiche.getCodifica()));
+			}
 		}
 
 		return Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.label",sb.toString());

@@ -250,7 +250,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				fileTracciato.setErrorMessageFileSize(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.errorMessageFileSize"));
 				fileTracciato.setErrorMessageFileType(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.errorMessageFileType"));
 				fileTracciato.setNote(fileTracciatoNote);
-				
+
 				this.infoCreazioneMap.put(fileTracciatoId, fileTracciato);
 			} catch(Exception e ){
 				throw new ConsoleException(e); 
@@ -473,14 +473,14 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			Tracciato entry = this.creaEntry(is, uriInfo, bd);
 
 			this.checkEntry(entry, null);
-			
+
 			it.govpay.core.loader.business.Tracciati tracciatiBd = new Tracciati(bd);
 			InserisciTracciatoDTO inserisciTracciatoDTO = new InserisciTracciatoDTO();
-			
+
 			inserisciTracciatoDTO.setNomeTracciato(entry.getNomeFile());
 			inserisciTracciatoDTO.setTracciato(entry.getRawDataRichiesta());
 			inserisciTracciatoDTO.setOperatore(entry.getOperatore(bd)); 
-			
+
 			InserisciTracciatoDTOResponse inserisciTracciatoDTOResponse = tracciatiBd.inserisciTracciato(inserisciTracciatoDTO);
 			entry = inserisciTracciatoDTOResponse.getTracciato();
 
@@ -619,10 +619,28 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataCaricamento.label"),dataS));
 		}
 
-		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
-				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+entry.getStato().name()),
-						entry.getStato().name()));
 
+
+		StatoTracciatoType stato = entry.getStato();
+		if(stato != null){
+			String statoS = stato.name();
+
+			switch (stato) {
+			case CARICAMENTO_KO:
+			case CARICAMENTO_OK:
+			case ANNULLATO:
+				break;
+			case IN_CARICAMENTO:
+			case NUOVO:
+			default:
+				statoS = "IN_CORSO";
+				break;
+			}
+
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+statoS),
+							statoS));
+		}
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numOperazioniOk.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numOperazioniOk.label"),entry.getNumOperazioniOk()+""));
 

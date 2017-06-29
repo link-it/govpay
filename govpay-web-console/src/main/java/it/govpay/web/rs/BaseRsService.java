@@ -101,18 +101,18 @@ public abstract class BaseRsService {
 				.header("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST")
 				.build();
 	}
-	
+
 	public void checkDirittiServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException,WebApplicationException{
 		if(!this.isOperatoreAdminServizio(bd, servizio))
 			if(!this.checkDirittiServizioOperatore(bd, servizio))
 				throw new WebApplicationException(this.getUnauthorizedResponse());
 	}
-	
+
 	public boolean isOperatoreAdminServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
 		return AclEngine.isAdminDirittiOperatore(ruoliUtente, servizio);
 	}
-	
+
 	public boolean checkDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
 		return topDirittiOperatore > Ruolo.NO_DIRITTI;
@@ -122,37 +122,37 @@ public abstract class BaseRsService {
 		if(!this.isServizioAbilitatoLettura(bd, servizio))
 			throw new WebApplicationException(this.getUnauthorizedResponse());
 	}
-	
+
 	public boolean isServizioAbilitatoLettura(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
 		return topDirittiOperatore >= Ruolo.DIRITTI_LETTURA;
 	}
-	
+
 	public void checkDirittiServizioScrittura(BasicBD bd, Acl.Servizio servizio) throws ServiceException,WebApplicationException{
 		if(!this.isServizioAbilitatoScrittura(bd, servizio))
 			throw new WebApplicationException(this.getUnauthorizedResponse());
 	}
-	
+
 	public boolean isServizioAbilitatoScrittura(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
 		return topDirittiOperatore == Ruolo.DIRITTI_SCRITTURA;
 	}
-	
+
 	public Set<String> getDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
 		return AclEngine.getDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_LETTURA);
 	}
-	
+
 	public Set<Long> getIdDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
 		return AclEngine.getIdDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_LETTURA);
 	}
-	
+
 	public Set<String> getDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
 		return AclEngine.getDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_SCRITTURA);
 	}
-	
+
 	public Set<Long> getIdDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
 		return AclEngine.getIdDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_SCRITTURA);
@@ -167,10 +167,14 @@ public abstract class BaseRsService {
 
 	public List<Ruolo> getRuoliOperatore(BasicBD bd) throws ServiceException {
 		Operatore operatore = this.getOperatoreByPrincipal(bd);
+		return this.getRuoliOperatore(bd, operatore);
+	}
+	
+	public List<Ruolo> getRuoliOperatore(BasicBD bd,Operatore operatore) throws ServiceException {
 		List<Ruolo> ruoliUtente = new ArrayList<Ruolo>();
 		List<String> ruoliOp = operatore.getRuoli();
 		List<Ruolo> listaRuoliRegistrati = getListaRuoliRegistrati(bd);
-		
+
 		for (String codRuolo : ruoliOp) {
 			if(codRuolo.equals(Operatore.RUOLO_SYSTEM)){
 				for (Ruolo ruolo : listaRuoliRegistrati) {
@@ -190,7 +194,7 @@ public abstract class BaseRsService {
 	}
 
 	protected String getPrincipal(){
-//		return "amministratore";
+		//		return "amministratore";
 		if(this.request.getUserPrincipal()!=null){
 			return this.request.getUserPrincipal().getName();
 		}
@@ -219,6 +223,22 @@ public abstract class BaseRsService {
 				throw new WebApplicationException(this.getUnauthorizedResponse());
 			}
 
+			// controllo che tra tutti i ruoli associati all'utente ci sia almeno un acl 
+			List<Ruolo> ruoliOperatore = getRuoliOperatore(bd,operatore);
+
+			boolean find = false;
+			for(Ruolo ruolo : ruoliOperatore) {
+				if(ruolo.getAcls() != null && ruolo.getAcls().size() > 0){
+					find = true;
+					break;
+				}
+			}
+			
+			if(!find){
+				this.invalidateSession(null);
+				throw new WebApplicationException(this.getUnauthorizedResponse());
+			}
+
 			return operatore;
 		} catch (ServiceException e) {
 			throw e;
@@ -230,7 +250,7 @@ public abstract class BaseRsService {
 			throw new WebApplicationException(this.getUnauthorizedResponse());
 		}	
 	}
-	
+
 	protected List<it.govpay.model.Ruolo> getListaRuoliRegistrati(BasicBD bd) throws ServiceException{
 		List<it.govpay.model.Ruolo> lst = new ArrayList<it.govpay.model.Ruolo>();
 		try {
@@ -284,13 +304,13 @@ public abstract class BaseRsService {
 		}
 		return null;
 	}
-	
+
 	public Locale getLanguage(){
 		Locale locale = null;
-		
+
 		String lingua =  this.request != null ? this.request.getParameter(BaseRsService.PARAMETER_LINGUA) : null;
 		locale = Utils.getInstance(lingua).getLocale();
-				
+
 		return locale;
 	}
 }

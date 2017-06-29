@@ -19,6 +19,9 @@
  */
 package it.govpay.web.rs.dars.anagrafica.operatori;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -31,12 +34,16 @@ import org.apache.logging.log4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Operatore;
+import it.govpay.model.Ruolo;
 import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
+import it.govpay.web.rs.dars.anagrafica.ruoli.RuoliHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
+import it.govpay.web.utils.Utils;
 
 @Path("/dars/operatori")
 public class Operatori extends DarsService {
@@ -84,6 +91,21 @@ public class Operatori extends DarsService {
 
 			// Reset ID DB
 			operatore.setId(null);
+			
+			// ruoli in formato descrizione (codice)
+			List<Ruolo> ruoliOperatore = this.getRuoliOperatore(bd,operatore);
+			List<String> ruoliOperatoreString = new ArrayList<String>();
+			Ruoli ruoliDars = new Ruoli();
+			RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
+			for (Ruolo ruolo : ruoliOperatore) {
+				if(!ruolo.getCodRuolo().equals(Operatore.RUOLO_SYSTEM)){
+					ruoliOperatoreString.add(ruoliDarsHandler.getTitolo(ruolo, bd));
+				}else {
+					ruoliOperatoreString.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio() + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"));
+				}
+			}
+			
+			operatore.setRuoli(ruoliOperatoreString);
 			
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(operatore);

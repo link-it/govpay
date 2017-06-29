@@ -158,8 +158,8 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 					serie2.getDati().add(serie2Val);
 					serie3.getDati().add(serie3Val);
 					serie1.getTooltip().add(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".transazioniCompletate.tooltip", dataElemento, serie1Val));
-					serie2.getTooltip().add(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".transazioniCompletate.tooltip", dataElemento, serie2Val));
-					serie3.getTooltip().add(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".transazioniCompletate.tooltip", dataElemento, serie3Val));
+					serie2.getTooltip().add(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".transazioniRifiutate.tooltip", dataElemento, serie2Val));
+					serie3.getTooltip().add(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".transazioniInCorso.tooltip", dataElemento, serie3Val));
 				}
 
 				grafico.getSerie().add(serie1);

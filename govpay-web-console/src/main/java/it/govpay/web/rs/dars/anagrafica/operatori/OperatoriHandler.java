@@ -45,6 +45,7 @@ import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
 import it.govpay.bd.model.Operatore;
+import it.govpay.model.Ruolo;
 import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
 import it.govpay.web.rs.dars.anagrafica.ruoli.RuoliHandler;
 import it.govpay.web.rs.dars.base.DarsHandler;
@@ -650,15 +651,19 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 	public String getSottotitolo(Operatore entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
-		List<String> ruoli = entry.getRuoli();
+		try{
+		List<Ruolo> ruoli = entry.getRuoli(bd);
 		if(ruoli != null && ruoli.size() > 0){
-			for (String r : ruoli) {
+			Ruoli ruoliDars = new Ruoli();
+			RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
+			for (Ruolo r : ruoli) {
 				if(sb.length() > 0 )
 					sb.append(", ");
-				sb.append(r);
+				sb.append(ruoliDarsHandler.getTitolo(r, bd)); 
 			}
 		}
-
+		}catch(Exception e){
+		}
 		return Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.label",Utils.getAbilitatoAsLabel(entry.isAbilitato()),sb.toString());
 	}
 

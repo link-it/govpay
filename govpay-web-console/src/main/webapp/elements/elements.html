@@ -41234,27 +41234,108 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 </dom-module>
 <dom-module id="link-profilo-panel" assetpath="link-profilo-panel/">
   <template>
-    <style>
+    <style include="shared-styles">
 
       :host {
         display: block;
+        --paper-card-header-text: {
+          padding: 0;
+          padding-bottom: 24px;
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+          color: var(--secondary-text-color);
+        };
+        position: fixed;
+        left: var(--link-pref-left, 25%);
+        top: var(--link-pref-top, 25%);
+        width: var(--link-pref-width, 50%);
+        height: var(--link-pref-height, 50%);
+        box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
+      }
+
+      @media (max-width: 450px) {
+        :host {
+          display: block;
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .block {
+        display: block;
+        background-color: rgba(0,0,0,0);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      paper-header-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--paper-dialog-background-color, --primary-background-color);
+        color: var(--paper-dialog-color, --primary-text-color);
+      }
+
+      paper-radio-group {
+        margin: 16px 0;
+      }
+
+      .sezione {
+        width: 100%;
+        padding: 24px;
+        padding-bottom: 16px;
+        margin-bottom: 2px;
+      }
+
+      .card-content {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        flex-basis: 50%;
+        /*font-size: 12px;*/
+        padding: 0;
+        position:relative;
+      }
+
+      .content {
+        padding: 0 24px;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+
+      .card-content .etichetta {
+        color: var(--secondary-text-color);
+        font-weight: 500;
+      }
+
+      .card-content .valore {
+        color: var(--primary-text-color);
       }
 
       .head-dialog {
-        @apply(--layout-horizontal);
-        @apply(--layout-flex);
-        @apply(--layout-end-justified);
-        margin-top: 16px;
       }
 
       .ellipsis-text {
+        width: 100%;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow-x: hidden;
       }
 
       .ruolo {
-
+        min-height: 24px;
+        padding: 0 16px 8px 0;
+        box-sizing: border-box;
+        /*flex-basis: calc(var(--voce-basis, 50%) - 16px);*/
+        /*width: calc(var(--voce-basis, 50%) - 16px);*/
       }
 
       .user-roles{
@@ -41269,20 +41350,49 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         margin: 0 -8px 0 0;
       }
 
+      @media (max-width: 600px) {
+        .mobile-space {
+          width: 100%;
+        }
+
+        .card-content {
+          @apply(--layout-vertical);
+          flex-basis: 50%;
+          font-size: 12px;
+          padding: 0;
+          position:relative;
+        }
+
+        .ruolo {
+          min-height: 24px;
+          padding-bottom: 8px;
+          width: 100%;
+        }
+      }
+
     </style>
 
-    <paper-dialog id="profilo" modal="">
-      <div class="head-dialog">
+    <div class="block"></div>
+    <paper-header-panel fixed="" id="profilo">
+      <paper-toolbar class="head-dialog">
+        <div class="ellipsis-text">[[localize('profilo')]]</div>
         <paper-icon-button class="icon-dismiss" icon="icons:clear" tabindex="-1" on-tap="close"></paper-icon-button>
+      </paper-toolbar>
+      <div class="content">
+        <paper-card class="sezione" elevation="0">
+          <div class="card-content">
+              <div class="ruolo ellipsis-text">
+                <span class="etichetta">[[localize('utenteCollegato')]]:</span>
+                <span class="valore">[[userInfo.principal]]</span>
+              </div>
+              <div class="ruolo ellipsis-text">
+               <span class="etichetta">[[localize('ruoli')]]:</span>
+               <span class="valore">[[_getRuoli(userInfo.ruoli)]]</span>
+              </div>
+          </div>
+        </paper-card>
       </div>
-      <h2 class="wrapped-text">[[userInfo.principal]]</h2>
-      <div class="user-roles">
-        <template is="dom-repeat" items="[[userInfo.ruoli]]" as="ruolo">
-          <p class="ruolo ellipsis-text">[[_getRuolo(ruolo)]]</p>
-        </template>
-      </div>
-    </paper-dialog>
-
+    </paper-header-panel>
   </template>
   <script>
   (function() {
@@ -41290,6 +41400,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
     Polymer({
       is: 'link-profilo-panel',
+
+      listeners: {
+        'iron-overlay-opened': '_refit'
+      },
 
       behaviors: [
         LinkLocalizeBehavior
@@ -41305,20 +41419,35 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       show: function(){
         if(app.USER_LOGGED) {
           this.userInfo = app.USER_LOGGED;
-          this.$.profilo.open();
+          this.listen(window, 'resize', '_refit');
         }
       },
 
       close: function(){
-        this.$.profilo.close();
+        this.unlisten(window, 'resize', '_refit');
         document.body.removeChild(this);
       },
 
-      _getRuolo: function(_ruolo){
-        if(_ruolo){
-            return _ruolo;
+      _getRuoli: function(_ruoli){
+        var ruoli = '';
+        if(_ruoli){
+          for(var i =0; i < _ruoli.length; i++){
+            if(i > 0)
+              ruoli += ', ';
+
+            ruoli += _ruoli[i];
+          }
         }
-        return '';
+
+        return ruoli;
+      },
+
+      _refit: function(){
+        this.customStyle['--link-pref-height'] = window.innerHeight / 2 +'px';
+        this.customStyle['--link-pref-width'] = window.innerWidth / 2 +'px';
+        this.customStyle['--link-pref-left'] = (window.innerWidth / 4) +'px';
+        this.customStyle['--link-pref-top'] = (window.innerHeight / 4) +'px';
+        this.updateStyles();
       }
 
     });
