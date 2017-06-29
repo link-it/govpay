@@ -11,6 +11,23 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
 
 public class OperazioneCaricamento extends Operazione{
+	
+	public OperazioneCaricamento() {
+	}
+	
+	public OperazioneCaricamento(Operazione operazione){
+		this.setCodVersamentoEnte(operazione.getCodVersamentoEnte());
+		this.setDatiRichiesta(operazione.getDatiRichiesta());
+		this.setDatiRisposta(operazione.getDatiRisposta());
+		this.setDettaglioEsito(operazione.getDettaglioEsito());
+		this.setId(operazione.getId());
+		this.setIdApplicazione(operazione.getIdApplicazione());
+		this.setIdOperazione(operazione.getIdOperazione());
+		this.setIdTracciato(operazione.getIdTracciato());
+		this.setLineaElaborazione(operazione.getLineaElaborazione());
+		this.setStato(operazione.getStato());
+		this.setTipoOperazione(operazione.getTipoOperazione());
+	}
 
 	// richiesta
 	private String codDominio;

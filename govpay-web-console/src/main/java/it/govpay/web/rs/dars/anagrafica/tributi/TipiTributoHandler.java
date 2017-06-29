@@ -353,53 +353,59 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, TipoTributo entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-		String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
-		String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
-		String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-		String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+				String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+				String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+				String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+				String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+				String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idTributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
+				idTributo.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idTributo);
+
+				InputText codTributo = (InputText) this.infoCreazioneMap.get(codTributoId);
+				codTributo.setDefaultValue(entry.getCodTributo());
+				codTributo.setEditable(false); 
+				sezioneRoot.addField(codTributo);
+
+				InputText descrizione = (InputText) this.infoCreazioneMap.get(descrizioneId);
+				descrizione.setDefaultValue(entry.getDescrizione());
+
+				if(!entry.getCodTributo().equals(Tributo.BOLLOT)) {
+					descrizione.setEditable(false);
+				} else {
+					descrizione.setEditable(true);
+				}
+
+				sezioneRoot.addField(descrizione);
+
+				SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId);
+				tipoContabilita.setDefaultValue(entry.getTipoContabilitaDefault() != null ? entry.getTipoContabilitaDefault().getCodifica() : null);
+				sezioneRoot.addField(tipoContabilita);
+
+				InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId);
+				codContabilita.setDefaultValue(entry.getCodContabilitaDefault());
+				sezioneRoot.addField(codContabilita);
+
+				InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId);
+				codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvDefault());
+				sezioneRoot.addField(codificaTributoInIuv);
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idTributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
-		idTributo.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idTributo);
-
-		InputText codTributo = (InputText) this.infoCreazioneMap.get(codTributoId);
-		codTributo.setDefaultValue(entry.getCodTributo());
-		codTributo.setEditable(false); 
-		sezioneRoot.addField(codTributo);
-
-		InputText descrizione = (InputText) this.infoCreazioneMap.get(descrizioneId);
-		descrizione.setDefaultValue(entry.getDescrizione());
-
-		if(!entry.getCodTributo().equals(Tributo.BOLLOT)) {
-			descrizione.setEditable(false);
-		} else {
-			descrizione.setEditable(true);
-		}
-
-		sezioneRoot.addField(descrizione);
-
-		SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId);
-		tipoContabilita.setDefaultValue(entry.getTipoContabilitaDefault() != null ? entry.getTipoContabilitaDefault().getCodifica() : null);
-		sezioneRoot.addField(tipoContabilita);
-
-		InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId);
-		codContabilita.setDefaultValue(entry.getCodContabilitaDefault());
-		sezioneRoot.addField(codContabilita);
-
-		InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId);
-		codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvDefault());
-		sezioneRoot.addField(codificaTributoInIuv);
-
 		return infoModifica;
 	}
 

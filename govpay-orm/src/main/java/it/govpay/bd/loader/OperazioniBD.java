@@ -23,6 +23,8 @@ package it.govpay.bd.loader;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.loader.converter.OperazioneConverter;
 import it.govpay.bd.loader.filters.OperazioneFilter;
+import it.govpay.bd.loader.model.OperazioneCaricamento;
+import it.govpay.model.loader.Operazione.TipoOperazioneType;
 import it.govpay.orm.Operazione;
 import it.govpay.orm.dao.IDBOperazioneService;
 
@@ -98,7 +100,9 @@ public class OperazioniBD extends BasicBD {
 	public it.govpay.bd.loader.model.Operazione getOperazione(long id) throws ServiceException, NotFoundException {
 		try {
 			it.govpay.orm.Operazione operazione = ((IDBOperazioneService)this.getOperazioneService()).get(id);
-			return OperazioneConverter.toDettaglioDTO(operazione);
+			it.govpay.bd.loader.model.Operazione dto = OperazioneConverter.toDettaglioDTO(operazione);
+			
+			return dto;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {

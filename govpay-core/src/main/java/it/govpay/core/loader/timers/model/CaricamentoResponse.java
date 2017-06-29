@@ -1,8 +1,30 @@
 package it.govpay.core.loader.timers.model;
 
+import org.openspcoop2.generic_project.exception.ValidationException;
+import org.openspcoop2.utils.csv.Record;
 
+import it.govpay.core.utils.Utils;
 
 public class CaricamentoResponse extends AbstractOperazioneResponse {
+	
+	public static final String ESITO_CARICAMENTO_OK = "OK";
+
+	public CaricamentoResponse() {
+	}
+	
+	public CaricamentoResponse(Record record) throws ValidationException{
+		this.setEsito(Utils.validaESettaRecord(record,"esito",null, null, false));
+		if(this.getEsito().equals(ESITO_CARICAMENTO_OK))
+			this.setIuv(Utils.validaESettaRecord(record,"descrizioneEsito",null, null, false));
+		else 
+			this.setDescrizioneEsito(Utils.validaESettaRecord(record,"descrizioneEsito",null, null, false));
+		
+		String qrCode = Utils.validaESettaRecord(record,"qrCode",null, null, true);
+		this.setQrCode(qrCode != null ? qrCode.getBytes() : null);
+		
+		String barCode = Utils.validaESettaRecord(record,"barCode",null, null, true);
+		this.setBarCode(barCode != null ? barCode.getBytes() : null);
+	}
 	
 	private String iuv;
 	
@@ -32,7 +54,7 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	protected byte[] createDati() {
 		switch(this.getStato()) {
 		case ESEGUITO_KO: return (this.getEsito() + this.getDelim() + this.getDescrizioneEsito()).getBytes();
-		case ESEGUITO_OK: return ("OK" + this.getDelim() + this.iuv + this.getDelim() + new String(this.qrCode) + this.getDelim() + new String(this.barCode)).getBytes();
+		case ESEGUITO_OK: return (ESITO_CARICAMENTO_OK + this.getDelim() + this.iuv + this.getDelim() + new String(this.qrCode) + this.getDelim() + new String(this.barCode)).getBytes(); 
 		default: return "".getBytes();
 		}
 	}

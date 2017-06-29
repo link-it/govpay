@@ -114,7 +114,8 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, this.getInfoEsportazione(uriInfo, bd,params) , this.getInfoCancellazione(uriInfo, bd,params),simpleSearchPlaceholder);  
-
+			elenco.setNumeroMassimoElementiExport(null);
+			elenco.setNumeroMassimoElementiCancellazione(null);  
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
 			if(findAll != null && findAll.size() > 0){
@@ -650,14 +651,6 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Evento entry)	throws ConsoleException {	
 		InfoForm infoEsportazione = null;
-		try{
-			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-				infoEsportazione = new InfoForm(esportazione);
-			}
-		}catch(ServiceException e){
-			throw new ConsoleException(e);
-		}
 		return infoEsportazione;
 	}
 

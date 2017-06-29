@@ -29,6 +29,7 @@ public class AnnullaVersamentoDTO {
 	private Applicazione applicazione;
 	private String codApplicazione;
 	private String codVersamentoEnte;
+	private String motivoAnnullamento;
 	
 	public AnnullaVersamentoDTO(Operatore operatore, String codApplicazione, String codVersamentoEnte) {
 		this.operatore = operatore;
@@ -57,4 +58,13 @@ public class AnnullaVersamentoDTO {
 	public String getCodVersamentoEnte() {
 		return codVersamentoEnte;
 	}
+
+	public String getMotivoAnnullamento() {
+		return motivoAnnullamento;
+	}
+
+	public void setMotivoAnnullamento(String motivoAnnullamento) {
+		this.motivoAnnullamento = motivoAnnullamento;
+	}
+	
 }

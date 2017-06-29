@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.web.rs.dars.base;
 
 import java.util.ArrayList;
@@ -35,7 +54,7 @@ public abstract class StatisticaDarsHandler<T> extends BaseDarsHandler<T> implem
 
 	@Override
 	public abstract PaginaGrafico getGrafico(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException;
-	
+
 	@Override
 	public Map<String, ParamField<?>> getInfoGrafico(UriInfo uriInfo, BasicBD bd ) throws ConsoleException{
 		return this.getInfoGrafico(uriInfo, bd, true);
@@ -67,13 +86,13 @@ public abstract class StatisticaDarsHandler<T> extends BaseDarsHandler<T> implem
 				calendar.add(Calendar.HOUR, avanzamento);
 				break;
 			}
-			
+
 			return calendar.getTime();
 		}
-		
+
 		return data;
 	}
-	
+
 	protected StatisticaFilter popoloFiltroStatistiche(UriInfo uriInfo,BasicBD bd, StatisticaFilter filter) throws ConsoleException, Exception {
 		Date data = new Date();
 		String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
@@ -94,30 +113,37 @@ public abstract class StatisticaDarsHandler<T> extends BaseDarsHandler<T> implem
 			}
 		}
 		filter.setLimit(colonne);
-		
+
 		String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
 		String tipoIntervalloS = this.getParameter(uriInfo, tipoIntervalloId, String.class);
 		TipoIntervallo tipoIntervallo= TipoIntervallo.GIORNALIERO;
 		if(StringUtils.isNotEmpty(tipoIntervalloS)){
-			tipoIntervallo = TipoIntervallo.valueOf(tipoIntervalloS);
+			try{
+				tipoIntervallo= TipoIntervallo.valueOf(tipoIntervalloS);
+			}catch(Exception e){
+				tipoIntervallo = null;
+			}
+			
+			if(tipoIntervallo == null)
+				tipoIntervallo = this.toTipoIntervallo(tipoIntervalloS);
 		}
 		filter.setTipoIntervallo(tipoIntervallo);
-		
+
 		// soglia minima percentuale
 		double soglia = ConsoleProperties.getInstance().getSogliaPercentualeMinimaGraficoTorta() / 100;
 		filter.setSoglia(soglia);
-		
+
 		return filter;
 	}
-	
+
 	protected void initInfoGrafico(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		if(this.infoRicercaMap == null)
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
-			
+
 		String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
 		String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.colonne.id");
 		String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
-		
+
 		InputNumber colonne = new InputNumber(colonneId, null, null, true, true, false, 1, 20);
 		this.infoRicercaMap.put(colonneId, colonne);
 
@@ -125,14 +151,18 @@ public abstract class StatisticaDarsHandler<T> extends BaseDarsHandler<T> implem
 		this.infoRicercaMap.put(dataId, data);
 
 		List<Voce<String>> tipiIntervallo = new ArrayList<Voce<String>>(); //tipoIntervallo.ORARIO.label
-		tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.ORARIO.name()+".label"),TipoIntervallo.ORARIO.name()));
-		tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".label"),TipoIntervallo.GIORNALIERO.name()));
-		tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.MENSILE.name()+".label"),TipoIntervallo.MENSILE.name()));
+		tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.ORARIO.name()+".label"),
+				Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.ORARIO.name()+".value")));
+		tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".label"),
+				Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".value")));
+		tipiIntervallo.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.MENSILE.name()+".label"),
+				Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.MENSILE.name()+".value")));
 		String tipoIntervalloLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.label");
-		SelectList<String> tipoIntervallo = new SelectList<String>(tipoIntervalloId, tipoIntervalloLabel, TipoIntervallo.GIORNALIERO.name(), false, false, true, tipiIntervallo );
+		SelectList<String> tipoIntervallo = new SelectList<String>(tipoIntervalloId, tipoIntervalloLabel, 
+				Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".value"), false, false, true, tipiIntervallo );
 		this.infoRicercaMap.put(tipoIntervalloId, tipoIntervallo);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, ParamField<?>> getInfoGrafico(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca,
@@ -156,23 +186,23 @@ public abstract class StatisticaDarsHandler<T> extends BaseDarsHandler<T> implem
 		infoGrafico.put(dataId,data);
 
 		SelectList<String> tipoIntervallo = (SelectList<String>) this.infoRicercaMap.get(tipoIntervalloId);
-		tipoIntervallo.setDefaultValue(TipoIntervallo.GIORNALIERO.name());
+		tipoIntervallo.setDefaultValue(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".value"));
 		infoGrafico.put(tipoIntervalloId,tipoIntervallo); 
 
 		return infoGrafico;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected Map<String, ParamField<?>> valorizzaInfoGrafico(UriInfo uriInfo, BasicBD bd, StatisticaFilter filter,Map<String, ParamField<?>> infoGrafico) throws ConsoleException {
-		
+
 		if(this.infoRicercaMap == null){
 			this.getInfoRicerca(uriInfo, bd);
 		}
-		
+
 		String dataId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.data.id");
 		String colonneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.colonne.id");
 		String tipoIntervalloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo.id");
-		
+
 		InputNumber colonne = (InputNumber) this.infoRicercaMap.get(colonneId);
 		colonne.setDefaultValue(filter.getLimit());
 
@@ -180,8 +210,32 @@ public abstract class StatisticaDarsHandler<T> extends BaseDarsHandler<T> implem
 		data.setDefaultValue(filter.getData());
 
 		SelectList<String> tipoIntervallo = (SelectList<String>) this.infoRicercaMap.get(tipoIntervalloId);
-		tipoIntervallo.setDefaultValue(filter.getTipoIntervallo().name());
-		
+		tipoIntervallo.setDefaultValue(this.fromTipoIntervallo(filter.getTipoIntervallo()));
+
 		return infoGrafico;
+	}
+
+	protected TipoIntervallo toTipoIntervallo(String tipoIntervalloS) {
+		if(StringUtils.isNotEmpty(tipoIntervalloS)){
+			if(tipoIntervalloS.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.ORARIO.name()+".value")))
+				return TipoIntervallo.ORARIO;
+			else if(tipoIntervalloS.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".value")))
+				return TipoIntervallo.GIORNALIERO;
+			else if(tipoIntervalloS.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.MENSILE.name()+".value")))
+				return TipoIntervallo.MENSILE;
+		}
+		return TipoIntervallo.GIORNALIERO;
+	}
+
+	protected String fromTipoIntervallo(TipoIntervallo tipoIntervallo) {
+		switch (tipoIntervallo) {
+		case MENSILE:
+			return Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.MENSILE.name()+".value");
+		case ORARIO:
+			return Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.ORARIO.name()+".value");
+		case GIORNALIERO:
+		default:
+			return Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("statistiche.tipoIntervallo."+TipoIntervallo.GIORNALIERO.name()+".value");
+		}
 	}
 }

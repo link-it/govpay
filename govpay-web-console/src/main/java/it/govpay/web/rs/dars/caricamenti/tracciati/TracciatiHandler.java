@@ -30,6 +30,9 @@ import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.loader.TracciatiBD;
 import it.govpay.bd.loader.filters.TracciatoFilter;
 import it.govpay.bd.loader.model.Tracciato;
+import it.govpay.core.business.model.InserisciTracciatoDTO;
+import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
+import it.govpay.core.loader.business.Tracciati;
 import it.govpay.model.Operatore;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 import it.govpay.web.rs.dars.base.DarsHandler;
@@ -470,9 +473,16 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			Tracciato entry = this.creaEntry(is, uriInfo, bd);
 
 			this.checkEntry(entry, null);
-
-			TracciatiBD tracciatiBD = new TracciatiBD(bd);
-			tracciatiBD.insertTracciato(entry);
+			
+			it.govpay.core.loader.business.Tracciati tracciatiBd = new Tracciati(bd);
+			InserisciTracciatoDTO inserisciTracciatoDTO = new InserisciTracciatoDTO();
+			
+			inserisciTracciatoDTO.setNomeTracciato(entry.getNomeFile());
+			inserisciTracciatoDTO.setTracciato(entry.getRawDataRichiesta());
+			inserisciTracciatoDTO.setOperatore(entry.getOperatore(bd)); 
+			
+			InserisciTracciatoDTOResponse inserisciTracciatoDTOResponse = tracciatiBd.inserisciTracciato(inserisciTracciatoDTO);
+			entry = inserisciTracciatoDTOResponse.getTracciato();
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
