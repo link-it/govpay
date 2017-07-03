@@ -33688,7 +33688,7 @@ Polymer.AppLocalizeBehavior = {
               this.postEdit(temp);
           }
         } else {
-          app.showPaperToast(this.localize('erroriCompilazione')  , 'error');
+          app.showPaperToast(this.localize('erroriCompilazione'), 'error');
         }
       },
       /** *********** Vaadin-upload files ************ **/
@@ -34130,9 +34130,11 @@ Polymer.AppLocalizeBehavior = {
         if (response.simpleSearchPlaceHolder) {
           this.simplePlaceholder = response.simpleSearchPlaceHolder;
         }
+        this.maxSelections = -1;
         if (response.numeroMassimoElementiExport) {
           this.maxSelections = response.numeroMassimoElementiExport;
         }
+        this.maxDelete = 0;
         if (response.numeroMassimoElementiCancellazione) {
           this.maxDelete = response.numeroMassimoElementiCancellazione;
         }
@@ -39432,7 +39434,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         }
 
         this.set('isSelected', true);
-        this.set('mDateTrigger', this.mDateTrigger + 1);
+        this.set('mDateTrigger', this.mDateTrigger != 0?0:1);
 
 
         // console.log('date is now:',this.date);
@@ -39666,9 +39668,13 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
           type: String,
           computed: '_computeNonCompatPropz(multidate, rangedate)'
         },
+        dateHeadingTrigger: {
+          type: Number,
+          value: 0
+        },
         dateHeading: {
           type: String,
-          computed: '_computeDateHeading(mDateTrigger)'
+          computed: '_computeDateHeading(dateHeadingTrigger)'
         },
         todayHidden: {
           type: Boolean,
@@ -39703,6 +39709,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
       },
       _localeObserver: function(_locale) {
         moment.locale(_locale || 'it');
+        this.$.monthView.daysOfWeek = moment.weekdaysShort(true);
       },
       _computeDate: function(mDateTrigger){
         return this.mDate.format(this.dateFormat);
@@ -39743,7 +39750,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
             && _minDate != ''
             && moment(_minDate, this.dateFormat) > moment() ){
           this.set('mDate', moment(_minDate, this.dateFormat));
-          this.set('mDateTrigger', this.mDateTrigger + 1);
+          this.set('mDateTrigger', this.mDateTrigger != 0?0:1);
           this.async(function(){
             var node = this.$$('link-month-view');
             // if(node){}
@@ -39755,7 +39762,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
       _today: function(e){
         this.set('isSelected', false);
         this.set('mDate', moment());
-        this.set('mDateTrigger', this.mDateTrigger + 1);
+        this.set('mDateTrigger', this.mDateTrigger != 0?0:1);
         var node = this.$$('link-month-view');
         node.createMonthView();
       },
@@ -39773,7 +39780,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         this.set('isSelected', false);
         var node = this.$$('link-month-view');
         node.prevMonth();
-        this.set('mDateTrigger', this.mDateTrigger + 1);
+        this.set('dateHeadingTrigger', this.dateHeadingTrigger != 0?0:1);
       },
       _prevMonthDisabled: function(_minDate){
         if(this.minDate && this.minDate != ''){
@@ -39788,7 +39795,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         this.set('isSelected', false);
         var node = this.$$('link-month-view');
         node.nextMonth();
-        this.set('mDateTrigger', this.mDateTrigger + 1);
+        this.set('dateHeadingTrigger', this.dateHeadingTrigger != 0?0:1);
       },
       _nextMonthDisabled: function(_maxDate){
         if(this.maxDate && this.maxDate != ''){
@@ -39806,6 +39813,11 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
           node.createMonthView();
         }
 
+      },
+
+      setTriggers: function() {
+        this.mDateTrigger = (this.mDateTrigger != 0)?0:1;
+        this.dateHeadingTrigger = (this.dateHeadingTrigger != 0)?0:1;
       },
 
       refresh: function(){
@@ -39969,7 +39981,11 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
             _el[_cv.split('=')[0]] = _cv.split('=')[1];
               return _el;
           }, {});
-          this.fire('dialog-closed', { selectedDate: this.date , form: _form });
+          var _time = new Date();
+          var _h = ('0'+_time.getHours()).substr(-2);
+          var _m = ('0'+_time.getMinutes()).substr(-2);
+          var _s = ('0'+_time.getSeconds()).substr(-2);
+          this.fire('dialog-closed', { selectedDate: this.date, fullSelectedDate: this.date+'T'+_h+':'+_m+':'+_s, form: _form });
         }
       },
       _reset: function() {
@@ -40003,7 +40019,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         var ldp = this.querySelector('link-datepicker');
         if(ldp) {
           ldp.isSelected = false;
-          ldp.mDateTrigger = ldp.mDateTrigger + 1;
+          ldp.setTriggers();
           ldp.refresh();
         }
       }
@@ -40524,7 +40540,6 @@ var xb=["جنوری","فروری","مارچ","اپریل","مئی","جون","ج�
 //! author : Ben : https://github.com/ben-lin
 //! author : Chris Lam : https://github.com/hehachris
 return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:yb,weekdaysMin:yb,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd، D MMMM YYYY HH:mm"},meridiemParse:/صبح|شام/,isPM:function(a){return"شام"===a},meridiem:function(a,b,c){return a<12?"صبح":"شام"},calendar:{sameDay:"[آج بوقت] LT",nextDay:"[کل بوقت] LT",nextWeek:"dddd [بوقت] LT",lastDay:"[گذشتہ روز بوقت] LT",lastWeek:"[گذشتہ] dddd [بوقت] LT",sameElse:"L"},relativeTime:{future:"%s بعد",past:"%s قبل",s:"چند سیکنڈ",m:"ایک منٹ",mm:"%d منٹ",h:"ایک گھنٹہ",hh:"%d گھنٹے",d:"ایک دن",dd:"%d دن",M:"ایک ماہ",MM:"%d ماہ",y:"ایک سال",yy:"%d سال"},preparse:function(a){return a.replace(/،/g,",")},postformat:function(a){return a.replace(/,/g,"،")},week:{dow:1,doy:4}}),a.defineLocale("uz-latn",{months:"Yanvar_Fevral_Mart_Aprel_May_Iyun_Iyul_Avgust_Sentabr_Oktabr_Noyabr_Dekabr".split("_"),monthsShort:"Yan_Fev_Mar_Apr_May_Iyun_Iyul_Avg_Sen_Okt_Noy_Dek".split("_"),weekdays:"Yakshanba_Dushanba_Seshanba_Chorshanba_Payshanba_Juma_Shanba".split("_"),weekdaysShort:"Yak_Dush_Sesh_Chor_Pay_Jum_Shan".split("_"),weekdaysMin:"Ya_Du_Se_Cho_Pa_Ju_Sha".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[Bugun soat] LT [da]",nextDay:"[Ertaga] LT [da]",nextWeek:"dddd [kuni soat] LT [da]",lastDay:"[Kecha soat] LT [da]",lastWeek:"[O'tgan] dddd [kuni soat] LT [da]",sameElse:"L"},relativeTime:{future:"Yaqin %s ichida",past:"Bir necha %s oldin",s:"soniya",m:"bir daqiqa",mm:"%d daqiqa",h:"bir soat",hh:"%d soat",d:"bir kun",dd:"%d kun",M:"bir oy",MM:"%d oy",y:"bir yil",yy:"%d yil"},week:{dow:1,doy:7}}),a.defineLocale("uz",{months:"январ_феврал_март_апрел_май_июн_июл_август_сентябр_октябр_ноябр_декабр".split("_"),monthsShort:"янв_фев_мар_апр_май_июн_июл_авг_сен_окт_ноя_дек".split("_"),weekdays:"Якшанба_Душанба_Сешанба_Чоршанба_Пайшанба_Жума_Шанба".split("_"),weekdaysShort:"Якш_Душ_Сеш_Чор_Пай_Жум_Шан".split("_"),weekdaysMin:"Як_Ду_Се_Чо_Па_Жу_Ша".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[Бугун соат] LT [да]",nextDay:"[Эртага] LT [да]",nextWeek:"dddd [куни соат] LT [да]",lastDay:"[Кеча соат] LT [да]",lastWeek:"[Утган] dddd [куни соат] LT [да]",sameElse:"L"},relativeTime:{future:"Якин %s ичида",past:"Бир неча %s олдин",s:"фурсат",m:"бир дакика",mm:"%d дакика",h:"бир соат",hh:"%d соат",d:"бир кун",dd:"%d кун",M:"бир ой",MM:"%d ой",y:"бир йил",yy:"%d йил"},week:{dow:1,doy:7}}),a.defineLocale("vi",{months:"tháng 1_tháng 2_tháng 3_tháng 4_tháng 5_tháng 6_tháng 7_tháng 8_tháng 9_tháng 10_tháng 11_tháng 12".split("_"),monthsShort:"Th01_Th02_Th03_Th04_Th05_Th06_Th07_Th08_Th09_Th10_Th11_Th12".split("_"),monthsParseExact:!0,weekdays:"chủ nhật_thứ hai_thứ ba_thứ tư_thứ năm_thứ sáu_thứ bảy".split("_"),weekdaysShort:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysMin:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysParseExact:!0,meridiemParse:/sa|ch/i,isPM:function(a){return/^ch$/i.test(a)},meridiem:function(a,b,c){return a<12?c?"sa":"SA":c?"ch":"CH"},longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM [năm] YYYY",LLL:"D MMMM [năm] YYYY HH:mm",LLLL:"dddd, D MMMM [năm] YYYY HH:mm",l:"DD/M/YYYY",ll:"D MMM YYYY",lll:"D MMM YYYY HH:mm",llll:"ddd, D MMM YYYY HH:mm"},calendar:{sameDay:"[Hôm nay lúc] LT",nextDay:"[Ngày mai lúc] LT",nextWeek:"dddd [tuần tới lúc] LT",lastDay:"[Hôm qua lúc] LT",lastWeek:"dddd [tuần rồi lúc] LT",sameElse:"L"},relativeTime:{future:"%s tới",past:"%s trước",s:"vài giây",m:"một phút",mm:"%d phút",h:"một giờ",hh:"%d giờ",d:"một ngày",dd:"%d ngày",M:"một tháng",MM:"%d tháng",y:"một năm",yy:"%d năm"},dayOfMonthOrdinalParse:/\d{1,2}/,ordinal:function(a){return a},week:{dow:1,doy:4}}),a.defineLocale("x-pseudo",{months:"J~áñúá~rý_F~ébrú~árý_~Márc~h_Áp~ríl_~Máý_~Júñé~_Júl~ý_Áú~gúst~_Sép~témb~ér_Ó~ctób~ér_Ñ~óvém~bér_~Décé~mbér".split("_"),monthsShort:"J~áñ_~Féb_~Már_~Ápr_~Máý_~Júñ_~Júl_~Áúg_~Sép_~Óct_~Ñóv_~Déc".split("_"),monthsParseExact:!0,weekdays:"S~úñdá~ý_Mó~ñdáý~_Túé~sdáý~_Wéd~ñésd~áý_T~húrs~dáý_~Fríd~áý_S~átúr~dáý".split("_"),weekdaysShort:"S~úñ_~Móñ_~Túé_~Wéd_~Thú_~Frí_~Sát".split("_"),weekdaysMin:"S~ú_Mó~_Tú_~Wé_T~h_Fr~_Sá".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[T~ódá~ý át] LT",nextDay:"[T~ómó~rró~w át] LT",nextWeek:"dddd [át] LT",lastDay:"[Ý~ést~érdá~ý át] LT",lastWeek:"[L~ást] dddd [át] LT",sameElse:"L"},relativeTime:{future:"í~ñ %s",past:"%s á~gó",s:"á ~féw ~sécó~ñds",m:"á ~míñ~úté",mm:"%d m~íñú~tés",h:"á~ñ hó~úr",hh:"%d h~óúrs",d:"á ~dáý",dd:"%d d~áýs",M:"á ~móñ~th",MM:"%d m~óñt~hs",y:"á ~ýéár",yy:"%d ý~éárs"},dayOfMonthOrdinalParse:/\d{1,2}(th|st|nd|rd)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c},week:{dow:1,doy:4}}),a.defineLocale("yo",{months:"Sẹ́rẹ́_Èrèlè_Ẹrẹ̀nà_Ìgbé_Èbibi_Òkùdu_Agẹmo_Ògún_Owewe_Ọ̀wàrà_Bélú_Ọ̀pẹ̀̀".split("_"),monthsShort:"Sẹ́r_Èrl_Ẹrn_Ìgb_Èbi_Òkù_Agẹ_Ògú_Owe_Ọ̀wà_Bél_Ọ̀pẹ̀̀".split("_"),weekdays:"Àìkú_Ajé_Ìsẹ́gun_Ọjọ́rú_Ọjọ́bọ_Ẹtì_Àbámẹ́ta".split("_"),weekdaysShort:"Àìk_Ajé_Ìsẹ́_Ọjr_Ọjb_Ẹtì_Àbá".split("_"),weekdaysMin:"Àì_Aj_Ìs_Ọr_Ọb_Ẹt_Àb".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[Ònì ni] LT",nextDay:"[Ọ̀la ni] LT",nextWeek:"dddd [Ọsẹ̀ tón'bọ] [ni] LT",lastDay:"[Àna ni] LT",lastWeek:"dddd [Ọsẹ̀ tólọ́] [ni] LT",sameElse:"L"},relativeTime:{future:"ní %s",past:"%s kọjá",s:"ìsẹjú aayá die",m:"ìsẹjú kan",mm:"ìsẹjú %d",h:"wákati kan",hh:"wákati %d",d:"ọjọ́ kan",dd:"ọjọ́ %d",M:"osù kan",MM:"osù %d",y:"ọdún kan",yy:"ọdún %d"},dayOfMonthOrdinalParse:/ọjọ́\s\d{1,2}/,ordinal:"ọjọ́ %d",week:{dow:1,doy:4}}),a.defineLocale("zh-cn",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"周日_周一_周二_周三_周四_周五_周六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日Ah点mm分",LLLL:"YYYY年MMMD日ddddAh点mm分",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"下午"===b||"晚上"===b?a+12:a>=11?a:a+12},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|周)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"周";default:return a}},relativeTime:{future:"%s内",past:"%s前",s:"几秒",m:"1 分钟",mm:"%d 分钟",h:"1 小时",hh:"%d 小时",d:"1 天",dd:"%d 天",M:"1 个月",MM:"%d 个月",y:"1 年",yy:"%d 年"},week:{dow:1,doy:4}}),a.defineLocale("zh-hk",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"週日_週一_週二_週三_週四_週五_週六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日 HH:mm",LLLL:"YYYY年MMMD日dddd HH:mm",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"中午"===b?a>=11?a:a+12:"下午"===b||"晚上"===b?a+12:void 0},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|週)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"週";default:return a}},relativeTime:{future:"%s內",past:"%s前",s:"幾秒",m:"1 分鐘",mm:"%d 分鐘",h:"1 小時",hh:"%d 小時",d:"1 天",dd:"%d 天",M:"1 個月",MM:"%d 個月",y:"1 年",yy:"%d 年"}}),a.defineLocale("zh-tw",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"週日_週一_週二_週三_週四_週五_週六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日 HH:mm",LLLL:"YYYY年MMMD日dddd HH:mm",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"中午"===b?a>=11?a:a+12:"下午"===b||"晚上"===b?a+12:void 0},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|週)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"週";default:return a}},relativeTime:{future:"%s內",past:"%s前",s:"幾秒",m:"1 分鐘",mm:"%d 分鐘",h:"1 小時",hh:"%d 小時",d:"1 天",dd:"%d 天",M:"1 個月",MM:"%d 個月",y:"1 年",yy:"%d 年"}}),a.locale("en"),a});</script>
-
 <dom-module id="link-chart" assetpath="link-chart/">
 
   <template>
@@ -40554,8 +40569,23 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       }
 
       .chart-bar {
+        position: relative;
         margin: 0;
         padding: 0;
+      }
+
+      .no-result {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+      }
+
+      .no-result span {
+        width: 100%;
+        text-align: center;
       }
 
       .ellipsis-text {
@@ -40614,7 +40644,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         <paper-icon-button icon="menu" on-tap="goBack"></paper-icon-button>
         <div class="ellipsis-text">[[titolo]]</div>
         <link-user-action id="userAction" user="[[user]]"></link-user-action>
-        <paper-tabs class="bottom fit" selected="0" no-slide="" on-iron-select="switchView" selected-class="tab-selected">
+        <paper-tabs class="bottom fit" selected="0" no-slide="" on-iron-select="switchView" selected-class="link-chart-tab-selected">
           <paper-tab data-arg="[[uri]]">[[titoloTab]]</paper-tab>
           <template is="dom-repeat" items="[[_elementiCorrelati]]">
             <paper-tab data-arg="[[item.uri]]">[[item.etichetta]]</paper-tab>
@@ -40633,6 +40663,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           <div class="fixed-icons" on-tap="_navigateChart" data-arg="false"><iron-icon icon="chevron-left"></iron-icon></div>
           <div class="chart-bar">
             <canvas></canvas>
+            <div class="no-result" hidden$="[[!_nodata]]"><span>[[localize('nessunElemento')]]</span></div>
           </div>
           <div class="fixed-icons" on-tap="_navigateChart" data-arg="true"><iron-icon icon="chevron-right" class="fixed-size"></iron-icon></div>
         </div>
@@ -40643,7 +40674,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       <paper-fab icon="icons:date-range" class="fab-item" mini="" on-tap="_openDialog" hidden$="[[_hideDatepicker]]"></paper-fab>
       <paper-fab icon="icons:filter-list" class="fab-item" mini="" on-tap="_toggleFilter"></paper-fab>
     </link-fab-menu>
-    <link-datepicker-dialog id="dialog" locale="it" heading-selected-format="MMM YYYY" tipo-intervallo="[[_datepickerConfig]]" heading-not-selected-format="MMM YYYY" on-dialog-closed="_daySelected"></link-datepicker-dialog>
+    <link-datepicker-dialog id="dialog" locale="[[_currentLanguage]]" heading-selected-format="MMM YYYY" tipo-intervallo="[[_datepickerConfig]]" heading-not-selected-format="MMM YYYY" on-dialog-closed="_daySelected"></link-datepicker-dialog>
 
     <iron-ajax id="getChartInfo" handle-as="json" on-response="getChartInfo_responseHandler" on-error="getChartInfo_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="navigationChart" handle-as="json" on-response="navigationChart_responseHandler" on-error="getChartInfo_errorHandler" debounce-duration="300"></iron-ajax>
@@ -40695,6 +40726,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           _response: {
             type: Object
           },
+          _nodata: {
+            type: Boolean,
+            value: false
+          },
           _hideChart: {
             type: Boolean,
             value: true
@@ -40736,13 +40771,11 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           if(this.getBoundingClientRect().height != 0) {
             if(this._currentLanguage && this._currentLanguage != language) {
               this._currentLanguage = language;
-              console.log('TODO - refresh for language');
-              /* TODO - refresh for language
               if(this.svgChart) {
                 this.svgChart.destroy();
-                this.requestChartInfo(this.uri);
+                var _link = this.querySelector('paper-tab.link-chart-tab-selected').dataArg;
+                this.requestChartInfo(_link);
               }
-              */
             }
           }
         },
@@ -40840,7 +40873,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
               case 'bar':
                 _grafico = this._configBarChart(_response);
                 if(_grafico) {
-                  var _newData = {valori: [], tips: [], x: []};
+                  var _newData = { valori: [], tips: [], x: [], subtitle: _grafico.chartSubtitle };
                   _newData.valori = _grafico.datasetsData.map(function (_el) {
                     return _el.data;
                   });
@@ -40923,7 +40956,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
           this._hideChart = false;
           this._hideDatepicker = !_response.attivaDate;
-          this.titoloTab = _response.grafico.titolo;
+          this.titoloTab = _response.grafico.titolo?_response.grafico.titolo:'';
 
           if(!this.serviceParameters){
             this.serviceParameters = {};
@@ -40931,12 +40964,15 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
               this._elementiCorrelati = _response.elementiCorrelati;
             }
           }
-          this.serviceParameters.data = (_response.infoGrafico.data.defaultValue)?moment(_response.infoGrafico.data.defaultValue).format('YYYY-MM-DD'):'';
           this.serviceParameters.tipoIntervallo = _response.infoGrafico.tipoIntervallo.defaultValue;
+          if(this.serviceParameters.tipoIntervallo != 'h') {
+            this.serviceParameters.data = (_response.infoGrafico.data.defaultValue)?moment(_response.infoGrafico.data.defaultValue).format('YYYY-MM-DD'):'';
+          } else {
+            this.serviceParameters.data = (_response.infoGrafico.data.defaultValue)?moment(_response.infoGrafico.data.defaultValue).format('YYYY-MM-DDTHH:mm:ss'):'';
+          }
 
           this._datepickerConfig = (_response.infoGrafico.tipoIntervallo)?_response.infoGrafico.tipoIntervallo:{};
           this._datepickerConfig.mDate = moment(this.serviceParameters.data);
-          //this._datepickerConfig.defaultSelection = [ this.serviceParameters.data ];
 
           var _grafico = { datasetsData: [], labelsInterval: [], tooltip: [] };
 
@@ -40977,9 +41013,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           for (var i = 0; i < _barConfig.datasetsData.length; i++) {
             var item = _barConfig.datasetsData[i];
             item.label = _data.grafico.categorie[i];
-            item.backgroundColor = _data.grafico.colori[i];
-            item.borderColor = _data.grafico.colori[i];
+            item.backgroundColor = (_barConfig.coloriAutomatici)?this.colorSerie(i, true):_data.grafico.colori[i];
+            item.borderColor = (_barConfig.coloriAutomatici)?this.colorSerie(i, true):_data.grafico.colori[i];
           }
+          this._nodata = false;
 
           return _barConfig;
         },
@@ -40990,13 +41027,20 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           _pieConfig.coloriAutomatici = _data.grafico.coloriAutomatici;
           _pieConfig.chartSubtitle = _data.grafico.sottotitolo;
           _pieConfig.labelsInterval = _data.grafico.categorie;
-          _pieConfig.colori = _data.grafico.colori;
-          _pieConfig.datasetsData = _data.grafico.serie.map(function (item) {
-            return {
-              data: item.dati,
-              tips: item.tooltip
-            };
-          })[0];
+          _pieConfig.colori = (_data.grafico.coloriAutomatici)?this.colorSerie(_data.grafico.categorie.length, false):_data.grafico.colori;
+          _pieConfig.datasetsData = [ { data: [], tips: [] } ];
+          this._nodata = false;
+          if(_data.grafico.serie.length != 0) {
+            _pieConfig.datasetsData = _data.grafico.serie.map(function (item) {
+              return {
+                data: item.dati,
+                tips: item.tooltip
+              };
+            })[0];
+          } else {
+            this._nodata = true;
+          }
+
           return _pieConfig;
         },
 
@@ -41041,7 +41085,6 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
                       });
                       return _dataLabels.map(function (_obj, i) {
                         var metadata = _chart.getDatasetMeta(i);
-                        var ds = data.datasets[i];
 
                         return {
                           text: _obj.label,
@@ -41082,8 +41125,40 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
                 datasets: [ { data: _data.datasetsData.data, tips:_data.datasetsData.tips, backgroundColor: _data.colori } ]
             },
             options: {
-              title: { display: true, fontSize: 20, padding: 30, text: _data.chartSubtitle },
-              legend: { display: true, position: 'bottom' },
+              maintainAspectRatio: false,
+              title: { display: true, fontSize: 14, fontStyle: 'normal', padding: 20, text: _data.chartSubtitle }, //subtitle
+              legend: { display: true, position: 'bottom', fullWidth: true,
+                labels: {
+                  generateLabels: function (_chart) {
+                    _chart.legend.afterFit = function () {
+                      var width = this.width;
+                      this.lineWidths = this.lineWidths.map(function () {
+                        return width;
+                      });
+                    };
+                    var data = _chart.data;
+                    if (data.labels && data.labels.length != 0) {
+                      var _dataLabels = data.labels.map(function(_label, _index) {
+                        return { label: _label, color: data.datasets[0].backgroundColor[_index] };
+                      });
+                      return _dataLabels.map(function (_obj, i) {
+                        var metadata = _chart.getDatasetMeta(0);
+
+                        return {
+                          text: _obj.label,
+                          fillStyle: _obj.color,
+                          strokeStyle: _obj.color,
+                          lineWidth: 1,
+                          hidden: metadata.hidden,
+                          index: i
+                        };
+                      });
+                    }
+
+                    return [];
+                  }
+                }
+              },
               tooltips: { enabled: true, mode: 'index',
                 callbacks: {
                   label: function(tooltipItem, data) {
@@ -41119,7 +41194,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
         _navigateChart: function(event) {
           var _forward = event.currentTarget.getAttribute('data-arg') == 'true';
-          var _link = this.querySelector('paper-tab.tab-selected').dataArg;
+          var _link = this.querySelector('paper-tab.link-chart-tab-selected').dataArg;
           if(_link) {
             this._setNewDate(_forward);
             this.requestChartInfo(_link, _forward);
@@ -41130,11 +41205,19 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
         _setNewDate: function(_direction) {
           _direction = _direction?1:-1;
-          this.serviceParameters.avanzamento = _direction*this._calcColumns()/2;
+          if(this.data.type != 'pie') {
+            this.serviceParameters.avanzamento = _direction*this._calcColumns()/2;
+          } else {
+            this.serviceParameters.avanzamento = _direction;
+          }
 
-          var nmd = moment(this.serviceParameters.data).add(this.serviceParameters.avanzamento, 'd');
+          var nmd = moment(this.serviceParameters.data).add(this.serviceParameters.avanzamento, this.serviceParameters.tipoIntervallo);
 
-          this.serviceParameters.data = nmd.format('YYYY-MM-DD');
+          if(this.serviceParameters.tipoIntervallo != 'h') {
+            this.serviceParameters.data = nmd.format('YYYY-MM-DD');
+          } else {
+            this.serviceParameters.data = nmd.format("YYYY-MM-DDTHH:mm:ss");
+          }
         },
 
         _updateNavigation: function(_chart, _newData, _isForward) {
@@ -41174,6 +41257,8 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
             (_isForward)?dataset.tips.splice(0, _newData.x.length):dataset.tips.slice(dataset.tips.length - _newData.x.length, _newData.x.length);
           });
 
+          _chart.options.title.text = _newData.subtitle;
+
           _chart.update();
         },
 
@@ -41186,12 +41271,6 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
             this.svgChart.destroy();
             this.serviceParameters = null;
             this.requestChartInfo(e.detail.item.dataArg);
-            /*if(e.currentTarget.selected != 0) {
-              var _link = this._elementiCorrelati[e.currentTarget.selected - 1].uri;
-              this.requestChartInfo(_link);
-            } else {
-              this.requestChartInfo(this.uri);
-            }*/
           }
 
         },
@@ -41204,11 +41283,8 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         },
 
         _openDialog: function() {
-          this.$.dialog.mDate = this._datepickerConfig.mDate;
-          if(this.$.dialog.date && this.$.dialog.date != '') {
-            this.$.dialog.selectedDates = [ this.$.dialog.date ];
-            this.$.dialog.mDate = moment(this.$.dialog.date);
-          }
+          this.$.dialog.mDate = moment(this.serviceParameters.data);
+          this.$.dialog.selectedDates = [ this.serviceParameters.data.split('T')[0] ];
           this.$.dialog.refresh();
           this.$.dialog.openDatepicker();
         },
@@ -41221,12 +41297,46 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           if(event.detail.hasOwnProperty('selectedDate') && event.detail.selectedDate != '' &&
             event.detail.hasOwnProperty('form') && event.detail.form.hasOwnProperty('tipoIntervallo') &&
             event.detail.form.tipoIntervallo != '') {
-            this.serviceParameters.data = event.detail.selectedDate;
-            this.serviceParameters.avanzamento = 0;
-            this.serviceParameters.tipoIntervallo = event.detail.form.tipoIntervallo;
-            this.requestChartInfo(this.uri);
+            if(this.svgChart) {
+              var _link = this.querySelector('paper-tab.link-chart-tab-selected').dataArg;
+              this.svgChart.destroy();
+              if(event.detail.form.tipoIntervallo == 'h') {
+                this.serviceParameters.data = event.detail.fullSelectedDate;
+              } else {
+                this.serviceParameters.data = event.detail.selectedDate;
+              }
+              this.serviceParameters.avanzamento = 0;
+              this.serviceParameters.tipoIntervallo = event.detail.form.tipoIntervallo;
+              this.requestChartInfo(_link);
+            }
           }
+        },
+
+        /**
+         * Elenco colori serie
+         * @param _ref: int
+         * @param _single: Boolean
+         * @returns {[string] | string}
+         */
+        colorSerie: function(_ref, _single) {
+        var color = [
+          "#2484c1", "#65a620", "#7b6888", "#a05d56", "#961a1a", "#d8d23a", "#e98125", "#d0743c", "#635222", "#6ada6a",
+          "#0c6197", "#7d9058", "#207f33", "#44b9b0", "#bca44a", "#e4a14b", "#a3acb2", "#8cc3e9", "#69a6f9", "#5b388f",
+          "#546e91", "#8bde95", "#d2ab58", "#273c71", "#98bf6e", "#4daa4b", "#98abc5", "#cc1010", "#31383b", "#006391",
+          "#c2643f", "#b0a474", "#a5a39c", "#a9c2bc", "#22af8c", "#7fcecf", "#987ac6", "#3d3b87", "#b77b1c", "#c9c2b6",
+          "#807ece", "#8db27c", "#be66a2", "#9ed3c6", "#00644b", "#005064", "#77979f", "#77e079", "#9c73ab", "#1f79a7"
+        ];
+        if(!_single && _ref > (color.length - 1)) {
+          console.log('Serie grafico superiore a '+color.length);
+          return color;
         }
+        if(!_single && _ref == 0) {
+          return [];
+        }
+        var range = (!_single)?color.splice(0, _ref):color[_ref];
+
+        return range;
+      }
 
       });
     })();
