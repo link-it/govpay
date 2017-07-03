@@ -33840,6 +33840,7 @@ Polymer.AppLocalizeBehavior = {
         color: #9e9e9e;
         @apply(--layout-horizontal);
         @apply(--layout-center);
+        outline: none;
       }
 
       .noResults {
@@ -33924,7 +33925,7 @@ Polymer.AppLocalizeBehavior = {
       <iron-scroll-threshold id="scrollThreshold" lower-threshold="500" on-lower-threshold="loadMoreData">
         <div class="content over-hidden-x">
           <div class="infoResults">
-            <div class="resultsBar" hidden$="[[noResults(results.length)]]">
+            <div class="resultsBar" hidden$="[[noResults(results.length)]]" tabindex="1">
               <div class="center-vertical">
                 [[localize('risultatiTrovati', 'numero', numResults)]]
               </div>
@@ -34127,6 +34128,9 @@ Polymer.AppLocalizeBehavior = {
       },
 
       setResponse: function(response){
+        if (this.$.scrollThreshold) {
+          this.$.scrollThreshold.scrollTop = 0;
+        }
         if (response.simpleSearchPlaceHolder) {
           this.simplePlaceholder = response.simpleSearchPlaceHolder;
         }
@@ -34168,6 +34172,8 @@ Polymer.AppLocalizeBehavior = {
           this.results = response.elenco;
           this.useVaadin = response.tabella;
           this.intestazione= response.intestazione;
+
+          this.$.scrollThreshold.querySelector('.resultsBar').focus();
         }
         this.activateFabs();
         this.$$('#resultsBox').resetSelection();
@@ -34374,7 +34380,7 @@ Polymer.AppLocalizeBehavior = {
               e.currentTarget.removeEventListener('iron-overlay-closed', closing);
               document.body.removeChild(e.currentTarget);
             });
-            lap.qta = listaId.length;
+            lap.qta = listaId.length!=0?listaId.length:this.numResults;
             lap.isExport = true;
             lap.template = this.infoEsportazione;
             document.body.appendChild(lap);

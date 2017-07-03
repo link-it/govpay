@@ -22,8 +22,6 @@ package it.govpay.web.rs.dars.statistiche.transazioni;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,25 +90,25 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 			TransazioniFilter filter = transazioniBD.newFilter();
 			this.popolaFiltroRicerca(uriInfo, transazioniBD, filter);
 
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(filter.getData());
+//			Calendar calendar = Calendar.getInstance();
+//			calendar.setTime(filter.getData());
 			SimpleDateFormat _sdf = null;
 			switch (filter.getTipoIntervallo()) {
 			case MENSILE:
-				calendar.add(Calendar.MONTH, - filter.getLimit());
+//				calendar.add(Calendar.MONTH, - (filter.getLimit() -1 ));
 				_sdf = this.sdfMese;
 				break;
 			case GIORNALIERO:
-				calendar.add(Calendar.DATE, - filter.getLimit());
+//				calendar.add(Calendar.DATE, - (filter.getLimit() -1 ));
 				_sdf= this.sdfGiorno;
 				break;
 			case ORARIO:
-				calendar.add(Calendar.HOUR, - filter.getLimit());
+//				calendar.add(Calendar.HOUR, - (filter.getLimit() -1 ));
 				_sdf = this.sdf;
 				break;
 			}
-			Date start = calendar.getTime();
-			String sottoTitolo = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",_sdf.format(start),_sdf.format(filter.getData()));
+//			Date start = calendar.getTime();
+			String sottoTitolo = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",_sdf.format(filter.getData()));
 
 
 			// visualizza la ricerca solo se i risultati sono > del limit

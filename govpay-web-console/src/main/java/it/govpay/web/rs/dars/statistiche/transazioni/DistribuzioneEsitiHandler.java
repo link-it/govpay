@@ -103,15 +103,15 @@ public class DistribuzioneEsitiHandler extends StatisticaDarsHandler<Distribuzio
 			SimpleDateFormat _sdf = null;
 			switch (filter.getTipoIntervallo()) {
 			case MENSILE:
-				calendar.add(Calendar.MONTH, - filter.getLimit());
+				calendar.add(Calendar.MONTH, - (filter.getLimit() -1 ));
 				_sdf = this.sdfMese;
 				break;
 			case GIORNALIERO:
-				calendar.add(Calendar.DATE, - filter.getLimit());
+				calendar.add(Calendar.DATE, - (filter.getLimit() -1 ));
 				_sdf= this.sdfGiorno;
 				break;
 			case ORARIO:
-				calendar.add(Calendar.HOUR, - filter.getLimit());
+				calendar.add(Calendar.HOUR, - (filter.getLimit() -1 ));
 				_sdf = this.sdf;
 				break;
 			}
