@@ -43,6 +43,7 @@ import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
+import it.govpay.web.rs.dars.manutenzione.strumenti.StrumentiHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -483,10 +484,38 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 			InserisciTracciatoDTOResponse inserisciTracciatoDTOResponse = tracciatiBd.inserisciTracciato(inserisciTracciatoDTO);
 			entry = inserisciTracciatoDTOResponse.getTracciato();
-			
+
 			// invocare jmx
-			
-			
+			Object invoke = null;
+			String nomeMetodo = "attivazioneRecuperoTracciatiPendenti";
+			log.debug("Invocazione operazione ["+nomeMetodo +"] in corso..."); 
+			Map<String, String> urlJMX = ConsoleProperties.getInstance().getUrlJMX();
+			for(String nodo : urlJMX.keySet()) {
+
+				String url = urlJMX.get(nodo);
+
+				try{
+					invoke = Utils.invocaOperazioneJMX(nomeMetodo, url, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
+
+					if(invoke != null && invoke instanceof String){
+						String esito = (String) invoke;
+						String[] voci = esito.split("\\|");
+						if(voci != null && voci.length > 0)
+							for (String string : voci) {
+								String[] voce = string.split("#");
+								if(voce.length == 2)
+									this.log.debug(voce[0] +", "+voce[1]);
+								else
+									if(voce.length == 1)
+										this.log.debug(voce[0]);
+							}
+					}
+
+				} catch(Exception e) {
+					log.error("si e' verificato un errore durante l'esecuzione dell'operazione ["+nomeMetodo+"]: " + e.getMessage(),e); 
+					throw e;
+				}
+			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
