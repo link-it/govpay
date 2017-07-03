@@ -175,7 +175,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 				RuoliBD ruoliBD = new RuoliBD(bd);
 				RuoloFilter ruoliFilter = ruoliBD.newFilter();
 				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
+				fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
 				fsw.setSortOrder(SortOrder.ASC);
 				ruoliFilter.getFilterSortList().add(fsw);
 
@@ -183,7 +183,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 
 				if(findAll != null && findAll.size() > 0){
 					for (it.govpay.model.Ruolo r : findAll) {
-						listaRuoli.add(new Voce<String>(r.getCodRuolo(), r.getCodRuolo()));  
+						listaRuoli.add(new Voce<String>(r.getDescrizione(), r.getCodRuolo()));  
 					}
 					listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"),
 							Operatore.RUOLO_SYSTEM));
@@ -261,7 +261,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 					RuoliBD ruoliBD = new RuoliBD(bd);
 					RuoloFilter ruoliFilter = ruoliBD.newFilter();
 					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
+					fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
 					fsw.setSortOrder(SortOrder.ASC);
 					ruoliFilter.getFilterSortList().add(fsw);
 
@@ -376,7 +376,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 					RuoliBD ruoliBD = new RuoliBD(bd);
 					RuoloFilter ruoliFilter = ruoliBD.newFilter();
 					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
+					fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
 					fsw.setSortOrder(SortOrder.ASC);
 					ruoliFilter.getFilterSortList().add(fsw);
 

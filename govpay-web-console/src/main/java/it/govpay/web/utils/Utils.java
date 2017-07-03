@@ -40,6 +40,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
+import org.openspcoop2.utils.resources.GestoreRisorseJMX;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
@@ -724,4 +725,35 @@ public class Utils {
 
 		return res;
 	}
+	
+	
+	public static GestoreRisorseJMX getGestoreJMX(String url, org.apache.log4j.Logger log) throws Exception {
+//		String dominio= ConsoleProperties.getInstance().getDominioOperazioniJMX();
+//		String tipo = ConsoleProperties.getInstance().getTipoOperazioniJMX();
+//		String nomeRisorsa = ConsoleProperties.getInstance().getNomeRisorsaOperazioniJMX();
+		String as = ConsoleProperties.getInstance().getAsJMX();
+		String factory = ConsoleProperties.getInstance().getFactoryJMX();
+		String username = ConsoleProperties.getInstance().getUsernameJMX();
+		String password = ConsoleProperties.getInstance().getPasswordJMX();
+		
+		GestoreRisorseJMX gestoreJMX = null;
+		
+		if(url.equals("locale"))
+			gestoreJMX = new GestoreRisorseJMX(log);
+		else
+			gestoreJMX = new GestoreRisorseJMX(as, factory, url, username, password, log);
+
+		return gestoreJMX;
+	}
+	
+	public static Object invocaOperazioneJMX(String nomeMetodo, String url, org.apache.log4j.Logger log) throws Exception {
+		String dominio= ConsoleProperties.getInstance().getDominioOperazioniJMX();
+		String tipo = ConsoleProperties.getInstance().getTipoOperazioniJMX();
+		String nomeRisorsa = ConsoleProperties.getInstance().getNomeRisorsaOperazioniJMX();
+		
+		GestoreRisorseJMX gestoreJMX = getGestoreJMX(url, log);
+		
+		return gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
+	}
+	
 }

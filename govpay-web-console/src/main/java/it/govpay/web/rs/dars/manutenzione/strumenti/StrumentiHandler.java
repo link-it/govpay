@@ -110,14 +110,6 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 			InfoForm infoCancellazione = null;
 			InfoForm infoEsportazione = null;
 
-			String dominio= ConsoleProperties.getInstance().getDominioOperazioniJMX();
-			String tipo = ConsoleProperties.getInstance().getTipoOperazioniJMX();
-			String nomeRisorsa = ConsoleProperties.getInstance().getNomeRisorsaOperazioniJMX();
-			String as = ConsoleProperties.getInstance().getAsJMX();
-			String factory = ConsoleProperties.getInstance().getFactoryJMX();
-			String username = ConsoleProperties.getInstance().getUsernameJMX();
-			String password = ConsoleProperties.getInstance().getPasswordJMX();
-
 			Dettaglio dettaglio = new Dettaglio(titoloOperazione, infoEsportazione, infoCancellazione, infoModifica);
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -134,33 +126,14 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 				String url = urlJMX.get(nodo);
 
 				try{
-					GestoreRisorseJMX gestoreJMX = null;
-
-					if(url.equals("locale"))
-						gestoreJMX = new GestoreRisorseJMX(org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
-					else
-						gestoreJMX = new GestoreRisorseJMX(as, factory, url, username, password, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
-
-					invoke = gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
+					invoke = Utils.invocaOperazioneJMX(nomeMetodo, url, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
 
 					if(id==3) {
 						root.addVoce("Esito operazione sul nodo " + nodo, (String) invoke);
 					} else {
 						root.addVoce("Operazione completata sul nodo",nodo);
 
-						if(invoke != null && invoke instanceof String){
-							String esito = (String) invoke;
-							String[] voci = esito.split("\\|");
-
-							for (String string : voci) {
-								String[] voce = string.split("#");
-								if(voce.length == 2)
-									root.addVoce(voce[0],voce[1]);
-								else
-									if(voce.length == 1)
-										root.addVoce(voce[0],null);
-							}
-						}
+						popolaVociSezioneRoot(root, invoke);
 					}
 
 					if(id!=3) {
@@ -184,6 +157,22 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 			throw e;
 		}catch(Exception e){
 			throw new ConsoleException(e);
+		}
+	}
+
+	public void popolaVociSezioneRoot(it.govpay.web.rs.dars.model.Sezione root, Object invoke) {
+		if(invoke != null && invoke instanceof String){
+			String esito = (String) invoke;
+			String[] voci = esito.split("\\|");
+
+			for (String string : voci) {
+				String[] voce = string.split("#");
+				if(voce.length == 2)
+					root.addVoce(voce[0],voce[1]);
+				else
+					if(voce.length == 1)
+						root.addVoce(voce[0],null);
+			}
 		}
 	}
 
