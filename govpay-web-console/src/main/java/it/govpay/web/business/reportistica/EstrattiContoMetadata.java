@@ -27,8 +27,6 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
-import it.govpay.model.Operatore;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.reportistica.EstrattoContoMetadata;
 import it.govpay.model.reportistica.comparator.EstrattoContoMetadataEntryComparator;
 import it.govpay.web.utils.ConsoleProperties;
@@ -60,10 +58,6 @@ public class EstrattiContoMetadata extends BasicBD{
 			if(mapEC == null)
 				mapEC = new TreeMap<String, LinkedHashMap<Long, EstrattoContoMetadata>>();
 
-			Operatore operatore = filter.getOperatore();
-			ProfiloOperatore ruolo = operatore.getProfilo() ;
-			boolean isAdmin = ruolo.equals(ProfiloOperatore.ADMIN);
-
 			DominiBD dominiBd = new DominiBD(this);
 			DominioFilter dominioFilter = dominiBd.newFilter(); 
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -71,10 +65,7 @@ public class EstrattiContoMetadata extends BasicBD{
 			fsw.setSortOrder(SortOrder.ASC);
 			dominioFilter.getFilterSortList().add(fsw);
 
-			boolean eseguiRicerca = isAdmin;
-			
-			if(!eseguiRicerca)
-				eseguiRicerca = !filter.getIdDomini().isEmpty();				
+			boolean eseguiRicerca = !filter.getIdDomini().isEmpty();	
 
 			List<EstrattoContoMetadata> lst = new ArrayList<EstrattoContoMetadata>();
 

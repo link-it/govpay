@@ -42,6 +42,12 @@ public class ConsoleProperties {
 	
 	private List<String> localeAbilitati= null;
 	
+	private Long dimensioneMassimaFileTracciato =0L;
+	
+	private double sogliaPercentualeMinimaGraficoTorta ;
+	
+	private boolean abilitaFunzionalitaStatistiche = false;
+	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
 			init();
@@ -146,7 +152,16 @@ public class ConsoleProperties {
 					this.localeAbilitati.add(lingua);
 				}
 			}
-						
+			
+			String dim = ConsoleProperties.getProperty("it.govpay.console.caricamentoTracciati.dimensioneMassimaFile", props, false);
+			this.dimensioneMassimaFileTracciato = num != null ? Long.parseLong(dim) : 10485760;
+			
+			String sogliaPercentualeMinimaGraficoTortaS = ConsoleProperties.getProperty("it.govpay.console.statistiche.percentualeMinimaGraficoTorta", props, false);
+			this.sogliaPercentualeMinimaGraficoTorta = num != null ? Double.parseDouble(sogliaPercentualeMinimaGraficoTortaS) : 1D;		
+			
+			String abilitaFunzionalitaStatisticheS = ConsoleProperties.getProperty("it.govpay.console.statistiche.visualizzazione.enabled", props, false);
+			this.abilitaFunzionalitaStatistiche = Boolean.parseBoolean(abilitaFunzionalitaStatisticheS);
+			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
@@ -264,4 +279,17 @@ public class ConsoleProperties {
 	public List<String> getLocaleAbilitati() {
 		return localeAbilitati;
 	}
+	
+	public Long getDimensioneMassimaFileTracciato() {
+		return dimensioneMassimaFileTracciato;
+	}
+
+	public double getSogliaPercentualeMinimaGraficoTorta() {
+		return sogliaPercentualeMinimaGraficoTorta;
+	}
+
+	public boolean isAbilitaFunzionalitaStatistiche() {
+		return abilitaFunzionalitaStatistiche;
+	}
+	
 }

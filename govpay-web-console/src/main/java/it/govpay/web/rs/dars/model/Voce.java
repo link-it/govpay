@@ -20,18 +20,27 @@
 package it.govpay.web.rs.dars.model;
 
 public class Voce<T> {
+	
+	public enum TipoVoce { TEXT, IMAGE};
+	
 	private String etichetta;
 	private T valore;
 	private boolean avanzata;
-
+	private TipoVoce tipo;
+	
 	public Voce(String etichetta, T valore) {
 		this(etichetta, valore, false);
 	}
+
+	public Voce(String etichetta, T valore,boolean avanzata) {
+		this(etichetta, valore, false, TipoVoce.TEXT);
+	}
 	
-	public Voce(String etichetta, T valore, boolean avanzata) {
+	public Voce(String etichetta, T valore, boolean avanzata, TipoVoce tipo) {
 		this.etichetta = etichetta;
 		this.valore = valore;
 		this.avanzata = avanzata;
+		this.tipo= tipo;
 	}
 	
 	public String getEtichetta() {
@@ -46,6 +55,12 @@ public class Voce<T> {
 		return this.avanzata;
 	}
 
-	
+	public String getTipo() {
+		return tipo != null ? this.tipo.name() : TipoVoce.TEXT.name();
+	}
+
+	public void setTipo(TipoVoce tipo) {
+		this.tipo = tipo;
+	}
 }
 

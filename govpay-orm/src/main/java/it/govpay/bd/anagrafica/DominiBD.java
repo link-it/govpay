@@ -19,20 +19,6 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
-import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.converter.DominioConverter;
-import it.govpay.bd.model.converter.IbanAccreditoConverter;
-import it.govpay.bd.wrapper.StatoNdP;
-import it.govpay.model.IbanAccredito;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.dao.jdbc.JDBCDominioService;
-import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
-import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +34,20 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.IFilter;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.converter.DominioConverter;
+import it.govpay.bd.model.converter.IbanAccreditoConverter;
+import it.govpay.bd.wrapper.StatoNdP;
+import it.govpay.model.IbanAccredito;
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.dao.jdbc.JDBCDominioService;
+import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
 
 public class DominiBD extends BasicBD {
 	
@@ -97,7 +97,6 @@ public class DominiBD extends BasicBD {
 		try {
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			Dominio dominio = DominioConverter.toDTO(dominioVO);
-
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

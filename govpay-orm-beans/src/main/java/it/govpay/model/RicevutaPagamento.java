@@ -3,22 +3,21 @@ package it.govpay.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class RicevutaPagamento extends BasicModel{
+public class RicevutaPagamento {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	private Dominio dominioCreditore;
 	private Anagrafica anagraficaCreditore;
+	private Anagrafica anagraficaVersante;
+	private Anagrafica anagraficaAttestante;
 	private Date dataScadenza;
 	private Date dataPagamento;
 	private String iuv;
 	private BigDecimal importoDovuto;
 	private BigDecimal importoPagato;
+	private BigDecimal commissioni;
 	private Anagrafica anagraficaDebitore;
 	private String causale;
+	private String descrizioneCausale;
 	private String codVersamento;
 	private String codAvviso;
 	private String ccp;
@@ -26,6 +25,7 @@ public class RicevutaPagamento extends BasicModel{
 	private String canale;
 	private String idRiscossione;
 	private String codDominio;
+	private byte[] logoDominioCreditore=null;
 	
 	public Dominio getDominioCreditore() {
 		return dominioCreditore;
@@ -123,6 +123,35 @@ public class RicevutaPagamento extends BasicModel{
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
+	public Anagrafica getAnagraficaVersante() {
+		return anagraficaVersante;
+	}
+	public void setAnagraficaVersante(Anagrafica anagraficaVersante) {
+		this.anagraficaVersante = anagraficaVersante;
+	}
+	public Anagrafica getAnagraficaAttestante() {
+		return anagraficaAttestante;
+	}
+	public void setAnagraficaAttestante(Anagrafica anagraficaAttestante) {
+		this.anagraficaAttestante = anagraficaAttestante;
+	}
+	public BigDecimal getCommissioni() {
+		return commissioni;
+	}
+	public void setCommissioni(BigDecimal commissioni) {
+		this.commissioni = commissioni;
+	}
+	public String getDescrizioneCausale() {
+		return descrizioneCausale;
+	}
+	public void setDescrizioneCausale(String descrizioneCausale) {
+		this.descrizioneCausale = descrizioneCausale;
+	}
+	public byte[] getLogoDominioCreditore() {
+		return logoDominioCreditore;
+	}
+	public void setLogoDominioCreditore(byte[] logoDominioCreditore) {
+		this.logoDominioCreditore = logoDominioCreditore;
+	}
 	
-
 }

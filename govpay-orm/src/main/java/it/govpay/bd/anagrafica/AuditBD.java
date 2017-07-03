@@ -19,10 +19,14 @@
  */
 package it.govpay.bd.anagrafica;
 
-import java.util.Date;
-
 import it.govpay.bd.BasicBD;
 import it.govpay.model.BasicModel;
+import it.govpay.orm.Audit;
+import it.govpay.orm.IdOperatore;
+
+import java.util.Date;
+
+import org.apache.log4j.Logger;
 
 public class AuditBD extends BasicBD {
 
@@ -32,22 +36,19 @@ public class AuditBD extends BasicBD {
 	
 	public void insertAudit(long idOperatore, BasicModel model) {
 		
-		// insert con data attuale;
-		// In caso di errore loggare
-		
-		
-		
-		System.out.println("<<<< START AUDIT >>>> " );
-		if(idOperatore == 0) {
-			System.err.println("Operatore non fornito!!!!");
-		} else {
-			System.out.println("Operatore " + idOperatore);
+		try {
+			Audit audit = new Audit();
+			audit.setData(new Date());
+			audit.setIdOggetto(model.getId());
+			audit.setOggetto(model.toString());
+			audit.setTipoOggetto(model.getClass().getSimpleName());
+			IdOperatore idOp = new IdOperatore();
+			idOp.setId(idOperatore);
+			audit.setIdOperatore(idOp);
+			
+			this.getAuditService().create(audit);
+		} catch(Throwable e) {
+			Logger.getLogger(AuditBD.class).error("Errore durante la registrazione dell'audit: " + e.getMessage(),e);
 		}
-		System.out.println("Tipo " + model.getClass().getSimpleName());
-		System.out.println("Data " + new Date());
-		System.out.println("Bean " + model.toString());
-		System.out.println("<<<< STOP  AUDIT >>>> " );
 	}
-	
-	
 }

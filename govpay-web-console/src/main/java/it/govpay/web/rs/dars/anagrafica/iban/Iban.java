@@ -24,11 +24,12 @@ import javax.ws.rs.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.web.rs.dars.base.DarsService;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 
 @Path("/dars/iban")
-public class Iban extends BaseDarsService {
+public class Iban extends DarsService {
 
 	Logger log = LogManager.getLogger();
 	
@@ -51,4 +52,8 @@ public class Iban extends BaseDarsService {
 		return "/dars/" + this.getNomeServizio();
 	}
 	
+	@Override
+	public Servizio getFunzionalita() {
+		return Servizio.Anagrafica_Contabile;
+	}
 }

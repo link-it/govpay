@@ -21,7 +21,7 @@ package it.govpay.model;
 
 import java.util.List;
 
-public class Portale extends Versionabile {
+public class Portale extends Versionabile implements IAutorizzato {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;

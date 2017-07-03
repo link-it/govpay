@@ -411,6 +411,10 @@ public class Utils {
 	public static String getAbilitatoAsLabel(boolean abilitato){
 		return getBooleanAsLabel(abilitato, "commons.label.abilitato","commons.label.nonAbilitato");
 	}
+	
+	public static String getAbilitataAsLabel(boolean abilitata){
+		return getBooleanAsLabel(abilitata, "commons.label.abilitata","commons.label.nonAbilitata");
+	}
 
 	public static String getSiNoAsLabel(boolean abilitato){
 		return getBooleanAsLabel(abilitato, "commons.label.si","commons.label.no");
@@ -481,6 +485,16 @@ public class Utils {
 					} else 
 						lst.add(acl.getIdTributo());
 				}
+			}
+		}
+		return lst;
+	}
+	
+	public static List<Acl> getAcls(List<Acl> listaAcl, Tipo tipo, Servizio servizio){
+		List<Acl> lst = new ArrayList<Acl>();
+		for (Acl acl : listaAcl) {
+			if(acl.getServizio().equals(servizio) && acl.getTipo().equals(tipo)){
+				lst.add(acl);
 			}
 		}
 		return lst;
@@ -658,5 +672,56 @@ public class Utils {
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+	}
+	
+	public static String fileSizeConverter(Number bytes) {
+		MessageFormat mf = new MessageFormat("{0,number,#.##}");
+		Double len = null;
+		String res = "";
+
+		// il valore e' in byte
+		len = bytes.doubleValue();
+		long d = Math.round(len / 1024);
+		//Originale e funzionante :)
+		//		if (d <= 1) {
+		//			// byte
+		//			Object[] objs = { len };
+		//			res = mf.format(objs);
+		//			res += " B";
+		//		} else if (d > 1 && d < 1000) {
+		//			// kilo byte
+		//			Object[] objs = { len / 1024 };
+		//			res = mf.format(objs);
+		//			res += " KB";
+		//		} else {
+		//			// mega byte
+		//			Object[] objs = { len / 1048576 };
+		//			res = mf.format(objs);
+		//			res += " MB";
+		//		}
+
+		if (d <= 1) {
+			// byte
+			Object[] objs = { len };
+			res = mf.format(objs);
+			res += " B";
+		} else if (d > 1 && d < 1000) {
+			// kilo byte
+			Object[] objs = { len / 1024 };
+			res = mf.format(objs);
+			res += " KB";
+		} else  if (d >= 1000 && d < 1000000){
+			// mega byte
+			Object[] objs = { len / 1048576 };
+			res = mf.format(objs);
+			res += " MB";
+		} else {
+			// giga byte
+			Object[] objs = { len / 1073741824 };
+			res = mf.format(objs);
+			res += " GB";
+		}
+
+		return res;
 	}
 }

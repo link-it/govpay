@@ -19,7 +19,6 @@
  */
 package it.govpay.web.rs.dars.model.input.base;
 
-import java.net.URI;
 import java.util.List;
 
 import it.govpay.web.rs.dars.model.input.FieldType;
@@ -27,17 +26,21 @@ import it.govpay.web.rs.dars.model.input.ParamField;
 
 public class InputFile extends ParamField<byte[]> {
 	
+	public static final String FILENAME = "filename";
+	public static final String DATA = "data";
+	
 	private List<String> acceptedMimeTypes;
 	private long maxFileSize;
 	private int maxFiles;
-	private URI target;
+	private String errorMessageFileSize;
+	private String errorMessageFileType;
+
 	
-	public InputFile(String id, String label, boolean required, boolean hidden, boolean editable, List<String> acceptedMimeTypes, long maxByteSize, int maxFiles, URI target) {
+	public InputFile(String id, String label, boolean required, boolean hidden, boolean editable, List<String> acceptedMimeTypes, long maxByteSize, int maxFiles) {
 		super(id, label, null, required, hidden, editable, FieldType.INPUT_FILE);
 		this.acceptedMimeTypes = acceptedMimeTypes;
 		this.maxFileSize = maxByteSize;
 		this.maxFiles = maxFiles;
-		this.target = target;
 	}
 
 	public List<String> getAcceptedMimeTypes() {
@@ -52,7 +55,20 @@ public class InputFile extends ParamField<byte[]> {
 		return this.maxFiles;
 	}
 
-	public URI getTarget() {
-		return target;
+	public String getErrorMessageFileSize() {
+		return errorMessageFileSize;
 	}
+
+	public void setErrorMessageFileSize(String errorMessageFileSize) {
+		this.errorMessageFileSize = errorMessageFileSize;
+	}
+
+	public String getErrorMessageFileType() {
+		return errorMessageFileType;
+	}
+
+	public void setErrorMessageFileType(String errorMessageFileType) {
+		this.errorMessageFileType = errorMessageFileType;
+	}
+	
 }

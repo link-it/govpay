@@ -53,6 +53,10 @@ public class ModelFactory {
 	
 	public static TipoTributoModel TIPO_TRIBUTO = new TipoTributoModel();
 	
+	public static AuditModel AUDIT = new AuditModel();
+	
+	public static RuoloModel RUOLO = new RuoloModel();
+	
 	public static ACLModel ACL = new ACLModel();
 	
 	public static OperatoreModel OPERATORE = new OperatoreModel();
@@ -82,6 +86,10 @@ public class ModelFactory {
 	public static RendicontazionePagamentoModel RENDICONTAZIONE_PAGAMENTO = new RendicontazionePagamentoModel();
 	
 	public static BatchModel BATCH = new BatchModel();
+	
+	public static OperazioneModel OPERAZIONE = new OperazioneModel();
+	
+	public static TracciatoModel TRACCIATO = new TracciatoModel();
 	
 
 }

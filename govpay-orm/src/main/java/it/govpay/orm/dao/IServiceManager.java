@@ -345,6 +345,57 @@ public interface IServiceManager {
 	public ITipoTributoService getTipoTributoService() throws ServiceException,NotImplementedException;
 	
 	
+		/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Audit type:Audit
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Audit}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Audit}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IAuditServiceSearch getAuditServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Audit}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Audit}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IAuditService getAuditService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Ruolo type:Ruolo
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Ruolo}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Ruolo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IRuoloServiceSearch getRuoloServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ruolo}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ruolo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IRuoloService getRuoloService() throws ServiceException,NotImplementedException;
+	
+	
 	
 	/*
 	 =====================================================================================================================
@@ -725,6 +776,58 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IBatchService getBatchService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Operazione type:Operazione
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Operazione}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Operazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IOperazioneServiceSearch getOperazioneServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Operazione}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Operazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IOperazioneService getOperazioneService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Tracciato type:Tracciato
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Tracciato}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Tracciato}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public ITracciatoServiceSearch getTracciatoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Tracciato}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Tracciato}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public ITracciatoService getTracciatoService() throws ServiceException,NotImplementedException;
 	
 	
 	

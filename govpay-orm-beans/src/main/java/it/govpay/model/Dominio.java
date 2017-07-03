@@ -48,6 +48,7 @@ public class Dominio extends BasicModel {
 	
 	private String iuvPrefix;
 	private boolean iuvPrefixStrict;
+	private byte[] logo;
 	
 	public Long getId() {
 		return id;
@@ -199,6 +200,13 @@ public class Dominio extends BasicModel {
 	public void setNdpData(Date ndpData) {
 		this.ndpData = ndpData;
 	}
-	
+
+	public byte[] getLogo() {
+		return logo;
+	}
+
+	public void setLogo(byte[] logo) {
+		this.logo = logo;
+	}
 }
 

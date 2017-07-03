@@ -19,8 +19,7 @@
  */
 package it.govpay.model;
 
-public class Periodo extends BasicModel {
-	private static final long serialVersionUID = 1L;
+public class Periodo {
 	private String da;
 	private String a;
 	

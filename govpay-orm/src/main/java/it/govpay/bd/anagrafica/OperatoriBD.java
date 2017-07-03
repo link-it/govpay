@@ -19,16 +19,6 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.filters.OperatoreFilter;
-import it.govpay.bd.model.converter.AclConverter;
-import it.govpay.bd.model.converter.OperatoreConverter;
-import it.govpay.model.Acl;
-import it.govpay.model.Operatore;
-import it.govpay.orm.ACL;
-import it.govpay.orm.IdOperatore;
-import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +27,13 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.OperatoreFilter;
+import it.govpay.bd.model.converter.OperatoreConverter;
+import it.govpay.bd.model.Operatore;
+import it.govpay.orm.IdOperatore;
+import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
 
 public class OperatoriBD extends BasicBD {
 
@@ -54,11 +51,11 @@ public class OperatoriBD extends BasicBD {
 	 * @throws ServiceException
 	 */
 	public Operatore getOperatore(Long idOperatore) throws NotFoundException, MultipleResultException, ServiceException {
-		
+
 		if(idOperatore== null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-		
+
 		long id = idOperatore.longValue();
 
 
@@ -69,7 +66,7 @@ public class OperatoriBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	/**
 	 * Recupera l'operatore identificato dalla chiave logica
 	 * 
@@ -90,22 +87,12 @@ public class OperatoriBD extends BasicBD {
 		}
 	}
 
-	
+
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
-		
-		AclBD aclBD = new AclBD(this);
-		try{
-			List<Acl> acls = aclBD.getAclOperatore(operatoreVO.getId());
-
-			Operatore operatore = OperatoreConverter.toDTO(operatoreVO, acls);
-			return operatore;
-
-		} catch(NotFoundException e) {
-			throw new ServiceException(e);
-		}
-
+		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
+		return operatore;
 	}
-	
+
 	/**
 	 * Recupera tutti gli operatori censiti sul sistema
 	 * 
@@ -118,7 +105,7 @@ public class OperatoriBD extends BasicBD {
 	public List<Operatore> getOperatori() throws ServiceException {
 		return this.findAll(this.newFilter());
 	}
-	
+
 	/**
 	 * Aggiorna il operatore
 	 * 
@@ -135,27 +122,6 @@ public class OperatoriBD extends BasicBD {
 				throw new NotFoundException("Operatore con id ["+idOperatore.toJson()+"] non trovato");
 			}
 			this.getOperatoreService().update(idOperatore, vo);
-
-			AclBD aclBD = new AclBD(this);
-			aclBD.deleteAclOperatore(operatore.getId());
-			
-			if(operatore.getAcls() != null && !operatore.getAcls().isEmpty()) {
-				 
-				for(Acl acl: operatore.getAcls()) {
-					try{
-						ACL aclVo = AclConverter.toVO(acl, this);
-						IdOperatore idOperatoreACL = new IdOperatore();
-						idOperatoreACL.setId(operatore.getId());
-						aclVo.setIdOperatore(idOperatoreACL);
-						this.getAclService().create(aclVo);
-					} catch(NotFoundException e) {
-						throw new ServiceException(e);
-					}
-				}
-			}
-
-			
-			
 			operatore.setId(vo.getId());
 			emitAudit(operatore);
 		} catch (NotImplementedException e) {
@@ -166,7 +132,7 @@ public class OperatoriBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	/**
 	 * Crea un nuovo operatore.
 	 * 
@@ -176,27 +142,9 @@ public class OperatoriBD extends BasicBD {
 	 */
 	public void insertOperatore(Operatore operatore) throws  ServiceException{
 		try {
-
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
-
 			this.getOperatoreService().create(vo);
 			operatore.setId(vo.getId());
-			
-			if(operatore.getAcls() != null && !operatore.getAcls().isEmpty()) {
-				 
-				for(Acl acl: operatore.getAcls()) {
-					try{
-						ACL aclVo = AclConverter.toVO(acl, this);
-						IdOperatore idOperatoreACL = new IdOperatore();
-						idOperatoreACL.setId(operatore.getId());
-						aclVo.setIdOperatore(idOperatoreACL);
-						this.getAclService().create(aclVo);
-					} catch(NotFoundException e) {
-						throw new ServiceException(e);
-					}
-				}
-			}
-			
 			emitAudit(operatore);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -206,7 +154,7 @@ public class OperatoriBD extends BasicBD {
 	public OperatoreFilter newFilter() throws ServiceException {
 		return new OperatoreFilter(this.getOperatoreService());
 	}
-	
+
 	public OperatoreFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new OperatoreFilter(this.getOperatoreService(),simpleSearch);
 	}

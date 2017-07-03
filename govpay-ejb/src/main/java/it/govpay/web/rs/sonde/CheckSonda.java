@@ -43,24 +43,37 @@ public class CheckSonda {
 	public static List<CheckSonda> getListaCheckSonda() {
 		List<CheckSonda> check = new ArrayList<CheckSonda>();
 		CheckSonda sondaUpdatePsp = new CheckSonda();
-		sondaUpdatePsp.setName("update-psp");
+		sondaUpdatePsp.setName(it.govpay.core.business.Operazioni.psp);
 		check.add(sondaUpdatePsp);
 		CheckSonda sondaUpdateRnd = new CheckSonda();
-		sondaUpdateRnd.setName("update-rnd");
+		sondaUpdateRnd.setName(it.govpay.core.business.Operazioni.rnd);
 		check.add(sondaUpdateRnd);
 		CheckSonda sondaUpdatePnd = new CheckSonda();
-		sondaUpdatePnd.setName("update-pnd");
+		sondaUpdatePnd.setName(it.govpay.core.business.Operazioni.pnd);
 		check.add(sondaUpdatePnd);
 		CheckSonda sondaUpdateNtfy = new CheckSonda();
-		sondaUpdateNtfy.setName("update-ntfy");
+		sondaUpdateNtfy.setName(it.govpay.core.business.Operazioni.ntfy);
 		check.add(sondaUpdateNtfy);
 		CheckSonda sondaUpdateConto = new CheckSonda();
-		sondaUpdateConto.setName("update-conto");
+		sondaUpdateConto.setName(it.govpay.core.business.Operazioni.conto);
 		check.add(sondaUpdateConto);
 		CheckSonda sondaCheckNtfy = new CheckSonda();
-		sondaCheckNtfy.setName("check-ntfy");
+		sondaCheckNtfy.setName(it.govpay.core.business.Operazioni.check_ntfy);
 		sondaCheckNtfy.setCoda(true);
 		check.add(sondaCheckNtfy);
+		CheckSonda sondaCheckTracciati = new CheckSonda();
+		sondaCheckTracciati.setName(it.govpay.core.business.Operazioni.check_tracciati);
+		sondaCheckTracciati.setCoda(true);
+		check.add(sondaCheckTracciati);
+		CheckSonda sondaBatchTracciati = new CheckSonda();
+		sondaBatchTracciati.setName(it.govpay.core.business.Operazioni.batch_tracciati);
+		check.add(sondaBatchTracciati);
+		CheckSonda sondaBatchConservazioneReq = new CheckSonda();
+		sondaBatchConservazioneReq.setName(it.govpay.core.business.Operazioni.conservazione_req);
+		check.add(sondaBatchConservazioneReq);
+		CheckSonda sondaBatchConservazioneEsito = new CheckSonda();
+		sondaBatchConservazioneEsito.setName(it.govpay.core.business.Operazioni.conservazione_esito);
+		check.add(sondaBatchConservazioneEsito);
 		return check;
 	}
 }
