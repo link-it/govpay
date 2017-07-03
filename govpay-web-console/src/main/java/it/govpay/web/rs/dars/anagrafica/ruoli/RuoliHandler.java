@@ -114,7 +114,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
+			fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
@@ -167,7 +167,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 
 		if(visualizzaRicerca){
 			String codRuoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codRuolo.id");
-
+			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 
@@ -178,6 +179,11 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			codRuolo.setDefaultValue(null);
 			codRuolo.setEditable(true); 
 			sezioneRoot.addField(codRuolo);
+			
+			InputText descrizione= (InputText) this.infoRicercaMap.get(descrizioneId);
+			descrizione.setDefaultValue(null);
+			descrizione.setEditable(true); 
+			sezioneRoot.addField(descrizione);
 		}
 		return infoRicerca;
 	}
@@ -190,6 +196,11 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			String codRuoloLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codRuolo.label");
 			InputText codRuolo = new InputText(codRuoloId, codRuoloLabel, null, false, false, true, 1, 255);
 			this.infoRicercaMap.put(codRuoloId, codRuolo);
+			
+			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+			String descrizioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label");
+			InputText descrizione = new InputText(descrizioneId, descrizioneLabel, null, false, false, true, 1, 255);
+			this.infoRicercaMap.put(descrizioneId, descrizione);
 		}
 	}
 
@@ -1837,80 +1848,83 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 
 	@Override
 	public String getTitolo(Ruolo entry, BasicBD bd) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".titolo.label",entry.getDescrizione(),entry.getCodRuolo()));
-		return sb.toString();
+		return entry.getDescrizione();
+		
+//		StringBuilder sb = new StringBuilder();
+//		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".titolo.label",entry.getDescrizione(),entry.getCodRuolo()));
+//		return sb.toString();
 	}
 
 	@Override
 	public String getSottotitolo(Ruolo entry, BasicBD bd) {
-		StringBuilder sb = new StringBuilder();
-
-		List<Acl> acls = entry.getAcls();
-		List<Long> idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_PagoPa);
-		if(idDomini != null && idDomini.size() > 0){
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Anagrafica_PagoPa.getCodifica()));
-		}
-
-		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Contabile);
-		if(idDomini != null && idDomini.size() > 0){
-			if(sb.length() > 0) sb.append(", ");
-
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Anagrafica_Contabile.getCodifica()));
-		}
-
-		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Applicazioni);
-		if(idDomini != null && idDomini.size() > 0){
-			if(sb.length() > 0) sb.append(", ");
-
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Anagrafica_Applicazioni.getCodifica()));
-		}
-
-		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Utenti);
-		if(idDomini != null && idDomini.size() > 0){
-			if(sb.length() > 0) sb.append(", ");
-
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Anagrafica_Utenti.getCodifica()));
-		}
-
-		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Pagamenti);
-		if(idDomini != null && idDomini.size() > 0){
-			if(sb.length() > 0) sb.append(", ");
-
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Gestione_Pagamenti.getCodifica()));
-		}
-
-		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Rendicontazioni);
-		if(idDomini != null && idDomini.size() > 0){
-			if(sb.length() > 0) sb.append(", ");
-
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Gestione_Rendicontazioni.getCodifica()));
-		}
-
-		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Giornale_Eventi);
-		if(idDomini != null && idDomini.size() > 0){
-			if(sb.length() > 0) sb.append(", ");
-
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Giornale_Eventi.getCodifica()));
-		}
-
-		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Manutenzione);
-		if(idDomini != null && idDomini.size() > 0){
-			if(sb.length() > 0) sb.append(", ");
-
-			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Manutenzione.getCodifica()));
-		}
-
-		if(ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche()){
-			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Statistiche);
-			if(idDomini != null && idDomini.size() > 0){
-				if(sb.length() > 0) sb.append(", ");
-
-				sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Statistiche.getCodifica()));
-			}
-		}
-
-		return Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.label",sb.toString());
+		return entry.getCodRuolo();
+//		StringBuilder sb = new StringBuilder();
+//
+//		List<Acl> acls = entry.getAcls();
+//		List<Long> idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_PagoPa);
+//		if(idDomini != null && idDomini.size() > 0){
+//			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Anagrafica_PagoPa.getCodifica()));
+//		}
+//
+//		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Contabile);
+//		if(idDomini != null && idDomini.size() > 0){
+//			if(sb.length() > 0) sb.append(", ");
+//
+//			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Anagrafica_Contabile.getCodifica()));
+//		}
+//
+//		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Applicazioni);
+//		if(idDomini != null && idDomini.size() > 0){
+//			if(sb.length() > 0) sb.append(", ");
+//
+//			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Anagrafica_Applicazioni.getCodifica()));
+//		}
+//
+//		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Anagrafica_Utenti);
+//		if(idDomini != null && idDomini.size() > 0){
+//			if(sb.length() > 0) sb.append(", ");
+//
+//			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Anagrafica_Utenti.getCodifica()));
+//		}
+//
+//		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Pagamenti);
+//		if(idDomini != null && idDomini.size() > 0){
+//			if(sb.length() > 0) sb.append(", ");
+//
+//			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Gestione_Pagamenti.getCodifica()));
+//		}
+//
+//		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Rendicontazioni);
+//		if(idDomini != null && idDomini.size() > 0){
+//			if(sb.length() > 0) sb.append(", ");
+//
+//			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Gestione_Rendicontazioni.getCodifica()));
+//		}
+//
+//		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Giornale_Eventi);
+//		if(idDomini != null && idDomini.size() > 0){
+//			if(sb.length() > 0) sb.append(", ");
+//
+//			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Giornale_Eventi.getCodifica()));
+//		}
+//
+//		idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Manutenzione);
+//		if(idDomini != null && idDomini.size() > 0){
+//			if(sb.length() > 0) sb.append(", ");
+//
+//			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Manutenzione.getCodifica()));
+//		}
+//
+//		if(ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche()){
+//			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.Statistiche);
+//			if(idDomini != null && idDomini.size() > 0){
+//				if(sb.length() > 0) sb.append(", ");
+//
+//				sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("funzionalita."+ Servizio.Statistiche.getCodifica()));
+//			}
+//		}
+//
+//		return Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.label",sb.toString());
 	}
 
 	@Override
