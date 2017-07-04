@@ -314,7 +314,7 @@ CREATE TABLE acl
 	cod_tipo VARCHAR(1) NOT NULL,
 	diritti INT,
 	cod_servizio VARCHAR(35) NOT NULL,
-	admin BOOLEAN NOT NULL DEFAULT false,
+	amministratore BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT,
@@ -455,6 +455,10 @@ CREATE TABLE rpt
 	cod_stazione VARCHAR(35) NOT NULL,
 	cod_transazione_rpt VARCHAR(36),
 	cod_transazione_rt VARCHAR(36),
+	stato_conservazione VARCHAR(35),
+	descrizione_stato_cons VARCHAR(512),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_conservazione TIMESTAMP(3) DEFAULT 0,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,
@@ -785,7 +789,9 @@ CREATE TABLE operazioni
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
-CREATE TABLE audit
+
+
+CREATE TABLE gp_audit
 (
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data TIMESTAMP(3) NOT NULL DEFAULT 0,
@@ -796,8 +802,8 @@ CREATE TABLE audit
 	id BIGINT AUTO_INCREMENT,
 	id_operatore BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT pk_audit PRIMARY KEY (id)
+	CONSTRAINT fk_gp_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 

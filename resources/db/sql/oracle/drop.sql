@@ -1,6 +1,6 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
 -- DROP INDEX index_iuv_1 CASCADE;
-DROP TRIGGER trg_audit;
+DROP TRIGGER trg_gp_audit;
 DROP TRIGGER trg_operazioni;
 DROP TRIGGER trg_tracciati;
 DROP TRIGGER trg_batch;
@@ -29,7 +29,7 @@ DROP TRIGGER trg_intermediari CASCADE;
 DROP TRIGGER trg_canali CASCADE;
 DROP TRIGGER trg_psp CASCADE;
 DROP TABLE ID_MESSAGGIO_RELATIVO CASCADE;
-DROP TABLE audit CASCADE;
+DROP TABLE gp_audit CASCADE;
 DROP TABLE operazioni CASCADE;
 DROP TABLE tracciati CASCADE;
 DROP TABLE batch CASCADE;

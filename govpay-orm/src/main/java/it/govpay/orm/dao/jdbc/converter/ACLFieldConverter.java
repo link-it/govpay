@@ -118,9 +118,9 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(ACL.model().ADMIN)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".admin";
+				return this.toAliasTable(field)+".amministratore";
 			}else{
-				return "admin";
+				return "amministratore";
 			}
 		}
 		if(field.equals(ACL.model().ID_DOMINIO.COD_DOMINIO)){

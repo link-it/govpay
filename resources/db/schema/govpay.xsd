@@ -933,7 +933,7 @@
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true"/>
-					<linkit:sql-table-mapping generate-sql="true" name="audit"
+					<linkit:sql-table-mapping generate-sql="true" name="gp_audit"
 						on-delete-cascade="false">
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -1041,7 +1041,15 @@
 			<xsd:element name="codTipo" type="String1"/>
 			<xsd:element name="diritti" type="xsd:int" minOccurs="0"/>
 			<xsd:element name="codServizio" type="String35"/>
-			<xsd:element name="admin" type="xsd:boolean" default="false"/>
+			<xsd:element name="admin" type="xsd:boolean" default="false">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping name="amministratore"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="idDominio" type="id-dominio" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1497,6 +1505,11 @@
 			<xsd:element name="codStazione" type="String35"/>
 			<xsd:element name="codTransazioneRPT" type="String36" minOccurs="0"/>
 			<xsd:element name="codTransazioneRT" type="String36" minOccurs="0"/>
+			
+			<xsd:element name="statoConservazione" type="String35" minOccurs="0"/>
+			<xsd:element name="descrizioneStatoCons" type="String512" minOccurs="0"/>
+			<xsd:element name="dataConservazione" type="xsd:dateTime" minOccurs="0"/>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 

@@ -470,7 +470,7 @@ CREATE TABLE acl
 	cod_tipo VARCHAR2(1 CHAR) NOT NULL,
 	diritti NUMBER,
 	cod_servizio VARCHAR2(35 CHAR) NOT NULL,
-	admin NUMBER NOT NULL,
+	amministratore NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
@@ -490,7 +490,7 @@ CREATE TABLE acl
 );
 
 
-ALTER TABLE acl MODIFY admin DEFAULT 0;
+ALTER TABLE acl MODIFY amministratore DEFAULT 0;
 
 CREATE TRIGGER trg_acl
 BEFORE
@@ -641,6 +641,9 @@ CREATE TABLE rpt
 	cod_stazione VARCHAR2(35 CHAR) NOT NULL,
 	cod_transazione_rpt VARCHAR2(36 CHAR),
 	cod_transazione_rt VARCHAR2(36 CHAR),
+	stato_conservazione VARCHAR2(35 CHAR),
+	descrizione_stato_cons VARCHAR2(512 CHAR),
+	data_conservazione TIMESTAMP,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -1097,9 +1100,9 @@ end;
 
 
 
-CREATE SEQUENCE seq_audit MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_gp_audit MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE audit
+CREATE TABLE gp_audit
 (
 	data TIMESTAMP NOT NULL,
 	id_oggetto NUMBER NOT NULL,
@@ -1109,17 +1112,17 @@ CREATE TABLE audit
 	id NUMBER NOT NULL,
 	id_operatore NUMBER NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT pk_audit PRIMARY KEY (id)
+	CONSTRAINT fk_gp_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 );
 
-CREATE TRIGGER trg_audit
+CREATE TRIGGER trg_gp_audit
 BEFORE
-insert on audit
+insert on gp_audit
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_audit.nextval INTO :new.id
+      SELECT seq_gp_audit.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
