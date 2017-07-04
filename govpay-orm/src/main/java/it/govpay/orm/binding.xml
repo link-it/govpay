@@ -543,6 +543,9 @@
     <value name="codStazione" field="codStazione" usage="required"/>
     <value name="codTransazioneRPT" field="codTransazioneRPT" usage="optional"/>
     <value name="codTransazioneRT" field="codTransazioneRT" usage="optional"/>
+    <value name="statoConservazione" field="statoConservazione" usage="optional"/>
+    <value name="descrizioneStatoCons" field="descrizioneStatoCons" usage="optional"/>
+    <value name="dataConservazione" field="dataConservazione" usage="optional"/>
   </mapping>
   <mapping name="RR" class="it.govpay.orm.RR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

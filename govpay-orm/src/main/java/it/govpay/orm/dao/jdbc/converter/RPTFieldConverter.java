@@ -326,6 +326,27 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_transazione_rt";
 			}
 		}
+		if(field.equals(RPT.model().STATO_CONSERVAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_conservazione";
+			}else{
+				return "stato_conservazione";
+			}
+		}
+		if(field.equals(RPT.model().DESCRIZIONE_STATO_CONS)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione_stato_cons";
+			}else{
+				return "descrizione_stato_cons";
+			}
+		}
+		if(field.equals(RPT.model().DATA_CONSERVAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_conservazione";
+			}else{
+				return "data_conservazione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -448,6 +469,15 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model(), returnAlias);
 		}
 		if(field.equals(RPT.model().COD_TRANSAZIONE_RT)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().STATO_CONSERVAZIONE)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().DESCRIZIONE_STATO_CONS)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().DATA_CONSERVAZIONE)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
 

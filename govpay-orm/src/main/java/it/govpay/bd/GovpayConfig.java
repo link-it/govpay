@@ -200,6 +200,10 @@ public class GovpayConfig {
 
 	public CustomIuv getDefaultCustomIuvGenerator() {
 		return defaultCustomIuvGenerator;
-	} 
+	}
+
+	public String getResourceDir() {
+		return resourceDir;
+	}
 
 }

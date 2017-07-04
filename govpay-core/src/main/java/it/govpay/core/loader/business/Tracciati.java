@@ -71,7 +71,7 @@ public class Tracciati extends BasicBD {
 			tracciatiBd.insertTracciato(tracciato);
 
 			inserisciTracciatoDTOResponse.setTracciato(tracciato);
-			it.govpay.core.business.Operazioni.setForzaCaricamentoTracciati();
+			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 			return inserisciTracciatoDTOResponse;
 		} catch (ServiceException e) {
 			throw new InternalException(e);

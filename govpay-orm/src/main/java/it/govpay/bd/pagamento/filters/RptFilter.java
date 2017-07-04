@@ -33,6 +33,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.model.Rpt.StatoConservazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.RPT;
@@ -91,6 +92,25 @@ public class RptFilter extends AbstractFilter {
 				RPTFieldConverter converter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(RPT.model()));
 				newExpression.in(cf, this.idRpt);
+				addAnd = true;
+			}
+			
+			if(this.conservato != null){
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression newExpression2 = this.newExpression();
+				newExpression2.equals(RPT.model().STATO_CONSERVAZIONE, StatoConservazione.ERRORE).or().isNull(RPT.model().STATO_CONSERVAZIONE);
+				
+				newExpression.and(newExpression2);
+				addAnd = true;
+			}
+
+			if(this.stato != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().STATO, this.stato);
 				addAnd = true;
 			}
 

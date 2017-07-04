@@ -74,16 +74,16 @@ public class Operazioni{
 	
 	private static boolean forzaCaricamentoTracciati;
 	
-	public static synchronized void setForzaCaricamentoTracciati() {
+	public static synchronized void setEseguiElaborazioneTracciati() {
 		forzaCaricamentoTracciati = true;
 	}
 	
-	public static synchronized boolean getAndResetForzaCaricamentoTracciati() {
-		boolean value = forzaCaricamentoTracciati;
-		if(forzaCaricamentoTracciati) {
-			forzaCaricamentoTracciati = false;
-		}
-		return value;
+	public static synchronized void resetEseguiElaborazioneTracciati() {
+		forzaCaricamentoTracciati = false;
+	}
+	
+	public static synchronized boolean getEseguiElaborazioneTracciati() {
+		return forzaCaricamentoTracciati;
 	}
 
 	public static String acquisizioneRendicontazioni(String serviceName){
@@ -384,7 +384,7 @@ public class Operazioni{
 		}
 	}
 
-	public static String caricamentoTracciati(String serviceName){
+	public static String elaborazioneTracciati(String serviceName){
 		BasicBD bd = null;
 		List<CaricaTracciatoThread> threads = new ArrayList<CaricaTracciatoThread>();
 		GpContext ctx = null;

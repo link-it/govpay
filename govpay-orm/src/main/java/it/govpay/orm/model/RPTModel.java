@@ -68,6 +68,9 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.COD_STAZIONE = new Field("codStazione",java.lang.String.class,"RPT",RPT.class);
 		this.COD_TRANSAZIONE_RPT = new Field("codTransazioneRPT",java.lang.String.class,"RPT",RPT.class);
 		this.COD_TRANSAZIONE_RT = new Field("codTransazioneRT",java.lang.String.class,"RPT",RPT.class);
+		this.STATO_CONSERVAZIONE = new Field("statoConservazione",java.lang.String.class,"RPT",RPT.class);
+		this.DESCRIZIONE_STATO_CONS = new Field("descrizioneStatoCons",java.lang.String.class,"RPT",RPT.class);
+		this.DATA_CONSERVAZIONE = new Field("dataConservazione",java.util.Date.class,"RPT",RPT.class);
 	
 	}
 	
@@ -102,6 +105,9 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.COD_STAZIONE = new ComplexField(father,"codStazione",java.lang.String.class,"RPT",RPT.class);
 		this.COD_TRANSAZIONE_RPT = new ComplexField(father,"codTransazioneRPT",java.lang.String.class,"RPT",RPT.class);
 		this.COD_TRANSAZIONE_RT = new ComplexField(father,"codTransazioneRT",java.lang.String.class,"RPT",RPT.class);
+		this.STATO_CONSERVAZIONE = new ComplexField(father,"statoConservazione",java.lang.String.class,"RPT",RPT.class);
+		this.DESCRIZIONE_STATO_CONS = new ComplexField(father,"descrizioneStatoCons",java.lang.String.class,"RPT",RPT.class);
+		this.DATA_CONSERVAZIONE = new ComplexField(father,"dataConservazione",java.util.Date.class,"RPT",RPT.class);
 	
 	}
 	
@@ -160,6 +166,12 @@ public class RPTModel extends AbstractModel<RPT> {
 	public IField COD_TRANSAZIONE_RPT = null;
 	 
 	public IField COD_TRANSAZIONE_RT = null;
+	 
+	public IField STATO_CONSERVAZIONE = null;
+	 
+	public IField DESCRIZIONE_STATO_CONS = null;
+	 
+	public IField DATA_CONSERVAZIONE = null;
 	 
 
 	@Override
