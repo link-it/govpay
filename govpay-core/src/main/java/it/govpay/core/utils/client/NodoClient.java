@@ -79,6 +79,7 @@ public class NodoClient extends BasicClient {
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
+		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
 	}
 
 	public Risposta send(String azione, JAXBElement<?> body, Object header) throws GovPayException, ClientException {
