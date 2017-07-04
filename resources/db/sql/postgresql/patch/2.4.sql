@@ -55,20 +55,20 @@ CREATE TABLE operazioni
 
 --GP-524
 
-CREATE SEQUENCE seq_audit start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+CREATE SEQUENCE seq_gp_audit start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
-CREATE TABLE audit
+CREATE TABLE gp_audit
 (
        data TIMESTAMP NOT NULL,
        id_oggetto BIGINT NOT NULL,
        tipo_oggetto VARCHAR(255) NOT NULL,
        oggetto TEXT NOT NULL,
        -- fk/pk columns
-       id BIGINT DEFAULT nextval('seq_audit') NOT NULL,
+       id BIGINT DEFAULT nextval('seq_gp_audit') NOT NULL,
        id_operatore BIGINT NOT NULL,
        -- fk/pk keys constraints
-       CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-       CONSTRAINT pk_audit PRIMARY KEY (id)
+       CONSTRAINT fk_gp_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+       CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 );
 
 --GP-526
@@ -95,7 +95,7 @@ ALTER TABLE acl ADD CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(
 ALTER TABLE domini ADD COLUMN logo BYTEA;
 
 ALTER TABLE operatori ALTER COLUMN profilo TYPE VARCHAR(1024);
-ALTER TABLE acl ADD COLUMN admin BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE acl ADD COLUMN amministratore BOOLEAN NOT NULL DEFAULT false;
 
 UPDATE operatori SET profilo = 'Amministratore' where profilo = 'A';
 UPDATE operatori SET profilo = 'Operatore' where profilo = 'E';
@@ -107,7 +107,7 @@ INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_PPA', 2,
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_CON', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_APP', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_USR', 2, id from ruoli where cod_ruolo ='Amministratore';
-INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo,admin) select 'D', 'G_PAG', 2, id, true from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo,amministratore) select 'D', 'G_PAG', 2, id, true from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'G_RND', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'GDE', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'MAN', 2, id from ruoli where cod_ruolo ='Amministratore';
@@ -120,3 +120,8 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('cons-req', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('cons-esito', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+
+--GP-525
+ALTER TABLE rpt ADD COLUMN stato_conservazione VARCHAR(35);
+ALTER TABLE rpt ADD COLUMN descrizione_stato_cons VARCHAR(512);
+ALTER TABLE rpt ADD COLUMN data_conservazione TIMESTAMP;

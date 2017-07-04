@@ -102,6 +102,12 @@ public class RPTFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rpt", RPT.model().COD_TRANSAZIONE_RPT.getFieldType()));
 				setParameter(object, "setCodTransazioneRT", RPT.model().COD_TRANSAZIONE_RT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rt", RPT.model().COD_TRANSAZIONE_RT.getFieldType()));
+				setParameter(object, "setStatoConservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato_conservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType()));
+				setParameter(object, "setDescrizioneStatoCons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato_cons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()));
+				setParameter(object, "setDataConservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_conservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -172,6 +178,12 @@ public class RPTFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codTransazioneRPT"));
 				setParameter(object, "setCodTransazioneRT", RPT.model().COD_TRANSAZIONE_RT.getFieldType(),
 					this.getObjectFromMap(map,"codTransazioneRT"));
+				setParameter(object, "setStatoConservazione", RPT.model().STATO_CONSERVAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"statoConservazione"));
+				setParameter(object, "setDescrizioneStatoCons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType(),
+					this.getObjectFromMap(map,"descrizioneStatoCons"));
+				setParameter(object, "setDataConservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"dataConservazione"));
 				return object;
 			}
 			

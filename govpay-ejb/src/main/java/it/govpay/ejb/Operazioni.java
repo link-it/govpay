@@ -80,11 +80,13 @@ public class Operazioni{
 			return "Batch non attivi";
 		}
 
-		if(!it.govpay.core.business.Operazioni.getAndResetEseguiElaborazioneTracciati()) {
+		if(!it.govpay.core.business.Operazioni.getEseguiElaborazioneTracciati()) {
 			return "";
 		}
+		String esito = it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
 		
-		return it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
+		it.govpay.core.business.Operazioni.resetEseguiElaborazioneTracciati();
+		return esito;
 	}
 
 	@Schedule(hour="*", minute="*/30", persistent=false)
@@ -112,7 +114,7 @@ public class Operazioni{
 		it.govpay.core.business.Operazioni.estrattoConto("Batch");
 	}
 
-	@Schedule(hour="3", persistent=false)
+	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
 	@AccessTimeout(value=90, unit=TimeUnit.MINUTES)
 	public static String richiestaConservazioneRt(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
@@ -121,7 +123,7 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.richiestaConservazioneRt("Batch");
 	}
 	
-	@Schedule(hour="5", persistent=false)
+	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
 	@AccessTimeout(value=60, unit=TimeUnit.MINUTES)
 	public static String esitoConservazioneRt(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {

@@ -144,7 +144,7 @@ public class AuditFieldConverter extends AbstractSQLFieldConverter {
 		// the full definition of the table containing the alias
 		
 		if(model.equals(Audit.model())){
-			return "audit";
+			return "gp_audit";
 		}
 		if(model.equals(Audit.model().ID_OPERATORE)){
 			return "operatori";

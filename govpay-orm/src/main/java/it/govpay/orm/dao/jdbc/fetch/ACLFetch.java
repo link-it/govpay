@@ -61,7 +61,7 @@ public class ACLFetch extends AbstractJDBCFetch {
 				setParameter(object, "setCodServizio", ACL.model().COD_SERVIZIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_servizio", ACL.model().COD_SERVIZIO.getFieldType()));
 				setParameter(object, "setAdmin", ACL.model().ADMIN.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "admin", ACL.model().ADMIN.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "amministratore", ACL.model().ADMIN.getFieldType()));
 				return object;
 			}
 			

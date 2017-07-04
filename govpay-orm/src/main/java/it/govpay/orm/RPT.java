@@ -62,6 +62,9 @@ import java.io.Serializable;
  * 			&lt;element name="codStazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codTransazioneRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codTransazioneRT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="statoConservazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="descrizioneStatoCons" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataConservazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -102,7 +105,10 @@ import java.io.Serializable;
   	"xmlRT",
   	"codStazione",
   	"codTransazioneRPT",
-  	"codTransazioneRT"
+  	"codTransazioneRT",
+  	"statoConservazione",
+  	"descrizioneStatoCons",
+  	"dataConservazione"
   }
 )
 
@@ -348,6 +354,30 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.codTransazioneRT = codTransazioneRT;
   }
 
+  public java.lang.String getStatoConservazione() {
+    return this.statoConservazione;
+  }
+
+  public void setStatoConservazione(java.lang.String statoConservazione) {
+    this.statoConservazione = statoConservazione;
+  }
+
+  public java.lang.String getDescrizioneStatoCons() {
+    return this.descrizioneStatoCons;
+  }
+
+  public void setDescrizioneStatoCons(java.lang.String descrizioneStatoCons) {
+    this.descrizioneStatoCons = descrizioneStatoCons;
+  }
+
+  public java.util.Date getDataConservazione() {
+    return this.dataConservazione;
+  }
+
+  public void setDataConservazione(java.util.Date dataConservazione) {
+    this.dataConservazione = dataConservazione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -478,5 +508,18 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codTransazioneRT",required=false,nillable=false)
   protected java.lang.String codTransazioneRT;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="statoConservazione",required=false,nillable=false)
+  protected java.lang.String statoConservazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrizioneStatoCons",required=false,nillable=false)
+  protected java.lang.String descrizioneStatoCons;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataConservazione",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataConservazione;
 
 }

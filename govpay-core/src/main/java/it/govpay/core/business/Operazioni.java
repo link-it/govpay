@@ -78,12 +78,12 @@ public class Operazioni{
 		eseguiElaborazioneTracciati = true;
 	}
 	
-	public static synchronized boolean getAndResetEseguiElaborazioneTracciati() {
-		boolean value = eseguiElaborazioneTracciati;
-		if(eseguiElaborazioneTracciati) {
-			eseguiElaborazioneTracciati = false;
-		}
-		return value;
+	public static synchronized void resetEseguiElaborazioneTracciati() {
+		eseguiElaborazioneTracciati = false;
+	}
+	
+	public static synchronized boolean getEseguiElaborazioneTracciati() {
+		return eseguiElaborazioneTracciati;
 	}
 
 	public static String acquisizioneRendicontazioni(String serviceName){

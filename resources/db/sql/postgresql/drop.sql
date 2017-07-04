@@ -1,7 +1,7 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
 -- DROP INDEX index_iuv_1 CASCADE;
 DROP TABLE ID_MESSAGGIO_RELATIVO CASCADE;
-DROP TABLE audit CASCADE;
+DROP TABLE gp_audit CASCADE;
 DROP TABLE operazioni CASCADE;
 DROP TABLE tracciati CASCADE;
 DROP TABLE batch CASCADE;

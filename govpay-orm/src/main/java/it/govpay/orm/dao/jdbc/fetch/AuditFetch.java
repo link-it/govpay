@@ -112,7 +112,7 @@ public class AuditFetch extends AbstractJDBCFetch {
 		try{
 
 			if(model.equals(Audit.model())){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("audit","id","seq_audit","audit_init_seq");
+				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("gp_audit","id","seq_gp_audit","gp_audit_init_seq");
 			}
 			
 			else{

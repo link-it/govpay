@@ -54,7 +54,7 @@ CREATE TABLE operazioni
 
 --GP-524
 
-CREATE TABLE audit
+CREATE TABLE gp_audit
 (
        -- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
        data TIMESTAMP(3) NOT NULL DEFAULT 0,
@@ -65,8 +65,8 @@ CREATE TABLE audit
        id BIGINT AUTO_INCREMENT,
        id_operatore BIGINT NOT NULL,
        -- fk/pk keys constraints
-       CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-       CONSTRAINT pk_audit PRIMARY KEY (id)
+       CONSTRAINT fk_gp_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+       CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 --GP-526
@@ -96,7 +96,7 @@ ALTER TABLE domini ADD COLUMN logo MEDIUMBLOB;
 
 ALTER TABLE operatori MODIFY COLUMN profilo VARCHAR(1024);
 
-ALTER TABLE acl ADD COLUMN admin BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE acl ADD COLUMN amministratore BOOLEAN NOT NULL DEFAULT false;
 
 UPDATE operatori SET profilo = 'Amministratore' where profilo = 'A';
 UPDATE operatori SET profilo = 'Operatore' where profilo = 'E';
@@ -108,7 +108,7 @@ INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_PPA', 2,
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_CON', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_APP', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_USR', 2, id from ruoli where cod_ruolo ='Amministratore';
-INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo,admin) select 'D', 'G_PAG', 2, id, true from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo,amministratore) select 'D', 'G_PAG', 2, id, true from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'G_RND', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'GDE', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'MAN', 2, id from ruoli where cod_ruolo ='Amministratore';
@@ -121,3 +121,8 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('cons-req', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('cons-esito', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+
+--GP-525
+ALTER TABLE rpt ADD COLUMN stato_conservazione VARCHAR(35);
+ALTER TABLE rpt ADD COLUMN descrizione_stato_cons VARCHAR(512);
+ALTER TABLE rpt ADD COLUMN data_conservazione TIMESTAMP(3) DEFAULT 0;
