@@ -162,7 +162,6 @@ public class Menu extends BaseRsService {
 				vociMenuAnagrafica.add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(ruoliDars.getNomeServizio() + ".titolo"), ruoliURI, VoceMenu.VOCE_ANAGRAFICA));
 			}
 
-			int idxPagamenti = -1;
 			// Preparazione voci menu' monitoraggio
 			if(this.checkDirittiServizioOperatore(bd, Servizio.Gestione_Pagamenti)){
 				Versamenti versamentiDars = new Versamenti();
@@ -180,7 +179,6 @@ public class Menu extends BaseRsService {
 				VoceMenu voceMenuPagamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".titolo"), pagamentiURI, VoceMenu.VOCE_MONITORAGGIO);
 
 				vociMenuMonitoraggio.add(voceMenuPagamenti);
-				idxPagamenti = vociMenuMonitoraggio.size() -1;
 			}
 
 			if(this.checkDirittiServizioOperatore(bd, Servizio.Gestione_Rendicontazioni)){
@@ -262,11 +260,7 @@ public class Menu extends BaseRsService {
 			}
 			
 			if(vociMenuMonitoraggio.size() > 0){
-				if(idxPagamenti > -1)
-					menu.setHome(vociMenuMonitoraggio.get(idxPagamenti));
-				else 
-					menu.setHome(vociMenuMonitoraggio.get(0));
-				
+				menu.setHome(vociMenuMonitoraggio.get(0));
 			} else if(vociMenuAnagrafica.size() > 0){
 				menu.setHome(vociMenuAnagrafica.get(0));
 			} else if(vociMenuCaricamenti.size() > 0){
