@@ -35,7 +35,7 @@ import it.govpay.orm.IdSingoloVersamento;
 
 
 public class PagamentoConverter {
-	
+
 	public static List<Pagamento> toDTO(List<it.govpay.orm.Pagamento> singoliPagamenti) throws ServiceException {
 		List<Pagamento> dto = new ArrayList<Pagamento>();
 		for(it.govpay.orm.Pagamento vo : singoliPagamenti) {
@@ -43,54 +43,59 @@ public class PagamentoConverter {
 		}
 		return dto;
 	}
-	
+
 	public static Pagamento toDTO(it.govpay.orm.Pagamento vo) throws ServiceException {
-		Pagamento dto = new Pagamento();
-		
-		dto.setId(vo.getId());
-		dto.setCodDominio(vo.getCodDominio());
-		dto.setIuv(vo.getIuv());
-		dto.setIur(vo.getIur());
-		
-		dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
-		dto.setDataAcquisizione(vo.getDataAcquisizione());
-		dto.setDataPagamento(vo.getDataPagamento());
-		if(vo.getCommissioniPsp() != null)
-			dto.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
-		if(vo.getTipoAllegato() != null)
-			dto.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
-		dto.setAllegato(vo.getAllegato());
-		dto.setIbanAccredito(vo.getIbanAccredito());
-		
-		if(vo.getIdRPT() != null) 
-			dto.setIdRpt(vo.getIdRPT().getId());
-		if(vo.getIdSingoloVersamento() != null)
-			dto.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
-		if(vo.getIdRr() != null)
-			dto.setIdRr(vo.getIdRr().getId());
-		
-		dto.setDataAcquisizioneRevoca(vo.getDataAcquisizioneRevoca());
-		dto.setCausaleRevoca(vo.getCausaleRevoca());
-		dto.setDatiRevoca(vo.getDatiRevoca());
-		dto.setEsitoRevoca(vo.getEsitoRevoca());
-		dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
-		if(vo.getImportoRevocato() != null)
-			dto.setImportoRevocato(BigDecimal.valueOf(vo.getImportoRevocato()));
-		dto.setStato(Stato.valueOf(vo.getStato()));
-		
-		if(vo.getIdIncasso() != null)
-			dto.setIdIncasso(vo.getIdIncasso().getId());
-		return dto;
+		try{
+			Pagamento dto = new Pagamento();
+
+			dto.setId(vo.getId());
+			dto.setCodDominio(vo.getCodDominio());
+			dto.setIuv(vo.getIuv());
+			dto.setIur(vo.getIur());
+
+			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
+			dto.setDataAcquisizione(vo.getDataAcquisizione());
+			dto.setDataPagamento(vo.getDataPagamento());
+			if(vo.getCommissioniPsp() != null)
+				dto.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
+			if(vo.getTipoAllegato() != null)
+				dto.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
+			dto.setAllegato(vo.getAllegato());
+			dto.setIbanAccredito(vo.getIbanAccredito());
+
+			if(vo.getIdRPT() != null) 
+				dto.setIdRpt(vo.getIdRPT().getId());
+			if(vo.getIdSingoloVersamento() != null)
+				dto.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
+			if(vo.getIdRr() != null)
+				dto.setIdRr(vo.getIdRr().getId());
+
+			dto.setDataAcquisizioneRevoca(vo.getDataAcquisizioneRevoca());
+			dto.setCausaleRevoca(vo.getCausaleRevoca());
+			dto.setDatiRevoca(vo.getDatiRevoca());
+			dto.setEsitoRevoca(vo.getEsitoRevoca());
+			dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
+			if(vo.getImportoRevocato() != null)
+				dto.setImportoRevocato(BigDecimal.valueOf(vo.getImportoRevocato()));
+			if(vo.getStato() != null)
+				dto.setStato(Stato.valueOf(vo.getStato()));
+
+			if(vo.getIdIncasso() != null)
+				dto.setIdIncasso(vo.getIdIncasso().getId());
+			return dto;
+		}catch(Throwable t){
+			throw new ServiceException(t);
+		}
 	}
-	
+
 	public static it.govpay.orm.Pagamento toVO(Pagamento dto) {
 		it.govpay.orm.Pagamento vo = new it.govpay.orm.Pagamento();
-		
+
 		vo.setId(dto.getId());
 		vo.setCodDominio(dto.getCodDominio());
 		vo.setIuv(dto.getIuv());
 		vo.setIur(dto.getIur());
-		
+
 		if(dto.getImportoPagato() != null)
 			vo.setImportoPagato(dto.getImportoPagato().doubleValue());
 		vo.setDataAcquisizione(dto.getDataAcquisizione());
@@ -101,7 +106,7 @@ public class PagamentoConverter {
 			vo.setTipoAllegato(dto.getTipoAllegato().toString());
 		vo.setAllegato(dto.getAllegato());
 		vo.setIbanAccredito(dto.getIbanAccredito());
-		
+
 		if(dto.getIdRpt() != null) {
 			IdRpt idRpt = new IdRpt();
 			idRpt.setId(dto.getIdRpt());
@@ -122,19 +127,20 @@ public class PagamentoConverter {
 			idIncasso.setId(dto.getIdIncasso());
 			vo.setIdIncasso(idIncasso);
 		}
-		
+
 		vo.setDataAcquisizioneRevoca(dto.getDataAcquisizioneRevoca());
 		vo.setCausaleRevoca(dto.getCausaleRevoca());
 		vo.setDatiRevoca(dto.getDatiRevoca());
 		vo.setEsitoRevoca(dto.getEsitoRevoca());
 		vo.setDatiEsitoRevoca(dto.getDatiEsitoRevoca());
-		
+
 		if(dto.getImportoRevocato() != null)
 			vo.setImportoRevocato(dto.getImportoRevocato().doubleValue());
-		
-		vo.setStato(dto.getStato().toString());
-		
+
+		if(dto.getStato() != null)
+			vo.setStato(dto.getStato().toString());
+
 		return vo;
 	}
-	
+
 }

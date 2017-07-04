@@ -853,20 +853,34 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			}
 
-			filter.setOffset(0);
-			if(esportaRtPdf)
-				filter.setLimit(limit);
-
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
-
-
-			List<Pagamento> findAllPag = pagamentiBD.findAll(filter);
+			List<Pagamento> findAllPag = new ArrayList<Pagamento>();
+			
+			int countIterazione = -1;
+			int offset = 0;
+			
+			// esecuzione della ricerca di tutti i pagamenti paginata per problemi di performance, nel caso di esporta rt pdf c'e' il limit impostato e si fa solo un ciclo
+			do{
+				filter.setOffset(offset);
+				filter.setLimit(limit);
+				List<Pagamento> findAllPagTmp = pagamentiBD.findAll(filter);
+				countIterazione = findAllPagTmp != null ? findAllPagTmp.size() : 0;
+				offset += countIterazione;
+				
+				if(findAllPagTmp != null && findAllPagTmp.size() > 0)
+					findAllPag.addAll(findAllPagTmp);
+				
+			}while(countIterazione > 0 && !esportaRtPdf);
+			
+			
 			List<Long> ids = new ArrayList<Long>();
 			for (Pagamento pagamento : findAllPag) {
-				ids.add(pagamento.getIdSingoloVersamento());
+				if(pagamento.getIdSingoloVersamento() != null)
+					ids.add(pagamento.getIdSingoloVersamento());
+				
 				if(esportaRtPdf || esportaRtBase64){
 					// ricevuta pagamento
 					try{
@@ -1013,6 +1027,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		}catch(ExportException e){
 			throw e;
 		}catch(Exception e){
+			this.log.error(e.getMessage(),e); 
 			throw new ConsoleException(e);
 		}
 
@@ -1131,7 +1146,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				}
 
 				List<Long> ids = new ArrayList<Long>();
-				ids.add(pagamento.getIdSingoloVersamento());
+				if(pagamento.getIdSingoloVersamento() != null)
+					ids.add(pagamento.getIdSingoloVersamento());
 
 				SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
 				EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
