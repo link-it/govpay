@@ -609,8 +609,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			if(exportTracciatoElaborato && tracciato.getRawDataRisposta() != null){
 				numeroZipEntries ++;
 				String nomeTracciatoNoExt = tracciato.getNomeFile() != null ? tracciato.getNomeFile().substring(0, tracciato.getNomeFile().lastIndexOf(".csv")) : "tracciato";
-				SimpleDateFormat f2 = new SimpleDateFormat("yyyy_MM_dd_HHmm");
-				String fileNameElaborato = nomeTracciatoNoExt +  "_" + f2.format(tracciato.getDataCaricamento())  + ".csv";
+				String fileNameElaborato = nomeTracciatoNoExt +  "_esito.csv";
 
 				ZipEntry tracciatoElaboratoEntry = new ZipEntry(fileNameElaborato);
 				zout.putNextEntry(tracciatoElaboratoEntry);

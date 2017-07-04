@@ -35,6 +35,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 public class RuoloFilter extends AbstractFilter {
 
 	private String codRuolo = null;
+	private String descrizione = null;
 	
 	public enum SortFields {
 	}
@@ -48,6 +49,7 @@ public class RuoloFilter extends AbstractFilter {
 		
 		try{
 			this.listaFieldSimpleSearch.add(Ruolo.model().COD_RUOLO);
+			this.listaFieldSimpleSearch.add(Ruolo.model().DESCRIZIONE);
 		} catch(Exception e){
 			
 		}
@@ -60,6 +62,10 @@ public class RuoloFilter extends AbstractFilter {
 			
 			if(this.codRuolo != null){
 				newExpression.ilike(Ruolo.model().COD_RUOLO, this.codRuolo,LikeMode.ANYWHERE);
+			}
+			
+			if(this.descrizione != null){
+				newExpression.ilike(Ruolo.model().DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
 			}
 			
 			return newExpression;
@@ -84,6 +90,14 @@ public class RuoloFilter extends AbstractFilter {
 
 	public void setCodRuolo(String codRuolo) {
 		this.codRuolo = codRuolo;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
 
 	

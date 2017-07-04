@@ -1159,28 +1159,28 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
 		InfoForm infoEsportazione = null;
-		try{
-			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-				URI esportazione = this.getUriEsportazione(uriInfo, bd);
-				infoEsportazione = new InfoForm(esportazione);
-			}
-		}catch(ServiceException e){
-			throw new ConsoleException(e);
-		}
+//		try{
+//			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+//				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+//				infoEsportazione = new InfoForm(esportazione);
+//			}
+//		}catch(ServiceException e){
+//			throw new ConsoleException(e);
+//		}
 		return infoEsportazione;
 	}
 
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry)	throws ConsoleException {	
 		InfoForm infoEsportazione = null;
-		try{
-			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-				infoEsportazione = new InfoForm(esportazione);
-			}
-		}catch(ServiceException e){
-			throw new ConsoleException(e);
-		}
+//		try{
+//			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+//				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+//				infoEsportazione = new InfoForm(esportazione);
+//			}
+//		}catch(ServiceException e){
+//			throw new ConsoleException(e);
+//		}
 		return infoEsportazione;	
 	}
 

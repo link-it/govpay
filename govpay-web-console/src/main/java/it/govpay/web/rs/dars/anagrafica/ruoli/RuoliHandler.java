@@ -131,6 +131,13 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				if(StringUtils.isNotEmpty(codRuolo)){
 					filter.setCodRuolo(codRuolo);
 				}
+				
+				String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+				String descrizione = this.getParameter(uriInfo, descrizioneId, String.class);
+
+				if(StringUtils.isNotEmpty(descrizione)){
+					filter.setDescrizione(descrizione);
+				}
 			}
 			long count = ruoliBD.count(filter);
 
