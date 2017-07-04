@@ -8,7 +8,7 @@ CREATE TABLE tracciati
        data_ultimo_aggiornamento TIMESTAMP NOT NULL,
        stato VARCHAR2(255 CHAR) NOT NULL,
        linea_elaborazione NUMBER NOT NULL,
-       descrizione_stato VARCHAR2(1024) CHAR,
+       descrizione_stato VARCHAR2(1024 CHAR),
        num_linee_totali NUMBER NOT NULL,
        num_operazioni_ok NUMBER NOT NULL,
        num_operazioni_ko NUMBER NOT NULL,
@@ -78,9 +78,9 @@ end;
 
 
 --GP-524
-CREATE SEQUENCE seq_audit MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_gpaudit MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE audit
+CREATE TABLE gpaudit
 (
        data TIMESTAMP NOT NULL,
        id_oggetto NUMBER NOT NULL,
@@ -90,17 +90,17 @@ CREATE TABLE audit
        id NUMBER NOT NULL,
        id_operatore NUMBER NOT NULL,
        -- fk/pk keys constraints
-       CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-       CONSTRAINT pk_audit PRIMARY KEY (id)
+       CONSTRAINT fk_gpaudit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+       CONSTRAINT pk_gpaudit PRIMARY KEY (id)
 );
 
-CREATE TRIGGER trg_audit
+CREATE TRIGGER trg_gpaudit
 BEFORE
-insert on audit
+insert on gpaudit
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_audit.nextval INTO :new.id
+      SELECT seq_gpaudit.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -144,8 +144,7 @@ ALTER TABLE domini ADD logo BLOB;
 
 ALTER TABLE operatori MODIFY profilo VARCHAR2(1024 CHAR);
 
-ALTER TABLE acl ADD admin NUMBER NOT NULL;
-ALTER TABLE acl MODIFY admin DEFAULT 0;
+ALTER TABLE acl ADD amministratore NUMBER DEFAULT 0 NOT NULL;
 
 UPDATE operatori SET profilo = 'Amministratore' where profilo = 'A';
 UPDATE operatori SET profilo = 'Operatore' where profilo = 'E';
@@ -157,7 +156,7 @@ INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_PPA', 2,
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_CON', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_APP', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'A_USR', 2, id from ruoli where cod_ruolo ='Amministratore';
-INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo,admin) select 'D', 'G_PAG', 2, id, 1 from ruoli where cod_ruolo ='Amministratore';
+INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo,amministratore) select 'D', 'G_PAG', 2, id, 1 from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'G_RND', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'GDE', 2, id from ruoli where cod_ruolo ='Amministratore';
 INSERT INTO acl (cod_tipo,cod_servizio,diritti,id_ruolo) select 'D', 'MAN', 2, id from ruoli where cod_ruolo ='Amministratore';
