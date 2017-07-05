@@ -73,12 +73,9 @@ public class AcquisizioneUtils {
 
 	public AbstractOperazioneRequest acquisisci(byte[] linea, Tracciato tracciato, long numLinea) throws ServiceException {
 		AbstractOperazioneRequest request = this.parseLineaOperazioneRequest(linea);
-
-		if(request != null) {
-			request.setIdTracciato(tracciato.getId());
-			request.setLinea(numLinea);
-			request.setDati(linea);
-		}
+		request.setIdTracciato(tracciato.getId());
+		request.setLinea(numLinea);
+		request.setDati(linea);
 
 		return request;
 	}
@@ -88,7 +85,7 @@ public class AcquisizioneUtils {
 		String lineaString = new String(linea);
 
 		if(lineaString == null || "".equals(lineaString))
-			return null;
+			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
 
 		String[] lineaSplitted = lineaString.split(this.delimiter);
 		if(lineaSplitted.length < 0) {
@@ -114,8 +111,8 @@ public class AcquisizioneUtils {
 		}
 
 		if(parserResult.getRecords() == null || parserResult.getRecords().size() == 0)
-			return null;
-
+			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
+		
 		if(parserResult.getRecords().size() > 1) {
 			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record multipli trovati");
 		}
@@ -204,7 +201,7 @@ public class AcquisizioneUtils {
 	 * @return
 	 * @throws Exception 
 	 */
-	public AbstractOperazioneResponse acquisisciResponse(AbstractOperazioneRequest request, Tracciato tracciato, BasicBD bd) throws Exception {
+	public AbstractOperazioneResponse acquisisciResponse(AbstractOperazioneRequest request, Tracciato tracciato, BasicBD bd) throws ServiceException {
 		AbstractOperazioneResponse response = null;
 
 		if(request instanceof CaricamentoRequest) {
@@ -254,7 +251,7 @@ public class AcquisizioneUtils {
 	}
 
 
-	private CaricamentoResponse caricaVersamento(Tracciato tracciato, CaricamentoRequest request, BasicBD basicBD) throws Exception {
+	private CaricamentoResponse caricaVersamento(Tracciato tracciato, CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
 
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
 
@@ -290,7 +287,7 @@ public class AcquisizioneUtils {
 		return caricamentoResponse;
 	}
 
-	private AnnullamentoResponse annullaVersamento(Tracciato tracciato, AnnullamentoRequest request, BasicBD basicBD) throws Exception {
+	private AnnullamentoResponse annullaVersamento(Tracciato tracciato, AnnullamentoRequest request, BasicBD basicBD) throws ServiceException {
 
 
 		AnnullamentoResponse annullamentoResponse = new AnnullamentoResponse();

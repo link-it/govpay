@@ -19,16 +19,29 @@
  */
 package it.govpay.core.business;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.OperazioneAnnullamento;
 import it.govpay.bd.model.OperazioneCaricamento;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
-import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.bd.pagamento.filters.OperazioneFilter.SortFields;
+import it.govpay.core.business.model.ElaboraLineaDTO;
+import it.govpay.core.business.model.ElaboraLineaDTOResponse;
 import it.govpay.core.business.model.ElaboraTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
@@ -41,7 +54,7 @@ import it.govpay.core.business.model.ListaTracciatiDTOResponse;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.tracciati.AcquisizioneUtils;
-import it.govpay.core.utils.tracciati.TimerCaricamentoTracciatoSmistatore;
+import it.govpay.core.utils.tracciati.operazioni.AbstractOperazioneRequest;
 import it.govpay.core.utils.tracciati.operazioni.AbstractOperazioneResponse;
 import it.govpay.core.utils.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
@@ -50,18 +63,6 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Tracciato.StatoTracciatoType;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 
 public class Tracciati extends BasicBD {
@@ -215,75 +216,75 @@ public class Tracciati extends BasicBD {
 	public void elaboraTracciato(ElaboraTracciatoDTO elaboraTracciatoDTO) throws ServiceException {
 
 		TracciatiBD tracciatiBD = new TracciatiBD(this);
-		OperazioniBD operazioniBD = new OperazioniBD(this);
 		Tracciato tracciato = elaboraTracciatoDTO.getTracciato();
 		Date dataInizio = new Date();
 		LogManager.getLogger().info("Caricamento tracciato ["+tracciato.getNomeFile()+"] iniziato alle ore: " + dataInizio);
 
-		if(!tracciato.getStato().equals(StatoTracciatoType.IN_CARICAMENTO)) {
+		if(tracciato.getStato().equals(StatoTracciatoType.NUOVO)) {
 			tracciato.setLineaElaborazione(0);
 			tracciato.setStato(StatoTracciatoType.IN_CARICAMENTO);
 			tracciatiBD.updateTracciato(tracciato);
 		}
 
+		ByteArrayOutputStream baos = null;
 		try {
-			TimerCaricamentoTracciatoSmistatore smist = new TimerCaricamentoTracciatoSmistatore(this);
-			List<List<List<byte[]>>> lstLst = splitCSV(tracciato);
+			List<List<byte[]>> lstLst = splitCSV(tracciato);
 
 
-			for(List<List<byte[]>> lst: lstLst) {
-				int numLineeElaborate = smist.smista(lst, tracciato, tracciato.getLineaElaborazione());
-				tracciato.setLineaElaborazione(tracciato.getLineaElaborazione() + numLineeElaborate);
-				tracciatiBD.updateTracciato(tracciato);
-			}
-
-			OperazioneFilter operazioneFilter = operazioniBD.newFilter();
-			operazioneFilter.setIdTracciato(tracciato.getId());
-			operazioneFilter.addSortField(SortFields.LINEA, true);
-			List<Operazione> operazioniInserite = operazioniBD.findAll(operazioneFilter);
-
-			long countErrori = 0;
-			long countOK = 0;
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			for(Operazione op: operazioniInserite) {
-
-				if(op.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
-					countOK++;
-				} else {
-					countErrori++;
+			long numLinea = tracciato.getLineaElaborazione();
+			byte[] rawRispostaPrima = tracciato.getRawDataRisposta();
+			baos = new ByteArrayOutputStream();
+			if(rawRispostaPrima != null)
+				baos.write(rawRispostaPrima);
+			
+			for(List<byte[]> lst: lstLst) {
+				for(byte[] linea: lst) {
+					ElaboraLineaDTO elaboraLineaDTO = new ElaboraLineaDTO();
+					elaboraLineaDTO.setLinea(linea);
+					elaboraLineaDTO.setNumLinea(numLinea++);
+					elaboraLineaDTO.setTracciato(tracciato);
+					ElaboraLineaDTOResponse elaboraLinea = this.elaboraLinea(elaboraLineaDTO);
+					if(elaboraLinea.getOperazione().getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
+						tracciato.setNumOperazioniOk(tracciato.getNumOperazioniOk()+1);
+					} else {
+						tracciato.setNumOperazioniKo(tracciato.getNumOperazioniKo()+1);
+					}				
+					
+					if(elaboraLinea.getOperazione().getDatiRisposta() != null)
+						baos.write(elaboraLinea.getOperazione().getDatiRisposta());
+					baos.write("\n".getBytes());
+					
+					tracciato.setLineaElaborazione(tracciato.getLineaElaborazione() + 1);					
 				}
-
-				if(op.getDatiRisposta() != null)
-					baos.write(op.getDatiRisposta());
-
-				baos.write("\n".getBytes());
+				tracciato.setRawDataRisposta(baos.toByteArray());
+				tracciatiBD.updateTracciato(tracciato);
+				this.commit();
 			}
 
-			tracciato.setRawDataRisposta(baos.toByteArray());
-
-			tracciato.setNumOperazioniKo(countErrori);
-			if(countErrori > 0) {
+			if(tracciato.getNumOperazioniKo() > 0) {
 				tracciato.setStato(StatoTracciatoType.CARICAMENTO_KO);
 			} else {
 				tracciato.setStato(StatoTracciatoType.CARICAMENTO_OK);
 			}
-
-
-			tracciato.setNumOperazioniOk(countOK);
+			tracciato.setNumLineeTotali(tracciato.getNumOperazioniOk()+tracciato.getNumOperazioniKo());
 
 		} catch(Exception e) {
 			LogManager.getLogger().error("Errore durante l'inserimento del tracciato ["+tracciato.getId()+"]: " + e.getMessage(), e);
-			tracciato.setDataUltimoAggiornamento(new Date());
+		} finally {
+			if(baos != null) {
+				try {baos.flush();} catch(Exception e){}
+				try {baos.close();} catch(Exception e){}
+			}
 		}
 
+		tracciato.setDataUltimoAggiornamento(new Date());
 		tracciatiBD.updateTracciato(tracciato);
 		Date dataFine = new Date();
 		LogManager.getLogger().info("Caricamento tracciato ["+tracciato.getNomeFile()+"] completato in ["+((dataFine.getTime()-dataInizio.getTime()) / 1000)+"] secondi");
 	}
 
 
-	private List<List<List<byte[]>>> splitCSV(Tracciato tracciato) throws Exception {
+	public static List<List<byte[]>> splitCSV(Tracciato tracciato) throws Exception {
 
 		ByteArrayInputStream in = new ByteArrayInputStream(tracciato.getRawDataRichiesta());
 		InputStreamReader isr = new InputStreamReader(in);
@@ -291,15 +292,62 @@ public class Tracciati extends BasicBD {
 
 		br.skip(tracciato.getLineaElaborazione()); //skip prime n linee gia' lette
 
-		List<List<List<byte[]>>> lst = new ArrayList<List<List<byte[]>>>();
 		List<List<byte[]>> lstLst = new ArrayList<List<byte[]>>();
-		List<byte[]> lstLstLst = new ArrayList<byte[]>(); 
+		List<byte[]> lst = new ArrayList<byte[]>(); 
+		
+		
 		while(br.ready()) {
-			lstLstLst.add(br.readLine().getBytes());
+			if(lst.size() < 50) {
+				lst.add(br.readLine().getBytes());
+			} else { 
+				List<byte[]> lstCopy = new ArrayList<byte[]>(); 
+				lstCopy.addAll(lst);
+				lstLst.add(lstCopy);
+				lst = new ArrayList<byte[]>();
+				lst.add(br.readLine().getBytes());
+			}
 		}
-		lstLst.add(lstLstLst);
-		lst.add(lstLst);
-		return lst;
+		lstLst.add(lst);
+		return lstLst;
+	}
+	
+	private static AcquisizioneUtils acquisizioneUtils = new AcquisizioneUtils();
+	
+	public ElaboraLineaDTOResponse elaboraLinea(ElaboraLineaDTO elaboraLineaDTO) throws ServiceException {
+
+		ElaboraLineaDTOResponse elaboraLineaDTOResponse = new ElaboraLineaDTOResponse();
+		AbstractOperazioneRequest request = Tracciati.acquisizioneUtils.acquisisci(elaboraLineaDTO.getLinea(), elaboraLineaDTO.getTracciato(), elaboraLineaDTO.getNumLinea());
+
+		AbstractOperazioneResponse response = Tracciati.acquisizioneUtils.acquisisciResponse(request, elaboraLineaDTO.getTracciato(), this);
+		String codApplicazione = Tracciati.acquisizioneUtils.getCodiceApplicazione(request);
+		String codVersamentoEnte = Tracciati.acquisizioneUtils.getCodVersamentoEnte(request);
+		
+		OperazioniBD op = new OperazioniBD(this);
+		Operazione operazione = new Operazione();
+		operazione.setCodVersamentoEnte(codVersamentoEnte);
+		operazione.setDatiRichiesta(elaboraLineaDTO.getLinea());
+		operazione.setDatiRisposta(response.getDati());
+		operazione.setStato(response.getStato());
+		if(response.getDescrizioneEsito() != null)
+			operazione.setDettaglioEsito(response.getDescrizioneEsito().length() > 255 ? response.getDescrizioneEsito().substring(0, 255) : response.getDescrizioneEsito());
+		
+		if(codApplicazione != null){
+			try {
+				operazione.setIdApplicazione(AnagraficaManager.getApplicazione(this, codApplicazione).getId());
+			} catch(NotFoundException e) {
+				throw new ServiceException("Applicazione ["+codApplicazione+"] non trovata");
+			}
+			
+		}
+			
+		
+		operazione.setIdTracciato(request.getIdTracciato());
+		operazione.setLineaElaborazione(request.getLinea());
+		operazione.setTipoOperazione(request.getTipoOperazione());
+		op.insertOperazione(operazione);
+
+		elaboraLineaDTOResponse.setOperazione(operazione);
+		return elaboraLineaDTOResponse;
 	}
 
 	/**
