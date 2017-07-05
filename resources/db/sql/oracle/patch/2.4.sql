@@ -78,15 +78,9 @@ end;
 
 
 --GP-524
-<<<<<<< HEAD
-CREATE SEQUENCE seq_gpaudit MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE gpaudit
-=======
 CREATE SEQUENCE seq_gp_audit MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE gp_audit
->>>>>>> GP-523
 (
        data TIMESTAMP NOT NULL,
        id_oggetto NUMBER NOT NULL,
@@ -96,19 +90,6 @@ CREATE TABLE gp_audit
        id NUMBER NOT NULL,
        id_operatore NUMBER NOT NULL,
        -- fk/pk keys constraints
-<<<<<<< HEAD
-       CONSTRAINT fk_gpaudit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-       CONSTRAINT pk_gpaudit PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_gpaudit
-BEFORE
-insert on gpaudit
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_gpaudit.nextval INTO :new.id
-=======
        CONSTRAINT fk_gp_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
        CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 );
@@ -120,7 +101,6 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_gp_audit.nextval INTO :new.id
->>>>>>> GP-523
                 FROM DUAL;
    END IF;
 end;
