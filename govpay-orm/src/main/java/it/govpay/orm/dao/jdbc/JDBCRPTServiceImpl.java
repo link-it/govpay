@@ -340,6 +340,12 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodTransazioneRPT(), RPT.model().COD_TRANSAZIONE_RPT.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_TRANSAZIONE_RT,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodTransazioneRT(), RPT.model().COD_TRANSAZIONE_RT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().STATO_CONSERVAZIONE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getStatoConservazione(), RPT.model().STATO_CONSERVAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DESCRIZIONE_STATO_CONS,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getDescrizioneStatoCons(), RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_CONSERVAZIONE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getDataConservazione(), RPT.model().DATA_CONSERVAZIONE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}

@@ -100,7 +100,11 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 				
 				IExpression newExpression2 = this.newExpression();
-				newExpression2.equals(RPT.model().STATO_CONSERVAZIONE, StatoConservazione.ERRORE).or().isNull(RPT.model().STATO_CONSERVAZIONE);
+				if(this.conservato) {
+					newExpression2.notEquals(RPT.model().STATO_CONSERVAZIONE, StatoConservazione.ERRORE.name()).and().isNotNull(RPT.model().STATO_CONSERVAZIONE);
+				} else {
+					newExpression2.equals(RPT.model().STATO_CONSERVAZIONE, StatoConservazione.ERRORE.name()).or().isNull(RPT.model().STATO_CONSERVAZIONE);					
+				}
 				
 				newExpression.and(newExpression2);
 				addAnd = true;
@@ -110,7 +114,7 @@ public class RptFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(RPT.model().STATO, this.stato);
+				newExpression.equals(RPT.model().STATO, this.stato.name());
 				addAnd = true;
 			}
 
