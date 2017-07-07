@@ -400,8 +400,9 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			bd.setAutoCommit(false);
+			
 			if(BatchManager.startEsecuzione(bd, batch_tracciati)) {
+				bd.setAutoCommit(false);
 				log.trace("Elaborazione tracciati");
 				TracciatiBD tracciatiBD = new TracciatiBD(bd);
 				TracciatoFilter filter = tracciatiBD.newFilter();
@@ -425,6 +426,9 @@ public class Operazioni{
 					tracciatiBusiness.elaboraTracciato(elaboraTracciatoDTO);
 					log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
 				}
+				
+				bd.commit();
+				
 				aggiornaSondaOK(batch_tracciati, bd);
 				BatchManager.stopEsecuzione(bd, batch_tracciati);
 				log.info("Elaborazione tracciati terminata.");
@@ -433,8 +437,11 @@ public class Operazioni{
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
+			if(bd != null) {
+				bd.rollback();
+				aggiornaSondaKO(batch_tracciati, e, bd); 
+			}
 			log.error("Non è stato possibile eseguire l'elaborazione dei tracciati", e);
-			aggiornaSondaKO(batch_tracciati, e, bd); 
 			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
