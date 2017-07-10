@@ -95,7 +95,7 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Intermediario.model().COD_INTERMEDIARIO);
+			fsw.setField(it.govpay.orm.Intermediario.model().DENOMINAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
@@ -111,6 +111,13 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 
 				if(StringUtils.isNotEmpty(codIntermediario)){
 					filter.setIdIntermediario(codIntermediario); 
+				}
+
+				String denominazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
+				String denominazione = this.getParameter(uriInfo, denominazioneId, String.class);
+
+				if(StringUtils.isNotEmpty(denominazione)){
+					filter.setDenominazione(denominazione); 
 				}
 			}
 			long count = intermediariBD.count(filter);
@@ -150,6 +157,7 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 
 		if(visualizzaRicerca){
 			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
+			String denominazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
 
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
@@ -162,6 +170,11 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 			codIntermediario.setDefaultValue(null);
 			codIntermediario.setEditable(true); 
 			sezioneRoot.addField(codIntermediario);
+
+			InputText denominazione = (InputText) this.infoRicercaMap.get(denominazioneId);
+			denominazione.setDefaultValue(null);
+			denominazione.setEditable(true); 
+			sezioneRoot.addField(denominazione);
 		}
 		return infoRicerca;
 	}
@@ -244,10 +257,17 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
+			String denominazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
+
 			// codIntermediario
 			String codIntermediarioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label");
 			InputText codIntermediario = new InputText(codIntermediarioId, codIntermediarioLabel, null, false, false, true, 11, 11);
 			this.infoRicercaMap.put(codIntermediarioId, codIntermediario);
+
+			// denominazione
+			String denominazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".denominazione.label");
+			InputText denominazione = new InputText(denominazioneId, denominazioneLabel, null, false, false, true, 11, 11);
+			this.infoRicercaMap.put(denominazioneId, denominazione);
 		}
 	}
 

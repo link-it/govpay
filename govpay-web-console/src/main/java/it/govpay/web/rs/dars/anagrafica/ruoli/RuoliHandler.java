@@ -615,7 +615,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			this.infoCreazioneMap.put(domini_G_PAGId, domini_G_PAG);
 
 			String admin_G_PAGLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_PAG.label");
-			URI admin_G_PAGRefreshUri = this.getUriField(uriInfo, bd, domini_G_PAGId); 
+			URI admin_G_PAGRefreshUri = this.getUriField(uriInfo, bd, admin_G_PAGId); 
 			AdminFunzionalita_G_PAG admin_G_PAG = new AdminFunzionalita_G_PAG(this.nomeServizio, admin_G_PAGId, admin_G_PAGLabel, admin_G_PAGRefreshUri, funzionalita_G_PAGValues, this.getLanguage());
 			admin_G_PAG.addDependencyField(funzionalita_G_PAG);
 			admin_G_PAG.init(funzionalita_G_PAGValues, bd,this.getLanguage()); 

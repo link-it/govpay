@@ -118,7 +118,19 @@ public class DistribuzionePspHandler extends StatisticaDarsHandler<Distribuzione
 			// valorizzo i valori da restitire al client
 			infoGrafico = this.valorizzaInfoGrafico(uriInfo, bd, filter, infoGrafico);
 
-			List<DistribuzionePsp> distribuzioneEsiti = transazioniBD.getDistribuzionePsp(filter);
+			//List<DistribuzionePsp> distribuzioneEsiti = transazioniBD.getDistribuzionePsp(filter);
+			
+			List<DistribuzionePsp> distribuzioneEsiti = new ArrayList<DistribuzionePsp>();
+			DistribuzionePsp d = new DistribuzionePsp("Unicredit SPA", 7420);
+			distribuzioneEsiti.add(d);
+			DistribuzionePsp d2 = new DistribuzionePsp("Poste Italiane", 3158);
+			distribuzioneEsiti.add(d2);
+			DistribuzionePsp d3 = new DistribuzionePsp("UBI Banca SPA", 4801);
+			distribuzioneEsiti.add(d3);
+			DistribuzionePsp d4 = new DistribuzionePsp("Paytipper SPA", 1790);
+			distribuzioneEsiti.add(d4);
+			DistribuzionePsp daltri = new DistribuzionePsp("Altri", 1126);
+			distribuzioneEsiti.add(daltri);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
