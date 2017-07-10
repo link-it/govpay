@@ -55,7 +55,7 @@ public class PortaliBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public Portale getPortale(long id) throws NotFoundException, ServiceException, MultipleResultException {
+	public Portale getPortale(Long id) throws NotFoundException, ServiceException, MultipleResultException {
 		try {
 			it.govpay.orm.Portale portaleVO = ((JDBCPortaleServiceSearch)this.getPortaleService()).get(id);
 			AclBD aclBD = new AclBD(this);
