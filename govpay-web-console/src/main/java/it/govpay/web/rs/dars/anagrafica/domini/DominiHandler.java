@@ -19,21 +19,28 @@
  */
 package it.govpay.web.rs.dars.anagrafica.domini;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.ImageIO;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.tika.Tika;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -62,19 +69,20 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
+import it.govpay.web.rs.dars.anagrafica.domini.input.Logo;
 import it.govpay.web.rs.dars.anagrafica.domini.input.ModalitaIntermediazione;
 import it.govpay.web.rs.dars.anagrafica.iban.Iban;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
 import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
@@ -83,23 +91,24 @@ import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.model.VoceImage;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
+import it.govpay.web.rs.dars.model.input.base.InputFile;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHandler<Dominio>{
+public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<Dominio>{
 
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	public static final String ANAGRAFICA_DOMINI = "anagrafica";
 
-	public DominiHandler(Logger log, BaseDarsService darsService) {
+	public DominiHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -108,14 +117,13 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "getElenco " + this.titoloServizio;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd);
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter(simpleSearch);
@@ -136,7 +144,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			if(simpleSearch){
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
@@ -174,7 +182,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Dominio> findAll = dominiBD.findAll(filter);
 
@@ -286,155 +294,180 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
-		String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String dominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
-		String glnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
-		String uoIdId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
-		String idApplicazioneDefaultId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
-		String riusoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
-		String customIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
-		String modalitaIntermediazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
-		String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
-		String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
-		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+				String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
+				String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String dominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
+				String glnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
+				String uoIdId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
+				String idApplicazioneDefaultId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
+				String riusoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
+				String customIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
+				String modalitaIntermediazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
+				String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
+				String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
+				String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+				String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
+				String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
 
-		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio,this.getLanguage());
-		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
+				AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio,this.getLanguage());
+				List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
-		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(dominioId);
-		idInterm.setDefaultValue(null);
-		sezioneRoot.addField(idInterm);
-		InputText codDominio = (InputText) this.infoCreazioneMap.get(codDominioId);
-		codDominio.setDefaultValue(null);
-		codDominio.setEditable(true); 
-		sezioneRoot.addField(codDominio);
-
-		InputNumber uoId = (InputNumber) this.infoCreazioneMap.get(uoIdId);
-		uoId.setDefaultValue(null);
-		sezioneRoot.addField(uoId);
-
-		List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
-
-		try{
-			StazioniBD stazioniBD = new StazioniBD(bd);
-			StazioneFilter filter = stazioniBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Stazione.model().COD_STAZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-
-			List<Stazione> findAll = stazioniBD.findAll(filter);
-
-
-			if(findAll != null && findAll.size() > 0){
-				for (Stazione entry : findAll) {
-					stazioni.add(new Voce<Long>(entry.getCodStazione(), entry.getId()));
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
 				}
+
+				Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(dominioId);
+				idInterm.setDefaultValue(null);
+				sezioneRoot.addField(idInterm);
+				InputText codDominio = (InputText) this.infoCreazioneMap.get(codDominioId);
+				codDominio.setDefaultValue(null);
+				codDominio.setEditable(true); 
+				sezioneRoot.addField(codDominio);
+
+				InputNumber uoId = (InputNumber) this.infoCreazioneMap.get(uoIdId);
+				uoId.setDefaultValue(null);
+				sezioneRoot.addField(uoId);
+
+				List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
+
+				try{
+					StazioniBD stazioniBD = new StazioniBD(bd);
+					StazioneFilter filter = stazioniBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Stazione.model().COD_STAZIONE);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+
+					List<Stazione> findAll = stazioniBD.findAll(filter);
+
+
+					if(findAll != null && findAll.size() > 0){
+						for (Stazione entry : findAll) {
+							stazioni.add(new Voce<Long>(entry.getCodStazione(), entry.getId()));
+						}
+					}
+				}catch(Exception e){
+					throw new ConsoleException(e);
+				}
+
+				SelectList<Long> stazione = (SelectList<Long>) this.infoCreazioneMap.get(idStazioneId);
+				stazione.setDefaultValue(null);
+				stazione.setValues(stazioni);
+				sezioneRoot.addField(stazione); 
+
+				InputText ragioneSociale = (InputText) this.infoCreazioneMap.get(ragioneSocialeId);
+				ragioneSociale.setDefaultValue(null);
+				//sezioneRoot.addField(ragioneSociale);
+
+				InputText gln = (InputText) this.infoCreazioneMap.get(glnId);
+				gln.setDefaultValue(null);
+				sezioneRoot.addField(gln);
+
+				List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+
+				applicazioni.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuna"), -1L));
+				try{
+					ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+					ApplicazioneFilter filter = applicazioniBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+
+					List<Applicazione> findAll = applicazioniBD.findAll(filter);
+
+
+					if(findAll != null && findAll.size() > 0){
+						for (Applicazione entry : findAll) {
+							applicazioni.add(new Voce<Long>(entry.getCodApplicazione(), entry.getId()));
+						}
+					}
+				}catch(Exception e){
+					throw new ConsoleException(e);
+				}
+
+				SelectList<Long> idApplicazioneDefault = (SelectList<Long>) this.infoCreazioneMap.get(idApplicazioneDefaultId);
+				idApplicazioneDefault.setDefaultValue(-1L);
+				idApplicazioneDefault.setValues(applicazioni);
+				sezioneRoot.addField(idApplicazioneDefault); 
+
+				//				Sezione sezioneLogo = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneLogo"));
+
+				CheckButton abilitaModificaLogo  = (CheckButton) this.infoCreazioneMap.get(abilitaModificaLogoId);
+				abilitaModificaLogo.setDefaultValue(true);
+				abilitaModificaLogo.setHidden(true);
+				abilitaModificaLogo.setEditable(false);
+				sezioneRoot.addField(abilitaModificaLogo); 
+
+				List<RawParamValue> abilitaModificaLogoValues = new ArrayList<RawParamValue>();
+				abilitaModificaLogoValues.add(new RawParamValue(dominioId, null)); 
+				abilitaModificaLogoValues.add(new RawParamValue(abilitaModificaLogoId, "true"));
+
+				Logo logo = (Logo) this.infoCreazioneMap.get(logoId);
+				logo.init(abilitaModificaLogoValues, bd,this.getLanguage());  
+				sezioneRoot.addField(logo);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(true); 
+				sezioneRoot.addField(abilitato);
+
+				// sezione Gestione IUV
+
+				Sezione sezioneGestioneIuv = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
+
+				CheckButton riusoIuv = (CheckButton) this.infoCreazioneMap.get(riusoIuvId);
+				riusoIuv.setDefaultValue(true); 
+				sezioneGestioneIuv.addField(riusoIuv);
+
+				CheckButton customIuv = (CheckButton) this.infoCreazioneMap.get(customIuvId);
+				customIuv.setDefaultValue(false);
+				customIuv.setEditable(true);
+				sezioneGestioneIuv.addField(customIuv);
+
+				List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
+				modalitaIntermediazioneValues.add(new RawParamValue(dominioId, null));
+				modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, null));
+
+				ModalitaIntermediazione modalitaIntermediazione =  (ModalitaIntermediazione) this.infoCreazioneMap.get(modalitaIntermediazioneId);
+				modalitaIntermediazione.init(modalitaIntermediazioneValues, bd,this.getLanguage()); 
+				sezioneGestioneIuv.addField(modalitaIntermediazione); 
+
+				// prefissoIuv
+				InputText prefissoIuv = (InputText) this.infoCreazioneMap.get(prefissoIuvId);
+				prefissoIuv.setDefaultValue(null);
+				sezioneGestioneIuv.addField(prefissoIuv);
+
+				// prefissoIuvRigoroso
+				CheckButton prefissoIuvRigoroso = (CheckButton) this.infoCreazioneMap.get(prefissoIuvRigorosoId);
+				prefissoIuvRigoroso.setDefaultValue(false);
+				sezioneGestioneIuv.addField(prefissoIuvRigoroso);
+
+				// segregationCode
+				InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
+				segregationCode.setDefaultValue(null); 
+				sezioneGestioneIuv.addField(segregationCode);
+
+				// sezione anagrafica
+
+				Sezione sezioneAnagrafica = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
+
+				for (ParamField<?> par : infoCreazioneAnagrafica) { 
+					sezioneAnagrafica.addField(par); 	
+				}
+
 			}
-		}catch(Exception e){
+		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-
-		SelectList<Long> stazione = (SelectList<Long>) this.infoCreazioneMap.get(idStazioneId);
-		stazione.setDefaultValue(null);
-		stazione.setValues(stazioni);
-		sezioneRoot.addField(stazione); 
-
-		InputText ragioneSociale = (InputText) this.infoCreazioneMap.get(ragioneSocialeId);
-		ragioneSociale.setDefaultValue(null);
-		//sezioneRoot.addField(ragioneSociale);
-
-		InputText gln = (InputText) this.infoCreazioneMap.get(glnId);
-		gln.setDefaultValue(null);
-		sezioneRoot.addField(gln);
-
-		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-
-		applicazioni.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuna"), -1L));
-		try{
-			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-			ApplicazioneFilter filter = applicazioniBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-
-			List<Applicazione> findAll = applicazioniBD.findAll(filter);
-
-
-			if(findAll != null && findAll.size() > 0){
-				for (Applicazione entry : findAll) {
-					applicazioni.add(new Voce<Long>(entry.getCodApplicazione(), entry.getId()));
-				}
-			}
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
-
-		SelectList<Long> idApplicazioneDefault = (SelectList<Long>) this.infoCreazioneMap.get(idApplicazioneDefaultId);
-		idApplicazioneDefault.setDefaultValue(-1L);
-		idApplicazioneDefault.setValues(applicazioni);
-		sezioneRoot.addField(idApplicazioneDefault); 
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(true); 
-		sezioneRoot.addField(abilitato);
-
-		// sezione Gestione IUV
-
-		Sezione sezioneGestioneIuv = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
-
-		CheckButton riusoIuv = (CheckButton) this.infoCreazioneMap.get(riusoIuvId);
-		riusoIuv.setDefaultValue(true); 
-		sezioneGestioneIuv.addField(riusoIuv);
-
-		CheckButton customIuv = (CheckButton) this.infoCreazioneMap.get(customIuvId);
-		customIuv.setDefaultValue(false);
-		customIuv.setEditable(true);
-		sezioneGestioneIuv.addField(customIuv);
-
-		List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
-		modalitaIntermediazioneValues.add(new RawParamValue(dominioId, null));
-		modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, null));
-
-		ModalitaIntermediazione modalitaIntermediazione =  (ModalitaIntermediazione) this.infoCreazioneMap.get(modalitaIntermediazioneId);
-		modalitaIntermediazione.init(modalitaIntermediazioneValues, bd,this.getLanguage()); 
-		sezioneGestioneIuv.addField(modalitaIntermediazione); 
-
-		// prefissoIuv
-		InputText prefissoIuv = (InputText) this.infoCreazioneMap.get(prefissoIuvId);
-		prefissoIuv.setDefaultValue(null);
-		sezioneGestioneIuv.addField(prefissoIuv);
-
-		// prefissoIuvRigoroso
-		CheckButton prefissoIuvRigoroso = (CheckButton) this.infoCreazioneMap.get(prefissoIuvRigorosoId);
-		prefissoIuvRigoroso.setDefaultValue(false);
-		sezioneGestioneIuv.addField(prefissoIuvRigoroso);
-
-		// segregationCode
-		InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
-		segregationCode.setDefaultValue(null); 
-		sezioneGestioneIuv.addField(segregationCode);
-
-		// sezione anagrafica
-
-		Sezione sezioneAnagrafica = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
-
-		for (ParamField<?> par : infoCreazioneAnagrafica) { 
-			sezioneAnagrafica.addField(par); 	
-		}
-
 		return infoCreazione;
 	}
 
@@ -464,6 +497,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
 			String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 			String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+			String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
+			String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
 
 			// codDominio
 			String codDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
@@ -547,180 +582,234 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			segregationCode.setAvanzata(true); 
 			this.infoCreazioneMap.put(segregationCodeId, segregationCode);
 
+
+			// abilita modifica logo
+			String abilitaModificaLogoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.label");
+			CheckButton abilitaModificaLogo = new CheckButton(abilitaModificaLogoId, abilitaModificaLogoLabel, true, false, false, true);
+			this.infoCreazioneMap.put(abilitaModificaLogoId, abilitaModificaLogo);
+
+			List<RawParamValue> abilitaModificaLogoValues = new ArrayList<RawParamValue>();
+			abilitaModificaLogoValues.add(new RawParamValue(dominioId, null));
+			abilitaModificaLogoValues.add(new RawParamValue(abilitaModificaLogoId, "true"));
+
+			// logo
+			URI logoRefreshUri = this.getUriField(uriInfo, bd, logoId); 
+			String logoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.label");
+			String maxWidthS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxWidth");
+			String maxHeightS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxHeight");
+			String logoAccTypes = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.acceptedMimeTypes");
+			List<String> acceptedMimeTypes =new ArrayList<String>();
+			acceptedMimeTypes.addAll(Arrays.asList(logoAccTypes.split(",")));  
+			String maxByteSizeS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxByteSize");
+			long maxByteSize = Long.parseLong(maxByteSizeS);
+			maxByteSizeS = Utils.fileSizeConverter(maxByteSize);
+			String logoNote = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".logo.note", (maxWidthS+"x" + maxHeightS),maxByteSizeS);
+			Logo logo = new Logo(this.nomeServizio,	logoId, logoLabel, acceptedMimeTypes , maxByteSize , 1, logoRefreshUri,abilitaModificaLogoValues,bd,this.getLanguage());
+			logo.setNote(logoNote);
+			logo.setErrorMessageFileSize(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.errorMessageFileSize"));
+			logo.setErrorMessageFileType(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.errorMessageFileType"));
+			logo.addDependencyField(abilitaModificaLogo);
+			logo.init(abilitaModificaLogoValues, bd,this.getLanguage()); 
+
+			this.infoCreazioneMap.put(logoId, logo);
+
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Dominio entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
-
-		String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
-		String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String dominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
-		String glnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
-		String uoIdId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
-		String idApplicazioneDefaultId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
-		String riusoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
-		String customIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
-		String modalitaIntermediazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
-		String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
-		String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
-		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
-
-
-		UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
-		UnitaOperativa unitaOperativa = null;
+		InfoForm infoModifica = null;
 		try {
-			unitaOperativa = uoBD.getUnitaOperativa(entry.getId(), it.govpay.model.Dominio.EC);
-		} catch (Exception e) {
-			//throw new ConsoleException(e);
-			return null;
-		}
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio,this.getLanguage());
-		Anagrafica anagrafica = unitaOperativa != null ? unitaOperativa.getAnagrafica() : null;
-		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaDominio(uriInfo, bd,anagrafica,entry.getRagioneSociale());
+				String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
+				String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String dominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
+				String glnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
+				String uoIdId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
+				String idApplicazioneDefaultId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
+				String riusoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
+				String customIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
+				String modalitaIntermediazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
+				String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
+				String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
+				String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+				String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
+				String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
-		}
+				UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
+				UnitaOperativa unitaOperativa = null;
+				try {
+					unitaOperativa = uoBD.getUnitaOperativa(entry.getId(), it.govpay.model.Dominio.EC);
+				} catch (Exception e) {
+					//throw new ConsoleException(e);
+					return null;
+				}
 
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(dominioId);
-		idInterm.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idInterm);
-		InputText codDominio = (InputText) this.infoCreazioneMap.get(codDominioId);
-		codDominio.setDefaultValue(entry.getCodDominio());
-		codDominio.setEditable(false); 
-		sezioneRoot.addField(codDominio);
+				AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio,this.getLanguage());
+				Anagrafica anagrafica = unitaOperativa != null ? unitaOperativa.getAnagrafica() : null;
+				List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaDominio(uriInfo, bd,anagrafica,entry.getRagioneSociale());
 
-		if(unitaOperativa != null){
-			InputNumber uoId = (InputNumber) this.infoCreazioneMap.get(uoIdId);
-			uoId.setDefaultValue(unitaOperativa.getId());
-			sezioneRoot.addField(uoId);
-		}
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
 
-		List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
-		try{
-			StazioniBD stazioniBD = new StazioniBD(bd);
-			StazioneFilter filter = stazioniBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Stazione.model().COD_STAZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(dominioId);
+				idInterm.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idInterm);
+				InputText codDominio = (InputText) this.infoCreazioneMap.get(codDominioId);
+				codDominio.setDefaultValue(entry.getCodDominio());
+				codDominio.setEditable(false); 
+				sezioneRoot.addField(codDominio);
 
-			List<Stazione> findAll = stazioniBD.findAll(filter);
+				if(unitaOperativa != null){
+					InputNumber uoId = (InputNumber) this.infoCreazioneMap.get(uoIdId);
+					uoId.setDefaultValue(unitaOperativa.getId());
+					sezioneRoot.addField(uoId);
+				}
+
+				List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
+				try{
+					StazioniBD stazioniBD = new StazioniBD(bd);
+					StazioneFilter filter = stazioniBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Stazione.model().COD_STAZIONE);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+
+					List<Stazione> findAll = stazioniBD.findAll(filter);
 
 
-			if(findAll != null && findAll.size() > 0){
-				for (Stazione s : findAll) {
-					stazioni.add(new Voce<Long>(s.getCodStazione(), s.getId()));
+					if(findAll != null && findAll.size() > 0){
+						for (Stazione s : findAll) {
+							stazioni.add(new Voce<Long>(s.getCodStazione(), s.getId()));
+						}
+					}
+				}catch(Exception e){
+					throw new ConsoleException(e);
+				}
+
+				SelectList<Long> stazione = (SelectList<Long>) this.infoCreazioneMap.get(idStazioneId);
+				stazione.setDefaultValue(entry.getIdStazione());
+				stazione.setValues(stazioni); 
+				sezioneRoot.addField(stazione); 
+
+				InputText ragioneSociale = (InputText) this.infoCreazioneMap.get(ragioneSocialeId);
+				ragioneSociale.setDefaultValue(entry.getRagioneSociale());
+				//sezioneRoot.addField(ragioneSociale);
+
+				InputText gln = (InputText) this.infoCreazioneMap.get(glnId);
+				gln.setDefaultValue(entry.getGln());
+				sezioneRoot.addField(gln);
+
+				List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+				applicazioni.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuna"), -1L));
+				try{
+					ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+					ApplicazioneFilter filter = applicazioniBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+
+					List<Applicazione> findAll = applicazioniBD.findAll(filter);
+
+
+					if(findAll != null && findAll.size() > 0){
+						for (Applicazione applicazione : findAll) {
+							applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), applicazione.getId()));
+						}
+					}
+				}catch(Exception e){
+					throw new ConsoleException(e);
+				}
+
+				SelectList<Long> idApplicazioneDefault = (SelectList<Long>) this.infoCreazioneMap.get(idApplicazioneDefaultId);
+				idApplicazioneDefault.setDefaultValue(entry.getIdApplicazioneDefault() != null ? entry.getIdApplicazioneDefault() : -1L);
+				idApplicazioneDefault.setValues(applicazioni);
+				sezioneRoot.addField(idApplicazioneDefault); 
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+
+				// sezione logo
+				Sezione sezioneLogo = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneLogo"));
+
+				CheckButton abilitaModificaLogo  = (CheckButton) this.infoCreazioneMap.get(abilitaModificaLogoId);
+				abilitaModificaLogo.setDefaultValue(false);
+				abilitaModificaLogo.setHidden(false);
+				abilitaModificaLogo.setEditable(true);
+				sezioneLogo.addField(abilitaModificaLogo); 
+
+				List<RawParamValue> abilitaModificaLogoValues = new ArrayList<RawParamValue>();
+				abilitaModificaLogoValues.add(new RawParamValue(dominioId, entry.getId() + "")); 
+				abilitaModificaLogoValues.add(new RawParamValue(abilitaModificaLogoId, "false"));
+
+				Logo logo = (Logo) this.infoCreazioneMap.get(logoId);
+				logo.init(abilitaModificaLogoValues, bd,this.getLanguage());  
+				sezioneLogo.addField(logo);
+
+				// sezione Gestione IUV
+
+				Sezione sezioneGestioneIuv = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
+
+				CheckButton riusoIuv = (CheckButton) this.infoCreazioneMap.get(riusoIuvId);
+				riusoIuv.setDefaultValue(entry.isRiusoIuv()); 
+				sezioneGestioneIuv.addField(riusoIuv);
+
+				CheckButton customIuv = (CheckButton) this.infoCreazioneMap.get(customIuvId);
+				customIuv.setDefaultValue(entry.isCustomIuv());
+				// Se in modifica e' settato il customIuv allora non si puo' modificare
+				if(entry.isCustomIuv()) {
+					customIuv.setEditable(false);
+				}
+				sezioneGestioneIuv.addField(customIuv);
+
+				List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
+				modalitaIntermediazioneValues.add(new RawParamValue(dominioId, ""+entry.getId()));
+				modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, ""+entry.getIdStazione()));
+
+				ModalitaIntermediazione modalitaIntermediazione =  (ModalitaIntermediazione) this.infoCreazioneMap.get(modalitaIntermediazioneId);
+				modalitaIntermediazione.init(modalitaIntermediazioneValues, bd,this.getLanguage()); 
+				sezioneGestioneIuv.addField(modalitaIntermediazione); 
+
+				// prefissoIuv
+				InputText prefissoIuv = (InputText) this.infoCreazioneMap.get(prefissoIuvId);
+				prefissoIuv.setDefaultValue(entry.getIuvPrefix());
+				sezioneGestioneIuv.addField(prefissoIuv);
+
+				// prefissoIuvRigoroso
+				CheckButton prefissoIuvRigoroso = (CheckButton) this.infoCreazioneMap.get(prefissoIuvRigorosoId);
+				prefissoIuvRigoroso.setDefaultValue(entry.isIuvPrefixStrict());
+				sezioneGestioneIuv.addField(prefissoIuvRigoroso);
+
+				// segregationCode
+				InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
+				String segCode = entry.getSegregationCode() != null ? (entry.getSegregationCode() < 10 ? "0"+entry.getSegregationCode() : entry.getSegregationCode()+"" ) : null;
+				segregationCode.setDefaultValue(segCode); 
+				sezioneGestioneIuv.addField(segregationCode);
+
+				Sezione sezioneAnagrafica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
+
+				for (ParamField<?> par : infoCreazioneAnagrafica) { 
+					sezioneAnagrafica.addField(par); 	
 				}
 			}
-		}catch(Exception e){
+		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-
-		SelectList<Long> stazione = (SelectList<Long>) this.infoCreazioneMap.get(idStazioneId);
-		stazione.setDefaultValue(entry.getIdStazione());
-		stazione.setValues(stazioni); 
-		sezioneRoot.addField(stazione); 
-
-		InputText ragioneSociale = (InputText) this.infoCreazioneMap.get(ragioneSocialeId);
-		ragioneSociale.setDefaultValue(entry.getRagioneSociale());
-		//sezioneRoot.addField(ragioneSociale);
-
-		InputText gln = (InputText) this.infoCreazioneMap.get(glnId);
-		gln.setDefaultValue(entry.getGln());
-		sezioneRoot.addField(gln);
-
-		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-		applicazioni.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuna"), -1L));
-		try{
-			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-			ApplicazioneFilter filter = applicazioniBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-
-			List<Applicazione> findAll = applicazioniBD.findAll(filter);
-
-
-			if(findAll != null && findAll.size() > 0){
-				for (Applicazione applicazione : findAll) {
-					applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), applicazione.getId()));
-				}
-			}
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
-
-		SelectList<Long> idApplicazioneDefault = (SelectList<Long>) this.infoCreazioneMap.get(idApplicazioneDefaultId);
-		idApplicazioneDefault.setDefaultValue(entry.getIdApplicazioneDefault() != null ? entry.getIdApplicazioneDefault() : -1L);
-		idApplicazioneDefault.setValues(applicazioni);
-		sezioneRoot.addField(idApplicazioneDefault); 
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
-
-		// sezione Gestione IUV
-
-		Sezione sezioneGestioneIuv = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
-
-		CheckButton riusoIuv = (CheckButton) this.infoCreazioneMap.get(riusoIuvId);
-		riusoIuv.setDefaultValue(entry.isRiusoIuv()); 
-		sezioneGestioneIuv.addField(riusoIuv);
-
-		CheckButton customIuv = (CheckButton) this.infoCreazioneMap.get(customIuvId);
-		customIuv.setDefaultValue(entry.isCustomIuv());
-		// Se in modifica e' settato il customIuv allora non si puo' modificare
-		if(entry.isCustomIuv()) {
-			customIuv.setEditable(false);
-		}
-		sezioneGestioneIuv.addField(customIuv);
-
-		List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
-		modalitaIntermediazioneValues.add(new RawParamValue(dominioId, ""+entry.getId()));
-		modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, ""+entry.getIdStazione()));
-
-		ModalitaIntermediazione modalitaIntermediazione =  (ModalitaIntermediazione) this.infoCreazioneMap.get(modalitaIntermediazioneId);
-		modalitaIntermediazione.init(modalitaIntermediazioneValues, bd,this.getLanguage()); 
-		sezioneGestioneIuv.addField(modalitaIntermediazione); 
-
-		// prefissoIuv
-		InputText prefissoIuv = (InputText) this.infoCreazioneMap.get(prefissoIuvId);
-		prefissoIuv.setDefaultValue(entry.getIuvPrefix());
-		sezioneGestioneIuv.addField(prefissoIuv);
-
-		// prefissoIuvRigoroso
-		CheckButton prefissoIuvRigoroso = (CheckButton) this.infoCreazioneMap.get(prefissoIuvRigorosoId);
-		prefissoIuvRigoroso.setDefaultValue(entry.isIuvPrefixStrict());
-		sezioneGestioneIuv.addField(prefissoIuvRigoroso);
-
-		// segregationCode
-		InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
-		String segCode = entry.getSegregationCode() != null ? (entry.getSegregationCode() < 10 ? "0"+entry.getSegregationCode() : entry.getSegregationCode()+"" ) : null;
-		segregationCode.setDefaultValue(segCode); 
-		sezioneGestioneIuv.addField(segregationCode);
-
-		Sezione sezioneAnagrafica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
-
-		for (ParamField<?> par : infoCreazioneAnagrafica) { 
-			sezioneAnagrafica.addField(par); 	
-		}
-
 		return infoModifica;
 	}
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
 
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Dominio entry) throws ConsoleException {
@@ -728,11 +817,39 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 
 	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return infoEsportazione;
+	}
+
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Dominio entry)	throws ConsoleException {
+		InfoForm infoEsportazione = null;
+		try{
+			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+				infoEsportazione = new InfoForm(esportazione);
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return infoEsportazione;
+	}
+
+	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
@@ -756,13 +873,26 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 
 	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+
+	@Override
+	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+
+	@Override
+	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+
+
+	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "dettaglio " + this.titoloServizio + ".Id "+ id;
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			boolean mostraAnomalia = false;
 			// recupero oggetto
@@ -771,9 +901,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,dominio);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, dominio);
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd,id);
+			InfoForm infoEsportazione = this.getInfoEsportazioneDettaglio(uriInfo, bd,dominio);
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -872,6 +1002,20 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 				sezioneAnomalia.addVoce(dominio.getNdpDescrizione() , "");
 			}
 
+			if(dominio.getLogo() != null && dominio.getLogo().length > 0){
+				//sezione logo 
+				it.govpay.web.rs.dars.model.Sezione sezioneLogo = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneLogo"));
+				String etichettaLogo = "";
+				String logoBase64 = Base64.encodeBase64String(dominio.getLogo()); 
+				BufferedImage image = ImageIO.read(new ByteArrayInputStream(dominio.getLogo()));
+				Tika tika = new Tika();
+				String mimeTypeFromExt = tika.detect(dominio.getLogo());
+				String htmlLogo64 = "data:" + mimeTypeFromExt + ";base64," + logoBase64;
+				VoceImage<String> voceLogo = new VoceImage<String>(etichettaLogo, htmlLogo64);
+				voceLogo.setWidth(image.getWidth());
+				voceLogo.setHeight(image.getHeight());
+				sezioneLogo.addVoce(voceLogo);
+			}
 
 			// Elementi correlati
 			String etichettaUnitaOperative = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.unitaOperative.titolo");
@@ -918,8 +1062,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			List<Object> lista = this.creaDominioEAnagrafica(is, uriInfo, bd);
 
@@ -989,11 +1133,12 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "creaEntry " + this.titoloServizio;
 		Dominio entry = null;
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+		String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			JsonConfig jsonConfig = new JsonConfig();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1007,11 +1152,21 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String segregationCode = jsonObjectDominio.getString(segregationCodeId);
 			jsonObjectDominio.remove(segregationCodeId);
 
+			JSONArray jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
+			jsonObjectDominio.remove(logoId);
+
 			jsonConfig.setRootClass(Dominio.class);
 			entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
 
 			if(StringUtils.isNotEmpty(segregationCode)){
 				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
+			}
+
+			if(jsonArrayFile != null && jsonArrayFile.size() == 1){
+				JSONObject jsonObjectFile = jsonArrayFile.getJSONObject(0);
+				//				String fileName = jsonObjectFile.getString(InputFile.FILENAME);
+				String data64 = jsonObjectFile.getString(InputFile.DATA);
+				entry.setLogo(Base64.decodeBase64(data64));
 			}
 
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
@@ -1029,10 +1184,12 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "creaDominioEAnagrafica " + this.titoloServizio;
 		List<Object> list = new ArrayList<Object>();
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
+		String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
+		String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			JsonConfig jsonConfig = new JsonConfig();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1054,6 +1211,16 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String segregationCode = jsonObjectDominio.getString(segregationCodeId);
 			jsonObjectDominio.remove(segregationCodeId);
 
+			Boolean abilitaModificaLogo = false;
+			JSONArray jsonArrayFile =  null;
+			if(jsonObjectDominio.getBoolean(abilitaModificaLogoId)){
+				jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
+				abilitaModificaLogo = true;
+			}
+
+			jsonObjectDominio.remove(logoId);
+			jsonObjectDominio.remove(abilitaModificaLogoId);
+
 			jsonConfig.setRootClass(Dominio.class);
 
 			Dominio  entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
@@ -1067,6 +1234,13 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			if(StringUtils.isNotEmpty(segregationCode)){
 				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
+			}
+
+			if(jsonArrayFile != null && jsonArrayFile.size() == 1){
+				JSONObject jsonObjectFile = jsonArrayFile.getJSONObject(0);
+				//				String fileName = jsonObjectFile.getString(InputFile.FILENAME);
+				String data64 = jsonObjectFile.getString(InputFile.DATA);
+				entry.setLogo(Base64.decodeBase64(data64));
 			}
 
 			jsonConfig.setRootClass(Anagrafica.class);
@@ -1096,6 +1270,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			list.add(entry);
 			list.add(uo);
+			list.add(abilitaModificaLogo);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return list;
@@ -1123,9 +1298,53 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreRagioneSocialeObbligatoria"));
 		}
 
+		String maxWidthS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxWidth");
+		String maxHeightS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxHeight");
+		String maxByteSizeS = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.maxByteSize");
+		long maxByteSize = Long.parseLong(maxByteSizeS);
+		maxByteSizeS = Utils.fileSizeConverter(maxByteSize);
+		int maxWidth = Integer.parseInt(maxWidthS), maxHeight  = Integer.parseInt(maxHeightS);  
+		// validazione immagine in creazione
+		if(entry.getLogo() != null && entry.getLogo().length > 0) {
+			if(entry.getLogo().length > maxByteSize)
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreLogoSizeErrata",maxByteSizeS));
+
+			try {
+				BufferedImage image = ImageIO.read(new ByteArrayInputStream(entry.getLogo()));
+
+				if(image.getWidth() > maxWidth || image.getHeight() > maxHeight){
+					String msg = maxWidth + "x" + maxHeight;
+					throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreLogoDimensioniErrate",msg));
+				}
+
+			} catch (IOException e) { 
+				this.log.error(e.getMessage());
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDecodificaLogo"));
+			}
+		}
+
 		if(oldEntry != null) { //caso update
 			if(!oldEntry.getCodDominio().equals(entry.getCodDominio())) {
-				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreCodDominioNonCoincide",oldEntry.getCodDominio(),entry.getCodDominio()));
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodDominioNonCoincide",oldEntry.getCodDominio(),entry.getCodDominio()));
+			}
+
+			// validazione immagine in update
+			if(entry.getLogo() != null && entry.getLogo().length > 0) {
+				if(entry.getLogo().length > maxByteSize)
+					throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreLogoSizeErrata",maxByteSizeS));
+
+				try {
+					BufferedImage image = ImageIO.read(new ByteArrayInputStream(entry.getLogo()));
+
+					if(image.getWidth() > maxWidth || image.getHeight() > maxHeight){
+						String msg = maxWidth + "x" + maxHeight;
+						throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreLogoDimensioniErrate",msg));
+					}
+
+				} catch (IOException e) { 
+					this.log.error(e.getMessage());
+					throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreDecodificaLogo"));
+				}
 			}
 		}
 	}
@@ -1137,17 +1356,23 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			List<Object> lista = this.creaDominioEAnagrafica(is, uriInfo, bd);
 
-
 			Dominio entry = (Dominio) lista.get(0);
-			UnitaOperativa uo = (UnitaOperativa) lista.get(1); 
+			UnitaOperativa uo = (UnitaOperativa) lista.get(1);
+			Boolean abilitaModificaLogo = (Boolean) lista.get(2); 
 
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio oldEntry = dominiBD.getDominio(entry.getCodDominio());
+
+			// se l'utente non ha modificato il logo reimposto quello originale
+			if(!abilitaModificaLogo) {
+				entry.setLogo(oldEntry.getLogo());
+			}
+
 			this.checkEntry(entry, oldEntry);
 
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
@@ -1160,9 +1385,6 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			// ripristino l'autocommit.
 			bd.setAutoCommit(true); 
-
-
-			dominiBD.updateDominio(entry); 
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
@@ -1275,7 +1497,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		}
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
-		
+
 		if(idsToExport == null || idsToExport.size() == 0) {
 			List<String> msg = new ArrayList<String>();
 			msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.erroreSelezioneVuota"));
@@ -1283,14 +1505,14 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		}
 
 		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout);
 		} 
 
 		String fileName = "Domini.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			DominiBD dominiBD = new DominiBD(bd);
 
@@ -1331,14 +1553,14 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			DominiBD dominiBD = new DominiBD(bd);
 

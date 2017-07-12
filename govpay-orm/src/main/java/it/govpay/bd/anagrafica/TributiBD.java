@@ -116,7 +116,7 @@ public class TributiBD extends BasicBD {
 			}
 			this.getTributoService().update(idVO, vo);
 			tributo.setId(vo.getId());
-			AnagraficaManager.removeFromCache(tributo);
+			emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
@@ -139,6 +139,7 @@ public class TributiBD extends BasicBD {
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
 			this.getTributoService().create(vo);
 			tributo.setId(vo.getId());
+			emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

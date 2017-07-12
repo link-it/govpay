@@ -130,8 +130,6 @@ public class RptUtils {
 		rpt.setVersamento(versamento);
 		rpt.setCanale(canale);
 		rpt.setPsp(psp);
-		rpt.setStazione(stazione);
-		rpt.setIntermediario(intermediario);
 
 		CtRichiestaPagamentoTelematico richiestaRPT = buildRPT(rpt, versamento, portale, versante, canale, autenticazione, ibanAddebito, bd);
 		byte[] rptXml;
@@ -521,7 +519,7 @@ public class RptUtils {
 						}
 	
 						if(nodoChiediCopiaRTRisposta.getFault() != null) {
-							log.info("Fault nell'acquisizione dell'RT: [" + risposta.getFault().getFaultCode() + "] " + risposta.getFault().getFaultString());
+							log.info("Fault nell'acquisizione dell'RT: [" + nodoChiediCopiaRTRisposta.getFault().getFaultCode() + "] " + nodoChiediCopiaRTRisposta.getFault().getFaultString());
 							log.info("Aggiorno lo stato della RPT [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "] in " + nuovoStato + ".");
 							rptBD.updateRpt(rpt.getId(), nuovoStato, null, null, null);
 							rpt.setStato(nuovoStato);

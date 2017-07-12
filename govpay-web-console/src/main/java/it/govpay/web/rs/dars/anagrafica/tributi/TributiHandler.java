@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -50,17 +51,17 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo.TipoContabilta;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.tributi.input.CodContabilita;
 import it.govpay.web.rs.dars.anagrafica.tributi.input.CodificaTributoInIuv;
 import it.govpay.web.rs.dars.anagrafica.tributi.input.TipoContabilita;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -77,14 +78,12 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHandler<Tributo>{
+public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler<Tributo>{
 
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	public static final String ANAGRAFICA_UO = "anagrafica";
 	private Long idDominio = null;
 
-	public TributiHandler(Logger log, BaseDarsService darsService) {
+	public TributiHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -92,17 +91,16 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	public Elenco getElenco(UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo agli utenti che hanno almeno un ruolo consentito per la funzionalita'
+			this.darsService.checkDirittiServizio(bd, this.funzionalita);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			Map<String, String> params = new HashMap<String, String>();
 
 			TributiBD tributiBD = new TributiBD(bd);
@@ -121,8 +119,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			if(simpleSearch) {
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
@@ -145,7 +143,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, 
-					this.getInfoCreazione(uriInfo, bd), count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Tributo> findAll = tributiBD.findAll(filter);
 
@@ -204,116 +202,123 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione =  null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI creazione = this.getUriCreazione(uriInfo, bd);
+				infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-		String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-		String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-		String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+				String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+				String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+				String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
 
-		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-
-		InputNumber idITributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
-		idITributo.setDefaultValue(null);
-		sezioneRoot.addField(idITributo);
-
-		SelectList<Long> idTipoTributo  = (SelectList<Long>) this.infoCreazioneMap.get(idTipoTributoId);
-		List<Voce<Long>> idTipoTributoValues = new ArrayList<Voce<Long>>();
-
-		try{
-			// 1. prelevo i tipi tributi gia' definiti per il dominio
-
-			TributiBD tributiBD = new TributiBD(bd);
-			List<Long> listaIdTipiTributoDaEscludere = tributiBD.getIdTipiTributiDefinitiPerDominio(this.idDominio);
-
-			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
-			TipoTributoFilter filterTipiTributi = tipiTributoBD.newFilter();
-			filterTipiTributi.setListaIdTributiDaEscludere(listaIdTipiTributoDaEscludere );
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.TipoTributo.model().DESCRIZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			filterTipiTributi.getFilterSortList().add(fsw);
-			List<it.govpay.model.TipoTributo> findAll = tipiTributoBD.findAll(filterTipiTributi);
-			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.model.TipoTributo tipoTributo : findAll) {
-					String label = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".idTipoTributo.label.form", tipoTributo.getDescrizione(),tipoTributo.getCodTributo());
-					idTipoTributoValues.add(new Voce<Long>(label, tipoTributo.getId()));
 				}
+
+				Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+
+				InputNumber idITributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
+				idITributo.setDefaultValue(null);
+				sezioneRoot.addField(idITributo);
+
+				SelectList<Long> idTipoTributo  = (SelectList<Long>) this.infoCreazioneMap.get(idTipoTributoId);
+				List<Voce<Long>> idTipoTributoValues = new ArrayList<Voce<Long>>();
+
+				try{
+					// 1. prelevo i tipi tributi gia' definiti per il dominio
+
+					TributiBD tributiBD = new TributiBD(bd);
+					List<Long> listaIdTipiTributoDaEscludere = tributiBD.getIdTipiTributiDefinitiPerDominio(this.idDominio);
+
+					TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
+					TipoTributoFilter filterTipiTributi = tipiTributoBD.newFilter();
+					filterTipiTributi.setListaIdTributiDaEscludere(listaIdTipiTributoDaEscludere );
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.TipoTributo.model().DESCRIZIONE);
+					fsw.setSortOrder(SortOrder.ASC);
+					filterTipiTributi.getFilterSortList().add(fsw);
+					List<it.govpay.model.TipoTributo> findAll = tipiTributoBD.findAll(filterTipiTributi);
+					if(findAll != null && findAll.size() > 0){
+						for (it.govpay.model.TipoTributo tipoTributo : findAll) {
+							String label = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".idTipoTributo.label.form", tipoTributo.getDescrizione(),tipoTributo.getCodTributo());
+							idTipoTributoValues.add(new Voce<Long>(label, tipoTributo.getId()));
+						}
+					}
+				}catch(Exception e){
+					throw new ConsoleException(e);
+				}
+				idTipoTributo.setEditable(true);
+				idTipoTributo.setHidden(false);
+				idTipoTributo.setValues(idTipoTributoValues);
+				idTipoTributo.setDefaultValue(null);
+				sezioneRoot.addField(idTipoTributo);
+
+				InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
+				idDominio.setDefaultValue(this.idDominio);
+				sezioneRoot.addField(idDominio);
+
+				SelectList<Long> idIbanAccredito  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoId);
+				List<Voce<Long>> listaIban = new ArrayList<Voce<Long>>();
+
+				try{
+					DominiBD dominiBD = new DominiBD(bd);
+					IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+					IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
+					fsw.setSortOrder(SortOrder.ASC);
+					filterIban.getFilterSortList().add(fsw);
+					filterIban.setCodDominio(dominiBD.getDominio(this.idDominio).getCodDominio());   
+					List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+
+					if(findAll != null && findAll.size() > 0){
+						for (it.govpay.model.IbanAccredito ib : findAll) {
+							listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+						}
+					}
+
+				}catch(Exception e){
+					throw new ConsoleException(e);
+				}
+				idIbanAccredito.setEditable(true);
+				idIbanAccredito.setHidden(false);
+				idIbanAccredito.setRequired(true);
+				idIbanAccredito.setValues(listaIban);
+				idIbanAccredito.setDefaultValue(null);
+				sezioneRoot.addField(idIbanAccredito);
+
+				List<RawParamValue> idTipoTributoDependencyValues = new ArrayList<RawParamValue>();
+				idTipoTributoDependencyValues.add(new RawParamValue(idTipoTributoId, null));
+
+
+				TipoContabilita tipoContabilita = (TipoContabilita) this.infoCreazioneMap.get(tipoContabilitaId);
+				tipoContabilita.init(idTipoTributoDependencyValues, bd,this.getLanguage());
+				sezioneRoot.addField(tipoContabilita);
+
+				CodContabilita codContabilita = (CodContabilita) this.infoCreazioneMap.get(codContabilitaId);
+				codContabilita.init(idTipoTributoDependencyValues, bd,this.getLanguage());
+				sezioneRoot.addField(codContabilita);
+
+				CodificaTributoInIuv codificaTributoInIuv = (CodificaTributoInIuv) this.infoCreazioneMap.get(codificaTributoInIuvId);
+				codificaTributoInIuv.init(idTipoTributoDependencyValues, bd,this.getLanguage());
+				sezioneRoot.addField(codificaTributoInIuv);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(true); 
+				sezioneRoot.addField(abilitato);
+
+
 			}
-		}catch(Exception e){
+		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-		idTipoTributo.setEditable(true);
-		idTipoTributo.setHidden(false);
-		idTipoTributo.setValues(idTipoTributoValues);
-		idTipoTributo.setDefaultValue(null);
-		sezioneRoot.addField(idTipoTributo);
-
-		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
-		idDominio.setDefaultValue(this.idDominio);
-		sezioneRoot.addField(idDominio);
-
-		SelectList<Long> idIbanAccredito  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoId);
-		List<Voce<Long>> listaIban = new ArrayList<Voce<Long>>();
-
-		try{
-			DominiBD dominiBD = new DominiBD(bd);
-			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
-			IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
-			fsw.setSortOrder(SortOrder.ASC);
-			filterIban.getFilterSortList().add(fsw);
-			filterIban.setCodDominio(dominiBD.getDominio(this.idDominio).getCodDominio());   
-			List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
-
-			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.model.IbanAccredito ib : findAll) {
-					listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
-				}
-			}
-
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
-		idIbanAccredito.setEditable(true);
-		idIbanAccredito.setHidden(false);
-		idIbanAccredito.setRequired(true);
-		idIbanAccredito.setValues(listaIban);
-		idIbanAccredito.setDefaultValue(null);
-		sezioneRoot.addField(idIbanAccredito);
-
-		List<RawParamValue> idTipoTributoDependencyValues = new ArrayList<RawParamValue>();
-		idTipoTributoDependencyValues.add(new RawParamValue(idTipoTributoId, null));
-
-
-		TipoContabilita tipoContabilita = (TipoContabilita) this.infoCreazioneMap.get(tipoContabilitaId);
-		tipoContabilita.init(idTipoTributoDependencyValues, bd,this.getLanguage());
-		sezioneRoot.addField(tipoContabilita);
-
-		CodContabilita codContabilita = (CodContabilita) this.infoCreazioneMap.get(codContabilitaId);
-		codContabilita.init(idTipoTributoDependencyValues, bd,this.getLanguage());
-		sezioneRoot.addField(codContabilita);
-
-		CodificaTributoInIuv codificaTributoInIuv = (CodificaTributoInIuv) this.infoCreazioneMap.get(codificaTributoInIuvId);
-		codificaTributoInIuv.init(idTipoTributoDependencyValues, bd,this.getLanguage());
-		sezioneRoot.addField(codificaTributoInIuv);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(true); 
-		sezioneRoot.addField(abilitato);
-
-
 		return infoCreazione;
 	}
 
@@ -416,134 +421,140 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
-		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = null;
+		try {
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI modifica = this.getUriModifica(uriInfo, bd);
+				infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
-		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-		String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-		String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-		String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
+				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+				String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+				String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+				String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+				String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+				String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
 
-		if(this.infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
-		}
+				if(this.infoCreazioneMap == null){
+					this.initInfoCreazione(uriInfo, bd);
+				}
 
-		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idTributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
-		idTributo.setDefaultValue(entry.getId());
-		sezioneRoot.addField(idTributo);
+				Sezione sezioneRoot = infoModifica.getSezioneRoot();
+				InputNumber idTributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
+				idTributo.setDefaultValue(entry.getId());
+				sezioneRoot.addField(idTributo);
 
-		InputNumber idTipoTributo = new InputNumber(idTipoTributoId, null, null, true, true, false, 1, 255);
-		idTipoTributo.setDefaultValue(entry.getIdTipoTributo());
-		sezioneRoot.addField(idTipoTributo);
+				InputNumber idTipoTributo = new InputNumber(idTipoTributoId, null, null, true, true, false, 1, 255);
+				idTipoTributo.setDefaultValue(entry.getIdTipoTributo());
+				sezioneRoot.addField(idTipoTributo);
 
-		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
-		idDominio.setDefaultValue(entry.getIdDominio());
-		sezioneRoot.addField(idDominio);
+				InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
+				idDominio.setDefaultValue(entry.getIdDominio());
+				sezioneRoot.addField(idDominio);
 
-		SelectList<Long> idIbanAccredito  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoId);
-		List<Voce<Long>> listaIban = new ArrayList<Voce<Long>>();
+				SelectList<Long> idIbanAccredito  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoId);
+				List<Voce<Long>> listaIban = new ArrayList<Voce<Long>>();
 
-		if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)){
-			try{
-				DominiBD dominiBD = new DominiBD(bd);
-				IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
-				IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
-				fsw.setSortOrder(SortOrder.ASC);
-				filterIban.getFilterSortList().add(fsw);
-				filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
-				List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+				if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)){
+					try{
+						DominiBD dominiBD = new DominiBD(bd);
+						IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+						IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
+						fsw.setSortOrder(SortOrder.ASC);
+						filterIban.getFilterSortList().add(fsw);
+						filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
+						List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
-				if(findAll != null && findAll.size() > 0){
-					for (it.govpay.model.IbanAccredito ib : findAll) {
-						listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+						if(findAll != null && findAll.size() > 0){
+							for (it.govpay.model.IbanAccredito ib : findAll) {
+								listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+							}
+						}
+
+					}catch(Exception e){
+						throw new ConsoleException(e);
+					}
+					idIbanAccredito.setEditable(true);
+					idIbanAccredito.setHidden(false);
+					idIbanAccredito.setRequired(true);
+				} else {
+					idIbanAccredito.setEditable(false);
+					idIbanAccredito.setHidden(true);
+					idIbanAccredito.setRequired(false);
+				}
+
+				idIbanAccredito.setValues(listaIban);
+				idIbanAccredito.setDefaultValue(entry.getIdIbanAccredito());
+				sezioneRoot.addField(idIbanAccredito);
+
+				// prelevo le versioni statiche per l'update
+				SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId+"_update");
+
+				TipoContabilta tipoContabilitaCustom = entry.getTipoContabilitaCustom();
+				TipoContabilta tipoContabilitaDefault = entry.getTipoContabilitaDefault();
+
+				List<Voce<String>> lst = new ArrayList<Voce<String>>();
+				if(tipoContabilitaDefault != null){
+					switch(tipoContabilitaDefault){
+					case ALTRO:
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
+						break;
+					case SIOPE:
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
+						break;
+					case SPECIALE:
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
+						break;
+					case CAPITOLO:
+					default:
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
+						break;
 					}
 				}
 
-			}catch(Exception e){
-				throw new ConsoleException(e);
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+
+
+				if(tipoContabilitaCustom == null) {
+					tipoContabilita.setDefaultValue(tipoContabilitaDefault.getCodifica() + "_p");
+				} else {
+					tipoContabilita.setDefaultValue(tipoContabilitaCustom.getCodifica());
+				}
+
+				tipoContabilita.setValues(lst); 
+				sezioneRoot.addField(tipoContabilita);
+
+				InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId+"_update");
+				String codContabilitaLabel = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ?	Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codContabilita.label.default.form",entry.getCodContabilitaDefault()) :	Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
+				codContabilita.setLabel(codContabilitaLabel);
+				codContabilita.setDefaultValue(entry.getCodContabilitaCustom());
+				sezioneRoot.addField(codContabilita);
+
+				InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId+"_update");
+				String codificaTributoInIuvLabel = StringUtils.isNotEmpty(entry.getCodTributoIuvDefault()) ? Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default.form",entry.getCodTributoIuvDefault()) : Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
+
+				codificaTributoInIuv.setLabel(codificaTributoInIuvLabel);
+				codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvCustom());
+				sezioneRoot.addField(codificaTributoInIuv);
+
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
 			}
-			idIbanAccredito.setEditable(true);
-			idIbanAccredito.setHidden(false);
-			idIbanAccredito.setRequired(true);
-		} else {
-			idIbanAccredito.setEditable(false);
-			idIbanAccredito.setHidden(true);
-			idIbanAccredito.setRequired(false);
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
 		}
-
-		idIbanAccredito.setValues(listaIban);
-		idIbanAccredito.setDefaultValue(entry.getIdIbanAccredito());
-		sezioneRoot.addField(idIbanAccredito);
-
-		// prelevo le versioni statiche per l'update
-		SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId+"_update");
-
-		TipoContabilta tipoContabilitaCustom = entry.getTipoContabilitaCustom();
-		TipoContabilta tipoContabilitaDefault = entry.getTipoContabilitaDefault();
-
-		List<Voce<String>> lst = new ArrayList<Voce<String>>();
-		if(tipoContabilitaDefault != null){
-			switch(tipoContabilitaDefault){
-			case ALTRO:
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
-				break;
-			case SIOPE:
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
-				break;
-			case SPECIALE:
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
-				break;
-			case CAPITOLO:
-			default:
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
-				break;
-			}
-		}
-
-		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
-
-
-		if(tipoContabilitaCustom == null) {
-			tipoContabilita.setDefaultValue(tipoContabilitaDefault.getCodifica() + "_p");
-		} else {
-			tipoContabilita.setDefaultValue(tipoContabilitaCustom.getCodifica());
-		}
-
-		tipoContabilita.setValues(lst); 
-		sezioneRoot.addField(tipoContabilita);
-
-		InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId+"_update");
-		String codContabilitaLabel = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ?	Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codContabilita.label.default.form",entry.getCodContabilitaDefault()) :	Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
-		codContabilita.setLabel(codContabilitaLabel);
-		codContabilita.setDefaultValue(entry.getCodContabilitaCustom());
-		sezioneRoot.addField(codContabilita);
-
-		InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId+"_update");
-		String codificaTributoInIuvLabel = StringUtils.isNotEmpty(entry.getCodTributoIuvDefault()) ? Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default.form",entry.getCodTributoIuvDefault()) : Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
-
-		codificaTributoInIuv.setLabel(codificaTributoInIuvLabel);
-		codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvCustom());
-		sezioneRoot.addField(codificaTributoInIuv);
-
-		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
-
 		return infoModifica;
 	}
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
 
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
@@ -551,11 +562,17 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
+
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tributo entry)	throws ConsoleException {	return null;	}
+
+	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
 
 			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
@@ -576,13 +593,25 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	@Override
+	public Object getDeleteField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+
+	@Override
+	public Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+
+
+	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			// recupero oggetto
 			TributiBD tributiBD = new TributiBD(bd);
@@ -590,9 +619,9 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,tributo);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, tributo);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -653,8 +682,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			Tributo entry = this.creaEntry(is, uriInfo, bd);
 
@@ -691,8 +720,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		Tributo entry = null;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			JsonConfig jsonConfig = new JsonConfig();
 
@@ -781,8 +810,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo all'amministratore
-			this.darsService.checkOperatoreAdmin(bd);
+			// Operazione consentita solo ai ruoli con diritto di scrittura
+			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita);
 
 			Tributo entry = this.creaEntry(is, uriInfo, bd);
 
@@ -853,7 +882,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
 

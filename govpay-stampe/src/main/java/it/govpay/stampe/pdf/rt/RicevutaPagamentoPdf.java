@@ -20,7 +20,7 @@ import net.sf.dynamicreports.report.constant.PageType;
 
 public class RicevutaPagamentoPdf implements IRicevutaPagamento{
 
-	public String getPdfRicevutaPagamento(String pathLoghi, RicevutaPagamento ricevuta, Properties prop, OutputStream os ,Logger log) throws Exception {
+	public String getPdfRicevutaPagamento(RicevutaPagamento ricevuta, Properties prop, OutputStream os ,Logger log) throws Exception {
 		String msg = null;
 		List<String> errList = new ArrayList<String>();
 
@@ -30,20 +30,20 @@ public class RicevutaPagamentoPdf implements IRicevutaPagamento{
 
 			List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
 
-			ComponentBuilder<?, ?> createTitleComponent = TemplateRt.createTitleComponent(pathLoghi,ricevuta,errList,log);
+			ComponentBuilder<?, ?> createTitleComponent = TemplateRt.createTitleComponent(ricevuta,errList,log);
 			if(createTitleComponent != null) {
 				cl.add(createTitleComponent);
 
-				ComponentBuilder<?,?> createSezioneDebitore = TemplateRt.createSezioneDebitore(ricevuta, errList, log);
-				cl.add(createSezioneDebitore);
+				ComponentBuilder<?,?> createSezioneCreditore = TemplateRt.createSezioneCreditore(ricevuta, errList, log);
+				cl.add(createSezioneCreditore);
 
-				ComponentBuilder<?,?> createSezioneTitoloRicevuta = TemplateRt.createSezioneTitoloRicevuta(ricevuta, errList, log);
-				cl.add(createSezioneTitoloRicevuta);
+//				ComponentBuilder<?,?> createSezioneTitoloRicevuta = TemplateRt.createSezioneTitoloRicevuta(ricevuta, errList, log);
+//				cl.add(createSezioneTitoloRicevuta);
 
-				ComponentBuilder<?,?> createSezioneRicevutaPagamento = TemplateRt.createSezionePagamento(ricevuta, errList, log); 
+				ComponentBuilder<?,?> createSezioneImporti = TemplateRt.createSezioneImporti(ricevuta, errList, log); 
 
-				if(createSezioneRicevutaPagamento != null)
-					cl.add(createSezioneRicevutaPagamento);
+				if(createSezioneImporti != null)
+					cl.add(createSezioneImporti);
 
 				// se ho generato almeno il titolo allora produco il pdf.
 				if(cl.size() > 0){

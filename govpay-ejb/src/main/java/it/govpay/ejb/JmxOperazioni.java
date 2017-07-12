@@ -46,8 +46,11 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 	public final static String AGGIORNAMENTO_REGISTRO_PSP = "aggiornamentoRegistroPsp";
 	public final static String RECUPERO_RPT_PENDENTI = "recuperoRptPendenti";
 	public final static String SPEDIZIONE_NOTIFICHE = "spedizioneNotifiche";
+	public final static String RECUPERO_TRACCIATI_PENDENTI = "recuperoTracciatiPendenti";
+	public final static String ATTIVAZIONE_RECUPERO_TRACCIATI_PENDENTI = "attivazioneRecuperoTracciatiPendenti";
 	public final static String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
 	public final static String ESTRATTO_CONTO = "estrattoConto";
+	
 
 	/** getAttribute */
 	@Override
@@ -119,6 +122,16 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 			return it.govpay.core.business.Operazioni.spedizioneNotifiche("JmxCall");
 		}
 
+		if(actionName.equals(RECUPERO_TRACCIATI_PENDENTI)){
+			return it.govpay.core.business.Operazioni.elaborazioneTracciati("JmxCall");
+		}
+		
+		if(actionName.equals(ATTIVAZIONE_RECUPERO_TRACCIATI_PENDENTI)){
+			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
+			return "Elaborazione tracciati schedulata";
+		}
+		
+
 		throw new UnsupportedOperationException("Operazione "+actionName+" sconosciuta");
 	}
 
@@ -166,6 +179,19 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 					String.class.getName(),
 					MBeanOperationInfo.ACTION);
 			
+			// MetaData per l'operazione 
+			MBeanOperationInfo recuperoTracciatiPendentiOP
+			= new MBeanOperationInfo(RECUPERO_TRACCIATI_PENDENTI,"Recupera tracciati pendenti",
+					null,
+					String.class.getName(),
+					MBeanOperationInfo.ACTION);
+			
+			MBeanOperationInfo attivazioneRecuperoTracciatiPendentiOP
+			= new MBeanOperationInfo(ATTIVAZIONE_RECUPERO_TRACCIATI_PENDENTI,"Schedula il batch di recupero tracciati pendenti",
+					null,
+					String.class.getName(),
+					MBeanOperationInfo.ACTION);
+			
 			// Mbean costruttore
 			MBeanConstructorInfo defaultConstructor = new MBeanConstructorInfo("Default Constructor","Crea e inizializza una nuova istanza del MBean",null);
 
@@ -173,7 +199,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 			MBeanConstructorInfo[] constructors = new MBeanConstructorInfo[]{defaultConstructor};
 
 			// Lista operazioni
-			MBeanOperationInfo[] operations = new MBeanOperationInfo[]{acquisizioneRendicontazioniOP, aggiornamentoRegistroPspOP, recuperoRptPendentiOP, spedizioneEsitiOP, resetCacheAnagraficaOP};
+			MBeanOperationInfo[] operations = new MBeanOperationInfo[]{acquisizioneRendicontazioniOP, aggiornamentoRegistroPspOP, recuperoRptPendentiOP, spedizioneEsitiOP, resetCacheAnagraficaOP, recuperoTracciatiPendentiOP, attivazioneRecuperoTracciatiPendentiOP};
 
 			return new MBeanInfo(className,description,null,constructors,operations,null);
 

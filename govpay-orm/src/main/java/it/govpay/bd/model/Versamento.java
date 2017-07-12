@@ -44,11 +44,11 @@ public class Versamento extends it.govpay.model.Versamento {
 	private static final long serialVersionUID = 1L;
 	// BUSINESS
 	
-	private List<SingoloVersamento> singoliVersamenti;
-	private List<Rpt> rpts;
-	private Applicazione applicazione;
-	private UnitaOperativa uo;
-	private Iuv iuv;
+	private transient List<SingoloVersamento> singoliVersamenti;
+	private transient List<Rpt> rpts;
+	private transient Applicazione applicazione;
+	private transient UnitaOperativa uo;
+	private transient Iuv iuv;
 	
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {

@@ -273,7 +273,7 @@ public class RrUtils extends NdpValidationUtils {
 		evento.setCodCanale(rpt.getCanale(bd).getCodCanale());
 		evento.setCodDominio(rpt.getCodDominio());
 		evento.setCodPsp(rpt.getPsp(bd).getCodPsp());
-		evento.setCodStazione(rpt.getCodStazione());
+		evento.setCodStazione(rpt.getStazione(bd).getCodStazione());
 		evento.setComponente(Evento.COMPONENTE);
 		evento.setDataRisposta(new Date());
 		evento.setErogatore(Evento.NDP);

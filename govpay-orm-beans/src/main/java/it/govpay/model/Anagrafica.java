@@ -21,6 +21,7 @@
 package it.govpay.model;
 
 public class Anagrafica extends BasicModel {
+
 	private static final long serialVersionUID = 1L;
 	private String ragioneSociale;
 	private String codUnivoco;
@@ -113,31 +114,5 @@ public class Anagrafica extends BasicModel {
 	}
 	public void setUrlSitoWeb(String urlSitoWeb) {
 		this.urlSitoWeb = urlSitoWeb;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		Anagrafica anagrafica = null;
-		if(obj instanceof Anagrafica) {
-			anagrafica = (Anagrafica) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal =
-				equals(cap, anagrafica.getCap()) &&
-				equals(cellulare, anagrafica.getCellulare()) &&
-				equals(civico, anagrafica.getCivico()) &&
-				equals(codUnivoco, anagrafica.getCodUnivoco()) &&
-				equals(email, anagrafica.getEmail()) &&
-				equals(fax, anagrafica.getFax()) &&
-				equals(indirizzo, anagrafica.getIndirizzo()) &&
-				equals(localita, anagrafica.getLocalita()) &&
-				equals(nazione, anagrafica.getNazione()) &&
-				equals(provincia, anagrafica.getProvincia()) &&
-				equals(ragioneSociale, anagrafica.getRagioneSociale()) &&
-				equals(telefono, anagrafica.getTelefono()) &&
-				equals(urlSitoWeb, anagrafica.getUrlSitoWeb());
-		
-		return equal;
 	}
 }

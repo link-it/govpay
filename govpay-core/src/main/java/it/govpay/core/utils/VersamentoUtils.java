@@ -38,6 +38,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
@@ -144,6 +145,59 @@ public class VersamentoUtils {
 		for(it.govpay.servizi.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
 			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, bd));
 		}
+		
+		return model;
+	}
+
+	public static Versamento toVersamentoModel(CaricamentoRequest versamento, BasicBD bd) throws ServiceException, GovPayException {
+		Versamento model = new Versamento();
+		model.setAggiornabile(true);
+		it.govpay.model.Anagrafica anagrafica = new it.govpay.model.Anagrafica();
+		anagrafica.setCodUnivoco(versamento.getCfDebitore());
+		anagrafica.setRagioneSociale(versamento.getAnagraficaDebitore()); 
+		model.setAnagraficaDebitore(anagrafica);
+		
+		CausaleSemplice causale = model.new CausaleSemplice();
+		causale.setCausale(versamento.getCausale());
+		model.setCausaleVersamento(causale);
+		
+		model.setCodBundlekey(versamento.getBundleKey());
+		model.setCodLotto(versamento.getIdDebito()); 
+		model.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+		model.setDataCreazione(new Date());
+		model.setDataScadenza(versamento.getScadenza());
+		model.setDataUltimoAggiornamento(new Date());
+		model.setDescrizioneStato(null);
+		model.setId(null);
+		try {
+			model.setApplicazione(versamento.getCodApplicazione(), bd);
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.APP_000, versamento.getCodApplicazione());
+		}
+		
+		Dominio dominio = null;
+		try {
+			dominio = AnagraficaManager.getDominio(bd, versamento.getCodDominio());
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.DOM_000, versamento.getCodDominio());
+		}
+		
+		try {
+			model.setUo(dominio.getId(), Dominio.EC, bd);
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.UOP_000, Dominio.EC, versamento.getCodDominio());
+		}
+		
+		model.setImportoTotale(new BigDecimal(versamento.getImporto()));
+		model.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+		
+		it.govpay.servizi.commons.Versamento.SingoloVersamento svModel = new it.govpay.servizi.commons.Versamento.SingoloVersamento();
+		svModel.setCodSingoloVersamentoEnte(versamento.getCodVersamentoEnte());
+		BigDecimal importoSingoloVersamentoAsBigDecimal  = new BigDecimal(versamento.getImporto());
+		svModel.setImporto(importoSingoloVersamentoAsBigDecimal);
+		svModel.setNote(versamento.getNote());
+		svModel.setCodTributo(versamento.getCodTributo());
+		model.addSingoloVersamento(toSingoloVersamentoModel(model, svModel, bd));
 		
 		return model;
 	}

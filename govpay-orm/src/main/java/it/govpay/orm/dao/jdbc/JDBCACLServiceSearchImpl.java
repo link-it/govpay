@@ -158,12 +158,15 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(ACL.model().COD_SERVIZIO);
 			fields.add(ACL.model().COD_TIPO);
+			fields.add(ACL.model().DIRITTI);
+			fields.add(ACL.model().ADMIN);
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_portale", Long.class, "id_portale", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_operatore", Long.class, "id_operatore", this.getFieldConverter().toTable(ACL.model())));
-			
+			fields.add(new CustomField("id_ruolo", Long.class, "id_ruolo", this.getFieldConverter().toTable(ACL.model())));
+
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
@@ -173,6 +176,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				Object idPortaleObj = map.remove("id_portale");
 				Object idOperatoreObj = map.remove("id_operatore");
 				Object idTipoTributoObj = map.remove("id_tipo_tributo");
+				Object idRuoloObj = map.remove("id_ruolo");
 				
 				
 				ACL acl = (ACL)this.getFetch().fetch(jdbcProperties.getDatabase(), ACL.model(), map);
@@ -239,6 +243,18 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 					}
 					id_acl_tipoTributo.setId(idFK_acl_tipoTributo);
 					acl.setIdTipoTributo(id_acl_tipoTributo);
+				}
+				
+				if(idRuoloObj instanceof Long) {
+					it.govpay.orm.IdRuolo id_acl_ruolo = null;
+					Long idFK_acl_ruolo = (Long) idRuoloObj;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_acl_ruolo = ((JDBCRuoloServiceSearch)(this.getServiceManager().getRuoloServiceSearch())).findId(idFK_acl_ruolo, false);
+					}else{
+						id_acl_ruolo = new it.govpay.orm.IdRuolo();
+					}
+					id_acl_ruolo.setId(idFK_acl_ruolo);
+					acl.setIdRuolo(id_acl_ruolo);
 				}
 				
 				list.add(acl);

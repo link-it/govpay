@@ -19,20 +19,6 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
-import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.converter.DominioConverter;
-import it.govpay.bd.model.converter.IbanAccreditoConverter;
-import it.govpay.bd.wrapper.StatoNdP;
-import it.govpay.model.IbanAccredito;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.dao.jdbc.JDBCDominioService;
-import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
-import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +35,23 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.IFilter;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.converter.DominioConverter;
+import it.govpay.bd.model.converter.IbanAccreditoConverter;
+import it.govpay.bd.wrapper.StatoNdP;
+import it.govpay.model.IbanAccredito;
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.dao.jdbc.JDBCDominioService;
+import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
+
 public class DominiBD extends BasicBD {
+	
+	public static final String tipoElemento = "DOMINIO";
 
 	public DominiBD(BasicBD basicBD) {
 		super(basicBD);
@@ -68,10 +70,8 @@ public class DominiBD extends BasicBD {
 		try {
 			IdDominio id = new IdDominio();
 			id.setCodDominio(codDominio);
-			
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().get(id);
 			Dominio dominio = DominioConverter.toDTO(dominioVO);
-
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -97,7 +97,6 @@ public class DominiBD extends BasicBD {
 		try {
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			Dominio dominio = DominioConverter.toDTO(dominioVO);
-
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -114,10 +113,9 @@ public class DominiBD extends BasicBD {
 	public void insertDominio(Dominio dominio) throws ServiceException{
 		try {
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
-			
 			this.getDominioService().create(vo);
 			dominio.setId(vo.getId());
-			
+			emitAudit(dominio);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -137,10 +135,9 @@ public class DominiBD extends BasicBD {
 			if(!this.getDominioService().exists(id)) {
 				throw new NotFoundException("Dominio con id ["+id+"] non esiste.");
 			}
-			
 			this.getDominioService().update(id, vo);
 			dominio.setId(vo.getId());
-			AnagraficaManager.removeFromCache(dominio);
+			emitAudit(dominio);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -155,7 +152,6 @@ public class DominiBD extends BasicBD {
 	
 	public void setStatoNdp(long idDominio, Integer codice, String operazione, String descrizione) throws ServiceException{
 		try {
-			
 			List<UpdateField> lst = new ArrayList<UpdateField>();
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_STATO, codice));
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_OPERAZIONE, operazione));

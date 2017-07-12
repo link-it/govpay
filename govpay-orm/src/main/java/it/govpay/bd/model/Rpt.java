@@ -36,13 +36,11 @@ public class Rpt extends it.govpay.model.Rpt{
 	 
 	// Business
 	
-	private Versamento versamento;
-	private Stazione stazione;
-	private Intermediario intermediario;
-	private Canale canale;
-	private Psp psp;
-	private List<Pagamento> pagamenti;
-	
+	private transient Versamento versamento;
+	private transient Dominio dominio;
+	private transient Canale canale;
+	private transient Psp psp;
+	private transient List<Pagamento> pagamenti;
 	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
 		if(this.versamento == null) {
@@ -56,29 +54,15 @@ public class Rpt extends it.govpay.model.Rpt{
 		this.versamento = versamento;
 	}
 	
-	public Stazione getStazione(BasicBD bd) throws ServiceException {
-		if(this.stazione == null) {
+	public Dominio getDominio(BasicBD bd) throws ServiceException {
+		if(this.dominio == null) {
 			try {
-				this.stazione = AnagraficaManager.getStazione(bd, getCodStazione());
+				this.dominio = AnagraficaManager.getDominio(bd, getCodDominio());
 			} catch (NotFoundException e) {
 				throw new ServiceException(e);
 			}
 		}
-		return this.stazione;
-	}
-	
-	public void setStazione(Stazione stazione) {
-		this.stazione = stazione;
-	}
-	
-	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
-		if(this.intermediario == null) {
-			this.intermediario = AnagraficaManager.getIntermediario(bd, getStazione(bd).getIdIntermediario());
-		}
-		return this.intermediario;
-	}
-	public void setIntermediario(Intermediario intermediario) {
-		this.intermediario = intermediario;
+		return this.dominio;
 	}
 	
 	public Canale getCanale(BasicBD bd) throws ServiceException {
@@ -118,6 +102,15 @@ public class Rpt extends it.govpay.model.Rpt{
 	
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
+	}
+
+	public Stazione getStazione(BasicBD bd) throws ServiceException {
+		return getDominio(bd).getStazione(bd);
+	}
+
+
+	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
+		return getDominio(bd).getStazione(bd).getIntermediario(bd);
 	}
 
 }

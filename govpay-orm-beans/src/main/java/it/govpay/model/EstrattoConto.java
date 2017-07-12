@@ -5,13 +5,8 @@ import java.util.Date;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
-public class EstrattoConto extends BasicModel {
+public class EstrattoConto {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	private Date dataPagamento;
 	private Double importoPagato;
 	private Double importoDovuto;

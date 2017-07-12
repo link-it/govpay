@@ -39,6 +39,7 @@ public class IntermediarioFilter extends AbstractFilter {
 
 	// Viene utilizzato in or sui campi IDIntermediario e NomeSpc
 	private String idIntermediario;
+	private String denominazione;
 	private CustomField cf;
 
 	public enum SortFields {
@@ -56,6 +57,7 @@ public class IntermediarioFilter extends AbstractFilter {
 			IntermediarioFieldConverter converter = new IntermediarioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(Intermediario.model()));
 			this.listaFieldSimpleSearch.add(Intermediario.model().COD_INTERMEDIARIO);
+			this.listaFieldSimpleSearch.add(Intermediario.model().DENOMINAZIONE);
 		} catch(Exception e){
 			
 		}
@@ -65,7 +67,8 @@ public class IntermediarioFilter extends AbstractFilter {
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression exp = this.newExpression();
-
+			boolean addAnd = false;
+			
 			if(this.idIntermediario != null){
 				//1 provo a convertirlo in un long
 				long l = -1l;
@@ -83,6 +86,15 @@ public class IntermediarioFilter extends AbstractFilter {
 				
 				// 2. metto in or l'eventuale stringa per il nome dell'intermediario
 				exp.ilike(Intermediario.model().COD_INTERMEDIARIO, this.idIntermediario,LikeMode.ANYWHERE); 
+				
+				addAnd = true;
+			}
+			
+			if(this.denominazione != null){
+				if(addAnd)
+					exp.and();
+				
+				exp.ilike(Intermediario.model().DENOMINAZIONE, this.denominazione,LikeMode.ANYWHERE);
 			}
 
 			return exp;
@@ -118,6 +130,14 @@ public class IntermediarioFilter extends AbstractFilter {
 
 	public void setIdIntermediario(String idIntermediario) {
 		this.idIntermediario = idIntermediario;
+	}
+
+	public String getDenominazione() {
+		return denominazione;
+	}
+
+	public void setDenominazione(String denominazione) {
+		this.denominazione = denominazione;
 	}
 
 

@@ -56,6 +56,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.v1.beans.Errore;
 import it.govpay.web.rs.v1.beans.Incasso;
 import it.govpay.web.rs.v1.beans.IncassoExt;
 
@@ -68,8 +69,8 @@ public class Incassi extends BaseRsServiceV1 {
 	@Path("/")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response addIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
-		String methodName = "addIncasso"; 
+	public Response inserisciIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+		String methodName = "inserisciIncasso"; 
 		
 		BasicBD bd = null;
 		GpContext ctx = null; 
@@ -123,15 +124,14 @@ public class Incassi extends BaseRsServiceV1 {
 	
 	@GET
 	@Path("/")
-	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response getIncassi(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
+	public Response cercaIncassi(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@QueryParam(value="data_inizio") @Nullable Date inizio,
 			@QueryParam(value="data_fine") @Nullable Date fine,
 			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value="limit") @DefaultValue(value="25") int limit) {
 		
-		String methodName = "getIncassi"; 
+		String methodName = "cercaIncassi"; 
 		if(limit > 25) limit = 25;
 		
 		BasicBD bd = null;
@@ -176,10 +176,10 @@ public class Incassi extends BaseRsServiceV1 {
 	@Path("/{trn}")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response getIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
+	public Response leggiIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam(value="trn") String trn) {
 		
-		String methodName = "getIncasso"; 
+		String methodName = "leggiIncasso"; 
 		BasicBD bd = null;
 		GpContext ctx = null; 
 		

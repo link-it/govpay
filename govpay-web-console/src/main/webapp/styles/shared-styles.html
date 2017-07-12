@@ -22,6 +22,7 @@
 
       #drawerToolbar .menu-name {
         @apply(--paper-font-title);
+        font-size: 21px;
       }
 
       /**.addFAB, .editFAB {
@@ -32,6 +33,7 @@
 
       paper-toolbar {
         --paper-toolbar-background: var(--toolbar-color);
+        font-size: 21px;
       }
 
       paper-scroll-header-panel {
@@ -146,6 +148,12 @@
         --paper-toast-color: #9F6000;
       }
 
+      .paper-toast-button {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+      }
+
       .buttonBar {
         padding-top: 24px;
         @apply(--layout-horizontal);
@@ -165,6 +173,10 @@
       vaadin-combo-box-overlay::content #selector .item {
         white-space: normal !important;
         color: red;
+      }
+
+      .paper-toast-button {
+        --paper-icon-button-ink-color: transparent;
       }
 
       /*#spinner {

@@ -88,6 +88,13 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(ACL.model().ID_RUOLO.COD_RUOLO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_ruolo";
+			}else{
+				return "cod_ruolo";
+			}
+		}
 		if(field.equals(ACL.model().COD_TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tipo";
@@ -95,11 +102,25 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tipo";
 			}
 		}
+		if(field.equals(ACL.model().DIRITTI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".diritti";
+			}else{
+				return "diritti";
+			}
+		}
 		if(field.equals(ACL.model().COD_SERVIZIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_servizio";
 			}else{
 				return "cod_servizio";
+			}
+		}
+		if(field.equals(ACL.model().ADMIN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".amministratore";
+			}else{
+				return "amministratore";
 			}
 		}
 		if(field.equals(ACL.model().ID_DOMINIO.COD_DOMINIO)){
@@ -138,10 +159,19 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(ACL.model().ID_OPERATORE.PRINCIPAL)){
 			return this.toTable(ACL.model().ID_OPERATORE, returnAlias);
 		}
+		if(field.equals(ACL.model().ID_RUOLO.COD_RUOLO)){
+			return this.toTable(ACL.model().ID_RUOLO, returnAlias);
+		}
 		if(field.equals(ACL.model().COD_TIPO)){
 			return this.toTable(ACL.model(), returnAlias);
 		}
+		if(field.equals(ACL.model().DIRITTI)){
+			return this.toTable(ACL.model(), returnAlias);
+		}
 		if(field.equals(ACL.model().COD_SERVIZIO)){
+			return this.toTable(ACL.model(), returnAlias);
+		}
+		if(field.equals(ACL.model().ADMIN)){
 			return this.toTable(ACL.model(), returnAlias);
 		}
 		if(field.equals(ACL.model().ID_DOMINIO.COD_DOMINIO)){
@@ -174,6 +204,9 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(ACL.model().ID_OPERATORE)){
 			return "operatori";
+		}
+		if(model.equals(ACL.model().ID_RUOLO)){
+			return "ruoli";
 		}
 		if(model.equals(ACL.model().ID_DOMINIO)){
 			return "domini";

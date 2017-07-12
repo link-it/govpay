@@ -79,6 +79,14 @@ public class RptConverter {
 		dto.setStato(StatoRpt.toEnum(vo.getStato()));
 		dto.setXmlRpt(vo.getXmlRPT());
 		dto.setXmlRt(vo.getXmlRT());
+		
+		dto.setDataConservazione(vo.getDataConservazione());
+		
+		if(vo.getStatoConservazione() != null)
+			dto.setStatoConservazione(it.govpay.model.Rpt.StatoConservazione.valueOf(vo.getStatoConservazione()));
+		
+		dto.setDescrizioneStatoConservazione(vo.getDescrizioneStatoCons());
+
 		return dto;
 	}
 
@@ -122,6 +130,14 @@ public class RptConverter {
 		vo.setStato(dto.getStato().toString());
 		vo.setXmlRPT(dto.getXmlRpt());
 		vo.setXmlRT(dto.getXmlRt());
+		
+		vo.setDataConservazione(dto.getDataConservazione());
+		
+		if(dto.getStatoConservazione() != null)
+			vo.setStatoConservazione(dto.getStatoConservazione().name());
+		
+		vo.setDescrizioneStatoCons(dto.getDescrizioneStatoConservazione());
+
 		return vo;
 	}
 

@@ -121,6 +121,23 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			}
 		}
 
+		// Object _ruolo
+		Long id_ruolo = null;
+		it.govpay.orm.IdRuolo idLogic_ruolo = null;
+		idLogic_ruolo = acl.getIdRuolo();
+		if(idLogic_ruolo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_ruolo = ((JDBCRuoloServiceSearch)(this.getServiceManager().getRuoloServiceSearch())).findTableId(idLogic_ruolo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_ruolo = idLogic_ruolo.getId();
+				if(id_ruolo==null || id_ruolo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 		// Object _dominio
 		Long id_dominio = null;
 		it.govpay.orm.IdDominio idLogic_dominio = null;
@@ -159,10 +176,13 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		// Object acl
 		sqlQueryObjectInsert.addInsertTable(this.getACLFieldConverter().toTable(ACL.model()));
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_TIPO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().ADMIN,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_portale","?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
+		sqlQueryObjectInsert.addInsertField("id_ruolo","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
 
@@ -170,10 +190,13 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getACLFetch().getKeyGeneratorObject(ACL.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodTipo(),ACL.model().COD_TIPO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getDiritti(),ACL.model().DIRITTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodServizio(),ACL.model().COD_SERVIZIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getAdmin(),ACL.model().ADMIN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ruolo,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoTributo,Long.class)
 		);
@@ -274,6 +297,23 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			}
 		}
 
+		// Object _acl_ruolo
+		Long id_acl_ruolo = null;
+		it.govpay.orm.IdRuolo idLogic_acl_ruolo = null;
+		idLogic_acl_ruolo = acl.getIdRuolo();
+		if(idLogic_acl_ruolo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_acl_ruolo = ((JDBCRuoloServiceSearch)(this.getServiceManager().getRuoloServiceSearch())).findTableId(idLogic_acl_ruolo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_acl_ruolo = idLogic_acl_ruolo.getId();
+				if(id_acl_ruolo==null || id_acl_ruolo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 		// Object _acl_dominio
 		Long id_acl_dominio = null;
 		it.govpay.orm.IdDominio idLogic_acl_dominio = null;
@@ -316,8 +356,12 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_acl = new java.util.ArrayList<JDBCObject>();
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().COD_TIPO,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getCodTipo(), ACL.model().COD_TIPO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false), "?");
+		lstObjects_acl.add(new JDBCObject(acl.getDiritti(), ACL.model().DIRITTI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getCodServizio(), ACL.model().COD_SERVIZIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().ADMIN,false), "?");
+		lstObjects_acl.add(new JDBCObject(acl.getAdmin(), ACL.model().ADMIN.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
@@ -326,6 +370,9 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_ruolo","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
@@ -341,6 +388,9 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_acl.add(new JDBCObject(id_acl_operatore, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_acl.add(new JDBCObject(id_acl_ruolo, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_acl.add(new JDBCObject(id_acl_dominio, Long.class));

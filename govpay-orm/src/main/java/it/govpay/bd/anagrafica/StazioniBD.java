@@ -60,7 +60,7 @@ public class StazioniBD extends BasicBD {
 
 			this.getStazioneService().create(vo);
 			stazione.setId(vo.getId());			
-			
+			emitAudit(stazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -78,7 +78,7 @@ public class StazioniBD extends BasicBD {
 			
 			this.getStazioneService().update(idStazione, vo);
 			stazione.setId(vo.getId());
-			AnagraficaManager.removeFromCache(stazione);
+			emitAudit(stazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {

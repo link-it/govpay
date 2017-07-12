@@ -37,9 +37,10 @@ public class Notifica extends it.govpay.model.Notifica {
 	
 	public Notifica(Rpt rpt, TipoNotifica tipoNotifica, BasicBD bd) throws ServiceException {
 		setApplicazione(rpt.getVersamento(bd).getApplicazione(bd));
-		setDataAggiornamento(new Date());
-		setDataCreazione(new Date());
-		setDataProssimaSpedizione(new Date());
+		long adesso = new Date().getTime();
+		setDataAggiornamento(new Date(adesso));
+		setDataCreazione(new Date(adesso));
+		setDataProssimaSpedizione(new Date(adesso + 60000 ));
 		setDescrizioneStato(null);
 		setRpt(rpt);
 		setStato(StatoSpedizione.DA_SPEDIRE);
@@ -49,9 +50,10 @@ public class Notifica extends it.govpay.model.Notifica {
 	
 	public Notifica(Rr rr, TipoNotifica tipoNotifica, BasicBD bd) throws ServiceException {
 		setApplicazione(rr.getRpt(bd).getVersamento(bd).getApplicazione(bd));
-		setDataAggiornamento(new Date());
-		setDataCreazione(new Date());
-		setDataProssimaSpedizione(new Date());
+		long adesso = new Date().getTime();
+		setDataAggiornamento(new Date(adesso));
+		setDataCreazione(new Date(adesso));
+		setDataProssimaSpedizione(new Date(adesso + 60000 ));
 		setDescrizioneStato(null);
 		setRr(rr);
 		setStato(StatoSpedizione.DA_SPEDIRE);
@@ -62,9 +64,9 @@ public class Notifica extends it.govpay.model.Notifica {
 	private static final long serialVersionUID = 1L;
 	
 	// Business 
-	private Applicazione applicazione;
-	private Rpt rpt;
-	private Rr rr;
+	private transient Applicazione applicazione;
+	private transient Rpt rpt;
+	private transient Rr rr;
 	
 	public void setApplicazione(Applicazione applicazione) {
 		this.applicazione = applicazione;

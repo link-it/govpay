@@ -174,6 +174,12 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:complexType name="iuv-search">
+		<xsd:sequence>
+			<xsd:element name="iuv" type="String35"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	
 	<xsd:complexType name="id-incasso">
 		<xsd:sequence>
@@ -266,6 +272,12 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
+	<xsd:complexType name="id-ruolo">
+		<xsd:sequence>
+			<xsd:element name="codRuolo" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:complexType name="id-versamento">
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="xsd:string"/>
@@ -429,6 +441,8 @@
 			<xsd:element minOccurs="0" name="ndpOperazione" type="String256"/>
 			<xsd:element minOccurs="0" name="ndpDescrizione" type="String1024"/>
 			<xsd:element minOccurs="0" name="ndpData" type="xsd:dateTime"/>
+			
+			<xsd:element minOccurs="0" name="logo" type="xsd:base64Binary"/>
 
 		</xsd:sequence>
 	</xsd:complexType>
@@ -614,7 +628,32 @@
 			<xsd:element minOccurs="0" name="codTributoIuv" type="String4"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
+	<xsd:element name="Audit" type="Audit"/>
+	<xsd:complexType name="Audit">
+		
+		<xsd:sequence>
+			<xsd:element name="data" type="xsd:dateTime"/>
+			<xsd:element name="idOperatore" type="id-operatore">
+				
+			</xsd:element>
+			<xsd:element name="idOggetto" type="xsd:long"/>
+			<xsd:element name="tipoOggetto" type="xsd:string"/>
+			<xsd:element name="oggetto" type="xsd:string">
+				
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="Ruolo" type="Ruolo"/>
+	<xsd:complexType name="Ruolo">
+		
+		<xsd:sequence>
+			<xsd:element name="codRuolo" type="String35"/>
+			<xsd:element name="descrizione" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:element name="ACL" type="ACL"/>
 	<xsd:complexType name="ACL">
 		
@@ -628,8 +667,13 @@
 			<xsd:element minOccurs="0" name="idOperatore" type="id-operatore">
 				
 			</xsd:element>
+			<xsd:element minOccurs="0" name="idRuolo" type="id-ruolo">
+				
+			</xsd:element>
 			<xsd:element name="codTipo" type="String1"/>
-			<xsd:element name="codServizio" type="String1"/>
+			<xsd:element minOccurs="0" name="diritti" type="xsd:int"/>
+			<xsd:element name="codServizio" type="String35"/>
+			<xsd:element default="false" name="admin" type="xsd:boolean"/>
 			<xsd:element minOccurs="0" name="idDominio" type="id-dominio">
 				
 			</xsd:element>
@@ -645,7 +689,7 @@
 		<xsd:sequence>
 			<xsd:element name="principal" type="xsd:string"/>
 			<xsd:element name="nome" type="String35"/>
-			<xsd:element name="profilo" type="String16"/>
+			<xsd:element name="profilo" type="String1024"/>
 			<xsd:element default="true" name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -681,11 +725,15 @@
 			<xsd:element name="idUo" type="id-uo">
 				
 			</xsd:element>
-
+			
 			<xsd:element name="idApplicazione" type="id-applicazione">
 				
 			</xsd:element>
-
+			
+			<xsd:element minOccurs="0" name="iuv" type="iuv-search">
+				
+			</xsd:element>
+			
 			<xsd:element name="importoTotale" type="xsd:double"/>
 			<xsd:element name="statoVersamento" type="String35"/>
 			<xsd:element minOccurs="0" name="descrizioneStato" type="xsd:string"/>
@@ -973,11 +1021,13 @@
 			<xsd:element name="codDominio" type="String35"/>
 			<xsd:element name="causale" type="String512"/>
 			<xsd:element name="importo" type="xsd:decimal"/>
-			<xsd:element name="codApplicazione" type="String35"/>
 			<xsd:element minOccurs="0" name="dataValuta" type="xsd:date"/>
 			<xsd:element minOccurs="0" name="dataContabile" type="xsd:date"/>
 			<xsd:element name="dataOraIncasso" type="xsd:dateTime"/>
 			<xsd:element minOccurs="0" name="nomeDispositivo" type="String512"/>
+			<xsd:element minOccurs="0" name="idApplicazione" type="id-applicazione">
+				
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1054,7 +1104,75 @@
 		</xsd:complexType>
 	</xsd:element>
 
-
-
-
+	<xsd:element name="Operazione" type="Operazione"/>
+	<xsd:complexType name="Operazione">
+		
+		<xsd:sequence>
+			<xsd:element name="idTracciato" type="id-tracciato">
+				
+			</xsd:element>
+			<xsd:element name="tipoOperazione" type="TipoOperazioneType"/>
+			<xsd:element name="lineaElaborazione" type="xsd:long"/>
+			<xsd:element name="stato" type="StatoOperazioneType"/>
+			<xsd:element name="datiRichiesta" type="xsd:base64Binary"/>
+			<xsd:element minOccurs="0" name="datiRisposta" type="xsd:base64Binary"/>
+			<xsd:element minOccurs="0" name="dettaglioEsito" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="idApplicazione" type="id-applicazione">
+				
+			</xsd:element>
+			<xsd:element minOccurs="0" name="codVersamentoEnte" type="xsd:string"/>
+			
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="Tracciato" type="Tracciato"/>
+	<xsd:complexType name="Tracciato">
+		
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="idOperatore" type="id-operatore">
+				
+			</xsd:element>
+			<xsd:element minOccurs="0" name="idApplicazione" type="id-applicazione">
+				
+			</xsd:element>
+			<xsd:element name="dataCaricamento" type="xsd:dateTime"/>
+			<xsd:element name="dataUltimoAggiornamento" type="xsd:dateTime"/>
+			<xsd:element name="stato" type="StatoTracciatoType"/>
+			<xsd:element name="lineaElaborazione" type="xsd:long"/>
+			<xsd:element minOccurs="0" name="descrizioneStato" type="String1024"/>
+			<xsd:element name="numLineeTotali" type="xsd:long"/>
+			<xsd:element name="numOperazioniOk" type="xsd:long"/>
+			<xsd:element name="numOperazioniKo" type="xsd:long"/>
+			<xsd:element name="nomeFile" type="xsd:string"/>
+			<xsd:element name="rawDataRichiesta" type="xsd:base64Binary"/>
+			<xsd:element minOccurs="0" name="rawDataRisposta" type="xsd:base64Binary"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="StatoTracciatoType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ANNULLATO"/>
+			<xsd:enumeration value="NUOVO"/>
+			<xsd:enumeration value="IN_CARICAMENTO"/>
+			<xsd:enumeration value="CARICAMENTO_OK"/>
+			<xsd:enumeration value="CARICAMENTO_KO"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="TipoOperazioneType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ADD"/>
+			<xsd:enumeration value="DEL"/>
+			<xsd:enumeration value="N_V"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="StatoOperazioneType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="NON_VALIDO"/>
+			<xsd:enumeration value="ESEGUITO_OK"/>
+			<xsd:enumeration value="ESEGUITO_KO"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
 </xsd:schema>

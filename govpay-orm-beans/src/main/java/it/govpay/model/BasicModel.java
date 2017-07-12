@@ -25,11 +25,18 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
-public class BasicModel implements Serializable {
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+public abstract class BasicModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	public BasicModel() {}
+	
+	public Long getId() {
+		return null;
+	}
 
 	public static boolean equals(Object a, Object b) {
 		if(a==null)
@@ -107,5 +114,10 @@ public class BasicModel implements Serializable {
 		}
 		
 		return null;
+	}
+	
+	
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE, false);
 	}
 }

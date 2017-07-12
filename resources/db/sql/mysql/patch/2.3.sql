@@ -26,8 +26,8 @@ ALTER TABLE fr ADD COLUMN cod_dominio VARCHAR(35);
 UPDATE fr SET cod_psp = (SELECT cod_psp FROM psp WHERE id = id_psp);
 UPDATE fr SET cod_dominio = (SELECT cod_dominio FROM domini WHERE id = id_dominio);
 
-ALTER TABLE fr DROP FOREIGN KEY 'fk_fr_1';
-ALTER TABLE fr DROP FOREIGN KEY 'fk_fr_2';
+ALTER TABLE fr DROP FOREIGN KEY fk_fr_1;
+ALTER TABLE fr DROP FOREIGN KEY fk_fr_2;
 ALTER TABLE fr DROP COLUMN id_psp;
 ALTER TABLE fr DROP COLUMN id_dominio;
 
@@ -64,7 +64,7 @@ CREATE TABLE rendicontazioni
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
-INSERT INTO RENDICONTAZIONI (iuv, iur, importo_pagato, esito, data, stato, anomalie, id_fr, id_pagamento)
+INSERT INTO rendicontazioni (iuv, iur, importo_pagato, esito, data, stato, anomalie, id_fr, id_pagamento)
 SELECT iuv, pagamenti.iur, importo_pagato, rendicontazione_esito, rendicontazione_data, 'OK', null, fr_applicazioni.id_fr, pagamenti.id from pagamenti, fr_applicazioni where pagamenti.id_fr_applicazione=fr_applicazioni.id; 
 
 ALTER TABLE pagamenti DROP COLUMN rendicontazione_esito;
@@ -78,8 +78,8 @@ ALTER TABLE pagamenti DROP COLUMN cod_flusso_rendicontaz_revoca;
 ALTER TABLE pagamenti DROP COLUMN anno_riferimento_revoca;
 ALTER TABLE pagamenti DROP COLUMN ind_singolo_pagamento_revoca;
 ALTER TABLE pagamenti DROP COLUMN ind_singolo_pagamento_revoca;
-ALTER TABLE pagamenti DROP FOREIGN KEY 'fk_pagamenti_3';
-ALTER TABLE pagamenti DROP FOREIGN KEY 'fk_pagamenti_5';
+ALTER TABLE pagamenti DROP FOREIGN KEY fk_pagamenti_3;
+ALTER TABLE pagamenti DROP FOREIGN KEY fk_pagamenti_5;
 ALTER TABLE pagamenti DROP COLUMN id_fr_applicazione;
 ALTER TABLE pagamenti DROP COLUMN id_fr_applicazione_revoca;
 ALTER TABLE pagamenti MODIFY COLUMN id_singolo_versamento BIGINT NULL;

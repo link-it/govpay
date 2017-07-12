@@ -32,9 +32,9 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	
 	// Business
 	
-	private Versamento versamento;
-	private Tributo tributo;
-	private IbanAccredito ibanAccredito;
+	private transient Versamento versamento;
+	private transient Tributo tributo;
+	private transient IbanAccredito ibanAccredito;
 	
 	public Tributo getTributo(BasicBD bd) throws ServiceException {
 		if(tributo == null && this.getIdTributo() != null) {
