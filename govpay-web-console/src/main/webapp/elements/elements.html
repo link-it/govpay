@@ -41959,7 +41959,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
       _pollingStatus: function(_el) {
         if(_el.refreshUri && !this._timer){
-          this._timer = setInterval(this._doPoll.bind(this), 30000, _el.refreshUri);
+          this._timer = setInterval(this._doPoll.bind(this), 5000, _el.refreshUri);
           (window.linkIntervals)?window.linkIntervals.push(this._timer):window.linkIntervals = [this._timer];
         }
       },
