@@ -31,6 +31,7 @@ public class Elemento {
 		this.titolo = titolo;
 		this.uri = urlDettaglio;
 		this.voci = new HashMap<String, Voce<String>>();
+		this.refreshUri = null;
 	}
 	
 	private long id;
@@ -38,7 +39,8 @@ public class Elemento {
 	private String sottotitolo;
 	private URI uri;
 	private String formatter;
-	private Map<String, Voce<String>> voci; 
+	private Map<String, Voce<String>> voci;
+	private URI refreshUri;
 	
 	public long getId() {
 		return this.id;
@@ -63,5 +65,11 @@ public class Elemento {
 	}
 	public void setVoci(Map<String, Voce<String>> voci) {
 		this.voci = voci;
+	}
+	public URI getRefreshUri() {
+		return refreshUri;
+	}
+	public void setRefreshUri(URI refreshUri) {
+		this.refreshUri = refreshUri;
 	}
 }

@@ -37611,132 +37611,6 @@ event and do your own custom submission:
   })();
   </script>
 </dom-module>
-<script>
-    (function(scope) {
-        var JuicyHTMLPrototype = Object.create((HTMLTemplateElement || HTMLElement).prototype);
-        var isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
-
-        JuicyHTMLPrototype.createdCallback = function() {
-            var model = null;
-            Object.defineProperty(this, "model", {
-                set: function(newValue) {
-                    model = newValue;
-                    this.attachModel(newValue);
-                },
-                get: function() {
-                    return model;
-                }
-            });
-        };
-        JuicyHTMLPrototype.stampedNodes = null;
-        JuicyHTMLPrototype.loadTemplate_ = function() {
-            var val = this.getAttribute('content');
-            if (val && (val.indexOf('/') === 0 || val.indexOf('./') === 0 || val.indexOf('../') === 0)) {
-                //val is a URL, load the partial from external file
-                this._loadExternalFile(val);
-            } else if (val === null) {
-                this.clear();
-            } else {
-                //val is HTML code, insert the partial from the string
-                this.reattachTemplate_(val);
-            }
-        };
-        /**
-         * Load the partial from the HTTP server/cache, via XHR.
-         * @param  {String} url relative/absolute string to load the resource
-         * @return {HTMLElement}     itself
-         */
-        JuicyHTMLPrototype._loadExternalFile = function(url){
-            var oReq = new XMLHttpRequest();
-            var that = this;
-            oReq.onload = function(event) {
-                that.reattachTemplate_(event.target.responseText);
-            };
-            oReq.open("GET", url, true);
-            oReq.send();
-        };
-
-        JuicyHTMLPrototype.reattachTemplate_ = function(html) {
-            this.clear();
-            // fragmentFromString(strHTML) from http://stackoverflow.com/a/25214113/868184
-            var range = document.createRange();
-
-            // Safari does not support `createContextualFragment` without selecting a node.
-            if (isSafari) {
-                range.selectNode(this);
-            }
-
-            var fragment = range.createContextualFragment(html);
-            // convert dynamic NodeList to regullar array
-            this.stampedNodes = Array.prototype.slice.call(fragment.childNodes);
-            // attach models
-            this.attributeChangedCallback("model", undefined, this.model || this.getAttribute("model"));
-            this.parentNode.insertBefore(fragment, this.nextSibling);
-            this.dispatchEvent(new CustomEvent("stamped", {
-                detail: this.stampedNodes
-            }));
-
-        };
-
-        /**
-         * Remove stamped content.
-         */
-        JuicyHTMLPrototype.clear = function() {
-            var parent = this.parentNode;
-            var childNo = this.stampedNodes && this.stampedNodes.length || 0;
-            var child;
-            while (childNo--) {
-                // this.stampedNodes[childNo].remove();
-                child = this.stampedNodes[childNo];
-                if (child.parentNode) {
-                    child.parentNode.removeChild(child);
-                }
-            }
-            // forget the removed nodes
-            this.stampedNodes = null;
-        };
-
-        JuicyHTMLPrototype.isAttached = false;
-        JuicyHTMLPrototype.attachedCallback = function() {
-            this.isAttached = true;
-            this.loadTemplate_();
-        };
-        JuicyHTMLPrototype.detachedCallback = function() {
-            this.isAttached = false;
-            this.clear();
-        };
-        JuicyHTMLPrototype.attributeChangedCallback = function(name, oldVal, newVal) {
-            if (this.isAttached) {
-                switch (name) {
-                    case "model":
-                        if (typeof newVal === "string") {
-                            newVal = newVal ? JSON.parse(newVal) : null;
-                        }
-                        this.model = newVal;
-                        break;
-                    case "content":
-                        this.loadTemplate_();
-                        break;
-                }
-            }
-        };
-
-        JuicyHTMLPrototype.attachModel = function(model, arrayOfElements) {
-            arrayOfElements || (arrayOfElements = this.stampedNodes);
-            if (model === null || !arrayOfElements) {
-                return;
-            }
-            for (var childNo = 0; childNo < arrayOfElements.length; childNo++) {
-                arrayOfElements[childNo].model = model;
-            }
-        };
-
-        scope.JuicyHTMLElement = document.registerElement('juicy-html', {
-            prototype: JuicyHTMLPrototype,
-            extends: "template"
-        });
-    })(window);
-</script>
 <dom-module id="link-listbox" assetpath="link-listbox/">
   <template>
     <style include="shared-styles">
@@ -37809,7 +37683,7 @@ event and do your own custom submission:
         min-height: auto;
       }
 
-      paper-item-body {
+      link-listbox-item {
         display: block;
         padding: 10px 24px;
         transition: transform .100s;
@@ -37820,6 +37694,10 @@ event and do your own custom submission:
         transform: translateX(64px);
       }
 
+      .check-status {
+        opacity: .5;
+      }
+
     </style>
 
     <paper-material elevation="0">
@@ -37827,9 +37705,7 @@ event and do your own custom submission:
       <template id="listTemplate" is="dom-repeat" items="[[dataProvider]]" filter="isVisible" on-dom-change="_domChanged">
         <paper-item id="item_[[index]]" on-tap="nextLevel" on-track="_onswipe">
           <div class="icon-checkmark"><iron-icon icon="check"></iron-icon></div>
-          <paper-item-body class$="[[classFromIndex(index)]]">
-            <template is="juicy-html" content$="[[_render(item)]]"></template>
-          </paper-item-body>
+          <link-listbox-item class$="[[classFromIndex(index)]]" element="[[item]]" index="[[index]]" on-loading="_setOpacity"></link-listbox-item>
         </paper-item>
       </template>
     </paper-material>
@@ -37887,7 +37763,7 @@ event and do your own custom submission:
 
       nextLevel: function(event){
         //Cancel selection
-        var cib = event.currentTarget.querySelector('paper-item-body');
+        var cib = event.currentTarget.querySelector('link-listbox-item');
         if(cib.className.indexOf('item-selected') != -1) {
           this.toggleClass('item-selected', false, cib);
           this.toggleClass('layout-item-box-translate', false, cib);
@@ -37933,13 +37809,6 @@ event and do your own custom submission:
         return (numresults<=1 || !this.filtrabile);
       },
 
-      _render: function(item){
-        var funzione = (item.formatter || 'defaultFormatter');
-        if (funzione){
-          return window[funzione](item);
-        }
-      },
-
       resetSelection: function() {
         var selectedElements = this.querySelectorAll('.item-selected');
         for(var i = 0; i < selectedElements.length; i++) {
@@ -37962,7 +37831,7 @@ event and do your own custom submission:
             case 'end':
               var dt = (new Date()).getTime() - this.swipeVelocity;
               if(e.detail.dx >= 100 && dt < 500) {
-                var pib = e.currentTarget.querySelector('paper-item-body');
+                var pib = e.currentTarget.querySelector('link-listbox-item');
                 if(pib.className.indexOf('item-selected') == -1) {
                   pib.className += ' layout-item-box-translate item-selected';
                   this.dataProvider[e.model.index].checked = true;
@@ -37970,6 +37839,16 @@ event and do your own custom submission:
                 }
               }
               break;
+          }
+        }
+      },
+
+      _setOpacity: function(event) {
+        if(event.detail.index != undefined && event.detail.index != null) {
+          //console.log('Item '+event.detail.index+' loading: '+event.detail.loading);
+          var pi = this.querySelector('paper-item#item_'+event.detail.index);
+          if(pi) {
+            this.toggleClass('check-status', event.detail.loading, pi);
           }
         }
       }
@@ -41872,6 +41751,264 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         this.customStyle['--link-pref-left'] = (window.innerWidth / 4) +'px';
         this.customStyle['--link-pref-top'] = (window.innerHeight / 4) +'px';
         this.updateStyles();
+      }
+
+    });
+  })();
+  </script>
+</dom-module>
+<script>
+    (function(scope) {
+        var JuicyHTMLPrototype = Object.create((HTMLTemplateElement || HTMLElement).prototype);
+        var isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
+
+        JuicyHTMLPrototype.createdCallback = function() {
+            var model = null;
+            Object.defineProperty(this, "model", {
+                set: function(newValue) {
+                    model = newValue;
+                    this.attachModel(newValue);
+                },
+                get: function() {
+                    return model;
+                }
+            });
+        };
+        JuicyHTMLPrototype.stampedNodes = null;
+        JuicyHTMLPrototype.loadTemplate_ = function() {
+            var val = this.getAttribute('content');
+            if (val && (val.indexOf('/') === 0 || val.indexOf('./') === 0 || val.indexOf('../') === 0)) {
+                //val is a URL, load the partial from external file
+                this._loadExternalFile(val);
+            } else if (val === null) {
+                this.clear();
+            } else {
+                //val is HTML code, insert the partial from the string
+                this.reattachTemplate_(val);
+            }
+        };
+        /**
+         * Load the partial from the HTTP server/cache, via XHR.
+         * @param  {String} url relative/absolute string to load the resource
+         * @return {HTMLElement}     itself
+         */
+        JuicyHTMLPrototype._loadExternalFile = function(url){
+            var oReq = new XMLHttpRequest();
+            var that = this;
+            oReq.onload = function(event) {
+                that.reattachTemplate_(event.target.responseText);
+            };
+            oReq.open("GET", url, true);
+            oReq.send();
+        };
+
+        JuicyHTMLPrototype.reattachTemplate_ = function(html) {
+            this.clear();
+            // fragmentFromString(strHTML) from http://stackoverflow.com/a/25214113/868184
+            var range = document.createRange();
+
+            // Safari does not support `createContextualFragment` without selecting a node.
+            if (isSafari) {
+                range.selectNode(this);
+            }
+
+            var fragment = range.createContextualFragment(html);
+            // convert dynamic NodeList to regullar array
+            this.stampedNodes = Array.prototype.slice.call(fragment.childNodes);
+            // attach models
+            this.attributeChangedCallback("model", undefined, this.model || this.getAttribute("model"));
+            this.parentNode.insertBefore(fragment, this.nextSibling);
+            this.dispatchEvent(new CustomEvent("stamped", {
+                detail: this.stampedNodes
+            }));
+
+        };
+
+        /**
+         * Remove stamped content.
+         */
+        JuicyHTMLPrototype.clear = function() {
+            var parent = this.parentNode;
+            var childNo = this.stampedNodes && this.stampedNodes.length || 0;
+            var child;
+            while (childNo--) {
+                // this.stampedNodes[childNo].remove();
+                child = this.stampedNodes[childNo];
+                if (child.parentNode) {
+                    child.parentNode.removeChild(child);
+                }
+            }
+            // forget the removed nodes
+            this.stampedNodes = null;
+        };
+
+        JuicyHTMLPrototype.isAttached = false;
+        JuicyHTMLPrototype.attachedCallback = function() {
+            this.isAttached = true;
+            this.loadTemplate_();
+        };
+        JuicyHTMLPrototype.detachedCallback = function() {
+            this.isAttached = false;
+            this.clear();
+        };
+        JuicyHTMLPrototype.attributeChangedCallback = function(name, oldVal, newVal) {
+            if (this.isAttached) {
+                switch (name) {
+                    case "model":
+                        if (typeof newVal === "string") {
+                            newVal = newVal ? JSON.parse(newVal) : null;
+                        }
+                        this.model = newVal;
+                        break;
+                    case "content":
+                        this.loadTemplate_();
+                        break;
+                }
+            }
+        };
+
+        JuicyHTMLPrototype.attachModel = function(model, arrayOfElements) {
+            arrayOfElements || (arrayOfElements = this.stampedNodes);
+            if (model === null || !arrayOfElements) {
+                return;
+            }
+            for (var childNo = 0; childNo < arrayOfElements.length; childNo++) {
+                arrayOfElements[childNo].model = model;
+            }
+        };
+
+        scope.JuicyHTMLElement = document.registerElement('juicy-html', {
+            prototype: JuicyHTMLPrototype,
+            extends: "template"
+        });
+    })(window);
+</script>
+<dom-module id="link-listbox-item" assetpath="link-listbox/">
+  <template>
+
+    <style include="shared-styles">
+
+      :host {
+        display: block;
+      }
+
+      .group {
+        width: 100%;
+      }
+
+      paper-spinner {
+        position: absolute;
+        left: calc(50% - 19px);;
+        bottom: 0;
+        top: calc(50% - 19px);
+        right: 0;
+      }
+
+    </style>
+
+    <paper-spinner active$="[[_loading]]"></paper-spinner>
+    <div class="group">
+      <template is="juicy-html" content$="[[_element]]"></template>
+    </div>
+    <iron-ajax id="_polling" handle-as="json" on-response="_pollingInfo_responseHandler" on-error="_pollingInfo_errorHandler" debounce-duration="300"></iron-ajax>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'link-listbox-item',
+
+      observers: [
+        '_pollingStatus(element)'
+      ],
+
+      properties: {
+
+        element: {
+          type: Object
+        },
+
+        index: {
+          type: Number
+        },
+
+        _element: {
+          type: Object,
+          computed: '_render(element)'
+        },
+
+        _timer: {
+          type: Number
+        },
+
+        _loading: {
+          type: Boolean,
+          value: false
+        }
+
+      },
+
+      _render: function(item){
+        var funzione = (item.formatter || 'defaultFormatter');
+        if (funzione){
+          return window[funzione](item);
+        }
+      },
+
+      _pollingStatus: function(_el) {
+        if(_el.refreshUri && !this._timer){
+          this._timer = setInterval(this._doPoll.bind(this), 30000, _el.refreshUri);
+          (window.linkIntervals)?window.linkIntervals.push(this._timer):window.linkIntervals = [this._timer];
+        }
+      },
+
+      _doPoll: function(_refreshUri) {
+        //console.log('Check Item Status: '+this.element.id+' #'+this._timer);
+        this._loading = true;
+        this._fire();
+
+        this.$._polling.url = REST_URL + _refreshUri + app.appendLangParameter(_refreshUri);
+        this.$._polling.generateRequest();
+      },
+
+      _pollingInfo_responseHandler: function(event) {
+        try {
+          var _newElement = event.detail.response.response;
+          if(_newElement) {
+            if (!_newElement.refreshUri) {
+              this._clearTimer();
+            }
+            this.set('element', _newElement);
+          } else {
+            this._clearTimer();
+            console.log('Check Item Status: Bad Response');
+          }
+          this._loading = false;
+          this._fire();
+        } catch (e) {
+          this._clearTimer();
+          this._loading = false;
+          this._fire();
+          console.log('Errors detected during execution: '+e.message);
+        }
+      },
+
+      _pollingInfo_errorHandler: function(event){
+        this._clearTimer();
+        this._loading = false;
+        this._fire();
+        console.log('Check Item Status: Network Error');
+      },
+
+      _clearTimer: function() {
+        clearInterval(this._timer);
+        window.linkIntervals.splice(window.linkIntervals.indexOf(this._timer), 1);
+      },
+
+      _fire: function() {
+        this.fire('loading', { loading: this._loading, index: this.index });
       }
 
     });

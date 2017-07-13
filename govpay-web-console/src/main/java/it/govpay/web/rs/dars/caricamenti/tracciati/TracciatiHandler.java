@@ -35,6 +35,7 @@ import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
 import it.govpay.core.business.Tracciati;
 import it.govpay.model.Operatore;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.web.rs.dars.base.BaseDarsService;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -110,6 +111,10 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				for (Tracciato entry : findAll) {
 					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
 					elemento.setFormatter(formatter); 
+					if(!entry.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !entry.getStato().equals(StatoTracciatoType.CARICAMENTO_OK)){
+						URI refreshUri =  Utils.creaUriConPath(this.pathServizio , entry.getId()+"", BaseDarsService.PATH_REFRESH);
+						elemento.setRefreshUri(refreshUri);
+					}
 					elenco.getElenco().add(elemento);
 				}
 			}
@@ -122,6 +127,36 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			throw new ConsoleException(e);
 		}
 	}
+
+	public Elemento getElemento(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
+		String methodName = "elemento " + this.titoloServizio + ".Id "+ id;
+
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+
+			// Operazione consentita solo all'operatore con ruolo autorizzato
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita); 
+			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+
+			// recupero oggetto
+			TracciatiBD tracciatiBD = new TracciatiBD(bd);
+			Tracciato tracciato = tracciatiBD.getTracciato(id);
+			Elemento elemento = this.getElemento(tracciato, tracciato.getId(), this.pathServizio,bd);
+			elemento.setFormatter(formatter); 
+			if(!tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_OK)){
+				URI refreshUri =  Utils.creaUriConPath(this.pathServizio , id+"", BaseDarsService.PATH_REFRESH);
+				elemento.setRefreshUri(refreshUri);
+			}
+
+			this.log.info("Esecuzione " + methodName + " completata.");
+			return elemento;
+		}catch(WebApplicationException e){
+			throw e;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}	
+
 
 	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, boolean simpleSearch, TracciatoFilter filter) throws ConsoleException, Exception {
 		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
