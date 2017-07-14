@@ -1135,52 +1135,60 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry) throws ConsoleException {
-		URI cancellazione = this.getUriCancellazioneDettaglio(uriInfo, bd, entry.getId());
-		InfoForm infoCancellazione = new InfoForm(cancellazione);
-		List<String> titoli = new ArrayList<String>();
-		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.singolo.titolo"));
-		infoCancellazione.setTitolo(titoli); 
+		InfoForm infoCancellazione = null;
 
-		String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
+		try{
+			if(this.darsService.isServizioAbilitatoScrittura(bd, this.funzionalita)){
+				URI cancellazione = this.getUriCancellazioneDettaglio(uriInfo, bd, entry.getId());
+				infoCancellazione = new InfoForm(cancellazione);
+				List<String> titoli = new ArrayList<String>();
+				titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.singolo.titolo"));
+				infoCancellazione.setTitolo(titoli); 
 
-		if(this.infoCancellazioneMap == null){
-			this.initInfoCancellazione(uriInfo, bd);
+				String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
+
+				if(this.infoCancellazioneMap == null){
+					this.initInfoCancellazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoCancellazione.getSezioneRoot();
+
+				InputTextArea motivoCancellazione = (InputTextArea) this.infoCancellazioneMap.get(motivoCancellazioneId);
+				motivoCancellazione.setDefaultValue(null);
+				sezioneRoot.addField(motivoCancellazione);
+
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCancellazione.getSezioneRoot();
-
-		InputTextArea motivoCancellazione = (InputTextArea) this.infoCancellazioneMap.get(motivoCancellazioneId);
-		motivoCancellazione.setDefaultValue(null);
-		sezioneRoot.addField(motivoCancellazione);
-
 		return infoCancellazione;
 	}
 
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
 		InfoForm infoEsportazione = null;
-//		try{
-//			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-//				URI esportazione = this.getUriEsportazione(uriInfo, bd);
-//				infoEsportazione = new InfoForm(esportazione);
-//			}
-//		}catch(ServiceException e){
-//			throw new ConsoleException(e);
-//		}
+		//		try{
+		//			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+		//				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+		//				infoEsportazione = new InfoForm(esportazione);
+		//			}
+		//		}catch(ServiceException e){
+		//			throw new ConsoleException(e);
+		//		}
 		return infoEsportazione;
 	}
 
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry)	throws ConsoleException {	
 		InfoForm infoEsportazione = null;
-//		try{
-//			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-//				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-//				infoEsportazione = new InfoForm(esportazione);
-//			}
-//		}catch(ServiceException e){
-//			throw new ConsoleException(e);
-//		}
+		//		try{
+		//			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+		//				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		//				infoEsportazione = new InfoForm(esportazione);
+		//			}
+		//		}catch(ServiceException e){
+		//			throw new ConsoleException(e);
+		//		}
 		return infoEsportazione;	
 	}
 
