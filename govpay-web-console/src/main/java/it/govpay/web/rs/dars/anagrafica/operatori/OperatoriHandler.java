@@ -67,7 +67,6 @@ import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.InputText;
-import it.govpay.web.rs.dars.model.input.base.MultiSelectList;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
@@ -221,7 +220,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		InfoForm infoCreazione =  null;
@@ -255,33 +253,11 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 				nome.setDefaultValue(null);
 				sezioneRoot.addField(nome);
 
-				MultiSelectList<String, List<String>> ruoli = (MultiSelectList<String, List<String>>) this.infoCreazioneMap.get(ruoliId);
-				List<Voce<String>> listaRuoli = new ArrayList<Voce<String>>();
-				try{
-					RuoliBD ruoliBD = new RuoliBD(bd);
-					RuoloFilter ruoliFilter = ruoliBD.newFilter();
-					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
-					fsw.setSortOrder(SortOrder.ASC);
-					ruoliFilter.getFilterSortList().add(fsw);
-
-					List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
-					listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-					if(findAll != null && findAll.size() > 0){
-						Ruoli ruoliDars = new Ruoli();
-						RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
-						for (it.govpay.model.Ruolo ruolo : findAll) {
-							listaRuoli.add(new Voce<String>(ruoliDarsHandler.getTitolo(ruolo, bd), ruolo.getCodRuolo()));   
-						}
-						listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"),
-								Operatore.RUOLO_SYSTEM));
-					}
-
-				}catch(Exception e){
-					throw new ConsoleException(e);
-				}
-				ruoli.setValues(listaRuoli);
-				ruoli.setDefaultValue(new ArrayList<String>());
+				List<RawParamValue> ruoliParamValues = new ArrayList<RawParamValue>();
+				ruoliParamValues.add(new RawParamValue(operatoreId, null)); 
+				it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli ruoli = (it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli) this.infoCreazioneMap.get(ruoliId);
+				ruoli.init(ruoliParamValues, bd,this.getLanguage());
+				ruoli.aggiornaParametro(ruoliParamValues, bd,this.getLanguage());
 
 				sezioneRoot.addField(ruoli);
 
@@ -323,9 +299,12 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			this.infoCreazioneMap.put(nomeId, nome);
 
 			// ruoli
-			List<Voce<String>> ruoliValues = new ArrayList<Voce<String>>();
 			String ruoliLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.label");
-			MultiSelectList<String, List<String>> ruoli = new MultiSelectList<String, List<String>>(ruoliId, ruoliLabel, null, true, false, true, ruoliValues );
+			List<RawParamValue> ruoliParamValues = new ArrayList<RawParamValue>();
+			URI ruoliRefreshUri = this.getUriField(uriInfo, bd, ruoliId); 
+			it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli ruoli = 
+					new it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli(this.nomeServizio, ruoliId, ruoliLabel, ruoliRefreshUri , ruoliParamValues, bd,this.getLanguage());
+			ruoli.init(ruoliParamValues, bd,this.getLanguage());
 			ruoli.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.errorMessage"));
 			this.infoCreazioneMap.put(ruoliId, ruoli);
 
@@ -336,7 +315,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Operatore entry) throws ConsoleException {
 		InfoForm infoModifica = null;
@@ -369,34 +347,11 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 				nome.setDefaultValue(entry.getNome());
 				sezioneRoot.addField(nome);
 
-				MultiSelectList<String, List<String>> ruoli = (MultiSelectList<String, List<String>>) this.infoCreazioneMap.get(ruoliId);
-
-				List<Voce<String>> listaRuoli = new ArrayList<Voce<String>>();
-				try{
-					RuoliBD ruoliBD = new RuoliBD(bd);
-					RuoloFilter ruoliFilter = ruoliBD.newFilter();
-					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
-					fsw.setSortOrder(SortOrder.ASC);
-					ruoliFilter.getFilterSortList().add(fsw);
-
-					List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
-
-					if(findAll != null && findAll.size() > 0){
-						Ruoli ruoliDars = new Ruoli();
-						RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
-						for (it.govpay.model.Ruolo ruolo : findAll) {
-							listaRuoli.add(new Voce<String>(ruoliDarsHandler.getTitolo(ruolo, bd), ruolo.getCodRuolo()));   
-						}
-						listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"),
-								Operatore.RUOLO_SYSTEM));
-					}
-
-				}catch(Exception e){
-					throw new ConsoleException(e);
-				}
-				ruoli.setValues(listaRuoli);
-				ruoli.setDefaultValue(entry.getRuoli() != null ? entry.getRuoli() : new ArrayList<String>());
+				List<RawParamValue> ruoliParamValues = new ArrayList<RawParamValue>();
+				ruoliParamValues.add(new RawParamValue(operatoreId, entry.getId() + "")); 
+				it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli ruoli = (it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli) this.infoCreazioneMap.get(ruoliId);
+				ruoli.init(ruoliParamValues, bd,this.getLanguage());
+				ruoli.aggiornaParametro(ruoliParamValues, bd,this.getLanguage());
 
 				sezioneRoot.addField(ruoli);
 
