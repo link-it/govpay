@@ -110,7 +110,7 @@ public class Operatori extends DarsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(operatore);
 		} catch(WebApplicationException e){
-			this.log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore ["+this.getPrincipal()+"], utente non riconosciuto.");
+			this.log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore ["+this.getPrincipal()+"], utente non riconosciuto.", e);
 			throw e;
 		} catch (Exception e) {
 			this.log.error("Riscontrato errore durante la ricerca dell'operatore:" +e.getMessage() , e);
