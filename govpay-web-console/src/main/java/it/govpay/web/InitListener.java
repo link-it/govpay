@@ -22,6 +22,7 @@ package it.govpay.web;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 import it.govpay.web.utils.ConsoleProperties;
 
@@ -60,6 +61,7 @@ public class InitListener implements ServletContextListener {
 			RicevutaPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
 			AnagraficaManager.newInstance(false);
 			ConnectionManager.initialize();
+			OperazioneFactory.init();
 		} catch(Exception e){
 			throw new RuntimeException("Inizializzazione di GovPay Console fallita: " + e, e);
 		}

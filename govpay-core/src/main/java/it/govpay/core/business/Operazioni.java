@@ -410,24 +410,25 @@ public class Operazioni{
 				filter.addStatoTracciato(StatoTracciatoType.IN_CARICAMENTO);
 				filter.setDataUltimoAggiornamentoMax(new Date());
 
-				List<Tracciato> tracciati  = tracciatiBD.findAll(filter);
-				if(tracciati.size() == 0) {
-					BatchManager.stopEsecuzione(bd, batch_tracciati);
-					return "Nessun tracciato da elaborare.";
-				}
-
-				log.info("Trovati ["+tracciati.size()+"] tracciati da caricare");
 				
-				Tracciati tracciatiBusiness = new Tracciati(bd);
-				for(Tracciato tracciato: tracciati) {
-					log.info("Avvio elaborazione tracciato "  + tracciato.getId());
-					ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
-					elaboraTracciatoDTO.setTracciato(tracciato);
-					tracciatiBusiness.elaboraTracciato(elaboraTracciatoDTO);
-					log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
-				}
+				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
 				
-				bd.commit();
+				while(tracciati.size() != 0) {
+					log.info("Trovati ["+tracciati.size()+"] tracciati da caricare");
+					
+					Tracciati tracciatiBusiness = new Tracciati(bd);
+					
+					for(Tracciato tracciato: tracciati) {
+						log.info("Avvio elaborazione tracciato "  + tracciato.getId());
+						ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
+						elaboraTracciatoDTO.setTracciato(tracciato);
+						tracciatiBusiness.elaboraTracciato(elaboraTracciatoDTO);
+						log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
+					}
+					
+					filter.setDataUltimoAggiornamentoMax(new Date());
+					tracciati = tracciatiBD.findAll(filter);
+				}
 				
 				aggiornaSondaOK(batch_tracciati, bd);
 				BatchManager.stopEsecuzione(bd, batch_tracciati);
