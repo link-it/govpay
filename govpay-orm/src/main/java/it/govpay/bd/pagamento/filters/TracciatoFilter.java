@@ -134,6 +134,29 @@ public class TracciatoFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpressionOr = super._toSimpleSearchExpression();
+			
+			if(this.idOperatore != null){
+				IExpression newExpressionOperatore = this.newExpression();
+				TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField idOperatoreCustomField = new CustomField("id_operatore",  Long.class, "id_operatore",converter.toTable(it.govpay.orm.Tracciato.model()));
+				newExpressionOperatore.equals(idOperatoreCustomField, this.idOperatore);
+				
+				newExpressionOr.and(newExpressionOperatore);
+			}
+			return newExpressionOr;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	/**
 	 * @param statoTracciato2
