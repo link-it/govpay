@@ -123,7 +123,8 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 		}
 
 		if(actionName.equals(RECUPERO_TRACCIATI_PENDENTI)){
-			return it.govpay.core.business.Operazioni.elaborazioneTracciati("JmxCall");
+			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
+			return "Elaborazione tracciati schedulata";
 		}
 		
 		if(actionName.equals(ATTIVAZIONE_RECUPERO_TRACCIATI_PENDENTI)){

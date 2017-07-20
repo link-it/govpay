@@ -114,6 +114,15 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 					if(!entry.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !entry.getStato().equals(StatoTracciatoType.CARICAMENTO_OK)){
 						URI refreshUri =  Utils.creaUriConPath(this.pathServizio , entry.getId()+"", BaseDarsService.PATH_REFRESH);
 						elemento.setRefreshUri(refreshUri);
+						
+						double percentuale = 100;
+						// Controllo per evitare divisione per 0
+						if(entry.getNumLineeTotali() != 0)
+							percentuale = Math.round(((double) entry.getLineaElaborazione() / (double) entry.getNumLineeTotali() ) * 100);
+						
+						elemento.getVoci().put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".percentuale.id"),
+								new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".percentuale.label"), percentuale + "" ));
+						
 					}
 					elenco.getElenco().add(elemento);
 				}
@@ -146,6 +155,14 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			if(!tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_OK)){
 				URI refreshUri =  Utils.creaUriConPath(this.pathServizio , id+"", BaseDarsService.PATH_REFRESH);
 				elemento.setRefreshUri(refreshUri);
+				
+				double percentuale = 100;
+				// Controllo per evitare divisione per 0
+				if(tracciato.getNumLineeTotali() != 0)
+					percentuale = Math.round(((double) tracciato.getLineaElaborazione() / (double) tracciato.getNumLineeTotali() ) * 100);
+				
+				elemento.getVoci().put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".percentuale.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".percentuale.label"), percentuale + "" ));
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");

@@ -13,7 +13,7 @@ import org.openspcoop2.utils.csv.Record;
 public class CaricamentoRequest extends AbstractOperazioneRequest {
 
 	public CaricamentoRequest(Record record) throws ValidationException {
-		super(TipoOperazioneType.ADD, record);
+		super(TipoOperazioneType.ADD);
 		this.setCodDominio(Utils.validaESettaRecord(record, "codDominio", 35, null, false));
 		this.setCfDebitore(Utils.validaESettaRecord(record, "cfDebitore", 35, null, false));
 		this.setAnagraficaDebitore(Utils.validaESettaRecord(record, "anagraficaDebitore", 70, null, false));

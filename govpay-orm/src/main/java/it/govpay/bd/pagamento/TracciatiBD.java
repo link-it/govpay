@@ -21,8 +21,10 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -32,7 +34,9 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.TracciatoConverter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
+import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.orm.Tracciato;
+import it.govpay.orm.dao.jdbc.JDBCTracciatoService;
 
 public class TracciatiBD extends BasicBD {
 
@@ -65,6 +69,23 @@ public class TracciatiBD extends BasicBD {
 		try{
 			Tracciato tracciatoVo = TracciatoConverter.toVO(tracciato);
 			this.getTracciatoService().update(this.getTracciatoService().convertToId(tracciatoVo), tracciatoVo);
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateTracciato(long idTracciato, StatoTracciatoType stato, long lineaElaborazione, long ok, long ko) throws ServiceException {
+		try{
+			List<UpdateField> listUpdateFields = new ArrayList<UpdateField>();
+			listUpdateFields.add(new UpdateField(Tracciato.model().STATO, stato.toString()));
+			listUpdateFields.add(new UpdateField(Tracciato.model().NUM_OPERAZIONI_OK, ok));
+			listUpdateFields.add(new UpdateField(Tracciato.model().NUM_OPERAZIONI_KO, ko));
+			listUpdateFields.add(new UpdateField(Tracciato.model().LINEA_ELABORAZIONE, lineaElaborazione));
+			listUpdateFields.add(new UpdateField(Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, new Date()));
+			
+			((JDBCTracciatoService)this.getTracciatoService()).updateFields(idTracciato, listUpdateFields.toArray(new UpdateField[]{}));
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {

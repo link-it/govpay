@@ -22,5 +22,14 @@ package it.govpay.core.exceptions;
 public class NotAuthorizedException extends Exception {
 
 	private static final long serialVersionUID = 1L;
+	public static final String descrizione = "Operazione non autorizzata";
+	
+	public NotAuthorizedException() {
+		super();
+	}
+	
+	public NotAuthorizedException(String causa) {
+		super(causa);
+	}
 	
 }

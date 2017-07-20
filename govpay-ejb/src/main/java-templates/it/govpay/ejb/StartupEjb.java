@@ -28,6 +28,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
 
 import java.io.File;
 import java.net.URI;
@@ -155,6 +156,7 @@ public class StartupEjb {
 		try {
 			AnagraficaManager.newInstance();
 			JaxbUtils.init();
+			OperazioneFactory.init();
 			ConnectionManager.initialize();
 			ThreadExecutorManager.setup();
 			JmxOperazioni.register();
@@ -164,7 +166,7 @@ public class StartupEjb {
 			ctx.log();
 			throw new RuntimeException("Inizializzazione GovPay ${project.version} (build " + commit + ") fallita.", e);
 		}
-
+		
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -174,6 +176,9 @@ public class StartupEjb {
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
+		
+		
+		it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 
 		ctx.log();
 

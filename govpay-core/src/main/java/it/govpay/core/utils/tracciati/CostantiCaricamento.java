@@ -10,8 +10,7 @@ package it.govpay.core.utils.tracciati;
  * 
  */
 public class CostantiCaricamento {
-
-	public static final String NOT_AUTHORIZED = "X_501";
-	public static final String OPERAZIONE_NON_SUPPORTATA = "X_901";
-	public static final String ERRORE_SINTASSI = "X_902";
+	public static final String NOT_AUTHORIZED = "ERR_AUTH";
+	public static final String ERRORE_SINTASSI = "ERR_SIN";
+	public static final String EMPTY = "EMPTY";
 }

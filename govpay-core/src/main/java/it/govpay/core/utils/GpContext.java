@@ -294,6 +294,14 @@ public class GpContext {
 		return getContext().getIdTransaction();
 	}
 	
+	public boolean hasCorrelationId() {
+		try {
+			return contexts.get(0).getRequest().getCorrelationIdentifier() != null;
+		} catch (Throwable t) {
+			return false;
+		}
+	}
+	
 	public void setCorrelationId(String id) {
 		contexts.get(0).getRequest().setCorrelationIdentifier(id);
 	}

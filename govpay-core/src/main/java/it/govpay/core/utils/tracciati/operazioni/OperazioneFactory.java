@@ -1,4 +1,4 @@
-package it.govpay.core.utils.tracciati;
+package it.govpay.core.utils.tracciati.operazioni;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -21,42 +21,31 @@ import it.govpay.core.business.model.CaricaVersamentoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.tracciati.operazioni.AbstractOperazioneRequest;
-import it.govpay.core.utils.tracciati.operazioni.AbstractOperazioneResponse;
-import it.govpay.core.utils.tracciati.operazioni.AnnullamentoRequest;
-import it.govpay.core.utils.tracciati.operazioni.AnnullamentoResponse;
-import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
-import it.govpay.core.utils.tracciati.operazioni.CaricamentoResponse;
-import it.govpay.core.utils.tracciati.operazioni.OperazioneNonValidaRequest;
-import it.govpay.core.utils.tracciati.operazioni.OperazioneNonValidaResponse;
+import it.govpay.core.utils.tracciati.CSVReaderProperties;
+import it.govpay.core.utils.tracciati.CostantiCaricamento;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 
-public class AcquisizioneUtils {
+public class OperazioneFactory {
 
+	private static Logger logger = LogManager.getLogger(OperazioneFactory.class);
+	private static Format formatW;
+	private static Parser caricamentoParser;
+	private static Parser annullamentoParser;
+	private static Parser caricamentoResponseParser;
+	private static Parser annullamentoResponseParser;
+	private static String delimiter;
 
-	private Logger logger = LogManager.getLogger(AcquisizioneUtils.class);
-	private Format formatW;
-	private Parser caricamentoParser;
-	private Parser annullamentoParser;
-	private Parser caricamentoResponseParser;
-	private Parser annullamentoResponseParser;
-	private String delimiter;
-
-	public AcquisizioneUtils() {
-		try{
-			FormatReader formatReader = new FormatReader(CSVReaderProperties.getInstance(logger).getProperties());
-			this.formatW = formatReader.getFormat();
-			this.delimiter = "" + this.formatW.getCsvFormat().getDelimiter();
-			this.caricamentoParser = new Parser(AcquisizioneUtils.class.getResourceAsStream("/caricamento.mapping.properties"), true);
-			this.annullamentoParser = new Parser(AcquisizioneUtils.class.getResourceAsStream("/annullamento.mapping.properties"), true);
-			this.caricamentoResponseParser = new Parser(AcquisizioneUtils.class.getResourceAsStream("/caricamento.response.mapping.properties"), true);
-			this.annullamentoResponseParser = new Parser(AcquisizioneUtils.class.getResourceAsStream("/annullamento.response.mapping.properties"), true);
-		}catch(Exception e){
-			logger.error("Errore durante l'inizializzazione di AcquisizioneUtils: " + e.getMessage(),e);
-		}
-
+	public static void init() throws UtilsException, Exception {
+		FormatReader formatReader = new FormatReader(CSVReaderProperties.getInstance(logger).getProperties());
+		formatW = formatReader.getFormat();
+		delimiter = "" + formatW.getCsvFormat().getDelimiter();
+		caricamentoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.mapping.properties"), true);
+		annullamentoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.mapping.properties"), true);
+		caricamentoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.mapping.properties"), true);
+		annullamentoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.mapping.properties"), true);
 	}
+
 	public AbstractOperazioneRequest acquisisci(Record record, String op) throws ValidationException {
 		try {
 			if("ADD".equals(op)) {
@@ -71,12 +60,11 @@ public class AcquisizioneUtils {
 		}
 	}
 
-	public AbstractOperazioneRequest acquisisci(byte[] linea, Tracciato tracciato, long numLinea) throws ServiceException {
-		AbstractOperazioneRequest request = this.parseLineaOperazioneRequest(linea);
-		request.setIdTracciato(tracciato.getId());
+	public AbstractOperazioneRequest acquisisci(byte[] linea, long idtracciato, long numLinea) throws ServiceException {
+		AbstractOperazioneRequest request = parseLineaOperazioneRequest(linea);
+		request.setIdTracciato(idtracciato);
 		request.setLinea(numLinea);
 		request.setDati(linea);
-
 		return request;
 	}
 
@@ -84,14 +72,10 @@ public class AcquisizioneUtils {
 
 		String lineaString = new String(linea);
 
-		if(lineaString == null || "".equals(lineaString))
-			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
+		if(lineaString == null || lineaString.trim().isEmpty())
+			return getOperazioneNonValida(CostantiCaricamento.EMPTY, "Linea vuota");
 
-		String[] lineaSplitted = lineaString.split(this.delimiter);
-		if(lineaSplitted.length < 0) {
-			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
-		}
-
+		String[] lineaSplitted = lineaString.split(delimiter);
 		String op = lineaSplitted[0];
 
 		Parser parser = null;
@@ -100,19 +84,19 @@ public class AcquisizioneUtils {
 		} else if("DEL".equals(op)) {
 			parser = annullamentoParser;
 		} else {
-			return getOperazioneNonValida(CostantiCaricamento.OPERAZIONE_NON_SUPPORTATA, "Codice operazione "+op+" non supportata");
+			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Codice operazione "+op+" non supportata");
 		}
 
 		ParserResult parserResult = null;
 		try {
-			parserResult = parser.parseCsvFile(this.formatW, linea);
+			parserResult = parser.parseCsvFile(formatW, linea);
 		} catch(UtilsException e) {
 			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
 		}
 
 		if(parserResult.getRecords() == null || parserResult.getRecords().size() == 0)
 			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
-		
+
 		if(parserResult.getRecords().size() > 1) {
 			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record multipli trovati");
 		}
@@ -132,7 +116,7 @@ public class AcquisizioneUtils {
 		if(lineaString == null || "".equals(lineaString))
 			return null;
 
-		String[] lineaSplitted = lineaString.split(this.delimiter);
+		String[] lineaSplitted = lineaString.split(delimiter);
 		if(lineaSplitted.length < 0) {
 			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
 		}
@@ -143,12 +127,12 @@ public class AcquisizioneUtils {
 		} else if(tipoOperazione.equals(TipoOperazioneType.DEL)) {
 			parser = annullamentoResponseParser;
 		} else {
-			return getOperazioneNonValidaResponse(CostantiCaricamento.OPERAZIONE_NON_SUPPORTATA, "Tipo operazione "+tipoOperazione+" non supportata");
+			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" non supportata");
 		}
 
 		ParserResult parserResult = null;
 		try {
-			parserResult = parser.parseCsvFile(this.formatW, linea);
+			parserResult = parser.parseCsvFile(formatW, linea);
 		} catch(UtilsException e) {
 			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
 		}
@@ -166,7 +150,7 @@ public class AcquisizioneUtils {
 			} else if(tipoOperazione.equals(TipoOperazioneType.DEL)) {
 				return new AnnullamentoResponse(parserResult.getRecords().get(0));
 			} else {
-				return getOperazioneNonValidaResponse(CostantiCaricamento.OPERAZIONE_NON_SUPPORTATA, "Tipo operazione "+tipoOperazione+" non supportata");
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" non supportata");
 			}
 		} catch(ValidationException e) {
 			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato: " + e.getMessage());
@@ -175,15 +159,10 @@ public class AcquisizioneUtils {
 	}
 
 	private OperazioneNonValidaRequest getOperazioneNonValida(String codice, String dettaglio) {
-		try {
-			OperazioneNonValidaRequest request = new OperazioneNonValidaRequest();
-			request.setCodiceErrore(codice);
-			request.setDettaglioErrore(dettaglio);
-			return request;
-		} catch(ValidationException e) {
-			logger.error("Errore durante l'inizializzazione di una operazione non valida: " + e.getMessage(), e);	
-		}
-		return null;
+		OperazioneNonValidaRequest request = new OperazioneNonValidaRequest();
+		request.setCodiceErrore(codice);
+		request.setDettaglioErrore(dettaglio);
+		return request;
 	}
 
 	private OperazioneNonValidaResponse getOperazioneNonValidaResponse(String codice, String dettaglio) {
@@ -201,15 +180,15 @@ public class AcquisizioneUtils {
 	 * @return
 	 * @throws Exception 
 	 */
-	public AbstractOperazioneResponse acquisisciResponse(AbstractOperazioneRequest request, Tracciato tracciato, BasicBD bd) throws ServiceException {
+	public AbstractOperazioneResponse eseguiOperazione(AbstractOperazioneRequest request, Tracciato tracciato, BasicBD bd) throws ServiceException {
 		AbstractOperazioneResponse response = null;
 
 		if(request instanceof CaricamentoRequest) {
 			CaricamentoRequest caricamentoRequest = (CaricamentoRequest) request;
-			response = this.caricaVersamento(tracciato, caricamentoRequest, bd);
+			response = caricaVersamento(tracciato, caricamentoRequest, bd);
 		} else if(request instanceof AnnullamentoRequest) {
 			AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) request;
-			response = this.annullaVersamento(tracciato, annullamentoRequest, bd);
+			response = annullaVersamento(tracciato, annullamentoRequest, bd);
 		} else  if(request instanceof OperazioneNonValidaRequest) {
 			OperazioneNonValidaRequest operazioneNonValidaRequest = (OperazioneNonValidaRequest) request;
 			response = new OperazioneNonValidaResponse();
@@ -218,7 +197,7 @@ public class AcquisizioneUtils {
 			response.setDescrizioneEsito(operazioneNonValidaRequest.getDettaglioErrore());
 		}
 
-		response.setDelim(this.delimiter);
+		response.setDelim(delimiter);
 
 		return response;
 	}
@@ -254,7 +233,8 @@ public class AcquisizioneUtils {
 	private CaricamentoResponse caricaVersamento(Tracciato tracciato, CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
 
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
-
+		caricamentoResponse.setCodApplicazione(request.getCodApplicazione());
+		caricamentoResponse.setCodVersamentoEnte(request.getCodVersamentoEnte());
 		try {
 			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request, basicBD);
 			CaricaVersamentoDTO caricaVersamentoDTO = null;
@@ -274,14 +254,15 @@ public class AcquisizioneUtils {
 			caricamentoResponse.setIuv(caricaVersamento.getIuv());
 
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
+			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 		} catch(GovPayException e) {
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			caricamentoResponse.setEsito(e.getCodEsito().name());
-			caricamentoResponse.setDescrizioneEsito(e.getMessage());
+			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
+			caricamentoResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " + e.getMessage());
 		} catch(NotAuthorizedException e) {
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			caricamentoResponse.setEsito(CostantiCaricamento.NOT_AUTHORIZED);
-			caricamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(e.getMessage()) ? e.getMessage() : "");
+			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
+			caricamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
 		}
 
 		return caricamentoResponse;
@@ -291,6 +272,8 @@ public class AcquisizioneUtils {
 
 
 		AnnullamentoResponse annullamentoResponse = new AnnullamentoResponse();
+		annullamentoResponse.setCodApplicazione(request.getCodApplicazione());
+		annullamentoResponse.setCodVersamentoEnte(request.getCodVersamentoEnte());
 
 		try {
 			PagamentiAttesa pagamentiAttesa = new PagamentiAttesa(basicBD);
@@ -305,14 +288,18 @@ public class AcquisizioneUtils {
 			pagamentiAttesa.annullaVersamento(annullaVersamentoDTO);
 
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
+			annullamentoResponse.setEsito("DEL_OK");
+			annullamentoResponse.setDescrizioneEsito("Pagamento in Attesa [App:" + request.getCodApplicazione() + " Id:" + request.getCodVersamentoEnte() + "] eliminato con successo");
 		} catch(GovPayException e) {
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+			annullamentoResponse.setEsito("DEL_KO");
 			annullamentoResponse.setEsito(e.getCodEsito().name());
-			annullamentoResponse.setDescrizioneEsito(e.getMessage());
+			annullamentoResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " +e.getMessage());
 		} catch(NotAuthorizedException e) {
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+			annullamentoResponse.setEsito("DEL_KO");
 			annullamentoResponse.setEsito(CostantiCaricamento.NOT_AUTHORIZED);
-			annullamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(e.getMessage()) ? e.getMessage() : "");
+			annullamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
 		}
 		return annullamentoResponse;
 

@@ -1,7 +1,5 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
-import org.openspcoop2.generic_project.exception.ValidationException;
-
 import it.govpay.model.Operazione.TipoOperazioneType;
 
 
@@ -10,8 +8,8 @@ public class OperazioneNonValidaRequest extends AbstractOperazioneRequest {
 	private String codiceErrore;
 	private String dettaglioErrore;
 	
-	public OperazioneNonValidaRequest() throws ValidationException {
-		super(TipoOperazioneType.N_V, null);
+	public OperazioneNonValidaRequest() {
+		super(TipoOperazioneType.N_V);
 	}
 
 	public String getDettaglioErrore() {
@@ -29,5 +27,16 @@ public class OperazioneNonValidaRequest extends AbstractOperazioneRequest {
 	public void setCodiceErrore(String codiceErrore) {
 		this.codiceErrore = codiceErrore;
 	}
+
+	@Override
+	public String getCodApplicazione() {
+		return null;
+	}
+
+	@Override
+	public String getCodVersamentoEnte() {
+		return null;
+	}
+	
 	
 }

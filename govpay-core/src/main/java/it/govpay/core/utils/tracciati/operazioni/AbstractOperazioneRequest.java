@@ -1,8 +1,5 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
-import org.openspcoop2.generic_project.exception.ValidationException;
-import org.openspcoop2.utils.csv.Record;
-
 import it.govpay.model.Operazione.TipoOperazioneType;
 
 
@@ -13,7 +10,7 @@ public abstract class AbstractOperazioneRequest {
 	private byte[] dati;
 	private TipoOperazioneType tipoOperazione;
 	
-	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione, Record record) throws ValidationException {
+	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
 
@@ -43,4 +40,7 @@ public abstract class AbstractOperazioneRequest {
 	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
+	
+	public abstract String getCodApplicazione();
+	public abstract String getCodVersamentoEnte();
 }

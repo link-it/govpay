@@ -14,7 +14,7 @@ public class AnnullamentoRequest extends AbstractOperazioneRequest {
 	private String codVersamentoEnte;
 
 	public AnnullamentoRequest(Record record) throws ValidationException{
-		super(TipoOperazioneType.DEL, record);
+		super(TipoOperazioneType.DEL);
 		this.setMotivoAnnullamento(Utils.validaESettaRecord(record, "motivoAnnullamento", 35, null, false));
 		this.setCodApplicazione(Utils.validaESettaRecord(record, "codApplicazione", 35, null, false));
 		this.setCodVersamentoEnte(Utils.validaESettaRecord(record, "codiceVersamentoEnte", 35, null, false));

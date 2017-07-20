@@ -162,4 +162,42 @@ public class BatchManager {
 			log.error("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch, se);
 		}
 	}
+	
+	
+	public static void aggiornaEsecuzione(BasicBD bd, String codBatch) throws ServiceException {
+		log.debug("Aggiorno il batch " + codBatch);
+
+		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
+		if(GovpayConfig.getInstance().getClusterId() == null) {
+			log.debug("ClusterId non impostato. Gestione concorrenza non abilitata. Aggiornamento non necessario");
+			return;
+		}
+		boolean wasAutocommit = true;
+		try {
+			if(bd.isAutoCommit()) {
+				bd.setAutoCommit(false);
+				wasAutocommit = true;
+			}
+			bd.enableSelectForUpdate();
+			
+			BatchBD batchBD = new BatchBD(bd);
+			
+			Batch batch = getRunningBatch(batchBD, codBatch);
+			
+			if(batch != null && GovpayConfig.getInstance().getClusterId() == batch.getNodo()) {
+				batch.setAggiornamento(new Date()); 
+				batchBD.update(batch);
+				bd.commit();
+				log.debug("Aggiornato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+				return;
+			}
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+			return;
+		} finally {
+			if(wasAutocommit)
+				bd.setAutoCommit(true);
+			bd.disableSelectForUpdate();
+		}
+	}
 }

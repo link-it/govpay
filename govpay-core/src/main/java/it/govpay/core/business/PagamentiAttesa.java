@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -141,10 +142,18 @@ public class PagamentiAttesa extends BasicBD {
 	}
 	
 
-	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException, ServiceException{
+	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException {
+		log.info("Richiesto annullamento per il Versamento (" + annullaVersamentoDTO.getCodVersamentoEnte() + ") dell'applicazione (" + annullaVersamentoDTO.getCodApplicazione() + ")");
+		
+		GpContext ctx = GpThreadLocal.get();
+		
+		if(!ctx.hasCorrelationId()) ctx.setCorrelationId(annullaVersamentoDTO.getCodApplicazione() + annullaVersamentoDTO.getCodVersamentoEnte());
+		ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", annullaVersamentoDTO.getCodApplicazione()));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codVersamentoEnte", annullaVersamentoDTO.getCodVersamentoEnte()));
+		ctx.log("versamento.annulla");
 		
 		if(annullaVersamentoDTO.getApplicazione() != null && !annullaVersamentoDTO.getApplicazione().getCodApplicazione().equals(annullaVersamentoDTO.getCodApplicazione())) {
-			throw new NotAuthorizedException();
+			throw new NotAuthorizedException("Applicazione chiamante [" + annullaVersamentoDTO.getApplicazione().getCodApplicazione() + "] non e' proprietaria del versamento");
 		}
 		
 		String codApplicazione = annullaVersamentoDTO.getCodApplicazione();
@@ -162,11 +171,12 @@ public class PagamentiAttesa extends BasicBD {
 				if(annullaVersamentoDTO.getOperatore() != null && 
 						!(AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti,versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2 ||
 						AclEngine.isAdminDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()))) {
-					throw new NotAuthorizedException();
+					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
 				}
 				// Se è già annullato non devo far nulla.
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") gia' annullato. Aggiornamento non necessario.");
+					ctx.log("versamento.annullaOk");
 					return;
 				}
 				
@@ -176,6 +186,7 @@ public class PagamentiAttesa extends BasicBD {
 					versamentoLetto.setDescrizioneStato(annullaVersamentoDTO.getMotivoAnnullamento()); 
 					versamentiBD.updateVersamento(versamentoLetto);
 					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") annullato.");
+					ctx.log("versamento.annullaOk");
 					return;
 				}
 				
@@ -190,10 +201,19 @@ public class PagamentiAttesa extends BasicBD {
 			}
 		} catch (Exception e) {
 			rollback();
-			if(e instanceof GovPayException)
+			if(e instanceof GovPayException) {
+				GovPayException gpe = (GovPayException) e;
+				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
 				throw (GovPayException) e;
-			else 
-				throw new GovPayException(e);
+			} else if(e instanceof NotAuthorizedException) { 
+				NotAuthorizedException nae = (NotAuthorizedException) e;
+				ctx.log("versamento.annullaKo", "NOT_AUTHORIZED", NotAuthorizedException.descrizione, nae.getMessage() != null ? nae.getMessage() : "- Non specificata -");
+				throw nae;
+			} else {
+				GovPayException gpe = new GovPayException(e);
+				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
+				throw gpe;
+			}
 		}
 	}
 }

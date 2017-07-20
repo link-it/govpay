@@ -22,7 +22,7 @@ package it.govpay.model;
 public class Operazione {
 	
 	public enum StatoOperazioneType {
-		NON_VALIDO, ESEGUITO_OK, ESEGUITO_KO;
+		NON_VALIDO, ESEGUITO_KO, ESEGUITO_OK;
 	}
 	
 	public enum TipoOperazioneType {

@@ -95,7 +95,7 @@ public class OperazioniBD extends BasicBD {
 		}
 	}
 	
-	public it.govpay.bd.model.Operazione getOperazione(long id) throws ServiceException, NotFoundException {
+	public it.govpay.bd.model.Operazione getOperazione(long id) throws ServiceException {
 		try {
 			it.govpay.orm.Operazione operazione = ((IDBOperazioneService)this.getOperazioneService()).get(id);
 			it.govpay.bd.model.Operazione dto = OperazioneConverter.toDettaglioDTO(operazione);
