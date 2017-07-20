@@ -41684,77 +41684,77 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       <div class="content">
         <paper-card class="sezione" elevation="0">
           <div class="card-content">
-              <div class="ruolo ellipsis-text">
-                <span class="etichetta">[[localize('utenteCollegato')]]:</span>
-                <span class="valore">[[userInfo.principal]]</span>
-              </div>
-              <div class="ruolo ellipsis-text">
-               <span class="etichetta">[[localize('ruoli')]]:</span>
-               <span class="valore">[[_getRuoli(userInfo.ruoli)]]</span>
-              </div>
+            <div class="ruolo ellipsis-text">
+              <span class="etichetta">[[localize('utenteCollegato')]]:</span>
+              <span class="valore">[[userInfo.principal]]</span>
+            </div>
+            <div class="ruolo ellipsis-text">
+              <span class="etichetta">[[localize('ruoli')]]:</span>
+              <span class="valore">[[_getRuoli(userInfo.ruoli)]]</span>
+            </div>
           </div>
         </paper-card>
       </div>
     </paper-header-panel>
   </template>
   <script>
-  (function() {
-    'use strict';
+    (function() {
+      'use strict';
 
-    Polymer({
-      is: 'link-profilo-panel',
+      Polymer({
+        is: 'link-profilo-panel',
 
-      listeners: {
-        'iron-overlay-opened': '_refit'
-      },
+        listeners: {
+          'iron-overlay-opened': '_refit'
+        },
 
-      behaviors: [
-        LinkLocalizeBehavior
-      ],
+        behaviors: [
+          LinkLocalizeBehavior
+        ],
 
-      properties: {
-        userInfo: {
-          type: Object,
-          value: null
-        }
-      },
-
-      show: function(){
-        if(app.USER_LOGGED) {
-          this.userInfo = app.USER_LOGGED;
-          this.listen(window, 'resize', '_refit');
-        }
-      },
-
-      close: function(){
-        this.unlisten(window, 'resize', '_refit');
-        document.body.removeChild(this);
-      },
-
-      _getRuoli: function(_ruoli){
-        var ruoli = '';
-        if(_ruoli){
-          for(var i =0; i < _ruoli.length; i++){
-            if(i > 0)
-              ruoli += ', ';
-
-            ruoli += _ruoli[i];
+        properties: {
+          userInfo: {
+            type: Object,
+            value: null
           }
+        },
+
+        show: function(){
+          if(app.USER_LOGGED) {
+            this.userInfo = app.USER_LOGGED;
+            this.listen(window, 'resize', '_refit');
+          }
+        },
+
+        close: function(){
+          this.unlisten(window, 'resize', '_refit');
+          document.body.removeChild(this);
+        },
+
+        _getRuoli: function(_ruoli){
+          var ruoli = '';
+          if(_ruoli){
+            for(var i =0; i < _ruoli.length; i++){
+              if(i > 0)
+                ruoli += ', ';
+
+              ruoli += _ruoli[i];
+            }
+          }
+
+          return ruoli;
+        },
+
+        _refit: function(){
+          this.customStyle['--link-pref-height'] = window.innerHeight / 2 +'px';
+          this.customStyle['--link-pref-width'] = window.innerWidth / 2 +'px';
+          this.customStyle['--link-pref-left'] = (window.innerWidth / 4) +'px';
+          this.customStyle['--link-pref-top'] = (window.innerHeight / 4) +'px';
+          this.updateStyles();
         }
 
-        return ruoli;
-      },
-
-      _refit: function(){
-        this.customStyle['--link-pref-height'] = window.innerHeight / 2 +'px';
-        this.customStyle['--link-pref-width'] = window.innerWidth / 2 +'px';
-        this.customStyle['--link-pref-left'] = (window.innerWidth / 4) +'px';
-        this.customStyle['--link-pref-top'] = (window.innerHeight / 4) +'px';
-        this.updateStyles();
-      }
-
-    });
-  })();
+      });
+    })();
   </script>
 </dom-module>
 <script>
@@ -41946,6 +41946,11 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         _loading: {
           type: Boolean,
           value: false
+        },
+
+        _DELAY_TIME: {
+          type: Number,
+          value: 10000
         }
 
       },
@@ -41958,16 +41963,17 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       },
 
       _pollingStatus: function(_el) {
-        if(_el.refreshUri && !this._timer){
-          this._timer = setInterval(this._doPoll.bind(this), 5000, _el.refreshUri);
-          (window.linkIntervals)?window.linkIntervals.push(this._timer):window.linkIntervals = [this._timer];
+        if(!_el.refreshUri && this._timer) {
+          this._clearTimer();
+        } else if(_el.refreshUri) {
+          this._checkAndRegisterTimer(_el);
         }
       },
 
       _doPoll: function(_refreshUri) {
         //console.log('Check Item Status: '+this.element.id+' #'+this._timer);
         this._loading = true;
-        this._fire();
+        this._fireLoading();
 
         this.$._polling.url = REST_URL + _refreshUri + app.appendLangParameter(_refreshUri);
         this.$._polling.generateRequest();
@@ -41986,11 +41992,11 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
             console.log('Check Item Status: Bad Response');
           }
           this._loading = false;
-          this._fire();
+          this._fireLoading();
         } catch (e) {
           this._clearTimer();
           this._loading = false;
-          this._fire();
+          this._fireLoading();
           console.log('Errors detected during execution: '+e.message);
         }
       },
@@ -41998,16 +42004,29 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       _pollingInfo_errorHandler: function(event){
         this._clearTimer();
         this._loading = false;
-        this._fire();
+        this._fireLoading();
         console.log('Check Item Status: Network Error');
       },
 
-      _clearTimer: function() {
-        clearInterval(this._timer);
-        window.linkIntervals.splice(window.linkIntervals.indexOf(this._timer), 1);
+      _checkAndRegisterTimer: function(_el) {
+        if(app.LINK_INTERVALS.indexOf(this._timer) == -1) {
+          this._timer = setInterval(this._doPoll.bind(this), this._DELAY_TIME, _el.refreshUri);
+          (app.LINK_INTERVALS)?app.LINK_INTERVALS.push(this._timer):app.LINK_INTERVALS = [this._timer];
+        }
       },
 
-      _fire: function() {
+      _clearTimer: function() {
+        var _timerIndex = app.LINK_INTERVALS.indexOf(this._timer);
+        if(this._timer) {
+          clearInterval(this._timer);
+        }
+        if(_timerIndex != -1) {
+          app.LINK_INTERVALS.splice(_timerIndex, 1);
+        }
+        this._timer = undefined;
+      },
+
+      _fireLoading: function() {
         this.fire('loading', { loading: this._loading, index: this.index });
       }
 
