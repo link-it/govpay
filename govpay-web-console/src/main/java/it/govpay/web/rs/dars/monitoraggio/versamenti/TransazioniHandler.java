@@ -72,6 +72,7 @@ import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.rs.dars.monitoraggio.eventi.EventiHandler;
 import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler<Rpt>{
@@ -189,6 +190,58 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 		} else {
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
+			if(StringUtils.isNotEmpty(idDominio)){
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDom);
+					filter.setIdDomini(toListCodDomini(idDomini, bd));
+					if(elementoCorrelato)
+						params.put(idDominioId,idDominio);
+				}
+			}
+
+		}
+
+		if(eseguiRicerca &&!setDomini.contains(-1L)){
+			List<Long> lstCodDomini = new ArrayList<Long>();
+			lstCodDomini.addAll(setDomini);
+			idDomini.addAll(setDomini);
+			filter.setIdDomini(toListCodDomini(idDomini, bd));
+		}
+
+		return eseguiRicerca;
+	}
+	
+	private boolean popoloFiltroRicerca(List<RawParamValue> rawValues, UriInfo uriInfo, 
+			BasicBD bd, Map<String, String> params, boolean simpleSearch, RptFilter filter) throws ServiceException, NotFoundException, ConsoleException {
+		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		boolean eseguiRicerca = !setDomini.isEmpty();
+		boolean elementoCorrelato = false;
+		List<Long> idDomini = new ArrayList<Long>();
+
+		String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
+		String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
+
+		if(StringUtils.isNotEmpty(idVersamento)){
+			filter.setIdVersamento(Long.parseLong(idVersamento)); 
+			elementoCorrelato = true;
+			params.put(versamentoId, idVersamento);
+		}
+
+		if(simpleSearch) {
+			// simplesearch
+			String simpleSearchString = Utils.getValue(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+				if(elementoCorrelato)
+					params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+			}
+		} else {
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominio = Utils.getValue(rawValues, idDominioId);
 			if(StringUtils.isNotEmpty(idDominio)){
 				long idDom = -1l;
 				try{
@@ -630,27 +683,56 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 
-		if(idsToExport == null || idsToExport.size() == 0) {
-			List<String> msg = new ArrayList<String>();
-			msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.erroreSelezioneVuota"));
-			throw new ExportException(msg, EsitoOperazione.ERRORE);
-		}
-
-		if(idsToExport.size() == 1)
-			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout); 
-
 		String fileName = "Transazioni.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
+			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			RptBD rptBD = new RptBD(bd);
+			RptFilter filter = rptBD.newFilter(simpleSearch);
+			Map<String, String> params = new HashMap<String, String>();
+			// se ho ricevuto anche gli id li utilizzo per fare il check della count
+			if(idsToExport != null && idsToExport.size() > 0) 
+				filter.setIdRpt(idsToExport);
+
+			//1. eseguo una count per verificare che il numero dei risultati da esportare sia <= sogliamassimaexport massivo
+			boolean eseguiRicerca = this.popoloFiltroRicerca(rawValues, uriInfo, rptBD, params, simpleSearch, filter);
+			
+			if(!eseguiRicerca){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.operazioneNonPermessa"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+			
+			long count = rptBD.count(filter);
+
+			if(count < 1){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.nessunElementoDaEsportare"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+			
+			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+			
+			filter.setOffset(0);
+			filter.setLimit(limit);
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
+			fsw.setSortOrder(SortOrder.DESC);
+			
+			List<Rpt> findAll = rptBD.findAll(filter);
+			
 			EventiBD eventiBd = new EventiBD(bd);
 			Eventi eventiDars = new Eventi();
 			EventiHandler eventiDarsHandler = (EventiHandler) eventiDars.getDarsHandler(); 
 
-			for (Long idTransazione : idsToExport) {
-				Rpt rpt = rptBD.getRpt(idTransazione);
+			for (Rpt rpt  : findAll) {
 				String folderName = rpt.getCodMsgRichiesta();
 				String iuv = rpt.getIuv();
 				String ccp = rpt.getCcp();
@@ -697,6 +779,8 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			return fileName;
 		}catch(WebApplicationException e){
 			throw e;
+		}catch(ExportException e){
+			throw e;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
@@ -710,7 +794,8 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
+			// Operazione consentita solo ai ruoli con diritto di lettura
+			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
 			RptBD rptBD = new RptBD(bd);
 			EventiBD eventiBd = new EventiBD(bd);
@@ -763,6 +848,8 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 
 			return fileName;
 		}catch(WebApplicationException e){
+			throw e;
+		}catch(ExportException e){
 			throw e;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -880,7 +967,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 		InfoForm infoEsportazione = null;
 		try{
 			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+				URI esportazione = this.getUriEsportazione(uriInfo, bd, parameters);
 				infoEsportazione = new InfoForm(esportazione);
 			}
 		}catch(ServiceException e){

@@ -965,6 +965,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			return fileName;
 		}catch(WebApplicationException e){
 			throw e;
+		}catch(ExportException e){
+			throw e;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
@@ -1083,6 +1085,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 			return fileName;
 		}catch(WebApplicationException e){
+			throw e;
+		}catch(ExportException e){
 			throw e;
 		}catch(Exception e){
 			throw new ConsoleException(e);

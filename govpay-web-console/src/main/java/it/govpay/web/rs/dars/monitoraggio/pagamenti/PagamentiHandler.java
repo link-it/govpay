@@ -1400,7 +1400,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		InfoForm infoEsportazione = null;
 		try{
 			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+				URI esportazione = this.getUriEsportazione(uriInfo, bd, parameters);
 				infoEsportazione = new InfoForm(esportazione);
 
 
