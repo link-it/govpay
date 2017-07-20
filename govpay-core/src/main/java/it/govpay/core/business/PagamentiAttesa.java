@@ -214,6 +214,14 @@ public class PagamentiAttesa extends BasicBD {
 				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
 				throw gpe;
 			}
+		} finally {
+			try {
+				disableSelectForUpdate();
+			} catch (ServiceException e) {
+				GovPayException gpe = new GovPayException(e);
+				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
+				throw gpe;
+			}
 		}
 	}
 }

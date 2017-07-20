@@ -176,6 +176,10 @@ public class Versamento extends BasicBD {
 				throw (GovPayException) e;
 			else 
 				throw new GovPayException(e);
+		} finally {
+			try {
+				disableSelectForUpdate();
+			} catch (Exception e) {}
 		}
 	}
 	
