@@ -215,7 +215,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			this.log.error("Esito operazione "+methodName+" [" + idsAsString + "], causa: " +e.getMessage());
+			this.log.error("Esito operazione "+methodName+" [" + idsAsString + "], causa: " +e.getMessage(),e);
 			if(bd != null) 
 				bd.rollback();
 			
