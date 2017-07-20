@@ -41956,6 +41956,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       },
 
       _render: function(item){
+        this._clearTimer();
         var funzione = (item.formatter || 'defaultFormatter');
         if (funzione){
           return window[funzione](item);
