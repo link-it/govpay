@@ -37705,7 +37705,7 @@ event and do your own custom submission:
       <template id="listTemplate" is="dom-repeat" items="[[dataProvider]]" filter="isVisible" on-dom-change="_domChanged">
         <paper-item id="item_[[index]]" on-tap="nextLevel" on-track="_onswipe">
           <div class="icon-checkmark"><iron-icon icon="check"></iron-icon></div>
-          <link-listbox-item class$="[[classFromIndex(index)]]" element="[[item]]" index="[[index]]" on-loading="_setOpacity"></link-listbox-item>
+          <link-listbox-item class$="[[classFromIndex(index)]]" element="[[item]]" index$="[[index]]" on-loading="_setOpacity"></link-listbox-item>
         </paper-item>
       </template>
     </paper-material>
@@ -41904,9 +41904,38 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         right: 0;
       }
 
+      .progress-status {
+        position: absolute;
+        left: 18px;
+        top: calc(50% - 18px);
+      }
+
+      .progress-bar {
+        transform: rotate(-90deg);
+        transform-origin: center;
+        stroke: var(--accent-color);
+        stroke-width: 5px;
+        fill: none;
+        stroke-dasharray: 75.39;
+      }
+
+      .progress-track {
+        fill: none;
+        stroke-width: 3px;
+        stroke: black;
+        stroke-dasharray: 0;
+      }
+
+
     </style>
 
     <paper-spinner active$="[[_loading]]"></paper-spinner>
+    <div hidden$="[[!_hasPercentuale]]">
+      <svg class="progress-status" viewBox="0 0 36 36" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+        <circle class="progress-bar" cx="18" cy="18" r="12" stroke-dashoffset$="{{_percentage}}" fill$="{{_progressColor}}"></circle>
+        <circle class="progress-track" cx="18" cy="18" r="10" stroke-dashoffset$="75.39" fill$="{{_progressColor}}"></circle>
+      </svg>
+    </div>
     <div class="group">
       <template is="juicy-html" content$="[[_element]]"></template>
     </div>
@@ -41914,6 +41943,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
   </template>
   <script>
+
   (function() {
     'use strict';
 
@@ -41950,13 +41980,28 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
         _DELAY_TIME: {
           type: Number,
-          value: 3000
+          value: 5000
+        },
+
+        _hasPercentuale: {
+          type: Boolean,
+          value: false
+        },
+
+        _percentage: {
+          type: Number,
+          value: 75.39
+        },
+
+        _progressColor: {
+          type: String
         }
 
       },
 
       _render: function(item){
         this._clearTimer();
+        this._hasPercentuale = (item.voci.hasOwnProperty('percentuale') && item.voci.percentuale.hasOwnProperty('valore'));
         var funzione = (item.formatter || 'defaultFormatter');
         if (funzione){
           return window[funzione](item);
@@ -41964,6 +42009,8 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       },
 
       _pollingStatus: function(_el) {
+        this._percentage = 75.39;
+        this._getPercentage(this.element);
         if(!_el.refreshUri && this._timer) {
           this._clearTimer();
         } else if(_el.refreshUri) {
@@ -41980,6 +42027,16 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         this.$._polling.generateRequest();
       },
 
+      _getPercentage: function(_el) {
+        if(_el && _el.voci.hasOwnProperty('percentuale') && _el.voci.percentuale.hasOwnProperty('valore')){
+          var _tmp = parseFloat(_el.voci.percentuale.valore);
+          (_tmp > 100)?_tmp = 100:null;
+          (_tmp < 0)?_tmp = 0:null;
+          this._percentage = 75.39 * (100 - _tmp) / 100;
+        }
+        this._progressColor = (this.index%2==0)?'#fafafa':'#fff';
+      },
+
       _pollingInfo_responseHandler: function(event) {
         try {
           var _newElement = event.detail.response.response;
@@ -41987,6 +42044,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
             if (!_newElement.refreshUri) {
               this._clearTimer();
             }
+            this._getPercentage(_newElement);
             this.set('element', _newElement);
           } else {
             this._clearTimer();
