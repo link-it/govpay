@@ -126,44 +126,44 @@ public class Operatori extends DarsService {
 
 	}
 	
-	@GET
-	@Path("/userNonAutorizzato")
-	@Produces({MediaType.APPLICATION_JSON})
-	public DarsResponse getOperatoreNonAutorizzato() throws ConsoleException {
-		this.initLogger("simulazioneUtenteNonAutorizzato");
-		
-		this.log.info("Ricevuta richiesta");
-
-		DarsResponse darsResponse = new DarsResponse();
-		darsResponse.setCodOperazione(this.codOperazione);
-
-		BasicBD bd = null;
-		try {
-			bd = BasicBD.newInstance(this.codOperazione);
-			Operatore operatore = this.getOperatoreByPrincipal(bd,"UTENTE_NON_ESISTENTE");
-
-			// Reset ID DB
-			operatore.setId(null);
-
-			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
-			darsResponse.setResponse(operatore);
-		} catch(WebApplicationException e){
-			this.log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore:" +e.getMessage() , e);
-			// Invalido la sessione appena creata dal container.
-			this.invalidateSession(this.log);
-			throw e;
-		} catch (Exception e) {
-			this.log.error("Riscontrato errore durante la ricerca dell'operatore:" +e.getMessage() , e);
-
-			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(BaseRsService.ERRORE_INTERNO);
-		}finally {
-			this.response.setHeader("Access-Control-Allow-Origin", "*");
-			if(bd != null) bd.closeConnection();
-		}
-		this.log.info("Richiesta evasa con successo");
-		return darsResponse;
-
-	}
+//	@GET
+//	@Path("/userNonAutorizzato")
+//	@Produces({MediaType.APPLICATION_JSON})
+//	public DarsResponse getOperatoreNonAutorizzato() throws ConsoleException {
+//		this.initLogger("simulazioneUtenteNonAutorizzato");
+//		
+//		this.log.info("Ricevuta richiesta");
+//
+//		DarsResponse darsResponse = new DarsResponse();
+//		darsResponse.setCodOperazione(this.codOperazione);
+//
+//		BasicBD bd = null;
+//		try {
+//			bd = BasicBD.newInstance(this.codOperazione);
+//			Operatore operatore = this.getOperatoreByPrincipal(bd,"Amministratore");
+//
+//			// Reset ID DB
+//			operatore.setId(null);
+//
+//			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+//			darsResponse.setResponse(operatore);
+//		} catch(WebApplicationException e){
+//			this.log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore:" +e.getMessage() , e);
+//			// Invalido la sessione appena creata dal container.
+//			this.invalidateSession(this.log);
+//			throw e;
+//		} catch (Exception e) {
+//			this.log.error("Riscontrato errore durante la ricerca dell'operatore:" +e.getMessage() , e);
+//
+//			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+//			darsResponse.setDettaglioEsito(BaseRsService.ERRORE_INTERNO);
+//		}finally {
+//			this.response.setHeader("Access-Control-Allow-Origin", "*");
+//			if(bd != null) bd.closeConnection();
+//		}
+//		this.log.info("Richiesta evasa con successo");
+//		return darsResponse;
+//
+//	}
 
 }

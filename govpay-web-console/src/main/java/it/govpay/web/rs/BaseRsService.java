@@ -55,6 +55,7 @@ import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl;
 import it.govpay.model.Operatore;
 import it.govpay.model.Ruolo;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 @Path("/")
@@ -205,7 +206,7 @@ public abstract class BaseRsService {
 		Operatore operatore = getOperatoreByPrincipal(bd, getPrincipal());
 		return operatore;
 	}
-
+	
 	protected Operatore getOperatoreByPrincipal(BasicBD bd, String principal) throws ServiceException,WebApplicationException{
 		if(principal == null){
 			this.invalidateSession(null);
@@ -214,8 +215,9 @@ public abstract class BaseRsService {
 
 		Operatore operatore = null;
 		try {
+			boolean controlloPrincipalCaseInsensitive = ConsoleProperties.getInstance().isAbilitaControlloPrincipalCaseInsensitive();
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
-			operatore = operatoriBD.getOperatore(principal);
+			operatore = operatoriBD.getOperatore(principal,controlloPrincipalCaseInsensitive);
 
 			// Se l'utente non dispone di almeno un ruolo allora non e' autorizzato
 			if(operatore.getRuoli() == null || operatore.getRuoli().size() == 0){

@@ -22,10 +22,14 @@ package it.govpay.bd.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
@@ -77,12 +81,33 @@ public class OperatoriBD extends BasicBD {
 	 * @throws ServiceException
 	 */
 	public Operatore getOperatore(String principal) throws NotFoundException, MultipleResultException, ServiceException {
+		return getOperatore(principal, false);
+	}
+	
+	/**
+	 * Recupera l'operatore identificato dalla chiave logica
+	 * 
+	 * @param principal
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public Operatore getOperatore(String principal, boolean checkIgnoreCase) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IdOperatore id = new IdOperatore();
-			id.setPrincipal(principal);
-			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().get(id);
+			IExpression expr = this.getOperatoreService().newExpression();
+			if(checkIgnoreCase)
+				expr.ilike(it.govpay.orm.Operatore.model().PRINCIPAL, principal, LikeMode.EXACT);
+			else 
+				expr.equals(it.govpay.orm.Operatore.model().PRINCIPAL, principal);
+			
+			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
 			return getOperatore(operatoreVO);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
