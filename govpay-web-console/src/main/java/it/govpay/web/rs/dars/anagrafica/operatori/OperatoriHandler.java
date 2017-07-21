@@ -40,6 +40,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
@@ -158,7 +159,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 
 		if(visualizzaRicerca){
 			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruolo.id");
+			String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
@@ -204,7 +205,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruolo.id");
+			String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 
 			// principal
 			String principalLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label");
@@ -212,7 +213,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			this.infoRicercaMap.put(principalId, principal);
 
 			// ruolo
-			String ruoloLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruolo.label");
+			String ruoloLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.label");
 			List<Voce<String>> tipiProfili = new ArrayList<Voce<String>>();
 			SelectList<String> ruolo = new SelectList<String>(ruoloId, ruoloLabel, "", false, false, true, tipiProfili);
 			this.infoRicercaMap.put(ruoloId, ruolo);
@@ -447,15 +448,25 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			List<String> ruoli = operatore.getRuoli();
 			if(ruoli != null && ruoli.size() > 0){
 				StringBuffer sb = new StringBuffer();
-
-				for (String r : ruoli) {
+				
+				Ruoli ruoliDars = new Ruoli();
+				RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
+				for (String codRuolo : ruoli) {
 					if(sb.length() > 0 )
 						sb.append(", ");
-					sb.append(r);
-				}
 
+					if(!codRuolo.equals(Operatore.RUOLO_SYSTEM)) {
+						try{
+							Ruolo r = AnagraficaManager.getRuolo(bd, codRuolo);
+							sb.append(ruoliDarsHandler.getTitolo(r, bd)); 
+						}catch(Exception e) {}
+					} else {
+						sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"));
+					}
+				}
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.label"), sb.toString());
 			}
+			
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(operatore.isAbilitato()));
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -599,7 +610,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 
 	@Override
 	public String getTitolo(Operatore entry, BasicBD bd) {
-		return entry.getPrincipal();
+		return entry.getNome();
 	}
 
 	@Override
@@ -607,19 +618,28 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		StringBuilder sb = new StringBuilder();
 
 		try{
-		List<Ruolo> ruoli = entry.getRuoli(bd);
-		if(ruoli != null && ruoli.size() > 0){
-			Ruoli ruoliDars = new Ruoli();
-			RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
-			for (Ruolo r : ruoli) {
-				if(sb.length() > 0 )
-					sb.append(", ");
-				sb.append(ruoliDarsHandler.getTitolo(r, bd)); 
+			List<String> ruoli = entry.getRuoli();
+
+			if(ruoli != null && ruoli.size() > 0){
+				Ruoli ruoliDars = new Ruoli();
+				RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
+				for (String codRuolo : ruoli) {
+					if(sb.length() > 0 )
+						sb.append(", ");
+
+					if(!codRuolo.equals(Operatore.RUOLO_SYSTEM)) {
+						try{
+							Ruolo r = AnagraficaManager.getRuolo(bd, codRuolo);
+							sb.append(ruoliDarsHandler.getTitolo(r, bd)); 
+						}catch(Exception e) {}
+					} else {
+						sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"));
+					}
+				}
 			}
-		}
 		}catch(Exception e){
 		}
-		return Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.label",Utils.getAbilitatoAsLabel(entry.isAbilitato()),sb.toString());
+		return Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.label",Utils.getAbilitatoAsLabel(entry.isAbilitato()), entry.getPrincipal(), sb.toString());
 	}
 
 	@Override

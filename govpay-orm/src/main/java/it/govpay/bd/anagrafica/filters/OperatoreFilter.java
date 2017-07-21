@@ -47,6 +47,7 @@ public class OperatoreFilter extends AbstractFilter {
 	public OperatoreFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Operatore.model().PRINCIPAL);
+		this.listaFieldSimpleSearch.add(Operatore.model().NOME);
 	}
 
 	@Override
