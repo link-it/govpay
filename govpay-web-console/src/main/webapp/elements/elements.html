@@ -41921,7 +41921,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
       .progress-track {
         fill: none;
-        stroke-width: 3px;
+        stroke-width: 2px;
         stroke: black;
         stroke-dasharray: 0;
       }
@@ -42001,7 +42001,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
       _render: function(item){
         this._clearTimer();
-        this._hasPercentuale = (item.voci.hasOwnProperty('percentuale') && item.voci.percentuale.hasOwnProperty('valore'));
+        this._hasPercentuale = (item && item.hasOwnProperty('voci') && item.voci && item.voci.hasOwnProperty('percentuale') && item.voci.percentuale && item.voci.percentuale.hasOwnProperty('valore'));
         var funzione = (item.formatter || 'defaultFormatter');
         if (funzione){
           return window[funzione](item);
@@ -42028,7 +42028,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       },
 
       _getPercentage: function(_el) {
-        if(_el && _el.voci.hasOwnProperty('percentuale') && _el.voci.percentuale.hasOwnProperty('valore')){
+        if(_el && _el.hasOwnProperty('voci') && _el.voci && _el.voci.hasOwnProperty('percentuale') && _el.voci.percentuale && _el.voci.percentuale.hasOwnProperty('valore')){
           var _tmp = parseFloat(_el.voci.percentuale.valore);
           (_tmp > 100)?_tmp = 100:null;
           (_tmp < 0)?_tmp = 0:null;
