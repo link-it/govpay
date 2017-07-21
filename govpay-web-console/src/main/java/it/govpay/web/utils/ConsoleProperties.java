@@ -48,6 +48,8 @@ public class ConsoleProperties {
 	
 	private boolean abilitaFunzionalitaStatistiche = false;
 	
+	private boolean abilitaControlloPrincipalCaseInsensitive = false;
+	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
 			init();
@@ -161,6 +163,9 @@ public class ConsoleProperties {
 			
 			String abilitaFunzionalitaStatisticheS = ConsoleProperties.getProperty("it.govpay.console.statistiche.visualizzazione.enabled", props, false);
 			this.abilitaFunzionalitaStatistiche = Boolean.parseBoolean(abilitaFunzionalitaStatisticheS);
+			
+			String abilitaControlloPrincipalCaseInsensitiveS = ConsoleProperties.getProperty("it.govpay.console.login.controlloPrincipalCaseInsensitive.enabled", props, false);
+			this.abilitaControlloPrincipalCaseInsensitive = Boolean.parseBoolean(abilitaControlloPrincipalCaseInsensitiveS);
 			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
@@ -290,6 +295,10 @@ public class ConsoleProperties {
 
 	public boolean isAbilitaFunzionalitaStatistiche() {
 		return abilitaFunzionalitaStatistiche;
+	}
+
+	public boolean isAbilitaControlloPrincipalCaseInsensitive() {
+		return abilitaControlloPrincipalCaseInsensitive;
 	}
 	
 }
