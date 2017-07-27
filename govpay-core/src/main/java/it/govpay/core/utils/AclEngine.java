@@ -133,9 +133,7 @@ public class AclEngine {
 						if(acl.getIdDominio() != null)
 							domini.add(acl.getIdDominio());
 						else {
-							domini.clear();
-							domini.add(-1L);
-							return domini;
+							return null;
 						}
 					}
 
@@ -143,9 +141,7 @@ public class AclEngine {
 					if(acl.getIdDominio() != null)
 						domini.add(acl.getIdDominio());
 					else {
-						domini.clear();
-						domini.add(-1L);
-						return domini;
+						return null;
 					}
 				}
 			}

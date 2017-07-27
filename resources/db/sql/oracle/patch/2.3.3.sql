@@ -14,7 +14,6 @@ CREATE TABLE incassi
        -- fk/pk columns
        id NUMBER NOT NULL,
        id_applicazione NUMBER,
-
        -- fk/pk keys constraints
        CONSTRAINT fk_incassi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
        CONSTRAINT pk_incassi PRIMARY KEY (id)

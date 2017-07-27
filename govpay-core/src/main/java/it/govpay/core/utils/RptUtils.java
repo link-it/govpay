@@ -205,16 +205,13 @@ public class RptUtils {
 		enteBeneficiario.setIdentificativoUnivocoBeneficiario(idUnivocoBeneficiario);
 		enteBeneficiario.setDenominazioneBeneficiario(dominio.getRagioneSociale());
 
-		try {
-			Anagrafica anagrafica = dominio.getAnagrafica(bd);
-			enteBeneficiario.setCapBeneficiario(getNotEmpty(anagrafica.getCap()));
-			enteBeneficiario.setCivicoBeneficiario(getNotEmpty(anagrafica.getCivico()));
-			enteBeneficiario.setIndirizzoBeneficiario(getNotEmpty(anagrafica.getIndirizzo()));
-			enteBeneficiario.setLocalitaBeneficiario(getNotEmpty(anagrafica.getLocalita()));
-			enteBeneficiario.setNazioneBeneficiario(getNotEmpty(anagrafica.getNazione()));
-			enteBeneficiario.setProvinciaBeneficiario(getNotEmpty(anagrafica.getProvincia()));
-		} catch (NotFoundException e) {
-		}
+		Anagrafica anagrafica = dominio.getAnagrafica(bd);
+		enteBeneficiario.setCapBeneficiario(getNotEmpty(anagrafica.getCap()));
+		enteBeneficiario.setCivicoBeneficiario(getNotEmpty(anagrafica.getCivico()));
+		enteBeneficiario.setIndirizzoBeneficiario(getNotEmpty(anagrafica.getIndirizzo()));
+		enteBeneficiario.setLocalitaBeneficiario(getNotEmpty(anagrafica.getLocalita()));
+		enteBeneficiario.setNazioneBeneficiario(getNotEmpty(anagrafica.getNazione()));
+		enteBeneficiario.setProvinciaBeneficiario(getNotEmpty(anagrafica.getProvincia()));
 
 		if(!uo.getCodUo().equals(Dominio.EC) && uo.getAnagrafica() != null) {
 			if(uo.getAnagrafica().getCodUnivoco() != null && uo.getAnagrafica().getCodUnivoco().trim().length()>0)

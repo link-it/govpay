@@ -21,6 +21,7 @@ package it.govpay.web.rs;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -146,7 +147,12 @@ public abstract class BaseRsService {
 
 	public Set<Long> getIdDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
-		return AclEngine.getIdDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_LETTURA);
+		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_LETTURA);
+		if(idDominiAutorizzati == null) {
+			idDominiAutorizzati = new HashSet<Long>();
+			idDominiAutorizzati.add(-1L);
+		}
+		return idDominiAutorizzati;
 	}
 
 	public Set<String> getDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
@@ -156,7 +162,12 @@ public abstract class BaseRsService {
 
 	public Set<Long> getIdDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
-		return AclEngine.getIdDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_SCRITTURA);
+		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_SCRITTURA);
+		if(idDominiAutorizzati == null) {
+			idDominiAutorizzati = new HashSet<Long>();
+			idDominiAutorizzati.add(-1L);
+		}
+		return idDominiAutorizzati;
 	}
 
 	private int getTopDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException {

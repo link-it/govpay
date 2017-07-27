@@ -20,23 +20,35 @@
 
 package it.govpay.bd.model;
 
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.IbanAccreditoBD;
+import it.govpay.bd.anagrafica.TributiBD;
+import it.govpay.bd.anagrafica.UnitaOperativeBD;
+import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
+import it.govpay.bd.anagrafica.filters.TributoFilter;
+import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
+import it.govpay.bd.model.IbanAccredito;
 
 public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
-	
+
 	// Business
-	
+
 	private transient Anagrafica anagrafica;
 	private transient Stazione stazione;
 	private transient Applicazione applicazioneDefault;
-	
+	private transient List<UnitaOperativa> unitaOperative;
+	private transient List<IbanAccredito> ibanAccredito;
+	private transient List<Tributo> tributi;
+
 	public Stazione getStazione(BasicBD bd) throws ServiceException {
 		if(stazione == null) {
 			stazione = AnagraficaManager.getStazione(bd, this.getIdStazione());
@@ -44,9 +56,13 @@ public class Dominio extends it.govpay.model.Dominio {
 		return stazione;
 	}
 
-	public Anagrafica getAnagrafica(BasicBD bd) throws ServiceException, NotFoundException {
+	public Anagrafica getAnagrafica(BasicBD bd) throws ServiceException {
 		if(anagrafica == null) {
-			anagrafica = AnagraficaManager.getUnitaOperativa(bd, this.getId(), EC).getAnagrafica();
+			try {
+				anagrafica = AnagraficaManager.getUnitaOperativa(bd, this.getId(), EC).getAnagrafica();
+			} catch (NotFoundException e) {
+				throw new ServiceException(e);
+			}
 		}
 		return anagrafica;
 	}
@@ -67,6 +83,62 @@ public class Dominio extends it.govpay.model.Dominio {
 		this.setIdApplicazioneDefault(applicazioneDefault.getId());
 	}
 
+	public List<UnitaOperativa> getUnitaOperative(BasicBD bd) throws ServiceException {
+		if(unitaOperative == null) { 
+			UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
+			UnitaOperativaFilter filter = uoBD.newFilter();
+			filter.setDominioFilter(this.getId());
+			unitaOperative = uoBD.findAll(filter);
+		}
+		return unitaOperative;
+	}
+	
+	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco) throws ServiceException, NotFoundException {
+		List<UnitaOperativa> unitaOperative = getUnitaOperative(bd);
+		for(UnitaOperativa uo : unitaOperative) {
+			if(uo.getAnagrafica().getCodUnivoco().equals(codUnivoco))
+				return uo;
+		}
+		throw new NotFoundException();
+	}
+	
+	public List<IbanAccredito> getIbanAccredito(BasicBD bd) throws ServiceException {
+		if(ibanAccredito == null) { 
+			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter();
+			filter.setIdDominio(this.getId());
+			ibanAccredito = ibanAccreditoBD.findAll(filter);
+		}
+		return ibanAccredito;
+	}
+	
+	public IbanAccredito getIban(BasicBD bd, String iban) throws ServiceException, NotFoundException {
+		List<IbanAccredito> ibans = getIbanAccredito(bd);
+		for(IbanAccredito ibanAccredito : ibans) {
+			if(ibanAccredito.getCodIban().equals(iban))
+				return ibanAccredito;
+		}
+		throw new NotFoundException();
+	}
+
+	public List<Tributo> getTributi(BasicBD bd) throws ServiceException {
+		if(tributi == null) { 
+			TributiBD tributiBD = new TributiBD(bd);
+			TributoFilter filter = tributiBD.newFilter();
+			filter.setIdDominio(this.getId());
+			tributi = tributiBD.findAll(filter);
+		}
+		return tributi;
+	}
+
+	public Tributo getTributo(BasicBD bd, String codTributo) throws ServiceException, NotFoundException {
+		List<Tributo> tributi = getTributi(bd);
+		for(Tributo tributo : tributi) {
+			if(tributo.getCodTributo().equals(codTributo))
+				return tributo;
+		}
+		throw new NotFoundException();
+	}
 
 }
 

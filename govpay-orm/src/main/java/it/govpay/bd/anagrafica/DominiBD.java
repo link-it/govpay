@@ -42,7 +42,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.converter.DominioConverter;
 import it.govpay.bd.model.converter.IbanAccreditoConverter;
 import it.govpay.bd.wrapper.StatoNdP;
-import it.govpay.model.IbanAccredito;
+import it.govpay.bd.model.IbanAccredito;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.JDBCDominioService;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
@@ -63,10 +63,9 @@ public class DominiBD extends BasicBD {
 	 * @param codDominio
 	 * @return
 	 * @throws NotFoundException se l'ente non esiste.
-	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public Dominio getDominio(String codDominio) throws NotFoundException, MultipleResultException, ServiceException {
+	public Dominio getDominio(String codDominio) throws NotFoundException, ServiceException {
 		try {
 			IdDominio id = new IdDominio();
 			id.setCodDominio(codDominio);
@@ -74,6 +73,8 @@ public class DominiBD extends BasicBD {
 			Dominio dominio = DominioConverter.toDTO(dominioVO);
 			return dominio;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}

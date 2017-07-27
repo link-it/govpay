@@ -17,54 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+package it.govpay.core.business.model;
 
-package it.govpay.model;
 
-import java.util.List;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class Operatore extends BasicModel {
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
+
+public class ListaDominiDTO {
 	
-	private static final long serialVersionUID = 1L;
-	
-	public static final String RUOLO_SYSTEM = "SYSTEM";
-	public static final String SEPARATORE_RUOLO = ";";
-	
-	private Long id;
 	private String principal;
-	private String nome;
-	private boolean abilitato;
-	private List<String> ruoli;
+	private DominioFilter filter;
 	
-	public Long getId() {
-		return id;
+	public ListaDominiDTO(BasicBD bd) throws ServiceException {
+		DominiBD dominiBD = new DominiBD(bd);
+		this.filter = dominiBD.newFilter();
 	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+	
 	public String getPrincipal() {
 		return principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
-	public boolean isAbilitato() {
-		return abilitato;
+	public DominioFilter getFilter() {
+		return filter;
 	}
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-	public String getNome() {
-		return nome;
-	}
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	public List<String> getRuoli() {
-		return ruoli;
-	}
-	public void setRuoli(List<String> ruoli) {
-		this.ruoli = ruoli;
-	}
-	
-
 }

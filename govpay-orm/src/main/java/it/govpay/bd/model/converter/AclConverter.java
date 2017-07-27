@@ -67,9 +67,7 @@ public class AclConverter {
 		if(dto.getIdDominio() != null || dto.getCodDominio() != null){
 			IdDominio idDominio = new IdDominio();
 			if(dto.getIdDominio() == null) {
-				try {
-					idDominio.setId(new DominiBD(bd).getDominio(dto.getCodDominio()).getId());
-				} catch(MultipleResultException e) {}
+				idDominio.setId(new DominiBD(bd).getDominio(dto.getCodDominio()).getId());
 			} else {
 				idDominio.setId(dto.getIdDominio());
 			}

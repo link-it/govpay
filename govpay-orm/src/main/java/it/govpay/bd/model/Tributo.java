@@ -67,4 +67,13 @@ public class Tributo extends it.govpay.model.Tributo {
 
 	private transient IbanAccredito ibanAccredito;
 	
+	private transient Dominio dominio;
+	
+	public Dominio getDominio(BasicBD bd) throws ServiceException {
+		if(dominio == null) {
+			dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+		} 
+		return dominio;
+	}
+	
 }

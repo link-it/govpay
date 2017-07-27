@@ -19,7 +19,7 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.IbanAccredito;
+import it.govpay.bd.model.IbanAccredito;
 import it.govpay.orm.IdDominio;
 
 import java.util.ArrayList;

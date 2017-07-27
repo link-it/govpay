@@ -30,7 +30,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.IFilter;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.model.converter.IbanAccreditoConverter;
-import it.govpay.model.IbanAccredito;
+import it.govpay.bd.model.IbanAccredito;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.dao.jdbc.JDBCIbanAccreditoServiceSearch;

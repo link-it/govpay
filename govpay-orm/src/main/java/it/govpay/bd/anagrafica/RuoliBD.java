@@ -119,8 +119,15 @@ public class RuoliBD extends BasicBD {
 	 * @throws ServiceException in caso di errore DB.
 	 */
 	public void updateRuolo(Ruolo ruolo) throws NotFoundException, ServiceException {
+		
+		boolean wasAutocommit = this.isAutoCommit();
+		
 		try {
 
+			if(this.isAutoCommit()) {
+				setAutoCommit(false);
+			}
+			
 			it.govpay.orm.Ruolo vo = RuoloConverter.toVO(ruolo);
 			IdRuolo idRuolo = this.getRuoloService().convertToId(vo);
 
@@ -151,12 +158,18 @@ public class RuoliBD extends BasicBD {
 			
 			ruolo.setId(vo.getId());
 			emitAudit(ruolo);
+			commit();
 		} catch (NotImplementedException e) {
+			rollback();
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			rollback();
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
+			rollback();
 			throw new ServiceException(e);
+		} finally {
+			setAutoCommit(wasAutocommit);
 		}
 	}
 

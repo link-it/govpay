@@ -58,7 +58,7 @@ import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Operatore;
+import it.govpay.bd.model.Operatore;
 import it.govpay.model.Portale;
 import it.govpay.model.Ruolo;
 import it.govpay.bd.model.Psp;
