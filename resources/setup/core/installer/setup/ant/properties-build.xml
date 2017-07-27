@@ -1,38 +1,18 @@
 
-<project name="setup-pdd" basedir=".">
+<project name="setup-govpay" basedir=".">
 	
 	<description>
-        	SETUP PDD
+        	SETUP GOVPAY
 	</description>
 
 	<import file="utils.xml" />
+
+
+
 	
 	<target name="govpay_properties_settings">
 
-
-                <condition property="endWithSlash">
-                  <matches pattern="^.+/$" string="${antinstaller_work_folder}" />
-                </condition>
-                <if>
-                  <equals arg1="${endWithSlash}" arg2="true" />
-                  <then>
-                         <propertyregex property="noendslash"
-                              input="${antinstaller_work_folder}"
-                              regexp="^(.+)/$"
-                              select="\1"
-                              casesensitive="false" />
-                  </then>
-                  <else>
-                        <property name="noendslash" value="${antinstaller_work_folder}"/>
-                  </else>
-                </if>
-
-
-                <antcall target="replace_token">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="/var/govpay"/>
-                        <param name="value" value="${noendslash}"/>
-                </antcall>
+		<properties-filler template="${file}"/>
 
 		<antcall target="set_property">
 			<param name="file" value="${file}"/>
@@ -40,146 +20,31 @@
 			<param name="value" value="Generato con GovPay v${antinstaller_product_version}"/>
 		</antcall>
 
-                <antcall target="replace_token">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="http://hostpdd/openspcoop2/PD"/>
-                        <param name="value" value="${antinstaller_pddcheck}"/>
-                </antcall>
-
-		<antcall target="set_property">
-			<param name="file" value="${file}"/>
-			<param name="token" value="it.govpay.orm.databaseType"/>
-			<param name="value" value="${antinstaller_tipo_database}"/>
-		</antcall>
-		<antcall target="set_property">
-			<param name="file" value="${file}"/>
-			<param name="token" value="it.govpay.orm.showSql"/>
-			<param name="value" value="false"/>
-		</antcall>
-		<antcall target="set_property">
-			<param name="file" value="${file}"/>
-			<param name="token" value="it.govpay.orm.dataSourceJNDIName"/>
-			<param name="value" value="govpay"/>
-		</antcall>
 
 	</target>
 
 	<target name="govpay_logger_properties_settings">
-                <antcall target="replace_token">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="TRACE"/>
-                        <param name="value" value="${antinstaller_log_level}"/>
-                </antcall>
-                <antcall target="replace_token">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="DEBUG"/>
-                        <param name="value" value="${antinstaller_log_level}"/>
-                </antcall>
-		<antcall target="replace_token">
-			<param name="file" value="${file}"/>
-			<param name="token" value="INFO"/>
-			<param name="value" value="${antinstaller_log_level}"/>
-		</antcall>
-		<antcall target="replace_token">
-			<param name="file" value="${file}"/>
-			<param name="token" value="WARN"/>
-			<param name="value" value="${antinstaller_log_level}"/>
-		</antcall>
-		<antcall target="replace_token">
-			<param name="file" value="${file}"/>
-			<param name="token" value="ERROR"/>
-			<param name="value" value="${antinstaller_log_level}"/>
-		</antcall>
-                <antcall target="replace_token">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="FATAL"/>
-                        <param name="value" value="${antinstaller_log_level}"/>
-                </antcall>
-                <antcall target="replace_token">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="OFF"/>
-                        <param name="value" value="${antinstaller_log_level}"/>
-                </antcall>
-                <antcall target="replace_token">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="ALL"/>
-                        <param name="value" value="${antinstaller_log_level}"/>
-                </antcall>
-		
-		<!-- Cotrollo che i path non terminino con il carattere '/'-->
-                <condition property="endWithSlash">
-                  <matches pattern="^.+/$" string="${antinstaller_log_folder}" />
-                </condition>
-                <if>
-                  <equals arg1="${endWithSlash}" arg2="true" />
-                  <then>
-                         <propertyregex property="noendslash"
-                              input="${antinstaller_log_folder}"
-                              regexp="^(.+)/$"
-                              select="\1"
-                              casesensitive="false" />
-                  </then>
-                  <else>
-                        <property name="noendslash" value="${antinstaller_log_folder}"/>
-                  </else>
-                </if>
 
-		<antcall target="replace_token">
-			<param name="file" value="${file}"/>
-			<param name="token" value="/var/log/govpay"/>
-			<param name="value" value="${noendslash}"/>
-		</antcall>
+		<properties-filler template="${file}"/>
+		<replace file="${file}" value="${antinstaller_log_level}">
+                          <replacefilter token="TRACE" />
+                          <replacefilter token="DEBUG"/>
+                          <replacefilter token="INFO"/>
+                          <replacefilter token="WARN" />
+                          <replacefilter token="ERROR" />
+                          <replacefilter token="FATAL" />
+                          <replacefilter token="OFF" />
+                          <replacefilter token="ALL"/> 
+		</replace>	
+
 	</target>
 
 	<target name="govpay_console_properties_settings">
 
-                <antcall target="set_property">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="it.govpay.orm.databaseType"/>
-                        <param name="value" value="${antinstaller_tipo_database}"/>
-                </antcall>
-                <antcall target="set_property">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="it.govpay.orm.showSql"/>
-                        <param name="value" value="false"/>
-                </antcall>
-                <antcall target="set_property">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="it.govpay.orm.dataSourceJNDIName"/>
-                        <param name="value" value="govpay"/>
-                </antcall>
+		<properties-filler template="${file}"/>
 
-
-                <antcall target="set_property">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="it.govpay.console.operazioni.jmx.as"/>
-                        <param name="value" value="${antinstaller_as}"/>
-                </antcall>
-
-                <!-- Cotrollo che i path non terminino con il carattere '/'-->
-                <condition property="endWithSlash">
-                  <matches pattern="^.+/$" string="${antinstaller_console_work_folder}" />
-                </condition>
-                <if>
-                  <equals arg1="${endWithSlash}" arg2="true" />
-                  <then>
-                         <propertyregex property="noendslash"
-                              input="${antinstaller_console_work_folder}"
-                              regexp="^(.+)/$"
-                              select="\1"
-                              casesensitive="false" />
-                  </then>
-                  <else>
-                        <property name="noendslash" value="${antinstaller_console_work_folder}"/>
-                  </else>
-                </if>
-
-		<antcall target="replace_token">
-                        <param name="file" value="${file}"/>
-                        <param name="token" value="/var/govpay/console"/>
-                        <param name="value" value="${noendslash}"/>
-                </antcall>
 	</target>
+
         <target name="wildfly_govpay_securitydomain">
 		<antcall target="replace_token">
                         <param name="file" value="${file}"/>

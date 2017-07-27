@@ -1,3 +1,3 @@
-1. Compila GovPay utilizzando il filtro "template" (mvn clean install)
+1. Compila GovPay utilizzando il filtro "installer_template" (mvn -Denv=installer_template clean install)
 2. Edita il file prepareSetup.sh indicando la versione nella prima riga.
 3. Avvia lo script prepareSetup.sh

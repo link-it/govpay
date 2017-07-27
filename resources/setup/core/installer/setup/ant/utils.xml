@@ -5,6 +5,32 @@
         	UTILS
 	</description>
 
+	<macrodef name="properties-filler">
+		<attribute name="template"/>
+		<sequential>
+		<copy file="@{template}" toFile="@{template}.new">
+        		<filterset>
+                		<filter token="GOVPAY_HOME" value="${antinstaller_work_folder_noendsep}"/>
+	                	<filter token="GOVPAY_CONSOLE_HOME" value="${antinstaller_console_work_folder_noendsep}"/>
+	                	<filter token="GOVPAY_LOG" value="${antinstaller_log_folder_noendsep}"/>
+        		        <filter token="GOVPAY_BATCH_EXPORT" value="${antinstaller_work_folder_noendsep}${file.separator}estrattoConto"/>
+	        	        <filter token="GOVPAY_BATCH_EXPORT_PDF" value="${antinstaller_work_folder_noendsep}${file.separator}estrattoConto"/>
+        	        	<filter token="GOVPAY_LOGO" value="${antinstaller_work_folder_noendsep}${file.separator}logo"/>
+	                	<filter token="GOVPAY_CONSOLE_LOGO" value="${antinstaller_work_folder_noendsep}${file.separator}logo"/>
+		                <filter token="GOVPAY_BATCH_LOGO" value="${antinstaller_work_folder_noendsep}${file.separator}logo"/>
+        		        <filter token="GOVPAY_URL_VERIFICA" value="${antinstaller_pddcheck}"/>
+                		<filter token="GOVPAY_TIPO_DATABASE" value="${antinstaller_tipo_database}"/>
+		                <filter token="GOVPAY_LOG_SHOWSQL" value="false"/>
+        		        <filter token="GOVPAY_DATASOURCE" value="govpay"/>
+                		<filter token="GOVPAY_JMX_AS" value="${antinstaller_as}"/>
+		        </filterset>
+		</copy>
+		<delete file="@{template}" />
+		<move file="@{template}.new" tofile="@{template}"/>
+		</sequential>
+	</macrodef>
+
+
 	<target name="replace_token">
 		<replace file="${file}" token="${token}" value="${value}"/>
 	</target>
