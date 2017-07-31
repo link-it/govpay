@@ -66,7 +66,6 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.utils.DominioUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
-import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
@@ -1170,7 +1169,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			}
 
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
-			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<IbanAccredito>()));
+			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<it.govpay.bd.model.IbanAccredito>()));
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
@@ -1225,7 +1224,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			Dominio  entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
-			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<IbanAccredito>()));
+			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<it.govpay.bd.model.IbanAccredito>()));
 
 			// azzero l'id applicazione default se ho selezionato nessuna.
 			if(entry.getIdApplicazioneDefault() != null && entry.getIdApplicazioneDefault().longValue() == -1l) {
@@ -1523,7 +1522,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				IbanAccreditoBD ibanAccreditoDB = new IbanAccreditoBD(bd);
 				IbanAccreditoFilter filter = ibanAccreditoDB.newFilter();
 				filter.setIdDominio(idDominio);
-				List<IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
+				List<it.govpay.bd.model.IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
 				final byte[] contiAccredito = DominioUtils.buildInformativaContoAccredito(dominio, ibans);
 
 				ZipEntry contiAccreditoXml = new ZipEntry(folderName + "/contiAccredito.xml");
@@ -1570,7 +1569,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			IbanAccreditoBD ibanAccreditoDB = new IbanAccreditoBD(bd);
 			IbanAccreditoFilter filter = ibanAccreditoDB.newFilter();
 			filter.setIdDominio(idToExport);
-			List<IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
+			List<it.govpay.bd.model.IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
 			final byte[] contiAccredito = DominioUtils.buildInformativaContoAccredito(dominio, ibans);
 
 			ZipEntry contiAccreditoXml = new ZipEntry("contiAccredito.xml");

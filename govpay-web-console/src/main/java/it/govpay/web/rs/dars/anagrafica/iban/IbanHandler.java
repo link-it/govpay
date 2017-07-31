@@ -116,7 +116,7 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 					this.getInfoCreazione(uriInfo, bd),
 					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
-			List<IbanAccredito> findAll = ibanAccreditoBD.findAll(filter);
+			List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (IbanAccredito entry : findAll) {

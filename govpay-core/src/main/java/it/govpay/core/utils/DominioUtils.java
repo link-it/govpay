@@ -56,7 +56,7 @@ public class DominioUtils {
 		return JaxbUtils.toByte(informativaControparte);
 	}
 	
-	public static byte[] buildInformativaContoAccredito(Dominio dominio, List<IbanAccredito> lstIban) throws JAXBException, SAXException, XMLStreamException, IOException {
+	public static byte[] buildInformativaContoAccredito(Dominio dominio, List<it.govpay.bd.model.IbanAccredito> lstIban) throws JAXBException, SAXException, XMLStreamException, IOException {
 		Date adesso = new Date();
 		SimpleDateFormat hourFormat = new SimpleDateFormat("hh:mm:ss.sss");
 		SimpleDateFormat idFormat = new SimpleDateFormat("yyyy-MM-dd");

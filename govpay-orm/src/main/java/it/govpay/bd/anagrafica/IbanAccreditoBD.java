@@ -98,7 +98,7 @@ public class IbanAccreditoBD extends BasicBD {
 	 * @throws NotFoundException se non esiste
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public void updateIbanAccredito(IbanAccredito ibanAccredito) throws NotFoundException, ServiceException {
+	public void updateIbanAccredito(it.govpay.model.IbanAccredito ibanAccredito) throws NotFoundException, ServiceException {
 		try {
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
 			IdIbanAccredito id = this.getIbanAccreditoService().convertToId(vo);
@@ -121,7 +121,7 @@ public class IbanAccreditoBD extends BasicBD {
 	 * @param ibanAccredito
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public void insertIbanAccredito(IbanAccredito ibanAccredito) throws ServiceException{
+	public void insertIbanAccredito(it.govpay.model.IbanAccredito ibanAccredito) throws ServiceException{
 		try {
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
 			this.getIbanAccreditoService().create(vo);

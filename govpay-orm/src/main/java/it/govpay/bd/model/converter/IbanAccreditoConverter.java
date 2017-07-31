@@ -54,7 +54,7 @@ public class IbanAccreditoConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.IbanAccredito toVO(IbanAccredito dto) {
+	public static it.govpay.orm.IbanAccredito toVO(it.govpay.model.IbanAccredito dto) {
 		it.govpay.orm.IbanAccredito vo = new it.govpay.orm.IbanAccredito();
 		vo.setId(dto.getId());
 		vo.setCodIban(toNull(dto.getCodIban()));

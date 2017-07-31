@@ -43,7 +43,6 @@ import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.core.utils.DominioUtils;
 import it.govpay.model.Dominio;
-import it.govpay.model.IbanAccredito;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -99,7 +98,7 @@ public class Domini extends DarsService {
 			IbanAccreditoBD ibanAccreditoDB = new IbanAccreditoBD(bd);
 			IbanAccreditoFilter filter = ibanAccreditoDB.newFilter();
 			filter.setIdDominio(id);
-			List<IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
+			List<it.govpay.bd.model.IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
 			final byte[] contiAccredito = DominioUtils.buildInformativaContoAccredito(dominio, ibans);
 			StreamingOutput stream = new StreamingOutput() {
 

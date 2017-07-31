@@ -74,7 +74,7 @@ public class IbanAccredito extends SelectList<Long>{
 			fsw.setSortOrder(SortOrder.ASC);
 			filterIban.getFilterSortList().add(fsw);
 			filterIban.setCodDominio(dominiBD.getDominio(Long.parseLong(idDominioValue)).getCodDominio());   
-			List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+			List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.model.IbanAccredito ib : findAll) {
