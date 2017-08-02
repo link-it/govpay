@@ -24,12 +24,12 @@ import java.util.List;
 
 import it.govpay.bd.model.Dominio;
 
-public class ListaDominiDTOResponse {
+public class FindUnitaOperativeDTOResponse {
 	
 	private List<Dominio> domini;
 	private long totalCount;
 
-	public ListaDominiDTOResponse() {
+	public FindUnitaOperativeDTOResponse() {
 		setDomini(new ArrayList<Dominio>());
 	}
 

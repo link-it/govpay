@@ -39,10 +39,10 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.core.business.model.LeggiDominioDTO;
-import it.govpay.core.business.model.LeggiDominioDTOResponse;
-import it.govpay.core.business.model.ListaDominiDTO;
-import it.govpay.core.business.model.ListaDominiDTOResponse;
+import it.govpay.core.business.model.GetDominioDTO;
+import it.govpay.core.business.model.GetDominioDTOResponse;
+import it.govpay.core.business.model.FindDominiDTO;
+import it.govpay.core.business.model.FindDominiDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -80,7 +80,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			ListaDominiDTO listaDominiDTO = new ListaDominiDTO(bd);
+			FindDominiDTO listaDominiDTO = new FindDominiDTO(bd);
 			
 			listaDominiDTO.setPrincipal(getPrincipal());
 			listaDominiDTO.getFilter().setOffset(offset);
@@ -88,7 +88,7 @@ public class Domini extends BaseRsServiceV1 {
 			listaDominiDTO.getFilter().setRagioneSociale(ragioneSociale);
 			
 			it.govpay.core.business.Domini dominiBusiness = new it.govpay.core.business.Domini(bd);
-			ListaDominiDTOResponse listaDominiDTOResponse = dominiBusiness.listaDomini(listaDominiDTO);
+			FindDominiDTOResponse listaDominiDTOResponse = dominiBusiness.listaDomini(listaDominiDTO);
 			
 			List<Dominio> domini = new ArrayList<Dominio>();
 			for(it.govpay.bd.model.Dominio d : listaDominiDTOResponse.getDomini()) {
@@ -126,12 +126,12 @@ public class Domini extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiDominioDTO leggiDominioDTO = new LeggiDominioDTO();
+			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
 			leggiDominioDTO.setCodDominio(codDominio);
 			leggiDominioDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			LeggiDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
 			Dominio dominio = new Dominio(leggiDominioDTOResponse.getDominio(), baseUriBuilder, bd);
 			
 			return Response.status(Status.OK).entity(dominio.toJSON(fields)).build();
@@ -166,12 +166,12 @@ public class Domini extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiDominioDTO leggiDominioDTO = new LeggiDominioDTO();
+			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
 			leggiDominioDTO.setCodDominio(codDominio);
 			leggiDominioDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			LeggiDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
 			
 			List<UnitaOperativa> unitaOperative = new ArrayList<UnitaOperativa>();
 			for(it.govpay.bd.model.UnitaOperativa uo : leggiDominioDTOResponse.getDominio().getUnitaOperative(bd)) {
@@ -208,12 +208,12 @@ public class Domini extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiDominioDTO leggiDominioDTO = new LeggiDominioDTO();
+			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
 			leggiDominioDTO.setCodDominio(codDominio);
 			leggiDominioDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			LeggiDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
 			UnitaOperativa unitaOperativa = new UnitaOperativa(leggiDominioDTOResponse.getDominio().getUnitaOperativa(bd, codUnivoco), uriInfo.getAbsolutePathBuilder(), bd);
 			
 			return Response.status(Status.OK).entity(unitaOperativa).build();
@@ -245,12 +245,12 @@ public class Domini extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiDominioDTO leggiDominioDTO = new LeggiDominioDTO();
+			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
 			leggiDominioDTO.setCodDominio(codDominio);
 			leggiDominioDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			LeggiDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
 			
 			List<Iban> ibans = new ArrayList<Iban>();
 			for(it.govpay.bd.model.IbanAccredito iban : leggiDominioDTOResponse.getDominio().getIbanAccredito(bd)) {
@@ -286,12 +286,12 @@ public class Domini extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiDominioDTO leggiDominioDTO = new LeggiDominioDTO();
+			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
 			leggiDominioDTO.setCodDominio(codDominio);
 			leggiDominioDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			LeggiDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
 			Iban ibanAccredito = new Iban(leggiDominioDTOResponse.getDominio().getIban(bd, iban), uriInfo.getAbsolutePathBuilder(), bd);
 			
 			return Response.status(Status.OK).entity(ibanAccredito).build();
@@ -323,12 +323,12 @@ public class Domini extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiDominioDTO leggiDominioDTO = new LeggiDominioDTO();
+			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
 			leggiDominioDTO.setCodDominio(codDominio);
 			leggiDominioDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			LeggiDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
 			
 			List<Entrata> entrate = new ArrayList<Entrata>();
 			for(it.govpay.bd.model.Tributo tributo : leggiDominioDTOResponse.getDominio().getTributi(bd)) {
@@ -364,12 +364,12 @@ public class Domini extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiDominioDTO leggiDominioDTO = new LeggiDominioDTO();
+			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
 			leggiDominioDTO.setCodDominio(codDominio);
 			leggiDominioDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			LeggiDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
 			Entrata entrata = new Entrata(leggiDominioDTOResponse.getDominio().getTributo(bd, codTributo), uriInfo.getAbsolutePathBuilder(), bd);
 			
 			return Response.status(Status.OK).entity(entrata).build();

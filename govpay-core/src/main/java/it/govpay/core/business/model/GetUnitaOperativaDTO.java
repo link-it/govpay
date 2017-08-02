@@ -1,6 +1,6 @@
 package it.govpay.core.business.model;
 
-public class LeggiDominioDTO {
+public class GetUnitaOperativaDTO {
 	
 	private String principal;
 	private String codDominio;

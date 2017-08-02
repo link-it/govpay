@@ -2,7 +2,7 @@ package it.govpay.core.business.model;
 
 import it.govpay.bd.model.Dominio;
 
-public class LeggiDominioDTOResponse {
+public class GetUnitaOperativaDTOResponse {
 	
 	private Dominio dominio;
 

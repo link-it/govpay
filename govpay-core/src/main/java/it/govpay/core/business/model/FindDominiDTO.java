@@ -26,12 +26,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 
-public class ListaDominiDTO {
+public class FindDominiDTO {
 	
 	private String principal;
 	private DominioFilter filter;
 	
-	public ListaDominiDTO(BasicBD bd) throws ServiceException {
+	public FindDominiDTO(BasicBD bd) throws ServiceException {
 		DominiBD dominiBD = new DominiBD(bd);
 		this.filter = dominiBD.newFilter();
 	}
