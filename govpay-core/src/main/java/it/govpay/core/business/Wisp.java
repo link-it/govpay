@@ -55,7 +55,7 @@ public class Wisp extends BasicBD {
 		NodoClient client = null;
 		try {
 			idTransaction = ctx.openTransaction();
-			ctx.setupNodoClient(dominio.getStazione(this).getCodStazione(), dominio.getCodDominio(), Azione.nodoChiediSceltaWISP);
+			ctx.setupNodoClient(dominio.getStazione().getCodStazione(), dominio.getCodDominio(), Azione.nodoChiediSceltaWISP);
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", dominio.getCodDominio()));
 			ctx.getContext().getRequest().addGenericProperty(new Property("codKeyPA", codKeyPA));
 			GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codKeyWISP", codKeyWISP));

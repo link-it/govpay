@@ -57,13 +57,13 @@ public class PagamentiAttesa extends BasicBD {
 		
 		// AUTORIZZAZIONE
 		if(caricaVersamentoDTO.getApplicazione() != null && !caricaVersamentoDTO.getApplicazione().getCodApplicazione().equals(caricaVersamentoDTO.getVersamento().getApplicazione(this).getCodApplicazione())) {
-			throw new NotAuthorizedException();
+			throw new NotAuthorizedException("TODO"); //TODO
 		}
 		
 		if(caricaVersamentoDTO.getOperatore() != null && 
-				!(AclEngine.getTopDirittiOperatore(caricaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()) == 2 ||
-				AclEngine.isAdminDirittiOperatore(caricaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()))) {
-			throw new NotAuthorizedException();
+				!(AclEngine.getTopDirittiOperatore(caricaVersamentoDTO.getOperatore(), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()) == 2 ||
+				AclEngine.isAdminDirittiOperatore(caricaVersamentoDTO.getOperatore(), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()))) {
+			throw new NotAuthorizedException("TODO"); //TODO
 		}
 		
 		Versamento versamento = caricaVersamentoDTO.getVersamento();
@@ -169,8 +169,8 @@ public class PagamentiAttesa extends BasicBD {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
 			
 				if(annullaVersamentoDTO.getOperatore() != null && 
-						!(AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti,versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2 ||
-						AclEngine.isAdminDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()))) {
+						!(AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore(), Servizio.Gestione_Pagamenti,versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2 ||
+						AclEngine.isAdminDirittiOperatore(annullaVersamentoDTO.getOperatore(), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()))) {
 					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
 				}
 				// Se è già annullato non devo far nulla.
@@ -207,7 +207,8 @@ public class PagamentiAttesa extends BasicBD {
 				throw (GovPayException) e;
 			} else if(e instanceof NotAuthorizedException) { 
 				NotAuthorizedException nae = (NotAuthorizedException) e;
-				ctx.log("versamento.annullaKo", "NOT_AUTHORIZED", NotAuthorizedException.descrizione, nae.getMessage() != null ? nae.getMessage() : "- Non specificata -");
+				//TODO
+				ctx.log("versamento.annullaKo", "NOT_AUTHORIZED", "NOTAUTHORIZED", nae.getMessage() != null ? nae.getMessage() : "- Non specificata -");
 				throw nae;
 			} else {
 				GovPayException gpe = new GovPayException(e);

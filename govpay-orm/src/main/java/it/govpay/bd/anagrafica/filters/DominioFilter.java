@@ -19,7 +19,7 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -40,17 +40,18 @@ import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
 public class DominioFilter extends AbstractFilter {
 
 	private String codStazione = null;
-	private List<Long> idDomini = null; 
+	private Collection<Long> idDomini = null; 
 	private CustomField cf;
 	
 	private String codDominio = null;
 	private String ragioneSociale = null;
+	private Boolean abilitato = null;
 	
 	public enum SortFields {
 	}
 	
 	public DominioFilter(IExpressionConstructor expressionConstructor) {
-		this(expressionConstructor,false);
+		this(expressionConstructor, false);
 	}
 	
 	public DominioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
@@ -114,6 +115,14 @@ public class DominioFilter extends AbstractFilter {
 				
 				// 2. metto in and la stringa con la ragione sociale
 				newExpression.ilike(Dominio.model().RAGIONE_SOCIALE, this.ragioneSociale,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.abilitato != null) {
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(Dominio.model().ABILITATO, this.abilitato);
+				addAnd = true;
 			}
 			
 			return newExpression;
@@ -140,11 +149,11 @@ public class DominioFilter extends AbstractFilter {
 		this.codStazione = codStazione;
 	}
 
-	public List<Long> getIdDomini() {
+	public Collection<Long> getIdDomini() {
 		return idDomini;
 	}
 
-	public void setIdDomini(List<Long> idDomini) {
+	public void setIdDomini(Collection<Long> idDomini) {
 		this.idDomini = idDomini;
 	}
 
@@ -162,6 +171,14 @@ public class DominioFilter extends AbstractFilter {
 
 	public void setRagioneSociale(String ragioneSociale) {
 		this.ragioneSociale = ragioneSociale;
+	}
+
+	public Boolean getAbilitato() {
+		return abilitato;
+	}
+
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 	
 	

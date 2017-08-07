@@ -23,41 +23,27 @@ import it.govpay.core.exceptions.BaseException;
 
 public class Errore {
 	
-	private String codice;
-	private String descrizione;
-	private String dettaglio;
-	
-	public Errore() {
-		// Necessario per marshalling/unmarshalling
-	}
+	private String code;
+	private String message;
+	private String details;
 	
 	public Errore(BaseException exception) {
-		this.codice = exception.getFaultCode();
-		this.descrizione = exception.getFaultString();
-		this.dettaglio = exception.getDescription();
+		this.code = exception.getCode();
+		this.message = exception.getMessage();
+		this.details = exception.getDetails();
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getDetails() {
+		return details;
 	}
 	
-	public String getCodice() {
-		return codice;
-	}
-
-	public void setCodice(String codice) {
-		this.codice = codice;
-	}
-
-	public String getDescrizione() {
-		return descrizione;
-	}
-
-	public void setDescrizione(String descrizione) {
-		this.descrizione = descrizione;
-	}
-
-	public String getDettaglio() {
-		return dettaglio;
-	}
-
-	public void setDettaglio(String dettaglio) {
-		this.dettaglio = dettaglio;
-	}
+	
 }

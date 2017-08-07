@@ -23,7 +23,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.bd.BasicBD;
 
 @JsonFilter(value="entrate")  
 public class Entrata extends JSONSerializable {
@@ -39,15 +38,15 @@ public class Entrata extends JSONSerializable {
 
 	}
 
-	public Entrata(it.govpay.bd.model.Tributo tributo, UriBuilder uriBuilder, BasicBD bd) throws ServiceException {
-		uriBuilder.path("domini").path(tributo.getDominio(bd).getCodDominio()).path("entrate").path(tributo.getCodTributo());
+	public Entrata(it.govpay.bd.model.Tributo tributo, String codDominio, UriBuilder uriBuilder) throws ServiceException {
+		uriBuilder.path("domini").path(codDominio).path("entrate").path(tributo.getCodTributo());
 		this.abilitato = tributo.isAbilitato();
 		this.descrizione = tributo.getDescrizione();
 		this.idEntrata = tributo.getCodTributo();
 		this.href = uriBuilder.build().toString();
 		this.abilitato = tributo.isAbilitato();
 		this.descrizione = tributo.getDescrizione();
-		this.ibanAccredito = tributo.getIbanAccredito(bd).getCodIban();
+		this.ibanAccredito = tributo.getIbanAccredito().getCodIban();
 		this.tipoContabilita = tributo.getTipoContabilita().name();
 		this.codContabilita = tributo.getCodContabilita();
 	}

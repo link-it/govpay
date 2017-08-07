@@ -24,8 +24,6 @@ import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
-
 @JsonFilter(value="domini")  
 public class Dominio extends JSONSerializable {
 	
@@ -57,23 +55,23 @@ public class Dominio extends JSONSerializable {
 
 	}
 
-	public Dominio(it.govpay.bd.model.Dominio dominio, UriBuilder uriBuilder, BasicBD bd) throws ServiceException {
+	public Dominio(it.govpay.bd.model.Dominio dominio, UriBuilder uriBuilder) throws ServiceException {
 		uriBuilder = uriBuilder.clone().path("domini").path(dominio.getCodDominio());
 		this.setHref(uriBuilder.build().toString());
 		this.ragioneSociale = dominio.getRagioneSociale();
 		this.abilitato = dominio.isAbilitato();
-		this.indirizzo = dominio.getAnagrafica(bd).getIndirizzo();
-		this.civico = dominio.getAnagrafica(bd).getCivico();
-		this.cap = dominio.getAnagrafica(bd).getCap();
-		this.localita = dominio.getAnagrafica(bd).getLocalita();
-		this.provincia = dominio.getAnagrafica(bd).getProvincia();
-		this.nazione = dominio.getAnagrafica(bd).getNazione();
+		this.indirizzo = dominio.getAnagrafica().getIndirizzo();
+		this.civico = dominio.getAnagrafica().getCivico();
+		this.cap = dominio.getAnagrafica().getCap();
+		this.localita = dominio.getAnagrafica().getLocalita();
+		this.provincia = dominio.getAnagrafica().getProvincia();
+		this.nazione = dominio.getAnagrafica().getNazione();
 		this.gln = dominio.getGln();
 		this.auxDigit = dominio.getAuxDigit();
 		this.segregationCode = dominio.getSegregationCode();
 		this.logo = dominio.getLogo();
 		this.iuvPrefix = dominio.getIuvPrefix();
-		this.stazione = dominio.getStazione(bd).getCodStazione();
+		this.stazione = dominio.getStazione().getCodStazione();
 		this.unitaOperative = new Href(uriBuilder.clone().path("unitaOperative").build().toString());
 		this.ibanAccredito = new Href(uriBuilder.clone().path("ibanAccredito").build().toString());
 		this.entrate = new Href(uriBuilder.clone().path("entrate").build().toString());

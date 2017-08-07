@@ -114,7 +114,7 @@ public class OperatoriBD extends BasicBD {
 
 
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
-		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
+		Operatore operatore = OperatoreConverter.toDTO(operatoreVO, this);
 		return operatore;
 	}
 

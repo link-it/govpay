@@ -229,7 +229,7 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 			
-			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo())) {
+			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo(), bd)) {
 				throw new GovPayException(EsitoOperazione.VER_022, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 		}
@@ -239,7 +239,7 @@ public class VersamentoUtils {
 			if(!versamento.getApplicazione(bd).isTrusted())
 				throw new GovPayException(EsitoOperazione.VER_019);
 			
-			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null))
+			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd))
 				throw new GovPayException(EsitoOperazione.VER_021);
 			
 			try {

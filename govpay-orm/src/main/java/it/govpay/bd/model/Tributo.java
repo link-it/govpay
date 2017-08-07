@@ -28,6 +28,14 @@ import it.govpay.model.IbanAccredito;
 public class Tributo extends it.govpay.model.Tributo {
 	private static final long serialVersionUID = 1L;
 	
+	public Tributo(BasicBD bd, Long idIbanAccredito) throws ServiceException {
+		super.setIdIbanAccredito(idIbanAccredito);
+		
+		if(this.getIdIbanAccredito() != null) {
+			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
+		}
+	}
+	
 	// Business
 	
 	public TipoContabilta getTipoContabilita() {
@@ -55,12 +63,10 @@ public class Tributo extends it.govpay.model.Tributo {
 	public boolean isCodContabilitaCustom(){return getCodContabilitaCustom() != null;}
 	public boolean isCodTributoIuvCustom(){return getCodTributoIuvCustom() != null;}
 	
-	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
-		if(ibanAccredito == null && this.getIdIbanAccredito() != null) {
-			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
-		}
+	public IbanAccredito getIbanAccredito() {
 		return ibanAccredito;
 	}
+	
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
 	}

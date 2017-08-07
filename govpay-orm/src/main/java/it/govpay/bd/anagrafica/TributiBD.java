@@ -65,7 +65,7 @@ public class TributiBD extends BasicBD {
 
 		long id = idTributo.longValue();
 		try {
-			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id));
+			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id), this);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -94,7 +94,7 @@ public class TributiBD extends BasicBD {
 			idTributo.setIdDominio(idDominioOrm);
 			idTipoTributo.setCodTributo(codTributo);
 			idTributo.setIdTipoTributo(idTipoTributo); 
-			return TributoConverter.toDTO(this.getTributoService().get(idTributo));
+			return TributoConverter.toDTO(this.getTributoService().get(idTributo), this);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -134,7 +134,7 @@ public class TributiBD extends BasicBD {
 	 * @throws NotPermittedException
 	 * @throws ServiceException
 	 */
-	public void insertTributo(Tributo tributo) throws ServiceException {
+	public void insertTributo(it.govpay.model.Tributo tributo) throws ServiceException {
 		try {
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
 			this.getTributoService().create(vo);
@@ -163,7 +163,7 @@ public class TributiBD extends BasicBD {
 
 	public List<Tributo> findAll(TributoFilter filter) throws ServiceException {
 		try {
-			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()));
+			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()), this);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

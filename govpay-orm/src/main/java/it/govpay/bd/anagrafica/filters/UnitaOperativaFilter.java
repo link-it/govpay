@@ -46,7 +46,10 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	private Long idDominio;
 	private List<Long> listaIdUo = null;
 	private String codUo= null;
+	private String codIdentificativo= null;
+	private String ragioneSociale= null;
 	private boolean excludeEC = false;
+	private Boolean abilitato; 
 
 	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, String dbType) {
 		this(expressionConstructor,dbType,false);
@@ -71,7 +74,25 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			
 			if(this.codUo != null){
 				if(addAnd) newExpression.and();
-				newExpression.ilike(Uo.model().COD_UO, this.codUo,LikeMode.ANYWHERE);
+				newExpression.ilike(Uo.model().COD_UO, this.codUo, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.codIdentificativo != null){
+				if(addAnd) newExpression.and();
+				newExpression.ilike(Uo.model().UO_CODICE_IDENTIFICATIVO, this.codIdentificativo, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.ragioneSociale != null){
+				if(addAnd) newExpression.and();
+				newExpression.ilike(Uo.model().UO_DENOMINAZIONE, this.ragioneSociale, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.abilitato != null){
+				if(addAnd) newExpression.and();
+				newExpression.equals(Uo.model().ABILITATO, this.abilitato);
 				addAnd = true;
 			}
 			
@@ -85,9 +106,9 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			if(this.listaIdUo != null && this.listaIdUo.size() > 0){
 				if(addAnd) newExpression.and();
 				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
-				
 				newExpression.in(new CustomField("id", Long.class, "id", fieldConverter.toTable(it.govpay.orm.Uo.model())), listaIdUo);				
 			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -157,5 +178,13 @@ public class UnitaOperativaFilter extends AbstractFilter {
 
 	public void setExcludeEC(boolean excludeEC) {
 		this.excludeEC = excludeEC;
+	}
+
+	public void setCodIdentificativo(String codIdentificativo) {
+		this.codIdentificativo = codIdentificativo;
+	}
+	
+	public void setRagioneSociale(String ragioneSociale) {
+		this.ragioneSociale = ragioneSociale;
 	}
 }

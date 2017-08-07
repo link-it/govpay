@@ -598,7 +598,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 										tributo.getDescrizione());
 
 
-								IbanAccredito ibanAccredito = tributo.getIbanAccredito(bd);
+								IbanAccredito ibanAccredito = tributo.getIbanAccredito();
 								if(ibanAccredito != null)
 									sezioneSingoloVersamento.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(svDars.getNomeServizio() + ".ibanAccredito.label"),
 											ibanAccredito.getCodIban());

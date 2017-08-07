@@ -343,7 +343,7 @@ public class Tracciati extends BasicBD {
 	 */
 	private void authorizeByOperatore(Tracciato tracciato, Operatore operatore) throws NotAuthorizedException {
 		if(tracciato.getIdOperatore() == null || !tracciato.getIdOperatore().equals(operatore.getId())) {
-			throw new NotAuthorizedException();
+			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato a visualizzare il tracciato"); //TODO Migliorare l'errore e rivedere i diritti
 		}
 	}
 
@@ -353,7 +353,7 @@ public class Tracciati extends BasicBD {
 	 */
 	private void authorizeByApplicazione(Tracciato tracciato, Applicazione applicazione) throws NotAuthorizedException {
 		if(tracciato.getIdApplicazione() == null || !tracciato.getIdApplicazione().equals(applicazione.getId())) {
-			throw new NotAuthorizedException();
+			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato a visualizzare il tracciato"); //TODO Migliorare l'errore e rivedere i diritti
 		}
 	}
 }

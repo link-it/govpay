@@ -61,7 +61,7 @@ import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Tributo;
+import it.govpay.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.utils.DominioUtils;
 import it.govpay.model.Anagrafica;
@@ -908,7 +908,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			// dati dell'dominio
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"), dominio.getCodDominio());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.label"), dominio.getStazione(bd).getCodStazione());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.label"), dominio.getStazione().getCodStazione());
 			//root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"), dominio.getRagioneSociale());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.label"), dominio.getGln());
 			if(dominio.getIdApplicazioneDefault() != null){
@@ -1412,7 +1412,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		try{
 
 			sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
-			sb.append(", Stazione: ").append(entry.getStazione(bd).getCodStazione());
+			sb.append(", Stazione: ").append(entry.getStazione().getCodStazione());
 
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -1431,7 +1431,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"),entry.getCodDominio()));
 
 		try {
-			Stazione stazione = entry.getStazione(bd);
+			Stazione stazione = entry.getStazione();
 
 			if(stazione != null){
 				Intermediario intermediario = stazione.getIntermediario(bd);
@@ -1507,7 +1507,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout);
 		} 
 
-		String fileName = "Domini.zip";
+		String fileName = "DominiBO.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo ai ruoli con diritto di lettura

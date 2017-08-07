@@ -1,10 +1,14 @@
-package it.govpay.core.business.model;
+package it.govpay.core.business.anagrafica.dto;
 
 import it.govpay.bd.model.Dominio;
 
-public class GetUnitaOperativaDTOResponse {
+public class GetDominioDTOResponse {
 	
 	private Dominio dominio;
+	
+	public GetDominioDTOResponse(Dominio dominio) {
+		this.dominio = dominio;
+	}
 
 	public Dominio getDominio() {
 		return dominio;

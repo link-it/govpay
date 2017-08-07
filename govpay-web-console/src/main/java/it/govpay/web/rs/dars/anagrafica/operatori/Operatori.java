@@ -93,7 +93,7 @@ public class Operatori extends DarsService {
 			operatore.setId(null);
 			
 			// ruoli in formato descrizione (codice)
-			List<Ruolo> ruoliOperatore = this.getRuoliOperatore(bd,operatore);
+			List<Ruolo> ruoliOperatore = this.getRuoliOperatore(bd, operatore);
 			List<String> ruoliOperatoreString = new ArrayList<String>();
 			Ruoli ruoliDars = new Ruoli();
 			RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();

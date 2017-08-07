@@ -43,6 +43,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	private CustomField cf;
 	private String codApplicazione = null;
 	
+	
 	public enum SortFields {
 	}
 

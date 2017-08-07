@@ -70,7 +70,7 @@ public class DominiBD extends BasicBD {
 			IdDominio id = new IdDominio();
 			id.setCodDominio(codDominio);
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().get(id);
-			Dominio dominio = DominioConverter.toDTO(dominioVO);
+			Dominio dominio = DominioConverter.toDTO(dominioVO, this);
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -97,7 +97,7 @@ public class DominiBD extends BasicBD {
 		
 		try {
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
-			Dominio dominio = DominioConverter.toDTO(dominioVO);
+			Dominio dominio = DominioConverter.toDTO(dominioVO, this);
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -266,7 +266,7 @@ public class DominiBD extends BasicBD {
 
 	public List<Dominio> findAll(IFilter filter) throws ServiceException {
 		try {
-			return DominioConverter.toDTOList(this.getDominioService().findAll(filter.toPaginatedExpression()));
+			return DominioConverter.toDTOList(this.getDominioService().findAll(filter.toPaginatedExpression()), this);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

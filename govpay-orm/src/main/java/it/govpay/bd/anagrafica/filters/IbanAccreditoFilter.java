@@ -27,6 +27,7 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
@@ -40,7 +41,9 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	// Filtro che indica che voglio gli iban associati al dominio.
 	private String codDominio;
 	private Long idDominio;
-
+	private Boolean abilitato;
+	private String codIbanAccredito;
+	
 	public enum SortFields {
 		COD_IBAN
 	}
@@ -51,6 +54,11 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	
 	public IbanAccreditoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		try{
+			this.listaFieldSimpleSearch.add(it.govpay.orm.IbanAccredito.model().COD_IBAN);
+		} catch(Exception e){
+			
+		}
 	}
 
 	@Override
@@ -66,6 +74,21 @@ public class IbanAccreditoFilter extends AbstractFilter {
 				if(addAnd) expr.and();
 				IbanAccreditoFieldConverter fieldConverter = new IbanAccreditoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 				expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.IbanAccredito.model())), getIdDominio());
+				addAnd = true;
+			}
+			
+			if(this.codIbanAccredito != null){
+				if(addAnd)
+					expr.and();
+				expr.ilike(IbanAccredito.model().COD_IBAN, this.codIbanAccredito,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			
+			if(this.abilitato != null) {
+				if(addAnd)
+					expr.and();
+				expr.equals(IbanAccredito.model().ABILITATO, this.abilitato);
 				addAnd = true;
 			}
 			
@@ -107,6 +130,14 @@ public class IbanAccreditoFilter extends AbstractFilter {
 
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
+	}
+	
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
+	}
+	
+	public void setCodIbanAccredito(String codIbanAccredito) {
+		this.codIbanAccredito = codIbanAccredito;
 	}
 
  

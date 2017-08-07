@@ -19,8 +19,21 @@
  */
 package it.govpay.core.exceptions;
 
-public class NotAuthenticatedException extends Exception {
+public class NotAuthenticatedException extends BaseException {
 
 	private static final long serialVersionUID = 1L;
+	
+	public NotAuthenticatedException() {
+		super("Utente non autenticato");
+	}
+	
+	public NotAuthenticatedException(String cause) {
+		super("Utente non autenticato", "401000", cause);
+	}
+	
+	@Override
+	public int getTransportErrorCode() {
+		return 401;
+	}
 	
 }

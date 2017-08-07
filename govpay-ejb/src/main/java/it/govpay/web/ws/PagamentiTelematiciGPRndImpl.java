@@ -152,7 +152,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			//Autorizzazione alla richiesta: controllo che il dominio sia tra quelli abilitati per l'applicazione
 			Fr frModel = new FrBD(bd).getFr(bodyrichiesta.getCodFlusso());
 			
-			if(!AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, frModel.getDominio(bd).getCodDominio(), null)) {
+			if(!AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, frModel.getDominio(bd).getCodDominio(), null, bd)) {
 				throw new GovPayException(EsitoOperazione.RND_001);
 			}
 			

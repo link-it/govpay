@@ -23,19 +23,20 @@ import java.util.Arrays;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Operatore;
 
 public class OperatoreConverter {
 
 
-	public static Operatore toDTO(it.govpay.orm.Operatore vo) throws ServiceException {
-		Operatore dto = new Operatore();
+	public static Operatore toDTO(it.govpay.orm.Operatore vo, BasicBD bd) throws ServiceException {
+		String profilo = vo.getProfilo();
+		String[] split = profilo.split(Operatore.SEPARATORE_RUOLO);
+		
+		Operatore dto = new Operatore(bd, Arrays.asList(split));
 		dto.setId(vo.getId());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setNome(vo.getNome());
-		String profilo = vo.getProfilo();
-		String[] split = profilo.split(Operatore.SEPARATORE_RUOLO);
-		dto.setRuoli(Arrays.asList(split));  
 		dto.setAbilitato(vo.isAbilitato());
 		return dto;
 	}

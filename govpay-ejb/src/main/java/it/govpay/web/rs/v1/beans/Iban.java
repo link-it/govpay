@@ -24,8 +24,6 @@ import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
-
 @JsonFilter(value="iban")
 public class Iban extends JSONSerializable {
 
@@ -40,13 +38,13 @@ public class Iban extends JSONSerializable {
 
 	}
 
-	public Iban(it.govpay.bd.model.IbanAccredito iban, UriBuilder uriBuilder, BasicBD bd) throws ServiceException {
+	public Iban(it.govpay.bd.model.IbanAccredito iban, String codDominio, UriBuilder uriBuilder) throws ServiceException {
 		this.abilitato = iban.isAbilitato();
 		this.iban = iban.getCodIban();
 		this.bic = iban.getCodBicAccredito();
 		this.ibanAppoggio = iban.getCodIbanAppoggio();
 		this.bicAppoggio = iban.getCodBicAppoggio();	
-		this.href = uriBuilder.path("domini").path(iban.getDominio(bd).getCodDominio()).path("iban").path(iban.getCodIban()).build().toString();
+		this.href = uriBuilder.path("domini").path(codDominio).path("iban").path(iban.getCodIban()).build().toString();
 	}
 
 	@Override

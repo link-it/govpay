@@ -44,6 +44,7 @@ public class TributoFilter extends AbstractFilter {
 	private CustomField cf;
 	private Long idDominio;
 	private String codTributo = null;
+	private String descrizione = null; //TODO
 	
 	public enum SortFields { }
 	
@@ -161,6 +162,14 @@ public class TributoFilter extends AbstractFilter {
 
 	public void setCodTributo(String codTributo) {
 		this.codTributo = codTributo;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
 
 	

@@ -207,7 +207,7 @@ public class Iuv extends BasicBD {
 	}
 	
 	public void checkIUV(Dominio dominio, String iuvProposto, TipoIUV tipo) throws GovPayException, ServiceException {
-		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, dominio.getAuxDigit(), dominio.getStazione(this).getApplicationCode())) {
+		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode())) {
 			throw new GovPayException(EsitoOperazione.VER_017, iuvProposto);
 		}
 	}
@@ -232,7 +232,7 @@ public class Iuv extends BasicBD {
 			iuv.setIdApplicazione(applicazione.getId());
 			iuv.setTipo(tipo);
 			iuv.setCodVersamentoEnte(codVersamentoEnte);
-			iuv.setApplicationCode(dominio.getStazione(this).getApplicationCode());
+			iuv.setApplicationCode(dominio.getStazione().getApplicationCode());
 			iuvBD.insertIuv(iuv);
 			GpThreadLocal.get().log("iuv.caricamentoIUVOk", applicazione.getCodApplicazione(), iuv.getCodVersamentoEnte(), dominio.getCodDominio(), iuv.getIuv());
 		}

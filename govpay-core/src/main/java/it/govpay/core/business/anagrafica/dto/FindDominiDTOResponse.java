@@ -17,32 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.model;
+package it.govpay.core.business.anagrafica.dto;
 
+import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.bd.model.Dominio;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.filters.DominioFilter;
-
-public class FindDominiDTO {
+public class FindDominiDTOResponse extends BasicFindResponseDTO {
 	
-	private String principal;
-	private DominioFilter filter;
-	
-	public FindDominiDTO(BasicBD bd) throws ServiceException {
-		DominiBD dominiBD = new DominiBD(bd);
-		this.filter = dominiBD.newFilter();
+	private List<Dominio> domini;
+
+	public FindDominiDTOResponse(long totalResults, List<Dominio> domini) {
+		super(totalResults);
+		this.domini = domini;
 	}
-	
-	public String getPrincipal() {
-		return principal;
+
+	public List<Dominio> getDomini() {
+		return domini;
 	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
-	public DominioFilter getFilter() {
-		return filter;
-	}
+
 }

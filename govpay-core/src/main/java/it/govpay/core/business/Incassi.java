@@ -125,11 +125,11 @@ public class Incassi extends BasicBD {
 			Long idApplicazione = null;
 			try {
 				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, richiestaIncasso.getPrincipal());
-				if(!AclEngine.isAuthorized(applicazione, Servizio.INCASSI, richiestaIncasso.getCodDominio(), null))
-					throw new NotAuthorizedException();
+				if(!AclEngine.isAuthorized(applicazione, Servizio.INCASSI, richiestaIncasso.getCodDominio(), null, this))
+					throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.INCASSI + " per il dominio " + richiestaIncasso.getCodDominio());
 				idApplicazione = applicazione.getId();
 			} catch (NotFoundException e) {
-				throw new NotAuthorizedException();
+				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.INCASSI + " per il dominio " + richiestaIncasso.getCodDominio());
 			} 
 			
 			RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
@@ -295,10 +295,10 @@ public class Incassi extends BasicBD {
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, listaIncassoDTO.getPrincipal());
 			domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
 			if(domini != null && domini.size() == 0) {
-				throw new NotAuthorizedException();
+				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.INCASSI + " per alcun dominio");
 			}
 		} catch (NotFoundException e) {
-			throw new NotAuthorizedException();
+			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.INCASSI + " per alcun dominio");
 		} 
 		
 		IncassiBD incassiBD = new IncassiBD(this);
@@ -327,7 +327,7 @@ public class Incassi extends BasicBD {
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, leggiIncassoDTO.getPrincipal());
 			Set<String> domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
 			if(!domini.contains(incasso.getCodDominio())) {
-				throw new NotAuthorizedException();
+				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.INCASSI + " per il dominio " + incasso.getCodDominio());
 			}
 			LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
 			response.setIncasso(incasso);

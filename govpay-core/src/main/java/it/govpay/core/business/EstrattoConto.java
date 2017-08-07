@@ -310,7 +310,7 @@ public class EstrattoConto extends BasicBD {
 									log.debug("creo il file PDf: "+dominioPdfFile.getAbsolutePath());
 									dominioPdfFile.createNewFile();
 									fosPdf  = new FileOutputStream(dominioPdfFile);
-									Anagrafica anagraficaDominio = dominio.getAnagrafica(this);
+									Anagrafica anagraficaDominio = dominio.getAnagrafica();
 
 									esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(pathLoghi,dominio,anagraficaDominio, dataInizio, dataFine, ibanAccredito, listaPagamentiDaIncludereNelFile, fosPdf,log); 
 
@@ -651,7 +651,7 @@ public class EstrattoConto extends BasicBD {
 					// creo nome file csv nel formato codDominio_IbanAccredito.csv
 					String dominioPdfFileName = estrattoConto.getDominio().getCodDominio() +  "_"  + ibanAccredito + ".pdf";
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					Anagrafica anagraficaDominio = estrattoConto.getDominio().getAnagrafica(this);
+					Anagrafica anagraficaDominio = estrattoConto.getDominio().getAnagrafica();
 					//ordinamento record
 					Collections.sort(estrattoContoPdf, new EstrattoContoComparator());
 					esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(pathLoghi, estrattoConto.getDominio(),anagraficaDominio, null, null, ibanAccredito, estrattoContoPdf, baos,log);
@@ -734,7 +734,7 @@ public class EstrattoConto extends BasicBD {
 					// creo nome file csv nel formato codDominio_IbanAccredito.csv
 					String dominioPdfFileName = estrattoConto.getDominio().getCodDominio() +  "_"  + ibanAccredito + ".pdf";
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					Anagrafica anagraficaDominio = estrattoConto.getDominio().getAnagrafica(this);
+					Anagrafica anagraficaDominio = estrattoConto.getDominio().getAnagrafica();
 					//ordinamento record
 					Collections.sort(estrattoContoPdf, new EstrattoContoComparator());
 					esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(pathLoghi, estrattoConto.getDominio(),anagraficaDominio, null, null, ibanAccredito, estrattoContoPdf, baos,log);

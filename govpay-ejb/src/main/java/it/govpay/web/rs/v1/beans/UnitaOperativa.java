@@ -24,8 +24,6 @@ import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
-
 @JsonFilter(value="unitaOperative")  
 public class UnitaOperativa extends JSONSerializable {
 	private String href;
@@ -43,8 +41,8 @@ public class UnitaOperativa extends JSONSerializable {
 	public UnitaOperativa() {
 	}
 
-	public UnitaOperativa(it.govpay.bd.model.UnitaOperativa uo, UriBuilder uriBuilder, BasicBD bd) throws IllegalArgumentException, ServiceException {
-		uriBuilder.path("domini").path(uo.getDominio(bd).getCodDominio()).path("unita_operative").path(uo.getAnagrafica().getCodUnivoco());
+	public UnitaOperativa(it.govpay.bd.model.UnitaOperativa uo, String codDominio, UriBuilder uriBuilder) throws IllegalArgumentException, ServiceException {
+		uriBuilder.path("domini").path(codDominio).path("unita_operative").path(uo.getAnagrafica().getCodUnivoco());
 		this.ragioneSociale = uo.getAnagrafica().getRagioneSociale();
 		this.abilitato = uo.isAbilitato();
 		this.codiceUnivoco = uo.getAnagrafica().getCodUnivoco();

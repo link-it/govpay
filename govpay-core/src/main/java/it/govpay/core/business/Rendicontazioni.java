@@ -644,7 +644,7 @@ public class Rendicontazioni extends BasicBD {
 		
 		List<String> domini = new ArrayList<String>();
 		if(codDominio != null) {
-			AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null);
+			AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null, this);
 			domini.add(codDominio);
 		} else {
 			Set<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione, Servizio.RENDICONTAZIONE);

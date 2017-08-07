@@ -28,29 +28,42 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.Acl;
+import it.govpay.model.IAutorizzato;
 import it.govpay.model.Ruolo;
 
-public class Operatore extends it.govpay.model.Operatore {
+public class Operatore extends it.govpay.model.Operatore implements IAutorizzato {
+	
 	private static final long serialVersionUID = 1L;
-	
-	// Business
-	
 	private transient List<Ruolo> ruoli;
+	private transient List<Acl> acls;
 	
-
-	public List<Ruolo> getRuoli(BasicBD bd) throws ServiceException {
-		if(ruoli == null && super.getRuoli() != null) {
-			ruoli = new ArrayList<Ruolo>();
+	public Operatore(BasicBD bd, List<String> ruoli) throws ServiceException {
+		super();
+		
+		super.setRuoli(ruoli);
+		this.ruoli = new ArrayList<Ruolo>();
+		if(super.getRuoli() != null) {
 			for(String codRuolo : super.getRuoli()) {
 				try {
-					ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
+					this.ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
 				} catch (NotFoundException e) {
 					throw new ServiceException(e);
 				}
 			}
-		} 
-		return ruoli;
+		}
+		
+		acls = new ArrayList<Acl>();
+		for(Ruolo ruolo : this.ruoli) {
+			acls.addAll(ruolo.getAcls());
+		}
+		
 	}
-
+	
+	
+	@Override
+	public List<Acl> getAcls() {
+		return acls;
+	}
 }
 

@@ -898,7 +898,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
 								ByteArrayOutputStream baos = new ByteArrayOutputStream();
 								String auxDigit = dominio.getAuxDigit() + "";
-								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
+								String applicationCode = String.format("%02d", dominio.getStazione().getApplicationCode());
 								RicevutaPagamentoUtils.getPdfRicevutaPagamento(dominio.getLogo(), versamento.getCausaleVersamento(), rt, pagamento, auxDigit, applicationCode, baos, this.log);
 								String rtPdfEntryName = ricevutaFileName + ".pdf";
 								numeroZipEntries ++;
@@ -1122,7 +1122,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
 								ByteArrayOutputStream baos = new ByteArrayOutputStream();
 								String auxDigit = dominio.getAuxDigit() + "";
-								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
+								String applicationCode = String.format("%02d", dominio.getStazione().getApplicationCode());
 								RicevutaPagamentoUtils.getPdfRicevutaPagamento(dominio.getLogo(), versamento.getCausaleVersamento(), rt, pagamento, auxDigit, applicationCode, baos, this.log);
 								String rtPdfEntryName = ricevutaFileName + ".pdf";
 								numeroZipEntries ++;

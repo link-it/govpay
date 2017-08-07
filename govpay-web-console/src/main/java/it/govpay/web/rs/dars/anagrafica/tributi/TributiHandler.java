@@ -630,7 +630,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), tributo.getDescrizione());
 
 			if(tributo.getIdIbanAccredito() != null){
-				IbanAccredito ibanAccredito = tributo.getIbanAccredito(bd); 
+				IbanAccredito ibanAccredito = tributo.getIbanAccredito(); 
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label"), ibanAccredito.getCodIban());
 			}
 

@@ -23,6 +23,7 @@ package it.govpay.core.exceptions;
 public class IncassiException extends BaseException {
 
 	private static final long serialVersionUID = 1L;
+	public static final String faultString = "Richiesta di incasso non processabile";
 	
 	public enum FaultType {
 		CAUSALE_NON_VALIDA("021401","Il formato della causale non e' conforme alle specifiche AgID."),
@@ -37,41 +38,30 @@ public class IncassiException extends BaseException {
 		DOMINIO_INESISTENTE("021410","Dominio inesistente.");
 		
 		
-		private String faultCode;
-		private String faultString;
+		private String faultSubCode;
+		private String description;
 		
-		FaultType(String faultCode, String faultString) {
-			this.faultCode = faultCode;
-			this.faultString = faultString;
+		FaultType(String faultSubCode, String description) {
+			this.faultSubCode = faultSubCode;
+			this.description = description;
 		}
 		
-		public String getFaultCode(){
-			return faultCode;
+		public String getFaultSubCode(){
+			return faultSubCode;
 		}
 		
-		public String getFaultString(){
-			return faultString;
+		public String getDescription(){
+			return description;
 		}
 	}
-	
-	private FaultType faultType;
-	private String description;
 	
 	public IncassiException(FaultType faultType, String description) {
-		super();
-		this.faultType = faultType;
-		this.description = description;
+		super(faultString, faultType.getFaultSubCode(), description);
+	}
+
+	@Override
+	public int getTransportErrorCode() {
+		return 422;
 	}
 	
-	public String getFaultCode(){
-		return faultType.getFaultCode();
-	}
-	
-	public String getFaultString(){
-		return faultType.getFaultString();
-	}
-	
-	public String getDescription(){
-		return description;
-	}
 }

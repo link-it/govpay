@@ -17,36 +17,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.model;
+package it.govpay.core.business.anagrafica.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import it.govpay.model.IAutorizzato;
 
-import it.govpay.bd.model.Dominio;
-
-public class FindDominiDTOResponse {
+public class FindTributiDTO extends BasicFindRequestDTO {
 	
-	private List<Dominio> domini;
-	private long totalCount;
-
-	public FindDominiDTOResponse() {
-		setDomini(new ArrayList<Dominio>());
+	private String codDominio;
+	private String codTributo;
+	private String descrizione;
+	
+	public FindTributiDTO(IAutorizzato user, String codDominio) {
+		super(user);
+		this.codDominio = codDominio;
+	}
+	
+	public String getCodDominio(){
+		return codDominio;
 	}
 
-	public List<Dominio> getDomini() {
-		return domini;
+	public String getCodTributo() {
+		return codTributo;
 	}
 
-	public void setDomini(List<Dominio> domini) {
-		this.domini = domini;
+	public void setCodTributo(String codTributo) {
+		this.codTributo = codTributo;
 	}
 
-	public long getTotalCount() {
-		return totalCount;
+	public String getDescrizione() {
+		return descrizione;
 	}
 
-	public void setTotalCount(long totalCount) {
-		this.totalCount = totalCount;
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
 
 }

@@ -135,6 +135,10 @@ public class IbanAccreditoBD extends BasicBD {
 	public IbanAccreditoFilter newFilter() throws ServiceException {
 		return new IbanAccreditoFilter(this.getIbanAccreditoService());
 	}
+	
+	public IbanAccreditoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new IbanAccreditoFilter(this.getIbanAccreditoService(),simpleSearch);
+	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {

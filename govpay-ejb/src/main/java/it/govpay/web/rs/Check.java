@@ -343,7 +343,7 @@ public class Check {
 				StazioniBD stazioniBD = new StazioniBD(bd);
 				
 				Dominio d = AnagraficaManager.getDominio(bd, codDominio);
-				Stazione stazione = d.getStazione(bd);
+				Stazione stazione = d.getStazione();
 				
 				StatoNdP statoDominioNdp = dominiBD.getStatoNdp(d.getId());
 				StatoNdP statoStazioneNdp = stazioniBD.getStatoNdp(stazione.getId());

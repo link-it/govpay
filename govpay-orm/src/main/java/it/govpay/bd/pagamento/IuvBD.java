@@ -106,7 +106,7 @@ public class IuvBD extends BasicBD {
 				// Vedo se utilizzare l'application code o il segregation code
 				switch (dominio.getAuxDigit()) {
 					case 0: 
-						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione(this).getApplicationCode()); 
+						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode()); 
 						iuv = reference + check;
 					break;
 					case 3: 
@@ -133,7 +133,7 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setTipo(type);
 		iuvDTO.setCodVersamentoEnte(codVersamentoEnte);
 		iuvDTO.setAuxDigit(dominio.getAuxDigit());
-		iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
+		iuvDTO.setApplicationCode(dominio.getStazione().getApplicationCode());
 		
 		return insertIuv(iuvDTO);
 	}

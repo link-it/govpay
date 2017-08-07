@@ -68,6 +68,18 @@ public class UnitaOperativeBD extends BasicBD {
 		}
 	}
 	
+	public UnitaOperativa getUnitaOperativaByCodUnivocoUo(Long idDominio, String codUnivocoUnitaOperativa) throws NotFoundException, ServiceException {
+		UnitaOperativaFilter filter = newFilter();
+		filter.setCodIdentificativo(codUnivocoUnitaOperativa);
+		filter.setDominioFilter(idDominio);
+		List<UnitaOperativa> findAll = findAll(filter);
+		if(findAll.size() == 0) {
+			throw new NotFoundException();
+		} else {
+			return findAll.get(0);
+		}
+	}
+	
 	public void updateUnitaOperativa(UnitaOperativa uo) throws NotFoundException, ServiceException {
 		try {
 			it.govpay.orm.Uo vo = UnitaOperativaConverter.toVO(uo);

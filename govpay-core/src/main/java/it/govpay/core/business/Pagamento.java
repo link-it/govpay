@@ -204,7 +204,7 @@ public class Pagamento extends BasicBD {
 
 					log.debug("Verifica autorizzazione portale [" + portale.getCodPortale() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
 
-					if(!AclEngine.isAuthorized(portale, Servizio.PAGAMENTI_ATTESA, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
+					if(!AclEngine.isAuthorized(portale, Servizio.PAGAMENTI_ATTESA, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo, this)) {
 						log.warn("Non autorizzato portale [" + portale.getCodPortale() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
 						throw new GovPayException(EsitoOperazione.PRT_003, portale.getCodPortale(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 					}
@@ -255,9 +255,9 @@ public class Pagamento extends BasicBD {
 				log.debug("Scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] verificata.");
 
 				if(stazione == null) {
-					stazione = versamentoModel.getUo(this).getDominio(this).getStazione(this);
+					stazione = versamentoModel.getUo(this).getDominio(this).getStazione();
 				} else {
-					if(stazione.getId().compareTo(versamentoModel.getUo(this).getDominio(this).getStazione(this).getId()) != 0) {
+					if(stazione.getId().compareTo(versamentoModel.getUo(this).getDominio(this).getStazione().getId()) != 0) {
 						throw new GovPayException(EsitoOperazione.PAG_000);
 					}
 				}

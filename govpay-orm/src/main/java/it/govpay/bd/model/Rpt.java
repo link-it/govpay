@@ -105,12 +105,12 @@ public class Rpt extends it.govpay.model.Rpt{
 	}
 
 	public Stazione getStazione(BasicBD bd) throws ServiceException {
-		return getDominio(bd).getStazione(bd);
+		return getDominio(bd).getStazione();
 	}
 
 
 	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
-		return getDominio(bd).getStazione(bd).getIntermediario(bd);
+		return getDominio(bd).getStazione().getIntermediario(bd);
 	}
 
 }

@@ -205,7 +205,7 @@ public class RptUtils {
 		enteBeneficiario.setIdentificativoUnivocoBeneficiario(idUnivocoBeneficiario);
 		enteBeneficiario.setDenominazioneBeneficiario(dominio.getRagioneSociale());
 
-		Anagrafica anagrafica = dominio.getAnagrafica(bd);
+		Anagrafica anagrafica = dominio.getAnagrafica();
 		enteBeneficiario.setCapBeneficiario(getNotEmpty(anagrafica.getCap()));
 		enteBeneficiario.setCivicoBeneficiario(getNotEmpty(anagrafica.getCivico()));
 		enteBeneficiario.setIndirizzoBeneficiario(getNotEmpty(anagrafica.getIndirizzo()));

@@ -39,9 +39,22 @@ import it.govpay.bd.model.IbanAccredito;
 
 public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
+	
+	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
+		
+		super.setId(idDominio);
+		super.setIdStazione(idStazione);
+		
+		try {
+			anagrafica = AnagraficaManager.getUnitaOperativa(bd, idDominio, EC).getAnagrafica();
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+		
+		stazione = AnagraficaManager.getStazione(bd, idStazione);
+	}
 
 	// Business
-
 	private transient Anagrafica anagrafica;
 	private transient Stazione stazione;
 	private transient Applicazione applicazioneDefault;
@@ -49,21 +62,11 @@ public class Dominio extends it.govpay.model.Dominio {
 	private transient List<IbanAccredito> ibanAccredito;
 	private transient List<Tributo> tributi;
 
-	public Stazione getStazione(BasicBD bd) throws ServiceException {
-		if(stazione == null) {
-			stazione = AnagraficaManager.getStazione(bd, this.getIdStazione());
-		} 
+	public Stazione getStazione() throws ServiceException {
 		return stazione;
 	}
 
-	public Anagrafica getAnagrafica(BasicBD bd) throws ServiceException {
-		if(anagrafica == null) {
-			try {
-				anagrafica = AnagraficaManager.getUnitaOperativa(bd, this.getId(), EC).getAnagrafica();
-			} catch (NotFoundException e) {
-				throw new ServiceException(e);
-			}
-		}
+	public Anagrafica getAnagrafica() throws ServiceException {
 		return anagrafica;
 	}
 

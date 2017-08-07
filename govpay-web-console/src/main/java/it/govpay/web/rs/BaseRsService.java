@@ -54,7 +54,7 @@ import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl;
-import it.govpay.model.Operatore;
+import it.govpay.bd.model.Operatore;
 import it.govpay.model.Ruolo;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
@@ -111,8 +111,7 @@ public abstract class BaseRsService {
 	}
 
 	public boolean isOperatoreAdminServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
-		return AclEngine.isAdminDirittiOperatore(ruoliUtente, servizio);
+		return AclEngine.isAdminDirittiOperatore(getOperatoreByPrincipal(bd), servizio);
 	}
 
 	public boolean checkDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
@@ -141,13 +140,11 @@ public abstract class BaseRsService {
 	}
 
 	public Set<String> getDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
-		return AclEngine.getDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_LETTURA);
+		return AclEngine.getDominiAutorizzati(this.getOperatoreByPrincipal(bd), servizio, Ruolo.DIRITTI_LETTURA);
 	}
 
 	public Set<Long> getIdDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
-		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_LETTURA);
+		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd), servizio, Ruolo.DIRITTI_LETTURA);
 		if(idDominiAutorizzati == null) {
 			idDominiAutorizzati = new HashSet<Long>();
 			idDominiAutorizzati.add(-1L);
@@ -156,13 +153,11 @@ public abstract class BaseRsService {
 	}
 
 	public Set<String> getDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
-		return AclEngine.getDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_SCRITTURA);
+		return AclEngine.getDominiAutorizzati(getOperatoreByPrincipal(bd), servizio, Ruolo.DIRITTI_SCRITTURA);
 	}
 
 	public Set<Long> getIdDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
-		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(ruoliUtente, servizio, Ruolo.DIRITTI_SCRITTURA);
+		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd), servizio, Ruolo.DIRITTI_SCRITTURA);
 		if(idDominiAutorizzati == null) {
 			idDominiAutorizzati = new HashSet<Long>();
 			idDominiAutorizzati.add(-1L);
@@ -171,8 +166,7 @@ public abstract class BaseRsService {
 	}
 
 	private int getTopDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException {
-		List<Ruolo> ruoliUtente = getRuoliOperatore(bd);
-		int topDirittiOperatore = AclEngine.getTopDirittiOperatore(ruoliUtente, servizio);
+		int topDirittiOperatore = AclEngine.getTopDirittiOperatore(getOperatoreByPrincipal(bd), servizio);
 		return topDirittiOperatore;
 	}
 
@@ -182,7 +176,7 @@ public abstract class BaseRsService {
 		return this.getRuoliOperatore(bd, operatore);
 	}
 	
-	public List<Ruolo> getRuoliOperatore(BasicBD bd,Operatore operatore) throws ServiceException {
+	public List<Ruolo> getRuoliOperatore(BasicBD bd, it.govpay.model.Operatore operatore) throws ServiceException {
 		List<Ruolo> ruoliUtente = new ArrayList<Ruolo>();
 		List<String> ruoliOp = operatore.getRuoli();
 		List<Ruolo> listaRuoliRegistrati = getListaRuoliRegistrati(bd);

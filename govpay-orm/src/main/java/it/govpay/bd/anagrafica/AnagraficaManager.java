@@ -56,7 +56,7 @@ import it.govpay.bd.anagrafica.cache.UoBDCacheWrapper;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.model.IbanAccredito;
+import it.govpay.bd.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.bd.model.Operatore;
 import it.govpay.model.Portale;
@@ -197,6 +197,7 @@ public class AnagraficaManager {
 	public static void removeFromCache(UnitaOperativa uo) {
 		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache("getUnitaOperativa", String.valueOf(uo.getId())));} catch (Exception e) {	}
 		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache("getUnitaOperativa", String.valueOf(uo.getCodUo() + "@" + uo.getIdDominio())));} catch (Exception e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache("getUnitaOperativa", String.valueOf("ByCodUnivocoUo#" + uo.getCodUo() + "@" + uo.getIdDominio())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(IbanAccredito iban) {
@@ -400,6 +401,25 @@ public class AnagraficaManager {
 		try {
 			String method = "getUnitaOperativa";
 			Object uo = uoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codUo + "@" + idDominio, method, idDominio, codUo);
+			return (UnitaOperativa) uo;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
+	
+	public static UnitaOperativa getUnitaOperativaByCodUnivocoUo(BasicBD basicBD, long idDominio, String codUnivocoUo) throws ServiceException, NotFoundException {
+		try {
+			String method = "getUnitaOperativaByCodUnivocoUo";
+			Object uo = uoBDCacheWrapper.getObjectCache(basicBD, DEBUG, "ByCodUnivocoUo#" + codUnivocoUo + "@" + idDominio, method, idDominio, codUnivocoUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {

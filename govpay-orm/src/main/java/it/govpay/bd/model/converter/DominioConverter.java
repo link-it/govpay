@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model.converter;
 
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdStazione;
@@ -30,19 +31,18 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class DominioConverter {
 
-	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst) throws ServiceException {
+	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst, BasicBD bd) throws ServiceException {
 		List<Dominio> lstDTO = new ArrayList<Dominio>();
 		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
 			for(it.govpay.orm.Dominio anagrafica: anagraficaLst){
-				lstDTO.add(toDTO(anagrafica));
+				lstDTO.add(toDTO(anagrafica, bd));
 			}
 		}
 		return lstDTO;
 	}
 
-	public static Dominio toDTO(it.govpay.orm.Dominio vo) throws ServiceException {
-		Dominio dto = new Dominio();
-		dto.setId(vo.getId());
+	public static Dominio toDTO(it.govpay.orm.Dominio vo, BasicBD bd) throws ServiceException {
+		Dominio dto = new Dominio(bd, vo.getId(), vo.getIdStazione().getId());
 		if(vo.getIdApplicazioneDefault() != null) {
 			dto.setIdApplicazioneDefault(vo.getIdApplicazioneDefault().getId());
 		}
@@ -52,7 +52,6 @@ public class DominioConverter {
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setRiusoIuv(vo.getRiusoIUV());
 		dto.setCustomIuv(vo.getCustomIUV());
-		dto.setIdStazione(vo.getIdStazione().getId());
 		dto.setContiAccredito(vo.getXmlContiAccredito());
 		dto.setTabellaControparti(vo.getXmlTabellaControparti());
 		dto.setAuxDigit(vo.getAuxDigit());

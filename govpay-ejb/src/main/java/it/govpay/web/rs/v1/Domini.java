@@ -38,18 +38,37 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.core.business.model.GetDominioDTO;
-import it.govpay.core.business.model.GetDominioDTOResponse;
-import it.govpay.core.business.model.FindDominiDTO;
-import it.govpay.core.business.model.FindDominiDTOResponse;
+import it.govpay.core.business.anagrafica.DominiBO;
+import it.govpay.core.business.anagrafica.UtentiBO;
+import it.govpay.core.business.anagrafica.dto.FindDominiDTO;
+import it.govpay.core.business.anagrafica.dto.FindDominiDTOResponse;
+import it.govpay.core.business.anagrafica.dto.FindIbanDTO;
+import it.govpay.core.business.anagrafica.dto.FindIbanDTOResponse;
+import it.govpay.core.business.anagrafica.dto.FindTributiDTO;
+import it.govpay.core.business.anagrafica.dto.FindTributiDTOResponse;
+import it.govpay.core.business.anagrafica.dto.FindUnitaOperativeDTO;
+import it.govpay.core.business.anagrafica.dto.FindUnitaOperativeDTOResponse;
+import it.govpay.core.business.anagrafica.dto.GetDominioDTO;
+import it.govpay.core.business.anagrafica.dto.GetDominioDTOResponse;
+import it.govpay.core.business.anagrafica.dto.GetIbanDTO;
+import it.govpay.core.business.anagrafica.dto.GetIbanDTOResponse;
+import it.govpay.core.business.anagrafica.dto.GetTributoDTO;
+import it.govpay.core.business.anagrafica.dto.GetTributoDTOResponse;
+import it.govpay.core.business.anagrafica.dto.GetUnitaOperativaDTO;
+import it.govpay.core.business.anagrafica.dto.GetUnitaOperativaDTOResponse;
+import it.govpay.core.exceptions.BaseException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.IAutorizzato;
 import it.govpay.web.rs.v1.beans.Dominio;
 import it.govpay.web.rs.v1.beans.Entrata;
+import it.govpay.web.rs.v1.beans.Errore;
 import it.govpay.web.rs.v1.beans.Iban;
 import it.govpay.web.rs.v1.beans.ListaDomini;
+import it.govpay.web.rs.v1.beans.ListaEntrate;
+import it.govpay.web.rs.v1.beans.ListaIbanAccredito;
+import it.govpay.web.rs.v1.beans.ListaUnitaOperative;
 import it.govpay.web.rs.v1.beans.UnitaOperativa;
 
 
@@ -65,49 +84,45 @@ public class Domini extends BaseRsServiceV1 {
 			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value="limit") @DefaultValue(value="25") int limit,
 			@QueryParam(value="fields") String fields,
-			@QueryParam(value="reagioneSociale") String ragioneSociale) {
+			@QueryParam(value="orderby") String orderby,
+			@QueryParam(value="ragioneSociale") String ragioneSociale,
+			@QueryParam(value="idDominio") String codDominio,
+			@QueryParam(value="abilitato") Boolean abilitato,
+			@QueryParam(value="simpleSearch") String simpleSearch) {
 		
 		String methodName = "findDomini"; 
 		if(limit > 25) limit = 500;
 		
-		BasicBD bd = null;
-		GpContext ctx = null; 
-		
 		try{
 			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			ctx =  GpThreadLocal.get();
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			FindDominiDTO listaDominiDTO = new FindDominiDTO(bd);
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
 			
-			listaDominiDTO.setPrincipal(getPrincipal());
-			listaDominiDTO.getFilter().setOffset(offset);
-			listaDominiDTO.getFilter().setLimit(limit);
-			listaDominiDTO.getFilter().setRagioneSociale(ragioneSociale);
-			
-			it.govpay.core.business.Domini dominiBusiness = new it.govpay.core.business.Domini(bd);
-			FindDominiDTOResponse listaDominiDTOResponse = dominiBusiness.listaDomini(listaDominiDTO);
+			FindDominiDTO findDominiDTO = new FindDominiDTO(user);
+			findDominiDTO.setOffset(offset);
+			findDominiDTO.setLimit(limit);
+			findDominiDTO.setRagioneSociale(ragioneSociale);
+			findDominiDTO.setCodDominio(codDominio);
+			findDominiDTO.setSimpleSearch(simpleSearch);
+			findDominiDTO.setAbilitato(abilitato);
+			findDominiDTO.setOrderBy(orderby);
+			FindDominiDTOResponse findDominiDTOResponse = new DominiBO().findDomini(findDominiDTO);
 			
 			List<Dominio> domini = new ArrayList<Dominio>();
-			for(it.govpay.bd.model.Dominio d : listaDominiDTOResponse.getDomini()) {
-				domini.add(new Dominio(d, baseUriBuilder, bd));
+			for(it.govpay.bd.model.Dominio d : findDominiDTOResponse.getDomini()) {
+				domini.add(new Dominio(d, baseUriBuilder));
 			}
 			
-			ListaDomini listaDomini = new ListaDomini(domini, uriInfo.getRequestUri(), listaDominiDTOResponse.getTotalCount(), offset, limit);
+			ListaDomini listaDomini = new ListaDomini(domini, uriInfo.getRequestUri(), findDominiDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaDomini.toJSON(fields)).build();
-		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
-			return Response.status(Status.UNAUTHORIZED).build();
+		} catch (BaseException e) {
+			return Response.status(e.getTransportErrorCode()).entity(new Errore(e)).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		} finally {
-			if(bd != null) bd.closeConnection();
-			if(ctx != null) ctx.log();
-		}
+		} 
 	}
 	
 	@GET
@@ -118,21 +133,19 @@ public class Domini extends BaseRsServiceV1 {
 			@QueryParam(value="fields") String fields) {
 		
 		String methodName = "getDominio"; 
-		BasicBD bd = null;
 		GpContext ctx = null; 
-		UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 		try{
 			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
-			leggiDominioDTO.setCodDominio(codDominio);
-			leggiDominioDTO.setPrincipal(getPrincipal());
+			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
-			Dominio dominio = new Dominio(leggiDominioDTOResponse.getDominio(), baseUriBuilder, bd);
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			
+			GetDominioDTO getDominioDTO = new GetDominioDTO(user, codDominio);
+			
+			GetDominioDTOResponse getDominioDTOResponse = new DominiBO().getDominio(getDominioDTO);
+			Dominio dominio = new Dominio(getDominioDTOResponse.getDominio(), baseUriBuilder);
 			
 			return Response.status(Status.OK).entity(dominio.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
@@ -143,7 +156,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
 	}
@@ -152,34 +164,39 @@ public class Domini extends BaseRsServiceV1 {
 	@Path("/{codDominio}/unita_operative")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response findUnitaOperative(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
+			@PathParam(value="codDominio") String codDominio,
 			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value="limit") @DefaultValue(value="25") int limit,
 			@QueryParam(value="fields") String fields,
-			@PathParam(value="codDominio") String codDominio) {
+			@QueryParam(value="abilitato") Boolean abilitato,
+			@QueryParam(value="simpleSearch") String simpleSearch,
+			@QueryParam(value="ragioneSociale") String ragioneSociale,
+			@QueryParam(value="codiceUnivoco") String codUnivoco) {
 		
 		String methodName = "findUnitaOperative"; 
-		BasicBD bd = null;
 		GpContext ctx = null; 
-		UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 		try{
 			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
-			leggiDominioDTO.setCodDominio(codDominio);
-			leggiDominioDTO.setPrincipal(getPrincipal());
+			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			
+			FindUnitaOperativeDTO findUnitaOperativeDTO = new FindUnitaOperativeDTO(user, codDominio);
+			findUnitaOperativeDTO.setCodIdentificativo(codUnivoco);
+			findUnitaOperativeDTO.setLimit(limit);
+			findUnitaOperativeDTO.setOffset(offset);
+			findUnitaOperativeDTO.setRagioneSociale(ragioneSociale);
+			findUnitaOperativeDTO.setSimpleSearch(simpleSearch);
+			FindUnitaOperativeDTOResponse findUnitaOperativeDTOResponse = new DominiBO().findUnitaOperative(findUnitaOperativeDTO);
 			
 			List<UnitaOperativa> unitaOperative = new ArrayList<UnitaOperativa>();
-			for(it.govpay.bd.model.UnitaOperativa uo : leggiDominioDTOResponse.getDominio().getUnitaOperative(bd)) {
-				if(uo.getCodUo().equals(it.govpay.model.Dominio.EC)) continue;
-				unitaOperative.add(new UnitaOperativa(uo, baseUriBuilder, bd));
+			for(it.govpay.bd.model.UnitaOperativa uo : findUnitaOperativeDTOResponse.getUnitaOperative()) {
+				unitaOperative.add(new UnitaOperativa(uo, codDominio, baseUriBuilder));
 			}
-			
-			return Response.status(Status.OK).entity(unitaOperative).build();
+			ListaUnitaOperative listaUnitaOperative = new ListaUnitaOperative(unitaOperative, uriInfo.getRequestUri(), findUnitaOperativeDTOResponse.getTotalResults(), offset, limit);
+			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
@@ -188,35 +205,35 @@ public class Domini extends BaseRsServiceV1 {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
 	}
 	
 	@GET
-	@Path("/{codDominio}/unita_operative/{codice_univoco}")
+	@Path("/{codDominio}/unita_operative/{codiceUnivoco}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getUnitaOperativa(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam(value="codDominio") String codDominio, @PathParam(value="codice_univoco") String codUnivoco) {
+			@PathParam(value="codDominio") String codDominio, 
+			@PathParam(value="codiceUnivoco") String codUnivoco,
+			@QueryParam(value="fields") String fields) {
 		
 		String methodName = "getUnitaOperativa"; 
-		BasicBD bd = null;
 		GpContext ctx = null; 
 		
 		try{
 			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
-			leggiDominioDTO.setCodDominio(codDominio);
-			leggiDominioDTO.setPrincipal(getPrincipal());
+			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
-			UnitaOperativa unitaOperativa = new UnitaOperativa(leggiDominioDTOResponse.getDominio().getUnitaOperativa(bd, codUnivoco), uriInfo.getAbsolutePathBuilder(), bd);
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
 			
-			return Response.status(Status.OK).entity(unitaOperativa).build();
+			GetUnitaOperativaDTO getUnitaOperativaDTO = new GetUnitaOperativaDTO(user, codDominio, codUnivoco);
+			GetUnitaOperativaDTOResponse getUnitaOperativaDTOResponse = new DominiBO().getUnitaOperativa(getUnitaOperativaDTO);
+			
+			UnitaOperativa unitaOperativa = new UnitaOperativa(getUnitaOperativaDTOResponse.getUnitaOperativa(), codDominio, baseUriBuilder);
+			
+			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
@@ -225,7 +242,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
 	}
@@ -234,30 +250,38 @@ public class Domini extends BaseRsServiceV1 {
 	@Path("/{codDominio}/iban")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response findIban(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam(value="codDominio") String codDominio) {
+			@PathParam(value="codDominio") String codDominio,
+			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
+			@QueryParam(value="limit") @DefaultValue(value="25") int limit,
+			@QueryParam(value="fields") String fields,
+			@QueryParam(value="simpleSearch") String simpleSearch,
+			@QueryParam(value="abilitato") Boolean abilitato,
+			@QueryParam(value="iban") String iban) {
 		
 		String methodName = "findIban"; 
-		BasicBD bd = null;
 		GpContext ctx = null; 
 		
 		try{
 			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
-			leggiDominioDTO.setCodDominio(codDominio);
-			leggiDominioDTO.setPrincipal(getPrincipal());
+			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			
+			FindIbanDTO findIbanDTO = new FindIbanDTO(user, codDominio);
+			findIbanDTO.setIban(iban);
+			findIbanDTO.setLimit(limit);
+			findIbanDTO.setOffset(offset);
+			findIbanDTO.setAbilitato(abilitato);
+			FindIbanDTOResponse findIbanDTOResponse = new DominiBO().findIban(findIbanDTO);
 			
 			List<Iban> ibans = new ArrayList<Iban>();
-			for(it.govpay.bd.model.IbanAccredito iban : leggiDominioDTOResponse.getDominio().getIbanAccredito(bd)) {
-				ibans.add(new Iban(iban, uriInfo.getAbsolutePathBuilder(), bd));
+			for(it.govpay.bd.model.IbanAccredito ibanAccredito : findIbanDTOResponse.getIban()) {
+				ibans.add(new Iban(ibanAccredito, codDominio, baseUriBuilder));
 			}
-			
-			return Response.status(Status.OK).entity(ibans).build();
+			ListaIbanAccredito listaUnitaOperative = new ListaIbanAccredito(ibans, uriInfo.getRequestUri(), findIbanDTOResponse.getTotalResults(), offset, limit);
+			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
@@ -266,7 +290,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
 	}
@@ -275,26 +298,27 @@ public class Domini extends BaseRsServiceV1 {
 	@Path("/{codDominio}/iban_accredito/{iban}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getIban(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam(value="codDominio") String codDominio, @PathParam(value="iban") String iban) {
+			@PathParam(value="codDominio") String codDominio, 
+			@PathParam(value="iban") String codIbanAccredito,
+			@QueryParam(value="fields") String fields) {
 		
 		String methodName = "getIban"; 
-		BasicBD bd = null;
 		GpContext ctx = null; 
 		
 		try{
 			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
-			leggiDominioDTO.setCodDominio(codDominio);
-			leggiDominioDTO.setPrincipal(getPrincipal());
+			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
-			Iban ibanAccredito = new Iban(leggiDominioDTOResponse.getDominio().getIban(bd, iban), uriInfo.getAbsolutePathBuilder(), bd);
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
 			
-			return Response.status(Status.OK).entity(ibanAccredito).build();
+			GetIbanDTO getIbanDTO = new GetIbanDTO(user, codDominio, codIbanAccredito);
+			GetIbanDTOResponse getIbanDTOResponse = new DominiBO().getIban(getIbanDTO);
+			
+			Iban unitaOperativa = new Iban(getIbanDTOResponse.getIbanAccredito(), codDominio, baseUriBuilder);
+			
+			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
@@ -303,7 +327,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
 	}
@@ -312,30 +335,38 @@ public class Domini extends BaseRsServiceV1 {
 	@Path("/{codDominio}/entrate")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response findTributi(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam(value="codDominio") String codDominio) {
+			@PathParam(value="codDominio") String codDominio,
+			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
+			@QueryParam(value="limit") @DefaultValue(value="25") int limit,
+			@QueryParam(value="fields") String fields,
+			@QueryParam(value="simpleSearch") String simpleSearch,
+			@QueryParam(value="codEntrata") String codEntrata,
+			@QueryParam(value="descrizione") String descrizione) {
 		
-		String methodName = "findTributi"; 
-		BasicBD bd = null;
+		String methodName = "findIban"; 
 		GpContext ctx = null; 
 		
 		try{
 			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
-			leggiDominioDTO.setCodDominio(codDominio);
-			leggiDominioDTO.setPrincipal(getPrincipal());
+			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			
+			FindTributiDTO findTributiDTO = new FindTributiDTO(user, codDominio);
+			findTributiDTO.setCodTributo(codEntrata);
+			findTributiDTO.setLimit(limit);
+			findTributiDTO.setOffset(offset);
+			findTributiDTO.setDescrizione(descrizione);
+			FindTributiDTOResponse findTributiDTOResponse = new DominiBO().findTributi(findTributiDTO);
 			
 			List<Entrata> entrate = new ArrayList<Entrata>();
-			for(it.govpay.bd.model.Tributo tributo : leggiDominioDTOResponse.getDominio().getTributi(bd)) {
-				entrate.add(new Entrata(tributo, uriInfo.getAbsolutePathBuilder(), bd));
+			for(it.govpay.bd.model.Tributo tributo : findTributiDTOResponse.getTributi()) {
+				entrate.add(new Entrata(tributo, codDominio, baseUriBuilder));
 			}
-			
-			return Response.status(Status.OK).entity(entrate).build();
+			ListaEntrate listaUnitaOperative = new ListaEntrate(entrate, uriInfo.getRequestUri(), findTributiDTOResponse.getTotalResults(), offset, limit);
+			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
@@ -344,7 +375,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
 	}
@@ -353,26 +383,27 @@ public class Domini extends BaseRsServiceV1 {
 	@Path("/{codDominio}/entrate/{codTributo}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getTributo(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam(value="codDominio") String codDominio, @PathParam(value="codTributo") String codTributo) {
+			@PathParam(value="codDominio") String codDominio, 
+			@PathParam(value="codEntrata") String codTributo,
+			@QueryParam(value="fields") String fields) {
 		
 		String methodName = "getTributo"; 
-		BasicBD bd = null;
 		GpContext ctx = null; 
 		
 		try{
 			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			GetDominioDTO leggiDominioDTO = new GetDominioDTO();
-			leggiDominioDTO.setCodDominio(codDominio);
-			leggiDominioDTO.setPrincipal(getPrincipal());
+			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			it.govpay.core.business.Domini domini = new it.govpay.core.business.Domini(bd);
-			GetDominioDTOResponse leggiDominioDTOResponse = domini.leggiDominio(leggiDominioDTO);
-			Entrata entrata = new Entrata(leggiDominioDTOResponse.getDominio().getTributo(bd, codTributo), uriInfo.getAbsolutePathBuilder(), bd);
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
 			
-			return Response.status(Status.OK).entity(entrata).build();
+			GetTributoDTO getTributoDTO = new GetTributoDTO(user, codDominio, codTributo);
+			GetTributoDTOResponse getTributoDTOResponse = new DominiBO().getTributo(getTributoDTO);
+			
+			Entrata entrata = new Entrata(getTributoDTOResponse.getTributo(), codDominio, baseUriBuilder);
+			
+			return Response.status(Status.OK).entity(entrata.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
@@ -381,7 +412,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
 	}

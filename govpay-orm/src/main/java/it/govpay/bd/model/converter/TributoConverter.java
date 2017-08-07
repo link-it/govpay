@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model.converter;
 
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.orm.IdDominio;
@@ -32,26 +33,32 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class TributoConverter {
 
-	public static List<Tributo> toDTOList(List<it.govpay.orm.Tributo> lstVO) throws ServiceException {
+	public static List<Tributo> toDTOList(List<it.govpay.orm.Tributo> lstVO, BasicBD bd) throws ServiceException {
 		List<Tributo> lst = new ArrayList<Tributo>();
 		if(lstVO != null && !lstVO.isEmpty()) {
 			for(it.govpay.orm.Tributo vo: lstVO) {
-				lst.add(toDTO(vo));
+				lst.add(toDTO(vo, bd));
 			}
 		}
 		return lst;
 	}
 
-	public static Tributo toDTO(it.govpay.orm.Tributo vo) throws ServiceException {
-		Tributo dto = new Tributo();
+	public static Tributo toDTO(it.govpay.orm.Tributo vo, BasicBD bd) throws ServiceException {
+		
+		Tributo dto = null;
+		if(vo.getIdIbanAccredito() != null) {
+			dto = new Tributo(bd, vo.getIdIbanAccredito().getId());
+		} else {
+			dto = new Tributo(bd, null);
+		}
+		
 		dto.setId(vo.getId());
 		dto.setIdDominio(vo.getIdDominio().getId());
 		dto.setCodTributo(vo.getTipoTributo().getCodTributo());
 		dto.setAbilitato(vo.getAbilitato());
 		dto.setDescrizione(vo.getTipoTributo().getDescrizione());
 		dto.setIdTipoTributo(vo.getTipoTributo().getId()); 
-		if(vo.getIdIbanAccredito() != null)
-			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
+		
 		
 		if(vo.getTipoContabilita() != null)
 			dto.setTipoContabilitaCustom(TipoContabilta.toEnum(vo.getTipoContabilita()));
@@ -66,7 +73,7 @@ public class TributoConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.Tributo toVO(Tributo dto) {
+	public static it.govpay.orm.Tributo toVO(it.govpay.model.Tributo dto) {
 		it.govpay.orm.Tributo vo = new it.govpay.orm.Tributo();
 		vo.setId(dto.getId());
 		vo.setAbilitato(dto.isAbilitato());

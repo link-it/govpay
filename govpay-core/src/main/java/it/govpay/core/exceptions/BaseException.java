@@ -20,13 +20,46 @@
 package it.govpay.core.exceptions;
 
 public abstract class BaseException extends Exception {
+	
+	transient private static final long serialVersionUID = 1L;
+	private String code;
+	private String message;
+	private String details;
+	
+	public BaseException(String message) {
+		super();
+		this.code = this.getClass().getName();
+		this.message = message;
+	}
+	
+	public BaseException(String message, Throwable cause) {
+		super(cause);
+		this.code = this.getClass().getName();
+		this.message = message;
+	}
+	
+	public BaseException(String message, String subCode, String description) {
+		this(message);
+		this.details = "(#"+subCode+") " + description;
+	}
+	
+	public BaseException(String message, String subCode, String description, Throwable cause) {
+		this(message, cause);
+		this.details = "(#"+subCode+") " + description;
+	}
 
-	private static final long serialVersionUID = 1L;
-	
-	public abstract String getFaultCode();
-	
-	public abstract String getFaultString();
-	
-	public abstract String getDescription();
+	public String getCode() {
+		return code;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getDetails() {
+		return details;
+	}
+
+	public abstract int getTransportErrorCode();
 	
 }
