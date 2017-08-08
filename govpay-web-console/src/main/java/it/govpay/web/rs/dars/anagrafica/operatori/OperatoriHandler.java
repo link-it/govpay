@@ -98,7 +98,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Operatore.model().PRINCIPAL);
+			fsw.setField(it.govpay.orm.Operatore.model().NOME);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
