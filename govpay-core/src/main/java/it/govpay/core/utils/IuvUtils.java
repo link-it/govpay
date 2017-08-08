@@ -58,7 +58,7 @@ public class IuvUtils {
 		return qrCode.getBytes();
 	}
 
-	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
+	private static final DecimalFormat nFormatter = new DecimalFormat("00.00", new DecimalFormatSymbols(Locale.ENGLISH));
 	
 	private static String buildBarCode(String gln, int applicationCode, String iuv, BigDecimal importoTotale) {
 		// Da Guida Tecnica di Adesione PA 3.8 pag 25 
