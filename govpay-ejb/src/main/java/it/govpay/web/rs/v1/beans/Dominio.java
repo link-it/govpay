@@ -46,7 +46,7 @@ public class Dominio extends JSONSerializable {
 	private Href unitaOperative;
 	private Href ibanAccredito;
 	private Href entrate;
-	private byte[] logo;
+	private String logo;
 	private boolean abilitato;
 	
 	private static JsonConfig jsonConfig = new JsonConfig();
@@ -83,7 +83,7 @@ public class Dominio extends JSONSerializable {
 		this.gln = dominio.getGln();
 		this.auxDigit = dominio.getAuxDigit();
 		this.segregationCode = dominio.getSegregationCode();
-		this.logo = dominio.getLogo();
+		this.logo = new String(dominio.getLogo());
 		this.iuvPrefix = dominio.getIuvPrefix();
 		this.stazione = dominio.getStazione().getCodStazione();
 		this.unitaOperative = new Href(uriBuilder.clone().path("unitaOperative").build().toString());
@@ -100,11 +100,11 @@ public class Dominio extends JSONSerializable {
 		this.gln = gln;
 	}
 
-	public byte[] getLogo() {
+	public String getLogo() {
 		return logo;
 	}
 
-	public void setLogo(byte[] logo) {
+	public void setLogo(String logo) {
 		this.logo = logo;
 	}
 	

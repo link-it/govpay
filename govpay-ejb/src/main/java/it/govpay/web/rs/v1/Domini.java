@@ -19,7 +19,6 @@
  */
 package it.govpay.web.rs.v1;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.core.business.anagrafica.DominiBO;
 import it.govpay.core.business.anagrafica.UtentiBO;
 import it.govpay.core.business.anagrafica.dto.FindDominiDTO;
@@ -69,7 +67,6 @@ import it.govpay.web.rs.v1.beans.Dominio;
 import it.govpay.web.rs.v1.beans.Entrata;
 import it.govpay.web.rs.v1.beans.Errore;
 import it.govpay.web.rs.v1.beans.Iban;
-import it.govpay.web.rs.v1.beans.Incasso;
 import it.govpay.web.rs.v1.beans.ListaDomini;
 import it.govpay.web.rs.v1.beans.ListaEntrate;
 import it.govpay.web.rs.v1.beans.ListaIbanAccredito;
@@ -98,6 +95,8 @@ public class Domini extends BaseRsServiceV1 {
 		if(limit > 25) limit = 500;
 		
 		try{
+			setupContext(uriInfo, httpHeaders, "findDomini");
+			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
 			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
@@ -122,7 +121,7 @@ public class Domini extends BaseRsServiceV1 {
 		} catch (BaseException e) {
 			return Response.status(e.getTransportErrorCode()).entity(new Errore(e)).build();
 		} catch (Exception e) {
-			log.error("Errore interno durante il processo di incasso", e);
+			log.error("Errore interno durante la ricerca dei domini", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} 
 	}
@@ -167,11 +166,8 @@ public class Domini extends BaseRsServiceV1 {
 			@PathParam(value="codDominio") String codDominio,
 			@QueryParam(value="fields") String fields) {
 		
-		String methodName = "getDominio"; 
-		GpContext ctx = null; 
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			ctx =  GpThreadLocal.get();
+			setupContext(uriInfo, httpHeaders, "findDomini");
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
@@ -184,15 +180,11 @@ public class Domini extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(dominio.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
-			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			log.error("Errore interno durante la lettura del dominio", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		} finally {
-			if(ctx != null) ctx.log();
-		}
+		} 
 	}
 	
 	@GET

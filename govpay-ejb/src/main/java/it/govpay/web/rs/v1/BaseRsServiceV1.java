@@ -24,8 +24,12 @@ import java.io.IOException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.web.rs.BaseRsService;
 
 public class BaseRsServiceV1 extends BaseRsService {
@@ -33,6 +37,12 @@ public class BaseRsServiceV1 extends BaseRsService {
 	@Override
 	public int getVersione() {
 		return 1;
+	}
+	
+	public void setupContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione) throws ServiceException {
+		GpContext ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione());
+		ThreadContext.put("op", ctx.getTransactionId());
+		GpThreadLocal.set(ctx);
 	}
 	
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o) throws IOException {

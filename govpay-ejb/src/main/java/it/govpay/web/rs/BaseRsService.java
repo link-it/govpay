@@ -76,7 +76,7 @@ public abstract class BaseRsService {
 	public void setHttpServletRequest(HttpServletRequest request) {
 		this.request = request;
 	}
-
+	
 
 	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
