@@ -34,7 +34,7 @@ public abstract class BaseException extends Exception {
 	
 	public BaseException(String message, Throwable cause) {
 		super(cause);
-		this.code = this.getClass().getName();
+		this.code = this.getClass().getSimpleName();
 		this.message = message;
 	}
 	

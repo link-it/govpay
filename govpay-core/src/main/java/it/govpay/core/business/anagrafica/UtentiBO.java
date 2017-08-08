@@ -25,32 +25,82 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Operatore;
-import it.govpay.core.exceptions.NotFoundException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Applicazione;
+import it.govpay.model.Autorizzato;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Portale;
 
 
 public class UtentiBO {
 
-	public IAutorizzato getUser(String principal) throws NotFoundException, ServiceException {
+	public enum TipoUtenza {
+		PORTALE, OPERATORE, APPLICAZIONE;
+	}
+
+	public IAutorizzato getUser(String principal) throws NotAuthenticatedException, ServiceException {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			Autorizzato user = new Autorizzato();
+			boolean autenticated = false;
+			try {
+				Portale portale = AnagraficaManager.getPortaleByPrincipal(bd, principal);
+				user.addAllAcls(portale.getAcls());
+				autenticated = true;
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
+		
+			try {
+				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
+				user.addAllAcls(applicazione.getAcls());
+				autenticated = true;
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
+
+			try {
+				Operatore operatore = AnagraficaManager.getOperatore(bd, principal);
+				user.addAllAcls(operatore.getAcls());
+				autenticated = true;
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
+			
+			if(!autenticated) throw new NotAuthenticatedException();
+			
+			return user;
+		} finally {
+			bd.closeConnection();
+		}
+	}
+	
+	public Applicazione getApplicazione(String principal) throws NotAuthenticatedException, ServiceException {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
+			return applicazione;
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new NotAuthenticatedException();
+		} finally {
+			bd.closeConnection();
+		}
+	}
+	
+	public Operatore getOperatore(String principal) throws NotAuthenticatedException, ServiceException {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			Operatore operatore = AnagraficaManager.getOperatore(bd, principal);
+			return operatore;
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
+			throw new NotAuthenticatedException();
+		} finally {
+			bd.closeConnection();
+		}
+	}
+	
+	public Portale getPortale(String principal) throws NotAuthenticatedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			Portale portale = AnagraficaManager.getPortaleByPrincipal(bd, principal);
 			return portale;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			try {
-				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
-				return applicazione;
-			} catch (org.openspcoop2.generic_project.exception.NotFoundException e2) {
-				try {
-					Operatore operatore = AnagraficaManager.getOperatore(bd, principal);
-					return operatore;
-				} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
-					throw new NotFoundException();
-				} 
-			}
+			throw new NotAuthenticatedException();
 		} finally {
 			bd.closeConnection();
 		}

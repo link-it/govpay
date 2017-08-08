@@ -19,6 +19,7 @@
  */
 package it.govpay.web.rs.v1;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -38,6 +40,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import it.govpay.bd.BasicBD;
 import it.govpay.core.business.anagrafica.DominiBO;
 import it.govpay.core.business.anagrafica.UtentiBO;
 import it.govpay.core.business.anagrafica.dto.FindDominiDTO;
@@ -61,10 +64,12 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.v1.beans.Dominio;
 import it.govpay.web.rs.v1.beans.Entrata;
 import it.govpay.web.rs.v1.beans.Errore;
 import it.govpay.web.rs.v1.beans.Iban;
+import it.govpay.web.rs.v1.beans.Incasso;
 import it.govpay.web.rs.v1.beans.ListaDomini;
 import it.govpay.web.rs.v1.beans.ListaEntrate;
 import it.govpay.web.rs.v1.beans.ListaIbanAccredito;
@@ -90,12 +95,9 @@ public class Domini extends BaseRsServiceV1 {
 			@QueryParam(value="abilitato") Boolean abilitato,
 			@QueryParam(value="simpleSearch") String simpleSearch) {
 		
-		String methodName = "findDomini"; 
 		if(limit > 25) limit = 500;
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
 			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
@@ -122,6 +124,39 @@ public class Domini extends BaseRsServiceV1 {
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		} 
+	}
+	
+	@PUT
+	@Path("/{codDominio}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response addDominio(InputStream is, @Context UriInfo uriInfo, 
+			@Context HttpHeaders httpHeaders,
+			@PathParam(value="codDominio") String codDominio) {
+		
+		String methodName = "addDominio"; 
+		ByteArrayOutputStream baos = null;
+		
+		try{
+			baos = new ByteArrayOutputStream();
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+
+			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
+			
+			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			Dominio dominio = Dominio.parse(baos.toString());
+			
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, "");
+			
+			return Response.status(Status.OK).entity(dominio).header("Location", "xxxxx").build();
+		} catch (BaseException e) {
+			return Response.status(e.getTransportErrorCode()).entity(new Errore(e)).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante il processo di incasso", e);
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new Errore(e)).build();
 		} 
 	}
 	

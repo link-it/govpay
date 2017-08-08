@@ -24,14 +24,12 @@ import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
 @JsonFilter(value="domini")  
 public class Dominio extends JSONSerializable {
 	
-	@Override
-	public String getJsonIdFilter() {
-		return "domini";
-	}
-
 	private String href;
 	private String ragioneSociale;
 	private String indirizzo;
@@ -50,11 +48,27 @@ public class Dominio extends JSONSerializable {
 	private Href entrate;
 	private byte[] logo;
 	private boolean abilitato;
+	
+	private static JsonConfig jsonConfig = new JsonConfig();
 
+	static {
+		jsonConfig.setRootClass(Dominio.class);
+	}
+	
 	public Dominio() {
 
 	}
-
+	
+	@Override
+	public String getJsonIdFilter() {
+		return "domini";
+	}
+	
+	public static Dominio parse(String json) {
+		JSONObject jsonObject = JSONObject.fromObject( json );  
+		return (Dominio) JSONObject.toBean( jsonObject, jsonConfig );
+	}
+	
 	public Dominio(it.govpay.bd.model.Dominio dominio, UriBuilder uriBuilder) throws ServiceException {
 		uriBuilder = uriBuilder.clone().path("domini").path(dominio.getCodDominio());
 		this.setHref(uriBuilder.build().toString());
@@ -93,7 +107,7 @@ public class Dominio extends JSONSerializable {
 	public void setLogo(byte[] logo) {
 		this.logo = logo;
 	}
-
+	
 	public String getIndirizzo() {
 		return indirizzo;
 	}

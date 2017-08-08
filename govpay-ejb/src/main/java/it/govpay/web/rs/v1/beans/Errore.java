@@ -32,6 +32,12 @@ public class Errore {
 		this.message = exception.getMessage();
 		this.details = exception.getDetails();
 	}
+	
+	public Errore(Exception exception) {
+		this.code = "InternalServerException";
+		this.message = "Errore interno";
+		this.details = exception.getMessage();
+	}
 
 	public String getCode() {
 		return code;
