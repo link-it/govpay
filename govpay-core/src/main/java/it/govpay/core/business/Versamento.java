@@ -22,7 +22,12 @@ package it.govpay.core.business;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
+import gov.telematici.pagamenti.ws.*;
+import it.govpay.bd.model.Stazione;
+import it.govpay.core.utils.client.NodoClient;
+import it.govpay.model.Intermediario;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -116,7 +121,54 @@ public class Versamento extends BasicBD {
 				
 				versamentiBD.updateVersamento(versamento, true);
 				ctx.log("versamento.aggioramentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
-				
+
+				// Invio avviso digitale
+				Stazione stazione = versamento.getUo(this).getDominio(this).getStazione(this);
+				Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
+				NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, this);
+
+				CtIdentificativoUnivocoPersonaFG fg = new CtIdentificativoUnivocoPersonaFG();
+				fg.setCodiceIdentificativoUnivoco(versamento.getAnagraficaDebitore().getCodUnivoco());
+				fg.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);
+
+				CtSoggettoPagatore pagatore = new CtSoggettoPagatore();
+				pagatore.setAnagraficaPagatore(versamento.getAnagraficaDebitore().getRagioneSociale());
+				pagatore.setIdentificativoUnivocoPagatore(fg);
+
+				CtAvvisoDigitale ctAvvisoDigitale = new CtAvvisoDigitale();
+				ctAvvisoDigitale.setAnagraficaBeneficiario(versamento.getAnagraficaDebitore().getRagioneSociale());
+				ctAvvisoDigitale.setCellulareSoggetto(versamento.getAnagraficaDebitore().getCellulare());
+				ctAvvisoDigitale.setCodiceAvviso("");
+				ctAvvisoDigitale.setDataScadenzaAvviso(versamento.getDataScadenza());
+				ctAvvisoDigitale.setDataScadenzaPagamento(versamento.getDataScadenza());
+				ctAvvisoDigitale.setDescrizionePagamento(versamento.getCausaleVersamento().getSimple());
+				ctAvvisoDigitale.setEMailSoggetto(versamento.getAnagraficaDebitore().getEmail());
+				ctAvvisoDigitale.setIdentificativoDominio(versamento.getUo(this).getDominio(this).getCodDominio());
+				ctAvvisoDigitale.setIdentificativoMessaggioRichiesta(buildUUID35());
+				ctAvvisoDigitale.setImportoAvviso(versamento.getImportoTotale());
+				ctAvvisoDigitale.setTassonomiaAvviso(Tassonomia.SERVIZI_COMUNE.toString());
+				// ctAvvisoDigitale.setUrlAvviso(""); -> Solo se c'è una pagina web disposta a visualizzare le info del pagamento.
+				ctAvvisoDigitale.setSoggettoPagatore(pagatore);
+
+				CtNodoInviaAvvisoDigitale avvisoDigitale = new CtNodoInviaAvvisoDigitale();
+				avvisoDigitale.setAvvisoDigitaleWS(ctAvvisoDigitale);
+				avvisoDigitale.setPassword(stazione.getPassword());
+
+				try {
+					CtNodoInviaAvvisoDigitaleRisposta risposta = client.nodoInviaAvvisoDigitale(intermediario, stazione, avvisoDigitale);
+					if(risposta.getEsitoOperazione() == StEsitoOperazione.OK) {
+						log.info("Avvisatura inviata con successo");
+					} else {
+						log.error("Errore invio avvisatura: " + risposta.getFault().getDescription());
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				// risposta.getEsitoOperazione().value().compareTo(StEsitoOperazione.OK)
+
+				// Fine Avviso digitale
+
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") aggiornato");
 			} catch (NotFoundException e) {
 				// Versamento nuovo. Inserisco
@@ -134,6 +186,18 @@ public class Versamento extends BasicBD {
 			else 
 				throw new GovPayException(e);
 		}
+	}
+
+	public static String buildUUID35() {
+		return UUID.randomUUID().toString().replace("-", "");
+	}
+
+	private enum Tassonomia {
+
+		TASSA_AUTO, IMPOSTE_REGIONALI, IMU_TASI_TASSE_REGIONALI, MULTE, CARTELLE_ESATTORIALI, DIRITTI_CONCESSIONI,
+		TICKET_SANITARIO, SERVIZI_REGIONE, SERVIZI_SCOLASTICI, TRASPORTI_PARCHEGGI, SERVIZI_COMUNE, PREVIDENZA_INFORTUNI,
+		INGRESSI_MOSTRE_MUSEI
+
 	}
 
 	@Deprecated
