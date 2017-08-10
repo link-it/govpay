@@ -98,7 +98,7 @@ public class Versamento extends BasicBD {
 			} catch (NotFoundException e) {
 				if(generaIuv) {
 					Iuv iuvBusiness = new Iuv(this);
-					iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte());
+					iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 				}
 			}
 			

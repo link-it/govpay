@@ -31,7 +31,6 @@ public class CustomIuv {
 		StrSubstitutor sub = new StrSubstitutor(values, "%(", ")");
 		String result = sub.replace(prefix);
 		
-
 		// il prefix risultante deve essere numerico
 		try {
 			Long.parseLong(result);
@@ -41,5 +40,9 @@ public class CustomIuv {
 		}
 
 		return result;
+	}
+
+	public boolean isNumericOnly(Applicazione applicazione, it.govpay.bd.model.Dominio dominio, Map<String, String> allIuvProps) {
+		return false;
 	}
 }

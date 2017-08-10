@@ -319,32 +319,29 @@ public class Pagamento extends BasicBD {
 
 				// Verifico se ha uno IUV suggerito ed in caso lo assegno
 				if(versamento.getIuvProposto() != null) {
+					log.debug("IUV Proposto: " + versamento.getIuvProposto());
 					TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
 					iuvBusiness.checkIUV(versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv);
 					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv, versamento.getCodVersamentoEnte());
 					ccp = IuvUtils.buildCCP();
 					ctx.log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {
-
-					// Gestione gentralizzata dello iuv. Verifico che il dominio lo consenta.
-					if(versamento.getUo(this).getDominio(this).isCustomIuv()) {
-						throw new GovPayException(EsitoOperazione.DOM_002, versamento.getUo(this).getDominio(this).getCodDominio());
-					}
-
-					// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso se il dominio e' configurato in tal senso. 
-					if(versamento.getUo(this).getDominio(this).isRiusoIuv()) {
-						try {
-							iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-							ccp = IuvUtils.buildCCP();
-							ctx.log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
-						} catch (NotFoundException e) {
-							iuv = iuvBusiness.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
+					// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso. 
+					try {
+						log.debug("Cerco iuv gia' assegnato....");
+						iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+						log.debug(".. iuv gia' assegnato: " + iuv.getIuv());
+						ccp = IuvUtils.buildCCP();
+						ctx.log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
+					} catch (NotFoundException e) {
+						log.debug("Iuv non assegnato. Generazione...");
+						// Non c'e' iuv assegnato. Glielo genero io.
+						iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
+						if(iuvBusiness.getTipoIUV(iuv.getIuv()).equals(TipoIUV.ISO11694)) {
 							ccp = Rpt.CCP_NA;
-							ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
+						} else {
+							ccp = IuvUtils.buildCCP();
 						}
-					} else {
-						iuv = iuvBusiness.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
-						ccp = Rpt.CCP_NA;
 						ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 					}
 				}

@@ -346,7 +346,10 @@ public class BasicClient {
 		} finally {
 			if(responseMsg != null) {
 				ctx.getContext().getResponse().setInDate(new Date());
-				ctx.getContext().getResponse().setInSize((long)responseMsg.getContent().length);
+				if(responseMsg.getContent() != null)
+					ctx.getContext().getResponse().setInSize((long) responseMsg.getContent().length);
+				else
+					ctx.getContext().getResponse().setInSize(0l);
 				ctx.log(responseMsg);
 			}
 
