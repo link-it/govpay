@@ -53,7 +53,10 @@ public class Incasso extends BasicModel {
 		return causale;
 	}
 	public void setCausale(String causale) {
-		this.causale = causale;
+		if(causale != null)
+			this.causale = causale.trim();
+		else 
+			this.causale = causale;
 	}
 	public BigDecimal getImporto() {
 		return importo;
