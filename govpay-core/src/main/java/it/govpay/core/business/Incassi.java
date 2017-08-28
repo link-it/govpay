@@ -77,29 +77,30 @@ public class Incassi extends BasicBD {
 			GpThreadLocal.get().log("incasso.richiesta");
 			
 			// Validazione dati obbligatori
-			if(richiestaIncasso.getTrn() == null) {
-				GpThreadLocal.get().log("incasso.sintassi", "trn mancante");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
-			}
-			
-			if(richiestaIncasso.getTrn().length() > 35) {
-				GpThreadLocal.get().log("incasso.sintassi", "trn troppo lungo");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Il valore del campo trn non rispetta la lunghezza massima di 35 caratteri");
-			}
 			
 			if(richiestaIncasso.getCausale() == null) {
 				GpThreadLocal.get().log("incasso.sintassi", "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
 			}
 			
-			if(richiestaIncasso.getCausale().length() > 512) {
-				GpThreadLocal.get().log("incasso.sintassi", "causale troppo lunga");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Il valore del campo causale non rispetta la lunghezza massima di 512 caratteri");
+			if(richiestaIncasso.getTrn() == null) {
+				GpThreadLocal.get().log("incasso.sintassi", "trn mancante");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
 			}
 			
-			if(richiestaIncasso.getTrn().length() > 35) {
+			if(richiestaIncasso.getTrn().length() > 512) {
 				GpThreadLocal.get().log("incasso.sintassi", "trn troppo lungo");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificato un trn che eccede il massimo numero di caratteri consentiti (512)");
+			}
+			
+			if(richiestaIncasso.getTrn().contains(" ")) {
+				GpThreadLocal.get().log("incasso.sintassi", "trn non deve contenere spazi");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificato un trn contenente spazi");
+			}
+			
+			if(richiestaIncasso.getCausale().length() > 512) {
+				GpThreadLocal.get().log("incasso.sintassi", "causale troppo lunga");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificata una causale che eccede il massimo numero di caratteri consentiti (512)");
 			}
 			
 			if(richiestaIncasso.getCodDominio() == null) {
@@ -111,7 +112,6 @@ public class Incassi extends BasicBD {
 				GpThreadLocal.get().log("incasso.sintassi", "importo mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio importo");
 			}
-
 			
 			// Verifica Dominio
 			try {
