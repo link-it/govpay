@@ -79,7 +79,10 @@ public class GpContext {
 			transaction.setRole(Role.SERVER);
 			
 			Service service = new Service();
-			service.setName(((QName) msgCtx.get(MessageContext.WSDL_SERVICE)).getLocalPart());
+			if(msgCtx.get(MessageContext.WSDL_SERVICE) != null)
+				service.setName(((QName) msgCtx.get(MessageContext.WSDL_SERVICE)).getLocalPart());
+			else 
+				service.setName("<Unknown>");
 			service.setVersion(versioneServizio);
 			service.setType(tipoServizio);
 			
@@ -87,13 +90,21 @@ public class GpContext {
 			
 			Operation operation = new Operation();
 			operation.setMode(FlowMode.INPUT_OUTPUT);
-			operation.setName(((QName) msgCtx.get(MessageContext.WSDL_OPERATION)).getLocalPart());
+			if(msgCtx.get(MessageContext.WSDL_OPERATION) != null)
+				operation.setName(((QName) msgCtx.get(MessageContext.WSDL_OPERATION)).getLocalPart());
+			else 
+				operation.setName("<Unknown>");
 			transaction.setOperation(operation);
 			
 			HttpServletRequest servletRequest = (HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST);
 			Client client = new Client();
 			client.setInvocationEndpoint(servletRequest.getRequestURI());
-			client.setInterfaceName(((QName) msgCtx.get(MessageContext.WSDL_INTERFACE)).getLocalPart());
+			
+			if(msgCtx.get(MessageContext.WSDL_INTERFACE) != null)
+				client.setInterfaceName(((QName) msgCtx.get(MessageContext.WSDL_INTERFACE)).getLocalPart());
+			else 
+				client.setInterfaceName("<Unknown>");
+			
 			if(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal() != null)
 				client.setPrincipal(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal().getName());
 			
