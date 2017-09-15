@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.anagrafica;
+package it.govpay.core.dao.anagrafica;
 
 import java.util.Set;
 
@@ -34,29 +34,29 @@ import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
-import it.govpay.core.business.anagrafica.dto.FindDominiDTO;
-import it.govpay.core.business.anagrafica.dto.FindDominiDTOResponse;
-import it.govpay.core.business.anagrafica.dto.FindIbanDTO;
-import it.govpay.core.business.anagrafica.dto.FindIbanDTOResponse;
-import it.govpay.core.business.anagrafica.dto.FindTributiDTO;
-import it.govpay.core.business.anagrafica.dto.FindTributiDTOResponse;
-import it.govpay.core.business.anagrafica.dto.FindUnitaOperativeDTO;
-import it.govpay.core.business.anagrafica.dto.FindUnitaOperativeDTOResponse;
-import it.govpay.core.business.anagrafica.dto.GetDominioDTO;
-import it.govpay.core.business.anagrafica.dto.GetDominioDTOResponse;
-import it.govpay.core.business.anagrafica.dto.GetIbanDTO;
-import it.govpay.core.business.anagrafica.dto.GetIbanDTOResponse;
-import it.govpay.core.business.anagrafica.dto.GetTributoDTO;
-import it.govpay.core.business.anagrafica.dto.GetTributoDTOResponse;
-import it.govpay.core.business.anagrafica.dto.GetUnitaOperativaDTO;
-import it.govpay.core.business.anagrafica.dto.GetUnitaOperativaDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
+import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
+import it.govpay.core.dao.anagrafica.dto.FindIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindTributiDTO;
+import it.govpay.core.dao.anagrafica.dto.FindTributiDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTO;
+import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.GetDominioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetIbanDTO;
+import it.govpay.core.dao.anagrafica.dto.GetIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
+import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
+import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Servizio;
 
-public class DominiBO {
+public class DominiDAO {
 
 	public FindDominiDTOResponse findDomini(FindDominiDTO listaDominiDTO) throws NotAuthorizedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -94,7 +94,7 @@ public class DominiBO {
 	public GetDominioDTOResponse getDominio(GetDominioDTO getDominioDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			Set<Long> domini = AclEngine.getIdDominiAutorizzati(getDominioDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			Set<String> domini = AclEngine.getDominiAutorizzati(getDominioDTO.getUser(), Servizio.Anagrafica_PagoPa);
 			
 			if(domini != null && !domini.contains(getDominioDTO.getCodDominio())) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getDominioDTO.getCodDominio());
@@ -147,7 +147,7 @@ public class DominiBO {
 	public GetUnitaOperativaDTOResponse getUnitaOperativa(GetUnitaOperativaDTO getUnitaOperativaDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			Set<Long> domini = AclEngine.getIdDominiAutorizzati(getUnitaOperativaDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			Set<String> domini = AclEngine.getDominiAutorizzati(getUnitaOperativaDTO.getUser(), Servizio.Anagrafica_PagoPa);
 			
 			if(domini != null && !domini.contains(getUnitaOperativaDTO.getCodDominio())) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getUnitaOperativaDTO.getCodDominio());
@@ -205,7 +205,7 @@ public class DominiBO {
 	public GetIbanDTOResponse getIban(GetIbanDTO getIbanDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			Set<Long> domini = AclEngine.getIdDominiAutorizzati(getIbanDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			Set<String> domini = AclEngine.getDominiAutorizzati(getIbanDTO.getUser(), Servizio.Anagrafica_PagoPa);
 			
 			if(domini != null && !domini.contains(getIbanDTO.getCodDominio())) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getIbanDTO.getCodDominio());
@@ -263,7 +263,7 @@ public class DominiBO {
 	public GetTributoDTOResponse getTributo(GetTributoDTO getTributoDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			Set<Long> domini = AclEngine.getIdDominiAutorizzati(getTributoDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			Set<String> domini = AclEngine.getDominiAutorizzati(getTributoDTO.getUser(), Servizio.Anagrafica_PagoPa);
 			
 			if(domini != null && !domini.contains(getTributoDTO.getCodDominio())) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getTributoDTO.getCodDominio());

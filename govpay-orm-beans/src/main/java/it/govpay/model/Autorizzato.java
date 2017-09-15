@@ -17,7 +17,7 @@ public class Autorizzato implements IAutorizzato {
 	}
 	
 	public void addAllAcls(Collection<Acl> acls) {
-		acls.addAll(acls);
+		this.acls.addAll(acls);
 	}
 
 }

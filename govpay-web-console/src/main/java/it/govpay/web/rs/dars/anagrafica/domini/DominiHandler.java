@@ -1507,7 +1507,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout);
 		} 
 
-		String fileName = "DominiBO.zip";
+		String fileName = "DominiDAO.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo ai ruoli con diritto di lettura

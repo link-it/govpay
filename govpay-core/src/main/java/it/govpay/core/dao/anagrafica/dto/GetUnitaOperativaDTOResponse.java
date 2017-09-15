@@ -1,4 +1,4 @@
-package it.govpay.core.business.anagrafica.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
 import it.govpay.bd.model.UnitaOperativa;
 

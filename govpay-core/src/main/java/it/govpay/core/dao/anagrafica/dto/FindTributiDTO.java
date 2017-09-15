@@ -17,17 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.anagrafica.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
 import it.govpay.model.IAutorizzato;
 
-public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
+public class FindTributiDTO extends BasicFindRequestDTO {
 	
 	private String codDominio;
-	private String codIdentificativo;
-	private String ragioneSociale;
+	private String codTributo;
+	private String descrizione;
 	
-	public FindUnitaOperativeDTO(IAutorizzato user, String codDominio) {
+	public FindTributiDTO(IAutorizzato user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
 	}
@@ -36,20 +36,20 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 		return codDominio;
 	}
 
-	public String getCodIdentificativo() {
-		return codIdentificativo;
+	public String getCodTributo() {
+		return codTributo;
 	}
 
-	public void setCodIdentificativo(String codIdentificativo) {
-		this.codIdentificativo = codIdentificativo;
+	public void setCodTributo(String codTributo) {
+		this.codTributo = codTributo;
 	}
 
-	public String getRagioneSociale() {
-		return ragioneSociale;
+	public String getDescrizione() {
+		return descrizione;
 	}
 
-	public void setRagioneSociale(String ragioneSociale) {
-		this.ragioneSociale = ragioneSociale;
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-package it.govpay.core.business.anagrafica.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

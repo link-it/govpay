@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.anagrafica.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.exception.ServiceException;

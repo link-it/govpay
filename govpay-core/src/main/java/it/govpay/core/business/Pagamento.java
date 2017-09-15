@@ -322,7 +322,10 @@ public class Pagamento extends BasicBD {
 					TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
 					iuvBusiness.checkIUV(versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv);
 					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv, versamento.getCodVersamentoEnte());
-					ccp = IuvUtils.buildCCP();
+					if(tipoIuv.equals(TipoIUV.NUMERICO))
+						ccp = IuvUtils.buildCCP();
+					else 
+						ccp = Rpt.CCP_NA;
 					ctx.log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {
 

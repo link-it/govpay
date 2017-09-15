@@ -17,23 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.anagrafica.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
-import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.UnitaOperativa;
 
-public class FindDominiDTOResponse extends BasicFindResponseDTO {
+public class FindUnitaOperativeDTOResponse extends BasicFindResponseDTO {
 	
-	private List<Dominio> domini;
+	private List<UnitaOperativa> unitaOperative;
 
-	public FindDominiDTOResponse(long totalResults, List<Dominio> domini) {
+	public FindUnitaOperativeDTOResponse(long totalResults, List<UnitaOperativa> unitaOperative) {
 		super(totalResults);
-		this.domini = domini;
+		this.unitaOperative = unitaOperative;
 	}
 
-	public List<Dominio> getDomini() {
-		return domini;
+	public List<UnitaOperativa> getUnitaOperative() {
+		return unitaOperative;
 	}
-
 }

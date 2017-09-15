@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.anagrafica;
+package it.govpay.core.dao.anagrafica;
 
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -33,7 +33,7 @@ import it.govpay.model.IAutorizzato;
 import it.govpay.model.Portale;
 
 
-public class UtentiBO {
+public class UtentiDAO {
 
 	public enum TipoUtenza {
 		PORTALE, OPERATORE, APPLICAZIONE;

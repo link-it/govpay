@@ -21,6 +21,8 @@ package it.govpay.web.rs.v1.beans;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.StringUtils;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -31,6 +33,7 @@ import net.sf.json.JsonConfig;
 public class Dominio extends JSONSerializable {
 	
 	private String href;
+	private String idDominio;
 	private String ragioneSociale;
 	private String indirizzo;
 	private String civico;
@@ -43,10 +46,10 @@ public class Dominio extends JSONSerializable {
 	private String stazione;
 	private int auxDigit;
 	private Integer segregationCode;
-	private Href unitaOperative;
-	private Href ibanAccredito;
-	private Href entrate;
 	private String logo;
+	private String unitaOperative;
+	private String ibanAccredito;
+	private String entrate;
 	private boolean abilitato;
 	
 	private static JsonConfig jsonConfig = new JsonConfig();
@@ -72,8 +75,8 @@ public class Dominio extends JSONSerializable {
 	public Dominio(it.govpay.bd.model.Dominio dominio, UriBuilder uriBuilder) throws ServiceException {
 		uriBuilder = uriBuilder.clone().path("domini").path(dominio.getCodDominio());
 		this.setHref(uriBuilder.build().toString());
+		this.setIdDominio(dominio.getCodDominio()); 
 		this.ragioneSociale = dominio.getRagioneSociale();
-		this.abilitato = dominio.isAbilitato();
 		this.indirizzo = dominio.getAnagrafica().getIndirizzo();
 		this.civico = dominio.getAnagrafica().getCivico();
 		this.cap = dominio.getAnagrafica().getCap();
@@ -83,13 +86,17 @@ public class Dominio extends JSONSerializable {
 		this.gln = dominio.getGln();
 		this.auxDigit = dominio.getAuxDigit();
 		this.segregationCode = dominio.getSegregationCode();
-		this.logo = new String(dominio.getLogo());
+		if(dominio.getLogo() != null) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(dominio.getLogo(), false)));
+			this.logo = sb.toString();
+		}
 		this.iuvPrefix = dominio.getIuvPrefix();
 		this.stazione = dominio.getStazione().getCodStazione();
-		this.unitaOperative = new Href(uriBuilder.clone().path("unitaOperative").build().toString());
-		this.ibanAccredito = new Href(uriBuilder.clone().path("ibanAccredito").build().toString());
-		this.entrate = new Href(uriBuilder.clone().path("entrate").build().toString());
-
+		this.unitaOperative = uriBuilder.clone().path("unita").build().toString();
+		this.ibanAccredito = uriBuilder.clone().path("iban").build().toString();
+		this.entrate = uriBuilder.clone().path("entrate").build().toString();
+		this.abilitato = dominio.isAbilitato();
 	}
 
 	public String getGln() {
@@ -204,27 +211,27 @@ public class Dominio extends JSONSerializable {
 		this.stazione = stazione;
 	}
 
-	public Href getUnitaOperative() {
+	public String getUnitaOperative() {
 		return unitaOperative;
 	}
 
-	public void setUnitaOperative(Href unitaOperative) {
+	public void setUnitaOperative(String unitaOperative) {
 		this.unitaOperative = unitaOperative;
 	}
 
-	public Href getIbanAccredito() {
+	public String getIbanAccredito() {
 		return ibanAccredito;
 	}
 
-	public void setIbanAccredito(Href ibanAccredito) {
+	public void setIbanAccredito(String ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
 	}
 
-	public Href getEntrate() {
+	public String getEntrate() {
 		return entrate;
 	}
 
-	public void setEntrate(Href entrate) {
+	public void setEntrate(String entrate) {
 		this.entrate = entrate;
 	}
 
@@ -234,5 +241,13 @@ public class Dominio extends JSONSerializable {
 
 	public void setHref(String href) {
 		this.href = href;
+	}
+
+	public String getIdDominio() {
+		return idDominio;
+	}
+
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
 	}
 }

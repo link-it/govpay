@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -39,30 +38,29 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.core.business.anagrafica.DominiBO;
-import it.govpay.core.business.anagrafica.UtentiBO;
-import it.govpay.core.business.anagrafica.dto.FindDominiDTO;
-import it.govpay.core.business.anagrafica.dto.FindDominiDTOResponse;
-import it.govpay.core.business.anagrafica.dto.FindIbanDTO;
-import it.govpay.core.business.anagrafica.dto.FindIbanDTOResponse;
-import it.govpay.core.business.anagrafica.dto.FindTributiDTO;
-import it.govpay.core.business.anagrafica.dto.FindTributiDTOResponse;
-import it.govpay.core.business.anagrafica.dto.FindUnitaOperativeDTO;
-import it.govpay.core.business.anagrafica.dto.FindUnitaOperativeDTOResponse;
-import it.govpay.core.business.anagrafica.dto.GetDominioDTO;
-import it.govpay.core.business.anagrafica.dto.GetDominioDTOResponse;
-import it.govpay.core.business.anagrafica.dto.GetIbanDTO;
-import it.govpay.core.business.anagrafica.dto.GetIbanDTOResponse;
-import it.govpay.core.business.anagrafica.dto.GetTributoDTO;
-import it.govpay.core.business.anagrafica.dto.GetTributoDTOResponse;
-import it.govpay.core.business.anagrafica.dto.GetUnitaOperativaDTO;
-import it.govpay.core.business.anagrafica.dto.GetUnitaOperativaDTOResponse;
+import it.govpay.core.dao.anagrafica.DominiDAO;
+import it.govpay.core.dao.anagrafica.UtentiDAO;
+import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
+import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
+import it.govpay.core.dao.anagrafica.dto.FindIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindTributiDTO;
+import it.govpay.core.dao.anagrafica.dto.FindTributiDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTO;
+import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.GetDominioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetIbanDTO;
+import it.govpay.core.dao.anagrafica.dto.GetIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
+import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
+import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.exceptions.BaseException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.v1.beans.Dominio;
 import it.govpay.web.rs.v1.beans.Entrata;
 import it.govpay.web.rs.v1.beans.Errore;
@@ -87,10 +85,8 @@ public class Domini extends BaseRsServiceV1 {
 			@QueryParam(value="limit") @DefaultValue(value="25") int limit,
 			@QueryParam(value="fields") String fields,
 			@QueryParam(value="orderby") String orderby,
-			@QueryParam(value="ragioneSociale") String ragioneSociale,
-			@QueryParam(value="idDominio") String codDominio,
 			@QueryParam(value="abilitato") Boolean abilitato,
-			@QueryParam(value="simpleSearch") String simpleSearch) {
+			@QueryParam(value="search") String simpleSearch) {
 		
 		if(limit > 25) limit = 500;
 		
@@ -99,17 +95,15 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			FindDominiDTO findDominiDTO = new FindDominiDTO(user);
 			findDominiDTO.setOffset(offset);
 			findDominiDTO.setLimit(limit);
-			findDominiDTO.setRagioneSociale(ragioneSociale);
-			findDominiDTO.setCodDominio(codDominio);
 			findDominiDTO.setSimpleSearch(simpleSearch);
 			findDominiDTO.setAbilitato(abilitato);
 			findDominiDTO.setOrderBy(orderby);
-			FindDominiDTOResponse findDominiDTOResponse = new DominiBO().findDomini(findDominiDTO);
+			FindDominiDTOResponse findDominiDTOResponse = new DominiDAO().findDomini(findDominiDTO);
 			
 			List<Dominio> domini = new ArrayList<Dominio>();
 			for(it.govpay.bd.model.Dominio d : findDominiDTOResponse.getDomini()) {
@@ -126,44 +120,11 @@ public class Domini extends BaseRsServiceV1 {
 		} 
 	}
 	
-	@PUT
-	@Path("/{codDominio}")
-	@Produces({MediaType.APPLICATION_JSON})
-	public Response addDominio(InputStream is, @Context UriInfo uriInfo, 
-			@Context HttpHeaders httpHeaders,
-			@PathParam(value="codDominio") String codDominio) {
-		
-		String methodName = "addDominio"; 
-		ByteArrayOutputStream baos = null;
-		
-		try{
-			baos = new ByteArrayOutputStream();
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
-			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
-			Dominio dominio = Dominio.parse(baos.toString());
-			
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, "");
-			
-			return Response.status(Status.OK).entity(dominio).header("Location", "xxxxx").build();
-		} catch (BaseException e) {
-			return Response.status(e.getTransportErrorCode()).entity(new Errore(e)).build();
-		} catch (Exception e) {
-			log.error("Errore interno durante il processo di incasso", e);
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new Errore(e)).build();
-		} 
-	}
-	
 	@GET
-	@Path("/{codDominio}")
+	@Path("/{idDominio}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getDominio(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam(value="codDominio") String codDominio,
+			@PathParam(value="idDominio") String codDominio,
 			@QueryParam(value="fields") String fields) {
 		
 		try{
@@ -171,11 +132,11 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, codDominio);
 			
-			GetDominioDTOResponse getDominioDTOResponse = new DominiBO().getDominio(getDominioDTO);
+			GetDominioDTOResponse getDominioDTOResponse = new DominiDAO().getDominio(getDominioDTO);
 			Dominio dominio = new Dominio(getDominioDTOResponse.getDominio(), baseUriBuilder);
 			
 			return Response.status(Status.OK).entity(dominio.toJSON(fields)).build();
@@ -188,7 +149,7 @@ public class Domini extends BaseRsServiceV1 {
 	}
 	
 	@GET
-	@Path("/{codDominio}/unita_operative")
+	@Path("/{codDominio}/unita")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response findUnitaOperative(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam(value="codDominio") String codDominio,
@@ -196,9 +157,7 @@ public class Domini extends BaseRsServiceV1 {
 			@QueryParam(value="limit") @DefaultValue(value="25") int limit,
 			@QueryParam(value="fields") String fields,
 			@QueryParam(value="abilitato") Boolean abilitato,
-			@QueryParam(value="simpleSearch") String simpleSearch,
-			@QueryParam(value="ragioneSociale") String ragioneSociale,
-			@QueryParam(value="codiceUnivoco") String codUnivoco) {
+			@QueryParam(value="simpleSearch") String simpleSearch) {
 		
 		String methodName = "findUnitaOperative"; 
 		GpContext ctx = null; 
@@ -208,15 +167,13 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			FindUnitaOperativeDTO findUnitaOperativeDTO = new FindUnitaOperativeDTO(user, codDominio);
-			findUnitaOperativeDTO.setCodIdentificativo(codUnivoco);
 			findUnitaOperativeDTO.setLimit(limit);
 			findUnitaOperativeDTO.setOffset(offset);
-			findUnitaOperativeDTO.setRagioneSociale(ragioneSociale);
 			findUnitaOperativeDTO.setSimpleSearch(simpleSearch);
-			FindUnitaOperativeDTOResponse findUnitaOperativeDTOResponse = new DominiBO().findUnitaOperative(findUnitaOperativeDTO);
+			FindUnitaOperativeDTOResponse findUnitaOperativeDTOResponse = new DominiDAO().findUnitaOperative(findUnitaOperativeDTO);
 			
 			List<UnitaOperativa> unitaOperative = new ArrayList<UnitaOperativa>();
 			for(it.govpay.bd.model.UnitaOperativa uo : findUnitaOperativeDTOResponse.getUnitaOperative()) {
@@ -237,11 +194,11 @@ public class Domini extends BaseRsServiceV1 {
 	}
 	
 	@GET
-	@Path("/{codDominio}/unita_operative/{codiceUnivoco}")
+	@Path("/{codDominio}/unita/{idUnita}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getUnitaOperativa(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam(value="codDominio") String codDominio, 
-			@PathParam(value="codiceUnivoco") String codUnivoco,
+			@PathParam(value="idUnita") String codUnivoco,
 			@QueryParam(value="fields") String fields) {
 		
 		String methodName = "getUnitaOperativa"; 
@@ -253,10 +210,10 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			GetUnitaOperativaDTO getUnitaOperativaDTO = new GetUnitaOperativaDTO(user, codDominio, codUnivoco);
-			GetUnitaOperativaDTOResponse getUnitaOperativaDTOResponse = new DominiBO().getUnitaOperativa(getUnitaOperativaDTO);
+			GetUnitaOperativaDTOResponse getUnitaOperativaDTOResponse = new DominiDAO().getUnitaOperativa(getUnitaOperativaDTO);
 			
 			UnitaOperativa unitaOperativa = new UnitaOperativa(getUnitaOperativaDTOResponse.getUnitaOperativa(), codDominio, baseUriBuilder);
 			
@@ -294,14 +251,14 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			FindIbanDTO findIbanDTO = new FindIbanDTO(user, codDominio);
 			findIbanDTO.setIban(iban);
 			findIbanDTO.setLimit(limit);
 			findIbanDTO.setOffset(offset);
 			findIbanDTO.setAbilitato(abilitato);
-			FindIbanDTOResponse findIbanDTOResponse = new DominiBO().findIban(findIbanDTO);
+			FindIbanDTOResponse findIbanDTOResponse = new DominiDAO().findIban(findIbanDTO);
 			
 			List<Iban> ibans = new ArrayList<Iban>();
 			for(it.govpay.bd.model.IbanAccredito ibanAccredito : findIbanDTOResponse.getIban()) {
@@ -322,7 +279,7 @@ public class Domini extends BaseRsServiceV1 {
 	}
 	
 	@GET
-	@Path("/{codDominio}/iban_accredito/{iban}")
+	@Path("/{codDominio}/iban/{iban}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getIban(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam(value="codDominio") String codDominio, 
@@ -338,10 +295,10 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			GetIbanDTO getIbanDTO = new GetIbanDTO(user, codDominio, codIbanAccredito);
-			GetIbanDTOResponse getIbanDTOResponse = new DominiBO().getIban(getIbanDTO);
+			GetIbanDTOResponse getIbanDTOResponse = new DominiDAO().getIban(getIbanDTO);
 			
 			Iban unitaOperativa = new Iban(getIbanDTOResponse.getIbanAccredito(), codDominio, baseUriBuilder);
 			
@@ -379,14 +336,14 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			FindTributiDTO findTributiDTO = new FindTributiDTO(user, codDominio);
 			findTributiDTO.setCodTributo(codEntrata);
 			findTributiDTO.setLimit(limit);
 			findTributiDTO.setOffset(offset);
 			findTributiDTO.setDescrizione(descrizione);
-			FindTributiDTOResponse findTributiDTOResponse = new DominiBO().findTributi(findTributiDTO);
+			FindTributiDTOResponse findTributiDTOResponse = new DominiDAO().findTributi(findTributiDTO);
 			
 			List<Entrata> entrate = new ArrayList<Entrata>();
 			for(it.govpay.bd.model.Tributo tributo : findTributiDTOResponse.getTributi()) {
@@ -407,7 +364,7 @@ public class Domini extends BaseRsServiceV1 {
 	}
 	
 	@GET
-	@Path("/{codDominio}/entrate/{codTributo}")
+	@Path("/{codDominio}/entrate/{codEntrata}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getTributo(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam(value="codDominio") String codDominio, 
@@ -423,10 +380,10 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiBO().getUser(getPrincipal());
+			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			GetTributoDTO getTributoDTO = new GetTributoDTO(user, codDominio, codTributo);
-			GetTributoDTOResponse getTributoDTOResponse = new DominiBO().getTributo(getTributoDTO);
+			GetTributoDTOResponse getTributoDTOResponse = new DominiDAO().getTributo(getTributoDTO);
 			
 			Entrata entrata = new Entrata(getTributoDTOResponse.getTributo(), codDominio, baseUriBuilder);
 			

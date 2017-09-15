@@ -50,7 +50,6 @@ import it.govpay.model.Applicazione;
 import it.govpay.web.handler.MessageLoggingHandlerUtils;
 import net.sf.json.JSONObject;
 
-@Path("/")
 public abstract class BaseRsService {
 
 	public static final String ERRORE_INTERNO = "Errore Interno";

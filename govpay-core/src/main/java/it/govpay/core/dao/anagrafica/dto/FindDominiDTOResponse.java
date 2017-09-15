@@ -17,39 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.anagrafica.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import java.util.List;
 
-public class FindIbanDTO extends BasicFindRequestDTO {
+import it.govpay.bd.model.Dominio;
+
+public class FindDominiDTOResponse extends BasicFindResponseDTO {
 	
-	private String codDominio;
-	private String iban;
-	private Boolean abilitato;
-	
-	public FindIbanDTO(IAutorizzato user, String codDominio) {
-		super(user);
-		this.codDominio = codDominio;
-	}
-	
-	public String getCodDominio(){
-		return codDominio;
+	private List<Dominio> domini;
+
+	public FindDominiDTOResponse(long totalResults, List<Dominio> domini) {
+		super(totalResults);
+		this.domini = domini;
 	}
 
-	public Boolean getAbilitato() {
-		return abilitato;
+	public List<Dominio> getDomini() {
+		return domini;
 	}
 
-	public void setAbilitato(Boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-
-	public String getIban() {
-		return iban;
-	}
-
-	public void setIban(String iban) {
-		this.iban = iban;
-	}
-	
 }
