@@ -114,7 +114,7 @@ public class Costanti {
 	public static final String LABEL_ID_RISCOSSIONE = "Id Riscossione";
 	public static final String LABEL_PSP = "Psp";
 	
-	public static final String LABEL_ATTESTANTE = "Attestante";
+	public static final String LABEL_ATTESTANTE = "Istituto di pagamento utilizzato";
 	public static final String LABEL_PAGATORE = "Pagatore";
 	public static final String LABEL_VERSANTE = "Versante";
 	public static final String LABEL_DEBITORE = "Debitore";

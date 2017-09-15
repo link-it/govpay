@@ -313,10 +313,12 @@ public class TemplateRt {
 				sb.append("<br/>");
 				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IUV, ricevuta.getIuv()));
 			}
+			/*
 			if(StringUtils.isNotEmpty(ricevuta.getCcp())){
 				sb.append("<br/>");
 				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_CCP, ricevuta.getCcp()));
 			}
+			*/
 			if(StringUtils.isNotEmpty(ricevuta.getIdRiscossione())){
 				sb.append("<br/>");
 				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_ID_RISCOSSIONE, ricevuta.getIdRiscossione()));
