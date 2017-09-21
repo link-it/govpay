@@ -42,11 +42,10 @@ public class UnitaOperativa extends JSONSerializable {
 	}
 
 	public UnitaOperativa(it.govpay.bd.model.UnitaOperativa uo, String codDominio, UriBuilder uriBuilder) throws IllegalArgumentException, ServiceException {
-		uriBuilder.path("domini").path(codDominio).path("unita_operative").path(uo.getAnagrafica().getCodUnivoco());
+		this.href = uriBuilder.clone().path("domini").path(codDominio).path("unita_operative").path(uo.getAnagrafica().getCodUnivoco()).toString();
 		this.ragioneSociale = uo.getAnagrafica().getRagioneSociale();
 		this.abilitato = uo.isAbilitato();
 		this.codiceUnivoco = uo.getAnagrafica().getCodUnivoco();
-		this.href = uriBuilder.build().toString();
 		this.indirizzo = uo.getAnagrafica().getIndirizzo();
 		this.civico = uo.getAnagrafica().getCivico();
 		this.cap = uo.getAnagrafica().getCap();

@@ -18,11 +18,11 @@
  *
  */
 
-package it.govpay.core.business.model;
+package it.govpay.core.dao.versamenti.dto;
 
+import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Operatore;
 
 public class CaricaVersamentoDTO {
 	
@@ -32,26 +32,18 @@ public class CaricaVersamentoDTO {
 	private boolean generaIuv;
 	private boolean aggiornaSeEsiste;
 	
-	public CaricaVersamentoDTO(Operatore operatore, Versamento versamento) {
-		this.operatore = operatore;
-		this.versamento = versamento;
-	}
-	
 	public CaricaVersamentoDTO(Applicazione applicazione, Versamento versamento) {
 		this.applicazione = applicazione;
 		this.versamento = versamento;
 	}
 	
-	public Applicazione getApplicazione() {
-		return applicazione;
+	public CaricaVersamentoDTO(Operatore operatore, Versamento versamento) {
+		this.operatore = operatore;
+		this.versamento = versamento;
 	}
 	
 	public it.govpay.bd.model.Versamento getVersamento() {
 		return versamento;
-	}
-	
-	public Operatore getOperatore() {
-		return operatore;
 	}
 	
 	public boolean isGeneraIuv() {
@@ -68,6 +60,14 @@ public class CaricaVersamentoDTO {
 	
 	public void setAggiornaSeEsiste(boolean aggiornaSeEsiste) {
 		this.aggiornaSeEsiste = aggiornaSeEsiste;
+	}
+
+	public Operatore getOperatore() {
+		return operatore;
+	}
+
+	public Applicazione getApplicazione() {
+		return applicazione;
 	}
 
 }

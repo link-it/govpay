@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business;
+package it.govpay.core.dao.versamenti;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,9 +30,10 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.business.Iuv;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
-import it.govpay.core.business.model.CaricaVersamentoDTO;
-import it.govpay.core.business.model.CaricaVersamentoDTOResponse;
+import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTO;
+import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AclEngine;
@@ -45,11 +46,11 @@ import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
-public class PagamentiAttesa extends BasicBD {
+public class PagamentiAttesaDAO extends BasicBD {
 
 	private static Logger log = LogManager.getLogger();
 	
-	public PagamentiAttesa(BasicBD basicBD) {
+	public PagamentiAttesaDAO(BasicBD basicBD) {
 		super(basicBD);
 	}
 	

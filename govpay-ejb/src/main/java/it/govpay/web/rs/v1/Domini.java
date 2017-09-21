@@ -75,7 +75,7 @@ import it.govpay.web.rs.v1.beans.UnitaOperativa;
 @Path("/v1/domini")
 public class Domini extends BaseRsServiceV1 {
 	
-	public static final String NOME_SERVIZIO = "incassi";
+	public static final String NOME_SERVIZIO = "domini";
 	
 	@GET
 	@Path("/")

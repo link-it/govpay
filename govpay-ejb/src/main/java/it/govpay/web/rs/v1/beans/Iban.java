@@ -44,7 +44,7 @@ public class Iban extends JSONSerializable {
 		this.bic = iban.getCodBicAccredito();
 		this.ibanAppoggio = iban.getCodIbanAppoggio();
 		this.bicAppoggio = iban.getCodBicAppoggio();	
-		this.href = uriBuilder.path("domini").path(codDominio).path("iban").path(iban.getCodIban()).build().toString();
+		this.href = uriBuilder.clone().path("domini").path(codDominio).path("iban").path(iban.getCodIban()).build().toString();
 	}
 
 	@Override

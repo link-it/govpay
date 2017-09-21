@@ -14,10 +14,10 @@ import org.openspcoop2.utils.csv.Record;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Tracciato;
-import it.govpay.core.business.PagamentiAttesa;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
-import it.govpay.core.business.model.CaricaVersamentoDTO;
-import it.govpay.core.business.model.CaricaVersamentoDTOResponse;
+import it.govpay.core.dao.versamenti.PagamentiAttesaDAO;
+import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTO;
+import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.VersamentoUtils;
@@ -247,7 +247,7 @@ public class OperazioneFactory {
 			caricaVersamentoDTO.setAggiornaSeEsiste(true);
 			caricaVersamentoDTO.setGeneraIuv(true);
 
-			PagamentiAttesa pagamentiAttesa = new PagamentiAttesa(basicBD);
+			PagamentiAttesaDAO pagamentiAttesa = new PagamentiAttesaDAO(basicBD);
 			CaricaVersamentoDTOResponse caricaVersamento = pagamentiAttesa.caricaVersamento(caricaVersamentoDTO);
 			caricamentoResponse.setBarCode(caricaVersamento.getBarCode());
 			caricamentoResponse.setQrCode(caricaVersamento.getQrCode());
@@ -276,7 +276,7 @@ public class OperazioneFactory {
 		annullamentoResponse.setCodVersamentoEnte(request.getCodVersamentoEnte());
 
 		try {
-			PagamentiAttesa pagamentiAttesa = new PagamentiAttesa(basicBD);
+			PagamentiAttesaDAO pagamentiAttesa = new PagamentiAttesaDAO(basicBD);
 			AnnullaVersamentoDTO annullaVersamentoDTO = null;
 			if(tracciato.getApplicazione(basicBD) != null) {
 				annullaVersamentoDTO = new AnnullaVersamentoDTO(tracciato.getApplicazione(basicBD), request.getCodApplicazione(), request.getCodVersamentoEnte());

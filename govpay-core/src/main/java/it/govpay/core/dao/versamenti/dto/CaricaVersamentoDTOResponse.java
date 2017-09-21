@@ -18,7 +18,7 @@
  *
  */
 
-package it.govpay.core.business.model;
+package it.govpay.core.dao.versamenti.dto;
 
 public class CaricaVersamentoDTOResponse {
 	

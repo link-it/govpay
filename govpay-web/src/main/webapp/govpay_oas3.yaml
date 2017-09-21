@@ -1,0 +1,706 @@
+openapi: '3.0.0'
+info:
+  description: 'API di integrazione ai servizi di pagamento di [GovPay](https://github.com/link-it/GovPay)'
+  version: '1.0'
+  title: GovPay
+  contact:
+    name: GitHub Project Page
+    url: https://github.com/link-it/GovPay/
+  license:
+    name: GPL
+    url: https://github.com/link-it/GovPay/blob/master/LICENSE
+servers:
+  - url: http://localhost:8080/govpay/rs/v1/
+security: 
+  - http: []
+paths:
+  '/domini':
+    get:
+      tags:
+        - Anagrafica
+      summary: Elenco dei beneficiari censiti su GovPay
+      parameters:
+        - in: query
+          name: offset
+          description: Numero di risultati da omettere nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 500
+        - in: query
+          name: fields
+          description: lista dei campi da visualizzare
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: orderby
+          in: query
+          description: lista dei campi su cui ordinare i risultati
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: search
+          in: query
+          description: Restrizione ai soli elementi che presentano il testo indicato nei parametri testuali
+          required: false
+          schema:
+            type: string
+        - name: abilitato
+          in: query
+          description: Restrizione ai soli elementi abilitati o disabilitati
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Elenco dei beneficiari censiti
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dominio'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/domini/{idDominio}':
+    get:
+      tags:
+        - Anagrafica
+      summary: Lettura dei dati di un beneficiario
+      description: |
+        Informazioni anagrafiche di un dominio censite sulla piattaforma ed utilizzate nella creazione delle RPT
+      parameters:
+        - in: query
+          name: fields
+          description: lista dei campi da visualizzare
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - in: path
+          name: idDominio
+          schema:
+            type: string
+          description: Codice fiscale del beneficiario
+          required: true
+      responses:
+        '200':
+          description: Dati anagrafici del beneficiario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dominio'
+        '401':
+          description: Richiesta non autorizzata
+  '/domini/{idDominio}/unita_operative':
+    get:
+      tags:
+        - Anagrafica
+      summary: Elenco delle Unità Operative censite per un dominio
+      parameters:
+        - in: query
+          name: offset
+          description: Numero di risultati da omettere nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 500
+        - in: query
+          name: fields
+          description: lista dei campi da visualizzare
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: orderby
+          in: query
+          description: lista dei campi su cui ordinare i risultati
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: search
+          in: query
+          description: Restrizione ai soli elementi che presentano il testo indicato nei parametri testuali
+          required: false
+          schema:
+            type: string
+        - name: abilitato
+          in: query
+          description: Restrizione ai soli elementi abilitati o disabilitati
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Elenco delle Unità Operative di un dominio
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnitaOperativa'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/domini/{idDominio}/unita_operative/{idUnita}':
+    get:
+      tags:
+        - Anagrafica
+      summary: Lettura dei dati di un beneficiario
+      description: |
+        Informazioni anagrafiche di un dominio censite sulla piattaforma ed utilizzate nella creazione delle RPT
+      parameters:
+        - in: query
+          name: fields
+          description: lista dei campi da visualizzare
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - in: path
+          name: idDominio
+          schema:
+            type: string
+          description: Codice fiscale del beneficiario
+          required: true
+        - in: path
+          name: idUnita
+          schema:
+            type: string
+          description: Identificativo univoco dell'unita operativa
+          required: true
+      responses:
+        '200':
+          description: Dati anagrafici del beneficiario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitaOperativa'
+        '401':
+          description: Richiesta non autorizzata
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/versamenti/{idDominio}':
+    get:
+      tags:
+        - Pagamenti in Attesa
+      summary: Elenco dei pagamenti in attesa di un dominio
+      description: Consultazione dei pagamenti in attesa di un dominio
+      parameters:
+        - in: path
+          name: idDominio
+          schema:
+            type: string
+          required: true
+          description: Codice fiscale del beneficiario
+        - in: query
+          name: offset
+          description: Numero di risultati da omettere nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 500
+        - in: query
+          name: fields
+          description: lista dei campi da visualizzare
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: orderby
+          in: query
+          description: lista dei campi su cui ordinare i risultati
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: search
+          in: query
+          description: Restrizione ai soli elementi che presentano il testo indicato nei parametri testuali
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco dei pagamenti in attesa che rispettano i criteri di ricerca impostati
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PagamentoInAttesa'
+        '401':
+          $ref: '#/components/responses/401' 
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      tags:
+        - Pagamenti in Attesa
+      summary: Creazione di un nuovo pagamento in attesa
+      description: Inserimento di un nuovo versamento nell'archivio dei pagamenti in attesa ed emissione del relativo IUV
+      parameters:
+        - in: path
+          name: idDominio
+          schema:
+            type: string
+          description: Codice fiscale del benediciario
+          required: true
+        - in: query
+          name: iuvprefix
+          schema:
+            type: string
+          required: false
+          description: Prefisso desiderato per la generazione dello IUV
+      requestBody:
+        content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - idDominio
+                  - causale
+                  - importo
+                  - pagatore
+                  - scadenzaPagamento
+                  - scadenzaAvviso
+                  - entrata
+                properties:
+                  idDominio:
+                    type: string
+                    description: Codice fiscale del beneficiario
+                    example: 01234567890
+                  idUnita:
+                    type: string
+                    description: Codice fiscale dell'unità operativa beneficiaria
+                    example: 0987654321
+                  pagatore:
+                    $ref: '#/components/schemas/Anagrafica'
+                  causale:
+                    type: object
+                    oneOf:
+                    - type: string
+                      example: Rinnovo licenza
+                    - type: array
+                      minItems: 1
+                      maxItems: 6
+                      items:
+                        properties:
+                          spezzone:
+                            type: string
+                            example: Rinnovo licenza
+                    - type: array
+                      minItems: 1
+                      maxItems: 6
+                      items:
+                        properties:
+                          spezzone:
+                            type: string
+                            example: Rinnovo licenza
+                          importo:
+                            type: number
+                            description: Importo della somma da versare
+                            example: 100.99      
+                  importo:
+                    type: number
+                    description: Importo della somma da versare
+                    example: 100.99
+                  entrata:
+                    oneOf:
+                    - type: string
+                      description: Identificativo di entrata in anagrafica del dominio
+                      example: LICENZA
+                    - type: object
+                      required:
+                        - ibanAccredito
+                        - tipoContabilita
+                        - codiceContabilita
+                      properties:
+                        ibanAccredito:
+                          type: string
+                          description: Conto di accredito dell'importo versato
+                          example: IT88T1927501600001011018002
+                        tipoContabilita:
+                          type: string
+                          description: |
+                            Tipologia di codifica della contabilità
+                            - 0: Capitolo e articolo di Entrata del Bilancio dello Stato
+                            - 1: Numero della contabilità  speciale
+                            - 2: Codice SIOPE
+                            - 9: Altro codice ad uso dell'Ente beneficiario
+                          example: 2
+                          enum:
+                            - 0
+                            - 1
+                            - 2
+                            - 9
+                        codiceContabilita:
+                          type: string
+                          description: Codice di contabilità  nella tipologia scelta
+                          example: 1234
+                  scadenzaPagamento:
+                    type: string
+                    format: date
+                    description: 'Data di scadenza del pagamento, decorsa la quale l''importo può subire variazioni'
+                    example: 31/12/2018
+                  scadenzaAvviso:
+                    type: string
+                    format: date
+                    description: Data di scadenza dell'Avviso, decorsa la quale il pagamento non può essere effettuato
+                    example: 31/12/2018
+      responses:
+        '201':
+          description: Pagamento in attesa inserito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagamentoInAttesa'
+        '401':
+          $ref: '#/components/responses/401' 
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+components:
+  securitySchemes:
+    http:
+      type: http
+      scheme: basic
+  responses:
+    '400':
+      description: Richiesta non correttamente formata
+      content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaultBean'
+    '401':
+      description: Richiesta non autenticata
+    '403':
+      description: Richiesta non autorizzata
+    '500':
+      description: Servizio non disponibile
+      content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaultBean'
+  schemas:
+    FaultBean:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Codice di errore
+        message:
+          type: string
+          description: Descrizione dell''errore
+        detail:
+          type: string
+          description: Descrizione aggiuntiva
+    Dominio:
+      type: object
+      required:
+       - href
+       - idDominio
+       - ragioneSociale
+       - gln
+       - stazione
+       - unitaOperative
+       - ibanAccredito
+       - entrate
+       - abilitato
+      properties:
+        href:
+          type: string
+          description: URL della risorsa beneficiario
+          example: 'http://localhost:8080/govpay/rs/v1/domini/01234567890'
+        idDominio:
+          type: string
+          description: Codice fiscale del beneficiario
+          example: 01234567890
+        ragioneSociale:
+          type: string
+          description: Ragione sociale del beneficiario
+          example: Ente Creditore
+        indirizzo:
+          type: string
+          description: Indirizzo del beneficiario
+          example: Corso Italia
+        civico:
+          type: string
+          description: Numero civico del beneficiario
+          example: 1A
+        cap:
+          type: string
+          description: Codice avviamento postale del beneficiario
+          example: 00000
+        localita:
+          type: string
+          description: Località del beneficiario
+          example: Roma
+        gln:
+          type: string
+          description: Global location number del beneficiario
+          example: 0011223344556
+        iuvPrefix:
+          type: string
+          description: Prefisso negli IUV generati da GovPay
+          example: '%(yyyy)%(a)'
+        stazione:
+          type: string
+          description: Codice stazione PagoPA che intermedia il beneficiario
+          example: 01234567890_01
+        auxDigit:
+          type: string
+          description: Valore della prima cifra dei Numero Avviso generati da GovPay
+          example: 0
+        segregationCode:
+          type: string
+          description: Codice di segregazione utilizzato in caso di beneficiario pluri-intermediato (auxDigit = 3)
+          example: Ente Creditore
+        logo:
+          type: string
+          description: Base64 del logo del beneficiario
+          example: /9j/4AA...base64...FFFFABRRRQB/9k=
+        unitaOperative:
+          type: string
+          description: URL delle unità operative censite per il beneficiario
+          example: 'http://localhost:8080/govpay/rs/v1/domini/01234567890/unita'
+        ibanAccredito:
+          type: string
+          description: URL degli iban di accredito censiti per il beneficiario
+          example: 'http://localhost:8080/govpay/rs/v1/domini/01234567890/iban'
+        entrate:
+          type: string
+          description: URL delle tipologie di entrata censite per il beneficiario
+          example: 'http://localhost:8080/govpay/rs/v1/domini/01234567890/entrate'
+        abilitato:
+          type: boolean
+          description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
+          example: 'true'
+    UnitaOperativa:
+      type: string
+    PagamentoInAttesa:
+      type: object
+      required:
+        - href
+        - idDominio
+        - iuv
+        - numeroAvviso
+        - stato
+        - causale
+        - importo
+        - pagatore
+        - scadenzaPagamento
+        - scadenzaAvviso
+        - ibanAccredito
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        href:
+          type: string
+          description: URL dove reperire il pagamento in attesa completo
+          example: 'http://localhost:8080/govpay/rs/v1/versamenti/01234567890/123456789012345'
+        idDominio:
+          type: string
+          description: Codice fiscale del beneficiario
+          example: 01234567890
+        idUnita:
+          type: string
+          description: Codice fiscale dell'unità operativa beneficiaria
+          example: 0987654321
+        iuv:
+          type: string
+          description: Identificativo Univoco Versamento assegnato
+          example: '123456789012345'
+        numeroAvviso:
+          type: string
+          format: Numero dell'avviso emesso
+          example: 001123456789012345
+        stato:
+          type: string
+          description: Stato di pagamento del versamento
+          enum:
+            - NON ESEGUITO
+            - ESEGUITO
+            - ANNULLATO
+            - SCADUTO
+          example: NON ESEGUITO
+        pagatore:
+          $ref: '#/components/schemas/Anagrafica'
+        causale:
+          type: object
+          oneOf:
+          - type: string
+            example: Rinnovo licenza
+          - type: array
+            minItems: 1
+            maxItems: 6
+            items:
+              properties:
+                spezzone:
+                  type: string
+                  example: 
+                    - Rinnovo licenza
+                    - Spese amministrative
+          - type: array
+            minItems: 1
+            maxItems: 6
+            items:
+              properties:
+                spezzone:
+                  type: string
+                  example: Rinnovo licenza
+                importo:
+                  type: number
+                  description: Importo della somma da versare
+                  example: 100.99
+            example:
+              - spezzone: Rinnovo licenza
+                importo: 90
+              - spezzone: Spese amministrative
+                importo: 10.99
+              - spezzone: Totale
+                importo: 100.99  
+        importo:
+          type: number
+          description: Importo della somma da versare
+          example: 100.99
+        ibanAccredito:
+          type: string
+          description: Conto di accredito dell'importo versato
+          example: IT88T1927501600001011018002
+        tipoContabilita:
+          type: string
+          description: |
+            Tipologia di codifica della contabilità
+            - 0: Capitolo e articolo di Entrata del Bilancio dello Stato
+            - 1: Numero della contabilità  speciale
+            - 2: Codice SIOPE
+            - 9: Altro codice ad uso dell'Ente beneficiario
+          example: 2
+          enum:
+            - 0
+            - 1
+            - 2
+            - 9
+        codiceContabilita:
+          type: string
+          description: Codice di contabilità  nella tipologia scelta
+          example: 1234
+        scadenzaPagamento:
+          type: string
+          format: date
+          description: 'Data di scadenza del pagamento, decorsa la quale l''importo può subire variazioni'
+          example: 31/12/2018
+        scadenzaAvviso:
+          type: string
+          format: date
+          description: Data di scadenza dell'Avviso, decorsa la quale il pagamento non può essere effettuato
+          example: 31/12/2018
+    Anagrafica:
+      type: object
+      required:
+        - tipoIdentificativoUnivoco
+        - identificativoUnivoco
+        - denominazione
+      properties:
+        identificativoUnivoco:
+          type: string
+          description: Identificativo del soggetto
+          example: RSSMRA85T10A562S
+        tipoIdentificativoUnivoco:
+          type: string
+          enum:
+            - F
+            - G
+          example: F
+          default: F
+        denominazione:
+          type: string
+          description: Nominativo o ragione sociale del soggetto
+          example: Rossi Mario
+        indirizzo:
+          type: string
+          example: Piazza della Vittoria
+        civico:
+          type: string
+          example: 1A
+        cap:
+          type: string
+          example: '00000'
+        localita:
+          type: string
+          example: Frascati
+        provincia:
+          type: string
+          example: Roma
+        nazione:
+          type: string
+          example: IT
+        email:
+          type: string
+          example: mario.rossi@mail.it
