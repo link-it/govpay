@@ -49,9 +49,9 @@
 	<!-- PagamentiTelematiciGPPrt  -->
 	
 	<servlet id="GPPrt_v2.3">
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
-		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-class>
-	</servlet>
+	<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
+	<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-class>
+</servlet>
 	<servlet-mapping>
 		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
 		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
