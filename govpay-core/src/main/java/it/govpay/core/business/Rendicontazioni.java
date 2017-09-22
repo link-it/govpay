@@ -644,8 +644,10 @@ public class Rendicontazioni extends BasicBD {
 		
 		List<String> domini = new ArrayList<String>();
 		if(codDominio != null) {
-			AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null);
-			domini.add(codDominio);
+			if(AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null))
+				domini.add(codDominio);
+			else
+				throw new GovPayException(EsitoOperazione.RND_001);
 		} else {
 			Set<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione, Servizio.RENDICONTAZIONE);
 			if(authorizedRnd != null)
@@ -655,7 +657,7 @@ public class Rendicontazioni extends BasicBD {
 		}
 		
 		if(domini != null && domini.size() == 0)
-			return new ArrayList<Fr>();
+			throw new GovPayException(EsitoOperazione.RND_001);
 
 		FrBD frBD = new FrBD(this);
 		FrFilter newFilter = frBD.newFilter();
