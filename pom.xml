@@ -6,6 +6,11 @@
 	<version>2.4.1</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
+	<developers>
+		<developer>
+			<name>Ivan</name>
+		</developer>
+	</developers>
 
 	<modules>
 		<module>govpay-orm-beans</module>
