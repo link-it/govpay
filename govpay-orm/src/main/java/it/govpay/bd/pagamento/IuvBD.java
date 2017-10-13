@@ -99,7 +99,7 @@ public class IuvBD extends BasicBD {
 			{
 				String reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
 				
-				if(reference.length() > 15)
+				if(reference.length() > 15) 
 					throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
 				
 				String check = "";
@@ -109,9 +109,6 @@ public class IuvBD extends BasicBD {
 						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione(this).getApplicationCode()); 
 						iuv = reference + check;
 					break;
-					case 1:
-						iuv = prefix + String.format("%0" + (17 - prefix.length()) + "d", prg);
-						break;
 					case 3: 
 						if(dominio.getSegregationCode() == null)
 							throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 

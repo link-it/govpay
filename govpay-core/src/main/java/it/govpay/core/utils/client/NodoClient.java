@@ -19,9 +19,6 @@
  */
 package it.govpay.core.utils.client;
 
-import gov.telematici.pagamenti.ws.CtNodoInviaAvvisoDigitale;
-import gov.telematici.pagamenti.ws.CtNodoInviaAvvisoDigitaleRisposta;
-import gov.telematici.pagamenti.ws.CtRisposta;
 import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRT;
@@ -67,9 +64,7 @@ public class NodoClient extends BasicClient {
 	
 
 	public enum Azione {
-		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediInformativaPSP, nodoChiediStatoRPT, nodoChiediCopiaRT,
-		nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione,
-		nodoChiediFlussoRendicontazione, nodoChiediSceltaWISP, nodoInviaAvvisoDigitale
+		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediInformativaPSP, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione, nodoChiediSceltaWISP
 	}
 
 	private static ObjectFactory objectFactory;
@@ -127,46 +122,6 @@ public class NodoClient extends BasicClient {
 		
 	}
 
-	public CtRisposta sendAvviso(String azione, JAXBElement<?> body, Object header) throws GovPayException, ClientException {
-		this.azione = azione;
-		String urlString = url.toExternalForm();
-		if(isAzioneInUrl) {
-			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
-		}
-		GpThreadLocal.get().getTransaction().getServer().setEndpoint(urlString);
-		GpThreadLocal.get().log("ndp_client.invioRichiesta");
-
-		try {
-			byte[] response = super.sendSoap(azione, body, header, isAzioneInUrl);
-			if(response == null) {
-				throw new ClientException("Il Nodo dei Pagamenti ha ritornato un messaggio vuoto.");
-			}
-			JAXBElement<?> jaxbElement = SOAPUtils.toJaxb(response, null);
-			CtRisposta r = (CtRisposta) jaxbElement.getValue();
-			if(r.getFault() != null) {
-				faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
-				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
-				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
-				errore = "Errore applicativo " + faultCode + ": " + faultString;
-				GpThreadLocal.get().log("ndp_client.invioRichiestaFault", faultCode, faultString, faultDescription);
-			} else {
-				GpThreadLocal.get().log("ndp_client.invioRichiestaOk");
-			}
-			return r;
-		} catch (ClientException e) {
-			errore = "Errore rete: " + e.getMessage();
-			GpThreadLocal.get().log("ndp_client.invioRichiestaKo", e.getMessage());
-			throw e;
-		} catch (Exception e) {
-			errore = "Errore interno: " + e.getMessage();
-			GpThreadLocal.get().log("ndp_client.invioRichiestaKo", "Errore interno");
-			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
-		} finally {
-			updateStato();
-		}
-
-	}
-
 	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, NodoInviaRPT inviaRPT) throws GovPayException, ClientException {
 		this.stazione = stazione.getCodStazione();
 		this.dominio = rpt.getCodDominio();
@@ -180,20 +135,6 @@ public class NodoClient extends BasicClient {
 		
 		Risposta response = send(Azione.nodoInviaRPT.toString(), objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
 		return (NodoInviaRPTRisposta) response;
-	}
-
-	public CtNodoInviaAvvisoDigitaleRisposta nodoInviaAvvisoDigitale(Intermediario intermediario, Stazione stazione, CtNodoInviaAvvisoDigitale value) throws GovPayException, ClientException {
-		this.stazione = stazione.getCodStazione();
-		this.dominio = value.getAvvisoDigitaleWS().getIdentificativoDominio();
-		gov.telematici.pagamenti.ws.ObjectFactory factory = new gov.telematici.pagamenti.ws.ObjectFactory();
-
-		gov.telematici.pagamenti.ws.sachead.IntestazionePPT intestazione = new gov.telematici.pagamenti.ws.sachead.IntestazionePPT();
-		intestazione.setIdentificativoDominio(value.getAvvisoDigitaleWS().getIdentificativoDominio());
-		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
-		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
-
-		CtRisposta response = sendAvviso(Azione.nodoInviaAvvisoDigitale.toString(), factory.createNodoInviaAvvisoDigitale(value), intestazione);
-		return (CtNodoInviaAvvisoDigitaleRisposta) response;
 	}
 
 	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws GovPayException, ClientException {
