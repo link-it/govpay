@@ -162,8 +162,12 @@ public class Psp extends BasicBD {
 							Canale canale = new Canale();
 							//canale.setCondizioni(informativaPspDetail.getCondizioniEconomicheMassime());
 							canale.setCodCanale(informativaPspDetail.getIdentificativoCanale());
-							//canale.setDescrizione(informativaPspDetail.getDescrizioneServizio());
-							//canale.setDisponibilita(informativaPspDetail.getDisponibilitaServizio());
+							if(informativaPspDetail.getListaInformazioniServizio().getInformazioniServizios().size() > 0) {
+								//canale.setDescrizione(informativaPspDetail.getDescrizioneServizio());
+								canale.setDescrizione(informativaPspDetail.getListaInformazioniServizio().getInformazioniServizios().get(0).getDescrizioneServizio());
+								//canale.setDisponibilita(informativaPspDetail.getDisponibilitaServizio());
+								canale.setDisponibilita(informativaPspDetail.getListaInformazioniServizio().getInformazioniServizios().get(0).getDisponibilitaServizio());
+							}
 							canale.setModelloPagamento(Canale.ModelloPagamento.toEnum(informativaPspDetail.getModelloPagamento()));
 							canale.setPsp(psp);
 							canale.setTipoVersamento(Canale.TipoVersamento.toEnum(informativaPspDetail.getTipoVersamento().name()));
