@@ -326,7 +326,7 @@ public class Incassi extends BasicBD {
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getTrn());
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, leggiIncassoDTO.getPrincipal());
 			Set<String> domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
-			if(domini != null && !domini.contains(incasso.getCodDominio())) {
+			if(!domini.contains(incasso.getCodDominio())) {
 				throw new NotAuthorizedException();
 			}
 			LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();

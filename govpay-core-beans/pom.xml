@@ -51,10 +51,7 @@
 				<configuration>
 					<schemaDirectory>${basedir}/src/main/resources/xsd/</schemaDirectory>
 					<arguments>-extension -b ${basedir}/src/main/resources/xsd/global.xjb</arguments>
-					<schemaFiles>
-						CatalogoDatiInformativi_1_0_10_TabellaDelleControparti_1_0_8_InformativaContoAccredito_1_2_1.xsd,InformazioniVersamentoQR_1_0_1.xsd,
-						avvisi-digitali-1.0.xsd,presa-in-carico-1.0.xsd,sac-common-types-1.0.xsd
-					</schemaFiles>
+					<schemaFiles>CatalogoDatiInformativi_1_0_10_TabellaDelleControparti_1_0_8_InformativaContoAccredito_1_2_1.xsd,InformazioniVersamentoQR_1_0_1.xsd</schemaFiles>
 				</configuration>
 			</plugin>
 
@@ -62,10 +59,10 @@
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
 				<version>3.1.5</version>
-				<!--<configuration>
+				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-				</configuration>-->
+				</configuration>
 				<executions>
 					<execution>
 						<id>generate-sources</id>
@@ -82,11 +79,6 @@
 									<frontEnd>jaxws21</frontEnd>
 									<wsdl>${basedir}/src/main/resources/wsdl/NodoPerPa.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/NodoPerPa.wsdl</wsdlLocation>
-								</wsdlOption>
-								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
-									<wsdl>${basedir}/src/main/resources/wsdl/NodoPerPaAvvisiDigitali.wsdl</wsdl>
-									<wsdlLocation>classpath:wsdl/NodoPerPaAvvisiDigitali.wsdl</wsdlLocation>
 								</wsdlOption>
 								<wsdlOption>
 									<frontEnd>jaxws21</frontEnd>

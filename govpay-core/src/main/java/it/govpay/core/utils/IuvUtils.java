@@ -57,8 +57,6 @@ public class IuvUtils {
 		String qrCode = null; 
 		if(auxDigit == 3)
 			qrCode = "PAGOPA|002|3" + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
-		else if(auxDigit == 1)
-			qrCode = "PAGOPA|002|1" + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", "")); // TODO
 		else 
 			qrCode = "PAGOPA|002|0" + String.format("%02d", applicationCode) + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
 
@@ -76,8 +74,6 @@ public class IuvUtils {
 		
 		if(auxDigit == 3)
 			return payToLoc + gln + refNo + "3" + iuv + amount + importo;
-		else if(auxDigit == 1)
-			return payToLoc + gln + refNo + "1" + iuv + amount + importo; // TODO
 		else 
 			return payToLoc + gln + refNo + "0" + String.format("%02d", applicationCode) + iuv + amount + importo;
 	}

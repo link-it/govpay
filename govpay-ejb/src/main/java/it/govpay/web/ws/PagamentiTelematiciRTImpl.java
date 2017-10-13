@@ -19,10 +19,7 @@
  */
 package it.govpay.web.ws;
 
-import java.util.Base64;
 import java.util.Date;
-
-import com.google.zxing.aztec.encoder.Encoder;
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.ws.nodo.EsitoPaaInviaRT;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRT;
