@@ -58,6 +58,8 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Pagamento.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv", Pagamento.model().IUV.getFieldType()));
+				setParameter(object, "setIndiceDati", Pagamento.model().INDICE_DATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "indice_dati", Pagamento.model().INDICE_DATI.getFieldType()));
 				setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Pagamento.model().IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),
@@ -114,6 +116,8 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codDominio"));
 				setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
 					this.getObjectFromMap(map,"iuv"));
+				setParameter(object, "setIndiceDati", Pagamento.model().INDICE_DATI.getFieldType(),
+					this.getObjectFromMap(map,"indiceDati"));
 				setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
 					this.getObjectFromMap(map,"importoPagato"));
 				setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),

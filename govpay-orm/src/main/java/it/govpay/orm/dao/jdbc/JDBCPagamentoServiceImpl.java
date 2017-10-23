@@ -143,6 +143,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertTable(this.getPagamentoFieldConverter().toTable(Pagamento.model()));
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_DOMINIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().INDICE_DATI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IMPORTO_PAGATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUR,false),"?");
@@ -168,6 +169,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCodDominio(),Pagamento.model().COD_DOMINIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIuv(),Pagamento.model().IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIndiceDati(),Pagamento.model().INDICE_DATI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getImportoPagato(),Pagamento.model().IMPORTO_PAGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataAcquisizione(),Pagamento.model().DATA_ACQUISIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIur(),Pagamento.model().IUR.getFieldType()),
@@ -312,6 +314,8 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getCodDominio(), Pagamento.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUV,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getIuv(), Pagamento.model().IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().INDICE_DATI,false), "?");
+		lstObjects_pagamento.add(new JDBCObject(pagamento.getIndiceDati(), Pagamento.model().INDICE_DATI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IMPORTO_PAGATO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getImportoPagato(), Pagamento.model().IMPORTO_PAGATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE,false), "?");

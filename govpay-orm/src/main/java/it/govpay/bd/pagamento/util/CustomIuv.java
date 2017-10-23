@@ -30,14 +30,6 @@ public class CustomIuv {
 		
 		StrSubstitutor sub = new StrSubstitutor(values, "%(", ")");
 		String result = sub.replace(prefix);
-		
-		// il prefix risultante deve essere numerico
-		try {
-			Long.parseLong(result);
-		} catch (NumberFormatException e) {
-			// Non e' un prefisso valido. Se la generazione e' strict, lancio una eccezione, altrimenti un warning.
-			throw new ServiceException("Il prefisso generato [" + result + "] non e' numerico.");
-		}
 
 		return result;
 	}

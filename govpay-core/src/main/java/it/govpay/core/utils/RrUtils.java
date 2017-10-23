@@ -406,6 +406,7 @@ public class RrUtils extends NdpValidationUtils {
 		valida(datiRr.getCodiceContestoPagamento(), datiEr.getCodiceContestoPagamento(), esito, "CodiceContestoPagamento non corrisponde", true);
 		valida(datiRr.getIdentificativoUnivocoVersamento(), datiEr.getIdentificativoUnivocoVersamento(), esito, "IdentificativoUnivocoVersamento non corrisponde", true);
 		
+		int indiceDati = 1;
 		for(CtDatiSingoloEsitoRevoca singolaRevoca : datiEr.getDatiSingolaRevoca()) {
 			
 			if(singolaRevoca.getSingoloImportoRevocato().compareTo(BigDecimal.ZERO) == 0) {
@@ -415,7 +416,7 @@ public class RrUtils extends NdpValidationUtils {
 
 			Pagamento pagamento = null;
 			try {
-				pagamento = rr.getPagamento(singolaRevoca.getIdentificativoUnivocoRiscossione(), bd);
+				pagamento = rr.getPagamento(singolaRevoca.getIdentificativoUnivocoRiscossione(),indiceDati, bd);
 			} catch (NotFoundException e) {
 				esito.addErrore("Ricevuto esito di revoca non richiesta", true);
 			}
@@ -423,6 +424,7 @@ public class RrUtils extends NdpValidationUtils {
 			pagamento.setDatiEsitoRevoca(singolaRevoca.getDatiAggiuntiviEsito());
 			pagamento.setEsitoRevoca(singolaRevoca.getCausaleEsito());
 			pagamento.setImportoRevocato(singolaRevoca.getSingoloImportoRevocato());
+			indiceDati++;
 		}
 		
 		return esito;

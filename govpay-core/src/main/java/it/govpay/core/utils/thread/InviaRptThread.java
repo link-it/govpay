@@ -34,6 +34,7 @@ import it.govpay.core.business.model.Risposta;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
+import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
@@ -79,7 +80,18 @@ public class InviaRptThread implements Runnable {
 			}
 			
 			RptBD rptBD = new RptBD(bd);
-			if(!risposta.getEsito().equals("OK")) {
+			
+			// Prima di procedere allo'aggiornamento dello stato verifico che nel frattempo non sia arrivato una RT
+			this.rpt = rptBD.getRpt(rpt.getId());
+			if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
+				// E' arrivata l'RT nel frattempo. Non aggiornare.
+				log.info("RPT inviata, ma nel frattempo e' arrivata l'RT. Non aggiorno lo stato");
+				ctx.log("pagamento.invioRptAttivataRTricevuta");
+				return;
+			}
+				
+			
+			if(!risposta.getEsito().equals("OK") && !risposta.getFaultBean(0).getFaultCode().equals("PPT_RPT_DUPLICATA")) {
 				// RPT rifiutata dal Nodo
 				// Aggiorno lo stato e loggo l'errore
 				FaultBean fb = risposta.getFaultBean(0);
@@ -105,12 +117,13 @@ public class InviaRptThread implements Runnable {
 				log.info("RPT inviata correttamente al nodo");
 				ctx.log("pagamento.invioRptAttivataOk");
 			}
+		} catch (ClientException e) {
+			log.error("Errore nella spedizione della RPT", e);
+			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
 		} catch (Exception e) {
-			// ERRORE DI RETE. Non so se la RPT e' stata effettivamente consegnata.
-			log.warn("Errore di rete nella spedizione della RPT: " + e);
+			log.warn("Errore interno nella spedizione della RPT: " + e);
 			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
 			if(bd != null) bd.rollback();
-			return;
 		} finally {
 			if(ctx != null) ctx.log();
 			if(bd != null) bd.closeConnection();

@@ -62,10 +62,10 @@ public class Rr extends it.govpay.model.Rr{
 		this.pagamenti = pagamenti;
 	}
 	
-	public Pagamento getPagamento(String iur, BasicBD bd) throws ServiceException, NotFoundException {
+	public Pagamento getPagamento(String iur, int indiceDati, BasicBD bd) throws ServiceException, NotFoundException {
 		List<Pagamento> pagamenti = getPagamenti(bd);
 		for(Pagamento pagamento : pagamenti) {
-			if(pagamento.getIur().equals(iur))
+			if(pagamento.getIur().equals(iur) && pagamento.getIndiceDati()==indiceDati)
 				return pagamento;
 		}
 		throw new NotFoundException();

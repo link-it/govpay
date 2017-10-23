@@ -165,6 +165,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(Pagamento.model().COD_DOMINIO);
 			fields.add(Pagamento.model().STATO);
 			fields.add(Pagamento.model().IUV);
+			fields.add(Pagamento.model().INDICE_DATI);
 			fields.add(Pagamento.model().IMPORTO_PAGATO);
 			fields.add(Pagamento.model().DATA_ACQUISIZIONE);
 			fields.add(Pagamento.model().IUR);

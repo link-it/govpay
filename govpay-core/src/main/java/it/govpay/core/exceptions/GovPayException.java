@@ -301,7 +301,7 @@ public class GovPayException extends Exception {
 	public GpResponse getWsResponse(GpResponse response, String codMsgDiagnostico, Logger log) {
 		if(getFaultBean() == null) {
 			response.setMittente(Mittente.GOV_PAY);
-			response.setCodEsito(this.getCodEsito() != null ? this.getDescrizioneEsito().toString() : "");
+			response.setCodEsito(this.getCodEsito() != null ? this.getCodEsito().toString() : "");
 			response.setDescrizioneEsito(this.getDescrizioneEsito() != null ? this.getDescrizioneEsito() : "");
 			response.setDettaglioEsito(this.getMessage());
 			log(log);

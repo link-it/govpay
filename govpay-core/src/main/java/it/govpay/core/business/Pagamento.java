@@ -405,7 +405,7 @@ public class Pagamento extends BasicBD {
 						// si risolvera' poi nella verifica pendenti
 					} 
 					ctx.log("rpt.invioKo", risposta.getLog());
-					log.info("RPR rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
+					log.info("RPT rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
 					throw new GovPayException(risposta.getFaultBean(0));
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
@@ -631,7 +631,7 @@ public class Pagamento extends BasicBD {
 							continue;
 						}
 
-						if(rpt.getStato().equals(StatoRpt.RPT_ATTIVATA)) {
+						if(rpt.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP) && (rpt.getStato().equals(StatoRpt.RPT_ATTIVATA) || rpt.getStato().equals(StatoRpt.RPT_ERRORE_INVIO_A_NODO))) {
 							ctx.log("pendenti.rptAttivata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 							log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt in stato " + rpt.getStato().toString() + ". Avviata rispedizione al Nodo.");
 						} else {

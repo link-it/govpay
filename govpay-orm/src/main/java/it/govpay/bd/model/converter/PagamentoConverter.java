@@ -52,7 +52,7 @@ public class PagamentoConverter {
 			dto.setCodDominio(vo.getCodDominio());
 			dto.setIuv(vo.getIuv());
 			dto.setIur(vo.getIur());
-
+			dto.setIndiceDati(vo.getIndiceDati());
 			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
 			dto.setDataAcquisizione(vo.getDataAcquisizione());
 			dto.setDataPagamento(vo.getDataPagamento());
@@ -95,7 +95,7 @@ public class PagamentoConverter {
 		vo.setCodDominio(dto.getCodDominio());
 		vo.setIuv(dto.getIuv());
 		vo.setIur(dto.getIur());
-
+		vo.setIndiceDati(dto.getIndiceDati());
 		if(dto.getImportoPagato() != null)
 			vo.setImportoPagato(dto.getImportoPagato().doubleValue());
 		vo.setDataAcquisizione(dto.getDataAcquisizione());

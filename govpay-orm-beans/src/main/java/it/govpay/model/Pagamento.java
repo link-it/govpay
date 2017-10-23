@@ -38,6 +38,7 @@ public class Pagamento extends BasicModel {
 	private String codDominio;
 	private String iuv;
 	private String iur;
+	private int indiceDati;
 	
 	private Stato stato;
 	
@@ -241,6 +242,14 @@ public class Pagamento extends BasicModel {
 
 	public void setIdIncasso(Long idIncasso) {
 		this.idIncasso = idIncasso;
+	}
+
+	public int getIndiceDati() {
+		return indiceDati;
+	}
+
+	public void setIndiceDati(int indiceDati) {
+		this.indiceDati = indiceDati;
 	}
 }
 

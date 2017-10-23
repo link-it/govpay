@@ -74,7 +74,7 @@ public class PagamentiBD extends BasicBD {
 	/**
 	 * Recupera il pagamento identificato dalla chiave logica
 	 */
-	public Pagamento getPagamento(String codDominio, String iuv, String iur)
+	public Pagamento getPagamento(String codDominio, String iuv, String iur, Integer indiceDati)
 			throws ServiceException, NotFoundException, MultipleResultException {
 		try {
 			IExpression exp = this.getPagamentoService().newExpression();
@@ -82,6 +82,7 @@ public class PagamentiBD extends BasicBD {
 			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO,
 					codDominio);
 			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.IUV, iuv);
+			if(indiceDati != null) exp.equals(it.govpay.orm.Pagamento.model().INDICE_DATI, indiceDati);
 			it.govpay.orm.Pagamento pagamentoVO = this.getPagamentoService()
 					.find(exp);
 			return PagamentoConverter.toDTO(pagamentoVO);

@@ -326,6 +326,7 @@ public class RtUtils extends NdpValidationUtils {
 		rpt.setEsitoPagamento(Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()));
 		rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
 		rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
+		rpt.setDescrizioneStato(null);
 		rpt.setXmlRt(rtByte);
 		rpt.setIdTransazioneRt(GpThreadLocal.get().getTransactionId());
 		// Aggiorno l'RPT con i dati dell'RT
@@ -358,7 +359,7 @@ public class RtUtils extends NdpValidationUtils {
 			pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
 			pagamento.setCodDominio(rpt.getCodDominio());
 			pagamento.setIuv(rpt.getIuv());
-
+			pagamento.setIndiceDati(indice + 1); // Aggiungo uno perche' i PSP non partono da 0 
 			if(ctDatiSingoloPagamentoRT.getAllegatoRicevuta() != null) {
 				pagamento.setTipoAllegato(Pagamento.TipoAllegato.valueOf(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTipoAllegatoRicevuta().toString()));
 				pagamento.setAllegato(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTestoAllegato());
