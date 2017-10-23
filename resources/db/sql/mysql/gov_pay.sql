@@ -689,6 +689,7 @@ CREATE TABLE rendicontazioni
 (
 	iuv VARCHAR(35) NOT NULL,
 	iur VARCHAR(35) NOT NULL,
+	indice_dati INT,
 	importo_pagato DOUBLE,
 	esito INT,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'

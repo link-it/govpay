@@ -109,6 +109,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 		sqlQueryObjectInsert.addInsertTable(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()));
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IUR,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().INDICE_DATI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IMPORTO_PAGATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().DATA,false),"?");
@@ -122,6 +123,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getIuv(),Rendicontazione.model().IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getIur(),Rendicontazione.model().IUR.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getIndiceDati(),Rendicontazione.model().INDICE_DATI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getImportoPagato(),Rendicontazione.model().IMPORTO_PAGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getEsito(),Rendicontazione.model().ESITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getData(),Rendicontazione.model().DATA.getFieldType()),
@@ -219,6 +221,8 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 		lstObjects_rendicontazione.add(new JDBCObject(rendicontazione.getIuv(), Rendicontazione.model().IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IUR,false), "?");
 		lstObjects_rendicontazione.add(new JDBCObject(rendicontazione.getIur(), Rendicontazione.model().IUR.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().INDICE_DATI,false), "?");
+		lstObjects_rendicontazione.add(new JDBCObject(rendicontazione.getIndiceDati(), Rendicontazione.model().INDICE_DATI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IMPORTO_PAGATO,false), "?");
 		lstObjects_rendicontazione.add(new JDBCObject(rendicontazione.getImportoPagato(), Rendicontazione.model().IMPORTO_PAGATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ESITO,false), "?");

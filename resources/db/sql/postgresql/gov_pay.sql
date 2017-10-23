@@ -672,6 +672,7 @@ CREATE TABLE rendicontazioni
 (
 	iuv VARCHAR(35) NOT NULL,
 	iur VARCHAR(35) NOT NULL,
+	indice_dati INT,
 	importo_pagato DOUBLE PRECISION,
 	esito INT,
 	data TIMESTAMP,

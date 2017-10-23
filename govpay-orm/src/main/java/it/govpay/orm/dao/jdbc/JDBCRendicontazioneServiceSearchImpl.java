@@ -156,6 +156,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 			fields.add(new CustomField("id_pagamento", Long.class, "id_pagamento", this.getFieldConverter().toTable(Rendicontazione.model())));
 			fields.add(Rendicontazione.model().IUV);
 			fields.add(Rendicontazione.model().IUR);
+			fields.add(Rendicontazione.model().INDICE_DATI);
 			fields.add(Rendicontazione.model().IMPORTO_PAGATO);
 			fields.add(Rendicontazione.model().ESITO);
 			fields.add(Rendicontazione.model().DATA);
@@ -492,6 +493,14 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		if(obj.getIdPagamento()!=null && 
 				imgSaved.getIdPagamento()!=null){
 			obj.getIdPagamento().setId(imgSaved.getIdPagamento().getId());
+			if(obj.getIdPagamento().getIdVersamento()!=null && 
+					imgSaved.getIdPagamento().getIdVersamento()!=null){
+				obj.getIdPagamento().getIdVersamento().setId(imgSaved.getIdPagamento().getIdVersamento().getId());
+				if(obj.getIdPagamento().getIdVersamento().getIdApplicazione()!=null && 
+						imgSaved.getIdPagamento().getIdVersamento().getIdApplicazione()!=null){
+					obj.getIdPagamento().getIdVersamento().getIdApplicazione().setId(imgSaved.getIdPagamento().getIdVersamento().getIdApplicazione().getId());
+				}
+			}
 		}
 
 	}

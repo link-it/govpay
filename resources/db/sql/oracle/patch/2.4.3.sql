@@ -104,3 +104,5 @@ ALTER TABLE gp_audit ADD CONSTRAINT fk_id_operatore FOREIGN KEY (id_operatore) R
 -- index
 CREATE INDEX index_rpt_stato ON rpt (stato);
 CREATE INDEX index_rpt_id_versamento ON rpt (id_versamento);
+
+ALTER TABLE rendicontazioni ADD indice_dati NUMBER;

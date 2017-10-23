@@ -955,6 +955,7 @@ CREATE TABLE rendicontazioni
 (
 	iuv VARCHAR2(35 CHAR) NOT NULL,
 	iur VARCHAR2(35 CHAR) NOT NULL,
+	indice_dati NUMBER,
 	importo_pagato BINARY_DOUBLE,
 	esito NUMBER,
 	data TIMESTAMP,
