@@ -256,10 +256,14 @@ public class EstrattoConto extends BasicBD {
 							offset += estrattoConto.size();
 							estrattoConto = estrattiContoBD.estrattoContoFromCodDominioIntervalloDate(dominio.getCodDominio(), dataInizio, dataFine, offset, LIMIT);
 						}
-
+						
 						for (String ibanAccredito : pagamentiPerIban.keySet()) {
 							String esitoGenerazione = null;
 							List<it.govpay.model.EstrattoConto> listaPagamentiDaIncludereNelFile = pagamentiPerIban.get(ibanAccredito);
+							
+							// filtro duplicati per il file csv
+							listaPagamentiDaIncludereNelFile = estrattiContoBD.filtraDuplicati(listaPagamentiDaIncludereNelFile);
+							
 							//ordinamento dei record
 							Collections.sort(listaPagamentiDaIncludereNelFile, new EstrattoContoComparator());
 
@@ -340,6 +344,10 @@ public class EstrattoConto extends BasicBD {
 						log.debug("Nome del file CSV destinazione: "+dominioCsvFileName);
 						File dominioFile = new File(basePath+File.separator + dominio.getCodDominio() + File.separator + dominioCsvFileName );
 						if(!dominioFile.exists()){
+							
+							// filtro duplicati per il file csv
+							listaPagamentiDaIncludereNelFileDominio = estrattiContoBD.filtraDuplicati(listaPagamentiDaIncludereNelFileDominio);
+							
 							log.debug("creo il file CSV: "+dominioFile.getAbsolutePath());
 							dominioFile.createNewFile();
 							// per ogni mese fino al quello indicato  nelle properties calcolo l'estratto conto
@@ -652,6 +660,10 @@ public class EstrattoConto extends BasicBD {
 					String dominioPdfFileName = estrattoConto.getDominio().getCodDominio() +  "_"  + ibanAccredito + ".pdf";
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					Anagrafica anagraficaDominio = estrattoConto.getDominio().getAnagrafica(this);
+					
+					// filtro duplicati per il file pdf
+					estrattoContoPdf = estrattiContoBD.filtraDuplicati(estrattoContoPdf);
+					
 					//ordinamento record
 					Collections.sort(estrattoContoPdf, new EstrattoContoComparator());
 					esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(pathLoghi, estrattoConto.getDominio(),anagraficaDominio, null, null, ibanAccredito, estrattoContoPdf, baos,log);
@@ -728,6 +740,9 @@ public class EstrattoConto extends BasicBD {
 							+"], SingoliVersamenti selezionati ["+ estrattoConto.getIdSingoliVersamenti() +"] IBAN ["+ibanAccredito+"] scrittura PDF in corso...");
 					String esitoGenerazione = null;
 					List<it.govpay.model.EstrattoConto> estrattoContoPdf = pagamentiPerIban.get(ibanAccredito);
+					
+					// filtro duplicati per il file pdf
+					estrattoContoPdf = estrattiContoBD.filtraDuplicati(estrattoContoPdf);
 
 					log.debug("Generazione Estratto Conto in formato PDF per il Dominio ["+estrattoConto.getDominio().getCodDominio()+"] SingoliVersamenti ID [" 
 							+ estrattoConto.getIdSingoliVersamenti() + " e per l'iban accredito ["+ibanAccredito+"]  ...");

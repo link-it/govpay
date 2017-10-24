@@ -294,6 +294,14 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				if(elementoCorrelato)
 					params.put(iurId,iur);
 			}
+			
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+			if(StringUtils.isNotEmpty(iuv)){
+				filter.setIuv(iuv);
+				if(elementoCorrelato)
+					params.put(iuvId,iuv);
+			}
 
 			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
 			String codSingoloVersamentoEnte = this.getParameter(uriInfo, codSingoloVersamentoEnteId, String.class);
@@ -421,6 +429,14 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				if(elementoCorrelato)
 					params.put(iurId,iur);
 			}
+			
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = Utils.getValue(rawValues, iuvId);
+			if(StringUtils.isNotEmpty(iuv)){
+				filter.setIuv(iuv);
+				if(elementoCorrelato)
+					params.put(iuvId,iuv);
+			}
 
 			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
 			String codSingoloVersamentoEnte = Utils.getValue(rawValues, codSingoloVersamentoEnteId);
@@ -503,7 +519,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 					if(inRitardo ) {
 						statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+PagamentoFilter.STATO_RITARDO_INCASSO);
 					} else {
-						statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.PAGATO.name());
+						statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name());
 					}
 				}
 
@@ -670,8 +686,14 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				else 
 					statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+PagamentoFilter.STATO_RITARDO_INCASSO+".sogliaGiorno");
 			} else {
-				statoPagamento = Stato.PAGATO.name();
-				statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+Stato.PAGATO.name(), this.sdf.format(dataPagamento));
+				statoPagamento = stato.name();
+				statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+stato.name(), this.sdf.format(dataPagamento));
+				
+				//pagamento senza rpt
+				if(stato.equals(Stato.PAGATO_SENZA_RPT)) {
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagatoSenzaRpt.id"),
+						new Voce<String>(statoPagamentoLabel,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name())));
+				}
 			}
 		}
 
@@ -925,7 +947,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			if(esportaCsv){
 				EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
-				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(); 
+				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(false); 
+				ecFilter.setFiltraDuplicati(true); 
 
 				// recupero oggetto
 				ecFilter.setIdSingoloVersamento(ids);
@@ -1151,7 +1174,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 				SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
 				EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
-				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter();
+				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(false);
+				ecFilter.setFiltraDuplicati(true); 
 
 				if(esportaCsv){
 					// recupero oggetto
@@ -1246,6 +1270,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
 			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 			String iurId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
 
 			if(this.infoRicercaMap == null){
@@ -1313,6 +1338,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
 				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.INCASSATO.name()), Stato.INCASSATO.name()));
 				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.PAGATO.name()), Stato.PAGATO.name()));
+				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.PAGATO_SENZA_RPT.name()), Stato.PAGATO_SENZA_RPT.name()));
 				Integer sogliaGiorniRitardoPagamenti = ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti();
 				if(sogliaGiorniRitardoPagamenti != null && sogliaGiorniRitardoPagamenti.intValue() > 0)
 					stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+PagamentoFilter.STATO_RITARDO_INCASSO), PagamentoFilter.STATO_RITARDO_INCASSO));
@@ -1326,6 +1352,11 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				InputText iur = (InputText) infoRicercaMap.get(iurId);
 				iur.setDefaultValue(null);
 				sezioneRoot.addField(iur);
+				
+				// iuv
+				InputText iuv = (InputText) infoRicercaMap.get(iuvId);
+				iuv.setDefaultValue(null);
+				sezioneRoot.addField(iuv);
 
 				// codSingoloVersamentoEnte
 				InputText codSingoloVersamentoEnte = (InputText) infoRicercaMap.get(codSingoloVersamentoEnteId);
@@ -1347,6 +1378,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
 			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 			String iurId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -1375,6 +1407,11 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			String iurLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iur.label");
 			InputText iur = new InputText(iurId, iurLabel, null, false, false, true, 0, 35);
 			infoRicercaMap.put(iurId, iur);
+			
+			// iuv
+			String iuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
+			InputText iuv = new InputText(iuvId, iuvLabel, null, false, false, true, 0, 35);
+			infoRicercaMap.put(iuvId, iuv);
 
 			// codSingoloVersamentoEnte
 			String codSingoloVersamentoEnteLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label");

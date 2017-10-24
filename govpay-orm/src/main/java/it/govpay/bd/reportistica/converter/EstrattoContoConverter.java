@@ -1,6 +1,7 @@
 package it.govpay.bd.reportistica.converter;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,9 @@ public class EstrattoContoConverter {
 		estrattoConto.setIuv((String) list.get(6)); // iuv
 		estrattoConto.setIur((String) list.get(7)); // iur1
 		estrattoConto.setIdRegolamento((String) list.get(8)); // iur 2
-		estrattoConto.setCodFlussoRendicontazione((String) list.get(9)); // cod_flusso_rendicontazione
+		List<String> lst = new ArrayList<String>();
+		lst.add((String) list.get(9));
+		estrattoConto.setCodFlussoRendicontazione(lst); // cod_flusso_rendicontazione
 		estrattoConto.setCodBicRiversamento((String) list.get(10)); //  codice_bic_riversamento
 		estrattoConto.setCodVersamentoEnte((String) list.get(11)); // cod_versamento_ente
 		estrattoConto.setStatoVersamento(StatoVersamento.valueOf((String) list.get(12))); // stato_versamento

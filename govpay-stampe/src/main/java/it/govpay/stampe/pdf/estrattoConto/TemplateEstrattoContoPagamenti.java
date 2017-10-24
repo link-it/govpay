@@ -40,7 +40,7 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 
 public class TemplateEstrattoContoPagamenti {
-	 
+
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
@@ -51,19 +51,19 @@ public class TemplateEstrattoContoPagamenti {
 			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
 			// caricamento del logo PagoPA
 			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(Costanti.logoPagoPa));
-					lst.add(cmp.image(resourceLogoPagoPa).setFixedDimension(90, 90));
+			lst.add(cmp.image(resourceLogoPagoPa).setFixedDimension(90, 90));
 
 			List<ComponentBuilder<?, ?>> lstTitolo = new ArrayList<ComponentBuilder<?,?>>();
 			String titoloReport =Costanti.TITOLO_REPORT;
-			
+
 			lstTitolo.add(cmp.text(titoloReport).setStyle(TemplateBase.bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
-			
+
 			//Intervallo date Opzionale
 			if(StringUtils.isNotEmpty(dataInizio) && StringUtils.isNotEmpty(dataFine)) {
 				String periodoOsservazione = MessageFormat.format(Costanti.TITOLO_PERIODO, dataInizio,dataFine);
 				lstTitolo.add(cmp.text(periodoOsservazione).setStyle(TemplateBase.fontStyle16).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
 			}
-			
+
 			lst.add(cmp.verticalList(lstTitolo.toArray(new ComponentBuilder[lstTitolo.size()])));
 
 			// caricamento del logo Dominio
@@ -122,14 +122,14 @@ public class TemplateEstrattoContoPagamenti {
 
 			String titoloRiepilogo = Costanti.TITOLO_RIEPILOGO;
 			listRiepilogo.add(cmp.text(titoloRiepilogo).setStyle(TemplateBase.boldStyle16.italic()).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)).newRow();
-			
+
 			if(StringUtils.equals(ibanAccredito,Costanti.PAGAMENTI_SENZA_RPT_KEY))
 				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_PAGAMENTI_SENZA_RPT, "", true, false, false);
 			else if(StringUtils.equals(ibanAccredito,Costanti.MARCA_DA_BOLLO_KEY))
-					TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_MARCA_DA_BOLLO_TELEMATICA, "", true, false, false);
-				else	
-					TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_IBAN_ACCREDITO , ibanAccredito, true, false, false);
-			
+				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_MARCA_DA_BOLLO_TELEMATICA, "", true, false, false);
+			else	
+				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_IBAN_ACCREDITO , ibanAccredito, true, false, false);
+
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_NUMERO_PAGAMENTI , "" + estrattoContoList.size(), true, false, false);
 			String tot = Costanti.LABEL_EURO + " " + String.format("%.2f", (double)totale.doubleValue());
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_IMPORTO_TOTALE ,tot, true, false, false);
@@ -304,9 +304,16 @@ public class TemplateEstrattoContoPagamenti {
 			else 
 				oneLine.add("");
 
-			if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazione()))
-				oneLine.add(pagamento.getCodFlussoRendicontazione());
-			else 
+			if(pagamento.getCodFlussoRendicontazione() != null && pagamento.getCodFlussoRendicontazione().size() > 0) {
+				StringBuilder sbFr = new StringBuilder(); 
+				for (String codFr : pagamento.getCodFlussoRendicontazione()) {
+					if(sbFr.length() > 0)
+						sbFr.append("\n");
+
+					sbFr.append(codFr);
+				}
+				oneLine.add(sbFr.toString());
+			}else 
 				oneLine.add("");
 
 			if(StringUtils.isNotEmpty(pagamento.getCodBicRiversamento()))

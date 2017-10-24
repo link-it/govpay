@@ -56,6 +56,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.bd.model.Psp;
@@ -383,6 +384,7 @@ public class Rendicontazioni extends BasicBD {
 											
 											// Trovato versamento. Creo il pagamento senza rpt 
 											pagamento = new it.govpay.bd.model.Pagamento();
+											pagamento.setStato(Stato.PAGATO_SENZA_RPT);
 											pagamento.setCodDominio(codDominio);
 											pagamento.setDataAcquisizione(rendicontazione.getData());
 											pagamento.setDataPagamento(rendicontazione.getData());

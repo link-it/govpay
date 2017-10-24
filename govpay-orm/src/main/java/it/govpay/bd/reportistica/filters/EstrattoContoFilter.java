@@ -26,6 +26,7 @@ public class EstrattoContoFilter extends AbstractFilter {
 	
 	public String statoVersamento ;
 	private boolean ignoraStatoVersamento;
+	private boolean filtraDuplicati = false;
 	
 	public EstrattoContoFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor, true,false);
@@ -134,6 +135,14 @@ public class EstrattoContoFilter extends AbstractFilter {
 
 	public void setIdSingoloVersamento(List<Long> idSingoloVersamento) {
 		this.idSingoloVersamento = idSingoloVersamento;
+	}
+
+	public boolean isFiltraDuplicati() {
+		return filtraDuplicati;
+	}
+
+	public void setFiltraDuplicati(boolean filtraDuplicati) {
+		this.filtraDuplicati = filtraDuplicati;
 	}
 	
 	

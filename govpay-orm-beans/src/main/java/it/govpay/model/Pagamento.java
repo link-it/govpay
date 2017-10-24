@@ -31,7 +31,7 @@ public class Pagamento extends BasicModel {
 	}
 	
 	public enum Stato {
-		PAGATO, INCASSATO
+		PAGATO, INCASSATO, PAGATO_SENZA_RPT
 	}
 
 	private Long id;

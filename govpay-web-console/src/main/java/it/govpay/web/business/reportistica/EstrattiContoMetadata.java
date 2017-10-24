@@ -47,11 +47,13 @@ public class EstrattiContoMetadata extends BasicBD{
 			mapEC = new TreeMap<String, LinkedHashMap<Long, EstrattoContoMetadata>>();
 	}
 
-
-	public EstrattoContoFilter newFilter() throws ServiceException {
-		return new EstrattoContoFilter(this.getPagamentoService());
+//	public EstrattoContoFilter newFilter() throws ServiceException {
+//		return new EstrattoContoFilter(this.getPagamentoService());
+//	}
+	
+	public EstrattoContoFilter newFilter(boolean ignoraStatoVersamento) throws ServiceException {
+		return new EstrattoContoFilter(this.getPagamentoService(),ignoraStatoVersamento);
 	}
-
 
 	public List<EstrattoContoMetadata> findAll(EstrattoContoFilter filter) throws ServiceException {
 		try{

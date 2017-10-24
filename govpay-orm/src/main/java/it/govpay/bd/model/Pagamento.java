@@ -46,6 +46,9 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	private transient Incasso incasso;
 	private transient List<Rendicontazione> rendicontazioni;
 
+	public Pagamento() {
+		// TODO Auto-generated constructor stub
+	}
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
 		if(this.getIdRpt() != null) {
 			if(rpt == null) {

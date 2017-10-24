@@ -142,6 +142,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			lstReturnType.add(Long.class); //id_rpt
 			lstReturnType.add(Long.class); //id_singolo_versamento
 			lstReturnType.add(Long.class); //id_rr
+			lstReturnType.add(Long.class); //id_incasso
 			lstReturnType.add(Pagamento.model().IBAN_ACCREDITO.getFieldType());
 			lstReturnType.add(Pagamento.model().COD_DOMINIO.getFieldType());
 			lstReturnType.add(Pagamento.model().IUV.getFieldType());
@@ -188,7 +189,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 		
 		boolean existsRendicontazione = idRendicontazione != null;
 		
-		Object idVersamento = record.get(81);
+		Object idVersamento = record.get(82);
 		boolean existsVersamento = idVersamento != null;
 
 		boolean existsFr = false;
@@ -330,6 +331,11 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 		}
 		if(record.get(i) != null) {
 			pagamento.setIdRr((Long) record.get(i++));
+		} else {
+			i++;
+		}
+		if(record.get(i) != null) {
+			pagamento.setIdIncasso((Long) record.get(i++));
 		} else {
 			i++;
 		}

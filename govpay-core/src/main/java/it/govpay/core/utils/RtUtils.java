@@ -29,6 +29,7 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -55,6 +56,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -350,16 +352,39 @@ public class RtUtils extends NdpValidationUtils {
 			
 			SingoloVersamento singoloVersamento = singoliVersamenti.get(indice);
 			
-			Pagamento pagamento = new Pagamento();
-			pagamento.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
-			pagamento.setRpt(rpt);
-			pagamento.setSingoloVersamento(singoloVersamento);
-			pagamento.setImportoPagato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato());
-			pagamento.setIur(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
-			pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
-			pagamento.setCodDominio(rpt.getCodDominio());
-			pagamento.setIuv(rpt.getIuv());
-			pagamento.setIndiceDati(indice + 1); // Aggiungo uno perche' i PSP non partono da 0 
+			Pagamento pagamento = null;
+			boolean insert = true;
+			try {
+				pagamento = pagamentiBD.getPagamento(codDominio, iuv, ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), indice+1);
+				pagamento.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
+				pagamento.setRpt(rpt);
+				pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
+				// Se non e' gia' stato incassato, aggiorno lo stato in pagato
+				if(!pagamento.getStato().equals(Stato.INCASSATO)) {
+					pagamento.setStato(Stato.PAGATO);
+					pagamento.setImportoPagato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato());
+				} else {
+					// Era stato gia incassato.
+					// non faccio niente.
+					continue;
+				}
+				insert = false;
+			} catch (NotFoundException nfe){
+				pagamento = new Pagamento();
+				pagamento.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
+				pagamento.setRpt(rpt);
+				pagamento.setSingoloVersamento(singoloVersamento);
+				pagamento.setImportoPagato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato());
+				pagamento.setIur(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
+				pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
+				pagamento.setCodDominio(rpt.getCodDominio());
+				pagamento.setIuv(rpt.getIuv());
+				pagamento.setIndiceDati(indice + 1);
+			} catch (MultipleResultException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			if(ctDatiSingoloPagamentoRT.getAllegatoRicevuta() != null) {
 				pagamento.setTipoAllegato(Pagamento.TipoAllegato.valueOf(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTipoAllegatoRicevuta().toString()));
 				pagamento.setAllegato(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTestoAllegato());
@@ -389,7 +414,11 @@ public class RtUtils extends NdpValidationUtils {
 			ctx.log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
 			
 			versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
-			pagamentiBD.insertPagamento(pagamento);
+			
+			if(insert)
+				pagamentiBD.insertPagamento(pagamento);
+			else 
+				pagamentiBD.updatePagamento(pagamento);
 		}
 		
 		

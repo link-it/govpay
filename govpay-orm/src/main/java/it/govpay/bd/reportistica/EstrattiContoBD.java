@@ -4,8 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -17,15 +20,17 @@ import it.govpay.model.EstrattoConto;
 
 public class EstrattiContoBD extends BasicBD{
 
+	public static final String TIPO_RECORD_STORNO = "STORNO";
 	private static final int LIMIT = 50;
+	Logger log = Logger.getLogger(EstrattiContoBD.class);
 
 	public EstrattiContoBD(BasicBD basicBD) {
 		super(basicBD);
 	}
 
-	public EstrattoContoFilter newFilter() throws ServiceException {
-		return new EstrattoContoFilter(this.getPagamentoService());
-	}
+//	public EstrattoContoFilter newFilter() throws ServiceException {
+//		return new EstrattoContoFilter(this.getPagamentoService());
+//	}
 
 	public EstrattoContoFilter newFilter(boolean ignoraStatoVersamento) throws ServiceException {
 		return new EstrattoContoFilter(this.getPagamentoService(),ignoraStatoVersamento);
@@ -49,6 +54,7 @@ public class EstrattiContoBD extends BasicBD{
 	private EstrattoConto toEstrattoConto(RendicontazionePagamento rp) throws ServiceException {
 		EstrattoConto estrattoConto= new EstrattoConto();
 
+		estrattoConto.setTipo(rp.getTipo()); 
 		estrattoConto.setIdPagamento(rp.getPagamento().getId()); //id_pagamento oppure id_rsr
 		estrattoConto.setDataPagamento(rp.getPagamento().getDataPagamento()); // data_pagamento
 		estrattoConto.setImportoDovuto(rp.getVersamento().getImportoTotale().doubleValue()); // importo dovuto
@@ -57,10 +63,13 @@ public class EstrattiContoBD extends BasicBD{
 		estrattoConto.setIur(rp.getPagamento().getIur()); // iur1
 		estrattoConto.setIbanAccredito(rp.getPagamento().getIbanAccredito()); // iban_accredito
 		estrattoConto.setIdPagamento(rp.getPagamento().getIdRr()); //id_rr
-		
+		estrattoConto.setIdIncasso(rp.getPagamento().getIdIncasso()); //id_incasso
+
 		if(rp.getFr() != null){
 			estrattoConto.setIdRegolamento(rp.getFr().getIur()); // iur 2
-			estrattoConto.setCodFlussoRendicontazione(rp.getFr().getCodFlusso()); // cod_flusso_rendicontazione
+			List<String> lst = new ArrayList<String>();
+			lst.add(rp.getFr().getCodFlusso());
+			estrattoConto.setCodFlussoRendicontazione(lst); // cod_flusso_rendicontazione
 			estrattoConto.setCodBicRiversamento(rp.getFr().getCodBicRiversamento()); //  codice_bic_riversamento
 		}
 		if(rp.getVersamento() != null){
@@ -108,17 +117,17 @@ public class EstrattiContoBD extends BasicBD{
 		return rpBd.count(filter2);
 	}
 
-	public List<EstrattoConto>  estrattoContoFromIdSingoliVersamenti(List<Long> idSingoliVersamenti, Integer offset, Integer limit)throws ServiceException {
-		EstrattoContoFilter filter = newFilter();
-		filter.setIdSingoloVersamento(idSingoliVersamenti);
+	public List<EstrattoConto>  estrattoContoFromIdSingoliVersamenti(EstrattoContoFilter filter, Integer offset, Integer limit)throws ServiceException {
+//		EstrattoContoFilter filter = newFilter();
+//		filter.setIdSingoloVersamento(idSingoliVersamenti);
 		filter.setOffset(offset);
 		filter.setLimit(limit);
 		return findAll(filter);
 	}
 
-	public List<EstrattoConto>  estrattoContoFromIdVersamenti(List<Long> idVersamenti, Integer offset, Integer limit)throws ServiceException {
-		EstrattoContoFilter filter = newFilter();
-		filter.setIdVersamento(idVersamenti);
+	public List<EstrattoConto>  estrattoContoFromIdVersamenti(EstrattoContoFilter filter, Integer offset, Integer limit)throws ServiceException {
+//		EstrattoContoFilter filter = newFilter();
+//		filter.setIdVersamento(idVersamenti);
 		filter.setOffset(offset);
 		filter.setLimit(limit);
 		return findAll(filter);
@@ -129,13 +138,18 @@ public class EstrattiContoBD extends BasicBD{
 		try {
 			int offset = 0;
 			List<EstrattoConto> lstRet = new ArrayList<EstrattoConto>();
-			List<EstrattoConto> lst = this.estrattoContoFromIdSingoliVersamenti(filter.getIdSingoloVersamento(), offset, LIMIT);
+			List<EstrattoConto> lst = this.estrattoContoFromIdSingoliVersamenti(filter, offset, LIMIT);
 
 			while(lst != null && !lst.isEmpty()) {
 				lstRet.addAll(lst);
 
 				offset += lst.size();
-				lst = this.estrattoContoFromIdSingoliVersamenti(filter.getIdSingoloVersamento(), offset, LIMIT);
+				lst = this.estrattoContoFromIdSingoliVersamenti(filter, offset, LIMIT);
+			}
+
+			if(filter.isFiltraDuplicati()) {
+				log.debug("Eseguo filtro duplicati ["+filter.isFiltraDuplicati()+"]"); 
+				lstRet = filtraDuplicati(lstRet);
 			}
 
 			return lstRet;
@@ -146,17 +160,72 @@ public class EstrattiContoBD extends BasicBD{
 		}
 	}
 
+	public List<EstrattoConto> filtraDuplicati(List<EstrattoConto> lstRet) {
+		List<EstrattoConto> lstRetFiltrata = new ArrayList<EstrattoConto>();
+		log.debug("Filtro duplicati numero iniziale entries ["+lstRet.size()+"]"); 
+		Map<String, EstrattoConto> mapFiltrata = new HashMap<String, EstrattoConto>();
+		Map<String, Boolean> mapIncassati = new HashMap<String, Boolean>();
+		List<String> ordineInserimentoChiavi = new ArrayList<String>();
+
+		for (EstrattoConto ecInput : lstRet) {
+			String codSingoloVersamentoEnteEcInput = ecInput.getCodSingoloVersamentoEnte();
+			if(!ecInput.getTipo().equals(TIPO_RECORD_STORNO)) {
+
+				if(mapFiltrata.containsKey(codSingoloVersamentoEnteEcInput)) {
+					log.debug("Entry ["+codSingoloVersamentoEnteEcInput+"] presente, modifico codice flusso");
+					EstrattoConto entryDaAggiornare = mapFiltrata.remove(codSingoloVersamentoEnteEcInput);
+					List<String> lstFr = entryDaAggiornare.getCodFlussoRendicontazione();
+					Boolean incassatoDaAggiornare = mapIncassati.remove(codSingoloVersamentoEnteEcInput);
+
+					// se la entry collezionata non e' incassata aggiorno il valore con un nuovo id flusso incassato oppure aggiungo l'id alla lista
+					// se e' gia' stata incassata non faccio nulla.
+					if(!incassatoDaAggiornare) {
+						// controllo se la nuova entry e' incassata
+						if(ecInput.getIdIncasso() != null) {
+							incassatoDaAggiornare = true;
+							// salvo solo il nuovo id flusso
+							if(ecInput.getCodFlussoRendicontazione() != null && ecInput.getCodFlussoRendicontazione().size() > 0)
+								lstFr = ecInput.getCodFlussoRendicontazione();
+						} else {
+							// collezione la lista degli identificativi flusso
+							if(ecInput.getCodFlussoRendicontazione() != null && ecInput.getCodFlussoRendicontazione().size() > 0)
+								lstFr.addAll(ecInput.getCodFlussoRendicontazione());
+						}
+					}
+
+					entryDaAggiornare.setCodFlussoRendicontazione(lstFr);
+					// riporto le modifiche
+					mapFiltrata.put(codSingoloVersamentoEnteEcInput, entryDaAggiornare);
+					mapIncassati.put(codSingoloVersamentoEnteEcInput, incassatoDaAggiornare);
+				} else {
+					log.debug("Entry ["+codSingoloVersamentoEnteEcInput+"] non presente aggiungo alla mappa"); 
+					ordineInserimentoChiavi.add(codSingoloVersamentoEnteEcInput);
+					mapFiltrata.put(codSingoloVersamentoEnteEcInput, ecInput);
+					mapIncassati.put(codSingoloVersamentoEnteEcInput, (ecInput.getIdIncasso() != null));
+				}
+			}
+		}
+
+		// popolo la lista filtrata
+		for (String chiave : ordineInserimentoChiavi) {
+			lstRetFiltrata.add(mapFiltrata.get(chiave));
+		}
+
+		log.debug("Filtro duplicati numero finale entries ["+lstRetFiltrata.size()+"]"); 
+		return lstRetFiltrata;
+	}
+
 	public List<EstrattoConto> estrattoContoFromIdVersamenti(EstrattoContoFilter filter) throws ServiceException {
 		try {
 			int offset = 0;
 			List<EstrattoConto> lstRet = new ArrayList<EstrattoConto>();
-			List<EstrattoConto> lst = this.estrattoContoFromIdVersamenti(filter.getIdVersamento(), offset, LIMIT);
+			List<EstrattoConto> lst = this.estrattoContoFromIdVersamenti(filter, offset, LIMIT);
 
 			while(lst != null && !lst.isEmpty()) {
 				lstRet.addAll(lst);
 
 				offset += lst.size();
-				lst = this.estrattoContoFromIdVersamenti(filter.getIdVersamento(), offset, LIMIT);
+				lst = this.estrattoContoFromIdVersamenti(filter, offset, LIMIT);
 			}
 
 			return lstRet;
@@ -168,7 +237,7 @@ public class EstrattiContoBD extends BasicBD{
 	}
 
 	public EstrattoConto getEstrattoContoByIdSingoloVersamento(long id) throws ServiceException {
-		EstrattoContoFilter filter = newFilter();
+		EstrattoContoFilter filter = newFilter(false);
 		filter.setIdSingoloVersamento(Arrays.asList(id));
 		filter.setOffset(0);
 		filter.setLimit(LIMIT);
@@ -181,7 +250,7 @@ public class EstrattiContoBD extends BasicBD{
 	}
 
 	public  List<EstrattoConto>  estrattoContoFromCodDominioIntervalloDate(String codDominio, Date dataInizio, Date dataFine, Integer offset, Integer limit)throws ServiceException {
-		EstrattoContoFilter filter = newFilter();
+		EstrattoContoFilter filter = newFilter(false);
 		filter.setIdDomini(Arrays.asList(codDominio));
 		filter.setDataInizio(dataInizio);
 		filter.setDataFine(dataFine);
@@ -191,7 +260,7 @@ public class EstrattiContoBD extends BasicBD{
 	}
 
 	public  List<EstrattoConto> estrattoContoFromCodDominioIdVersamenti(String codDominio, List<Long> idVersamenti, Integer offset, Integer limit)throws ServiceException {
-		EstrattoContoFilter filter = newFilter();
+		EstrattoContoFilter filter = newFilter(false);
 		filter.setIdDomini(Arrays.asList(codDominio));
 		filter.setIdVersamento(idVersamenti);
 		filter.setOffset(offset);
@@ -200,7 +269,7 @@ public class EstrattiContoBD extends BasicBD{
 	}
 
 	public  List<EstrattoConto> estrattoContoFromCodDominioIdSingoliVersamenti(String codDominio, List<Long> idSingoliVersamenti, Integer offset, Integer limit)throws ServiceException {
-		EstrattoContoFilter filter = newFilter();
+		EstrattoContoFilter filter = newFilter(false);
 		filter.setIdDomini(Arrays.asList(codDominio));
 		filter.setIdSingoloVersamento(idSingoliVersamenti);
 		filter.setOffset(offset);

@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
@@ -77,15 +76,20 @@ public class PagamentiBD extends BasicBD {
 	public Pagamento getPagamento(String codDominio, String iuv, String iur, Integer indiceDati)
 			throws ServiceException, NotFoundException, MultipleResultException {
 		try {
-			IExpression exp = this.getPagamentoService().newExpression();
-			exp.equals(it.govpay.orm.Pagamento.model().IUR, iur);
-			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO,
-					codDominio);
+			IPaginatedExpression exp = this.getPagamentoService().newPaginatedExpression();
+			
+			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO, codDominio);
 			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.IUV, iuv);
-			if(indiceDati != null) exp.equals(it.govpay.orm.Pagamento.model().INDICE_DATI, indiceDati);
-			it.govpay.orm.Pagamento pagamentoVO = this.getPagamentoService()
-					.find(exp);
-			return PagamentoConverter.toDTO(pagamentoVO);
+			if(iur != null) 
+				exp.equals(it.govpay.orm.Pagamento.model().IUR, iur);
+			if(indiceDati != null) 
+				exp.equals(it.govpay.orm.Pagamento.model().INDICE_DATI, indiceDati);
+			
+			List<it.govpay.orm.Pagamento> pagamentoVO = this.getPagamentoService().findAll(exp);
+
+			if(pagamentoVO.size() == 0) throw new NotFoundException();
+			if(pagamentoVO.size() == 1) return PagamentoConverter.toDTO(pagamentoVO.get(0));
+			throw new MultipleResultException();
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
 		} catch (ExpressionNotImplementedException e) {
@@ -97,23 +101,7 @@ public class PagamentiBD extends BasicBD {
 	
 	public Pagamento getPagamento(String codDominio, String iuv)
 			throws ServiceException, NotFoundException, MultipleResultException {
-		try {
-			IPaginatedExpression exp = this.getPagamentoService().newPaginatedExpression();
-			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO,
-					codDominio);
-			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.IUV, iuv);
-			List<it.govpay.orm.Pagamento> pagamentoVO = this.getPagamentoService()
-					.findAll(exp);
-			if(pagamentoVO.size() == 0) throw new NotFoundException();
-			if(pagamentoVO.size() == 1) return PagamentoConverter.toDTO(pagamentoVO.get(0));
-			throw new MultipleResultException();
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		}
+		return getPagamento(codDominio, iuv, null, null);
 	}
 
 	/**

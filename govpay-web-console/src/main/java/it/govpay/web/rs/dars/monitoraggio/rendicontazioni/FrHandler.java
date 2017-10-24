@@ -456,8 +456,8 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = fr != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, fr) : null;
 			InfoForm infoEsportazione = fr != null ? this.getInfoEsportazioneDettaglio(uriInfo, bd, fr) : null;
-
-			String titolo = fr != null ? this.getTitolo(fr,bd) : "";
+			
+			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".label.dettaglio");
 			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
