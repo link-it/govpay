@@ -36,7 +36,7 @@ CREATE TABLE canali
 	-- unique constraints
 	CONSTRAINT unique_canali_1 UNIQUE (id_psp,cod_canale,tipo_versamento),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_psp FOREIGN KEY (id_psp) REFERENCES psp(id),
+	CONSTRAINT fk_can_id_psp FOREIGN KEY (id_psp) REFERENCES psp(id),
 	CONSTRAINT pk_canali PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -80,7 +80,7 @@ CREATE TABLE stazioni
 	-- unique constraints
 	CONSTRAINT unique_stazioni_1 UNIQUE (cod_stazione),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_intermediario FOREIGN KEY (id_intermediario) REFERENCES intermediari(id),
+	CONSTRAINT fk_stz_id_intermediario FOREIGN KEY (id_intermediario) REFERENCES intermediari(id),
 	CONSTRAINT pk_stazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -141,8 +141,8 @@ CREATE TABLE domini
 	-- unique constraints
 	CONSTRAINT unique_domini_1 UNIQUE (cod_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_stazione FOREIGN KEY (id_stazione) REFERENCES stazioni(id),
-	CONSTRAINT fk_id_applicazione_default FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id),
+	CONSTRAINT fk_dom_id_stazione FOREIGN KEY (id_stazione) REFERENCES stazioni(id),
+	CONSTRAINT fk_dom_id_applicazione_default FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id),
 	CONSTRAINT pk_domini PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -169,7 +169,7 @@ CREATE TABLE uo
 	-- unique constraints
 	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_uo PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -255,7 +255,7 @@ CREATE TABLE iban_accredito
 	-- unique constraints
 	CONSTRAINT unique_iban_accredito_1 UNIQUE (cod_iban,id_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_iba_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_iban_accredito PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -298,9 +298,9 @@ CREATE TABLE tributi
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
-	CONSTRAINT fk_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
+	CONSTRAINT fk_trb_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_trb_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_trb_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -340,12 +340,12 @@ CREATE TABLE acl
 	id_dominio BIGINT,
 	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
-	CONSTRAINT fk_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
-	CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
+	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_acl_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
+	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_acl_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -391,8 +391,8 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
-	-- CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
+	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -424,9 +424,9 @@ CREATE TABLE singoli_versamenti
 	-- unique constraints
 	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	-- CONSTRAINT fk_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
-	-- CONSTRAINT fk_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -484,9 +484,9 @@ CREATE TABLE rpt
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	-- CONSTRAINT fk_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
-	-- CONSTRAINT fk_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
+	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -523,7 +523,7 @@ CREATE TABLE rr
 	-- unique constraints
 	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_rr PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -550,9 +550,9 @@ CREATE TABLE notifiche
 	id_rpt BIGINT,
 	id_rr BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT fk_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
+	CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -575,8 +575,8 @@ CREATE TABLE iuv
 	-- unique constraints
 	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_iuv PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -633,7 +633,7 @@ CREATE TABLE incassi
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -673,10 +673,10 @@ CREATE TABLE pagamenti
 	-- unique constraints
 	CONSTRAINT unique_pagamenti_1 UNIQUE (cod_dominio,iuv,iur,indice_dati),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT fk_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
-	CONSTRAINT fk_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
-	CONSTRAINT fk_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
+	CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
+	CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -701,8 +701,8 @@ CREATE TABLE rendicontazioni
 	id_fr BIGINT NOT NULL,
 	id_pagamento BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
-	CONSTRAINT fk_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
+	CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
+	CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -782,8 +782,8 @@ CREATE TABLE tracciati
 	-- check constraints
 	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -806,8 +806,8 @@ CREATE TABLE operazioni
 	-- check constraints
 	CONSTRAINT chk_operazioni_1 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
-	CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -825,7 +825,7 @@ CREATE TABLE gp_audit
 	id BIGINT AUTO_INCREMENT,
 	id_operatore BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_aud_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 

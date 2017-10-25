@@ -46,61 +46,47 @@ ALTER TABLE operazioni DROP CONSTRAINT fk_operazioni_2;
 ALTER TABLE gp_audit DROP CONSTRAINT fk_gp_audit_1;
 
 
-ALTER TABLE canali ADD CONSTRAINT fk_id_psp FOREIGN KEY (id_psp) REFERENCES psp(id);
-ALTER TABLE stazioni ADD CONSTRAINT fk_id_intermediario FOREIGN KEY (id_intermediario) REFERENCES intermediari(id);
-ALTER TABLE domini ADD CONSTRAINT fk_id_stazione FOREIGN KEY (id_stazione) REFERENCES stazioni(id);
-ALTER TABLE domini ADD CONSTRAINT fk_id_applicazione_default FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id);
-ALTER TABLE uo ADD CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
-ALTER TABLE iban_accredito ADD CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
-
-ALTER TABLE tributi ADD CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
-ALTER TABLE tributi ADD CONSTRAINT fk_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id);
-ALTER TABLE tributi ADD CONSTRAINT fk_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id);
-
-ALTER TABLE acl ADD CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
-ALTER TABLE acl ADD CONSTRAINT fk_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id);
-ALTER TABLE acl ADD CONSTRAINT fk_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
-ALTER TABLE acl ADD CONSTRAINT fk_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id);
-ALTER TABLE acl ADD CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
-ALTER TABLE acl ADD CONSTRAINT fk_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id);
-
--- ALTER TABLE versamenti ADD CONSTRAINT fk_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id);
--- ALTER TABLE versamenti ADD CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
-
--- ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id);
--- ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id);
--- ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id);
-
--- ALTER TABLE rpt ADD CONSTRAINT fk_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id);
--- ALTER TABLE rpt ADD CONSTRAINT fk_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id);
--- ALTER TABLE rpt ADD CONSTRAINT fk_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id);
-
-ALTER TABLE rr ADD CONSTRAINT fk_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
-
--- ALTER TABLE notifiche ADD CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
--- ALTER TABLE notifiche ADD CONSTRAINT fk_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
--- ALTER TABLE notifiche ADD CONSTRAINT fk_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id);
-
--- ALTER TABLE iuv ADD CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
--- ALTER TABLE iuv ADD CONSTRAINT fk_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-
-ALTER TABLE incassi ADD CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
-
-ALTER TABLE pagamenti ADD CONSTRAINT fk_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
-ALTER TABLE pagamenti ADD CONSTRAINT fk_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id);
-ALTER TABLE pagamenti ADD CONSTRAINT fk_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id);
-ALTER TABLE pagamenti ADD CONSTRAINT fk_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
-
-ALTER TABLE rendicontazioni ADD CONSTRAINT fk_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id);
-ALTER TABLE rendicontazioni ADD CONSTRAINT fk_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id);
-
-ALTER TABLE tracciati ADD CONSTRAINT fk_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
-ALTER TABLE tracciati ADD CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
-
-ALTER TABLE operazioni ADD CONSTRAINT fk_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
-ALTER TABLE operazioni ADD CONSTRAINT fk_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
-
-ALTER TABLE gp_audit ADD CONSTRAINT fk_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
+ALTER TABLE canali ADD CONSTRAINT fk_can_id_psp FOREIGN KEY (id_psp) REFERENCES psp(id);
+ALTER TABLE stazioni ADD CONSTRAINT fk_stz_id_intermediario FOREIGN KEY (id_intermediario) REFERENCES intermediari(id);
+ALTER TABLE domini ADD CONSTRAINT fk_dom_id_stazione FOREIGN KEY (id_stazione) REFERENCES stazioni(id);
+ALTER TABLE domini ADD CONSTRAINT fk_dom_id_applicazione_default FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id);
+ALTER TABLE uo ADD CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
+ALTER TABLE iban_accredito ADD CONSTRAINT fk_iba_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
+ALTER TABLE tributi ADD CONSTRAINT fk_trb_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
+ALTER TABLE tributi ADD CONSTRAINT fk_trb_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id);
+ALTER TABLE tributi ADD CONSTRAINT fk_trb_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id);
+ALTER TABLE acl ADD CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+ALTER TABLE acl ADD CONSTRAINT fk_acl_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id);
+ALTER TABLE acl ADD CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
+ALTER TABLE acl ADD CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id);
+ALTER TABLE acl ADD CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
+ALTER TABLE acl ADD CONSTRAINT fk_acl_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id);
+-- ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id);
+-- ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+-- ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id);
+-- ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id);
+-- ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id);
+-- ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id);
+-- ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id);
+-- ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id);
+ALTER TABLE rr ADD CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
+-- ALTER TABLE notifiche ADD CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+-- ALTER TABLE notifiche ADD CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
+-- ALTER TABLE notifiche ADD CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id);
+-- ALTER TABLE iuv ADD CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+-- ALTER TABLE iuv ADD CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
+ALTER TABLE incassi ADD CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+ALTER TABLE pagamenti ADD CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
+ALTER TABLE pagamenti ADD CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id);
+ALTER TABLE pagamenti ADD CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id);
+ALTER TABLE pagamenti ADD CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
+ALTER TABLE rendicontazioni ADD CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id);
+ALTER TABLE rendicontazioni ADD CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id);
+ALTER TABLE tracciati ADD CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
+ALTER TABLE tracciati ADD CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+ALTER TABLE operazioni ADD CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
+ALTER TABLE operazioni ADD CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+ALTER TABLE gp_audit ADD CONSTRAINT fk_aud_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
 
 CREATE INDEX index_rpt_stato ON rpt (stato);
 CREATE INDEX index_rpt_id_versamento ON rpt (id_versamento);
