@@ -605,6 +605,9 @@ public class Pagamento extends BasicBD {
 						continue;
 					}
 					
+					// Aggiorno il batch
+					BatchManager.aggiornaEsecuzione(this, Operazioni.pnd);
+					
 					String stato = statiRptPendenti.get(rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null) {
 						log.debug("Rpt confermata pendente dal nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: stato " + stato);

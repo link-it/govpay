@@ -238,7 +238,7 @@ public class Operazioni{
 		// Aspetto che abbiano finito tutti
 		while(true){
 			try {
-				Thread.sleep(500);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 
 			}
@@ -258,6 +258,14 @@ public class Operazioni{
 				}
 
 				return "Spedizione notifiche completata.";
+			} else {
+				try {
+					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					BatchManager.aggiornaEsecuzione(bd, ntfy);
+				} catch (ServiceException e) {
+				} finally {
+					if(bd != null) bd.closeConnection();
+				}
 			}
 		}
 	}
