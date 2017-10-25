@@ -55,12 +55,6 @@ then
         exit 4
 fi 
 cp ${DOC}/GovPay-ManualeIntegrazioneSOAP.pdf core.template/doc/
-if [ ! -e "${DOC}/GovPay-ManualeIntegrazioneREST.pdf" ]
-then
-        echo "Manuale di Integrazione REST non esistente"
-        exit 4
-fi
-cp ${DOC}/GovPay-ManualeIntegrazioneREST.pdf core.template/doc/
 
 if [ ! -e "${DOC}/GovPay-ManualeUtente.pdf" ]
 then
