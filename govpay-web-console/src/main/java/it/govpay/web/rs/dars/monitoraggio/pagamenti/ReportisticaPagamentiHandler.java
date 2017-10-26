@@ -427,7 +427,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 //				}
 //			}
 			// recupero oggetto
-			filter.setIdSingoloVersamento(ids);
+			filter.setIdPagamento(ids);
 			List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>();
 			EstrattoConto pagamento = findAll.size() > 0 ? findAll.get(0) : null;
 
@@ -639,8 +639,8 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 				Map<String, List<Long>> mappaInputEstrattoConto = new HashMap<String, List<Long>>();
 				Map<String, Dominio> mappaInputDomini = new HashMap<String, Dominio>();
 				// recupero oggetto
-				filter.setIdSingoloVersamento(ids);
-				List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdSingoliVersamenti(filter) : new ArrayList<EstrattoConto>();
+				filter.setIdPagamento(ids);
+				List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdPagamenti(filter) : new ArrayList<EstrattoConto>();
 
 				if(findAll != null && findAll.size() > 0){
 					numeroZipEntries ++;
@@ -789,8 +789,8 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 			if(eseguiRicerca ){
 				// recupero oggetto
-				filter.setIdSingoloVersamento(ids);
-				List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.estrattoContoFromIdSingoliVersamenti(filter) : new ArrayList<EstrattoConto>();
+				filter.setIdPagamento(ids);
+				List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.estrattoContoFromIdPagamenti(filter) : new ArrayList<EstrattoConto>();
 
 				if(findAll != null && findAll.size() > 0){
 					numeroZipEntries ++;

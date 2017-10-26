@@ -280,7 +280,8 @@ public class Rendicontazioni extends BasicBD {
 								rendicontazione.setIur(dsp.getIdentificativoUnivocoRiscossione());
 								rendicontazione.setIuv(dsp.getIdentificativoUnivocoVersamento());
 								rendicontazione.setImporto(dsp.getSingoloImportoPagato());
-
+								rendicontazione.setIndiceDati(indiceDati);
+								
 								totaleImportiRendicontati = totaleImportiRendicontati.add(importoRendicontato);
 
 								// Cerco il pagamento riferito

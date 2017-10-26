@@ -43,9 +43,8 @@ public class EstrattiContoBD extends BasicBD{
 		renfilter.setDataPagamentoMax(filter.getDataFine());
 		renfilter.setDataPagamentoMin(filter.getDataInizio());
 		renfilter.setCodDomini(filter.getIdDomini());
-		//renfilter.setIdPagamento(filter.getIdPagamento());
+		renfilter.setIdPagamento(filter.getIdPagamento());
 		renfilter.setIdVersamento(filter.getIdVersamento());
-		renfilter.setIdSingoloVersamento(filter.getIdSingoloVersamento());
 		renfilter.setOffset(filter.getOffset() != null ? filter.getOffset() : 0);
 		renfilter.setLimit(filter.getLimit() != null ? filter.getLimit() : LIMIT); 
 		return renfilter;
@@ -62,7 +61,7 @@ public class EstrattiContoBD extends BasicBD{
 		estrattoConto.setIuv(rp.getPagamento().getIuv());// iuv
 		estrattoConto.setIur(rp.getPagamento().getIur()); // iur1
 		estrattoConto.setIbanAccredito(rp.getPagamento().getIbanAccredito()); // iban_accredito
-		estrattoConto.setIdPagamento(rp.getPagamento().getIdRr()); //id_rr
+		estrattoConto.setIdRr(rp.getPagamento().getIdRr()); //id_rr
 		estrattoConto.setIdIncasso(rp.getPagamento().getIdIncasso()); //id_incasso
 
 		if(rp.getFr() != null){
@@ -117,7 +116,7 @@ public class EstrattiContoBD extends BasicBD{
 		return rpBd.count(filter2);
 	}
 
-	public List<EstrattoConto>  estrattoContoFromIdSingoliVersamenti(EstrattoContoFilter filter, Integer offset, Integer limit)throws ServiceException {
+	public List<EstrattoConto>  estrattoContoFromIdPagamenti(EstrattoContoFilter filter, Integer offset, Integer limit)throws ServiceException {
 //		EstrattoContoFilter filter = newFilter();
 //		filter.setIdSingoloVersamento(idSingoliVersamenti);
 		filter.setOffset(offset);
@@ -134,18 +133,10 @@ public class EstrattiContoBD extends BasicBD{
 
 	}
 
-	public List<EstrattoConto> estrattoContoFromIdSingoliVersamenti(EstrattoContoFilter filter) throws ServiceException {
+	public List<EstrattoConto> estrattoContoFromIdPagamenti(EstrattoContoFilter filter) throws ServiceException {
 		try {
 			int offset = 0;
-			List<EstrattoConto> lstRet = new ArrayList<EstrattoConto>();
-			List<EstrattoConto> lst = this.estrattoContoFromIdSingoliVersamenti(filter, offset, LIMIT);
-
-			while(lst != null && !lst.isEmpty()) {
-				lstRet.addAll(lst);
-
-				offset += lst.size();
-				lst = this.estrattoContoFromIdSingoliVersamenti(filter, offset, LIMIT);
-			}
+			List<EstrattoConto> lstRet = this.estrattoContoFromIdPagamenti(filter, offset, Integer.MAX_VALUE);
 
 			if(filter.isFiltraDuplicati()) {
 				log.debug("Eseguo filtro duplicati ["+filter.isFiltraDuplicati()+"]"); 
@@ -168,7 +159,7 @@ public class EstrattiContoBD extends BasicBD{
 		List<String> ordineInserimentoChiavi = new ArrayList<String>();
 
 		for (EstrattoConto ecInput : lstRet) {
-			String codSingoloVersamentoEnteEcInput = ecInput.getCodSingoloVersamentoEnte();
+			String codSingoloVersamentoEnteEcInput = ecInput.getIdPagamento().toString();
 			if(!ecInput.getTipo().equals(TIPO_RECORD_STORNO)) {
 
 				if(mapFiltrata.containsKey(codSingoloVersamentoEnteEcInput)) {
@@ -236,9 +227,9 @@ public class EstrattiContoBD extends BasicBD{
 		}
 	}
 
-	public EstrattoConto getEstrattoContoByIdSingoloVersamento(long id) throws ServiceException {
+	public EstrattoConto getEstrattoContoByIdPagamenti(long id) throws ServiceException {
 		EstrattoContoFilter filter = newFilter(false);
-		filter.setIdSingoloVersamento(Arrays.asList(id));
+		filter.setIdPagamento(Arrays.asList(id));
 		filter.setOffset(0);
 		filter.setLimit(LIMIT);
 		List<EstrattoConto> findAll = findAll(filter);
@@ -268,10 +259,10 @@ public class EstrattiContoBD extends BasicBD{
 		return findAll(filter);
 	}
 
-	public  List<EstrattoConto> estrattoContoFromCodDominioIdSingoliVersamenti(String codDominio, List<Long> idSingoliVersamenti, Integer offset, Integer limit)throws ServiceException {
+	public  List<EstrattoConto> estrattoContoFromCodDominioIdPagamenti(String codDominio, List<Long> idSingoliVersamenti, Integer offset, Integer limit)throws ServiceException {
 		EstrattoContoFilter filter = newFilter(false);
 		filter.setIdDomini(Arrays.asList(codDominio));
-		filter.setIdSingoloVersamento(idSingoliVersamenti);
+		filter.setIdPagamento(idSingoliVersamenti);
 		filter.setOffset(offset);
 		filter.setLimit(limit);
 		return findAll(filter);

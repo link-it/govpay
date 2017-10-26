@@ -16,9 +16,8 @@ import it.govpay.model.Operatore;
 public class EstrattoContoFilter extends AbstractFilter {
 	
 	private List<String> idDomini;
-//	private List<Long> idPagamento;
+	private List<Long> idPagamento;
 	private List<Long> idVersamento;
-	private List<Long> idSingoloVersamento;
 	private Operatore operatore;
 	
 	private Date dataInizio;
@@ -70,13 +69,13 @@ public class EstrattoContoFilter extends AbstractFilter {
 		this.operatore = operatore;
 	}
 
-//	public List<Long> getIdPagamento() {
-//		return idPagamento;
-//	}
+	public List<Long> getIdPagamento() {
+		return idPagamento;
+	}
 
-//	public void setIdPagamento(List<Long> idPagamento) {
-//		this.idPagamento = idPagamento;
-//	}
+	public void setIdPagamento(List<Long> idPagamento) {
+		this.idPagamento = idPagamento;
+	}
 
 	public List<Long> getIdVersamento() {
 		return idVersamento;
@@ -127,14 +126,6 @@ public class EstrattoContoFilter extends AbstractFilter {
 
 	public void setIgnoraStatoVersamento(boolean ignoraStatoVersamento) {
 		this.ignoraStatoVersamento = ignoraStatoVersamento;
-	}
-
-	public List<Long> getIdSingoloVersamento() {
-		return idSingoloVersamento;
-	}
-
-	public void setIdSingoloVersamento(List<Long> idSingoloVersamento) {
-		this.idSingoloVersamento = idSingoloVersamento;
 	}
 
 	public boolean isFiltraDuplicati() {

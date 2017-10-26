@@ -51,7 +51,7 @@ public class PagamentoFilter extends AbstractFilter {
 	private Date dataFine;
 	private List<Long> idVersamenti;
 	private List<Long> idPagamenti;
-	private String stato;
+	private List<String> stati;
 	private Integer sogliaRitardo = null;
 	public static final String STATO_RITARDO_INCASSO = "RITARDO_INCASSO";
 	private String codSingoloVersamentoEnte = null;
@@ -121,11 +121,11 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(stato != null){
+			if(stati != null && !stati.isEmpty()){
 				if(addAnd)
 					newExpression.and();
 				
-				if(stato.equals(STATO_RITARDO_INCASSO)) {
+				if(stati.contains(STATO_RITARDO_INCASSO)) {
 					if(this.sogliaRitardo != null && this.sogliaRitardo.intValue() > 0){
 						newExpression.notEquals(Pagamento.model().STATO,Stato.INCASSATO.name());
 						Calendar tempo = Calendar.getInstance();
@@ -134,7 +134,7 @@ public class PagamentoFilter extends AbstractFilter {
 						newExpression.lessThan(Pagamento.model().DATA_PAGAMENTO, tempo.getTime());
 					}
 				} else {
-					newExpression.equals(Pagamento.model().STATO,this.stato);
+					newExpression.in(Pagamento.model().STATO,this.stati);
 				}
 				
 				addAnd = true;
@@ -311,12 +311,12 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idDomini = idDomini;
 	}
 
-	public String getStato() {
-		return stato;
+	public List<String> getStati() {
+		return stati;
 	}
 
-	public void setStato(String stato) {
-		this.stato = stato;
+	public void setStati(List<String> stati) {
+		this.stati = stati;
 	}
 
 	public Integer getSogliaRitardo() {

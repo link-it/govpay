@@ -60,7 +60,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	}
 
 	private List<Long> idVersamento;
-	private List<Long> idSingoloVersamento;
+	private List<Long> idPagamento;
 	
 	public String statoVersamento ;
 	private boolean ignoraStatoVersamento;
@@ -86,8 +86,11 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		if(this.dataPagamentoMax != null){
 			obj.add(this.dataPagamentoMax);
 		}
-		if(this.idSingoloVersamento != null && !this.idSingoloVersamento.isEmpty()){
-			obj.addAll(this.idSingoloVersamento);
+		if(this.idPagamento != null && !this.idPagamento.isEmpty()){
+			obj.addAll(this.idPagamento);
+		}
+		if(this.codDomini != null && !this.codDomini.isEmpty()){
+			obj.addAll(this.codDomini);
 		}
 		
 		//ripeto per doppia condizione, nella query inner
@@ -97,15 +100,15 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		if(this.dataPagamentoMax != null){
 			obj.add(this.dataPagamentoMax);
 		}
-		if(this.idSingoloVersamento != null && !this.idSingoloVersamento.isEmpty()){
-			obj.addAll(this.idSingoloVersamento);
+		if(this.idPagamento != null && !this.idPagamento.isEmpty()){
+			obj.addAll(this.idPagamento);
+		}
+		if(this.codDomini != null && !this.codDomini.isEmpty()){
+			obj.addAll(this.codDomini);
 		}
 
 		//query outter
 		
-		if(this.codDomini != null && !this.codDomini.isEmpty()){
-			obj.addAll(this.codDomini);
-		}
 		if(this.idVersamento != null && !this.idVersamento.isEmpty()){
 			obj.addAll(this.idVersamento);
 		}
@@ -153,26 +156,26 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 				}
 				placeholderIn += "p." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " <  ?";
 			}
-			if(this.idSingoloVersamento != null && !this.idSingoloVersamento.isEmpty()){
+			if(this.idPagamento != null && !this.idPagamento.isEmpty()){
 				if(placeholderIn.length() > 0) {
 					placeholderIn += " AND ";
 				} else {
 					placeholderIn += " WHERE ";
 				}
 				String idSingoliVersamenti = "";
-				for(@SuppressWarnings("unused") Long idPagamento: this.idSingoloVersamento) {
+				for(@SuppressWarnings("unused") Long idPagamento: this.idPagamento) {
 					if(idSingoliVersamenti.length() > 0) {
 						idSingoliVersamenti += ",";
 					}
 					idSingoliVersamenti += "?";
 				}
-				placeholderIn +=  "sv.id in ("+idSingoliVersamenti+")";				
+				placeholderIn +=  "p.id in ("+idSingoliVersamenti+")";				
 			}
 			if(this.codDomini != null && !this.codDomini.isEmpty()){
-				if(placeholderOut.length() > 0) {
-					placeholderOut += " AND ";
+				if(placeholderIn.length() > 0) {
+					placeholderIn += " AND ";
 				} else {
-					placeholderOut += " WHERE ";
+					placeholderIn += " WHERE ";
 				}
 				String idDomini = "";
 				for(@SuppressWarnings("unused") String idDominio: this.codDomini) {
@@ -181,7 +184,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 					}
 					idDomini += "?";
 				}
-				placeholderOut +=  "fr." + this.getColumn(RendicontazionePagamento.model().FR.COD_DOMINIO) + " in ("+idDomini+")";				
+				placeholderIn +=  "p." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.COD_DOMINIO) + " in ("+idDomini+")";				
 			}
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
 				if(placeholderOut.length() > 0) {
@@ -321,8 +324,8 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		this.codFlusso = codFlusso;
 	}
 
-	public void setIdSingoloVersamento(List<Long> idSingoloVersamento) {
-		this.idSingoloVersamento = idSingoloVersamento;
+	public void setIdPagamento(List<Long> idPagamento) {
+		this.idPagamento = idPagamento;
 	}
 
 	
