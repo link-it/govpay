@@ -624,8 +624,8 @@ CREATE TABLE incassi
 	cod_dominio VARCHAR(35) NOT NULL,
 	causale VARCHAR(512) NOT NULL,
 	importo DOUBLE NOT NULL,
-	data_valuta TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-	data_contabile TIMESTAMP DEFAULT  CURRENT_TIMESTAMP(3),
+	data_valuta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	data_contabile TIMESTAMP DEFAULT  CURRENT_TIMESTAMP,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3),
 	nome_dispositivo VARCHAR(512),
