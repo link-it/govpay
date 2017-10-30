@@ -2,10 +2,14 @@ package it.govpay.stampe.pdf.avvisoPagamento;
 
 public class AvvisoPagamentoCostanti {
 	
+	// root element elemento di input
+	public static final String AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME= "input";
+	
 	// nomi properties loghi
 	public static final String LOGO_ENTE = "avvisoPagamento.logo.ente";
 	public static final String LOGO_AGID = "avvisoPagamento.logo.agid";
 	public static final String LOGO_PAGOPA = "avvisoPagamento.logo.pagopa";
+	public static final String LOGO_PAGOPA_90 = "avvisoPagamento.logo.pagopa90";
 	public static final String LOGO_APP = "avvisoPagamento.logo.app";
 	public static final String LOGO_PLACE = "avvisoPagamento.logo.place";
 	public static final String LOGO_IMPORTO = "avvisoPagamento.logo.importo";
