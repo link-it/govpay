@@ -16,8 +16,6 @@ import org.openspcoop2.utils.Utilities;
 
 public class AvvisoPagamentoProperties {
 
-	public static final String AVVISOPAGAMENTO_CLASSNAME_PROP_KEY = "avvisoPagamento.className";
-
 	private static final String PROPERTIES_FILE = "/avvisoPagamento.properties";
 	public static final String DEFAULT_PROPS = "default";
 
@@ -156,10 +154,6 @@ public class AvvisoPagamentoProperties {
 		}
 
 		return p;
-	}
-
-	public String getDefaultImplClassName() throws Exception{
-		return getPropertyEnte(DEFAULT_PROPS, AVVISOPAGAMENTO_CLASSNAME_PROP_KEY);
 	}
 
 	public Properties getProperties(Properties props, String prefix) throws Exception {

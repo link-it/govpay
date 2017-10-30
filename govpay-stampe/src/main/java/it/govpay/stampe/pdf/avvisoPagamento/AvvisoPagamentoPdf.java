@@ -6,15 +6,17 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
 
 import it.govpay.model.AvvisoPagamento;
 import it.govpay.model.AvvisoPagamentoInput;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
-import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRXmlDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 public class AvvisoPagamentoPdf {
@@ -50,7 +52,9 @@ public class AvvisoPagamentoPdf {
 		InputStream is = AvvisoPagamentoPdf.class.getResourceAsStream(jasperTemplateFilename);
 		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(is);
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters );
+		Document document = null;
+		JRDataSource dataSource = new JRXmlDataSource(document);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);
 		
 		byte[] reportToPdf = JasperExportManager.exportReportToPdf(jasperPrint);
 		
