@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns="http://www.govpay.it/orm" targetNamespace="http://www.govpay.it/orm"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-	attributeFormDefault="unqualified">
+	attributeFormDefault="unqualified"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.1" 
+	xmlns:annox="http://annox.dev.java.net" 
+	jaxb:extensionBindingPrefixes="annox">
 
 	<xsd:annotation>
 		<xsd:appinfo>
@@ -57,6 +61,7 @@
 								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
+								<linkit:sql-table object-name="Avviso" object-type="Avviso"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
 							</linkit:sql-table-list>
@@ -2080,6 +2085,72 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	
+	<xsd:element name="Avviso" type="Avviso" />
+	<xsd:complexType name="Avviso">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true"/>
+					<linkit:sql-table-mapping generate-sql="true"
+						name="avvisi" on-delete-cascade="false">
+						<linkit:sql-table-index>
+							<linkit:sql-table-index-field name="codDominio"/>
+							<linkit:sql-table-index-field name="iuv"/>
+						</linkit:sql-table-index>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="codDominio" type="String35"/>
+			<xsd:element name="iuv" type="String35"/>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="stato" type="StatoAvvisoType"/>
+			<xsd:element name="pdf" type="xsd:base64Binary"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="AvvisoPagamentoInput" type="AvvisoPagamentoInput" />
+	<xsd:complexType name="AvvisoPagamentoInput">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<annox:annotate>
+					<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="customer"/>
+				</annox:annotate>
+				<jaxb:class name="it.govpay.orm.AvvisoPagamentoInput"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ente_logo" type="xsd:base64Binary"/>
+			<xsd:element name="agid_logo" type="xsd:base64Binary"/>
+			<xsd:element name="pagopa_logo" type="xsd:base64Binary"/>
+			<xsd:element name="app_logo" type="xsd:base64Binary"/>
+			<xsd:element name="place_logo" type="xsd:base64Binary"/>
+			<xsd:element name="importo_logo" type="xsd:base64Binary"/>
+			<xsd:element name="scadenza_logo" type="xsd:base64Binary"/>
+			<xsd:element name="ente_denominazione" type="xsd:string"/>
+			<xsd:element name="ente_area" type="xsd:string"/>
+			<xsd:element name="ente_identificativo" type="xsd:string"/>
+			<xsd:element name="ente_cbill" type="xsd:string"/>
+			<xsd:element name="ente_url" type="xsd:string"/>
+			<xsd:element name="ente_peo" type="xsd:string"/>
+			<xsd:element name="ente_pec" type="xsd:string"/>
+			<xsd:element name="ente_partner" type="xsd:string"/>
+			<xsd:element name="intestatario_denominazione" type="xsd:string"/>
+			<xsd:element name="intestatario_identificativo" type="xsd:string"/>
+			<xsd:element name="intestatario_indirizzo_1" type="xsd:string"/>
+			<xsd:element name="intestatario_indirizzo_2" type="xsd:string"/>
+			<xsd:element name="avviso_causale" type="xsd:string"/>
+			<xsd:element name="avviso_importo" type="xsd:double"/>
+			<xsd:element name="avviso_scadenza" type="xsd:dateTime"/>
+			<xsd:element name="avviso_numero" type="xsd:string"/>
+			<xsd:element name="avviso_iuv" type="xsd:string"/>
+			<xsd:element name="avviso_barcode" type="xsd:string"/>
+			<xsd:element name="avviso_qrcode" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:simpleType name="StatoTracciatoType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="ANNULLATO" />
@@ -2095,6 +2166,13 @@
 			<xsd:enumeration value="ADD" />
 			<xsd:enumeration value="DEL" />
 			<xsd:enumeration value="N_V" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="StatoAvvisoType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DA_STAMPARE" />
+			<xsd:enumeration value="STAMPATO" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	

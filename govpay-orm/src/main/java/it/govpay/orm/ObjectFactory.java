@@ -186,6 +186,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Avviso }
+     */
+    public Avviso createAvviso() {
+        return new Avviso();
+    }
+
+    /**
      * Create an instance of {@link IdEvento }
      */
     public IdEvento createIdEvento() {
@@ -463,6 +470,13 @@ public class ObjectFactory {
      */
     public Canale createCanale() {
         return new Canale();
+    }
+
+    /**
+     * Create an instance of {@link AvvisoPagamentoInput }
+     */
+    public AvvisoPagamentoInput createAvvisoPagamentoInput() {
+        return new AvvisoPagamentoInput();
     }
 
     /**

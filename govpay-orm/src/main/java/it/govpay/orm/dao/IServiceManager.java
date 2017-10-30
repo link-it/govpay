@@ -831,5 +831,31 @@ public interface IServiceManager {
 	
 	
 	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Avviso type:Avviso
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Avviso}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Avviso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IAvvisoServiceSearch getAvvisoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Avviso}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Avviso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IAvvisoService getAvvisoService() throws ServiceException,NotImplementedException;
+	
+	
+	
 	
 }
