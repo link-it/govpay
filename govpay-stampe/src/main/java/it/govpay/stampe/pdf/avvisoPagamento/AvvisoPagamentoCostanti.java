@@ -13,8 +13,8 @@ public class AvvisoPagamentoCostanti {
 	
 	public static final String PREFIX_LOGO = "avvisoPagamento.logo";
 	
+	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER = "AvvisoPagamento.jasper";
 	
-
 	// chiavi contenuto statico
 	public static final String SEZIONE_DOVUTO_KEY = "sezioneDovuto";
 	public static final String SEZIONE_DISPONIBILITA_KEY = "sezioneDisponibilita";

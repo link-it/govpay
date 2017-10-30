@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.utils.Utilities;
@@ -16,7 +17,7 @@ import org.openspcoop2.utils.Utilities;
 public class AvvisoPagamentoProperties {
 
 	public static final String AVVISOPAGAMENTO_CLASSNAME_PROP_KEY = "avvisoPagamento.className";
-	
+
 	private static final String PROPERTIES_FILE = "/avvisoPagamento.properties";
 	public static final String DEFAULT_PROPS = "default";
 
@@ -156,27 +157,72 @@ public class AvvisoPagamentoProperties {
 
 		return p;
 	}
-	
+
 	public String getDefaultImplClassName() throws Exception{
 		return getPropertyEnte(DEFAULT_PROPS, AVVISOPAGAMENTO_CLASSNAME_PROP_KEY);
 	}
-	
+
 	public Properties getProperties(Properties props, String prefix) throws Exception {
-        Properties toRet = Utilities.readProperties(prefix+".", props);
-        return toRet;
+		Properties toRet = Utilities.readProperties(prefix+".", props);
+		return toRet;
 	}
-	
-	
+
+
 	public TreeMap<String, String> getPropertiesAsMap(Properties props, String prefix) throws Exception {
 		TreeMap<String, String> mappaProperties = new TreeMap<String, String>();
-		
+
 		Properties p = getProperties(props, prefix);
-		
+
 		for (Object pKeyObj: p.keySet()) {
 			Object pValObj = p.get(pKeyObj);
 			mappaProperties.put((String)pKeyObj, (String)pValObj);
 		}
-		
+
 		return mappaProperties; 
 	}
+
+	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws Exception {
+		return getPropertiesPerDominioTributo(codDominio, null, log);
+	}
+
+	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws Exception {
+		Properties p = null;
+		String key = null;
+	
+		// 1. ricerca delle properties per la chiave "codDominio.codTributo";
+		if(StringUtils.isNotEmpty(codTributo) && StringUtils.isNotEmpty(codDominio)) {
+			key = codDominio + "." + codTributo;
+			try{
+				log.debug("Ricerca delle properties per la chiave ["+key+"]");
+				p = this.getProperties(key);
+			}catch(Exception e){
+				log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage());
+			}
+		}
+
+		// 2 . ricerca per codDominio
+		if(StringUtils.isNotEmpty(codDominio)) {
+			if(p == null){
+				key = codDominio;
+				try{
+					log.debug("Ricerca delle properties per la chiave ["+key+"]");
+					p = this.getProperties(key);
+				}catch(Exception e){
+					log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage());
+				}
+			}
+		}
+
+		// utilizzo le properties di default
+		try{
+			log.debug("Ricerca delle properties di default");
+			p = this.getProperties(null);
+		}catch(Exception e){
+			log.debug("Non sono state trovate properties di default: " + e.getMessage());
+			throw e;
+		}
+
+		return p;
+	}
+
 }
