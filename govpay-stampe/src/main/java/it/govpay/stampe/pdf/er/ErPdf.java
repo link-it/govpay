@@ -62,7 +62,8 @@ public class ErPdf {
 		HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10));
 		CtDatiEsitoRevoca datiPagamento = er.getDatiRevoca(); 
 		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CAUSALE, causale);
-		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IMPORTO_REVOCA, (datiPagamento.getImportoTotaleRevocato().doubleValue()+ "‎€"));
+		if(datiPagamento.getImportoTotaleRevocato() != null)
+			TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IMPORTO_REVOCA, String.format("%.2f",datiPagamento.getImportoTotaleRevocato().doubleValue())+Costanti.LABEL_EURO );
 		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CF_PIVA_DEBITORE, er.getSoggettoPagatore().getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
 		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IUV, datiPagamento.getIdentificativoUnivocoVersamento());
 

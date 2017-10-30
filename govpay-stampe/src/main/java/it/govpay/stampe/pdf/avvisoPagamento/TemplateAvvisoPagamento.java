@@ -184,7 +184,7 @@ public class TemplateAvvisoPagamento {
 			StyleBuilder columnStyle = stl.style(TemplateBase.columnBorderStyle).setLeftPadding(5).setRightPadding(0).setTopPadding(5).setBottomPadding(5);
 
 			List<String> values = new ArrayList<String>();
-			String importoAsString = "‎€"+ avviso.getImporto().doubleValue(); 
+			String importoAsString = Costanti.LABEL_EURO + String.format("%.2f",avviso.getImporto().doubleValue()); 
 			StringBuilder sb = new StringBuilder();
 			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_DA_PAGARE, importoAsString));
 			if(avviso.getDataScadenza() != null){
@@ -227,7 +227,7 @@ public class TemplateAvvisoPagamento {
 			StyleBuilder columnStyle = stl.style(TemplateBase.columnBorderStyle).setLeftPadding(5).setRightPadding(0).setTopPadding(5).setBottomPadding(5);
 
 			List<String> values = new ArrayList<String>();
-			String importoAsString = "‎€"+ avviso.getImporto().doubleValue(); 
+			String importoAsString = Costanti.LABEL_EURO+ avviso.getImporto().doubleValue(); 
 			values.add(importoAsString);
 			verticalList.add(TemplateBase.getTabella(Costanti.LABEL_IMPORTO_DA_PAGARE,values, errList,150,columnStyle,horizontalTextAlignment, log));
 			verticalList.add(cmp.verticalGap(5));

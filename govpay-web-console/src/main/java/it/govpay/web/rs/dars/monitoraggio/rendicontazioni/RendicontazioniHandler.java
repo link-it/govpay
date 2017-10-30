@@ -361,7 +361,8 @@ public class RendicontazioniHandler extends DarsHandler<Rendicontazione> impleme
 				}
 
 				BigDecimal importoPagato = rendicontazione.getImporto() != null ? rendicontazione.getImporto() : BigDecimal.ZERO;  
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), importoPagato.doubleValue()+ "€");
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), 
+						this.currencyUtils.getCurrencyAsEuro(importoPagato));
 
 				StatoRendicontazione stato = rendicontazione.getStato();
 				if(stato!= null) {
@@ -471,7 +472,7 @@ public class RendicontazioniHandler extends DarsHandler<Rendicontazione> impleme
 		BigDecimal importoPagato = entry.getImporto() != null ? entry.getImporto() : BigDecimal.ZERO;  
 		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"),
-						importoPagato.doubleValue()+ "€"));
+						this.currencyUtils.getCurrencyAsEuro(importoPagato)));
 
 		if(entry.getAnomalie() != null && entry.getAnomalie().size() > 0){
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalie.id"),

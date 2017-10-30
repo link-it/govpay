@@ -82,7 +82,7 @@ public class RicevutaPagamentoPdf implements IRicevutaPagamento{
 //		HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10));
 //		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
 //		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CAUSALE, causale);
-//		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IMPORTO_PAGATO, (datiPagamento.getImportoTotalePagato().doubleValue()+ "‎€"));
+//		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IMPORTO_PAGATO, String.format("%.2f",datiPagamento.getImportoTotalePagato().doubleValue())+ Costanti.LABEL_EURO));
 //		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CF_PIVA_DEBITORE, rt.getSoggettoPagatore().getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
 //		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IUV, datiPagamento.getIdentificativoUnivocoVersamento());
 //

@@ -131,7 +131,8 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 				sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRevoca.label"),this.sdf.format(rr.getDataMsgRevoca()));
 			
 			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"),rr.getCodDominio());
-			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotaleRichiesto.label"), rr.getImportoTotaleRichiesto() + "€");
+			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotaleRichiesto.label"), 
+					this.currencyUtils.getCurrencyAsEuro(rr.getImportoTotaleRichiesto()));
 
 			if(StringUtils.isNotEmpty(rr.getDescrizioneStato()))
 				sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"),rr.getDescrizioneStato());
@@ -142,7 +143,8 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 			if(rr.getDataMsgEsito()!= null){
 				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataMsgEsito.label"), this.sdf.format(rr.getDataMsgEsito()));
 				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codMsgEsito.label"), rr.getCodMsgEsito());
-				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotaleRevocato.label"), rr.getImportoTotaleRevocato() + "€");
+				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotaleRevocato.label"),
+						this.currencyUtils.getCurrencyAsEuro(rr.getImportoTotaleRevocato()));
 			}
 			else	{
 				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".erAssente"), null);
@@ -181,7 +183,7 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 			int compareTo = importoTotalePagato.compareTo(BigDecimal.ZERO);
 			if(compareTo > 0){
 				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.erPresente.importoPositivo",
-						statoString, ( entry.getImportoTotaleRevocato() + "€")));
+						statoString, this.currencyUtils.getCurrencyAsEuro( entry.getImportoTotaleRevocato())));
 			} else{
 				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.erPresente",statoString));
 			}
@@ -228,7 +230,7 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"),
-						importoTotalePagato.toString()+ "€"));
+						this.currencyUtils.getCurrencyAsEuro(importoTotalePagato)));
 
 		if(entry.getDataMsgRevoca()!= null){
 			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.id"),

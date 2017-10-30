@@ -193,7 +193,7 @@ public class TemplateBase {
 
 		@Override
 		public String getPattern() {
-			return "€ #,###.00";
+			return Costanti.LABEL_EURO + " #,###.00";
 		}
 	}
 
