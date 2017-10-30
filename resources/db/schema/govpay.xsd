@@ -2132,7 +2132,7 @@
 			<xsd:element name="intestatario_indirizzo_2" type="xsd:string"/>
 			<xsd:element name="avviso_causale" type="xsd:string"/>
 			<xsd:element name="avviso_importo" type="xsd:double"/>
-			<xsd:element name="avviso_scadenza" type="xsd:dateTime"/>
+			<xsd:element name="avviso_scadenza" type="xsd:string"/>
 			<xsd:element name="avviso_numero" type="xsd:string"/>
 			<xsd:element name="avviso_iuv" type="xsd:string"/>
 			<xsd:element name="avviso_barcode" type="xsd:string"/>
