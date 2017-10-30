@@ -698,4 +698,41 @@
     <value name="rawDataRichiesta" field="rawDataRichiesta" usage="required"/>
     <value name="rawDataRisposta" field="rawDataRisposta" usage="optional"/>
   </mapping>
+  <mapping name="Avviso" class="it.govpay.orm.Avviso">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
+    <value name="iuv" field="iuv" usage="required"/>
+    <value name="dataCreazione" field="dataCreazione" usage="required"/>
+    <value name="stato" field="stato" usage="required" enum-value-method="toString"/>
+    <value name="pdf" field="pdf" usage="required"/>
+  </mapping>
+  <mapping name="AvvisoPagamentoInput" class="it.govpay.orm.AvvisoPagamentoInput">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="ente_logo" field="enteLogo" usage="required"/>
+    <value name="agid_logo" field="agidLogo" usage="required"/>
+    <value name="pagopa_logo" field="pagopaLogo" usage="required"/>
+    <value name="app_logo" field="appLogo" usage="required"/>
+    <value name="place_logo" field="placeLogo" usage="required"/>
+    <value name="importo_logo" field="importoLogo" usage="required"/>
+    <value name="scadenza_logo" field="scadenzaLogo" usage="required"/>
+    <value name="ente_denominazione" field="enteDenominazione" usage="required"/>
+    <value name="ente_area" field="enteArea" usage="required"/>
+    <value name="ente_identificativo" field="enteIdentificativo" usage="required"/>
+    <value name="ente_cbill" field="enteCbill" usage="required"/>
+    <value name="ente_url" field="enteUrl" usage="required"/>
+    <value name="ente_peo" field="entePeo" usage="required"/>
+    <value name="ente_pec" field="entePec" usage="required"/>
+    <value name="ente_partner" field="entePartner" usage="required"/>
+    <value name="intestatario_denominazione" field="intestatarioDenominazione" usage="required"/>
+    <value name="intestatario_identificativo" field="intestatarioIdentificativo" usage="required"/>
+    <value name="intestatario_indirizzo_1" field="intestatarioIndirizzo1" usage="required"/>
+    <value name="intestatario_indirizzo_2" field="intestatarioIndirizzo2" usage="required"/>
+    <value name="avviso_causale" field="avvisoCausale" usage="required"/>
+    <value name="avviso_importo" field="avvisoImporto" usage="required"/>
+    <value name="avviso_scadenza" field="avvisoScadenza" usage="required"/>
+    <value name="avviso_numero" field="avvisoNumero" usage="required"/>
+    <value name="avviso_iuv" field="avvisoIuv" usage="required"/>
+    <value name="avviso_barcode" field="avvisoBarcode" usage="required"/>
+    <value name="avviso_qrcode" field="avvisoQrcode" usage="required"/>
+  </mapping>
 </binding>
