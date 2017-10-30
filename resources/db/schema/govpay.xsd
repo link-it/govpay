@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns="http://www.govpay.it/orm" targetNamespace="http://www.govpay.it/orm"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-	attributeFormDefault="unqualified"
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-	jaxb:version="2.1" 
-	xmlns:annox="http://annox.dev.java.net" 
-	jaxb:extensionBindingPrefixes="annox">
+	attributeFormDefault="unqualified">
 
 	<xsd:annotation>
 		<xsd:appinfo>
@@ -2113,22 +2109,15 @@
 	
 	<xsd:element name="AvvisoPagamentoInput" type="AvvisoPagamentoInput" />
 	<xsd:complexType name="AvvisoPagamentoInput">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<annox:annotate>
-					<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="customer"/>
-				</annox:annotate>
-				<jaxb:class name="it.govpay.orm.AvvisoPagamentoInput"/>
-			</xsd:appinfo>
-		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="ente_logo" type="xsd:base64Binary"/>
-			<xsd:element name="agid_logo" type="xsd:base64Binary"/>
-			<xsd:element name="pagopa_logo" type="xsd:base64Binary"/>
-			<xsd:element name="app_logo" type="xsd:base64Binary"/>
-			<xsd:element name="place_logo" type="xsd:base64Binary"/>
-			<xsd:element name="importo_logo" type="xsd:base64Binary"/>
-			<xsd:element name="scadenza_logo" type="xsd:base64Binary"/>
+			<xsd:element name="ente_logo" type="xsd:string"/>
+			<xsd:element name="agid_logo" type="xsd:string"/>
+			<xsd:element name="pagopa_logo" type="xsd:string"/>
+			<xsd:element name="pagopa90_logo" type="xsd:string"/>
+			<xsd:element name="app_logo" type="xsd:string"/>
+			<xsd:element name="place_logo" type="xsd:string"/>
+			<xsd:element name="importo_logo" type="xsd:string"/>
+			<xsd:element name="scadenza_logo" type="xsd:string"/>
 			<xsd:element name="ente_denominazione" type="xsd:string"/>
 			<xsd:element name="ente_area" type="xsd:string"/>
 			<xsd:element name="ente_identificativo" type="xsd:string"/>

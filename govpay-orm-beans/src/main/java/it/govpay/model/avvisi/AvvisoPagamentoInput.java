@@ -36,13 +36,14 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="AvvisoPagamentoInput">
  * 		&lt;sequence>
- * 			&lt;element name="ente_logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="agid_logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="pagopa_logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="app_logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="place_logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="importo_logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="scadenza_logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ente_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="agid_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagopa_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagopa90_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="app_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="place_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="importo_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="scadenza_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_area" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_identificativo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
@@ -79,6 +80,7 @@ import javax.xml.bind.annotation.XmlType;
   	"enteLogo",
   	"agidLogo",
   	"pagopaLogo",
+  	"pagopa90Logo",
   	"appLogo",
   	"placeLogo",
   	"importoLogo",
@@ -128,59 +130,67 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
 		this.id=new Long(-1);
   }
 
-  public byte[] getEnteLogo() {
+  public java.lang.String getEnteLogo() {
     return this.enteLogo;
   }
 
-  public void setEnteLogo(byte[] enteLogo) {
+  public void setEnteLogo(java.lang.String enteLogo) {
     this.enteLogo = enteLogo;
   }
 
-  public byte[] getAgidLogo() {
+  public java.lang.String getAgidLogo() {
     return this.agidLogo;
   }
 
-  public void setAgidLogo(byte[] agidLogo) {
+  public void setAgidLogo(java.lang.String agidLogo) {
     this.agidLogo = agidLogo;
   }
 
-  public byte[] getPagopaLogo() {
+  public java.lang.String getPagopaLogo() {
     return this.pagopaLogo;
   }
 
-  public void setPagopaLogo(byte[] pagopaLogo) {
+  public void setPagopaLogo(java.lang.String pagopaLogo) {
     this.pagopaLogo = pagopaLogo;
   }
 
-  public byte[] getAppLogo() {
+  public java.lang.String getPagopa90Logo() {
+    return this.pagopa90Logo;
+  }
+
+  public void setPagopa90Logo(java.lang.String pagopa90Logo) {
+    this.pagopa90Logo = pagopa90Logo;
+  }
+
+  public java.lang.String getAppLogo() {
     return this.appLogo;
   }
 
-  public void setAppLogo(byte[] appLogo) {
+  public void setAppLogo(java.lang.String appLogo) {
     this.appLogo = appLogo;
   }
 
-  public byte[] getPlaceLogo() {
+  public java.lang.String getPlaceLogo() {
     return this.placeLogo;
   }
 
-  public void setPlaceLogo(byte[] placeLogo) {
+  public void setPlaceLogo(java.lang.String placeLogo) {
     this.placeLogo = placeLogo;
   }
 
-  public byte[] getImportoLogo() {
+  public java.lang.String getImportoLogo() {
     return this.importoLogo;
   }
 
-  public void setImportoLogo(byte[] importoLogo) {
+  public void setImportoLogo(java.lang.String importoLogo) {
     this.importoLogo = importoLogo;
   }
 
-  public byte[] getScadenzaLogo() {
+  public java.lang.String getScadenzaLogo() {
     return this.scadenzaLogo;
   }
 
-  public void setScadenzaLogo(byte[] scadenzaLogo) {
+  public void setScadenzaLogo(java.lang.String scadenzaLogo) {
     this.scadenzaLogo = scadenzaLogo;
   }
 
@@ -343,33 +353,37 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
 
 
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ente_logo",required=true,nillable=false)
-  protected byte[] enteLogo;
+  protected java.lang.String enteLogo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="agid_logo",required=true,nillable=false)
-  protected byte[] agidLogo;
+  protected java.lang.String agidLogo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagopa_logo",required=true,nillable=false)
-  protected byte[] pagopaLogo;
+  protected java.lang.String pagopaLogo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagopa90_logo",required=true,nillable=false)
+  protected java.lang.String pagopa90Logo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="app_logo",required=true,nillable=false)
-  protected byte[] appLogo;
+  protected java.lang.String appLogo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="place_logo",required=true,nillable=false)
-  protected byte[] placeLogo;
+  protected java.lang.String placeLogo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="importo_logo",required=true,nillable=false)
-  protected byte[] importoLogo;
+  protected java.lang.String importoLogo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="scadenza_logo",required=true,nillable=false)
-  protected byte[] scadenzaLogo;
+  protected java.lang.String scadenzaLogo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ente_denominazione",required=true,nillable=false)
