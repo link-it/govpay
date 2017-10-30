@@ -58,7 +58,7 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="intestatario_indirizzo_2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_causale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_scadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avviso_scadenza" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_numero" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_iuv" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_barcode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
@@ -306,11 +306,11 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
     this.avvisoImporto = avvisoImporto;
   }
 
-  public java.util.Date getAvvisoScadenza() {
+  public java.lang.String getAvvisoScadenza() {
     return this.avvisoScadenza;
   }
 
-  public void setAvvisoScadenza(java.util.Date avvisoScadenza) {
+  public void setAvvisoScadenza(java.lang.String avvisoScadenza) {
     this.avvisoScadenza = avvisoScadenza;
   }
 
@@ -441,10 +441,9 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   @XmlElement(name="avviso_importo",required=true,nillable=false)
   protected double avvisoImporto;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="avviso_scadenza",required=true,nillable=false,type=java.lang.String.class)
-  protected java.util.Date avvisoScadenza;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avviso_scadenza",required=true,nillable=false)
+  protected java.lang.String avvisoScadenza;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avviso_numero",required=true,nillable=false)
