@@ -77,7 +77,8 @@ public class SingoliVersamentiHandler extends DarsHandler<SingoloVersamento> imp
 		BigDecimal importoTotale = entry.getImportoSingoloVersamento();
 		String codVersamentoEnte = entry.getCodSingoloVersamentoEnte();
 		
-		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle((this.nomeServizio + ".label.titolo"), codVersamentoEnte, (importoTotale + "€")));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle((this.nomeServizio + ".label.titolo"),
+				codVersamentoEnte, this.currencyUtils.getCurrencyAsEuro(importoTotale)));
 		
 		return sb.toString();
 	}

@@ -24,7 +24,7 @@ public class AvvisoPagamentoPdf implements IAvvisoPagamento{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L; 
-
+	
 	public String getPdfAvvisoPagamento(String pathLoghi, AvvisoPagamento avviso, Properties properties, OutputStream os, Logger log) throws Exception {
 		String msg = null;
 		List<String> errList = new ArrayList<String>();

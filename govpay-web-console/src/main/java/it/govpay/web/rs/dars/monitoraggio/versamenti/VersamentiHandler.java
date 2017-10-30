@@ -543,7 +543,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 				}
 
 				if(versamento.getImportoTotale() != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), versamento.getImportoTotale().toString()+ "€");
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"),
+							this.currencyUtils.getCurrencyAsEuro(versamento.getImportoTotale()));
 				}
 
 				if(versamento.getStatoVersamento() != null) {
@@ -590,7 +591,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 							BigDecimal importoSingoloVersamento = entry.getImportoSingoloVersamento() != null ? entry.getImportoSingoloVersamento() : BigDecimal.ZERO;
 							sezioneSingoloVersamento.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(svDars.getNomeServizio() + ".importoSingoloVersamento.label"), 
-									importoSingoloVersamento.doubleValue() + "€");
+									this.currencyUtils.getCurrencyAsEuro(importoSingoloVersamento));
 
 							Tributo tributo = entry.getTributo(bd);
 							if(tributo != null){
@@ -692,8 +693,6 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			break;
 		}
 
-		//		sb.append("Versamento ").append(codVersamentoEnte).append(" di ").append(importoTotale).append("€");
-
 		return sb.toString();
 	}
 
@@ -783,7 +782,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 			if(entry.getImportoTotale() != null) {
 				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.id"),
-						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), entry.getImportoTotale().toString()+ "€"));
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), 
+								this.currencyUtils.getCurrencyAsEuro(entry.getImportoTotale())));
 			}
 
 			Anagrafica anagrafica = entry.getAnagraficaDebitore(); 

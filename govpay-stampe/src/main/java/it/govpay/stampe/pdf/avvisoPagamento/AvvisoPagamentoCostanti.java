@@ -1,6 +1,19 @@
 package it.govpay.stampe.pdf.avvisoPagamento;
 
 public class AvvisoPagamentoCostanti {
+	
+	// nomi properties loghi
+	public static final String LOGO_ENTE = "avvisoPagamento.logo.ente";
+	public static final String LOGO_AGID = "avvisoPagamento.logo.agid";
+	public static final String LOGO_PAGOPA = "avvisoPagamento.logo.pagopa";
+	public static final String LOGO_APP = "avvisoPagamento.logo.app";
+	public static final String LOGO_PLACE = "avvisoPagamento.logo.place";
+	public static final String LOGO_IMPORTO = "avvisoPagamento.logo.importo";
+	public static final String LOGO_SCADENZA = "avvisoPagamento.logo.scadenza";
+	
+	public static final String PREFIX_LOGO = "avvisoPagamento.logo";
+	
+	
 
 	// chiavi contenuto statico
 	public static final String SEZIONE_DOVUTO_KEY = "sezioneDovuto";

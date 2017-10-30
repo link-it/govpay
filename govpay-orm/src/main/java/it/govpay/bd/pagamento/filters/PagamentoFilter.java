@@ -19,7 +19,6 @@
  */
 package it.govpay.bd.pagamento.filters;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -42,22 +41,22 @@ import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoFilter extends AbstractFilter {
-	
+
 	private Long idIncasso;
 	private Long idRr;
 	private Long idRpt;
 	private List<String> idDomini;
 	private Date dataInizio;
 	private Date dataFine;
+	private Date dataPagamentoRitardoIncasso;
 	private List<Long> idVersamenti;
 	private List<Long> idPagamenti;
 	private List<String> stati;
 	private Integer sogliaRitardo = null;
-	public static final String STATO_RITARDO_INCASSO = "RITARDO_INCASSO";
 	private String codSingoloVersamentoEnte = null;
 	private String iur;
 	private String iuv;
-	
+
 	public enum SortFields {
 		DATA
 	}
@@ -65,7 +64,7 @@ public class PagamentoFilter extends AbstractFilter {
 	public PagamentoFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
 	}
-	
+
 	public PagamentoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE);
@@ -80,31 +79,31 @@ public class PagamentoFilter extends AbstractFilter {
 			boolean addAnd = false;
 
 			PagamentoFieldConverter pagamentoFieldConverter = new PagamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			
+
 			if(this.getIdRr() != null) {
 				if(addAnd)
 					newExpression.and();
-				
+
 				newExpression.equals(new CustomField("id_rr", Long.class, "id_rr", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRr());
 				addAnd = true;
 			}
-			
+
 			if(this.getIdRpt() != null) {
 				if(addAnd)
 					newExpression.and();
-				
+
 				newExpression.equals(new CustomField("id_rpt", Long.class, "id_rpt", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRpt());
 				addAnd = true;
 			}
-			
+
 			if(this.getIdIncasso() != null) {
 				if(addAnd)
 					newExpression.and();
-				
+
 				newExpression.equals(new CustomField("id_incasso", Long.class, "id_incasso", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdIncasso());
 				addAnd = true;
 			}
-			
+
 			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
@@ -112,7 +111,7 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.between(Pagamento.model().DATA_ACQUISIZIONE, this.dataInizio,this.dataFine);
 				addAnd = true;
 			}
-			
+
 			if(this.idDomini != null){
 				idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
@@ -120,26 +119,25 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.in(Pagamento.model().COD_DOMINIO, this.idDomini);
 				addAnd = true;
 			}
-			
+
+			if(this.dataPagamentoRitardoIncasso != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.lessThan(Pagamento.model().DATA_PAGAMENTO, this.dataPagamentoRitardoIncasso);
+				newExpression.notEquals(Pagamento.model().STATO,Stato.INCASSATO.name());
+				addAnd = true;
+			}
+
 			if(stati != null && !stati.isEmpty()){
 				if(addAnd)
 					newExpression.and();
-				
-				if(stati.contains(STATO_RITARDO_INCASSO)) {
-					if(this.sogliaRitardo != null && this.sogliaRitardo.intValue() > 0){
-						newExpression.notEquals(Pagamento.model().STATO,Stato.INCASSATO.name());
-						Calendar tempo = Calendar.getInstance();
-						tempo.setTime(new Date());
-						tempo.add(Calendar.DAY_OF_YEAR, -this.sogliaRitardo);
-						newExpression.lessThan(Pagamento.model().DATA_PAGAMENTO, tempo.getTime());
-					}
-				} else {
-					newExpression.in(Pagamento.model().STATO,this.stati);
-				}
-				
+
+				newExpression.in(Pagamento.model().STATO,this.stati);
+
 				addAnd = true;
 			}
-			
+
 			if(this.idVersamenti != null && this.idVersamenti.size() >0){ 
 				if(addAnd)
 					newExpression.and();
@@ -151,7 +149,7 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
 				addAnd = true;
 			}
-			
+
 			if(this.idPagamenti != null && this.idPagamenti.size() >0){ 
 				if(addAnd)
 					newExpression.and();
@@ -159,7 +157,7 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.in(cf, this.idPagamenti);
 				addAnd = true;
 			}
-			
+
 			if(this.codSingoloVersamentoEnte != null){
 				if(addAnd)
 					newExpression.and();
@@ -167,7 +165,7 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.ilike(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE, this.codSingoloVersamentoEnte, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
-			
+
 			if(this.iur != null){
 				if(addAnd)
 					newExpression.and();
@@ -175,7 +173,7 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.ilike(Pagamento.model().IUR, this.iur, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
-			
+
 			if(this.iuv != null){
 				if(addAnd)
 					newExpression.and();
@@ -183,7 +181,7 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.ilike(Pagamento.model().IUV, this.iuv, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
-			
+
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -193,32 +191,32 @@ public class PagamentoFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	@Override
 	public IExpression _toSimpleSearchExpression() throws ServiceException {
 		try {
 			PagamentoFieldConverter pagamentoFieldConverter = new PagamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			
+
 			IExpression newExpression = super._toSimpleSearchExpression();
-			
+
 			if(this.getIdRr() != null) {
 				IExpression newExpressionRR = this.newExpression();
 				newExpressionRR.equals(new CustomField("id_rr", Long.class, "id_rr", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRr());
 				newExpression.and(newExpressionRR);
 			}
-			
+
 			if(this.getIdRpt() != null) {
 				IExpression newExpressionRpt = this.newExpression();
 				newExpressionRpt.equals(new CustomField("id_rpt", Long.class, "id_rpt", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRpt());
 				newExpression.and(newExpressionRpt);
 			}
-			
+
 			if(this.getIdIncasso() != null) {
 				IExpression newExpressionIncasso = this.newExpression();
 				newExpressionIncasso.equals(new CustomField("id_incasso", Long.class, "id_incasso", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdIncasso());
 				newExpression.and(newExpressionIncasso);
 			}
-			
+
 			if(this.idVersamenti != null && this.idVersamenti.size() >0){
 				IExpression newExpressionVersamenti = this.newExpression();
 				CustomField idVersamentoField = new CustomField(ALIAS_ID, Long.class, ALIAS_ID,
@@ -229,7 +227,7 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpressionVersamenti.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
 				newExpression.and(newExpressionVersamenti);
 			}
-			
+
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
 				idDomini.removeAll(Collections.singleton(null));
@@ -358,5 +356,13 @@ public class PagamentoFilter extends AbstractFilter {
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
-	
+
+	public Date getDataPagamentoRitardoIncasso() {
+		return dataPagamentoRitardoIncasso;
+	}
+
+	public void setDataPagamentoRitardoIncasso(Date dataPagamentoRitardoIncasso) {
+		this.dataPagamentoRitardoIncasso = dataPagamentoRitardoIncasso;
+	}
+
 }
