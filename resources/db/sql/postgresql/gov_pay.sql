@@ -135,6 +135,7 @@ CREATE TABLE domini
 	ndp_descrizione VARCHAR(1024),
 	ndp_data TIMESTAMP,
 	logo BYTEA,
+	cbill VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,
@@ -164,6 +165,10 @@ CREATE TABLE uo
 	uo_localita VARCHAR(35),
 	uo_provincia VARCHAR(35),
 	uo_nazione VARCHAR(2),
+	uo_area VARCHAR(255),
+	uo_url_sito_web VARCHAR(255),
+	uo_email VARCHAR(255),
+	uo_pec VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_uo') NOT NULL,
 	id_dominio BIGINT NOT NULL,

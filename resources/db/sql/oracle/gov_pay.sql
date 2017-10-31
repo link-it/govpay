@@ -193,6 +193,7 @@ CREATE TABLE domini
 	ndp_descrizione VARCHAR(1024),
 	ndp_data TIMESTAMP,
 	logo BLOB,
+	cbill VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,
@@ -237,6 +238,10 @@ CREATE TABLE uo
 	uo_localita VARCHAR2(35 CHAR),
 	uo_provincia VARCHAR2(35 CHAR),
 	uo_nazione VARCHAR2(2 CHAR),
+	uo_area VARCHAR2(255 CHAR),
+	uo_url_sito_web VARCHAR2(255 CHAR),
+	uo_email VARCHAR2(255 CHAR),
+	uo_pec VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

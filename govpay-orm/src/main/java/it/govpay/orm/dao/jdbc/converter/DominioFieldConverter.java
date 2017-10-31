@@ -200,6 +200,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "logo";
 			}
 		}
+		if(field.equals(Dominio.model().CBILL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cbill";
+			}else{
+				return "cbill";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -268,6 +275,9 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().LOGO)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().CBILL)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

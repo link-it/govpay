@@ -19,3 +19,8 @@ CREATE TABLE avvisi
 -- index
 CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
 
+ALTER TABLE domini ADD COLUMN cbill VARCHAR(255);
+ALTER TABLE uo ADD COLUMN uo_area VARCHAR(255);
+ALTER TABLE uo ADD COLUMN uo_url_sito_web VARCHAR(255);
+ALTER TABLE uo ADD COLUMN uo_email VARCHAR(255);
+ALTER TABLE uo ADD COLUMN uo_pec VARCHAR(255);

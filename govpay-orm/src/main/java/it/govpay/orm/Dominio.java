@@ -54,6 +54,7 @@ import java.io.Serializable;
  * 			&lt;element name="ndpDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpData" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="cbill" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -86,7 +87,8 @@ import java.io.Serializable;
   	"ndpOperazione",
   	"ndpDescrizione",
   	"ndpData",
-  	"logo"
+  	"logo",
+  	"cbill"
   }
 )
 
@@ -284,6 +286,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.logo = logo;
   }
 
+  public java.lang.String getCbill() {
+    return this.cbill;
+  }
+
+  public void setCbill(java.lang.String cbill) {
+    this.cbill = cbill;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -385,5 +395,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="logo",required=false,nillable=false)
   protected byte[] logo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="cbill",required=false,nillable=false)
+  protected java.lang.String cbill;
 
 }

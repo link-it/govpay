@@ -289,6 +289,7 @@
     <value name="ndpDescrizione" field="ndpDescrizione" usage="optional"/>
     <value name="ndpData" field="ndpData" usage="optional"/>
     <value name="logo" field="logo" usage="optional"/>
+    <value name="cbill" field="cbill" usage="optional"/>
   </mapping>
   <mapping name="Psp" class="it.govpay.orm.Psp">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -325,6 +326,10 @@
     <value name="uoLocalita" field="uoLocalita" usage="optional"/>
     <value name="uoProvincia" field="uoProvincia" usage="optional"/>
     <value name="uoNazione" field="uoNazione" usage="optional"/>
+    <value name="uoArea" field="uoArea" usage="optional"/>
+    <value name="uoUrlSitoWeb" field="uoUrlSitoWeb" usage="optional"/>
+    <value name="uoEmail" field="uoEmail" usage="optional"/>
+    <value name="uoPec" field="uoPec" usage="optional"/>
   </mapping>
   <mapping name="Portale" class="it.govpay.orm.Portale">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -711,6 +716,7 @@
     <value name="ente_logo" field="enteLogo" usage="required"/>
     <value name="agid_logo" field="agidLogo" usage="required"/>
     <value name="pagopa_logo" field="pagopaLogo" usage="required"/>
+    <value name="pagopa90_logo" field="pagopa90Logo" usage="required"/>
     <value name="app_logo" field="appLogo" usage="required"/>
     <value name="place_logo" field="placeLogo" usage="required"/>
     <value name="importo_logo" field="importoLogo" usage="required"/>
@@ -718,6 +724,7 @@
     <value name="ente_denominazione" field="enteDenominazione" usage="required"/>
     <value name="ente_area" field="enteArea" usage="required"/>
     <value name="ente_identificativo" field="enteIdentificativo" usage="required"/>
+    <value name="ente_identificativo_split" field="enteIdentificativoSplit" usage="required"/>
     <value name="ente_cbill" field="enteCbill" usage="required"/>
     <value name="ente_url" field="enteUrl" usage="required"/>
     <value name="ente_peo" field="entePeo" usage="required"/>
@@ -731,7 +738,9 @@
     <value name="avviso_importo" field="avvisoImporto" usage="required"/>
     <value name="avviso_scadenza" field="avvisoScadenza" usage="required"/>
     <value name="avviso_numero" field="avvisoNumero" usage="required"/>
+    <value name="avviso_numero_split" field="avvisoNumeroSplit" usage="required"/>
     <value name="avviso_iuv" field="avvisoIuv" usage="required"/>
+    <value name="avviso_iuv_split" field="avvisoIuvSplit" usage="required"/>
     <value name="avviso_barcode" field="avvisoBarcode" usage="required"/>
     <value name="avviso_qrcode" field="avvisoQrcode" usage="required"/>
   </mapping>

@@ -4,10 +4,10 @@ CREATE SEQUENCE seq_avvisi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 
 CREATE TABLE avvisi
 (
-       cod_dominio VARCHAR(35) NOT NULL,
+       cod_dominio VARCHAR2(35 CHAR) NOT NULL,
        iuv VARCHAR(35) NOT NULL,
        data_creazione TIMESTAMP NOT NULL,
-       stato VARCHAR(255) NOT NULL,
+       stato VARCHAR2(255 CHAR) NOT NULL,
        pdf BLOB NOT NULL,
        -- fk/pk columns
        id NUMBER NOT NULL,
@@ -31,3 +31,9 @@ begin
 end;
 /
 
+
+ALTER TABLE domini ADD cbill VARCHAR2(255 CHAR);
+ALTER TABLE uo ADD uo_area VARCHAR2(255 CHAR);
+ALTER TABLE uo ADD uo_url_sito_web VARCHAR2(255 CHAR);
+ALTER TABLE uo ADD uo_email VARCHAR2(255 CHAR);
+ALTER TABLE uo ADD uo_pec VARCHAR2(255 CHAR);
