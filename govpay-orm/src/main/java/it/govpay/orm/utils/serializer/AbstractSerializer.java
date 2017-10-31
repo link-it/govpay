@@ -19,93 +19,92 @@
  */
 package it.govpay.orm.utils.serializer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+
+import javax.xml.bind.JAXBElement;
+
 import org.openspcoop2.generic_project.exception.SerializerException;
 import org.openspcoop2.utils.beans.WriteToSerializerType;
 import org.openspcoop2.utils.xml.JaxbUtils;
 
-import it.govpay.orm.Ruolo;
-import it.govpay.orm.IdPsp;
-import it.govpay.orm.Canale;
-import it.govpay.orm.IuvSearch;
-import it.govpay.orm.Audit;
-import it.govpay.orm.IdOperatore;
-import it.govpay.orm.IdIncasso;
-import it.govpay.orm.FR;
-import it.govpay.orm.RendicontazionePagamento;
-import it.govpay.orm.Rendicontazione;
-import it.govpay.orm.Pagamento;
-import it.govpay.orm.SingoloVersamento;
-import it.govpay.orm.Versamento;
-import it.govpay.orm.IdIntermediario;
-import it.govpay.orm.Stazione;
-import it.govpay.orm.IdTracciato;
-import it.govpay.orm.Operazione;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdRilevamento;
-import it.govpay.orm.Incasso;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdAcl;
-import it.govpay.orm.IdCanale;
-import it.govpay.orm.Intermediario;
-import it.govpay.orm.IdPagamento;
-import it.govpay.orm.IdNotifica;
-import it.govpay.orm.IdSla;
-import it.govpay.orm.IdMediaRilevamento;
-import it.govpay.orm.Psp;
-import it.govpay.orm.IdRpt;
-import it.govpay.orm.RR;
-import it.govpay.orm.Operatore;
-import it.govpay.orm.Tracciato;
-import it.govpay.orm.IdStazione;
-import it.govpay.orm.Dominio;
-import it.govpay.orm.IdVersamento;
-import it.govpay.orm.IdSingoloVersamento;
-import it.govpay.orm.IdTributo;
-import it.govpay.orm.IdIbanAccredito;
-import it.govpay.orm.IdPortale;
-import it.govpay.orm.Evento;
-import it.govpay.orm.IdUo;
-import it.govpay.orm.IdTipoTributo;
-import it.govpay.orm.IdBatch;
-import it.govpay.orm.IdTabellaControparti;
-import it.govpay.orm.TipoTributo;
-import it.govpay.orm.IdContoAccredito;
-import it.govpay.orm.Tributo;
-import it.govpay.orm.IUV;
-import it.govpay.orm.IdConnettore;
-import it.govpay.orm.Portale;
-import it.govpay.orm.Avviso;
-import it.govpay.orm.IdEvento;
-import it.govpay.orm.Connettore;
-import it.govpay.orm.IdRuolo;
-import it.govpay.orm.Uo;
 import it.govpay.orm.ACL;
-import it.govpay.orm.Notifica;
-import it.govpay.orm.IdRr;
-import it.govpay.orm.IdSingolaRendicontazione;
-import it.govpay.orm.IbanAccredito;
-import it.govpay.orm.IdMailTemplate;
-import it.govpay.orm.IdFr;
-import it.govpay.orm.IdRendicontazione;
-import it.govpay.orm.IdCarrello;
-import it.govpay.orm.Batch;
-import it.govpay.orm.IdMessaggio;
-import it.govpay.orm.IdSingolaRevoca;
-import it.govpay.orm.IdMail;
-import it.govpay.orm.IdIuv;
-import it.govpay.orm.AvvisoPagamentoInput;
-import it.govpay.orm.IdEr;
 import it.govpay.orm.Applicazione;
+import it.govpay.orm.Audit;
+import it.govpay.orm.Avviso;
+import it.govpay.orm.Batch;
+import it.govpay.orm.Canale;
+import it.govpay.orm.Connettore;
+import it.govpay.orm.Dominio;
+import it.govpay.orm.Evento;
+import it.govpay.orm.FR;
+import it.govpay.orm.IUV;
+import it.govpay.orm.IbanAccredito;
+import it.govpay.orm.IdAcl;
 import it.govpay.orm.IdAnagrafica;
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdBatch;
+import it.govpay.orm.IdCanale;
+import it.govpay.orm.IdCarrello;
+import it.govpay.orm.IdConnettore;
+import it.govpay.orm.IdContoAccredito;
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdEr;
+import it.govpay.orm.IdEvento;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.IdIbanAccredito;
+import it.govpay.orm.IdIncasso;
+import it.govpay.orm.IdIntermediario;
+import it.govpay.orm.IdIuv;
+import it.govpay.orm.IdMail;
+import it.govpay.orm.IdMailTemplate;
+import it.govpay.orm.IdMediaRilevamento;
+import it.govpay.orm.IdMessaggio;
+import it.govpay.orm.IdNotifica;
+import it.govpay.orm.IdOperatore;
+import it.govpay.orm.IdPagamento;
+import it.govpay.orm.IdPortale;
+import it.govpay.orm.IdPsp;
+import it.govpay.orm.IdRendicontazione;
+import it.govpay.orm.IdRilevamento;
+import it.govpay.orm.IdRpt;
+import it.govpay.orm.IdRr;
+import it.govpay.orm.IdRuolo;
+import it.govpay.orm.IdSingolaRendicontazione;
+import it.govpay.orm.IdSingolaRevoca;
+import it.govpay.orm.IdSingoloVersamento;
+import it.govpay.orm.IdSla;
+import it.govpay.orm.IdStazione;
+import it.govpay.orm.IdTabellaControparti;
+import it.govpay.orm.IdTipoTributo;
+import it.govpay.orm.IdTracciato;
+import it.govpay.orm.IdTributo;
+import it.govpay.orm.IdUo;
+import it.govpay.orm.IdVersamento;
+import it.govpay.orm.Incasso;
+import it.govpay.orm.Intermediario;
+import it.govpay.orm.IuvSearch;
+import it.govpay.orm.Notifica;
+import it.govpay.orm.Operatore;
+import it.govpay.orm.Operazione;
+import it.govpay.orm.Pagamento;
+import it.govpay.orm.Portale;
+import it.govpay.orm.Psp;
 import it.govpay.orm.RPT;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.File;
-import java.lang.reflect.Method;
-
-import javax.xml.bind.JAXBElement;
+import it.govpay.orm.RR;
+import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.RendicontazionePagamento;
+import it.govpay.orm.Ruolo;
+import it.govpay.orm.SingoloVersamento;
+import it.govpay.orm.Stazione;
+import it.govpay.orm.TipoTributo;
+import it.govpay.orm.Tracciato;
+import it.govpay.orm.Tributo;
+import it.govpay.orm.Uo;
+import it.govpay.orm.Versamento;
 
 /**     
  * XML Serializer of beans
@@ -8451,124 +8450,6 @@ public abstract class AbstractSerializer {
 	
 	/*
 	 =================================================================================
-	 Object: AvvisoPagamentoInput
-	 =================================================================================
-	*/
-	
-	/**
-	 * Serialize to file system in <var>fileName</var> the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param fileName Xml file to serialize the object <var>avvisoPagamentoInput</var>
-	 * @param avvisoPagamentoInput Object to be serialized in xml file <var>fileName</var>
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(String fileName,AvvisoPagamentoInput avvisoPagamentoInput) throws SerializerException {
-		this.objToXml(fileName, AvvisoPagamentoInput.class, avvisoPagamentoInput, false);
-	}
-	/**
-	 * Serialize to file system in <var>fileName</var> the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param fileName Xml file to serialize the object <var>avvisoPagamentoInput</var>
-	 * @param avvisoPagamentoInput Object to be serialized in xml file <var>fileName</var>
-	 * @param prettyPrint if true output the XML with indenting
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(String fileName,AvvisoPagamentoInput avvisoPagamentoInput,boolean prettyPrint) throws SerializerException {
-		this.objToXml(fileName, AvvisoPagamentoInput.class, avvisoPagamentoInput, prettyPrint);
-	}
-	
-	/**
-	 * Serialize to file system in <var>file</var> the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param file Xml file to serialize the object <var>avvisoPagamentoInput</var>
-	 * @param avvisoPagamentoInput Object to be serialized in xml file <var>fileName</var>
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(File file,AvvisoPagamentoInput avvisoPagamentoInput) throws SerializerException {
-		this.objToXml(file, AvvisoPagamentoInput.class, avvisoPagamentoInput, false);
-	}
-	/**
-	 * Serialize to file system in <var>file</var> the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param file Xml file to serialize the object <var>avvisoPagamentoInput</var>
-	 * @param avvisoPagamentoInput Object to be serialized in xml file <var>fileName</var>
-	 * @param prettyPrint if true output the XML with indenting
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(File file,AvvisoPagamentoInput avvisoPagamentoInput,boolean prettyPrint) throws SerializerException {
-		this.objToXml(file, AvvisoPagamentoInput.class, avvisoPagamentoInput, prettyPrint);
-	}
-	
-	/**
-	 * Serialize to output stream <var>out</var> the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param out OutputStream to serialize the object <var>avvisoPagamentoInput</var>
-	 * @param avvisoPagamentoInput Object to be serialized in xml file <var>fileName</var>
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(OutputStream out,AvvisoPagamentoInput avvisoPagamentoInput) throws SerializerException {
-		this.objToXml(out, AvvisoPagamentoInput.class, avvisoPagamentoInput, false);
-	}
-	/**
-	 * Serialize to output stream <var>out</var> the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param out OutputStream to serialize the object <var>avvisoPagamentoInput</var>
-	 * @param avvisoPagamentoInput Object to be serialized in xml file <var>fileName</var>
-	 * @param prettyPrint if true output the XML with indenting
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(OutputStream out,AvvisoPagamentoInput avvisoPagamentoInput,boolean prettyPrint) throws SerializerException {
-		this.objToXml(out, AvvisoPagamentoInput.class, avvisoPagamentoInput, prettyPrint);
-	}
-			
-	/**
-	 * Serialize to byte array the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param avvisoPagamentoInput Object to be serialized
-	 * @return Object to be serialized in byte array
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public byte[] toByteArray(AvvisoPagamentoInput avvisoPagamentoInput) throws SerializerException {
-		return this.objToXml(AvvisoPagamentoInput.class, avvisoPagamentoInput, false).toByteArray();
-	}
-	/**
-	 * Serialize to byte array the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param avvisoPagamentoInput Object to be serialized
-	 * @param prettyPrint if true output the XML with indenting
-	 * @return Object to be serialized in byte array
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public byte[] toByteArray(AvvisoPagamentoInput avvisoPagamentoInput,boolean prettyPrint) throws SerializerException {
-		return this.objToXml(AvvisoPagamentoInput.class, avvisoPagamentoInput, prettyPrint).toByteArray();
-	}
-	
-	/**
-	 * Serialize to String the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param avvisoPagamentoInput Object to be serialized
-	 * @return Object to be serialized as String
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public String toString(AvvisoPagamentoInput avvisoPagamentoInput) throws SerializerException {
-		return this.objToXml(AvvisoPagamentoInput.class, avvisoPagamentoInput, false).toString();
-	}
-	/**
-	 * Serialize to String the object <var>avvisoPagamentoInput</var> of type {@link it.govpay.orm.AvvisoPagamentoInput}
-	 * 
-	 * @param avvisoPagamentoInput Object to be serialized
-	 * @param prettyPrint if true output the XML with indenting
-	 * @return Object to be serialized as String
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public String toString(AvvisoPagamentoInput avvisoPagamentoInput,boolean prettyPrint) throws SerializerException {
-		return this.objToXml(AvvisoPagamentoInput.class, avvisoPagamentoInput, prettyPrint).toString();
-	}
-	
-	
-	
-	/*
-	 =================================================================================
 	 Object: id-er
 	 =================================================================================
 	*/
@@ -8682,7 +8563,6 @@ public abstract class AbstractSerializer {
 	public String toString(IdEr idEr,boolean prettyPrint) throws SerializerException {
 		return this.objToXml(IdEr.class, idEr, prettyPrint).toString();
 	}
-	
 	
 	
 	/*

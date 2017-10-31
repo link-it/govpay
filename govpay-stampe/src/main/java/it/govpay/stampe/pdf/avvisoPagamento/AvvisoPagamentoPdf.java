@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.beans.WriteToSerializerType;
 
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Versamento;
 import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.model.avvisi.AvvisoPagamentoInput;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
@@ -54,7 +56,7 @@ public class AvvisoPagamentoPdf {
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);
 		return jasperPrint;
 	}
-
+	
 	public AvvisoPagamento creaAvviso(Logger log, AvvisoPagamentoInput input, AvvisoPagamento avvisoPagamento, AvvisoPagamentoProperties avProperties) throws Exception {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		String codDominio = avvisoPagamento.getCodDominio();
@@ -92,7 +94,7 @@ public class AvvisoPagamentoPdf {
 		JRDataSource dataSource = new AvvisoPagamentoDatasource(listaAvvisi,log);
 		return dataSource;
 	}
-
+	
 	public void caricaLoghiAvviso(AvvisoPagamentoInput input, Properties propertiesAvvisoPerDominio) {
 		// valorizzo la sezione loghi
 		input.setEnteLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));

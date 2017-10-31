@@ -130,4 +130,13 @@ public class Operazioni{
 		}
 		return it.govpay.core.business.Operazioni.esitoConservazioneRt("Batch");
 	}
+	
+	@Schedule(hour="*", minute="*/30", persistent=false)
+	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
+	public static String generazioneAvvisiPagamento(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		return it.govpay.core.business.Operazioni.generaAvvisi("Batch");
+	}
 }

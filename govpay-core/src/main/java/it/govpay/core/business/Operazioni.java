@@ -19,27 +19,6 @@
  */
 package it.govpay.core.business;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Tracciato;
-import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.bd.pagamento.RptBD;
-import it.govpay.bd.pagamento.TracciatiBD;
-import it.govpay.bd.pagamento.filters.RptFilter;
-import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.core.business.IConservazione.EsitoConservazione;
-import it.govpay.core.business.model.ElaboraTracciatoDTO;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.thread.InviaNotificaThread;
-import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.model.Rpt.StatoConservazione;
-import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Tracciato.StatoTracciatoType;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +36,33 @@ import org.openspcoop2.utils.sonde.SondaException;
 import org.openspcoop2.utils.sonde.SondaFactory;
 import org.openspcoop2.utils.sonde.impl.SondaBatch;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.bd.pagamento.RptBD;
+import it.govpay.bd.pagamento.TracciatiBD;
+import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.bd.pagamento.filters.TracciatoFilter;
+import it.govpay.core.business.IConservazione.EsitoConservazione;
+import it.govpay.core.business.model.ElaboraTracciatoDTO;
+import it.govpay.core.business.model.ListaAvvisiDTO;
+import it.govpay.core.business.model.ListaAvvisiDTOResponse;
+import it.govpay.core.business.model.PrintAvvisoDTO;
+import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.thread.InviaNotificaThread;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Rpt.StatoConservazione;
+import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
+import it.govpay.model.avvisi.AvvisoPagamentoInput;
+
 public class Operazioni{
 
 	private static Logger log = LogManager.getLogger();
@@ -70,6 +76,7 @@ public class Operazioni{
 	public static final String conto = "update-conto";
 	public static final String conservazione_req = "cons-req";
 	public static final String conservazione_esito = "cons-esito";
+	public static final String batch_generazione_avvisi = "generazione-avvisi";
 
 	
 	private static boolean eseguiElaborazioneTracciati;
@@ -501,6 +508,66 @@ public class Operazioni{
 			return "Estratto Conto#" + e.getMessage();
 		} finally {
 			BatchManager.stopEsecuzione(bd, conto);
+			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
+		}
+	}
+	
+	public static String generaAvvisi(String serviceName){
+		BasicBD bd = null;
+		GpContext ctx = null;
+		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "GenerazioneAvvisi");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName(serviceName);
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
+			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("GenerazioneAvvisi");
+			ctx.getTransaction().setOperation(opt);
+			GpThreadLocal.set(ctx);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			if(BatchManager.startEsecuzione(bd, batch_generazione_avvisi)) {
+				log.trace("Generazione Avvisi");
+				// 1. Recupero gli avvisi
+				AvvisoPagamento avvisoBD = new AvvisoPagamento(bd);
+				ListaAvvisiDTO listaAvvisi = new ListaAvvisiDTO();
+				listaAvvisi.setStato(StatoAvviso.DA_STAMPARE);
+				ListaAvvisiDTOResponse listaAvvisiDTOResponse = avvisoBD.getAvvisi(listaAvvisi);
+				
+				List<it.govpay.model.avvisi.AvvisoPagamento> avvisi = listaAvvisiDTOResponse.getAvvisi();
+				log.info("Trovati ["+avvisi.size()+"] avvisi da generare");
+				
+				Versamento versamentoBD = new Versamento(bd);
+				for (it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento : avvisi) {
+					String codDominio = avvisoPagamento.getCodDominio();
+					String iuv = avvisoPagamento.getIuv();
+					log.info("Generazione Avviso [Dominio: "+codDominio + " | IUV: "+ iuv+"] in corso...");
+					PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
+					printAvvisoDTO.setAvviso(avvisoPagamento);
+					it.govpay.bd.model.Versamento chiediVersamento = versamentoBD.chiediVersamento(null, null, null, null, codDominio, iuv);
+					AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, chiediVersamento);
+					printAvvisoDTO.setInput(input); 
+					PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
+					boolean pdfGenerato = printAvvisoDTOResponse.getAvviso().getPdf() != null;
+					log.info("Generazione Avviso [Dominio: "+codDominio + " | IUV: "+ iuv+"] "+(pdfGenerato ? "completata con successo" : "non completata")+".");
+				}
+				
+				aggiornaSondaOK(batch_generazione_avvisi, bd);
+				BatchManager.stopEsecuzione(bd, batch_generazione_avvisi);
+				log.info("Generazione Avvisi Pagamento terminata.");
+				return "Generazione Avvisi Pagamento terminata.";
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Generazione Avvisi Pagamento Fallita", e);
+			aggiornaSondaKO(batch_generazione_avvisi, e, bd);
+			return "Generazione Avvisi Pagamento#" + e.getMessage();
+		} finally {
+			BatchManager.stopEsecuzione(bd, batch_generazione_avvisi);
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}

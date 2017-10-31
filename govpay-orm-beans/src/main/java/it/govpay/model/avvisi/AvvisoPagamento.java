@@ -19,7 +19,7 @@
  */
 package it.govpay.model.avvisi;
 
-public class AvvisoPagamento {
+public class AvvisoPagamento{
 	
 	public enum StatoAvviso {
 		DA_STAMPARE, STAMPATO
