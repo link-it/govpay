@@ -39,6 +39,8 @@ import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.business.model.ElaboraTracciatoDTO;
+import it.govpay.core.business.model.InserisciAvvisoDTO;
+import it.govpay.core.business.model.InserisciAvvisoDTOResponse;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
 import it.govpay.core.business.model.LeggiOperazioneDTO;
@@ -60,19 +62,21 @@ import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operazione.StatoOperazioneType;
+import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 
 
 public class Tracciati extends BasicBD {
-	
+
 	private static Logger log = LogManager.getLogger();;
-	
+
 	public Tracciati(BasicBD basicBD) {
 		super(basicBD);
 	}
 
 	public InserisciTracciatoDTOResponse inserisciTracciato(InserisciTracciatoDTO inserisciTracciatoDTO) throws NotAuthorizedException, InternalException {
-		
+
 		try {
 			log.info("Inserimento tracciato con nome: " + inserisciTracciatoDTO.getNomeTracciato());
 			InserisciTracciatoDTOResponse inserisciTracciatoDTOResponse = new InserisciTracciatoDTOResponse();
@@ -129,7 +133,7 @@ public class Tracciati extends BasicBD {
 			filter.setDataUltimoAggiornamentoMin(listaTracciatiDTO.getInizio());
 
 		filter.addSortField(it.govpay.bd.pagamento.filters.TracciatoFilter.SortFields.DATA_CARICAMENTO, false);
-		
+
 		filter.setOffset(listaTracciatiDTO.getOffset());
 		filter.setLimit(listaTracciatiDTO.getLimit());
 
@@ -160,65 +164,65 @@ public class Tracciati extends BasicBD {
 	}
 
 	public LeggiOperazioneDTOResponse leggiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws NotAuthorizedException, ServiceException {
-			LeggiOperazioneDTOResponse leggiOperazioneDTOResponse = new LeggiOperazioneDTOResponse();
+		LeggiOperazioneDTOResponse leggiOperazioneDTOResponse = new LeggiOperazioneDTOResponse();
 
-			OperazioniBD operazioniBD = new OperazioniBD(this);
+		OperazioniBD operazioniBD = new OperazioniBD(this);
 
-			Operazione operazione = operazioniBD.getOperazione(leggiOperazioneDTO.getId());
+		Operazione operazione = operazioniBD.getOperazione(leggiOperazioneDTO.getId());
 
-			OperazioneFactory factory = new OperazioneFactory();
+		OperazioneFactory factory = new OperazioneFactory();
 
-			switch (operazione.getTipoOperazione()) {
-			case ADD:
-				CaricamentoRequest caricamentoRequest = (CaricamentoRequest) factory.parseLineaOperazioneRequest(operazione.getDatiRichiesta());
-				AbstractOperazioneResponse abstractOperazioneResponse = factory.parseLineaOperazioneResponse(operazione.getTipoOperazione(), operazione.getDatiRisposta());
-				CaricamentoResponse caricamentoResponse = (abstractOperazioneResponse instanceof CaricamentoResponse) ?  (CaricamentoResponse) abstractOperazioneResponse : null;
+		switch (operazione.getTipoOperazione()) {
+		case ADD:
+			CaricamentoRequest caricamentoRequest = (CaricamentoRequest) factory.parseLineaOperazioneRequest(operazione.getDatiRichiesta());
+			AbstractOperazioneResponse abstractOperazioneResponse = factory.parseLineaOperazioneResponse(operazione.getTipoOperazione(), operazione.getDatiRisposta());
+			CaricamentoResponse caricamentoResponse = (abstractOperazioneResponse instanceof CaricamentoResponse) ?  (CaricamentoResponse) abstractOperazioneResponse : null;
 
-				OperazioneCaricamento operazioneCaricamento = new OperazioneCaricamento(operazione);
+			OperazioneCaricamento operazioneCaricamento = new OperazioneCaricamento(operazione);
 
-				operazioneCaricamento.setAnagraficaDebitore(caricamentoRequest.getAnagraficaDebitore());
-				operazioneCaricamento.setBundleKey(caricamentoRequest.getBundleKey());
-				operazioneCaricamento.setCausale(caricamentoRequest.getCausale());
-				operazioneCaricamento.setCfDebitore(caricamentoRequest.getCfDebitore());
-				operazioneCaricamento.setCodDominio(caricamentoRequest.getCodDominio());
-				operazioneCaricamento.setCodTributo(caricamentoRequest.getCodTributo());
-				operazioneCaricamento.setIdDebito(caricamentoRequest.getIdDebito());
-				operazioneCaricamento.setImporto(caricamentoRequest.getImporto());
-				operazioneCaricamento.setNote(caricamentoRequest.getNote());
-				operazioneCaricamento.setScadenza(caricamentoRequest.getScadenza());
+			operazioneCaricamento.setAnagraficaDebitore(caricamentoRequest.getAnagraficaDebitore());
+			operazioneCaricamento.setBundleKey(caricamentoRequest.getBundleKey());
+			operazioneCaricamento.setCausale(caricamentoRequest.getCausale());
+			operazioneCaricamento.setCfDebitore(caricamentoRequest.getCfDebitore());
+			operazioneCaricamento.setCodDominio(caricamentoRequest.getCodDominio());
+			operazioneCaricamento.setCodTributo(caricamentoRequest.getCodTributo());
+			operazioneCaricamento.setIdDebito(caricamentoRequest.getIdDebito());
+			operazioneCaricamento.setImporto(caricamentoRequest.getImporto());
+			operazioneCaricamento.setNote(caricamentoRequest.getNote());
+			operazioneCaricamento.setScadenza(caricamentoRequest.getScadenza());
 
-				if(caricamentoResponse != null) {
-					operazioneCaricamento.setIuv(caricamentoResponse.getIuv());
-					operazioneCaricamento.setBarCode(caricamentoResponse.getBarCode());
-					operazioneCaricamento.setQrCode(caricamentoResponse.getQrCode());
-				}
-
-				leggiOperazioneDTOResponse.setOperazione(operazioneCaricamento);
-				break;
-			case DEL:
-				AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) factory.parseLineaOperazioneRequest(operazione.getDatiRichiesta());
-				OperazioneAnnullamento operazioneAnnullamento = new OperazioneAnnullamento(operazione);
-				operazioneAnnullamento.setMotivoAnnullamento(annullamentoRequest.getMotivoAnnullamento());
-				leggiOperazioneDTOResponse.setOperazione(operazioneAnnullamento);
-				break;
-			case N_V:
-			default:
-				leggiOperazioneDTOResponse.setOperazione(operazione);
-				break;
+			if(caricamentoResponse != null) {
+				operazioneCaricamento.setIuv(caricamentoResponse.getIuv());
+				operazioneCaricamento.setBarCode(caricamentoResponse.getBarCode());
+				operazioneCaricamento.setQrCode(caricamentoResponse.getQrCode());
 			}
 
-			return leggiOperazioneDTOResponse;
+			leggiOperazioneDTOResponse.setOperazione(operazioneCaricamento);
+			break;
+		case DEL:
+			AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) factory.parseLineaOperazioneRequest(operazione.getDatiRichiesta());
+			OperazioneAnnullamento operazioneAnnullamento = new OperazioneAnnullamento(operazione);
+			operazioneAnnullamento.setMotivoAnnullamento(annullamentoRequest.getMotivoAnnullamento());
+			leggiOperazioneDTOResponse.setOperazione(operazioneAnnullamento);
+			break;
+		case N_V:
+		default:
+			leggiOperazioneDTOResponse.setOperazione(operazione);
+			break;
+		}
+
+		return leggiOperazioneDTOResponse;
 	}
 
 
 	public void elaboraTracciato(ElaboraTracciatoDTO elaboraTracciatoDTO) throws ServiceException {
 
 		boolean wasAutocommit = this.isAutoCommit();
-		
+
 		if(this.isAutoCommit()) {
 			this.setAutoCommit(false);
 		}
-		
+
 		TracciatiBD tracciatiBD = new TracciatiBD(this);
 		Tracciato tracciato = elaboraTracciatoDTO.getTracciato();
 
@@ -234,27 +238,27 @@ public class Tracciati extends BasicBD {
 
 		try {
 			long numLinea = tracciato.getLineaElaborazione();
-			
+
 			log.debug("Leggo il tracciato saltando le prime " + numLinea + " linee");
 			List<byte[]> lst = CSVUtils.splitCSV(tracciato.getRawDataRichiesta(), numLinea);
 			log.debug("Lette " + lst.size() + " linee");
-			
-			
+
+			AvvisoPagamento avvisoPagamentoBD = new AvvisoPagamento(this);
 			OperazioniBD operazioniBD = new OperazioniBD(this);
-			
+
 			OperazioneFactory factory = new OperazioneFactory();
-			
+
 			for(byte[] linea: lst) {
-				
+
 				numLinea = numLinea + 1 ;
-				
+
 				// Elaboro l'operazione
-				
+
 				AbstractOperazioneRequest request = factory.acquisisci(linea, tracciato.getId(), numLinea);
 				AbstractOperazioneResponse response = factory.eseguiOperazione(request, tracciato, this);
 
 				this.setAutoCommit(false);
-				
+
 				Operazione operazione = new Operazione();
 				operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
 				operazione.setDatiRichiesta(linea);
@@ -271,8 +275,17 @@ public class Tracciati extends BasicBD {
 				operazione.setLineaElaborazione(request.getLinea());
 				operazione.setTipoOperazione(request.getTipoOperazione());
 				operazioniBD.insertOperazione(operazione);
-				
+
 				if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
+					if(operazione.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
+						log.debug("Linea ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "] di tipo ADD: creazione Avviso Pagamento in corso...");
+						Long idAvviso = this.inserisciAvvisoPagamento(operazione, request, response, avvisoPagamentoBD);
+						if(idAvviso != null && idAvviso > 0)
+							log.debug("Linea ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "] di tipo ADD: creazione Avviso Pagamento avvenuta correttamente.");
+						else 
+							log.debug("Linea ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "] di tipo ADD: creazione Avviso Pagamento non completata.");
+					}
+
 					tracciato.setNumOperazioniOk(tracciato.getNumOperazioniOk()+1);
 				} else {
 					if(!response.getEsito().equals(CostantiCaricamento.EMPTY.toString()))
@@ -281,27 +294,27 @@ public class Tracciati extends BasicBD {
 				tracciato.setLineaElaborazione(tracciato.getLineaElaborazione()+1);	
 				log.debug("Linea ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(linea) + "]");
 				tracciato.setDataUltimoAggiornamento(new Date());
-				
+
 				tracciatiBD.updateTracciato(tracciato.getId(),tracciato.getStato(), tracciato.getLineaElaborazione(), tracciato.getNumOperazioniOk(), tracciato.getNumOperazioniKo());
 				this.commit();
-				
+
 				BatchManager.aggiornaEsecuzione(this, Operazioni.batch_tracciati);
 			}
-			
-			
+
+
 			// Elaborazione completata. Processamento tracciato di esito
-			
+
 			OperazioneFilter filter = operazioniBD.newFilter();
 			filter.setIdTracciato(tracciato.getId());
 			filter.setLimit(500);
 			filter.setOffset(0);
-			
+
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			
+
 			while(true) {
-				
+
 				// Ciclo finche' non mi ritorna meno record del limit. Altrimenti esco perche' ho finito
-				
+
 				List<Operazione> findAll = operazioniBD.findAll(filter);
 				for(Operazione operazione : findAll) {
 					baos.write(operazione.getDatiRisposta());
@@ -312,7 +325,7 @@ public class Tracciati extends BasicBD {
 				} else {
 					break;
 				}
-				
+
 			}
 
 			if(tracciato.getNumOperazioniKo() > 0) {
@@ -320,11 +333,11 @@ public class Tracciati extends BasicBD {
 			} else {
 				tracciato.setStato(StatoTracciatoType.CARICAMENTO_OK);
 			}
-			
+
 			tracciato.setRawDataRisposta(baos.toByteArray());
 			try {baos.flush();} catch(Exception e){}
 			try {baos.close();} catch(Exception e){}
-			
+
 			tracciatiBD.updateTracciato(tracciato);
 			if(!isAutoCommit()) this.commit();
 			log.info("Elaborazione tracciato ["+tracciato.getId()+"] terminata: " + tracciato.getStato());
@@ -355,6 +368,22 @@ public class Tracciati extends BasicBD {
 		if(tracciato.getIdApplicazione() == null || !tracciato.getIdApplicazione().equals(applicazione.getId())) {
 			throw new NotAuthorizedException();
 		}
+	}
+
+	public Long inserisciAvvisoPagamento(Operazione operazione,AbstractOperazioneRequest request, AbstractOperazioneResponse response, AvvisoPagamento avvisoPagamentoBD) throws Exception{
+		if(request instanceof CaricamentoRequest && response instanceof CaricamentoResponse) {
+			CaricamentoRequest caricamentoRequest = (CaricamentoRequest) request;
+			CaricamentoResponse caricamentoResponse = (CaricamentoResponse) response;
+			InserisciAvvisoDTO inserisciAvviso = new InserisciAvvisoDTO();
+			inserisciAvviso.setCodDominio(caricamentoRequest.getCodDominio());
+			inserisciAvviso.setIuv(caricamentoResponse.getIuv());
+			inserisciAvviso.setDataCreazione(new Date());
+			inserisciAvviso.setStato(StatoAvviso.DA_STAMPARE); 
+			InserisciAvvisoDTOResponse inserisciAvvisoDTOResponse = avvisoPagamentoBD.inserisciAvviso(inserisciAvviso );
+			return inserisciAvvisoDTOResponse.getAvviso().getId();
+		}
+		
+		return null;
 	}
 }
 

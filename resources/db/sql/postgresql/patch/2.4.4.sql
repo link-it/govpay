@@ -7,7 +7,7 @@ CREATE TABLE avvisi
        iuv VARCHAR(35) NOT NULL,
        data_creazione TIMESTAMP NOT NULL,
        stato VARCHAR(255) NOT NULL,
-       pdf BYTEA NOT NULL,
+       pdf BYTEA,
        -- fk/pk columns
        id BIGINT DEFAULT nextval('seq_avvisi') NOT NULL,
        -- check constraints

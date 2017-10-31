@@ -29,6 +29,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
+import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 
 import java.io.File;
 import java.net.URI;
@@ -160,6 +161,7 @@ public class StartupEjb {
 			ConnectionManager.initialize();
 			ThreadExecutorManager.setup();
 			JmxOperazioni.register();
+			AvvisoPagamentoProperties.newInstance(GovpayConfig.getInstance().getResourceDir());
 		} catch (Exception e) {
 			log.error("Inizializzazione fallita", e);
 			shutdown();

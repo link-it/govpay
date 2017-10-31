@@ -31,7 +31,7 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			
 			if(this.stato != null) {
-				newExpression.equals(Avviso.model().STATO, this.stato);
+				newExpression.equals(Avviso.model().STATO, this.stato.toString());
 			}
 			
 			return newExpression;

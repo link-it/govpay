@@ -2108,7 +2108,7 @@
 			<xsd:element name="iuv" type="String35"/>
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
 			<xsd:element name="stato" type="StatoAvvisoType"/>
-			<xsd:element name="pdf" type="xsd:base64Binary"/>
+			<xsd:element name="pdf" type="xsd:base64Binary" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

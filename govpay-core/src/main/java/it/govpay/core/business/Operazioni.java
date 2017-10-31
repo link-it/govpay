@@ -535,27 +535,41 @@ public class Operazioni{
 				AvvisoPagamento avvisoBD = new AvvisoPagamento(bd);
 				ListaAvvisiDTO listaAvvisi = new ListaAvvisiDTO();
 				listaAvvisi.setStato(StatoAvviso.DA_STAMPARE);
+				int offset = 0;
+				int limit = 500; 
+				listaAvvisi.setOffset(offset);
+				listaAvvisi.setLimit(limit);
+				
 				ListaAvvisiDTOResponse listaAvvisiDTOResponse = avvisoBD.getAvvisi(listaAvvisi);
 				
 				List<it.govpay.model.avvisi.AvvisoPagamento> avvisi = listaAvvisiDTOResponse.getAvvisi();
 				log.info("Trovati ["+avvisi.size()+"] avvisi da generare");
 				
 				Versamento versamentoBD = new Versamento(bd);
-				for (it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento : avvisi) {
-					String codDominio = avvisoPagamento.getCodDominio();
-					String iuv = avvisoPagamento.getIuv();
-					log.info("Generazione Avviso [Dominio: "+codDominio + " | IUV: "+ iuv+"] in corso...");
-					PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
-					printAvvisoDTO.setAvviso(avvisoPagamento);
-					it.govpay.bd.model.Versamento chiediVersamento = versamentoBD.chiediVersamento(null, null, null, null, codDominio, iuv);
-					AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, chiediVersamento);
-					printAvvisoDTO.setInput(input); 
-					PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
-					boolean pdfGenerato = printAvvisoDTOResponse.getAvviso().getPdf() != null;
-					log.info("Generazione Avviso [Dominio: "+codDominio + " | IUV: "+ iuv+"] "+(pdfGenerato ? "completata con successo" : "non completata")+".");
+				
+				while(avvisi.size() > 0) {
+				
+					for (it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento : avvisi) {
+						String codDominio = avvisoPagamento.getCodDominio();
+						String iuv = avvisoPagamento.getIuv();
+						log.info("Generazione Avviso [Dominio: "+codDominio + " | IUV: "+ iuv+"] in corso...");
+						PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
+						printAvvisoDTO.setAvviso(avvisoPagamento);
+						it.govpay.bd.model.Versamento chiediVersamento = versamentoBD.chiediVersamento(null, null, null, null, codDominio, iuv);
+						AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, chiediVersamento);
+						printAvvisoDTO.setInput(input); 
+						PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
+						boolean pdfGenerato = printAvvisoDTOResponse.getAvviso().getPdf() != null;
+						log.info("Generazione Avviso [Dominio: "+codDominio + " | IUV: "+ iuv+"] "+(pdfGenerato ? "completata con successo" : "non completata")+".");
+					}
+				
+					offset += avvisi.size();
+					listaAvvisi.setOffset(offset);
+					listaAvvisiDTOResponse = avvisoBD.getAvvisi(listaAvvisi);
+					avvisi = listaAvvisiDTOResponse.getAvvisi();
 				}
 				
-				aggiornaSondaOK(batch_generazione_avvisi, bd);
+				//aggiornaSondaOK(batch_generazione_avvisi, bd);
 				BatchManager.stopEsecuzione(bd, batch_generazione_avvisi);
 				log.info("Generazione Avvisi Pagamento terminata.");
 				return "Generazione Avvisi Pagamento terminata.";
@@ -564,7 +578,7 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			log.error("Generazione Avvisi Pagamento Fallita", e);
-			aggiornaSondaKO(batch_generazione_avvisi, e, bd);
+			//aggiornaSondaKO(batch_generazione_avvisi, e, bd);
 			return "Generazione Avvisi Pagamento#" + e.getMessage();
 		} finally {
 			BatchManager.stopEsecuzione(bd, batch_generazione_avvisi);

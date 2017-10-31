@@ -50,7 +50,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 	public final static String ATTIVAZIONE_RECUPERO_TRACCIATI_PENDENTI = "attivazioneRecuperoTracciatiPendenti";
 	public final static String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
 	public final static String ESTRATTO_CONTO = "estrattoConto";
-	
+	public final static String GENERAZIONE_AVVISI_PAGAMENTO = "generaAvvisiPagamento";
 
 	/** getAttribute */
 	@Override
@@ -130,6 +130,10 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 		if(actionName.equals(ATTIVAZIONE_RECUPERO_TRACCIATI_PENDENTI)){
 			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 			return "Elaborazione tracciati schedulata";
+		}
+		
+		if(actionName.equals(GENERAZIONE_AVVISI_PAGAMENTO)){
+			return it.govpay.core.business.Operazioni.generaAvvisi("JmxCall");
 		}
 		
 

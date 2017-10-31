@@ -1178,7 +1178,7 @@ CREATE TABLE avvisi
 	iuv VARCHAR(35) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
 	stato VARCHAR(255) NOT NULL,
-	pdf BLOB NOT NULL,
+	pdf BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- check constraints
