@@ -2121,6 +2121,7 @@
 			<xsd:element name="ente_denominazione" type="xsd:string"/>
 			<xsd:element name="ente_area" type="xsd:string"/>
 			<xsd:element name="ente_identificativo" type="xsd:string"/>
+			<xsd:element name="ente_identificativo_split" type="xsd:string"/>
 			<xsd:element name="ente_cbill" type="xsd:string"/>
 			<xsd:element name="ente_url" type="xsd:string"/>
 			<xsd:element name="ente_peo" type="xsd:string"/>
@@ -2134,7 +2135,9 @@
 			<xsd:element name="avviso_importo" type="xsd:double"/>
 			<xsd:element name="avviso_scadenza" type="xsd:string"/>
 			<xsd:element name="avviso_numero" type="xsd:string"/>
+			<xsd:element name="avviso_numero_split" type="xsd:string"/>
 			<xsd:element name="avviso_iuv" type="xsd:string"/>
+			<xsd:element name="avviso_iuv_split" type="xsd:string"/>
 			<xsd:element name="avviso_barcode" type="xsd:string"/>
 			<xsd:element name="avviso_qrcode" type="xsd:string"/>
 		</xsd:sequence>

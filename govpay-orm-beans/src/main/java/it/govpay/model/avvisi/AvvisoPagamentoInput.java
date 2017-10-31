@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="ente_denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_area" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_identificativo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ente_identificativo_split" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_cbill" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_url" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_peo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
@@ -60,7 +61,9 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="avviso_importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_scadenza" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_numero" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avviso_numero_split" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_iuv" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avviso_iuv_split" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_barcode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_qrcode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -88,6 +91,7 @@ import javax.xml.bind.annotation.XmlType;
   	"enteDenominazione",
   	"enteArea",
   	"enteIdentificativo",
+  	"enteIdentificativoSplit",
   	"enteCbill",
   	"enteUrl",
   	"entePeo",
@@ -101,7 +105,9 @@ import javax.xml.bind.annotation.XmlType;
   	"avvisoImporto",
   	"avvisoScadenza",
   	"avvisoNumero",
+  	"avvisoNumeroSplit",
   	"avvisoIuv",
+  	"avvisoIuvSplit",
   	"avvisoBarcode",
   	"avvisoQrcode"
   }
@@ -218,6 +224,14 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
     this.enteIdentificativo = enteIdentificativo;
   }
 
+  public java.lang.String getEnteIdentificativoSplit() {
+    return this.enteIdentificativoSplit;
+  }
+
+  public void setEnteIdentificativoSplit(java.lang.String enteIdentificativoSplit) {
+    this.enteIdentificativoSplit = enteIdentificativoSplit;
+  }
+
   public java.lang.String getEnteCbill() {
     return this.enteCbill;
   }
@@ -322,12 +336,28 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
     this.avvisoNumero = avvisoNumero;
   }
 
+  public java.lang.String getAvvisoNumeroSplit() {
+    return this.avvisoNumeroSplit;
+  }
+
+  public void setAvvisoNumeroSplit(java.lang.String avvisoNumeroSplit) {
+    this.avvisoNumeroSplit = avvisoNumeroSplit;
+  }
+
   public java.lang.String getAvvisoIuv() {
     return this.avvisoIuv;
   }
 
   public void setAvvisoIuv(java.lang.String avvisoIuv) {
     this.avvisoIuv = avvisoIuv;
+  }
+
+  public java.lang.String getAvvisoIuvSplit() {
+    return this.avvisoIuvSplit;
+  }
+
+  public void setAvvisoIuvSplit(java.lang.String avvisoIuvSplit) {
+    this.avvisoIuvSplit = avvisoIuvSplit;
   }
 
   public java.lang.String getAvvisoBarcode() {
@@ -398,6 +428,10 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   protected java.lang.String enteIdentificativo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ente_identificativo_split",required=true,nillable=false)
+  protected java.lang.String enteIdentificativoSplit;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ente_cbill",required=true,nillable=false)
   protected java.lang.String enteCbill;
 
@@ -450,8 +484,16 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   protected java.lang.String avvisoNumero;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avviso_numero_split",required=true,nillable=false)
+  protected java.lang.String avvisoNumeroSplit;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avviso_iuv",required=true,nillable=false)
   protected java.lang.String avvisoIuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avviso_iuv_split",required=true,nillable=false)
+  protected java.lang.String avvisoIuvSplit;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avviso_barcode",required=true,nillable=false)
