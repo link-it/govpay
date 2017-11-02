@@ -59,7 +59,7 @@ public class DataTypeAdapter {
 	}
 	
     public static Date parseDateTime(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return null;
         }
         return DatatypeConverter.parseDateTime(s).getTime();
@@ -82,7 +82,7 @@ public class DataTypeAdapter {
     }
     
     public static Date parseDate(String s) {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return null;
         }
         return DatatypeConverter.parseDateTime(s).getTime();

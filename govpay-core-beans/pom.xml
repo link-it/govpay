@@ -13,13 +13,6 @@
 	<packaging>jar</packaging>
 
 	<name>GovPay Core Beans</name>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.cxf.xjc-utils</groupId>
-			<artifactId>cxf-xjc-runtime</artifactId>
-		</dependency>
-	</dependencies>
 	
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
