@@ -36409,7 +36409,7 @@ Polymer.AppLocalizeBehavior = {
 
     <iron-ajax id="getDetail" handle-as="json" on-response="getDetail_responseHandler" on-error="getDetail_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="downloadDati" url="[[downloadUrl]]" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="downloadDati_responseHandler" on-error="downloadDati_errorHandler" debounce-duration="300"></iron-ajax>
-    <iron-ajax id="esportaDati" url="[[uriEsportazione]]" method="POST" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="esportaDati" url="[[uriEsportazione]]" method="POST" handle-as="arraybuffer" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="elimina" url="[[uriCancellazione]]" method="POST" handle-as="json" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="elimina_responseHandler" on-error="elimina_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
   <script>
@@ -36919,18 +36919,38 @@ Polymer.AppLocalizeBehavior = {
         app.hideSpinner();
         try {
           var ct =  event.detail.xhr.getResponseHeader('Content-Type');
-          var _blob = new Blob([event.detail.xhr.response], {type: ct });
-          var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
-          if(!this.isIE()){
-            var a         = document.createElement('a');
-            a.href        = window.URL.createObjectURL(event.detail.xhr.response);
-            a.target      = '_blank';
-            a.download    = nomeFile;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+          if(ct != 'application/json') {
+            var _blob = new Blob([event.detail.xhr.response], {type: ct });
+            var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
+            if(!this.isIE()){
+              var a         = document.createElement('a');
+              a.href        = window.URL.createObjectURL(_blob);
+              a.target      = '_blank';
+              a.download    = nomeFile;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            } else {
+              window.navigator.msSaveOrOpenBlob(_blob, nomeFile);
+            }
           } else {
-            window.navigator.msSaveOrOpenBlob(_blob, nomeFile);
+            var decodedString = this.utf8ArrayToString(new Uint8Array(event.detail.xhr.response));
+            var resp = JSON.parse(decodedString); //text to JSON
+            if (resp.dettaglioEsito){
+              switch (resp.esitoOperazione){
+                case 'ESEGUITA':
+                  app.showPaperToast(resp.dettaglioEsito, 'success');
+                  break;
+                case 'NONESEGUITA':
+                  app.showPaperToast(resp.dettaglioEsito, 'warning');
+                  break;
+                case 'ERRORE':
+                  app.showPaperToast(resp.dettaglioEsito, 'error');
+                  break;
+              }
+            } else {
+              console.log('Errore dettaglioEsito non presente');
+            }
           }
         } catch (err) {
           console.log(err.message);
@@ -36940,6 +36960,43 @@ Polymer.AppLocalizeBehavior = {
       esportaDati_errorHandler: function(event){
         app.hideSpinner();
         app.dars_errorHandler(event);
+      },
+
+      /**
+       * @return { string }
+       */
+      utf8ArrayToString: function (array) {
+        var out, i, len, c;
+        var char2, char3;
+
+        out = "";
+        len = array.length;
+        i = 0;
+        while(i < len) {
+          c = array[i++];
+          switch(c >> 4)
+          {
+            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+            // 0xxxxxxx
+            out += String.fromCharCode(c);
+            break;
+            case 12: case 13:
+            // 110x xxxx   10xx xxxx
+            char2 = array[i++];
+            out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+            break;
+            case 14:
+              // 1110 xxxx  10xx xxxx  10xx xxxx
+              char2 = array[i++];
+              char3 = array[i++];
+              out += String.fromCharCode(((c & 0x0F) << 12) |
+                ((char2 & 0x3F) << 6) |
+                ((char3 & 0x3F) << 0));
+              break;
+          }
+        }
+
+        return out;
       },
 
       isIE: function() {
