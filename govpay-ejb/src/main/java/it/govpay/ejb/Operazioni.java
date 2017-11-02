@@ -131,7 +131,7 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.esitoConservazioneRt("Batch");
 	}
 	
-	@Schedule(hour="*", minute="*/30", persistent=false)
+	@Schedule(hour="*", minute="*", second="*/30", persistent=false)
 	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
 	public static String generazioneAvvisiPagamento(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
