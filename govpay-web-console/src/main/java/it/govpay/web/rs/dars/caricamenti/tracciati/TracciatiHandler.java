@@ -27,14 +27,24 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.OperatoriBD;
+import it.govpay.bd.model.Operazione;
+import it.govpay.bd.model.OperazioneCaricamento;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
+import it.govpay.core.business.AvvisoPagamento;
+import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
-import it.govpay.core.business.Tracciati;
+import it.govpay.core.business.model.LeggiAvvisoDTO;
+import it.govpay.core.business.model.LeggiAvvisoDTOResponse;
+import it.govpay.core.business.model.ListaOperazioniDTO;
+import it.govpay.core.business.model.ListaOperazioniDTOResponse;
 import it.govpay.model.Operatore;
+import it.govpay.model.Operazione.StatoOperazioneType;
+import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 import it.govpay.web.rs.dars.base.BaseDarsService;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
@@ -45,6 +55,7 @@ import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.manutenzione.strumenti.StrumentiHandler;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -54,6 +65,7 @@ import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.RefreshableParamField;
+import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputFile;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.ConsoleProperties;
@@ -114,15 +126,15 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 					if(!entry.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !entry.getStato().equals(StatoTracciatoType.CARICAMENTO_OK)){
 						URI refreshUri =  Utils.creaUriConPath(this.pathServizio , entry.getId()+"", BaseDarsService.PATH_REFRESH);
 						elemento.setRefreshUri(refreshUri);
-						
+
 						double percentuale = 100;
 						// Controllo per evitare divisione per 0
 						if(entry.getNumLineeTotali() != 0)
 							percentuale = Math.round(((double) entry.getLineaElaborazione() / (double) entry.getNumLineeTotali() ) * 100);
-						
+
 						elemento.getVoci().put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".percentuale.id"),
 								new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".percentuale.label"), percentuale + "" ));
-						
+
 					}
 					elenco.getElenco().add(elemento);
 				}
@@ -155,12 +167,12 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			if(!tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_OK)){
 				URI refreshUri =  Utils.creaUriConPath(this.pathServizio , id+"", BaseDarsService.PATH_REFRESH);
 				elemento.setRefreshUri(refreshUri);
-				
+
 				double percentuale = 100;
 				// Controllo per evitare divisione per 0
 				if(tracciato.getNumLineeTotali() != 0)
 					percentuale = Math.round(((double) tracciato.getLineaElaborazione() / (double) tracciato.getNumLineeTotali() ) * 100);
-				
+
 				elemento.getVoci().put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".percentuale.id"),
 						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".percentuale.label"), percentuale + "" ));
 			}
@@ -337,11 +349,55 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
 				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
 				infoEsportazione = new InfoForm(esportazione);
+
+				List<String> titoli = new ArrayList<String>();
+				titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esporta.singolo.titolo"));
+				infoEsportazione.setTitolo(titoli);
+
+				String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
+				String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
+
+				if(this.infoEsportazioneMap == null){
+					this.initInfoEsportazione(uriInfo, bd);
+				}
+
+				Sezione sezioneRoot = infoEsportazione.getSezioneRoot();
+
+				CheckButton esportaCsv = (CheckButton) this.infoEsportazioneMap.get(esportaCsvId);
+				esportaCsv.setDefaultValue(true); 
+				sezioneRoot.addField(esportaCsv);
+
+				// [TODO] aggiungere check visualizzazione download avvisi
+
+				CheckButton esportaPdf = (CheckButton) this.infoEsportazioneMap.get(esportaPdfId);
+				esportaPdf.setDefaultValue(false); 
+				sezioneRoot.addField(esportaPdf);
+
 			}
 		}catch(ServiceException e){
 			throw new ConsoleException(e);
 		}
 		return infoEsportazione;
+	}
+
+	private void initInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
+		if(this.infoEsportazioneMap == null){
+			this.infoEsportazioneMap = new HashMap<String, ParamField<?>>();
+
+			String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
+			String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
+
+			// esportaCsv
+			String esportaCsvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.label");
+			CheckButton esportaCsv = new CheckButton(esportaCsvId, esportaCsvLabel, true, false, false, true);
+			this.infoEsportazioneMap.put(esportaCsvId, esportaCsv);
+
+			// esportaPdf
+			String esportaPdfLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.label");
+			CheckButton esportaPdf = new CheckButton(esportaPdfId, esportaPdfLabel, true, false, false, true);
+			this.infoEsportazioneMap.put(esportaPdfId, esportaPdf);
+
+		}
 	}
 
 	@Override
@@ -632,9 +688,8 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 	@Override
 	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException, ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
-		boolean exportTracciatoOriginale = true;
-		boolean exportTracciatoElaborato = true;
 		int numeroZipEntries = 0;
+		boolean esportaCsv = false, esportaPdf = false;
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo ai ruoli con diritto di lettura
@@ -650,7 +705,27 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			}
 
 			String fileName = f+".zip";
-			if(exportTracciatoOriginale){
+
+			String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
+			String esportaCsvS = Utils.getValue(rawValues, esportaCsvId);
+			if(StringUtils.isNotEmpty(esportaCsvS)){
+				esportaCsv = Boolean.parseBoolean(esportaCsvS);
+			}
+
+			String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
+			String esportaPdfS = Utils.getValue(rawValues, esportaPdfId);
+			if(StringUtils.isNotEmpty(esportaPdfS)){
+				esportaPdf = Boolean.parseBoolean(esportaPdfS);
+			}
+
+			// almeno una voce deve essere selezionata
+			if(!(esportaCsv || esportaPdf)){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.tipiExportObbligatori"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+
+			if(esportaCsv){
 				numeroZipEntries ++;
 				ZipEntry tracciatoOriginaleEntry = new ZipEntry(tracciato.getNomeFile());
 				zout.putNextEntry(tracciatoOriginaleEntry);
@@ -658,7 +733,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				zout.closeEntry();
 			}
 
-			if(exportTracciatoElaborato && tracciato.getRawDataRisposta() != null){
+			if(esportaCsv && tracciato.getRawDataRisposta() != null){
 				numeroZipEntries ++;
 				String nomeTracciatoNoExt = tracciato.getNomeFile() != null ? tracciato.getNomeFile().substring(0, tracciato.getNomeFile().lastIndexOf(".csv")) : "tracciato";
 				String fileNameElaborato = nomeTracciatoNoExt +  "_esito.csv";
@@ -668,6 +743,54 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				zout.write(tracciato.getRawDataRisposta());
 				zout.closeEntry();
 			}
+
+			if(esportaPdf) {
+				Tracciati tracciati = new Tracciati(bd);
+				ListaOperazioniDTO listaOperazioniDTO =new ListaOperazioniDTO();
+				// tipo operazione add
+				listaOperazioniDTO.setTipo(TipoOperazioneType.ADD);
+				// stato operazione completata con successo
+				listaOperazioniDTO.setStato(StatoOperazioneType.ESEGUITO_OK); 
+				// id Tracciato
+				listaOperazioniDTO.setIdTracciato(idToExport);
+				ListaOperazioniDTOResponse listaOperazioni = tracciati.listaOperazioni(listaOperazioniDTO);
+				List<Operazione> findAll = listaOperazioni.getOperazioni(); 
+
+				if(findAll != null && findAll.size() > 0){
+					this.log.debug("Export Tracciato, verranno inclusi " + findAll.size()+ " Avvisi pagamento.");
+
+					AvvisoPagamento avvisoBD = new AvvisoPagamento(bd);
+					for (Operazione entry : findAll) {
+						if(entry.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
+							// creo una entry per pdf
+							OperazioneCaricamento opCaricamento = (OperazioneCaricamento) entry;
+							String codDominio = opCaricamento.getCodDominio();
+							String iuv = opCaricamento.getIuv();
+							String avvisoFilename = codDominio + "_" + iuv;
+							this.log.debug("Lettura dell'Avviso [Dominio: " + codDominio+ " | Iuv: "+ iuv +"] in corso...");
+							LeggiAvvisoDTO leggiAvviso = new LeggiAvvisoDTO();
+							leggiAvviso.setCodDominio(codDominio);
+							leggiAvviso.setIuv(iuv);
+
+							LeggiAvvisoDTOResponse leggiAvvisoDTOResponse = avvisoBD.getAvviso(leggiAvviso );
+							
+							it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento = leggiAvvisoDTOResponse.getAvviso();
+							boolean avvisoDisponibile = avvisoPagamento.getStato().equals(StatoAvviso.STAMPATO) && avvisoPagamento.getPdf() != null;
+							this.log.debug("Lettura dell'Avviso [Dominio: " + codDominio+ " | Iuv: "+ iuv +"] effettuata, Avviso in formato Pdf "+(avvisoDisponibile ? "" : "non")+" disponibile.");
+							
+							if(avvisoDisponibile) {
+								// inserisco entry
+								numeroZipEntries ++;
+								ZipEntry tracciatoElaboratoEntry = new ZipEntry(avvisoFilename + ".pdf");
+								zout.putNextEntry(tracciatoElaboratoEntry);
+								zout.write(avvisoPagamento.getPdf());
+								zout.closeEntry();
+							}
+						}
+					}
+				}
+			}
+
 
 			// se non ho inserito nessuna entry
 			if(numeroZipEntries == 0){
@@ -684,6 +807,8 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return fileName;
+		}catch(ExportException e){
+			throw e;
 		}catch(WebApplicationException e){
 			throw e;
 		}catch(Exception e){

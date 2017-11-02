@@ -29,7 +29,7 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 		this.setIdDebito(Utils.validaESettaRecord(record, "idDebito", 35, null, true));
 		this.setNote(Utils.validaESettaRecord(record, "note", 512, null, true));
 		this.setCodApplicazione(Utils.validaESettaRecord(record, "codApplicazione", 35, null, false));
-		this.setCodVersamentoEnte(Utils.validaESettaRecord(record, "codiceVersamentoEnte", 35, null, false));
+		this.setCodVersamentoEnte(Utils.validaESettaRecord(record, "codVersamentoEnte", 35, null, false));
 	}
 	
 	public String getCodDominio() {

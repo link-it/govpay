@@ -32,8 +32,10 @@ public class OperazioneFactory {
 	private static Format formatW;
 	private static Parser caricamentoParser;
 	private static Parser annullamentoParser;
-	private static Parser caricamentoResponseParser;
-	private static Parser annullamentoResponseParser;
+	private static Parser caricamentoOkResponseParser;
+	private static Parser caricamentoKoResponseParser;
+	private static Parser annullamentoOkResponseParser;
+	private static Parser annullamentoKoResponseParser;
 	private static String delimiter;
 
 	public static void init() throws UtilsException, Exception {
@@ -42,8 +44,10 @@ public class OperazioneFactory {
 		delimiter = "" + formatW.getCsvFormat().getDelimiter();
 		caricamentoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.mapping.properties"), true);
 		annullamentoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.mapping.properties"), true);
-		caricamentoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.mapping.properties"), true);
-		annullamentoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.mapping.properties"), true);
+		caricamentoOkResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.ok.mapping.properties"), true);
+		caricamentoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.ko.mapping.properties"), true);
+		annullamentoOkResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.ok.mapping.properties"), true);
+		annullamentoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.ko.mapping.properties"), true);
 	}
 
 	public AbstractOperazioneRequest acquisisci(Record record, String op) throws ValidationException {
@@ -109,7 +113,7 @@ public class OperazioneFactory {
 
 	}
 
-	public AbstractOperazioneResponse parseLineaOperazioneResponse(TipoOperazioneType tipoOperazione, byte[] linea) throws ServiceException {
+	public AbstractOperazioneResponse parseLineaOperazioneResponse(TipoOperazioneType tipoOperazione, StatoOperazioneType statoOperazione, byte[] linea) throws ServiceException {
 
 		String lineaString = new String(linea);
 
@@ -123,9 +127,19 @@ public class OperazioneFactory {
 
 		Parser parser = null;
 		if(tipoOperazione.equals(TipoOperazioneType.ADD)) {
-			parser = caricamentoResponseParser;
+			if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_OK))
+				parser = caricamentoOkResponseParser;
+			else if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_KO))
+				parser = caricamentoKoResponseParser;
+			else 
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" in stato "+statoOperazione+" non supportata");
 		} else if(tipoOperazione.equals(TipoOperazioneType.DEL)) {
-			parser = annullamentoResponseParser;
+			if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_OK))
+				parser = annullamentoOkResponseParser;
+			else if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_KO))
+				parser = annullamentoKoResponseParser;
+			else 
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" in stato "+statoOperazione+" non supportata");
 		} else {
 			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" non supportata");
 		}

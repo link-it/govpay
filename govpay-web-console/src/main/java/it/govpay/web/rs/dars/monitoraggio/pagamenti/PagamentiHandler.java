@@ -1314,6 +1314,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return  fileName;
+		}catch(ExportException e){
+			throw e;
 		}catch(WebApplicationException e){
 			throw e;
 		}catch(Exception e){

@@ -20,6 +20,7 @@
 package it.govpay.core.business;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,8 +28,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.OperazioneAnnullamento;
@@ -47,6 +50,8 @@ import it.govpay.core.business.model.LeggiOperazioneDTO;
 import it.govpay.core.business.model.LeggiOperazioneDTOResponse;
 import it.govpay.core.business.model.LeggiTracciatoDTO;
 import it.govpay.core.business.model.LeggiTracciatoDTOResponse;
+import it.govpay.core.business.model.ListaOperazioniDTO;
+import it.govpay.core.business.model.ListaOperazioniDTOResponse;
 import it.govpay.core.business.model.ListaTracciatiDTO;
 import it.govpay.core.business.model.ListaTracciatiDTOResponse;
 import it.govpay.core.exceptions.InternalException;
@@ -170,12 +175,45 @@ public class Tracciati extends BasicBD {
 
 		Operazione operazione = operazioniBD.getOperazione(leggiOperazioneDTO.getId());
 
+		leggiOperazioneDTOResponse.setOperazione(fillOperazione(operazione));
+		return leggiOperazioneDTOResponse;
+	}
+
+	public ListaOperazioniDTOResponse listaOperazioni(ListaOperazioniDTO listaOperazioniDTO) throws NotAuthorizedException, ServiceException {
+		ListaOperazioniDTOResponse listaOperazioniDTOResponse = new ListaOperazioniDTOResponse();
+
+		OperazioniBD operazioniBD = new OperazioniBD(this);
+		OperazioneFilter filter = operazioniBD.newFilter(false);
+		FilterSortWrapper fsw = new FilterSortWrapper();
+		fsw.setField(it.govpay.orm.Operazione.model().LINEA_ELABORAZIONE);
+		fsw.setSortOrder(SortOrder.ASC);
+		filter.getFilterSortList().add(fsw);
+		filter.setTipoOperazione(listaOperazioniDTO.getTipo());
+		filter.setStato(listaOperazioniDTO.getStato()); 
+		filter.setIdTracciato(listaOperazioniDTO.getIdTracciato());
+
+		List<Operazione> findAll = operazioniBD.findAll(filter);
+
+		if(findAll != null && findAll.size() > 0){
+			List<Operazione> retList = new ArrayList<Operazione>();
+			for (Operazione operazione : findAll) {
+				retList.add(fillOperazione(operazione));
+			}
+
+			listaOperazioniDTOResponse.setOperazioni(retList);
+		}
+
+		return listaOperazioniDTOResponse;
+	}
+
+	private Operazione fillOperazione(Operazione operazione) 
+			throws ServiceException {
 		OperazioneFactory factory = new OperazioneFactory();
 
 		switch (operazione.getTipoOperazione()) {
 		case ADD:
 			CaricamentoRequest caricamentoRequest = (CaricamentoRequest) factory.parseLineaOperazioneRequest(operazione.getDatiRichiesta());
-			AbstractOperazioneResponse abstractOperazioneResponse = factory.parseLineaOperazioneResponse(operazione.getTipoOperazione(), operazione.getDatiRisposta());
+			AbstractOperazioneResponse abstractOperazioneResponse = factory.parseLineaOperazioneResponse(operazione.getTipoOperazione(), operazione.getStato(), operazione.getDatiRisposta());
 			CaricamentoResponse caricamentoResponse = (abstractOperazioneResponse instanceof CaricamentoResponse) ?  (CaricamentoResponse) abstractOperazioneResponse : null;
 
 			OperazioneCaricamento operazioneCaricamento = new OperazioneCaricamento(operazione);
@@ -197,21 +235,16 @@ public class Tracciati extends BasicBD {
 				operazioneCaricamento.setQrCode(caricamentoResponse.getQrCode());
 			}
 
-			leggiOperazioneDTOResponse.setOperazione(operazioneCaricamento);
-			break;
+			return operazioneCaricamento;
 		case DEL:
 			AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) factory.parseLineaOperazioneRequest(operazione.getDatiRichiesta());
 			OperazioneAnnullamento operazioneAnnullamento = new OperazioneAnnullamento(operazione);
 			operazioneAnnullamento.setMotivoAnnullamento(annullamentoRequest.getMotivoAnnullamento());
-			leggiOperazioneDTOResponse.setOperazione(operazioneAnnullamento);
-			break;
+			return operazioneAnnullamento;
 		case N_V:
 		default:
-			leggiOperazioneDTOResponse.setOperazione(operazione);
-			break;
+			return operazione;
 		}
-
-		return leggiOperazioneDTOResponse;
 	}
 
 
@@ -382,7 +415,7 @@ public class Tracciati extends BasicBD {
 			InserisciAvvisoDTOResponse inserisciAvvisoDTOResponse = avvisoPagamentoBD.inserisciAvviso(inserisciAvviso );
 			return inserisciAvvisoDTOResponse.getAvviso().getId();
 		}
-		
+
 		return null;
 	}
 }
