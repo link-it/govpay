@@ -71,6 +71,7 @@ import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 import java.io.ByteArrayOutputStream;
@@ -276,7 +277,10 @@ public class RptUtils {
 			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
 			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
 			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-			marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+			if(singoloVersamento.getTipoBollo() != null)
+				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+			else
+				marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
 			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
 			
 		}
