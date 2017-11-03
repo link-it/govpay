@@ -18,6 +18,14 @@
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.cxf.xjc-utils</groupId>
+			<artifactId>cxf-xjc-runtime</artifactId>
+                        <scope>provided</scope>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<filters>
 			<filter>${basedir}/../resources/filters/${env}.filter.properties</filter>
