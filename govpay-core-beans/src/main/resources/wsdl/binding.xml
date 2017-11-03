@@ -5,8 +5,8 @@
 
 	<jxb:globalBindings>
 		<jxb:javaType name="java.util.Date" xmlType="xs:time"
-			parseMethod="org.apache.cxf.xjc.runtime.DataTypeAdapter.parseTime"
-			printMethod="org.apache.cxf.xjc.runtime.DataTypeAdapter.printTime" />
+			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapterCXF.parseTime"
+			printMethod="it.govpay.core.utils.adapter.DataTypeAdapterCXF.printTime" />
 			
 		<jxb:javaType name="java.util.Date" xmlType="xs:dateTime"
 			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseDateTime"
