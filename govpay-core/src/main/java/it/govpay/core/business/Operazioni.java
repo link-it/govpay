@@ -80,6 +80,7 @@ public class Operazioni{
 
 	
 	private static boolean eseguiElaborazioneTracciati;
+	private static boolean eseguiGenerazioneAvvisi;
 	
 	public static synchronized void setEseguiElaborazioneTracciati() {
 		eseguiElaborazioneTracciati = true;
@@ -91,6 +92,18 @@ public class Operazioni{
 	
 	public static synchronized boolean getEseguiElaborazioneTracciati() {
 		return eseguiElaborazioneTracciati;
+	}
+	
+	public static synchronized void setEseguiGenerazioneAvvisi() {
+		eseguiGenerazioneAvvisi = true;
+	}
+	
+	public static synchronized void resetEseguiGenerazioneAvvisi() {
+		eseguiGenerazioneAvvisi = false;
+	}
+	
+	public static synchronized boolean getEseguiGenerazioneAvvisi() {
+		return eseguiGenerazioneAvvisi;
 	}
 
 	public static String acquisizioneRendicontazioni(String serviceName){
