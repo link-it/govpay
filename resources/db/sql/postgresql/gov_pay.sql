@@ -471,6 +471,9 @@ CREATE TABLE rpt
 	cod_stazione VARCHAR(35) NOT NULL,
 	cod_transazione_rpt VARCHAR(36),
 	cod_transazione_rt VARCHAR(36),
+	stato_conservazione VARCHAR(35),
+	descrizione_stato_cons VARCHAR(512),
+	data_conservazione TIMESTAMP,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_rpt') NOT NULL,
 	id_versamento BIGINT NOT NULL,
@@ -761,12 +764,11 @@ CREATE TABLE tracciati
 	nome_file VARCHAR(255) NOT NULL,
 	raw_data_richiesta BYTEA NOT NULL,
 	raw_data_risposta BYTEA,
+	tipo_tracciato VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
 	id_operatore BIGINT,
 	id_applicazione BIGINT,
-	-- check constraints
-	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -787,12 +789,13 @@ CREATE TABLE operazioni
 	dati_risposta BYTEA,
 	dettaglio_esito VARCHAR(255),
 	cod_versamento_ente VARCHAR(255),
+	cod_dominio VARCHAR(35),
+	iuv VARCHAR(35),
+	trn VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_operazioni') NOT NULL,
 	id_tracciato BIGINT NOT NULL,
 	id_applicazione BIGINT,
-	-- check constraints
-	CONSTRAINT chk_operazioni_1 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -832,14 +835,13 @@ CREATE TABLE avvisi
 	pdf BYTEA,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_avvisi') NOT NULL,
-	-- check constraints
-	CONSTRAINT chk_avvisi_1 CHECK (stato IN ('DA_STAMPARE','STAMPATO')),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_avvisi PRIMARY KEY (id)
 );
 
 -- index
 CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
+CREATE INDEX index_avvisi_2 ON avvisi (stato);
 
 
 

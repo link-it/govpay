@@ -85,6 +85,9 @@ public class Operazioni{
 		}
 		String esito = it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
 		
+		// forzo la generazione degli avvisi 
+		it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
+		
 		it.govpay.core.business.Operazioni.resetEseguiElaborazioneTracciati();
 		return esito;
 	}
@@ -131,12 +134,29 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.esitoConservazioneRt("Batch");
 	}
 	
-	@Schedule(hour="*", minute="*", second="*/30", persistent=false)
-	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
+	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
+	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
 	public static String generazioneAvvisiPagamento(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
 		}
+		
+		if(!it.govpay.core.business.Operazioni.getEseguiGenerazioneAvvisi()) {
+			return "";
+		}
+		String esito = it.govpay.core.business.Operazioni.generaAvvisi("Batch");
+		
+		it.govpay.core.business.Operazioni.resetEseguiGenerazioneAvvisi();
+		return esito;
+	}
+	
+	@Schedule(hour="*", minute="*/30", persistent=false)
+	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
+	public static String generazioneAvvisiPagamentoSchedule(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		
 		return it.govpay.core.business.Operazioni.generaAvvisi("Batch");
 	}
 }

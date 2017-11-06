@@ -10,8 +10,6 @@ CREATE TABLE avvisi
        pdf BYTEA,
        -- fk/pk columns
        id BIGINT DEFAULT nextval('seq_avvisi') NOT NULL,
-       -- check constraints
-       CONSTRAINT chk_avvisi_1 CHECK (stato IN ('DA_STAMPARE','STAMPATO')),
        -- fk/pk keys constraints
        CONSTRAINT pk_avvisi PRIMARY KEY (id)
 );
@@ -19,8 +17,23 @@ CREATE TABLE avvisi
 -- index
 CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
 
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('generazione-avvisi', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
+
 ALTER TABLE domini ADD COLUMN cbill VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_area VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_url_sito_web VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_email VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_pec VARCHAR(255);
+
+alter table tracciati DROP CONSTRAINT chk_tracciati_1;
+
+alter table tracciati add COLUMN tipo_tracciato VARCHAR(255);
+update tracciati set tipo_tracciato = 'VERSAMENTI';
+alter table tracciati ALTER COLUMN tipo_tracciato SET NOT NULL;
+
+alter table operazioni add COLUMN cod_dominio VARCHAR(35);
+alter table operazioni add COLUMN iuv VARCHAR(35);
+alter table operazioni add COLUMN trn VARCHAR(35);
+
+
+alter table operazioni DROP CONSTRAINT chk_operazioni_1;

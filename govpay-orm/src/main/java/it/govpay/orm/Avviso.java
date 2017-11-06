@@ -19,7 +19,6 @@
  */
 package it.govpay.orm;
 
-import it.govpay.orm.constants.StatoAvvisoType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,8 +38,9 @@ import java.io.Serializable;
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.govpay.it/orm}StatoAvvisoType" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="pdf" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pdf" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="operazione" type="{http://www.govpay.it/orm}Operazione" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -59,7 +59,8 @@ import java.io.Serializable;
   	"iuv",
   	"dataCreazione",
   	"stato",
-  	"pdf"
+  	"pdf",
+  	"operazione"
   }
 )
 
@@ -107,23 +108,11 @@ public class Avviso extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.dataCreazione = dataCreazione;
   }
 
-  public void set_value_stato(String value) {
-    this.stato = (StatoAvvisoType) StatoAvvisoType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_stato() {
-    if(this.stato == null){
-    	return null;
-    }else{
-    	return this.stato.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.StatoAvvisoType getStato() {
+  public java.lang.String getStato() {
     return this.stato;
   }
 
-  public void setStato(it.govpay.orm.constants.StatoAvvisoType stato) {
+  public void setStato(java.lang.String stato) {
     this.stato = stato;
   }
 
@@ -133,6 +122,14 @@ public class Avviso extends org.openspcoop2.utils.beans.BaseBean implements Seri
 
   public void setPdf(byte[] pdf) {
     this.pdf = pdf;
+  }
+
+  public Operazione getOperazione() {
+    return this.operazione;
+  }
+
+  public void setOperazione(Operazione operazione) {
+    this.operazione = operazione;
   }
 
   private static final long serialVersionUID = 1L;
@@ -167,14 +164,15 @@ public class Avviso extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @XmlElement(name="dataCreazione",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataCreazione;
 
-  @XmlTransient
-  protected java.lang.String _value_stato;
-
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
-  protected StatoAvvisoType stato;
+  protected java.lang.String stato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="pdf",required=true,nillable=false)
+  @XmlElement(name="pdf",required=false,nillable=false)
   protected byte[] pdf;
+
+  @XmlElement(name="operazione",required=true,nillable=false)
+  protected Operazione operazione;
 
 }

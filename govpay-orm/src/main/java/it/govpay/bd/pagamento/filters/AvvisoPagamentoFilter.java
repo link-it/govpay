@@ -1,5 +1,6 @@
 package it.govpay.bd.pagamento.filters;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -8,12 +9,21 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.model.Operazione.StatoOperazioneType;
+import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 import it.govpay.orm.Avviso;
+import it.govpay.orm.dao.jdbc.converter.AvvisoFieldConverter;
 
 public class AvvisoPagamentoFilter extends AbstractFilter {
 	
 	private StatoAvviso stato;
+	private StatoOperazioneType statoOperazione;
+	private TipoOperazioneType tipoOperazione;
+	private String codDominio;
+	private String iuv;
+	private Long idTracciato;
 
 	public AvvisoPagamentoFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -29,9 +39,52 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
+			boolean addAnd = false;
 			
 			if(this.stato != null) {
 				newExpression.equals(Avviso.model().STATO, this.stato.toString());
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Avviso.model().COD_DOMINIO, this.codDominio);
+			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Avviso.model().IUV, this.iuv);
+			}
+			
+			if(this.statoOperazione != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Avviso.model().OPERAZIONE.STATO, this.statoOperazione.toString());
+				addAnd = true;
+			}
+			
+			if(this.tipoOperazione != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Avviso.model().OPERAZIONE.TIPO_OPERAZIONE, this.tipoOperazione.toString());
+				addAnd = true;
+			}
+			
+			if(this.idTracciato != null){
+				AvvisoFieldConverter converter = new AvvisoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				
+				if(addAnd)
+					newExpression.and();
+				
+				// [TODO] fare model
+				CustomField idOperatoreCustomField = new CustomField("id_tracciato",  Long.class, "id_tracciato",converter.toTable(it.govpay.orm.Avviso.model().OPERAZIONE));
+				newExpression.equals(idOperatoreCustomField, this.idTracciato);
 			}
 			
 			return newExpression;
@@ -51,5 +104,46 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 	public void setStato(StatoAvviso stato) {
 		this.stato = stato;
 	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+
+	public Long getIdTracciato() {
+		return idTracciato;
+	}
+
+	public void setIdTracciato(Long idTracciato) {
+		this.idTracciato = idTracciato;
+	}
+
+	public StatoOperazioneType getStatoOperazione() {
+		return statoOperazione;
+	}
+
+	public void setStatoOperazione(StatoOperazioneType statoOperazione) {
+		this.statoOperazione = statoOperazione;
+	}
+
+	public TipoOperazioneType getTipoOperazione() {
+		return tipoOperazione;
+	}
+
+	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
+		this.tipoOperazione = tipoOperazione;
+	}
+ 
 
 }

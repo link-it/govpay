@@ -54,12 +54,12 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 				Operazione object = new Operazione();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "set_value_tipoOperazione", String.class,
-					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType())+"");
+				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType()));
 				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "linea_elaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType()));
-				setParameter(object, "set_value_stato", String.class,
-					jdbcParameterUtilities.readParameter(rs, "stato", Operazione.model().STATO.getFieldType())+"");
+				setParameter(object, "setStato", Operazione.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Operazione.model().STATO.getFieldType()));
 				setParameter(object, "setDatiRichiesta", Operazione.model().DATI_RICHIESTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_richiesta", Operazione.model().DATI_RICHIESTA.getFieldType()));
 				setParameter(object, "setDatiRisposta", Operazione.model().DATI_RISPOSTA.getFieldType(),
@@ -68,6 +68,12 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "dettaglio_esito", Operazione.model().DETTAGLIO_ESITO.getFieldType()));
 				setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType()));
+				setParameter(object, "setCodDominio", Operazione.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Operazione.model().COD_DOMINIO.getFieldType()));
+				setParameter(object, "setIuv", Operazione.model().IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv", Operazione.model().IUV.getFieldType()));
+				setParameter(object, "setTrn", Operazione.model().TRN.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "trn", Operazione.model().TRN.getFieldType()));
 				return object;
 			}
 			
@@ -90,11 +96,11 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 				Operazione object = new Operazione();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "set_value_tipoOperazione", String.class,
+				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"tipoOperazione"));
 				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"lineaElaborazione"));
-				setParameter(object, "set_value_stato", String.class,
+				setParameter(object, "setStato", Operazione.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
 				setParameter(object, "setDatiRichiesta", Operazione.model().DATI_RICHIESTA.getFieldType(),
 					this.getObjectFromMap(map,"datiRichiesta"));
@@ -104,6 +110,12 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dettaglioEsito"));
 				setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codVersamentoEnte"));
+				setParameter(object, "setCodDominio", Operazione.model().COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"codDominio"));
+				setParameter(object, "setIuv", Operazione.model().IUV.getFieldType(),
+					this.getObjectFromMap(map,"iuv"));
+				setParameter(object, "setTrn", Operazione.model().TRN.getFieldType(),
+					this.getObjectFromMap(map,"trn"));
 				return object;
 			}
 			

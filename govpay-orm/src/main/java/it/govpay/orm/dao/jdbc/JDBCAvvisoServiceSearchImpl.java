@@ -443,7 +443,25 @@ public class JDBCAvvisoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
+
+		String tableNameOperazioni = this.getFieldConverter().toAliasTable(Avviso.model().OPERAZIONE);
+		String tableNameAvvisi = this.getFieldConverter().toAliasTable(Avviso.model());
+		String tableNameTracciati = this.getFieldConverter().toAliasTable(Avviso.model().OPERAZIONE.ID_TRACCIATO);
+
+		if(expression.inUseModel(Avviso.model().OPERAZIONE,false)){
+			sqlQueryObject.addWhereCondition(tableNameAvvisi+".cod_dominio="+tableNameOperazioni+".cod_dominio");
+			sqlQueryObject.addWhereCondition(tableNameAvvisi+".iuv="+tableNameOperazioni+".iuv");
+		}
+		
+		if(expression.inUseModel(Avviso.model().OPERAZIONE.ID_TRACCIATO,false)){
+			sqlQueryObject.addWhereCondition(tableNameOperazioni+".id_tracciato="+tableNameTracciati+".id");
+			if(!expression.inUseModel(Avviso.model().OPERAZIONE,false)){
+				sqlQueryObject.addFromTable(tableNameOperazioni);
+			}
+			
+		}
+
+
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Avviso avviso) throws NotFoundException, ServiceException, NotImplementedException, Exception{

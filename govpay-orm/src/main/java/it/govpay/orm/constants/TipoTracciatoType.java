@@ -26,25 +26,21 @@ import org.openspcoop2.generic_project.beans.IEnumeration;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 
 /**     
- * Enumeration dell'elemento TipoOperazioneType xsd (tipo:string) 
+ * Enumeration dell'elemento TipoTracciatoType xsd (tipo:string) 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-@javax.xml.bind.annotation.XmlType(name = "TipoOperazioneType")
+@javax.xml.bind.annotation.XmlType(name = "TipoTracciatoType")
 @javax.xml.bind.annotation.XmlEnum(String.class)
-public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneable {
+public enum TipoTracciatoType implements IEnumeration , Serializable , Cloneable {
 
-	@javax.xml.bind.annotation.XmlEnumValue("ADD")
-	ADD ("ADD"),
-	@javax.xml.bind.annotation.XmlEnumValue("DEL")
-	DEL ("DEL"),
-	@javax.xml.bind.annotation.XmlEnumValue("INC")
-	INC ("INC"),
-	@javax.xml.bind.annotation.XmlEnumValue("N_V")
-	N_V ("N_V");
+	@javax.xml.bind.annotation.XmlEnumValue("VERSAMENTI")
+	VERSAMENTI ("VERSAMENTI"),
+	@javax.xml.bind.annotation.XmlEnumValue("INCASSI")
+	INCASSI ("INCASSI");
 	
 	
 	/** Value */
@@ -57,7 +53,7 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 
 
 	/** Official Constructor */
-	TipoOperazioneType(String value)
+	TipoTracciatoType(String value)
 	{
 		this.value = value;
 	}
@@ -68,7 +64,7 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 	public String toString(){
 		return this.value;
 	}
-	public boolean equals(TipoOperazioneType object){
+	public boolean equals(TipoTracciatoType object){
 		if(object==null)
 			return false;
 		if(object.getValue()==null)
@@ -85,10 +81,10 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 	
 	/** compatibility with the generated bean (reflection) */
 	public boolean equals(Object object,List<String> fieldsNotCheck){
-		if( !(object instanceof TipoOperazioneType) ){
+		if( !(object instanceof TipoTracciatoType) ){
 			throw new RuntimeException("Wrong type: "+object.getClass().getName());
 		}
-		return this.equals(((TipoOperazioneType)object));
+		return this.equals(((TipoTracciatoType)object));
 	}
 	public String toString(boolean reportHTML){
 		return toString();
@@ -109,7 +105,7 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 	public static String[] toArray(){
 		String[] res = new String[values().length];
 		int i=0;
-		for (TipoOperazioneType tmp : values()) {
+		for (TipoTracciatoType tmp : values()) {
 			res[i]=tmp.getValue();
 			i++;
 		}
@@ -118,7 +114,7 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 	public static String[] toStringArray(){
 		String[] res = new String[values().length];
 		int i=0;
-		for (TipoOperazioneType tmp : values()) {
+		for (TipoTracciatoType tmp : values()) {
 			res[i]=tmp.toString();
 			i++;
 		}
@@ -127,7 +123,7 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 	public static String[] toEnumNameArray(){
 		String[] res = new String[values().length];
 		int i=0;
-		for (TipoOperazioneType tmp : values()) {
+		for (TipoTracciatoType tmp : values()) {
 			res[i]=tmp.name();
 			i++;
 		}
@@ -138,16 +134,16 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 		return toEnumConstant(value)!=null;
 	}
 	
-	public static TipoOperazioneType toEnumConstant(String value){
+	public static TipoTracciatoType toEnumConstant(String value){
 		try{
 			return toEnumConstant(value,false);
 		}catch(NotFoundException notFound){
 			return null;
 		}
 	}
-	public static TipoOperazioneType toEnumConstant(String value, boolean throwNotFoundException) throws NotFoundException{
-		TipoOperazioneType res = null;
-		for (TipoOperazioneType tmp : values()) {
+	public static TipoTracciatoType toEnumConstant(String value, boolean throwNotFoundException) throws NotFoundException{
+		TipoTracciatoType res = null;
+		for (TipoTracciatoType tmp : values()) {
 			if(tmp.getValue().equals(value)){
 				res = tmp;
 				break;
@@ -167,8 +163,8 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 		}
 	}
 	public static IEnumeration toEnumConstantFromString(String value, boolean throwNotFoundException) throws NotFoundException{
-		TipoOperazioneType res = null;
-		for (TipoOperazioneType tmp : values()) {
+		TipoTracciatoType res = null;
+		for (TipoTracciatoType tmp : values()) {
 			if(tmp.toString().equals(value)){
 				res = tmp;
 				break;

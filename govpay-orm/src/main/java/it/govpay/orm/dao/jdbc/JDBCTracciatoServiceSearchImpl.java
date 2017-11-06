@@ -176,6 +176,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
     		fields.add(Tracciato.model().NOME_FILE);
     		fields.add(Tracciato.model().RAW_DATA_RICHIESTA);
     		fields.add(Tracciato.model().RAW_DATA_RISPOSTA);
+    		fields.add(Tracciato.model().TIPO_TRACCIATO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

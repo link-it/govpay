@@ -37,6 +37,7 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.orm.Tracciato;
 import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
 
@@ -45,6 +46,7 @@ public class TracciatoFilter extends AbstractFilter {
 	private List<Long> idTracciati = null; 
 	private CustomField cf;
 	
+	private TipoTracciatoType tipoTracciato;
 	private List<StatoTracciatoType> statoTracciato;
 	private Long idOperatore = null;
 	private Long idApplicazione = null;
@@ -79,7 +81,15 @@ public class TracciatoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			
+			if(this.tipoTracciato != null) {
+				newExpression.equals(it.govpay.orm.Tracciato.model().TIPO_TRACCIATO, it.govpay.orm.constants.TipoTracciatoType.valueOf(tipoTracciato.toString()));
+				addAnd = true;
+			}
+			
 			if(this.statoTracciato != null && !this.statoTracciato.isEmpty()) {
+				if(addAnd)
+					newExpression.and(); 
+				
 				List<it.govpay.orm.constants.StatoTracciatoType> statoTracciatoOrm  = toStatoTracciatoOrm(this.statoTracciato);
 				newExpression.in(it.govpay.orm.Tracciato.model().STATO, statoTracciatoOrm);
 				addAnd = true;
@@ -249,6 +259,12 @@ public class TracciatoFilter extends AbstractFilter {
 		this.dataCaricamentoMax = dataCaricamentoMax;
 	}
 
-	
+	public TipoTracciatoType getTipoTracciato() {
+		return tipoTracciato;
+	}
+
+	public void setTipoTracciato(TipoTracciatoType tipoTracciato) {
+		this.tipoTracciato = tipoTracciato;
+	}
 	
 }

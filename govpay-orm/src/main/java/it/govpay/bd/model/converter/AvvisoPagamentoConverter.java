@@ -15,7 +15,7 @@ public class AvvisoPagamentoConverter {
 		dto.setId(vo.getId());
 		dto.setIuv(vo.getIuv());
 		dto.setPdf(vo.getPdf());
-		dto.setStato(StatoAvviso.valueOf(vo.get_value_stato()));
+		dto.setStato(StatoAvviso.valueOf(vo.getStato()));
 		
 		return dto;
 	}
@@ -28,7 +28,7 @@ public class AvvisoPagamentoConverter {
 		vo.setId(dto.getId());
 		vo.setIuv(dto.getIuv());
 		vo.setPdf(dto.getPdf());
-		vo.set_value_stato(dto.getStato().toString());
+		vo.setStato(dto.getStato().toString());
 		
 		return vo;
 	}

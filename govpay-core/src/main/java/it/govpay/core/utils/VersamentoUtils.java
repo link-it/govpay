@@ -155,6 +155,11 @@ public class VersamentoUtils {
 		it.govpay.model.Anagrafica anagrafica = new it.govpay.model.Anagrafica();
 		anagrafica.setCodUnivoco(versamento.getCfDebitore());
 		anagrafica.setRagioneSociale(versamento.getAnagraficaDebitore()); 
+		anagrafica.setIndirizzo(versamento.getDebitoreIndirizzo());
+		anagrafica.setCivico(versamento.getDebitoreCivico());
+		anagrafica.setProvincia(versamento.getDebitoreProvincia());
+		anagrafica.setCap(versamento.getDebitoreCap());
+		anagrafica.setLocalita(versamento.getDebitoreLocalita());
 		model.setAnagraficaDebitore(anagrafica);
 		
 		CausaleSemplice causale = model.new CausaleSemplice();

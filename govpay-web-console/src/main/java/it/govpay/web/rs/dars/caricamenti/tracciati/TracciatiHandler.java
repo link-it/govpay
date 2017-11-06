@@ -76,9 +76,11 @@ import net.sf.json.JSONObject;
 public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHandler<Tracciato>{
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
+	private boolean abilitaDownloadAvvisiPagamento = false;
 
 	public TracciatiHandler(Logger log, DarsService darsService) { 
 		super(log, darsService);
+		this.abilitaDownloadAvvisiPagamento  = ConsoleProperties.getInstance().isAbilitaDownloadAvvisiPagamento();
 	}
 
 	@Override
@@ -350,29 +352,29 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
 				infoEsportazione = new InfoForm(esportazione);
 
-				List<String> titoli = new ArrayList<String>();
-				titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esporta.singolo.titolo"));
-				infoEsportazione.setTitolo(titoli);
-
-				String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
-				String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
-
-				if(this.infoEsportazioneMap == null){
-					this.initInfoEsportazione(uriInfo, bd);
+				// se l'utente ha la possibilita' di scaricare gli avvisi e se tutti gli avvisi del tracciato sono stati generati. 
+				if(this.abilitaDownloadAvvisiPagamento && entry.getStato().equals(StatoTracciatoType.STAMPATO)) {
+					List<String> titoli = new ArrayList<String>();
+					titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esporta.singolo.titolo"));
+					infoEsportazione.setTitolo(titoli);
+	
+					String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
+					String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
+	
+					if(this.infoEsportazioneMap == null){
+						this.initInfoEsportazione(uriInfo, bd);
+					}
+	
+					Sezione sezioneRoot = infoEsportazione.getSezioneRoot();
+	
+					CheckButton esportaCsv = (CheckButton) this.infoEsportazioneMap.get(esportaCsvId);
+					esportaCsv.setDefaultValue(true); 
+					sezioneRoot.addField(esportaCsv);
+	
+					CheckButton esportaPdf = (CheckButton) this.infoEsportazioneMap.get(esportaPdfId);
+					esportaPdf.setDefaultValue(false); 
+					sezioneRoot.addField(esportaPdf);
 				}
-
-				Sezione sezioneRoot = infoEsportazione.getSezioneRoot();
-
-				CheckButton esportaCsv = (CheckButton) this.infoEsportazioneMap.get(esportaCsvId);
-				esportaCsv.setDefaultValue(true); 
-				sezioneRoot.addField(esportaCsv);
-
-				// [TODO] aggiungere check visualizzazione download avvisi
-
-				CheckButton esportaPdf = (CheckButton) this.infoEsportazioneMap.get(esportaPdfId);
-				esportaPdf.setDefaultValue(false); 
-				sezioneRoot.addField(esportaPdf);
-
 			}
 		}catch(ServiceException e){
 			throw new ConsoleException(e);
@@ -705,17 +707,23 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			}
 
 			String fileName = f+".zip";
-
-			String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
-			String esportaCsvS = Utils.getValue(rawValues, esportaCsvId);
-			if(StringUtils.isNotEmpty(esportaCsvS)){
-				esportaCsv = Boolean.parseBoolean(esportaCsvS);
-			}
-
-			String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
-			String esportaPdfS = Utils.getValue(rawValues, esportaPdfId);
-			if(StringUtils.isNotEmpty(esportaPdfS)){
-				esportaPdf = Boolean.parseBoolean(esportaPdfS);
+			
+			// se l'utente ha la possibilita' di scaricare gli avvisi e se tutti gli avvisi del tracciato sono stati generati. 
+			if(this.abilitaDownloadAvvisiPagamento && tracciato.getStato().equals(StatoTracciatoType.STAMPATO)) { 
+				String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
+				String esportaCsvS = Utils.getValue(rawValues, esportaCsvId);
+				if(StringUtils.isNotEmpty(esportaCsvS)){
+					esportaCsv = Boolean.parseBoolean(esportaCsvS);
+				}
+	
+				String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
+				String esportaPdfS = Utils.getValue(rawValues, esportaPdfId);
+				if(StringUtils.isNotEmpty(esportaPdfS)){
+					esportaPdf = Boolean.parseBoolean(esportaPdfS);
+				}
+			} else {
+				//solo csv
+				esportaCsv = true;
 			}
 
 			// almeno una voce deve essere selezionata
@@ -838,6 +846,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			case CARICAMENTO_KO:
 			case CARICAMENTO_OK:
 			case ANNULLATO:
+			case STAMPATO:
 				break;
 			case IN_CARICAMENTO:
 			case NUOVO:

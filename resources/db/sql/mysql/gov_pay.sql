@@ -629,8 +629,8 @@ CREATE TABLE incassi
 	cod_dominio VARCHAR(35) NOT NULL,
 	causale VARCHAR(512) NOT NULL,
 	importo DOUBLE NOT NULL,
-	data_valuta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	data_contabile TIMESTAMP DEFAULT  CURRENT_TIMESTAMP,
+	data_valuta TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+	data_contabile TIMESTAMP DEFAULT  CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3),
 	nome_dispositivo VARCHAR(512),
@@ -745,6 +745,8 @@ CREATE TABLE eventi
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
+
+
 CREATE TABLE batch
 (
 	cod_batch VARCHAR(255) NOT NULL,
@@ -780,12 +782,11 @@ CREATE TABLE tracciati
 	nome_file VARCHAR(255) NOT NULL,
 	raw_data_richiesta MEDIUMBLOB NOT NULL,
 	raw_data_risposta MEDIUMBLOB,
+	tipo_tracciato VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_operatore BIGINT,
 	id_applicazione BIGINT,
-	-- check constraints
-	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -804,12 +805,13 @@ CREATE TABLE operazioni
 	dati_risposta MEDIUMBLOB,
 	dettaglio_esito VARCHAR(255),
 	cod_versamento_ente VARCHAR(255),
+	cod_dominio VARCHAR(35),
+	iuv VARCHAR(35),
+	trn VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_tracciato BIGINT NOT NULL,
 	id_applicazione BIGINT,
-	-- check constraints
-	CONSTRAINT chk_operazioni_1 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -836,6 +838,7 @@ CREATE TABLE gp_audit
 
 
 
+
 CREATE TABLE avvisi
 (
 	cod_dominio VARCHAR(35) NOT NULL,
@@ -846,14 +849,14 @@ CREATE TABLE avvisi
 	pdf MEDIUMBLOB,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	-- check constraints
-	CONSTRAINT chk_avvisi_1 CHECK (stato IN ('DA_STAMPARE','STAMPATO')),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_avvisi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- index
 CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
+CREATE INDEX index_avvisi_2 ON avvisi (stato);
+
 
 
 CREATE TABLE ID_MESSAGGIO_RELATIVO

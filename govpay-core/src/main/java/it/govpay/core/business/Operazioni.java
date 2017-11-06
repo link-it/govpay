@@ -80,6 +80,7 @@ public class Operazioni{
 
 	
 	private static boolean eseguiElaborazioneTracciati;
+	private static boolean eseguiGenerazioneAvvisi;
 	
 	public static synchronized void setEseguiElaborazioneTracciati() {
 		eseguiElaborazioneTracciati = true;
@@ -91,6 +92,18 @@ public class Operazioni{
 	
 	public static synchronized boolean getEseguiElaborazioneTracciati() {
 		return eseguiElaborazioneTracciati;
+	}
+	
+	public static synchronized void setEseguiGenerazioneAvvisi() {
+		eseguiGenerazioneAvvisi = true;
+	}
+	
+	public static synchronized void resetEseguiGenerazioneAvvisi() {
+		eseguiGenerazioneAvvisi = false;
+	}
+	
+	public static synchronized boolean getEseguiGenerazioneAvvisi() {
+		return eseguiGenerazioneAvvisi;
 	}
 
 	public static String acquisizioneRendicontazioni(String serviceName){
@@ -417,10 +430,41 @@ public class Operazioni{
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			if(BatchManager.startEsecuzione(bd, batch_tracciati)) {
-				bd.setAutoCommit(false);
 				log.trace("Elaborazione tracciati");
+				
 				TracciatiBD tracciatiBD = new TracciatiBD(bd);
 				TracciatoFilter filter = tracciatiBD.newFilter();
+				
+				// esecuzione di questa parte dell'elaborazione dei tracciati solo se la funzionalita' di stampa avvisi e' disponibile.
+				if(GovpayConfig.getInstance().isBatchAvvisiPagamento()) {
+					log.trace("Controllo stato stampa per i tracciati gia' caricati");
+					filter.addStatoTracciato(StatoTracciatoType.CARICAMENTO_OK);
+					filter.setDataUltimoAggiornamentoMax(new Date());
+					
+					List<Tracciato> tracciati = tracciatiBD.findAll(filter);
+					
+					while(tracciati.size() != 0) {
+						log.info("Trovati ["+tracciati.size()+"] tracciati che hanno gli avvisi di pagamento in stampa");
+						Tracciati tracciatiBusiness = new Tracciati(bd);
+						
+						for(Tracciato tracciato: tracciati) {
+							log.info("Avvio controllo stato stampe tracciato "  + tracciato.getId());
+							ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
+							elaboraTracciatoDTO.setTracciato(tracciato);
+							tracciatiBusiness.controllaStatoStampeTracciato(elaboraTracciatoDTO);
+							log.info("controllo stato stampe tracciato "  + tracciato.getId() + " completata");
+						}
+						
+						filter.setDataUltimoAggiornamentoMax(new Date());
+						tracciati = tracciatiBD.findAll(filter);
+					}
+						
+					log.trace("Controllo stato stampa per i tracciati gia' caricati completato.");
+				}
+				
+				
+				bd.setAutoCommit(false);
+				log.trace("Elaborazione tracciati da caricare");
 				filter.addStatoTracciato(StatoTracciatoType.NUOVO);
 				filter.addStatoTracciato(StatoTracciatoType.IN_CARICAMENTO);
 				filter.setDataUltimoAggiornamentoMax(new Date());
@@ -569,7 +613,7 @@ public class Operazioni{
 					avvisi = listaAvvisiDTOResponse.getAvvisi();
 				}
 				
-				//aggiornaSondaOK(batch_generazione_avvisi, bd);
+				aggiornaSondaOK(batch_generazione_avvisi, bd);
 				BatchManager.stopEsecuzione(bd, batch_generazione_avvisi);
 				log.info("Generazione Avvisi Pagamento terminata.");
 				return "Generazione Avvisi Pagamento terminata.";
@@ -578,7 +622,7 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			log.error("Generazione Avvisi Pagamento Fallita", e);
-			//aggiornaSondaKO(batch_generazione_avvisi, e, bd);
+			aggiornaSondaKO(batch_generazione_avvisi, e, bd);
 			return "Generazione Avvisi Pagamento#" + e.getMessage();
 		} finally {
 			BatchManager.stopEsecuzione(bd, batch_generazione_avvisi);

@@ -37,8 +37,10 @@ import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.OperazioneAnnullamento;
 import it.govpay.bd.model.OperazioneCaricamento;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.pagamento.AvvisiPagamentoBD;
 import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
+import it.govpay.bd.pagamento.filters.AvvisoPagamentoFilter;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.business.model.ElaboraTracciatoDTO;
@@ -307,6 +309,9 @@ public class Tracciati extends BasicBD {
 				operazione.setIdTracciato(request.getIdTracciato());
 				operazione.setLineaElaborazione(request.getLinea());
 				operazione.setTipoOperazione(request.getTipoOperazione());
+				
+				operazione = this.inserisciInformazioniRelativeAlTipoOperazione(operazione, request, response);
+				
 				operazioniBD.insertOperazione(operazione);
 
 				if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
@@ -381,6 +386,42 @@ public class Tracciati extends BasicBD {
 			this.setAutoCommit(wasAutocommit);
 		}
 	}
+	
+	public void controllaStatoStampeTracciato(ElaboraTracciatoDTO elaboraTracciatoDTO) throws ServiceException {
+		boolean wasAutocommit = this.isAutoCommit();
+
+		if(this.isAutoCommit()) {
+			this.setAutoCommit(false);
+		}
+
+		TracciatiBD tracciatiBD = new TracciatiBD(this);
+		Tracciato tracciato = elaboraTracciatoDTO.getTracciato();
+		AvvisiPagamentoBD avvisiBD = new AvvisiPagamentoBD(this);
+
+		log.info("Avvio controllo stato stampe avvisi per il tracciato [" + tracciato.getId() +"]");
+		
+		try {
+			// 1. esecuzione count avvisi da stampare.
+			AvvisoPagamentoFilter filter = avvisiBD.newFilter();
+			filter.setIdTracciato(tracciato.getId());
+			filter.setStato(StatoAvviso.DA_STAMPARE);
+			filter.setTipoOperazione(TipoOperazioneType.ADD);
+			filter.setStatoOperazione(StatoOperazioneType.ESEGUITO_OK);
+			long countNumeroAvvisiDaStampare = avvisiBD.count(filter);
+			
+			if(countNumeroAvvisiDaStampare == 0) {
+				tracciato.setStato(StatoTracciatoType.STAMPATO);
+				tracciatiBD.updateTracciato(tracciato);
+				if(!isAutoCommit()) this.commit();
+			}
+			log.info("Controllo stato stampe avvisi per il tracciato ["+tracciato.getId()+"] terminata: " + tracciato.getStato());
+		} catch(Throwable e) {
+			log.error("Errore durante il controllo stato stampe avvisi per il tracciato ["+tracciato.getId()+"]: " + e.getMessage(), e);
+			if(!isAutoCommit()) this.rollback();
+		} finally {
+			this.setAutoCommit(wasAutocommit);
+		}
+	}
 
 
 	/**
@@ -418,6 +459,25 @@ public class Tracciati extends BasicBD {
 
 		return null;
 	}
+	
+	public Operazione inserisciInformazioniRelativeAlTipoOperazione(Operazione operazione,AbstractOperazioneRequest request, AbstractOperazioneResponse response) throws Exception{
+		// aggiungo dati relativi a codDominio iuv (nel caso ADD) codDominio trn (nel caso INC)
+		if(operazione.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
+			if(request instanceof CaricamentoRequest && response instanceof CaricamentoResponse) {
+				CaricamentoRequest caricamentoRequest = (CaricamentoRequest) request;
+				CaricamentoResponse caricamentoResponse = (CaricamentoResponse) response;
+				operazione.setCodDominio(caricamentoRequest.getCodDominio());
+				operazione.setIuv(caricamentoResponse.getIuv());
+			}
+		} else if(operazione.getTipoOperazione().equals(TipoOperazioneType.INC)) {
+			// [BUSSU] aggiungere le info trn e coddominio
+		} else { //do nothing 
+			 
+		}
+		
+		return operazione;
+	}
+		 
 }
 
 
