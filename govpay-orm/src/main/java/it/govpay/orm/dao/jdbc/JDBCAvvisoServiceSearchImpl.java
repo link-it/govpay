@@ -48,7 +48,6 @@ import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 import it.govpay.orm.Avviso;
-import it.govpay.orm.FR;
 import it.govpay.orm.dao.jdbc.converter.AvvisoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.AvvisoFetch;
 
