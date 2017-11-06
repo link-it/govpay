@@ -1,5 +1,7 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,12 +15,18 @@ import org.openspcoop2.utils.csv.ParserResult;
 import org.openspcoop2.utils.csv.Record;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.core.business.Incassi;
 import it.govpay.core.business.PagamentiAttesa;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
 import it.govpay.core.business.model.CaricaVersamentoDTO;
 import it.govpay.core.business.model.CaricaVersamentoDTOResponse;
+import it.govpay.core.business.model.RichiestaIncassoDTO;
+import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IncassiException;
+import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.tracciati.CSVReaderProperties;
@@ -48,8 +56,11 @@ public class OperazioneFactory {
 		delimiter = "" + formatW.getCsvFormat().getDelimiter();
 		caricamentoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.mapping.properties"), true);
 		annullamentoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.mapping.properties"), true);
+		incassoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/incasso.mapping.properties"), true);
 		caricamentoOkResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.ok.mapping.properties"), true);
 		caricamentoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.ko.mapping.properties"), true);
+		incassoOkResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/incasso.response.ok.mapping.properties"), true);
+		incassoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/incasso.response.ko.mapping.properties"), true);
 		annullamentoOkResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.ok.mapping.properties"), true);
 		annullamentoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.ko.mapping.properties"), true);
 	}
@@ -330,39 +341,67 @@ public class OperazioneFactory {
 
 	}
 
-	private IncassoResponse eseguiIncasso(Tracciato tracciato, IncassoRequest request, BasicBD basicBD) throws ServiceException {
+	private IncassoResponse eseguiIncasso(Tracciato tracciato, IncassoRequest request, BasicBD bd) throws ServiceException {
 
 
-		IncassoResponse incassoResponse = new IncassoResponse();
-		//TODO
-//
-//		try {
-//			PagamentiAttesa pagamentiAttesa = new PagamentiAttesa(basicBD);
-//			AnnullaVersamentoDTO annullaVersamentoDTO = null;
-//			if(tracciato.getApplicazione(basicBD) != null) {
-//				annullaVersamentoDTO = new AnnullaVersamentoDTO(tracciato.getApplicazione(basicBD), request.getCodApplicazione(), request.getCodVersamentoEnte());
-//			} else {
-//				annullaVersamentoDTO = new AnnullaVersamentoDTO(tracciato.getOperatore(basicBD), request.getCodApplicazione(), request.getCodVersamentoEnte());
-//			}
-//
-//			annullaVersamentoDTO.setMotivoAnnullamento(request.getMotivoAnnullamento()); 
-//			pagamentiAttesa.annullaVersamento(annullaVersamentoDTO);
-//
-//			incassoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
-//			incassoResponse.setEsito("DEL_OK");
-//			incassoResponse.setDescrizioneEsito("Pagamento in Attesa [App:" + request.getCodApplicazione() + " Id:" + request.getCodVersamentoEnte() + "] eliminato con successo");
-//		} catch(GovPayException e) {
-//			incassoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-//			incassoResponse.setEsito("DEL_KO");
-//			incassoResponse.setEsito(e.getCodEsito().name());
-//			incassoResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " +e.getMessage());
-//		} catch(NotAuthorizedException e) {
-//			incassoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-//			incassoResponse.setEsito("DEL_KO");
-//			incassoResponse.setEsito(CostantiCaricamento.NOT_AUTHORIZED);
-//			incassoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
-//		}
-		return incassoResponse;
+		Incassi incassi = new Incassi(bd);
+		RichiestaIncassoDTO richiestaIncasso = new RichiestaIncassoDTO();
+		richiestaIncasso.setCausale(request.getCausale());
+		richiestaIncasso.setImporto(new BigDecimal(request.getImporto()));
+		richiestaIncasso.setDataContabile(request.getDataContabile());
+		richiestaIncasso.setTrn(request.getTrn());
+
+		richiestaIncasso.setCodDominio(request.getDominio());
+		richiestaIncasso.setDataValuta(request.getDataValuta());
+		richiestaIncasso.setDispositivo(request.getDispositivo());
+		richiestaIncasso.setPrincipal(tracciato.getOperatore(bd).getPrincipal());
+		
+		
+		
+		IncassoResponse response = new IncassoResponse();
+		RichiestaIncassoDTOResponse richiestaIncassoResponse = null;
+		try {
+			richiestaIncassoResponse = incassi.richiestaIncasso(richiestaIncasso);
+		} catch (IncassiException e) {
+			SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
+			singoloIncassoResponse.setTrn(request.getTrn());
+			singoloIncassoResponse.setFaultCode(e.getFaultCode());
+			singoloIncassoResponse.setFaultString(e.getFaultString());
+			singoloIncassoResponse.setFaultDescription(e.getDescription());
+			response.add(singoloIncassoResponse);
+		} catch (NotAuthorizedException e) {
+			SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
+			singoloIncassoResponse.setTrn(request.getTrn());
+			singoloIncassoResponse.setFaultCode("INC_KO_NOT_AUTH");
+			singoloIncassoResponse.setFaultString("Non autorizzato");
+			singoloIncassoResponse.setFaultDescription(e.getMessage());
+			response.add(singoloIncassoResponse);
+		} catch (InternalException e) {
+			SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
+			singoloIncassoResponse.setTrn(request.getTrn());
+			singoloIncassoResponse.setFaultCode("INC_KO_INTERNAL");
+			singoloIncassoResponse.setFaultString("Internal");
+			singoloIncassoResponse.setFaultDescription(e.getMessage());
+			response.add(singoloIncassoResponse);
+		}
+
+		if(richiestaIncassoResponse != null) {
+			for(Pagamento pagamento: richiestaIncassoResponse.getIncasso().getPagamenti(bd)) {
+				SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
+	
+				singoloIncassoResponse.setTrn(richiestaIncassoResponse.getIncasso().getTrn());
+				singoloIncassoResponse.setDominio(richiestaIncassoResponse.getIncasso().getCodDominio());
+				singoloIncassoResponse.setIur(pagamento.getIur());
+				singoloIncassoResponse.setIuv(pagamento.getIuv());
+				singoloIncassoResponse.setImporto(pagamento.getImportoPagato().doubleValue());
+				singoloIncassoResponse.setDataPagamento(pagamento.getDataPagamento());
+				singoloIncassoResponse.setCodVersamentoEnte(pagamento.getSingoloVersamento(bd).getVersamento(bd).getCodVersamentoEnte());
+				singoloIncassoResponse.setCodSingoloVersamentoEnte(pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
+				response.add(singoloIncassoResponse);
+			}
+		}
+		
+		return response;
 
 	}
 
