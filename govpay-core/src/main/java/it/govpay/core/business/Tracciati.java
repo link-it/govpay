@@ -307,6 +307,9 @@ public class Tracciati extends BasicBD {
 				operazione.setIdTracciato(request.getIdTracciato());
 				operazione.setLineaElaborazione(request.getLinea());
 				operazione.setTipoOperazione(request.getTipoOperazione());
+				
+				operazione = this.inserisciInformazioniRelativeAlTipoOperazione(operazione, request, response);
+				
 				operazioniBD.insertOperazione(operazione);
 
 				if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
@@ -392,21 +395,20 @@ public class Tracciati extends BasicBD {
 		TracciatiBD tracciatiBD = new TracciatiBD(this);
 		Tracciato tracciato = elaboraTracciatoDTO.getTracciato();
 
-		log.info("Avvio controllo stato stampe tracciato [" + tracciato.getId() +"]");
+		log.info("Avvio controllo stato stampe avvisi per il tracciato [" + tracciato.getId() +"]");
 		
 		try {
 			// 1. esecuzione count avvisi da stampare.
 			int countNumeroAvvisiDaStampare = 0;
 			
 			if(countNumeroAvvisiDaStampare == 0) {
-				// se stato STAMPATO
-				tracciato.setStato(StatoTracciatoType.CARICAMENTO_OK);
+				tracciato.setStato(StatoTracciatoType.STAMPATO);
 				tracciatiBD.updateTracciato(tracciato);
 				if(!isAutoCommit()) this.commit();
 			}
-			log.info("Elaborazione tracciato ["+tracciato.getId()+"] terminata: " + tracciato.getStato());
+			log.info("Controllo stato stampe avvisi per il tracciato ["+tracciato.getId()+"] terminata: " + tracciato.getStato());
 		} catch(Throwable e) {
-			log.error("Errore durante l'elaborazione del tracciato ["+tracciato.getId()+"]: " + e.getMessage(), e);
+			log.error("Errore durante il controllo stato stampe avvisi per il tracciato ["+tracciato.getId()+"]: " + e.getMessage(), e);
 			if(!isAutoCommit()) this.rollback();
 		} finally {
 			this.setAutoCommit(wasAutocommit);
@@ -448,6 +450,24 @@ public class Tracciati extends BasicBD {
 		}
 
 		return null;
+	}
+	
+	public Operazione inserisciInformazioniRelativeAlTipoOperazione(Operazione operazione,AbstractOperazioneRequest request, AbstractOperazioneResponse response) throws Exception{
+		// aggiungo dati relativi a codDominio iuv (nel caso ADD) codDominio trn (nel caso INC)
+		if(operazione.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
+			if(request instanceof CaricamentoRequest && response instanceof CaricamentoResponse) {
+				CaricamentoRequest caricamentoRequest = (CaricamentoRequest) request;
+				CaricamentoResponse caricamentoResponse = (CaricamentoResponse) response;
+				operazione.setCodDominio(caricamentoRequest.getCodDominio());
+				operazione.setIuv(caricamentoResponse.getIuv());
+			}
+		} else if(operazione.getTipoOperazione().equals(TipoOperazioneType.INC)) {
+			// [BUSSU] aggiungere le info trn e coddominio
+		} else { //do nothing 
+			 
+		}
+		
+		return operazione;
 	}
 }
 

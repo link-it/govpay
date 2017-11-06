@@ -17,6 +17,11 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 		this.setCodDominio(Utils.validaESettaRecord(record, "codDominio", 35, null, false));
 		this.setCfDebitore(Utils.validaESettaRecord(record, "cfDebitore", 35, null, false));
 		this.setAnagraficaDebitore(Utils.validaESettaRecord(record, "anagraficaDebitore", 70, null, false));
+		this.setDebitoreIndirizzo(Utils.validaESettaRecord(record, "debitoreIndirizzo", 70, null, false));
+		this.setDebitoreCivico(Utils.validaESettaRecord(record, "debitoreCivico", 16, null, false));
+		this.setDebitoreCap(Utils.validaESettaRecord(record, "debitoreCap", 16, null, false));
+		this.setDebitoreLocalita(Utils.validaESettaRecord(record, "debitoreLocalita", 35, null, false));
+		this.setDebitoreProvincia(Utils.validaESettaRecord(record, "debitoreProvincia", 35, null, false));		
 		this.setCodTributo(Utils.validaESettaRecord(record, "codTributo", 35, null, false));
 		try {
 			this.setImporto(Utils.validaESettaDouble("importo", record.getMap().get("importo"), null, null, false));
@@ -109,6 +114,47 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 	public void setCodVersamentoEnte(String codVersamentoEnte) {
 		this.codVersamentoEnte = codVersamentoEnte;
 	}
+	
+	public String getDebitoreLocalita() {
+		return debitoreLocalita;
+	}
+
+	public void setDebitoreLocalita(String debitoreLocalita) {
+		this.debitoreLocalita = debitoreLocalita;
+	}
+
+	public String getDebitoreCap() {
+		return debitoreCap;
+	}
+
+	public void setDebitoreCap(String debitoreCap) {
+		this.debitoreCap = debitoreCap;
+	}
+
+	public String getDebitoreIndirizzo() {
+		return debitoreIndirizzo;
+	}
+
+	public void setDebitoreIndirizzo(String debitoreIndirizzo) {
+		this.debitoreIndirizzo = debitoreIndirizzo;
+	}
+
+	public String getDebitoreCivico() {
+		return debitoreCivico;
+	}
+
+	public void setDebitoreCivico(String debitoreCivico) {
+		this.debitoreCivico = debitoreCivico;
+	}
+
+	public String getDebitoreProvincia() {
+		return debitoreProvincia;
+	}
+
+	public void setDebitoreProvincia(String debitoreProvincia) {
+		this.debitoreProvincia = debitoreProvincia;
+	}
+
 	private String codDominio;
 	private String cfDebitore;
 	private String anagraficaDebitore;
@@ -121,6 +167,11 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 	private String note;
 	private String codApplicazione;
 	private String codVersamentoEnte;
+	private String debitoreLocalita;
+	private String debitoreCap;
+	private String debitoreIndirizzo;
+	private String debitoreCivico;
+	private String debitoreProvincia;
 
 	private Versamento versamento;
 	

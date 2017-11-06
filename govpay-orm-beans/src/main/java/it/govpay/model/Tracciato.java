@@ -24,7 +24,7 @@ import java.util.Date;
 public class Tracciato {
 
 	public enum StatoTracciatoType {
-		ANNULLATO ,NUOVO ,IN_CARICAMENTO ,CARICAMENTO_OK ,CARICAMENTO_KO;
+		ANNULLATO ,NUOVO ,IN_CARICAMENTO ,CARICAMENTO_OK ,CARICAMENTO_KO, STAMPATO;
 	}
 	
 	
