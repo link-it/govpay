@@ -46,7 +46,7 @@ public class TracciatoConverter {
 		Tracciato dto = new Tracciato();
 
 		dto.setId(vo.getId());
-		dto.setStato(StatoTracciatoType.valueOf(vo.getStato().name()));
+		dto.setStato(StatoTracciatoType.valueOf(vo.getStato()));
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 
 		if(vo.getIdOperatore()!= null)
@@ -75,7 +75,7 @@ public class TracciatoConverter {
 		
 		vo.setId(dto.getId());
 		if(dto.getStato()!= null)
-			vo.setStato(it.govpay.orm.constants.StatoTracciatoType.valueOf(dto.getStato().name()));
+			vo.setStato(dto.getStato().name());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 
 		if(dto.getIdOperatore() != null) {

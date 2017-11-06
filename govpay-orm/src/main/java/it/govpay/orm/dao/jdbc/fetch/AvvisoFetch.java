@@ -60,8 +60,8 @@ public class AvvisoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iuv", Avviso.model().IUV.getFieldType()));
 				setParameter(object, "setDataCreazione", Avviso.model().DATA_CREAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_creazione", Avviso.model().DATA_CREAZIONE.getFieldType()));
-				setParameter(object, "set_value_stato", String.class,
-					jdbcParameterUtilities.readParameter(rs, "stato", Avviso.model().STATO.getFieldType())+"");
+				setParameter(object, "setStato", Avviso.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Avviso.model().STATO.getFieldType()));
 				setParameter(object, "setPdf", Avviso.model().PDF.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "pdf", Avviso.model().PDF.getFieldType()));
 				return object;
@@ -92,7 +92,7 @@ public class AvvisoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"iuv"));
 				setParameter(object, "setDataCreazione", Avviso.model().DATA_CREAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataCreazione"));
-				setParameter(object, "set_value_stato", String.class,
+				setParameter(object, "setStato", Avviso.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
 				setParameter(object, "setPdf", Avviso.model().PDF.getFieldType(),
 					this.getObjectFromMap(map,"pdf"));

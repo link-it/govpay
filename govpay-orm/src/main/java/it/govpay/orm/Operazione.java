@@ -19,8 +19,6 @@
  */
 package it.govpay.orm;
 
-import it.govpay.orm.constants.StatoOperazioneType;
-import it.govpay.orm.constants.TipoOperazioneType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -38,9 +36,9 @@ import java.io.Serializable;
  * &lt;complexType name="Operazione">
  * 		&lt;sequence>
  * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="tipoOperazione" type="{http://www.govpay.it/orm}TipoOperazioneType" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoOperazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="lineaElaborazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.govpay.it/orm}StatoOperazioneType" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="datiRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="datiRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dettaglioEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
@@ -106,23 +104,11 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
     this.idTracciato = idTracciato;
   }
 
-  public void set_value_tipoOperazione(String value) {
-    this.tipoOperazione = (TipoOperazioneType) TipoOperazioneType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_tipoOperazione() {
-    if(this.tipoOperazione == null){
-    	return null;
-    }else{
-    	return this.tipoOperazione.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.TipoOperazioneType getTipoOperazione() {
+  public java.lang.String getTipoOperazione() {
     return this.tipoOperazione;
   }
 
-  public void setTipoOperazione(it.govpay.orm.constants.TipoOperazioneType tipoOperazione) {
+  public void setTipoOperazione(java.lang.String tipoOperazione) {
     this.tipoOperazione = tipoOperazione;
   }
 
@@ -134,23 +120,11 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
     this.lineaElaborazione = lineaElaborazione;
   }
 
-  public void set_value_stato(String value) {
-    this.stato = (StatoOperazioneType) StatoOperazioneType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_stato() {
-    if(this.stato == null){
-    	return null;
-    }else{
-    	return this.stato.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.StatoOperazioneType getStato() {
+  public java.lang.String getStato() {
     return this.stato;
   }
 
-  public void setStato(it.govpay.orm.constants.StatoOperazioneType stato) {
+  public void setStato(java.lang.String stato) {
     this.stato = stato;
   }
 
@@ -240,21 +214,17 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
   @XmlElement(name="idTracciato",required=true,nillable=false)
   protected IdTracciato idTracciato;
 
-  @XmlTransient
-  protected java.lang.String _value_tipoOperazione;
-
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoOperazione",required=true,nillable=false)
-  protected TipoOperazioneType tipoOperazione;
+  protected java.lang.String tipoOperazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="lineaElaborazione",required=true,nillable=false)
   protected long lineaElaborazione;
 
-  @XmlTransient
-  protected java.lang.String _value_stato;
-
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
-  protected StatoOperazioneType stato;
+  protected java.lang.String stato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="datiRichiesta",required=true,nillable=false)

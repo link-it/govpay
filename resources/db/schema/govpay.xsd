@@ -2017,9 +2017,9 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="tipoOperazione" type="TipoOperazioneType"/>
+			<xsd:element name="tipoOperazione" type="String16"/>
 			<xsd:element name="lineaElaborazione" type="xsd:long"/>
-			<xsd:element name="stato" type="StatoOperazioneType"/>
+			<xsd:element name="stato" type="String16"/>
 			<xsd:element name="datiRichiesta" type="xsd:base64Binary"/>
 			<xsd:element name="datiRisposta" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="dettaglioEsito" type="xsd:string" minOccurs="0"/>
@@ -2078,7 +2078,7 @@
 			</xsd:element>
 			<xsd:element name="dataCaricamento" type="xsd:dateTime"/>
 			<xsd:element name="dataUltimoAggiornamento" type="xsd:dateTime"/>
-			<xsd:element name="stato" type="StatoTracciatoType"/>
+			<xsd:element name="stato" type="String16"/>
 			<xsd:element name="lineaElaborazione" type="xsd:long"/>
 			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
 			<xsd:element name="numLineeTotali" type="xsd:long"/>
@@ -2087,7 +2087,7 @@
 			<xsd:element name="nomeFile" type="xsd:string"/>
 			<xsd:element name="rawDataRichiesta" type="xsd:base64Binary"/>
 			<xsd:element name="rawDataRisposta" type="xsd:base64Binary" minOccurs="0"/>
-			<xsd:element name="tipoTracciato" type="TipoTracciatoType"/>
+			<xsd:element name="tipoTracciato" type="String16"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2104,6 +2104,9 @@
 							<linkit:sql-table-index-field name="codDominio"/>
 							<linkit:sql-table-index-field name="iuv"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index>
+							<linkit:sql-table-index-field name="stato"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2112,8 +2115,19 @@
 			<xsd:element name="codDominio" type="String35"/>
 			<xsd:element name="iuv" type="String35"/>
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
-			<xsd:element name="stato" type="StatoAvvisoType"/>
+			<xsd:element name="stato" type="String16"/>
 			<xsd:element name="pdf" type="xsd:base64Binary" minOccurs="0"/>
+			
+			<xsd:element name="operazione" type="Operazione">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Operazione"
+								object-type="Operazione" relationship="none" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

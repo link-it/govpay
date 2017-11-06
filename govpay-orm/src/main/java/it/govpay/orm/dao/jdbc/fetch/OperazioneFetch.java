@@ -54,12 +54,12 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 				Operazione object = new Operazione();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "set_value_tipoOperazione", String.class,
-					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType())+"");
+				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType()));
 				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "linea_elaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType()));
-				setParameter(object, "set_value_stato", String.class,
-					jdbcParameterUtilities.readParameter(rs, "stato", Operazione.model().STATO.getFieldType())+"");
+				setParameter(object, "setStato", Operazione.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Operazione.model().STATO.getFieldType()));
 				setParameter(object, "setDatiRichiesta", Operazione.model().DATI_RICHIESTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_richiesta", Operazione.model().DATI_RICHIESTA.getFieldType()));
 				setParameter(object, "setDatiRisposta", Operazione.model().DATI_RISPOSTA.getFieldType(),
@@ -96,11 +96,11 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 				Operazione object = new Operazione();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "set_value_tipoOperazione", String.class,
+				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"tipoOperazione"));
 				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"lineaElaborazione"));
-				setParameter(object, "set_value_stato", String.class,
+				setParameter(object, "setStato", Operazione.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
 				setParameter(object, "setDatiRichiesta", Operazione.model().DATI_RICHIESTA.getFieldType(),
 					this.getObjectFromMap(map,"datiRichiesta"));

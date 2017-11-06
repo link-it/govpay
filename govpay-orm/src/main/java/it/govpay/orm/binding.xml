@@ -678,9 +678,9 @@
   <mapping name="operazione" class="it.govpay.orm.Operazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure field="idTracciato" usage="required" map-as="it.govpay.orm.IdTracciato"/>
-    <value name="tipoOperazione" field="tipoOperazione" usage="required" enum-value-method="toString"/>
+    <value name="tipoOperazione" field="tipoOperazione" usage="required"/>
     <value name="lineaElaborazione" field="lineaElaborazione" usage="required"/>
-    <value name="stato" field="stato" usage="required" enum-value-method="toString"/>
+    <value name="stato" field="stato" usage="required"/>
     <value name="datiRichiesta" field="datiRichiesta" usage="required"/>
     <value name="datiRisposta" field="datiRisposta" usage="optional"/>
     <value name="dettaglioEsito" field="dettaglioEsito" usage="optional"/>
@@ -696,7 +696,7 @@
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="dataCaricamento" field="dataCaricamento" usage="required"/>
     <value name="dataUltimoAggiornamento" field="dataUltimoAggiornamento" usage="required"/>
-    <value name="stato" field="stato" usage="required" enum-value-method="toString"/>
+    <value name="stato" field="stato" usage="required"/>
     <value name="lineaElaborazione" field="lineaElaborazione" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="numLineeTotali" field="numLineeTotali" usage="required"/>
@@ -705,14 +705,14 @@
     <value name="nomeFile" field="nomeFile" usage="required"/>
     <value name="rawDataRichiesta" field="rawDataRichiesta" usage="required"/>
     <value name="rawDataRisposta" field="rawDataRisposta" usage="optional"/>
-    <value name="tipoTracciato" field="tipoTracciato" usage="required" enum-value-method="toString"/>
+    <value name="tipoTracciato" field="tipoTracciato" usage="required"/>
   </mapping>
   <mapping name="Avviso" class="it.govpay.orm.Avviso">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codDominio" field="codDominio" usage="required"/>
     <value name="iuv" field="iuv" usage="required"/>
     <value name="dataCreazione" field="dataCreazione" usage="required"/>
-    <value name="stato" field="stato" usage="required" enum-value-method="toString"/>
+    <value name="stato" field="stato" usage="required"/>
     <value name="pdf" field="pdf" usage="optional"/>
     <structure field="operazione" usage="required" map-as="it.govpay.orm.Operazione"/>
   </mapping>

@@ -769,9 +769,6 @@ CREATE TABLE tracciati
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
 	id_operatore BIGINT,
 	id_applicazione BIGINT,
-	-- check constraints
-	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO','STAMPATO')),
-	CONSTRAINT chk_tracciati_2 CHECK (tipo_tracciato IN ('VERSAMENTI','INCASSI')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -799,9 +796,6 @@ CREATE TABLE operazioni
 	id BIGINT DEFAULT nextval('seq_operazioni') NOT NULL,
 	id_tracciato BIGINT NOT NULL,
 	id_applicazione BIGINT,
-	-- check constraints
-	CONSTRAINT chk_operazioni_1 CHECK (tipo_operazione IN ('ADD','DEL','INC','N_V')),
-	CONSTRAINT chk_operazioni_2 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -841,14 +835,13 @@ CREATE TABLE avvisi
 	pdf BYTEA,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_avvisi') NOT NULL,
-	-- check constraints
-	CONSTRAINT chk_avvisi_1 CHECK (stato IN ('DA_STAMPARE','STAMPATO')),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_avvisi PRIMARY KEY (id)
 );
 
 -- index
 CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
+CREATE INDEX index_avvisi_2 ON avvisi (stato);
 
 
 

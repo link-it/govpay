@@ -11,8 +11,6 @@ CREATE TABLE avvisi
        pdf BLOB,
        -- fk/pk columns
        id NUMBER NOT NULL,
-       -- check constraints
-       CONSTRAINT chk_avvisi_1 CHECK (stato IN ('DA_STAMPARE','STAMPATO')),
        -- fk/pk keys constraints
        CONSTRAINT pk_avvisi PRIMARY KEY (id)
 );
@@ -40,10 +38,8 @@ ALTER TABLE uo ADD uo_email VARCHAR2(255 CHAR);
 ALTER TABLE uo ADD uo_pec VARCHAR2(255 CHAR);
 
 alter table tracciati DROP CONSTRAINT chk_tracciati_1;
-alter table tracciati add CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO','STAMPATO'));
 
 alter table tracciati add tipo_tracciato VARCHAR(255);
-alter table tracciati add CONSTRAINT chk_tracciati_2 CHECK (tipo_tracciato IN ('VERSAMENTI','INCASSI'));
 update tracciati set tipo_tracciato = 'VERSAMENTI';
 alter table tracciati MODIFY (tipo_tracciato NOT NULL);
 
@@ -53,6 +49,3 @@ alter table operazioni add trn VARCHAR(35);
 
 
 alter table operazioni DROP CONSTRAINT chk_operazioni_1;
-alter table operazioni add CONSTRAINT chk_operazioni_1 CHECK (tipo_operazione IN ('ADD','DEL','INC','N_V'));
-alter table operazioni add CONSTRAINT chk_operazioni_2 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO'));
-
