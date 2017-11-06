@@ -582,7 +582,7 @@ public class Operazioni{
 					avvisi = listaAvvisiDTOResponse.getAvvisi();
 				}
 				
-				//aggiornaSondaOK(batch_generazione_avvisi, bd);
+				aggiornaSondaOK(batch_generazione_avvisi, bd);
 				BatchManager.stopEsecuzione(bd, batch_generazione_avvisi);
 				log.info("Generazione Avvisi Pagamento terminata.");
 				return "Generazione Avvisi Pagamento terminata.";
@@ -591,7 +591,7 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			log.error("Generazione Avvisi Pagamento Fallita", e);
-			//aggiornaSondaKO(batch_generazione_avvisi, e, bd);
+			aggiornaSondaKO(batch_generazione_avvisi, e, bd);
 			return "Generazione Avvisi Pagamento#" + e.getMessage();
 		} finally {
 			BatchManager.stopEsecuzione(bd, batch_generazione_avvisi);

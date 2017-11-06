@@ -31,6 +31,7 @@ begin
 end;
 /
 
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('generazione-avvisi', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
 
 ALTER TABLE domini ADD cbill VARCHAR2(255 CHAR);
 ALTER TABLE uo ADD uo_area VARCHAR2(255 CHAR);

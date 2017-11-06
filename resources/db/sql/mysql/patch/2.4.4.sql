@@ -18,6 +18,8 @@ CREATE TABLE avvisi
 -- index
 CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
 
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('generazione-avvisi', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
+
 ALTER TABLE domini ADD COLUMN cbill VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_area VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_url_sito_web VARCHAR(255);
