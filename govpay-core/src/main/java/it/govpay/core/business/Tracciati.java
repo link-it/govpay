@@ -381,6 +381,37 @@ public class Tracciati extends BasicBD {
 			this.setAutoCommit(wasAutocommit);
 		}
 	}
+	
+	public void controllaStatoStampeTracciato(ElaboraTracciatoDTO elaboraTracciatoDTO) throws ServiceException {
+		boolean wasAutocommit = this.isAutoCommit();
+
+		if(this.isAutoCommit()) {
+			this.setAutoCommit(false);
+		}
+
+		TracciatiBD tracciatiBD = new TracciatiBD(this);
+		Tracciato tracciato = elaboraTracciatoDTO.getTracciato();
+
+		log.info("Avvio controllo stato stampe tracciato [" + tracciato.getId() +"]");
+		
+		try {
+			// 1. esecuzione count avvisi da stampare.
+			int countNumeroAvvisiDaStampare = 0;
+			
+			if(countNumeroAvvisiDaStampare == 0) {
+				// se stato STAMPATO
+				tracciato.setStato(StatoTracciatoType.CARICAMENTO_OK);
+				tracciatiBD.updateTracciato(tracciato);
+				if(!isAutoCommit()) this.commit();
+			}
+			log.info("Elaborazione tracciato ["+tracciato.getId()+"] terminata: " + tracciato.getStato());
+		} catch(Throwable e) {
+			log.error("Errore durante l'elaborazione del tracciato ["+tracciato.getId()+"]: " + e.getMessage(), e);
+			if(!isAutoCommit()) this.rollback();
+		} finally {
+			this.setAutoCommit(wasAutocommit);
+		}
+	}
 
 
 	/**
