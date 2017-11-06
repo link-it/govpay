@@ -1,5 +1,8 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.csv.Record;
 
@@ -36,12 +39,24 @@ public class AnnullamentoResponse extends AbstractOperazioneResponse {
 	}
 	
 	@Override
-	protected byte[] createDati() {
+	protected List<String> listDati() {
+		List<String> lst = new ArrayList<String>();
+		
 		switch(this.getStato()) {
-		case ESEGUITO_KO: return (ESITO_DEL_KO + this.getDelim() + this.codApplicazione + this.getDelim() + this.codVersamentoEnte + this.getDelim() + this.getDescrizioneEsito()).getBytes();
-		case ESEGUITO_OK: return (ESITO_DEL_OK + this.getDelim() + this.codApplicazione + this.getDelim() + this.codVersamentoEnte).getBytes();
-		default: return "DEL_INTERNAL: STATO NON VALIDO".getBytes();
+		case ESEGUITO_KO:	lst.add(ESITO_DEL_KO);
+							lst.add(this.codApplicazione);
+							lst.add(this.codVersamentoEnte);
+							lst.add(this.getDescrizioneEsito());
+							break;
+		case ESEGUITO_OK:	lst.add(ESITO_DEL_KO);
+							lst.add(this.codApplicazione);
+							lst.add(this.codVersamentoEnte);
+							break; 
+		default: lst.add("DEL_INTERNAL: STATO NON VALIDO");
 		}
+
+		
+		return lst;
 	}
 
 }

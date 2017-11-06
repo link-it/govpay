@@ -1,5 +1,8 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.csv.Record;
 
@@ -66,12 +69,24 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	}
 	
 	@Override
-	protected byte[] createDati() {
+	protected List<String> listDati() {
+		ArrayList<String> lst = new ArrayList<String>();
 		switch(this.getStato()) {
-		case ESEGUITO_KO: return (ESITO_ADD_KO + this.getDelim() + this.codApplicazione + this.getDelim() + this.codVersamentoEnte + this.getDelim() + this.getDescrizioneEsito()).getBytes();
-		case ESEGUITO_OK: return (ESITO_ADD_OK + this.getDelim() + this.codApplicazione + this.getDelim() + this.codVersamentoEnte + this.getDelim() + this.iuv + this.getDelim() + new String(this.qrCode) + this.getDelim() + new String(this.barCode)).getBytes(); 
-		default: return "".getBytes();
+		case ESEGUITO_KO: 	lst.add(ESITO_ADD_KO);
+							lst.add(this.codApplicazione);
+							lst.add(this.codVersamentoEnte);
+							lst.add(this.getDescrizioneEsito());
+							break;
+		case ESEGUITO_OK:	lst.add(ESITO_ADD_OK);
+							lst.add(this.codApplicazione);
+							lst.add(this.codVersamentoEnte);
+							lst.add(this.iuv);
+							lst.add(new String(this.qrCode));
+							lst.add(new String(this.barCode));
+							break;
 		}
+
+		return lst;
 	}
 
 	

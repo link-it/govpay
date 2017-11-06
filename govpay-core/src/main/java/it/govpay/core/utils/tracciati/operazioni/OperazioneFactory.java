@@ -25,17 +25,21 @@ import it.govpay.core.utils.tracciati.CSVReaderProperties;
 import it.govpay.core.utils.tracciati.CostantiCaricamento;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 
 public class OperazioneFactory {
 
 	private static Logger logger = LogManager.getLogger(OperazioneFactory.class);
 	private static Format formatW;
 	private static Parser caricamentoParser;
-	private static Parser annullamentoParser;
-	private static Parser caricamentoOkResponseParser;
 	private static Parser caricamentoKoResponseParser;
+	private static Parser caricamentoOkResponseParser;
+	private static Parser annullamentoParser;
 	private static Parser annullamentoOkResponseParser;
 	private static Parser annullamentoKoResponseParser;
+	private static Parser incassoParser;
+	private static Parser incassoOkResponseParser;
+	private static Parser incassoKoResponseParser;
 	private static String delimiter;
 
 	public static void init() throws UtilsException, Exception {
@@ -50,29 +54,39 @@ public class OperazioneFactory {
 		annullamentoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.ko.mapping.properties"), true);
 	}
 
-	public AbstractOperazioneRequest acquisisci(Record record, String op) throws ValidationException {
+	public AbstractOperazioneRequest acquisisci(Record record, TipoTracciatoType tipoTracciato, String op) throws ValidationException {
 		try {
-			if("ADD".equals(op)) {
-				return new CaricamentoRequest(record);
-			} else if("DEL".equals(op)) {
-				return new AnnullamentoRequest(record);
+			if(tipoTracciato.equals(TipoTracciatoType.VERSAMENTI)) {
+				if("ADD".equals(op)) {
+					return new CaricamentoRequest(record);
+				} else if("DEL".equals(op)) {
+					return new AnnullamentoRequest(record);
+				} else {
+					throw new ValidationException("Codice operazione "+op+" non supportata per il tipo tracciato " + tipoTracciato);
+				}
+			} else if(tipoTracciato.equals(TipoTracciatoType.INCASSI)) {
+				if("INC".equals(op)) {
+					return new IncassoRequest(record);
+				} else {
+					throw new ValidationException("Codice operazione "+op+" non supportata per il tipo tracciato " + tipoTracciato);
+				}
 			} else {
-				throw new ValidationException("Codice operazione "+op+" non supportata");
+				throw new ValidationException("Tipo tracciato "+tipoTracciato+" non supportato");
 			}
 		} catch(ValidationException e) {
 			throw new ValidationException(CostantiCaricamento.ERRORE_SINTASSI + " : " + e.getMessage());
 		}
 	}
 
-	public AbstractOperazioneRequest acquisisci(byte[] linea, long idtracciato, long numLinea) throws ServiceException {
-		AbstractOperazioneRequest request = parseLineaOperazioneRequest(linea);
+	public AbstractOperazioneRequest acquisisci(TipoTracciatoType tipoTracciato, byte[] linea, long idtracciato, long numLinea) throws ServiceException {
+		AbstractOperazioneRequest request = parseLineaOperazioneRequest(tipoTracciato, linea);
 		request.setIdTracciato(idtracciato);
 		request.setLinea(numLinea);
 		request.setDati(linea);
 		return request;
 	}
 
-	public AbstractOperazioneRequest parseLineaOperazioneRequest(byte[] linea) throws ServiceException {
+	public AbstractOperazioneRequest parseLineaOperazioneRequest(TipoTracciatoType tipoTracciato, byte[] linea) throws ServiceException {
 
 		String lineaString = new String(linea);
 
@@ -83,13 +97,24 @@ public class OperazioneFactory {
 		String op = lineaSplitted[0];
 
 		Parser parser = null;
-		if("ADD".equals(op)) {
-			parser = caricamentoParser;
-		} else if("DEL".equals(op)) {
-			parser = annullamentoParser;
+		if(tipoTracciato.equals(TipoTracciatoType.VERSAMENTI)) {
+			if("ADD".equals(op)) {
+				parser = caricamentoParser;
+			} else if("DEL".equals(op)) {
+				parser = annullamentoParser;
+			} else {
+				return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Codice operazione "+op+" non supportata per il tipo tracciato " + tipoTracciato);
+			}
+		} else if(tipoTracciato.equals(TipoTracciatoType.INCASSI)) {
+			if("INC".equals(op)) {
+				parser = incassoParser;
+			} else {
+				return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Codice operazione "+op+" non supportata per il tipo tracciato " + tipoTracciato);
+			}			
 		} else {
-			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Codice operazione "+op+" non supportata");
+			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Tipo tracciato "+tipoTracciato+" non supportato");
 		}
+ 
 
 		ParserResult parserResult = null;
 		try {
@@ -106,7 +131,7 @@ public class OperazioneFactory {
 		}
 
 		try {
-			return acquisisci(parserResult.getRecords().get(0), op);
+			return acquisisci(parserResult.getRecords().get(0), tipoTracciato, op);
 		} catch(ValidationException e) {
 			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato: " + e.getMessage());
 		}
@@ -140,6 +165,13 @@ public class OperazioneFactory {
 				parser = annullamentoKoResponseParser;
 			else 
 				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" in stato "+statoOperazione+" non supportata");
+		} else if(tipoOperazione.equals(TipoOperazioneType.INC)) {
+			if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_OK))
+				parser = incassoOkResponseParser;
+			else if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_KO))
+				parser = incassoKoResponseParser;
+			else 
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" in stato "+statoOperazione+" non supportata");
 		} else {
 			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" non supportata");
 		}
@@ -163,6 +195,8 @@ public class OperazioneFactory {
 				return new CaricamentoResponse(parserResult.getRecords().get(0));
 			} else if(tipoOperazione.equals(TipoOperazioneType.DEL)) {
 				return new AnnullamentoResponse(parserResult.getRecords().get(0));
+			} else if(tipoOperazione.equals(TipoOperazioneType.INC)) {
+				return new IncassoResponse(parserResult.getRecords().get(0));
 			} else {
 				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" non supportata");
 			}
@@ -203,6 +237,9 @@ public class OperazioneFactory {
 		} else if(request instanceof AnnullamentoRequest) {
 			AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) request;
 			response = annullaVersamento(tracciato, annullamentoRequest, bd);
+		} else if(request instanceof IncassoRequest) {
+			IncassoRequest incassoRequest = (IncassoRequest) request;
+			response = eseguiIncasso(tracciato, incassoRequest, bd);
 		} else  if(request instanceof OperazioneNonValidaRequest) {
 			OperazioneNonValidaRequest operazioneNonValidaRequest = (OperazioneNonValidaRequest) request;
 			response = new OperazioneNonValidaResponse();
@@ -216,32 +253,6 @@ public class OperazioneFactory {
 		return response;
 	}
 
-	/**
-	 * @param request
-	 * @return
-	 */
-	public String getCodiceApplicazione(AbstractOperazioneRequest request) {
-		if(request instanceof CaricamentoRequest) {
-			return ((CaricamentoRequest)request).getCodApplicazione();
-		} else if(request instanceof AnnullamentoRequest) {
-			return ((AnnullamentoRequest) request).getCodApplicazione();
-		} else {
-			return null;
-		}
-	}
-	/**
-	 * @param request
-	 * @return
-	 */
-	public String getCodVersamentoEnte(AbstractOperazioneRequest request) {
-		if(request instanceof CaricamentoRequest) {
-			return ((CaricamentoRequest)request).getCodVersamentoEnte();
-		} else if(request instanceof AnnullamentoRequest) {
-			return ((AnnullamentoRequest) request).getCodVersamentoEnte();
-		} else {
-			return null;
-		}
-	}
 
 
 	private CaricamentoResponse caricaVersamento(Tracciato tracciato, CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
@@ -316,6 +327,42 @@ public class OperazioneFactory {
 			annullamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
 		}
 		return annullamentoResponse;
+
+	}
+
+	private IncassoResponse eseguiIncasso(Tracciato tracciato, IncassoRequest request, BasicBD basicBD) throws ServiceException {
+
+
+		IncassoResponse incassoResponse = new IncassoResponse();
+		//TODO
+//
+//		try {
+//			PagamentiAttesa pagamentiAttesa = new PagamentiAttesa(basicBD);
+//			AnnullaVersamentoDTO annullaVersamentoDTO = null;
+//			if(tracciato.getApplicazione(basicBD) != null) {
+//				annullaVersamentoDTO = new AnnullaVersamentoDTO(tracciato.getApplicazione(basicBD), request.getCodApplicazione(), request.getCodVersamentoEnte());
+//			} else {
+//				annullaVersamentoDTO = new AnnullaVersamentoDTO(tracciato.getOperatore(basicBD), request.getCodApplicazione(), request.getCodVersamentoEnte());
+//			}
+//
+//			annullaVersamentoDTO.setMotivoAnnullamento(request.getMotivoAnnullamento()); 
+//			pagamentiAttesa.annullaVersamento(annullaVersamentoDTO);
+//
+//			incassoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
+//			incassoResponse.setEsito("DEL_OK");
+//			incassoResponse.setDescrizioneEsito("Pagamento in Attesa [App:" + request.getCodApplicazione() + " Id:" + request.getCodVersamentoEnte() + "] eliminato con successo");
+//		} catch(GovPayException e) {
+//			incassoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+//			incassoResponse.setEsito("DEL_KO");
+//			incassoResponse.setEsito(e.getCodEsito().name());
+//			incassoResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " +e.getMessage());
+//		} catch(NotAuthorizedException e) {
+//			incassoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+//			incassoResponse.setEsito("DEL_KO");
+//			incassoResponse.setEsito(CostantiCaricamento.NOT_AUTHORIZED);
+//			incassoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
+//		}
+		return incassoResponse;
 
 	}
 

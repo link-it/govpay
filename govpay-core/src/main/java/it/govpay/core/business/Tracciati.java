@@ -65,12 +65,14 @@ import it.govpay.core.utils.tracciati.operazioni.AbstractOperazioneResponse;
 import it.govpay.core.utils.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
 import it.govpay.core.utils.tracciati.operazioni.CaricamentoResponse;
+import it.govpay.core.utils.tracciati.operazioni.IncassoResponse;
 import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 
 
@@ -216,7 +218,7 @@ public class Tracciati extends BasicBD {
 
 		switch (operazione.getTipoOperazione()) {
 		case ADD:
-			CaricamentoRequest caricamentoRequest = (CaricamentoRequest) factory.parseLineaOperazioneRequest(operazione.getDatiRichiesta());
+			CaricamentoRequest caricamentoRequest = (CaricamentoRequest) factory.parseLineaOperazioneRequest(TipoTracciatoType.VERSAMENTI, operazione.getDatiRichiesta());
 			AbstractOperazioneResponse abstractOperazioneResponse = factory.parseLineaOperazioneResponse(operazione.getTipoOperazione(), operazione.getStato(), operazione.getDatiRisposta());
 			CaricamentoResponse caricamentoResponse = (abstractOperazioneResponse instanceof CaricamentoResponse) ?  (CaricamentoResponse) abstractOperazioneResponse : null;
 
@@ -246,10 +248,11 @@ public class Tracciati extends BasicBD {
 
 			return operazioneCaricamento;
 		case DEL:
-			AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) factory.parseLineaOperazioneRequest(operazione.getDatiRichiesta());
+			AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) factory.parseLineaOperazioneRequest(TipoTracciatoType.VERSAMENTI, operazione.getDatiRichiesta());
 			OperazioneAnnullamento operazioneAnnullamento = new OperazioneAnnullamento(operazione);
 			operazioneAnnullamento.setMotivoAnnullamento(annullamentoRequest.getMotivoAnnullamento());
 			return operazioneAnnullamento;
+		case INC: throw new ServiceException("NOT IMPLEMENTED");
 		case N_V:
 		default:
 			return operazione;
@@ -296,23 +299,17 @@ public class Tracciati extends BasicBD {
 
 				// Elaboro l'operazione
 
-				AbstractOperazioneRequest request = factory.acquisisci(linea, tracciato.getId(), numLinea);
+				AbstractOperazioneRequest request = factory.acquisisci(tracciato.getTipoTracciato(), linea, tracciato.getId(), numLinea);
 				AbstractOperazioneResponse response = factory.eseguiOperazione(request, tracciato, this);
 
 				this.setAutoCommit(false);
 
 				Operazione operazione = new Operazione();
-				operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
 				operazione.setDatiRichiesta(linea);
 				operazione.setDatiRisposta(response.getDati());
 				operazione.setStato(response.getStato());
 				if(response.getDescrizioneEsito() != null)
 					operazione.setDettaglioEsito(response.getDescrizioneEsito().length() > 255 ? response.getDescrizioneEsito().substring(0, 255) : response.getDescrizioneEsito());
-				try {
-					operazione.setIdApplicazione(AnagraficaManager.getApplicazione(this, request.getCodApplicazione()).getId());
-				} catch(Exception e) {
-					// CodApplicazione non censito in anagrafica.
-				}
 				operazione.setIdTracciato(request.getIdTracciato());
 				operazione.setLineaElaborazione(request.getLinea());
 				operazione.setTipoOperazione(request.getTipoOperazione());
@@ -476,11 +473,31 @@ public class Tracciati extends BasicBD {
 				CaricamentoResponse caricamentoResponse = (CaricamentoResponse) response;
 				operazione.setCodDominio(caricamentoRequest.getCodDominio());
 				operazione.setIuv(caricamentoResponse.getIuv());
+				operazione.setCodVersamentoEnte(caricamentoRequest.getCodVersamentoEnte());
+				
+				try {
+					operazione.setIdApplicazione(AnagraficaManager.getApplicazione(this, caricamentoRequest.getCodApplicazione()).getId());
+				} catch(Exception e) {
+					// CodApplicazione non censito in anagrafica.
+				}
 			}
 		} else if(operazione.getTipoOperazione().equals(TipoOperazioneType.INC)) {
-			// [BUSSU] aggiungere le info trn e coddominio
-		} else { //do nothing 
-			 
+			if(response instanceof IncassoResponse) {
+				IncassoResponse incassoResponse = (IncassoResponse) response;
+				operazione.setCodDominio(incassoResponse.getDominio());
+				operazione.setTrn(incassoResponse.getTrn());
+			}
+		} else {
+			if(request instanceof AnnullamentoRequest) {
+				AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) request;
+				operazione.setCodVersamentoEnte(annullamentoRequest.getCodVersamentoEnte());
+				try {
+					operazione.setIdApplicazione(AnagraficaManager.getApplicazione(this, annullamentoRequest.getCodApplicazione()).getId());
+				} catch(Exception e) {
+					// CodApplicazione non censito in anagrafica.
+				}
+
+			}			 
 		}
 		
 		return operazione;
