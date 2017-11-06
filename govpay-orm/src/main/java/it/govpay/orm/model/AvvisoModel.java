@@ -46,6 +46,7 @@ public class AvvisoModel extends AbstractModel<Avviso> {
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"Avviso",Avviso.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Avviso",Avviso.class);
 		this.PDF = new Field("pdf",byte[].class,"Avviso",Avviso.class);
+		this.OPERAZIONE = new it.govpay.orm.model.OperazioneModel(new Field("operazione",it.govpay.orm.Operazione.class,"Avviso",Avviso.class));
 	
 	}
 	
@@ -58,6 +59,7 @@ public class AvvisoModel extends AbstractModel<Avviso> {
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"Avviso",Avviso.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Avviso",Avviso.class);
 		this.PDF = new ComplexField(father,"pdf",byte[].class,"Avviso",Avviso.class);
+		this.OPERAZIONE = new it.govpay.orm.model.OperazioneModel(new ComplexField(father,"operazione",it.govpay.orm.Operazione.class,"Avviso",Avviso.class));
 	
 	}
 	
@@ -72,6 +74,8 @@ public class AvvisoModel extends AbstractModel<Avviso> {
 	public IField STATO = null;
 	 
 	public IField PDF = null;
+	 
+	public it.govpay.orm.model.OperazioneModel OPERAZIONE = null;
 	 
 
 	@Override

@@ -102,6 +102,90 @@ public class AvvisoFieldConverter extends AbstractSQLFieldConverter {
 				return "pdf";
 			}
 		}
+		if(field.equals(Avviso.model().OPERAZIONE.ID_TRACCIATO.ID_TRACCIATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_tracciato";
+			}else{
+				return "id_tracciato";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.TIPO_OPERAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_operazione";
+			}else{
+				return "tipo_operazione";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.LINEA_ELABORAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".linea_elaborazione";
+			}else{
+				return "linea_elaborazione";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato";
+			}else{
+				return "stato";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.DATI_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_richiesta";
+			}else{
+				return "dati_richiesta";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.DATI_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_risposta";
+			}else{
+				return "dati_risposta";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.DETTAGLIO_ESITO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dettaglio_esito";
+			}else{
+				return "dettaglio_esito";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.COD_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_ente";
+			}else{
+				return "cod_versamento_ente";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.TRN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trn";
+			}else{
+				return "trn";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -130,6 +214,42 @@ public class AvvisoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Avviso.model().PDF)){
 			return this.toTable(Avviso.model(), returnAlias);
 		}
+		if(field.equals(Avviso.model().OPERAZIONE.ID_TRACCIATO.ID_TRACCIATO)){
+			return this.toTable(Avviso.model().OPERAZIONE.ID_TRACCIATO, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.TIPO_OPERAZIONE)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.LINEA_ELABORAZIONE)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.STATO)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.DATI_RICHIESTA)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.DATI_RISPOSTA)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.DETTAGLIO_ESITO)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Avviso.model().OPERAZIONE.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.COD_VERSAMENTO_ENTE)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.COD_DOMINIO)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.IUV)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Avviso.model().OPERAZIONE.TRN)){
+			return this.toTable(Avviso.model().OPERAZIONE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -145,6 +265,15 @@ public class AvvisoFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Avviso.model())){
 			return "avvisi";
+		}
+		if(model.equals(Avviso.model().OPERAZIONE)){
+			return "operazioni";
+		}
+		if(model.equals(Avviso.model().OPERAZIONE.ID_TRACCIATO)){
+			return "tracciati";
+		}
+		if(model.equals(Avviso.model().OPERAZIONE.ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 

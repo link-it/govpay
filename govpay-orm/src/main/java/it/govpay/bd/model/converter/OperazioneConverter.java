@@ -44,6 +44,9 @@ public class OperazioneConverter {
 			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 		
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setIuv(vo.getIuv());
+		dto.setTrn(vo.getTrn());
 
 		return dto;
 	}
@@ -72,7 +75,10 @@ public class OperazioneConverter {
 		}
 
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
-		
+		vo.setCodDominio(dto.getCodDominio());
+		vo.setIuv(dto.getIuv());
+		vo.setTrn(dto.getTrn());
+
 		return vo;
 	}
 	
@@ -99,6 +105,11 @@ public class OperazioneConverter {
 		}
 		
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+		
+		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setIuv(vo.getIuv());
+		dto.setTrn(vo.getTrn());
 
 		return dto;
 	}
