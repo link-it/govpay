@@ -2,9 +2,11 @@ package it.govpay.core.business.model;
 
 import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 
 public class InserisciTracciatoDTO {
 	
+	private TipoTracciatoType tipo;
 	private byte[] tracciato;
 	private String nomeTracciato;
 	private Operatore operatore;
@@ -33,6 +35,12 @@ public class InserisciTracciatoDTO {
 	}
 	public void setApplicazione(Applicazione applicazione) {
 		this.applicazione = applicazione;
+	}
+	public TipoTracciatoType getTipo() {
+		return tipo;
+	}
+	public void setTipo(TipoTracciatoType tipo) {
+		this.tipo = tipo;
 	}
 
 }

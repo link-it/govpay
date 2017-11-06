@@ -109,6 +109,8 @@ public class Tracciati extends BasicBD {
 				tracciato.setNumLineeTotali(Long.MAX_VALUE);
 			}
 			tracciato.setStato(StatoTracciatoType.NUOVO);
+			tracciato.setTipoTracciato(inserisciTracciatoDTO.getTipo()); 
+			
 			tracciatiBd.insertTracciato(tracciato);
 
 			inserisciTracciatoDTOResponse.setTracciato(tracciato);
@@ -230,6 +232,11 @@ public class Tracciati extends BasicBD {
 			operazioneCaricamento.setImporto(caricamentoRequest.getImporto());
 			operazioneCaricamento.setNote(caricamentoRequest.getNote());
 			operazioneCaricamento.setScadenza(caricamentoRequest.getScadenza());
+			operazioneCaricamento.setDebitoreIndirizzo(caricamentoRequest.getDebitoreIndirizzo());
+			operazioneCaricamento.setDebitoreCivico(caricamentoRequest.getDebitoreCivico());
+			operazioneCaricamento.setDebitoreCap(caricamentoRequest.getDebitoreCap());
+			operazioneCaricamento.setDebitoreLocalita(caricamentoRequest.getDebitoreLocalita());
+			operazioneCaricamento.setDebitoreProvincia(caricamentoRequest.getDebitoreProvincia());
 
 			if(caricamentoResponse != null) {
 				operazioneCaricamento.setIuv(caricamentoResponse.getIuv());
@@ -408,6 +415,7 @@ public class Tracciati extends BasicBD {
 			filter.setTipoOperazione(TipoOperazioneType.ADD);
 			filter.setStatoOperazione(StatoOperazioneType.ESEGUITO_OK);
 			long countNumeroAvvisiDaStampare = avvisiBD.count(filter);
+			log.info("Stato attuale delle stampe avvisi per il tracciato ["+tracciato.getId()+"] il tracciato ha: " + countNumeroAvvisiDaStampare +" avvisi da stampare.");
 			
 			if(countNumeroAvvisiDaStampare == 0) {
 				tracciato.setStato(StatoTracciatoType.STAMPATO);

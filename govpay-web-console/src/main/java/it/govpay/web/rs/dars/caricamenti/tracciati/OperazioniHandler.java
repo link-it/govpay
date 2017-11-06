@@ -370,6 +370,20 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codiceFiscaleDebitore.label"), opCaricamento.getCfDebitore());
 					if(StringUtils.isNotEmpty(opCaricamento.getAnagraficaDebitore()))
 						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anagraficaDebitore.label"), opCaricamento.getAnagraficaDebitore());
+					
+					String indirizzoDebitore = StringUtils.isNotEmpty(opCaricamento.getDebitoreIndirizzo()) ? opCaricamento.getDebitoreIndirizzo() : "";
+					String civicoDebitore = StringUtils.isNotEmpty(opCaricamento.getDebitoreCivico()) ? opCaricamento.getDebitoreCivico() : "";
+					String capDebitore = StringUtils.isNotEmpty(opCaricamento.getDebitoreCap()) ? opCaricamento.getDebitoreCap() : "";
+					String localitaDebitore = StringUtils.isNotEmpty(opCaricamento.getDebitoreLocalita()) ? opCaricamento.getDebitoreLocalita() : "";
+					String provinciaDebitore = StringUtils.isNotEmpty(opCaricamento.getDebitoreProvincia()) ? (" (" +opCaricamento.getDebitoreProvincia() +")" ) : "";
+					String indirizzoCivicoDebitore = indirizzoDebitore + " " + civicoDebitore;
+					String capCittaDebitore = capDebitore + " " + localitaDebitore + provinciaDebitore;
+					
+					if(StringUtils.isNotEmpty(indirizzoCivicoDebitore))
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".debitoreIndirizzo1.label"), indirizzoCivicoDebitore);
+					if(StringUtils.isNotEmpty(capCittaDebitore))
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".debitoreIndirizzo2.label"), capCittaDebitore);
+					
 					if(opCaricamento.getImporto() != null) {
 						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), this.currencyUtils.getCurrencyAsEuro(opCaricamento.getImporto()));
 					}

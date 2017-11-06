@@ -38,6 +38,11 @@ public class OperazioneCaricamento extends Operazione{
 	private String bundleKey;
 	private String idDebito;
 	private String note;
+	private String debitoreLocalita;
+	private String debitoreCap;
+	private String debitoreIndirizzo;
+	private String debitoreCivico;
+	private String debitoreProvincia;
 	
 	// risposta
 	private String iuv;
@@ -124,6 +129,47 @@ public class OperazioneCaricamento extends Operazione{
 		this.barCode = barCode;
 	}
 	
+	
+	public String getDebitoreLocalita() {
+		return debitoreLocalita;
+	}
+
+	public void setDebitoreLocalita(String debitoreLocalita) {
+		this.debitoreLocalita = debitoreLocalita;
+	}
+
+	public String getDebitoreCap() {
+		return debitoreCap;
+	}
+
+	public void setDebitoreCap(String debitoreCap) {
+		this.debitoreCap = debitoreCap;
+	}
+
+	public String getDebitoreIndirizzo() {
+		return debitoreIndirizzo;
+	}
+
+	public void setDebitoreIndirizzo(String debitoreIndirizzo) {
+		this.debitoreIndirizzo = debitoreIndirizzo;
+	}
+
+	public String getDebitoreCivico() {
+		return debitoreCivico;
+	}
+
+	public void setDebitoreCivico(String debitoreCivico) {
+		this.debitoreCivico = debitoreCivico;
+	}
+
+	public String getDebitoreProvincia() {
+		return debitoreProvincia;
+	}
+
+	public void setDebitoreProvincia(String debitoreProvincia) {
+		this.debitoreProvincia = debitoreProvincia;
+	}
+
 	private transient Dominio dominio;
 	private transient Tributo tributo;
 	

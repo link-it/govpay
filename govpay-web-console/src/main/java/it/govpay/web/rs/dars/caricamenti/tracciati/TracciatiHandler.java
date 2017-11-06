@@ -44,6 +44,7 @@ import it.govpay.model.Operatore;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 import it.govpay.web.rs.dars.base.BaseDarsService;
 import it.govpay.web.rs.dars.base.DarsHandler;
@@ -125,7 +126,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				for (Tracciato entry : findAll) {
 					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
 					elemento.setFormatter(formatter); 
-					if(!entry.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !entry.getStato().equals(StatoTracciatoType.CARICAMENTO_OK)){
+					if(!entry.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !entry.getStato().equals(StatoTracciatoType.CARICAMENTO_OK) && !entry.getStato().equals(StatoTracciatoType.STAMPATO)){
 						URI refreshUri =  Utils.creaUriConPath(this.pathServizio , entry.getId()+"", BaseDarsService.PATH_REFRESH);
 						elemento.setRefreshUri(refreshUri);
 
@@ -166,7 +167,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			Tracciato tracciato = tracciatiBD.getTracciato(id);
 			Elemento elemento = this.getElemento(tracciato, tracciato.getId(), this.pathServizio,bd);
 			elemento.setFormatter(formatter); 
-			if(!tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_OK)){
+			if(!tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_KO) && !tracciato.getStato().equals(StatoTracciatoType.CARICAMENTO_OK) && !tracciato.getStato().equals(StatoTracciatoType.STAMPATO)){
 				URI refreshUri =  Utils.creaUriConPath(this.pathServizio , id+"", BaseDarsService.PATH_REFRESH);
 				elemento.setRefreshUri(refreshUri);
 
@@ -262,6 +263,10 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.IN_CARICAMENTO.name()), StatoTracciatoType.IN_CARICAMENTO.name()));
 			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.CARICAMENTO_OK.name()), StatoTracciatoType.CARICAMENTO_OK.name()));
 			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.CARICAMENTO_KO.name()), StatoTracciatoType.CARICAMENTO_KO.name()));
+			
+			if(this.abilitaDownloadAvvisiPagamento)
+				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.STAMPATO.name()), StatoTracciatoType.STAMPATO.name()));
+				
 			SelectList<String> stato  = new SelectList<String>(statoId, statoLabel, null, false, false, true, stati );
 			this.infoRicercaMap.put(statoId, stato);
 
@@ -484,17 +489,6 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".operatore.label"), operatore.getNome());
 			}
 
-			//			URI uriTracciatoOriginale = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","tracciatoOriginale");
-			//			URI uriTracciatoElaborato = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","tracciatoElaborato");
-			//			URI uriAvvisiPagamento = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","avvisiPagamento");
-			//
-			//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tracciatoOriginale.label"),
-			//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriTracciatoOriginale); 
-			//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tracciatoElaborato.label"), 
-			//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriTracciatoElaborato);
-			//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".avvisiPagamento.label"), 
-			//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriAvvisiPagamento);
-
 			// Elemento correlato
 			Operazioni operazioniDars = new Operazioni();
 			String etichettaOperazioni = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.operazioni.titolo");
@@ -590,8 +584,9 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 			inserisciTracciatoDTO.setNomeTracciato(entry.getNomeFile());
 			inserisciTracciatoDTO.setTracciato(entry.getRawDataRichiesta());
-			inserisciTracciatoDTO.setOperatore(entry.getOperatore(bd)); 
-
+			inserisciTracciatoDTO.setOperatore(entry.getOperatore(bd));
+			inserisciTracciatoDTO.setTipo(TipoTracciatoType.VERSAMENTI);
+			
 			InserisciTracciatoDTOResponse inserisciTracciatoDTOResponse = tracciatiBd.inserisciTracciato(inserisciTracciatoDTO);
 			entry = inserisciTracciatoDTOResponse.getTracciato();
 
