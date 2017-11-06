@@ -98,6 +98,7 @@
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni?wsdl</url-pattern>
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni?wsdl</url-pattern>
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali?wsdl</url-pattern>
+			<url-pattern>/rs/check/*</url-pattern>
 		</web-resource-collection>
 	</security-constraint>
 
