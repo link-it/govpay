@@ -686,6 +686,9 @@
     <value name="dettaglioEsito" field="dettaglioEsito" usage="optional"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="codVersamentoEnte" field="codVersamentoEnte" usage="optional"/>
+    <value name="codDominio" field="codDominio" usage="optional"/>
+    <value name="iuv" field="iuv" usage="optional"/>
+    <value name="trn" field="trn" usage="optional"/>
   </mapping>
   <mapping name="Tracciato" class="it.govpay.orm.Tracciato">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -702,6 +705,7 @@
     <value name="nomeFile" field="nomeFile" usage="required"/>
     <value name="rawDataRichiesta" field="rawDataRichiesta" usage="required"/>
     <value name="rawDataRisposta" field="rawDataRisposta" usage="optional"/>
+    <value name="tipoTracciato" field="tipoTracciato" usage="required" enum-value-method="toString"/>
   </mapping>
   <mapping name="Avviso" class="it.govpay.orm.Avviso">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -709,7 +713,7 @@
     <value name="iuv" field="iuv" usage="required"/>
     <value name="dataCreazione" field="dataCreazione" usage="required"/>
     <value name="stato" field="stato" usage="required" enum-value-method="toString"/>
-    <value name="pdf" field="pdf" usage="required"/>
+    <value name="pdf" field="pdf" usage="optional"/>
   </mapping>
   <mapping name="AvvisoPagamentoInput" class="it.govpay.orm.AvvisoPagamentoInput">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

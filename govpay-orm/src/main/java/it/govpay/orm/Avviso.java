@@ -40,7 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}StatoAvvisoType" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="pdf" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pdf" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -174,7 +174,7 @@ public class Avviso extends org.openspcoop2.utils.beans.BaseBean implements Seri
   protected StatoAvvisoType stato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="pdf",required=true,nillable=false)
+  @XmlElement(name="pdf",required=false,nillable=false)
   protected byte[] pdf;
 
 }

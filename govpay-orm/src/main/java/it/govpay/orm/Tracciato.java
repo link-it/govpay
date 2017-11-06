@@ -20,6 +20,7 @@
 package it.govpay.orm;
 
 import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.orm.constants.TipoTracciatoType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -49,6 +50,7 @@ import java.io.Serializable;
  * 			&lt;element name="nomeFile" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rawDataRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rawDataRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipoTracciato" type="{http://www.govpay.it/orm}TipoTracciatoType" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -75,7 +77,8 @@ import java.io.Serializable;
   	"numOperazioniKo",
   	"nomeFile",
   	"rawDataRichiesta",
-  	"rawDataRisposta"
+  	"rawDataRisposta",
+  	"tipoTracciato"
   }
 )
 
@@ -215,6 +218,26 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
     this.rawDataRisposta = rawDataRisposta;
   }
 
+  public void set_value_tipoTracciato(String value) {
+    this.tipoTracciato = (TipoTracciatoType) TipoTracciatoType.toEnumConstantFromString(value);
+  }
+
+  public String get_value_tipoTracciato() {
+    if(this.tipoTracciato == null){
+    	return null;
+    }else{
+    	return this.tipoTracciato.toString();
+    }
+  }
+
+  public it.govpay.orm.constants.TipoTracciatoType getTipoTracciato() {
+    return this.tipoTracciato;
+  }
+
+  public void setTipoTracciato(it.govpay.orm.constants.TipoTracciatoType tipoTracciato) {
+    this.tipoTracciato = tipoTracciato;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -287,5 +310,11 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="rawDataRisposta",required=false,nillable=false)
   protected byte[] rawDataRisposta;
+
+  @XmlTransient
+  protected java.lang.String _value_tipoTracciato;
+
+  @XmlElement(name="tipoTracciato",required=true,nillable=false)
+  protected TipoTracciatoType tipoTracciato;
 
 }

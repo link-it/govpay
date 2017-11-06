@@ -76,6 +76,8 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "raw_data_richiesta", Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()));
 				setParameter(object, "setRawDataRisposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "raw_data_risposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()));
+				setParameter(object, "set_value_tipoTracciato", String.class,
+					jdbcParameterUtilities.readParameter(rs, "tipo_tracciato", Tracciato.model().TIPO_TRACCIATO.getFieldType())+"");
 				return object;
 			}
 			
@@ -120,6 +122,8 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"rawDataRichiesta"));
 				setParameter(object, "setRawDataRisposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"rawDataRisposta"));
+				setParameter(object, "set_value_tipoTracciato", String.class,
+					this.getObjectFromMap(map,"tipoTracciato"));
 				return object;
 			}
 			

@@ -118,6 +118,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NOME_FILE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RICHIESTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RISPOSTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO_TRACCIATO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 
@@ -135,6 +136,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNomeFile(),Tracciato.model().NOME_FILE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawDataRichiesta(),Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawDataRisposta(),Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getTipoTracciato(),Tracciato.model().TIPO_TRACCIATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
@@ -246,6 +248,8 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawDataRichiesta(), Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RISPOSTA,false), "?");
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawDataRisposta(), Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO_TRACCIATO,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getTipoTracciato(), Tracciato.model().TIPO_TRACCIATO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
 		}

@@ -2034,6 +2034,10 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codVersamentoEnte" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codDominio" type="String35" minOccurs="0"/>
+			<xsd:element name="iuv" type="String35" minOccurs="0"/>
+			<xsd:element name="trn" type="String35" minOccurs="0"/>
+			
 			
 		</xsd:sequence>
 	</xsd:complexType>
@@ -2083,6 +2087,7 @@
 			<xsd:element name="nomeFile" type="xsd:string"/>
 			<xsd:element name="rawDataRichiesta" type="xsd:base64Binary"/>
 			<xsd:element name="rawDataRisposta" type="xsd:base64Binary" minOccurs="0"/>
+			<xsd:element name="tipoTracciato" type="TipoTracciatoType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2155,6 +2160,14 @@
 			<xsd:enumeration value="IN_CARICAMENTO" />
 			<xsd:enumeration value="CARICAMENTO_OK" />
 			<xsd:enumeration value="CARICAMENTO_KO" />
+			<xsd:enumeration value="STAMPATO" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="TipoTracciatoType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="VERSAMENTI" />
+			<xsd:enumeration value="INCASSI" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -2162,6 +2175,7 @@
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="ADD" />
 			<xsd:enumeration value="DEL" />
+			<xsd:enumeration value="INC" />
 			<xsd:enumeration value="N_V" />
 		</xsd:restriction>
 	</xsd:simpleType>

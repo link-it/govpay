@@ -68,6 +68,12 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "dettaglio_esito", Operazione.model().DETTAGLIO_ESITO.getFieldType()));
 				setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType()));
+				setParameter(object, "setCodDominio", Operazione.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Operazione.model().COD_DOMINIO.getFieldType()));
+				setParameter(object, "setIuv", Operazione.model().IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv", Operazione.model().IUV.getFieldType()));
+				setParameter(object, "setTrn", Operazione.model().TRN.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "trn", Operazione.model().TRN.getFieldType()));
 				return object;
 			}
 			
@@ -104,6 +110,12 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dettaglioEsito"));
 				setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codVersamentoEnte"));
+				setParameter(object, "setCodDominio", Operazione.model().COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"codDominio"));
+				setParameter(object, "setIuv", Operazione.model().IUV.getFieldType(),
+					this.getObjectFromMap(map,"iuv"));
+				setParameter(object, "setTrn", Operazione.model().TRN.getFieldType(),
+					this.getObjectFromMap(map,"trn"));
 				return object;
 			}
 			

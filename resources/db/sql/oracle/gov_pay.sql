@@ -814,6 +814,9 @@ CREATE TABLE iuv
 
 -- index
 CREATE INDEX index_iuv_1 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
+
+ALTER TABLE iuv MODIFY aux_digit DEFAULT 0;
+
 CREATE TRIGGER trg_iuv
 BEFORE
 insert on iuv
@@ -1077,12 +1080,14 @@ CREATE TABLE tracciati
 	nome_file VARCHAR2(255 CHAR) NOT NULL,
 	raw_data_richiesta BLOB NOT NULL,
 	raw_data_risposta BLOB,
+	tipo_tracciato VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_operatore NUMBER,
 	id_applicazione NUMBER,
 	-- check constraints
-	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
+	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO','STAMPATO')),
+	CONSTRAINT chk_tracciati_2 CHECK (tipo_tracciato IN ('VERSAMENTI','INCASSI')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -1114,12 +1119,16 @@ CREATE TABLE operazioni
 	dati_risposta BLOB,
 	dettaglio_esito VARCHAR2(255 CHAR),
 	cod_versamento_ente VARCHAR2(255 CHAR),
+	cod_dominio VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	trn VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tracciato NUMBER NOT NULL,
 	id_applicazione NUMBER,
 	-- check constraints
-	CONSTRAINT chk_operazioni_1 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
+	CONSTRAINT chk_operazioni_1 CHECK (tipo_operazione IN ('ADD','DEL','INC','N_V')),
+	CONSTRAINT chk_operazioni_2 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),

@@ -46,6 +46,9 @@ import java.io.Serializable;
  * 			&lt;element name="dettaglioEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="trn" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -68,7 +71,10 @@ import java.io.Serializable;
   	"datiRisposta",
   	"dettaglioEsito",
   	"idApplicazione",
-  	"codVersamentoEnte"
+  	"codVersamentoEnte",
+  	"codDominio",
+  	"iuv",
+  	"trn"
   }
 )
 
@@ -188,6 +194,30 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
     this.codVersamentoEnte = codVersamentoEnte;
   }
 
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
+  }
+
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
+  }
+
+  public java.lang.String getIuv() {
+    return this.iuv;
+  }
+
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
+  }
+
+  public java.lang.String getTrn() {
+    return this.trn;
+  }
+
+  public void setTrn(java.lang.String trn) {
+    this.trn = trn;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -244,5 +274,17 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codVersamentoEnte",required=false,nillable=false)
   protected java.lang.String codVersamentoEnte;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=false,nillable=false)
+  protected java.lang.String codDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuv",required=false,nillable=false)
+  protected java.lang.String iuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="trn",required=false,nillable=false)
+  protected java.lang.String trn;
 
 }
