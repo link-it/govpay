@@ -846,6 +846,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			case CARICAMENTO_KO:
 			case CARICAMENTO_OK:
 			case ANNULLATO:
+			case STAMPATO:
 				break;
 			case IN_CARICAMENTO:
 			case NUOVO:
