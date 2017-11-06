@@ -10,8 +10,6 @@ CREATE TABLE avvisi
        pdf BYTEA,
        -- fk/pk columns
        id BIGINT DEFAULT nextval('seq_avvisi') NOT NULL,
-       -- check constraints
-       CONSTRAINT chk_avvisi_1 CHECK (stato IN ('DA_STAMPARE','STAMPATO')),
        -- fk/pk keys constraints
        CONSTRAINT pk_avvisi PRIMARY KEY (id)
 );
@@ -28,10 +26,8 @@ ALTER TABLE uo ADD COLUMN uo_email VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_pec VARCHAR(255);
 
 alter table tracciati DROP CONSTRAINT chk_tracciati_1;
-alter table tracciati add CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO','STAMPATO'));
 
 alter table tracciati add COLUMN tipo_tracciato VARCHAR(255);
-alter table tracciati add CONSTRAINT chk_tracciati_2 CHECK (tipo_tracciato IN ('VERSAMENTI','INCASSI'));
 update tracciati set tipo_tracciato = 'VERSAMENTI';
 alter table tracciati ALTER COLUMN tipo_tracciato SET NOT NULL;
 
@@ -41,6 +37,3 @@ alter table operazioni add COLUMN trn VARCHAR(35);
 
 
 alter table operazioni DROP CONSTRAINT chk_operazioni_1;
-alter table operazioni add CONSTRAINT chk_operazioni_1 CHECK (tipo_operazione IN ('ADD','DEL','INC','N_V'));
-alter table operazioni DROP CONSTRAINT chk_operazioni_2;
-alter table operazioni add CONSTRAINT chk_operazioni_2 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO'));

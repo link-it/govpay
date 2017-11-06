@@ -19,8 +19,6 @@
  */
 package it.govpay.orm;
 
-import it.govpay.orm.constants.StatoTracciatoType;
-import it.govpay.orm.constants.TipoTracciatoType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -41,7 +39,7 @@ import java.io.Serializable;
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataCaricamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataUltimoAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.govpay.it/orm}StatoTracciatoType" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="lineaElaborazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="numLineeTotali" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
@@ -50,7 +48,7 @@ import java.io.Serializable;
  * 			&lt;element name="nomeFile" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rawDataRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rawDataRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoTracciato" type="{http://www.govpay.it/orm}TipoTracciatoType" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoTracciato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -134,23 +132,11 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
     this.dataUltimoAggiornamento = dataUltimoAggiornamento;
   }
 
-  public void set_value_stato(String value) {
-    this.stato = (StatoTracciatoType) StatoTracciatoType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_stato() {
-    if(this.stato == null){
-    	return null;
-    }else{
-    	return this.stato.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.StatoTracciatoType getStato() {
+  public java.lang.String getStato() {
     return this.stato;
   }
 
-  public void setStato(it.govpay.orm.constants.StatoTracciatoType stato) {
+  public void setStato(java.lang.String stato) {
     this.stato = stato;
   }
 
@@ -218,23 +204,11 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
     this.rawDataRisposta = rawDataRisposta;
   }
 
-  public void set_value_tipoTracciato(String value) {
-    this.tipoTracciato = (TipoTracciatoType) TipoTracciatoType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_tipoTracciato() {
-    if(this.tipoTracciato == null){
-    	return null;
-    }else{
-    	return this.tipoTracciato.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.TipoTracciatoType getTipoTracciato() {
+  public java.lang.String getTipoTracciato() {
     return this.tipoTracciato;
   }
 
-  public void setTipoTracciato(it.govpay.orm.constants.TipoTracciatoType tipoTracciato) {
+  public void setTipoTracciato(java.lang.String tipoTracciato) {
     this.tipoTracciato = tipoTracciato;
   }
 
@@ -273,11 +247,9 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   @XmlElement(name="dataUltimoAggiornamento",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataUltimoAggiornamento;
 
-  @XmlTransient
-  protected java.lang.String _value_stato;
-
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
-  protected StatoTracciatoType stato;
+  protected java.lang.String stato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="lineaElaborazione",required=true,nillable=false)
@@ -311,10 +283,8 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   @XmlElement(name="rawDataRisposta",required=false,nillable=false)
   protected byte[] rawDataRisposta;
 
-  @XmlTransient
-  protected java.lang.String _value_tipoTracciato;
-
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoTracciato",required=true,nillable=false)
-  protected TipoTracciatoType tipoTracciato;
+  protected java.lang.String tipoTracciato;
 
 }
