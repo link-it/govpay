@@ -37,8 +37,10 @@ import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.OperazioneAnnullamento;
 import it.govpay.bd.model.OperazioneCaricamento;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.pagamento.AvvisiPagamentoBD;
 import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
+import it.govpay.bd.pagamento.filters.AvvisoPagamentoFilter;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.business.model.ElaboraTracciatoDTO;
@@ -394,12 +396,18 @@ public class Tracciati extends BasicBD {
 
 		TracciatiBD tracciatiBD = new TracciatiBD(this);
 		Tracciato tracciato = elaboraTracciatoDTO.getTracciato();
+		AvvisiPagamentoBD avvisiBD = new AvvisiPagamentoBD(this);
 
 		log.info("Avvio controllo stato stampe avvisi per il tracciato [" + tracciato.getId() +"]");
 		
 		try {
 			// 1. esecuzione count avvisi da stampare.
-			int countNumeroAvvisiDaStampare = 0;
+			AvvisoPagamentoFilter filter = avvisiBD.newFilter();
+			filter.setIdTracciato(tracciato.getId());
+			filter.setStato(StatoAvviso.DA_STAMPARE);
+			filter.setTipoOperazione(TipoOperazioneType.ADD);
+			filter.setStatoOperazione(StatoOperazioneType.ESEGUITO_OK);
+			long countNumeroAvvisiDaStampare = avvisiBD.count(filter);
 			
 			if(countNumeroAvvisiDaStampare == 0) {
 				tracciato.setStato(StatoTracciatoType.STAMPATO);
@@ -469,6 +477,7 @@ public class Tracciati extends BasicBD {
 		
 		return operazione;
 	}
+		 
 }
 
 

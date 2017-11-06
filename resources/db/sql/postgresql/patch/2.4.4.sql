@@ -42,4 +42,5 @@ alter table operazioni add COLUMN trn VARCHAR(35);
 
 alter table operazioni DROP CONSTRAINT chk_operazioni_1;
 alter table operazioni add CONSTRAINT chk_operazioni_1 CHECK (tipo_operazione IN ('ADD','DEL','INC','N_V'));
+alter table operazioni DROP CONSTRAINT chk_operazioni_2;
 alter table operazioni add CONSTRAINT chk_operazioni_2 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO'));

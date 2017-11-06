@@ -352,10 +352,8 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
 				infoEsportazione = new InfoForm(esportazione);
 
-				// [TODO] aggiungere check visualizzazione download avvisi
-				boolean abilitaScaricamentoTracciato = true;
 				// se l'utente ha la possibilita' di scaricare gli avvisi e se tutti gli avvisi del tracciato sono stati generati. 
-				if(this.abilitaDownloadAvvisiPagamento && abilitaScaricamentoTracciato) {
+				if(this.abilitaDownloadAvvisiPagamento && entry.getStato().equals(StatoTracciatoType.STAMPATO)) {
 					List<String> titoli = new ArrayList<String>();
 					titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esporta.singolo.titolo"));
 					infoEsportazione.setTitolo(titoli);
@@ -710,10 +708,8 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 			String fileName = f+".zip";
 			
-			// [TODO] aggiungere check visualizzazione download avvisi
-			boolean abilitaScaricamentoTracciato = true;
 			// se l'utente ha la possibilita' di scaricare gli avvisi e se tutti gli avvisi del tracciato sono stati generati. 
-			if(this.abilitaDownloadAvvisiPagamento && abilitaScaricamentoTracciato) {
+			if(this.abilitaDownloadAvvisiPagamento && tracciato.getStato().equals(StatoTracciatoType.STAMPATO)) { 
 				String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
 				String esportaCsvS = Utils.getValue(rawValues, esportaCsvId);
 				if(StringUtils.isNotEmpty(esportaCsvS)){
