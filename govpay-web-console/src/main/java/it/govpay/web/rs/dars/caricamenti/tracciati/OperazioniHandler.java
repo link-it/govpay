@@ -469,12 +469,12 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 							
 							switch (stato) {
 							case ESEGUITO_KO:
-								if(StringUtils.isNotEmpty(singoloIncasso.getFaultCode()))
-									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultCode.label"), singoloIncasso.getFaultCode());
-								if(StringUtils.isNotEmpty(singoloIncasso.getFaultString()))
-									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultString.label"), singoloIncasso.getFaultString());
-								if(StringUtils.isNotEmpty(singoloIncasso.getFaultDescription()))
-									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultDescription.label"), singoloIncasso.getFaultDescription());
+//								if(StringUtils.isNotEmpty(singoloIncasso.getFaultCode()))
+//									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultCode.label"), singoloIncasso.getFaultCode());
+//								if(StringUtils.isNotEmpty(singoloIncasso.getFaultString()))
+//									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultString.label"), singoloIncasso.getFaultString());
+//								if(StringUtils.isNotEmpty(singoloIncasso.getFaultDescription()))
+//									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultDescription.label"), singoloIncasso.getFaultDescription());
 								break;
 							case ESEGUITO_OK:
 								if(StringUtils.isNotEmpty(singoloIncasso.getCodVersamentoEnte()))

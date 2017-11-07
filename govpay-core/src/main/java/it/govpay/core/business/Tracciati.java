@@ -268,8 +268,12 @@ public class Tracciati extends BasicBD {
 			operazioneIncasso.setDataContabile(incassoRequest.getDataContabile());
 			operazioneIncasso.setDataValuta(incassoRequest.getDataValuta());
 			operazioneIncasso.setImporto(incassoRequest.getImporto());
-			
+
 			if(incassoResponse != null) {
+				operazioneIncasso.setFaultCode(incassoResponse.getFaultCode());
+				operazioneIncasso.setFaultDescription(incassoResponse.getFaultDescription());
+				operazioneIncasso.setFaultString(incassoResponse.getFaultString());
+
 				List<SingoloIncasso> listaSingoloIncasso = this.getListaSingoloincasso(incassoResponse.getLstSingoloIncasso());
 				operazioneIncasso.setListaSingoloIncasso(listaSingoloIncasso);
 			}
@@ -294,9 +298,6 @@ public class Tracciati extends BasicBD {
 			sI.setDescrizioneEsito(singoloIncassoResponse.getDescrizioneEsito());
 			sI.setCodDominio(singoloIncassoResponse.getDominio());
 			sI.setEsito(singoloIncassoResponse.getEsito());
-			sI.setFaultCode(singoloIncassoResponse.getFaultCode());
-			sI.setFaultDescription(singoloIncassoResponse.getFaultDescription());
-			sI.setFaultString(singoloIncassoResponse.getFaultString());
 			sI.setIur(singoloIncassoResponse.getIur());
 			sI.setIuv(singoloIncassoResponse.getIuv());
 			sI.setImporto(singoloIncassoResponse.getImporto());

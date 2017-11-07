@@ -40,6 +40,10 @@ public class OperazioneIncasso extends Operazione{
 	// risposta
 	private List<SingoloIncasso> listaSingoloIncasso;
 
+	private String faultCode;
+	private String faultString;
+	private String faultDescription;
+
 	private transient Dominio dominio;
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
@@ -47,6 +51,31 @@ public class OperazioneIncasso extends Operazione{
 			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
 		} 
 		return dominio;
+	}
+
+
+	public String getFaultCode() {
+		return faultCode;
+	}
+
+	public void setFaultCode(String faultCode) {
+		this.faultCode = faultCode;
+	}
+
+	public String getFaultString() {
+		return faultString;
+	}
+
+	public void setFaultString(String faultString) {
+		this.faultString = faultString;
+	}
+
+	public String getFaultDescription() {
+		return faultDescription;
+	}
+
+	public void setFaultDescription(String faultDescription) {
+		this.faultDescription = faultDescription;
 	}
 
 	public String getDispositivo() {
@@ -103,9 +132,6 @@ public class OperazioneIncasso extends Operazione{
 		private Date dataPagamento;
 		private String codVersamentoEnte;
 		private String codSingoloVersamentoEnte;
-		private String faultCode;
-		private String faultString;
-		private String faultDescription;
 		private StatoOperazioneType stato;
 		private String esito;
 		private String descrizioneEsito;
@@ -152,30 +178,6 @@ public class OperazioneIncasso extends Operazione{
 
 		public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
 			this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
-		}
-
-		public String getFaultCode() {
-			return faultCode;
-		}
-
-		public void setFaultCode(String faultCode) {
-			this.faultCode = faultCode;
-		}
-
-		public String getFaultString() {
-			return faultString;
-		}
-
-		public void setFaultString(String faultString) {
-			this.faultString = faultString;
-		}
-
-		public String getFaultDescription() {
-			return faultDescription;
-		}
-
-		public void setFaultDescription(String faultDescription) {
-			this.faultDescription = faultDescription;
 		}
 
 		public StatoOperazioneType getStato() {
