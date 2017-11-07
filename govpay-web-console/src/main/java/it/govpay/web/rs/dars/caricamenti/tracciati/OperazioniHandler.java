@@ -598,7 +598,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 					Dominio dominio = entry.getDominio(bd);
 					if(dominio != null){
 						voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicazione.id"),
-								new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"),
+								new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"),
 										dominio.getCodDominio()));
 					}
 				} catch(Exception e){		}

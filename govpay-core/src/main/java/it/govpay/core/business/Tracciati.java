@@ -273,7 +273,7 @@ public class Tracciati extends BasicBD {
 				operazioneIncasso.setFaultCode(incassoResponse.getFaultCode());
 				operazioneIncasso.setFaultDescription(incassoResponse.getFaultDescription());
 				operazioneIncasso.setFaultString(incassoResponse.getFaultString());
-				operazioneIncasso.setDescrizioneEsito(incassoResponse.getDescrizioneEsito());
+				operazioneIncasso.setDettaglioEsito(incassoResponse.getDescrizioneEsito());
 				operazioneIncasso.setEsito(incassoResponse.getEsito());
 				operazioneIncasso.setStato(incassoResponse.getStato());
 
