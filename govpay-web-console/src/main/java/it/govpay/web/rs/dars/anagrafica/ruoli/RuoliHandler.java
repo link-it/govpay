@@ -50,6 +50,7 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Ruolo;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.AdminFunzionalita_G_PAG;
+import it.govpay.web.rs.dars.anagrafica.ruoli.input.AdminFunzionalita_G_RND;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_APP;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_CON;
 import it.govpay.web.rs.dars.anagrafica.ruoli.input.DirittiFunzionalita_A_PPA;
@@ -247,6 +248,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
 				String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
 				String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
+				String admin_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_RND.id");
 
 				String funzionalita_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_GDE.id");
 				String domini_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_GDE.id");
@@ -382,6 +384,10 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				List<RawParamValue> funzionalita_G_RNDValues = new ArrayList<RawParamValue>();
 				funzionalita_G_RNDValues.add(new RawParamValue(ruoloId, null));
 				funzionalita_G_RNDValues.add(new RawParamValue(funzionalita_G_RNDId, "false"));
+				
+				AdminFunzionalita_G_RND admin_G_RND = (AdminFunzionalita_G_RND) this.infoCreazioneMap.get(admin_G_RNDId);
+				admin_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage());
+				sezioneFunzionalita_G_RND.addField(admin_G_RND);
 
 				DirittiFunzionalita_G_RND diritti_G_RND = (DirittiFunzionalita_G_RND) this.infoCreazioneMap.get(diritti_G_RNDId);
 				diritti_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage()); 
@@ -469,6 +475,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
 			String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
 			String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
+			String admin_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_RND.id");
 
 			String funzionalita_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_GDE.id");
 			String domini_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_GDE.id");
@@ -644,6 +651,13 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			domini_G_RND.addDependencyField(funzionalita_G_RND);
 			domini_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage()); 
 			this.infoCreazioneMap.put(domini_G_RNDId, domini_G_RND);
+			
+			String admin_G_RNDLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_RND.label");
+			URI admin_G_RNDRefreshUri = this.getUriField(uriInfo, bd, admin_G_RNDId); 
+			AdminFunzionalita_G_RND admin_G_RND = new AdminFunzionalita_G_RND(this.nomeServizio, admin_G_RNDId, admin_G_RNDLabel, admin_G_RNDRefreshUri, funzionalita_G_RNDValues, this.getLanguage());
+			admin_G_RND.addDependencyField(funzionalita_G_RND);
+			admin_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage()); 
+			this.infoCreazioneMap.put(admin_G_RNDId, admin_G_RND);
 
 			//seziona funzionalita_GDE
 			// abilitato
@@ -718,7 +732,8 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
 				String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
 				String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
-
+				String admin_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_RND.id");
+				
 				String funzionalita_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_GDE.id");
 				String domini_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_GDE.id");
 				String diritti_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_GDE.id");
@@ -865,6 +880,10 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				List<RawParamValue> funzionalita_G_RNDValues = new ArrayList<RawParamValue>();
 				funzionalita_G_RNDValues.add(new RawParamValue(ruoloId, entry.getId()+""));
 				funzionalita_G_RNDValues.add(new RawParamValue(funzionalita_G_RNDId, (visualizzaG_RND ? "true" : "false")));
+				
+				AdminFunzionalita_G_RND admin_G_RND = (AdminFunzionalita_G_RND) this.infoCreazioneMap.get(admin_G_RNDId);
+				admin_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage());
+				sezioneFunzionalita_G_RND.addField(admin_G_RND);
 
 				DirittiFunzionalita_G_RND diritti_G_RND = (DirittiFunzionalita_G_RND) this.infoCreazioneMap.get(diritti_G_RNDId);
 				diritti_G_RND.init(funzionalita_G_RNDValues, bd,this.getLanguage()); 
@@ -1306,6 +1325,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			if(!Utils.isEmpty(idDomini)){
 				List<Acl> aclsFiltrate = Utils.getAcls(acls, Tipo.DOMINIO, Servizio.Gestione_Rendicontazioni);
 				int diritti = aclsFiltrate.get(0).getDiritti();
+				boolean admin = aclsFiltrate.get(0).isAdmin();
 				String dirittiValore = "";
 				switch (diritti) {
 				case Ruolo.DIRITTI_SCRITTURA:
@@ -1321,6 +1341,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 				}
 
 				sezioneFunzionalita_G_RND.addVoce(etichettaDiritti, dirittiValore); 
+				sezioneFunzionalita_G_RND.addVoce(etichettaAdmin, Utils.getSiNoAsLabel(admin));  
 
 				if(!idDomini.contains(-1L)){
 					DominiBD dominiBD = new DominiBD(bd);
@@ -1508,6 +1529,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 		String funzionalita_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
 		String domini_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_G_RND.id");
 		String diritti_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".diritti_G_RND.id");
+		String admin_G_RNDId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".admin_G_RND.id");
 
 		String funzionalita_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_GDE.id");
 		String domini_GDEId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini_GDE.id");
@@ -1699,6 +1721,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 
 			if(jsonObjectRuolo.getBoolean(funzionalita_G_RNDId)){
 				JSONArray jsonDomini = jsonObjectRuolo.getJSONArray(domini_G_RNDId);
+				boolean admin = jsonObjectRuolo.getBoolean(admin_G_RNDId);
 				// diritti
 				Long diritti_G_RND = jsonObjectRuolo.getLong(diritti_G_RNDId);
 
@@ -1709,6 +1732,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 					acl.setTipo(Tipo.DOMINIO);
 					acl.setServizio(Servizio.Gestione_Rendicontazioni);
 					acl.setDiritti(diritti_G_RND.intValue()); 
+					acl.setAdmin(admin);
 					if(idDominio > 0){
 						acl.setIdDominio(idDominio);
 						lstAclDominiFunzionalita_G_RND.add(acl);
@@ -1723,6 +1747,7 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			jsonObjectRuolo.remove(funzionalita_G_RNDId);
 			jsonObjectRuolo.remove(domini_G_RNDId);
 			jsonObjectRuolo.remove(diritti_G_RNDId);
+			jsonObjectRuolo.remove(admin_G_RNDId);
 
 			List<Acl> lstAclDominiFunzionalita_GDE = new ArrayList<Acl>();
 

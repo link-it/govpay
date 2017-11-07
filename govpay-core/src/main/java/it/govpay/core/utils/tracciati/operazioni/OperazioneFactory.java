@@ -358,7 +358,7 @@ public class OperazioneFactory {
 		richiestaIncasso.setCodDominio(request.getDominio());
 		richiestaIncasso.setDataValuta(request.getDataValuta());
 		richiestaIncasso.setDispositivo(request.getDispositivo());
-		richiestaIncasso.setPrincipal(tracciato.getOperatore(bd).getPrincipal());
+		richiestaIncasso.setOperatore(tracciato.getOperatore(bd));
 		
 		
 		

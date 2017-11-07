@@ -22,9 +22,13 @@ package it.govpay.core.business.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import it.govpay.bd.model.Operatore;
+import it.govpay.model.Applicazione;
+
 public class RichiestaIncassoDTO {
 	
-	private String principal;
+	private Applicazione applicazione;
+	private Operatore operatore;
 	private String codDominio;
 	private String trn;
 	private String causale;
@@ -57,12 +61,6 @@ public class RichiestaIncassoDTO {
 	public void setDispositivo(String dispositivo) {
 		this.dispositivo = dispositivo;
 	}
-	public String getPrincipal() {
-		return principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
 	public String getCodDominio() {
 		return codDominio;
 	}
@@ -80,5 +78,17 @@ public class RichiestaIncassoDTO {
 	}
 	public void setDataValuta(Date dataValuta) {
 		this.dataValuta = dataValuta;
+	}
+	public Applicazione getApplicazione() {
+		return applicazione;
+	}
+	public void setApplicazione(Applicazione applicazione) {
+		this.applicazione = applicazione;
+	}
+	public Operatore getOperatore() {
+		return operatore;
+	}
+	public void setOperatore(Operatore operatore) {
+		this.operatore = operatore;
 	}
 }

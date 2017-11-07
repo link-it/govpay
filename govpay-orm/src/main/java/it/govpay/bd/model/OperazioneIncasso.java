@@ -44,9 +44,7 @@ public class OperazioneIncasso extends Operazione{
 	private String faultString;
 	private String faultDescription;
 
-	private StatoOperazioneType stato;
 	private String esito;
-	private String descrizioneEsito;
 
 	private transient Dominio dominio;
 
@@ -82,28 +80,12 @@ public class OperazioneIncasso extends Operazione{
 		this.faultDescription = faultDescription;
 	}
 
-	public StatoOperazioneType getStato() {
-		return stato;
-	}
-
-	public void setStato(StatoOperazioneType stato) {
-		this.stato = stato;
-	}
-
 	public String getEsito() {
 		return esito;
 	}
 
 	public void setEsito(String esito) {
 		this.esito = esito;
-	}
-
-	public String getDescrizioneEsito() {
-		return descrizioneEsito;
-	}
-
-	public void setDescrizioneEsito(String descrizioneEsito) {
-		this.descrizioneEsito = descrizioneEsito;
 	}
 
 	public String getDispositivo() {
