@@ -10,7 +10,7 @@ import org.openspcoop2.utils.csv.Record;
 
 import it.govpay.core.utils.Utils;
 
-public class SingoloIncassoResponse extends AbstractOperazioneResponse {
+public class SingoloIncassoResponse {
 
 	public String getIuv() {
 		return iuv;
@@ -80,7 +80,6 @@ public class SingoloIncassoResponse extends AbstractOperazioneResponse {
 	}
 	
 	public SingoloIncassoResponse(Record record) throws ValidationException{
-		this.setEsito(Utils.validaESettaRecord(record,"esito",null, null, false));
 		this.trn = Utils.validaESettaRecord(record, "trn", null, null, false);
 		this.dominio = Utils.validaESettaRecord(record, "dominio", null, null, false);
 		this.iuv = Utils.validaESettaRecord(record, "iuv", null, null, false);
@@ -103,6 +102,19 @@ public class SingoloIncassoResponse extends AbstractOperazioneResponse {
 	private String codSingoloVersamentoEnte;
 	private String trn;
 	private String dominio;
+
+	protected byte[] createDati(String delim) {
+		StringBuilder sb = new StringBuilder();
+
+		for(String dato: this.listDati()) {
+			if(sb.length() > 0) {
+				sb.append(delim);
+			}
+			sb.append(dato);
+		}
+		
+		return sb.toString().getBytes();
+	}
 
 	protected List<String> listDati() {
 		ArrayList<String> lst = new ArrayList<String>();

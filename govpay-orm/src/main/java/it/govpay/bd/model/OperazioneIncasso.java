@@ -44,6 +44,10 @@ public class OperazioneIncasso extends Operazione{
 	private String faultString;
 	private String faultDescription;
 
+	private StatoOperazioneType stato;
+	private String esito;
+	private String descrizioneEsito;
+
 	private transient Dominio dominio;
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
@@ -76,6 +80,30 @@ public class OperazioneIncasso extends Operazione{
 
 	public void setFaultDescription(String faultDescription) {
 		this.faultDescription = faultDescription;
+	}
+
+	public StatoOperazioneType getStato() {
+		return stato;
+	}
+
+	public void setStato(StatoOperazioneType stato) {
+		this.stato = stato;
+	}
+
+	public String getEsito() {
+		return esito;
+	}
+
+	public void setEsito(String esito) {
+		this.esito = esito;
+	}
+
+	public String getDescrizioneEsito() {
+		return descrizioneEsito;
+	}
+
+	public void setDescrizioneEsito(String descrizioneEsito) {
+		this.descrizioneEsito = descrizioneEsito;
 	}
 
 	public String getDispositivo() {
@@ -132,9 +160,6 @@ public class OperazioneIncasso extends Operazione{
 		private Date dataPagamento;
 		private String codVersamentoEnte;
 		private String codSingoloVersamentoEnte;
-		private StatoOperazioneType stato;
-		private String esito;
-		private String descrizioneEsito;
 		private String codDominio;
 		private Double importo;
 		private String trn;
@@ -178,30 +203,6 @@ public class OperazioneIncasso extends Operazione{
 
 		public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
 			this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
-		}
-
-		public StatoOperazioneType getStato() {
-			return stato;
-		}
-
-		public void setStato(StatoOperazioneType stato) {
-			this.stato = stato;
-		}
-
-		public String getEsito() {
-			return esito;
-		}
-
-		public void setEsito(String esito) {
-			this.esito = esito;
-		}
-
-		public String getDescrizioneEsito() {
-			return descrizioneEsito;
-		}
-
-		public void setDescrizioneEsito(String descrizioneEsito) {
-			this.descrizioneEsito = descrizioneEsito;
 		}
 
 		public String getCodDominio() {

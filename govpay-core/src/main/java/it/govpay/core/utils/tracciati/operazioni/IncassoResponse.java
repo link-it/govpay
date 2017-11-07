@@ -31,7 +31,7 @@ public class IncassoResponse extends AbstractOperazioneResponse {
 			for(SingoloIncassoResponse r: this.lstSingoloIncasso) {
 				if(sb.length() > 0)
 					sb.append("\n");
-				sb.append(new String(r.createDati()));
+				sb.append(new String(r.createDati(this.getDelim())));
 			}
 		} else {
 			
@@ -86,9 +86,6 @@ public class IncassoResponse extends AbstractOperazioneResponse {
 
 	public void add(SingoloIncassoResponse singoloIncassoResponse) {
 		if(this.lstSingoloIncasso==null) this.lstSingoloIncasso = new ArrayList<SingoloIncassoResponse>();
-		if(singoloIncassoResponse.getDelim() == null)
-			singoloIncassoResponse.setDelim(this.getDelim());
-		
 		this.lstSingoloIncasso.add(singoloIncassoResponse);
 	}
 	public List<SingoloIncassoResponse> getLstSingoloIncasso() {

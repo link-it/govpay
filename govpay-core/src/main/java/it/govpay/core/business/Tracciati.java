@@ -273,6 +273,9 @@ public class Tracciati extends BasicBD {
 				operazioneIncasso.setFaultCode(incassoResponse.getFaultCode());
 				operazioneIncasso.setFaultDescription(incassoResponse.getFaultDescription());
 				operazioneIncasso.setFaultString(incassoResponse.getFaultString());
+				operazioneIncasso.setDescrizioneEsito(incassoResponse.getDescrizioneEsito());
+				operazioneIncasso.setEsito(incassoResponse.getEsito());
+				operazioneIncasso.setStato(incassoResponse.getStato());
 
 				List<SingoloIncasso> listaSingoloIncasso = this.getListaSingoloincasso(incassoResponse.getLstSingoloIncasso());
 				operazioneIncasso.setListaSingoloIncasso(listaSingoloIncasso);
@@ -295,14 +298,11 @@ public class Tracciati extends BasicBD {
 			SingoloIncasso sI = new OperazioneIncasso().new SingoloIncasso();
 			sI.setCodSingoloVersamentoEnte(singoloIncassoResponse.getCodSingoloVersamentoEnte());
 			sI.setCodVersamentoEnte(singoloIncassoResponse.getCodVersamentoEnte());
-			sI.setDescrizioneEsito(singoloIncassoResponse.getDescrizioneEsito());
 			sI.setCodDominio(singoloIncassoResponse.getDominio());
-			sI.setEsito(singoloIncassoResponse.getEsito());
 			sI.setIur(singoloIncassoResponse.getIur());
 			sI.setIuv(singoloIncassoResponse.getIuv());
 			sI.setImporto(singoloIncassoResponse.getImporto());
 			sI.setDataPagamento(singoloIncassoResponse.getDataPagamento());
-			sI.setStato(singoloIncassoResponse.getStato());
 			sI.setTrn(singoloIncassoResponse.getTrn());
 			
 			lstRet.add(sI);
