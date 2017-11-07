@@ -368,6 +368,7 @@ public class OperazioneFactory {
 			richiestaIncassoResponse = incassi.richiestaIncasso(richiestaIncasso);
 		} catch (IncassiException e) {
 			response.setTrn(request.getTrn());
+			response.setDominio(request.getDominio());
 			response.setFaultCode(e.getFaultCode());
 			response.setFaultString(e.getFaultString());
 			response.setFaultDescription(e.getDescription());
@@ -375,6 +376,7 @@ public class OperazioneFactory {
 			response.setStato(StatoOperazioneType.ESEGUITO_KO);
 		} catch (NotAuthorizedException e) {
 			response.setTrn(request.getTrn());
+			response.setDominio(request.getDominio());
 			response.setFaultCode("INC_KO_NOT_AUTH");
 			response.setFaultString("Non autorizzato");
 			response.setFaultDescription(e.getMessage());

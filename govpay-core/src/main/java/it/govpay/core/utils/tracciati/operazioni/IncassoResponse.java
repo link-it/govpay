@@ -34,8 +34,10 @@ public class IncassoResponse extends AbstractOperazioneResponse {
 				sb.append(new String(r.createDati(this.getDelim())));
 			}
 		} else {
-			
-		}		
+			sb.append(this.faultCode).append(this.getDelim());
+			sb.append(this.faultString).append(this.getDelim());
+			sb.append(this.faultDescription);
+		}
 		return sb.toString().getBytes();
 	}
 	
