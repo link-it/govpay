@@ -198,7 +198,9 @@ public class OperazioneFactory {
 			return null;
 
 		if(parserResult.getRecords().size() > 1) {
-			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record multipli trovati");
+			if(!tipoOperazione.equals(TipoOperazioneType.INC)) {
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record multipli trovati");
+			}
 		}
 
 		try {
@@ -207,7 +209,7 @@ public class OperazioneFactory {
 			} else if(tipoOperazione.equals(TipoOperazioneType.DEL)) {
 				return new AnnullamentoResponse(parserResult.getRecords().get(0));
 			} else if(tipoOperazione.equals(TipoOperazioneType.INC)) {
-				return new IncassoResponse(parserResult.getRecords().get(0));
+				return new IncassoResponse(parserResult.getRecords());
 			} else {
 				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" non supportata");
 			}

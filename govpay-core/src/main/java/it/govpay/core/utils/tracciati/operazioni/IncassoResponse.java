@@ -3,7 +3,10 @@ package it.govpay.core.utils.tracciati.operazioni;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.csv.Record;
+
+import it.govpay.core.utils.Utils;
 
 public class IncassoResponse extends AbstractOperazioneResponse {
 
@@ -21,7 +24,20 @@ public class IncassoResponse extends AbstractOperazioneResponse {
 	private String dominio;
 
 	public IncassoResponse() {}
-	public IncassoResponse(Record record) {}
+	public IncassoResponse(List<Record> recordList) throws ValidationException{
+		for(Record record:recordList) {
+			this.setEsito(Utils.validaESettaRecord(record,"esito",null, null, false));
+			this.setDescrizioneEsito(Utils.validaESettaRecord(record,"descrizioneEsito",null, null, true));
+			if(this.getEsito().equals(ESITO_INC_OK)) {
+				this.add(new SingoloIncassoResponse(record));
+			} else {
+				this.trn = Utils.validaESettaRecord(record, "trn", 35, null, false);
+				this.faultCode = Utils.validaESettaRecord(record, "faultCode", 70, null, false);
+				this.faultString = Utils.validaESettaRecord(record, "faultString", 70, null, false);
+				this.faultDescription = Utils.validaESettaRecord(record, "faultDescription", 70, null, false);
+			}
+		}
+	}
 
 	@Override
 	protected byte[] createDati() {
@@ -31,9 +47,10 @@ public class IncassoResponse extends AbstractOperazioneResponse {
 			for(SingoloIncassoResponse r: this.lstSingoloIncasso) {
 				if(sb.length() > 0)
 					sb.append("\n");
-				sb.append(new String(r.createDati(this.getDelim())));
+				sb.append(ESITO_INC_OK).append(this.getDelim()).append(new String(r.createDati(this.getDelim())));
 			}
 		} else {
+			sb.append(ESITO_INC_KO).append(this.getDelim());
 			sb.append(this.trn).append(this.getDelim());
 			sb.append(this.faultCode).append(this.getDelim());
 			sb.append(this.faultString).append(this.getDelim());
