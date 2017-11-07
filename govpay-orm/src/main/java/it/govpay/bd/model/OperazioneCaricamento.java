@@ -170,15 +170,8 @@ public class OperazioneCaricamento extends Operazione{
 		this.debitoreProvincia = debitoreProvincia;
 	}
 
-	private transient Dominio dominio;
 	private transient Tributo tributo;
 	
-	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
-		if(dominio == null) {
-			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
-		} 
-		return dominio;
-	}
 	public Tributo getTributo(BasicBD bd,long idDominio) throws ServiceException, NotFoundException {
 		if(tributo == null && this.getCodTributo() != null) {
 			tributo = AnagraficaManager.getTributo(bd, idDominio, getCodTributo());
