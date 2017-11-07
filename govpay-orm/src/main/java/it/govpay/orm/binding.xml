@@ -635,6 +635,7 @@
     <value name="dataOraIncasso" field="dataOraIncasso" usage="required"/>
     <value name="nomeDispositivo" field="nomeDispositivo" usage="optional"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
+    <structure name="idOperatore" field="idOperatore" usage="optional" map-as="_IdOperatore_Type"/>
   </mapping>
   <mapping name="FR" class="it.govpay.orm.FR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
