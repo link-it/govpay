@@ -52,3 +52,7 @@ alter table operazioni DROP CONSTRAINT chk_operazioni_1;
 
 alter table incassi add id_operatore NUMBER;
 alter table incassi add CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
+
+-- abilitazione al caricamento incassi per il ruolo amministratore
+UPDATE acl set amministratore = 1 where cod_servizio = 'G_RND' and id_ruolo in (select id from ruoli where cod_ruolo ='Amministratore');
+
