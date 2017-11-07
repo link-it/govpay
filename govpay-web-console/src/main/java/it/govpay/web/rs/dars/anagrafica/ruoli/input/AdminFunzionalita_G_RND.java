@@ -37,25 +37,25 @@ import it.govpay.web.utils.Utils;
 
 public class AdminFunzionalita_G_RND extends CheckButton<Boolean>{
 	
-	private String funzionalita_G_PAGId= null;
+	private String funzionalita_G_RNDId= null;
 	private String ruoloId = null;
 	private String nomeServizio = null;
-	private Servizio servizio = Servizio.Gestione_Pagamenti;
+	private Servizio servizio = Servizio.Gestione_Rendicontazioni;
 	private Tipo tipo = Tipo.DOMINIO;
 
 	public AdminFunzionalita_G_RND(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,Locale locale) {
 		super(id, label, refreshUri, paramValues);
 		this.nomeServizio = nomeServizio;
-		this.funzionalita_G_PAGId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_PAG.id");
+		this.funzionalita_G_RNDId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".funzionalita_G_RND.id");
 		this.ruoloId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override
 	protected Boolean getDefaultValue(List<RawParamValue> values, Object... objects) {
-		String funzionalita_G_PAGVAlue = Utils.getValue(values, this.funzionalita_G_PAGId);
+		String funzionalita_G_RNDVAlue = Utils.getValue(values, this.funzionalita_G_RNDId);
 		String idRuolo = Utils.getValue(values, this.ruoloId);
 
-		if(StringUtils.isNotEmpty(funzionalita_G_PAGVAlue) && funzionalita_G_PAGVAlue.equalsIgnoreCase("false")){
+		if(StringUtils.isNotEmpty(funzionalita_G_RNDVAlue) && funzionalita_G_RNDVAlue.equalsIgnoreCase("false")){
 			return false;
 		}
 		if(StringUtils.isEmpty(idRuolo)){
@@ -88,8 +88,8 @@ public class AdminFunzionalita_G_RND extends CheckButton<Boolean>{
 	}
 	@Override
 	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
-		String funzionalita_G_PAGVAlue = Utils.getValue(values, this.funzionalita_G_PAGId);
-		if(StringUtils.isNotEmpty(funzionalita_G_PAGVAlue) && funzionalita_G_PAGVAlue.equalsIgnoreCase("false")){
+		String funzionalita_G_RNDVAlue = Utils.getValue(values, this.funzionalita_G_RNDId);
+		if(StringUtils.isNotEmpty(funzionalita_G_RNDVAlue) && funzionalita_G_RNDVAlue.equalsIgnoreCase("false")){
 			return true;
 		}
 
@@ -97,8 +97,8 @@ public class AdminFunzionalita_G_RND extends CheckButton<Boolean>{
 	}
 	@Override
 	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
-		String funzionalita_G_PAGVAlue = Utils.getValue(values, this.funzionalita_G_PAGId);
-		if(StringUtils.isNotEmpty(funzionalita_G_PAGVAlue) && funzionalita_G_PAGVAlue.equalsIgnoreCase("false")){
+		String funzionalita_G_RNDVAlue = Utils.getValue(values, this.funzionalita_G_RNDId);
+		if(StringUtils.isNotEmpty(funzionalita_G_RNDVAlue) && funzionalita_G_RNDVAlue.equalsIgnoreCase("false")){
 			return false;
 		}
 		return true;
