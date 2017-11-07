@@ -125,16 +125,18 @@ public class Incassi extends BasicBD {
 				throw new IncassiException(FaultType.DOMINIO_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
 			}
 			
-			long idApplicazione = -1;
+			Long idApplicazione = null;
+			Long idOperatore = null;
 			// Verifica autorizzazione all'incasso e acquisizione applicazione chiamante
 			if(richiestaIncasso.getApplicazione() != null) {
 				idApplicazione = richiestaIncasso.getApplicazione().getId();
 				if(!AclEngine.isAuthorized(richiestaIncasso.getApplicazione(), Servizio.INCASSI, richiestaIncasso.getCodDominio(), null))
 					throw new NotAuthorizedException();
-			} else 	if(richiestaIncasso.getOperatore() != null && 
-					!(AclEngine.getTopDirittiOperatore(richiestaIncasso.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, richiestaIncasso.getCodDominio()) == 2 ||
-					AclEngine.isAdminDirittiOperatore(richiestaIncasso.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, richiestaIncasso.getCodDominio()))) {
-				throw new NotAuthorizedException();
+			} else if(richiestaIncasso.getOperatore() != null) {
+				idOperatore = richiestaIncasso.getOperatore().getId();
+				if(!(AclEngine.getTopDirittiOperatore(richiestaIncasso.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, richiestaIncasso.getCodDominio()) == 2 ||
+					AclEngine.isAdminDirittiOperatore(richiestaIncasso.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, richiestaIncasso.getCodDominio()))) 
+					throw new NotAuthorizedException();
 			} else {
 				throw new NotAuthorizedException();
 			} 
@@ -273,6 +275,7 @@ public class Incassi extends BasicBD {
 				incasso.setImporto(richiestaIncasso.getImporto());
 				incasso.setTrn(richiestaIncasso.getTrn());
 				incasso.setIdApplicazione(idApplicazione);
+				incasso.setIdOperatore(idOperatore); 
 				richiestaIncassoResponse.setIncasso(incasso);
 				incassiBD.insertIncasso(incasso);
 				
