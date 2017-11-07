@@ -60,6 +60,7 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Rpt.StatoConservazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 import it.govpay.model.avvisi.AvvisoPagamentoInput;
 
@@ -499,6 +500,7 @@ public class Operazioni{
 					bd.setAutoCommit(false);
 					TracciatiBD tracciatiBD = new TracciatiBD(bd);
 					TracciatoFilter filter = tracciatiBD.newFilter();
+					filter.setTipoTracciato(TipoTracciatoType.VERSAMENTI);
 
 					// esecuzione di questa parte dell'elaborazione dei tracciati solo se la funzionalita' di stampa avvisi e' disponibile.
 					log.trace("Controllo stato stampa per i tracciati in stato CARICAMENTO_OK");

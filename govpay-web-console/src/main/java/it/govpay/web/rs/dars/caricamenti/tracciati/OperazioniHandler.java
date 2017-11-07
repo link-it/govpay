@@ -308,7 +308,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = null;
-			InfoForm infoEsportazione = entry != null ?  this.getInfoEsportazioneDettaglio(uriInfo, operazioniBD, entry) : null;
+			InfoForm infoEsportazione = null;
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioOperazione") ;
 			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
@@ -422,6 +422,8 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 
 					if(StringUtils.isNotEmpty(opAnnullamento.getMotivoAnnullamento()))
 						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoAnnullamento.label"), opAnnullamento.getMotivoAnnullamento());
+				} else if(entry.getTipoOperazione().equals(TipoOperazioneType.INC)){
+						sezioneDatiRichiesta.addVoce("TODO", "TODO");
 				} else {
 					// non valido non ha dati
 				}
