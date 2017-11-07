@@ -90,7 +90,6 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 		// Object _operatore
 		Long id_operatore = null;
 		it.govpay.orm.IdOperatore idLogic_operatore = null;
-		// TODO Impostare il corretto metodo che contiene l'identificativo logico
 		idLogic_operatore = incasso.getIdOperatore();
 		if(idLogic_operatore!=null){
 			if(idMappingResolutionBehaviour==null ||

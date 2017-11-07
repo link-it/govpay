@@ -1,6 +1,7 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -271,7 +272,6 @@ public class OperazioneFactory {
 	private CaricamentoResponse caricaVersamento(Tracciato tracciato, CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
 
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
-		caricamentoResponse.setDelim(delimiter);
 		caricamentoResponse.setCodApplicazione(request.getCodApplicazione());
 		caricamentoResponse.setCodVersamentoEnte(request.getCodVersamentoEnte());
 		try {
@@ -311,7 +311,6 @@ public class OperazioneFactory {
 
 
 		AnnullamentoResponse annullamentoResponse = new AnnullamentoResponse();
-		annullamentoResponse.setDelim(delimiter);
 		annullamentoResponse.setCodApplicazione(request.getCodApplicazione());
 		annullamentoResponse.setCodVersamentoEnte(request.getCodVersamentoEnte());
 
@@ -351,7 +350,7 @@ public class OperazioneFactory {
 		Incassi incassi = new Incassi(bd);
 		RichiestaIncassoDTO richiestaIncasso = new RichiestaIncassoDTO();
 		richiestaIncasso.setCausale(request.getCausale());
-		richiestaIncasso.setImporto(new BigDecimal(request.getImporto()));
+		richiestaIncasso.setImporto(new BigDecimal(request.getImporto(), MathContext.DECIMAL64));
 		richiestaIncasso.setDataContabile(request.getDataContabile());
 		richiestaIncasso.setTrn(request.getTrn());
 
@@ -363,7 +362,6 @@ public class OperazioneFactory {
 		
 		
 		IncassoResponse response = new IncassoResponse();
-		response.setDelim(delimiter);
 
 		RichiestaIncassoDTOResponse richiestaIncassoResponse = null;
 		try {

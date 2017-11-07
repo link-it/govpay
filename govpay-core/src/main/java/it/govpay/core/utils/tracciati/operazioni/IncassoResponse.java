@@ -7,6 +7,7 @@ import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.csv.Record;
 
 import it.govpay.core.utils.Utils;
+import it.govpay.model.Operazione.StatoOperazioneType;
 
 public class IncassoResponse extends AbstractOperazioneResponse {
 
@@ -27,14 +28,15 @@ public class IncassoResponse extends AbstractOperazioneResponse {
 	public IncassoResponse(List<Record> recordList) throws ValidationException{
 		for(Record record:recordList) {
 			this.setEsito(Utils.validaESettaRecord(record,"esito",null, null, false));
-			this.setDescrizioneEsito(Utils.validaESettaRecord(record,"descrizioneEsito",null, null, true));
 			if(this.getEsito().equals(ESITO_INC_OK)) {
+				this.setStato(StatoOperazioneType.ESEGUITO_OK);
 				this.add(new SingoloIncassoResponse(record));
 			} else {
+				this.setStato(StatoOperazioneType.ESEGUITO_KO);
 				this.trn = Utils.validaESettaRecord(record, "trn", 35, null, false);
 				this.faultCode = Utils.validaESettaRecord(record, "faultCode", 70, null, false);
 				this.faultString = Utils.validaESettaRecord(record, "faultString", 70, null, false);
-				this.faultDescription = Utils.validaESettaRecord(record, "faultDescription", 70, null, false);
+				this.faultDescription = Utils.validaESettaRecord(record, "faultDescription", 255, null, false);
 			}
 		}
 	}

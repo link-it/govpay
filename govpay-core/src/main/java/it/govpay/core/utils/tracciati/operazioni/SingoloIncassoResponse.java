@@ -3,15 +3,17 @@ package it.govpay.core.utils.tracciati.operazioni;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.csv.Record;
 
+import it.govpay.core.utils.CurrencyUtils;
 import it.govpay.core.utils.Utils;
 
 public class SingoloIncassoResponse {
-
+	
 	public String getIuv() {
 		return iuv;
 	}
@@ -122,7 +124,11 @@ public class SingoloIncassoResponse {
 		lst.add(this.dominio); 
 		lst.add(this.iuv); 
 		lst.add(this.iur); 
-		lst.add(this.importo.toString()); 
+		try {
+			lst.add(CurrencyUtils.getInstance().getCurrencyAsStringWithStringFormatSenzaVirgole(this.importo, Locale.getDefault()));
+		} catch (Exception e) {
+			lst.add(CurrencyUtils.getInstance().getCurrencyAsString(this.importo));
+		} 
 		lst.add(Utils.newSimpleDateFormat().format(this.dataPagamento));
 		lst.add(this.codVersamentoEnte);
 		lst.add(this.codSingoloVersamentoEnte);

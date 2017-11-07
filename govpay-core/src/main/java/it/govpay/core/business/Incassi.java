@@ -309,6 +309,10 @@ public class Incassi extends BasicBD {
 			return richiestaIncassoResponse;
 		} catch (ServiceException e) {
 			throw new InternalException(e);
+		} finally {
+			try {
+				this.disableSelectForUpdate();
+			} catch (ServiceException e) {}
 		}
 	}
 
