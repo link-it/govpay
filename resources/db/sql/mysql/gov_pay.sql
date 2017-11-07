@@ -637,8 +637,10 @@ CREATE TABLE incassi
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT,
+	id_operatore BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 

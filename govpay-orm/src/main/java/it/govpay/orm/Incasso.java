@@ -44,6 +44,7 @@ import java.io.Serializable;
  * 			&lt;element name="dataOraIncasso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nomeDispositivo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -66,7 +67,8 @@ import java.io.Serializable;
   	"dataContabile",
   	"dataOraIncasso",
   	"nomeDispositivo",
-  	"idApplicazione"
+  	"idApplicazione",
+  	"idOperatore"
   }
 )
 
@@ -162,6 +164,14 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.idApplicazione = idApplicazione;
   }
 
+  public IdOperatore getIdOperatore() {
+    return this.idOperatore;
+  }
+
+  public void setIdOperatore(IdOperatore idOperatore) {
+    this.idOperatore = idOperatore;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -218,5 +228,8 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   @XmlElement(name="idApplicazione",required=false,nillable=false)
   protected IdApplicazione idApplicazione;
+
+  @XmlElement(name="idOperatore",required=false,nillable=false)
+  protected IdOperatore idOperatore;
 
 }

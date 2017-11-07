@@ -37,3 +37,6 @@ alter table operazioni add COLUMN trn VARCHAR(35);
 
 
 alter table operazioni DROP CONSTRAINT chk_operazioni_1;
+
+alter table incassi add COLUMN id_operatore BIGINT;
+alter table incassi add CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
