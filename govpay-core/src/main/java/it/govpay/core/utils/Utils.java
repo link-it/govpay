@@ -1,10 +1,8 @@
 package it.govpay.core.utils;
 
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.UtilsException;
@@ -63,10 +61,8 @@ public class Utils {
 		
 		Double campoDouble = null;
 		try {
-		    NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
-		    Number number = format.parse(validaESetta(nomeCampo, campo, null, null, nullable));
-		    campoDouble = number.doubleValue();
-		} catch (ParseException e) {
+			campoDouble = Double.parseDouble(validaESetta(nomeCampo, campo, null, null, nullable));
+		} catch(NumberFormatException e) {
 			throw new ValidationException("Campo "+nomeValoreCampo+" non e' un double");
 		}
 		if(max != null) {

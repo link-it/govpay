@@ -125,7 +125,7 @@ public class SingoloIncassoResponse {
 		lst.add(this.iuv); 
 		lst.add(this.iur); 
 		try {
-			lst.add(CurrencyUtils.getInstance().getCurrencyAsStringWithStringFormatSenzaVirgole(this.importo, Locale.getDefault()));
+			lst.add(CurrencyUtils.getInstance().getCurrencyAsStringWithStringFormatSenzaVirgole(this.importo, Locale.US));
 		} catch (Exception e) {
 			lst.add(CurrencyUtils.getInstance().getCurrencyAsString(this.importo));
 		} 
