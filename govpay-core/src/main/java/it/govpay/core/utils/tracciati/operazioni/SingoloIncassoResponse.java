@@ -162,6 +162,7 @@ public class SingoloIncassoResponse extends AbstractOperazioneResponse {
 							lst.add(this.faultString); 
 							lst.add(this.faultDescription);
 							break;
+		case NON_VALIDO: break;
 		}
 		
 		return lst;

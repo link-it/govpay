@@ -23,6 +23,8 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.OperazioneAnnullamento;
 import it.govpay.bd.model.OperazioneCaricamento;
+import it.govpay.bd.model.OperazioneIncasso;
+import it.govpay.bd.model.OperazioneIncasso.SingoloIncasso;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
@@ -338,8 +340,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 
 				it.govpay.web.rs.dars.model.Sezione sezioneDatiRichiesta = new it.govpay.web.rs.dars.model.Sezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneDatiRichiesta.label"));
 
-				it.govpay.web.rs.dars.model.Sezione sezioneDatiRisposta = new it.govpay.web.rs.dars.model.Sezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneDatiRisposta.label"));
-				
+				List<it.govpay.web.rs.dars.model.Sezione> datiRisposta = new ArrayList<it.govpay.web.rs.dars.model.Sezione>();
 				boolean addSezioneRisposta = false;
 				if(entry.getTipoOperazione().equals(TipoOperazioneType.ADD)){
 					OperazioneCaricamento opCaricamento = (OperazioneCaricamento) entry;
@@ -348,6 +349,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 					if(StringUtils.isNotEmpty(opCaricamento.getCodDominio())){
 						try{
 							Dominio dominio = opCaricamento.getDominio(bd);
+							idDominio = dominio.getId();
 							Domini dominiDars = new Domini();
 							Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
 							sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"), elemento.getTitolo());
@@ -400,7 +402,8 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 					if(StringUtils.isNotEmpty(opCaricamento.getNote()))
 						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".note.label"), opCaricamento.getNote());
 					
-					
+					it.govpay.web.rs.dars.model.Sezione sezioneDatiRisposta = new it.govpay.web.rs.dars.model.Sezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneDatiRisposta.label"));
+					datiRisposta.add(sezioneDatiRisposta);
 					if(StringUtils.isNotEmpty(opCaricamento.getIuv())){
 						sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"), opCaricamento.getIuv());
 						addSezioneRisposta = true;
@@ -423,14 +426,89 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 					if(StringUtils.isNotEmpty(opAnnullamento.getMotivoAnnullamento()))
 						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoAnnullamento.label"), opAnnullamento.getMotivoAnnullamento());
 				} else if(entry.getTipoOperazione().equals(TipoOperazioneType.INC)){
-						sezioneDatiRichiesta.addVoce("TODO", "TODO");
+					OperazioneIncasso opIncasso = (OperazioneIncasso) entry;
+					
+					if(StringUtils.isNotEmpty(opIncasso.getCodDominio())){
+						try{
+							Dominio dominio = opIncasso.getDominio(bd);
+							Domini dominiDars = new Domini();
+							Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
+							sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"), elemento.getTitolo());
+						}catch(Exception e){
+							sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"), opIncasso.getCodDominio());
+						}
+					}
+					
+					if(StringUtils.isNotEmpty(opIncasso.getDispositivo()))
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dispositivo.label"), opIncasso.getDispositivo());
+					if(StringUtils.isNotEmpty(opIncasso.getTrn()))
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.label"), opIncasso.getTrn());
+					if(StringUtils.isNotEmpty(opIncasso.getCausale()))
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".causale.label"), opIncasso.getCausale());
+					if(opIncasso.getImporto() != null) {
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), this.currencyUtils.getCurrencyAsEuro(opIncasso.getImporto()));
+					}
+					if(opIncasso.getDataContabile() != null) {
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataContabile.label"), this.sdf.format(opIncasso.getDataContabile()));
+					}
+					if(opIncasso.getDataValuta() != null) {
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataValuta.label"), this.sdf.format(opIncasso.getDataValuta()));
+					}
+					
+					if(opIncasso.getListaSingoloIncasso() != null && opIncasso.getListaSingoloIncasso().size() > 0) {
+						addSezioneRisposta = true;
+						for (SingoloIncasso singoloIncasso : opIncasso.getListaSingoloIncasso()) {
+							StatoOperazioneType stato = singoloIncasso.getStato();
+							
+							it.govpay.web.rs.dars.model.Sezione sezioneDatiRisposta = 
+									new it.govpay.web.rs.dars.model.Sezione(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sezioneDatiRispostaSingoloIncasso.label",
+											singoloIncasso.getTrn()));
+						
+							sezioneDatiRisposta.getVoci().add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),  
+									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name())));
+							
+							switch (stato) {
+							case ESEGUITO_KO:
+								if(StringUtils.isNotEmpty(singoloIncasso.getFaultCode()))
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultCode.label"), singoloIncasso.getFaultCode());
+								if(StringUtils.isNotEmpty(singoloIncasso.getFaultString()))
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultString.label"), singoloIncasso.getFaultString());
+								if(StringUtils.isNotEmpty(singoloIncasso.getFaultDescription()))
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultDescription.label"), singoloIncasso.getFaultDescription());
+								break;
+							case ESEGUITO_OK:
+								if(StringUtils.isNotEmpty(singoloIncasso.getCodVersamentoEnte()))
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), singoloIncasso.getCodVersamentoEnte());
+								if(StringUtils.isNotEmpty(singoloIncasso.getCodSingoloVersamentoEnte()))
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"), singoloIncasso.getCodSingoloVersamentoEnte());
+								if(StringUtils.isNotEmpty(singoloIncasso.getIuv()))
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"), singoloIncasso.getIuv());
+								if(StringUtils.isNotEmpty(singoloIncasso.getIur()))
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"), singoloIncasso.getIur());
+								if(singoloIncasso.getDataPagamento() != null) {
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"), this.sdf.format(singoloIncasso.getDataPagamento()));
+								}
+								if(singoloIncasso.getImporto() != null) {
+									sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), this.currencyUtils.getCurrencyAsEuro(singoloIncasso.getImporto()));
+								}
+								
+								break;
+							case NON_VALIDO:
+							default:
+								break;
+							}
+							
+							datiRisposta.add(sezioneDatiRisposta);
+						}
+					}
+					
 				} else {
 					// non valido non ha dati
 				}
 
 				dettaglio.getSezioni().add(sezioneDatiRichiesta );
 				if(addSezioneRisposta)
-					dettaglio.getSezioni().add(sezioneDatiRisposta );
+					dettaglio.getSezioni().addAll(datiRisposta);
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");

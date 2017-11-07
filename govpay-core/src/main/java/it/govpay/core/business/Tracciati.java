@@ -36,6 +36,8 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.OperazioneAnnullamento;
 import it.govpay.bd.model.OperazioneCaricamento;
+import it.govpay.bd.model.OperazioneIncasso;
+import it.govpay.bd.model.OperazioneIncasso.SingoloIncasso;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.pagamento.AvvisiPagamentoBD;
 import it.govpay.bd.pagamento.OperazioniBD;
@@ -65,8 +67,10 @@ import it.govpay.core.utils.tracciati.operazioni.AbstractOperazioneResponse;
 import it.govpay.core.utils.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
 import it.govpay.core.utils.tracciati.operazioni.CaricamentoResponse;
+import it.govpay.core.utils.tracciati.operazioni.IncassoRequest;
 import it.govpay.core.utils.tracciati.operazioni.IncassoResponse;
 import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
+import it.govpay.core.utils.tracciati.operazioni.SingoloIncassoResponse;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -252,13 +256,59 @@ public class Tracciati extends BasicBD {
 			OperazioneAnnullamento operazioneAnnullamento = new OperazioneAnnullamento(operazione);
 			operazioneAnnullamento.setMotivoAnnullamento(annullamentoRequest.getMotivoAnnullamento());
 			return operazioneAnnullamento;
-		case INC: throw new ServiceException("NOT IMPLEMENTED");
+		case INC: 
+			IncassoRequest incassoRequest = (IncassoRequest) factory.parseLineaOperazioneRequest(TipoTracciatoType.INCASSI, operazione.getDatiRichiesta());
+			AbstractOperazioneResponse abstractOperazioneResponse2 = factory.parseLineaOperazioneResponse(operazione.getTipoOperazione(), operazione.getStato(), operazione.getDatiRisposta());
+			IncassoResponse incassoResponse = (abstractOperazioneResponse2 instanceof IncassoResponse) ?  (IncassoResponse) abstractOperazioneResponse2 : null;
+			operazione = inserisciInformazioniRelativeAlTipoOperazione(operazione, incassoRequest, incassoResponse);
+			OperazioneIncasso operazioneIncasso = new OperazioneIncasso(operazione);
+			
+			operazioneIncasso.setCausale(incassoRequest.getCausale());
+			operazioneIncasso.setDispositivo(incassoRequest.getDispositivo());
+			operazioneIncasso.setDataContabile(incassoRequest.getDataContabile());
+			operazioneIncasso.setDataValuta(incassoRequest.getDataValuta());
+			operazioneIncasso.setImporto(incassoRequest.getImporto());
+			
+			if(incassoResponse != null) {
+				List<SingoloIncasso> listaSingoloIncasso = this.getListaSingoloincasso(incassoResponse.getLstSingoloIncasso());
+				operazioneIncasso.setListaSingoloIncasso(listaSingoloIncasso);
+			}
+			
+			return operazioneIncasso;
 		case N_V:
 		default:
 			return operazione;
 		}
 	}
 
+
+	private List<SingoloIncasso> getListaSingoloincasso(List<SingoloIncassoResponse> lstSingoloIncasso) {
+		if(lstSingoloIncasso == null)
+			return null;
+		
+		List<SingoloIncasso> lstRet = new ArrayList<OperazioneIncasso.SingoloIncasso>();
+		for (SingoloIncassoResponse singoloIncassoResponse : lstSingoloIncasso) {
+			SingoloIncasso sI = new OperazioneIncasso().new SingoloIncasso();
+			sI.setCodSingoloVersamentoEnte(singoloIncassoResponse.getCodSingoloVersamentoEnte());
+			sI.setCodVersamentoEnte(singoloIncassoResponse.getCodVersamentoEnte());
+			sI.setDescrizioneEsito(singoloIncassoResponse.getDescrizioneEsito());
+			sI.setCodDominio(singoloIncassoResponse.getDominio());
+			sI.setEsito(singoloIncassoResponse.getEsito());
+			sI.setFaultCode(singoloIncassoResponse.getFaultCode());
+			sI.setFaultDescription(singoloIncassoResponse.getFaultDescription());
+			sI.setFaultString(singoloIncassoResponse.getFaultString());
+			sI.setIur(singoloIncassoResponse.getIur());
+			sI.setIuv(singoloIncassoResponse.getIuv());
+			sI.setImporto(singoloIncassoResponse.getImporto());
+			sI.setDataPagamento(singoloIncassoResponse.getDataPagamento());
+			sI.setStato(singoloIncassoResponse.getStato());
+			sI.setTrn(singoloIncassoResponse.getTrn());
+			
+			lstRet.add(sI);
+		}
+		
+		return lstRet;
+	}
 
 	public void elaboraTracciato(ElaboraTracciatoDTO elaboraTracciatoDTO) throws ServiceException {
 
@@ -465,7 +515,7 @@ public class Tracciati extends BasicBD {
 		return null;
 	}
 	
-	public Operazione inserisciInformazioniRelativeAlTipoOperazione(Operazione operazione,AbstractOperazioneRequest request, AbstractOperazioneResponse response) throws Exception{
+	public Operazione inserisciInformazioniRelativeAlTipoOperazione(Operazione operazione,AbstractOperazioneRequest request, AbstractOperazioneResponse response) {
 		// aggiungo dati relativi a codDominio iuv (nel caso ADD) codDominio trn (nel caso INC)
 		if(operazione.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
 			if(request instanceof CaricamentoRequest && response instanceof CaricamentoResponse) {
@@ -506,5 +556,3 @@ public class Tracciati extends BasicBD {
 	}
 		 
 }
-
-
