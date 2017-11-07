@@ -269,6 +269,7 @@ public class OperazioneFactory {
 	private CaricamentoResponse caricaVersamento(Tracciato tracciato, CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
 
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
+		caricamentoResponse.setDelim(delimiter);
 		caricamentoResponse.setCodApplicazione(request.getCodApplicazione());
 		caricamentoResponse.setCodVersamentoEnte(request.getCodVersamentoEnte());
 		try {
@@ -308,6 +309,7 @@ public class OperazioneFactory {
 
 
 		AnnullamentoResponse annullamentoResponse = new AnnullamentoResponse();
+		annullamentoResponse.setDelim(delimiter);
 		annullamentoResponse.setCodApplicazione(request.getCodApplicazione());
 		annullamentoResponse.setCodVersamentoEnte(request.getCodVersamentoEnte());
 
@@ -359,36 +361,43 @@ public class OperazioneFactory {
 		
 		
 		IncassoResponse response = new IncassoResponse();
+		response.setDelim(delimiter);
+
 		RichiestaIncassoDTOResponse richiestaIncassoResponse = null;
 		try {
 			richiestaIncassoResponse = incassi.richiestaIncasso(richiestaIncasso);
 		} catch (IncassiException e) {
-			SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
-			singoloIncassoResponse.setTrn(request.getTrn());
-			singoloIncassoResponse.setFaultCode(e.getFaultCode());
-			singoloIncassoResponse.setFaultString(e.getFaultString());
-			singoloIncassoResponse.setFaultDescription(e.getDescription());
-			response.add(singoloIncassoResponse);
+			response.setTrn(request.getTrn());
+			response.setFaultCode(e.getFaultCode());
+			response.setFaultString(e.getFaultString());
+			response.setFaultDescription(e.getDescription());
+			response.setEsito(IncassoResponse.ESITO_INC_KO);
+			response.setStato(StatoOperazioneType.ESEGUITO_KO);
 		} catch (NotAuthorizedException e) {
-			SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
-			singoloIncassoResponse.setTrn(request.getTrn());
-			singoloIncassoResponse.setFaultCode("INC_KO_NOT_AUTH");
-			singoloIncassoResponse.setFaultString("Non autorizzato");
-			singoloIncassoResponse.setFaultDescription(e.getMessage());
-			response.add(singoloIncassoResponse);
+			response.setTrn(request.getTrn());
+			response.setFaultCode("INC_KO_NOT_AUTH");
+			response.setFaultString("Non autorizzato");
+			response.setFaultDescription(e.getMessage());
+			response.setEsito(IncassoResponse.ESITO_INC_KO);
+			response.setStato(StatoOperazioneType.ESEGUITO_KO);
 		} catch (InternalException e) {
-			SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
-			singoloIncassoResponse.setTrn(request.getTrn());
-			singoloIncassoResponse.setFaultCode("INC_KO_INTERNAL");
-			singoloIncassoResponse.setFaultString("Internal");
-			singoloIncassoResponse.setFaultDescription(e.getMessage());
-			response.add(singoloIncassoResponse);
+			response.setTrn(request.getTrn());
+			response.setFaultCode("INC_KO_INTERNAL");
+			response.setFaultString("Internal");
+			response.setFaultDescription(e.getMessage());
+			response.setEsito(IncassoResponse.ESITO_INC_KO);
+			response.setStato(StatoOperazioneType.ESEGUITO_KO);
 		}
 
 		if(richiestaIncassoResponse != null) {
+			response.setEsito(IncassoResponse.ESITO_INC_OK);
+			response.setStato(StatoOperazioneType.ESEGUITO_OK);
+			response.setTrn(richiestaIncassoResponse.getIncasso().getTrn());
+			response.setDominio(richiestaIncassoResponse.getIncasso().getCodDominio());
+
 			for(Pagamento pagamento: richiestaIncassoResponse.getIncasso().getPagamenti(bd)) {
 				SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
-	
+
 				singoloIncassoResponse.setTrn(richiestaIncassoResponse.getIncasso().getTrn());
 				singoloIncassoResponse.setDominio(richiestaIncassoResponse.getIncasso().getCodDominio());
 				singoloIncassoResponse.setIur(pagamento.getIur());

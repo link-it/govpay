@@ -11,22 +11,6 @@ import org.openspcoop2.utils.csv.Record;
 import it.govpay.core.utils.Utils;
 
 public class SingoloIncassoResponse extends AbstractOperazioneResponse {
-	
-	public String getTrn() {
-		return trn;
-	}
-
-	public void setTrn(String trn) {
-		this.trn = trn;
-	}
-
-	public String getDominio() {
-		return dominio;
-	}
-
-	public void setDominio(String dominio) {
-		this.dominio = dominio;
-	}
 
 	public String getIuv() {
 		return iuv;
@@ -76,93 +60,60 @@ public class SingoloIncassoResponse extends AbstractOperazioneResponse {
 		this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
 	}
 
-	public String getFaultCode() {
-		return faultCode;
+	public String getTrn() {
+		return trn;
 	}
 
-	public void setFaultCode(String faultCode) {
-		this.faultCode = faultCode;
+	public void setTrn(String trn) {
+		this.trn = trn;
 	}
 
-	public String getFaultString() {
-		return faultString;
+	public String getDominio() {
+		return dominio;
 	}
 
-	public void setFaultString(String faultString) {
-		this.faultString = faultString;
+	public void setDominio(String dominio) {
+		this.dominio = dominio;
 	}
-
-	public String getFaultDescription() {
-		return faultDescription;
-	}
-
-	public void setFaultDescription(String faultDescription) {
-		this.faultDescription = faultDescription;
-	}
-
-	public static final String ESITO_INC_OK = "INC_OK";
-	public static final String ESITO_INC_KO = "INC_KO";
 
 	public SingoloIncassoResponse() {
 	}
 	
 	public SingoloIncassoResponse(Record record) throws ValidationException{
 		this.setEsito(Utils.validaESettaRecord(record,"esito",null, null, false));
-		this.trn = Utils.validaESettaRecord(record, "esito", null, null, false);
-
-		if(this.getEsito().equals(ESITO_INC_OK)) {
-			this.dominio = Utils.validaESettaRecord(record, "dominio", null, null, false);
-			this.iuv = Utils.validaESettaRecord(record, "iuv", null, null, false);
-			this.iur = Utils.validaESettaRecord(record, "iur", null, null, false);
-			try {
-				this.importo = Utils.validaESettaDouble("importo", record.getMap().get("importo"), null, null, false);
-				this.dataPagamento = Utils.validaESettaDate("dataPagamento", record.getMap().get("dataPagamento"), false);
-			} catch(UtilsException e) {
-				throw new ValidationException(e);
-			}
-			this.codVersamentoEnte = Utils.validaESettaRecord(record, "codVersamentoEnte", null, null, false);
-			this.codSingoloVersamentoEnte = Utils.validaESettaRecord(record, "codSingoloVersamentoEnte", null, null, false);
-		} else {
-			this.faultCode = Utils.validaESettaRecord(record, "faultCode", null, null, false);
-			this.faultString = Utils.validaESettaRecord(record, "faultString", null, null, false);
-			this.faultDescription = Utils.validaESettaRecord(record, "faultDescription", null, null, false);
+		this.trn = Utils.validaESettaRecord(record, "trn", null, null, false);
+		this.dominio = Utils.validaESettaRecord(record, "dominio", null, null, false);
+		this.iuv = Utils.validaESettaRecord(record, "iuv", null, null, false);
+		this.iur = Utils.validaESettaRecord(record, "iur", null, null, false);
+		try {
+			this.importo = Utils.validaESettaDouble("importo", record.getMap().get("importo"), null, null, false);
+			this.dataPagamento = Utils.validaESettaDate("dataPagamento", record.getMap().get("dataPagamento"), false);
+		} catch(UtilsException e) {
+			throw new ValidationException(e);
 		}
-		
+		this.codVersamentoEnte = Utils.validaESettaRecord(record, "codVersamentoEnte", null, null, false);
+		this.codSingoloVersamentoEnte = Utils.validaESettaRecord(record, "codSingoloVersamentoEnte", null, null, false);
 	}
 	
-	private String trn;
-	private String dominio;
 	private String iuv;
 	private String iur;
 	private Double importo;
 	private Date dataPagamento;
 	private String codVersamentoEnte;
 	private String codSingoloVersamentoEnte;
-	private String faultCode;
-	private String faultString;
-	private String faultDescription;
-	
+	private String trn;
+	private String dominio;
+
 	protected List<String> listDati() {
 		ArrayList<String> lst = new ArrayList<String>();
-		switch(this.getStato()) {
-		case ESEGUITO_KO: 	lst.add(ESITO_INC_KO);
-							lst.add(this.trn); 
-							lst.add(this.dominio); 
-							lst.add(this.iuv); 
-							lst.add(this.iur); 
-							lst.add(this.importo.toString()); 
-							lst.add(Utils.newSimpleDateFormat().format(this.dataPagamento));
-							lst.add(this.codVersamentoEnte);
-							lst.add(this.codSingoloVersamentoEnte);
-							break;
-							
-		case ESEGUITO_OK: 	lst.add(ESITO_INC_OK); 
-							lst.add(this.trn); 
-							lst.add(this.faultCode); 
-							lst.add(this.faultString); 
-							lst.add(this.faultDescription);
-							break;
-		}
+		lst.add(this.trn); 
+		lst.add(this.dominio); 
+		lst.add(this.iuv); 
+		lst.add(this.iur); 
+		lst.add(this.importo.toString()); 
+		lst.add(Utils.newSimpleDateFormat().format(this.dataPagamento));
+		lst.add(this.codVersamentoEnte);
+		lst.add(this.codSingoloVersamentoEnte);
 		
 		return lst;
 	}

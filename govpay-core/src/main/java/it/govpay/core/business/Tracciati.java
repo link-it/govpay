@@ -484,10 +484,8 @@ public class Tracciati extends BasicBD {
 		} else if(operazione.getTipoOperazione().equals(TipoOperazioneType.INC)) {
 			if(response instanceof IncassoResponse) {
 				IncassoResponse incassoResponse = (IncassoResponse) response;
-				if(!incassoResponse.getLstSingoloIncasso().isEmpty()) {
-					operazione.setCodDominio(incassoResponse.getLstSingoloIncasso().get(0).getDominio());
-					operazione.setTrn(incassoResponse.getLstSingoloIncasso().get(0).getTrn());
-				}
+				operazione.setCodDominio(incassoResponse.getDominio());
+				operazione.setTrn(incassoResponse.getTrn());
 			}
 		} else {
 			if(request instanceof AnnullamentoRequest) {

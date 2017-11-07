@@ -16,7 +16,7 @@ public class IncassoRequest extends AbstractOperazioneRequest {
 		this.trn = Utils.validaESettaRecord(record, "trn", 35, null, false);
 		this.dispositivo= Utils.validaESettaRecord(record, "dispositivo", 35, null, true);
 		this.dominio= Utils.validaESettaRecord(record, "dominio", 35, null, false);
-		this.causale = Utils.validaESettaRecord(record, "causale", 35, null, false);
+		this.causale = Utils.validaESettaRecord(record, "causale", 70, null, false);
 		try {
 			this.importo = Utils.validaESettaDouble("importo", record.getMap().get("importo"), null, null, false);
 			this.dataContabile = Utils.validaESettaDate("dataContabile", record.getMap().get("dataContabile"), true);
