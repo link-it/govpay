@@ -455,8 +455,29 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataValuta.label"), this.sdf.format(opIncasso.getDataValuta()));
 					}
 					
-					if(opIncasso.getListaSingoloIncasso() != null && opIncasso.getListaSingoloIncasso().size() > 0) {
+					if(opIncasso.getListaSingoloIncasso() != null && opIncasso.getListaSingoloIncasso().size() > 0 || 
+							(StringUtils.isNotEmpty(opIncasso.getFaultCode()) || StringUtils.isNotEmpty(opIncasso.getFaultDescription())
+									|| StringUtils.isNotEmpty(opIncasso.getFaultString()))) {
 						addSezioneRisposta = true;
+						it.govpay.web.rs.dars.model.Sezione sezioneDatiRisposta = 
+								new it.govpay.web.rs.dars.model.Sezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneDatiRisposta.label"));
+					
+						sezioneDatiRisposta.getVoci().add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),  
+								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+opIncasso.getStato().name())));
+						
+						if(StringUtils.isNotEmpty(opIncasso.getFaultCode()))
+							sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultCode.label"), opIncasso.getFaultCode());
+						if(StringUtils.isNotEmpty(opIncasso.getFaultString()))
+							sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultString.label"), opIncasso.getFaultString());
+						if(StringUtils.isNotEmpty(opIncasso.getFaultDescription()))
+							sezioneDatiRisposta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".faultDescription.label"), opIncasso.getFaultDescription());
+						
+						datiRisposta.add(sezioneDatiRisposta);
+					}
+					
+					
+					if(opIncasso.getListaSingoloIncasso() != null && opIncasso.getListaSingoloIncasso().size() > 0) {
+
 						for (SingoloIncasso singoloIncasso : opIncasso.getListaSingoloIncasso()) {
 							StatoOperazioneType stato = singoloIncasso.getStato();
 							
