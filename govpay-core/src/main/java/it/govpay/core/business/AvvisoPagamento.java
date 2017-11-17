@@ -156,8 +156,11 @@ public class AvvisoPagamento extends BasicBD {
 		}
 
 		Intermediario intermediario = dominio.getStazione(this).getIntermediario(this);
-		if(intermediario != null)
-			input.setEntePartner(intermediario.getDenominazione());
+		if(intermediario != null) {
+			// visualizzao l'ente partner solo se non coincide con il dominio
+			if(!intermediario.getCodIntermediario().equals(dominio.getCodDominio()))
+				input.setEntePartner(intermediario.getDenominazione());
+		}
 
 		it.govpay.core.business.model.Iuv iuvGenerato = 
 				IuvUtils.toIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), 
@@ -165,6 +168,9 @@ public class AvvisoPagamento extends BasicBD {
 
 		if(versamento.getCausaleVersamento() != null)
 			input.setAvvisoCausale(versamento.getCausaleVersamento().getSimple());
+		
+		// avviso_mav 
+		input.setAvvisoMav(false);
 		
 		if(versamento.getImportoTotale() != null)
 			input.setAvvisoImporto(versamento.getImportoTotale().doubleValue());

@@ -44,6 +44,8 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="place_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importo_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="scadenza_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ *  		&lt;element name="taglio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ *  		&lt;element name="taglio1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_area" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_identificativo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
@@ -58,6 +60,7 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="intestatario_indirizzo_1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="intestatario_indirizzo_2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_causale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avviso_mav" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_scadenza" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_numero" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
@@ -88,6 +91,8 @@ import javax.xml.bind.annotation.XmlType;
   	"placeLogo",
   	"importoLogo",
   	"scadenzaLogo",
+  	"taglio",
+  	"taglio1",
   	"enteDenominazione",
   	"enteArea",
   	"enteIdentificativo",
@@ -102,6 +107,7 @@ import javax.xml.bind.annotation.XmlType;
   	"intestatarioIndirizzo1",
   	"intestatarioIndirizzo2",
   	"avvisoCausale",
+  	"avvisoMav",
   	"avvisoImporto",
   	"avvisoScadenza",
   	"avvisoNumero",
@@ -312,6 +318,18 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
     this.avvisoCausale = avvisoCausale;
   }
 
+  public boolean isAvvisoMav() {
+    return this.avvisoMav;
+  }
+
+  public boolean getAvvisoMav() {
+    return this.avvisoMav;
+  }
+
+  public void setAvvisoMav(boolean avvisoMav) {
+    this.avvisoMav = avvisoMav;
+  }
+
   public double getAvvisoImporto() {
     return this.avvisoImporto;
   }
@@ -375,8 +393,25 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   public void setAvvisoQrcode(java.lang.String avvisoQrcode) {
     this.avvisoQrcode = avvisoQrcode;
   }
+  
+	  public java.lang.String getTaglio() {
+		return taglio;
+	}
+	
+	public void setTaglio(java.lang.String taglio) {
+		this.taglio = taglio;
+	}
+	
+	public java.lang.String getTaglio1() {
+		return taglio1;
+	}
+	
+	public void setTaglio1(java.lang.String taglio1) {
+		this.taglio1 = taglio1;
+	}
 
-  private static final long serialVersionUID = 1L;
+
+private static final long serialVersionUID = 1L;
 
   @XmlTransient
   private Long id;
@@ -414,6 +449,14 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="scadenza_logo",required=true,nillable=false)
   protected java.lang.String scadenzaLogo;
+  
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="taglio",required=true,nillable=false)
+  protected java.lang.String taglio;
+  
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="taglio1",required=true,nillable=false)
+  protected java.lang.String taglio1;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ente_denominazione",required=true,nillable=false)
@@ -470,6 +513,10 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avviso_causale",required=true,nillable=false)
   protected java.lang.String avvisoCausale;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="avviso_mav",required=true,nillable=false)
+  protected boolean avvisoMav;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="avviso_importo",required=true,nillable=false)

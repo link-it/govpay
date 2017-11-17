@@ -2152,6 +2152,8 @@
 			<xsd:element name="place_logo" type="xsd:string"/>
 			<xsd:element name="importo_logo" type="xsd:string"/>
 			<xsd:element name="scadenza_logo" type="xsd:string"/>
+			<xsd:element name="taglio" type="xsd:string"/>
+			<xsd:element name="taglio1" type="xsd:string"/>
 			<xsd:element name="ente_denominazione" type="xsd:string"/>
 			<xsd:element name="ente_area" type="xsd:string"/>
 			<xsd:element name="ente_identificativo" type="xsd:string"/>
@@ -2166,6 +2168,7 @@
 			<xsd:element name="intestatario_indirizzo_1" type="xsd:string"/>
 			<xsd:element name="intestatario_indirizzo_2" type="xsd:string"/>
 			<xsd:element name="avviso_causale" type="xsd:string"/>
+			<xsd:element name="avviso_mav" type="xsd:boolean"/>
 			<xsd:element name="avviso_importo" type="xsd:double"/>
 			<xsd:element name="avviso_scadenza" type="xsd:string"/>
 			<xsd:element name="avviso_numero" type="xsd:string"/>
