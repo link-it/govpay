@@ -48,6 +48,7 @@ public class PspFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Psp.model().RAGIONE_SOCIALE);
 		this.listaFieldSimpleSearch.add(Psp.model().COD_PSP);
+		this.fieldAbilitato = Psp.model().ABILITATO;
 	}
 
 	@Override
@@ -74,6 +75,8 @@ public class PspFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
+			
 			
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -84,7 +87,7 @@ public class PspFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

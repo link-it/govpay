@@ -51,6 +51,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	
 	public IbanAccreditoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.fieldAbilitato = it.govpay.orm.IbanAccredito.model().ABILITATO;
 	}
 
 	@Override
@@ -68,6 +69,8 @@ public class IbanAccreditoFilter extends AbstractFilter {
 				expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.IbanAccredito.model())), getIdDominio());
 				addAnd = true;
 			}
+			
+			addAnd = this.setFiltroAbilitato(expr, addAnd);
 			
 			return expr;
 		} catch (NotImplementedException e) {

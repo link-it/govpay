@@ -115,6 +115,11 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			fsw.setField(it.govpay.orm.Portale.model().COD_PORTALE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String abilitato = this.getParameter(uriInfo, abilitatoId, String.class);
+			
+			filter.setSearchAbilitato(this.getMostraDisabilitato(abilitato)); 
 
 			if(simpleSearch){
 				// simplesearch
@@ -165,7 +170,8 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 
 		if(visualizzaRicerca){
 			String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
-
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 
@@ -176,6 +182,10 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			codPortale.setDefaultValue(null);
 			codPortale.setEditable(true); 
 			sezioneRoot.addField(codPortale);
+			
+			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
+			abilitato.setDefaultValue(false);
+			sezioneRoot.addField(abilitato);
 		}
 		return infoRicerca;
 	}
@@ -188,6 +198,10 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			String codPortaleLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.label");
 			InputText codPortale = new InputText(codPortaleId, codPortaleLabel, null, false, false, true, 1, 255);
 			this.infoRicercaMap.put(codPortaleId, codPortale);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			CheckButton abilitato = this.creaCheckButtonSearchMostraDisabilitato(abilitatoId);
+			this.infoRicercaMap.put(abilitatoId, abilitato);
 		}
 	}
 
