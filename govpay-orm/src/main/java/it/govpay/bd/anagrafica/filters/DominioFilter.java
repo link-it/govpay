@@ -61,6 +61,7 @@ public class DominioFilter extends AbstractFilter {
 			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().ID_STAZIONE.COD_STAZIONE);
 			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().COD_DOMINIO);
 			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
+			this.fieldAbilitato = it.govpay.orm.Dominio.model().ABILITATO;
 		} catch(Exception e){
 			
 		}
@@ -115,6 +116,8 @@ public class DominioFilter extends AbstractFilter {
 				// 2. metto in and la stringa con la ragione sociale
 				newExpression.ilike(Dominio.model().RAGIONE_SOCIALE, this.ragioneSociale,LikeMode.ANYWHERE);
 			}
+			
+			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

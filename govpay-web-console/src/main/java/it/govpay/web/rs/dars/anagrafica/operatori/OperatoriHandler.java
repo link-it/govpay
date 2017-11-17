@@ -102,6 +102,10 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String abilitato = this.getParameter(uriInfo, abilitatoId, String.class);
+			
+			filter.setSearchAbilitato(this.getMostraDisabilitato(abilitato)); 
 
 			if(simpleSearch){
 				// simplesearch
@@ -160,7 +164,8 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		if(visualizzaRicerca){
 			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 			String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
-
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 			}
@@ -195,6 +200,10 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			ruolo.setValues(listaRuoli);
 			ruolo.setDefaultValue("");
 			sezioneRoot.addField(ruolo); 
+			
+			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
+			abilitato.setDefaultValue(false);
+			sezioneRoot.addField(abilitato);
 
 		}
 		return infoRicerca;
@@ -217,6 +226,10 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			List<Voce<String>> tipiProfili = new ArrayList<Voce<String>>();
 			SelectList<String> ruolo = new SelectList<String>(ruoloId, ruoloLabel, "", false, false, true, tipiProfili);
 			this.infoRicercaMap.put(ruoloId, ruolo);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			CheckButton abilitato = this.creaCheckButtonSearchMostraDisabilitato(abilitatoId);
+			this.infoRicercaMap.put(abilitatoId, abilitato);
 
 		}
 	}

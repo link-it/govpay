@@ -46,16 +46,22 @@ public class PortaleFilter extends AbstractFilter {
 	public PortaleFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Portale.model().COD_PORTALE);
+		this.fieldAbilitato = it.govpay.orm.Portale.model().ABILITATO;
 	}
 
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression exp = this.newExpression();
+			boolean addAnd = false;
+			if(this.codPortale != null) {
+				exp.ilike(Portale.model().COD_PORTALE, this.codPortale,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
 
-			if(this.codPortale != null)
-				exp.ilike(Portale.model().COD_PORTALE, this.codPortale,LikeMode.ANYWHERE); 
-
+			
+			addAnd = this.setFiltroAbilitato(exp, addAnd);
+			
 			return exp;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

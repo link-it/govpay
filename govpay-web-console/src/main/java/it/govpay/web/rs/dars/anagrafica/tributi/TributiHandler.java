@@ -116,6 +116,15 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 
 			filter.setIdDominio(this.idDominio);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String abilitato = this.getParameter(uriInfo, abilitatoId, String.class);
+			
+			if(StringUtils.isNotEmpty(abilitato)) {
+				params.put(abilitatoId, abilitato);
+			}
+			
+			filter.setSearchAbilitato(this.getMostraDisabilitato(abilitato)); 
 
 			if(simpleSearch) {
 				// simplesearch
@@ -170,7 +179,8 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 
 		if(visualizzaRicerca) {
 			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 			}
@@ -180,6 +190,10 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 			InputText codTributo = (InputText) this.infoRicercaMap.get(codTributoId);
 			codTributo.setDefaultValue(null);
 			sezioneRoot.addField(codTributo);
+			
+			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
+			abilitato.setDefaultValue(false);
+			sezioneRoot.addField(abilitato);
 
 		}
 		return infoRicerca;
@@ -195,6 +209,10 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 			String codTributoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
 			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, false, false, true, 1, 255);
 			this.infoRicercaMap.put(codTributoId, codTributo);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			CheckButton abilitato = this.creaCheckButtonSearchMostraDisabilitato(abilitatoId);
+			this.infoRicercaMap.put(abilitatoId, abilitato);
 
 		}
 	}

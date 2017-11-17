@@ -54,6 +54,7 @@ import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.utils.Utils;
 
@@ -85,9 +86,19 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 			fsw.setField(it.govpay.orm.Psp.model().RAGIONE_SOCIALE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
+			
+			Map<String, String> params = new HashMap<String, String>();
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String abilitato = this.getParameter(uriInfo, abilitatoId, String.class);
+			
+			filter.setSearchAbilitato(this.getMostraDisabilitato(abilitato)); 
+			
 			if(simpleSearch){
 				// simplesearch
 				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+				
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
@@ -98,10 +109,12 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 				String codPsp = this.getParameter(uriInfo, codPspId, String.class);
 
 				if(StringUtils.isNotEmpty(codPsp)){
+					params.put(codPspId, codPsp);
 					filter.setCodPsp(codPsp);
 				}
 
 				if(StringUtils.isNotEmpty(ragioneSociale)){
+					params.put(ragioneSocialeId, ragioneSociale);
 					filter.setRagioneSociale(ragioneSociale);
 				}
 			}
@@ -109,7 +122,7 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 			long count = pspBD.count(filter);
 
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
@@ -137,13 +150,14 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
-		URI ricerca = this.getUriRicerca(uriInfo, bd);
+		URI ricerca = this.getUriRicerca(uriInfo, bd,parameters);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		if(visualizzaRicerca) {
 			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
 			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
-
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 
@@ -153,13 +167,15 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 
 			InputText codPsp = (InputText) this.infoRicercaMap.get(codPspId);
 			codPsp.setDefaultValue(null);
-			codPsp.setEditable(true); 
 			sezioneRoot.addField(codPsp);
 
 			InputText ragioneSociale = (InputText) this.infoRicercaMap.get(ragioneSocialeId);
 			ragioneSociale.setDefaultValue(null);
-			ragioneSociale.setEditable(true); 
 			sezioneRoot.addField(ragioneSociale);
+			
+			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
+			abilitato.setDefaultValue(false);
+			sezioneRoot.addField(abilitato);
 		}
 
 		return infoRicerca;
@@ -171,6 +187,7 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 
 			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
 			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 
 			// codPsp
 			String codPspLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label");
@@ -181,6 +198,9 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 			String ragioneSocialeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label");
 			InputText ragioneSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, false, false, true, 1, 255);
 			this.infoRicercaMap.put(ragioneSocialeId, ragioneSociale);
+			
+			CheckButton abilitato = this.creaCheckButtonSearchMostraDisabilitato(abilitatoId);
+			this.infoRicercaMap.put(abilitatoId, abilitato);	
 		}
 	}
 
@@ -257,7 +277,7 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"), psp.getCodFlusso());
 			if(StringUtils.isNotEmpty(psp.getUrlInfo()))
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), psp.getUrlInfo());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(psp.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(psp.isAbilitato()));
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".bolloGestito.label"), Utils.getAbilitatoAsLabel(psp.isBolloGestito()));
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stornoGestito.label"), Utils.getAbilitatoAsLabel(psp.isStornoGestito()));
 

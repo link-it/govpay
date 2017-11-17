@@ -56,6 +56,7 @@ public class TributoFilter extends AbstractFilter {
 		try{
 			TributoFieldConverter converter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Tributo.model()));
+			this.fieldAbilitato = it.govpay.orm.Tributo.model().ABILITATO;
 		} catch(Exception e){
 			
 		}
@@ -95,6 +96,8 @@ public class TributoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
+			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

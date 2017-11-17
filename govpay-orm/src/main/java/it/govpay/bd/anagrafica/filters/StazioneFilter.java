@@ -47,16 +47,21 @@ public class StazioneFilter extends AbstractFilter {
 	
 	public StazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.fieldAbilitato = it.govpay.orm.Stazione.model().ABILITATO;
 	}
 
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression expr = this.newExpression();
+			boolean addAnd = false; 
 			if(StringUtils.isNotEmpty(this.getCodIntermediario())){
 				//long id = Long.parseLong(this.getCodIntermediario());
 				expr.equals(Stazione.model().ID_INTERMEDIARIO.COD_INTERMEDIARIO, this.getCodIntermediario());
+				addAnd = true;
 			} 
+			
+			addAnd = this.setFiltroAbilitato(expr, addAnd);
 			return expr;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
