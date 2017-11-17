@@ -44,9 +44,11 @@ public class IncassoConverter {
 			idApplicazione.setId(dto.getIdApplicazione());
 			vo.setIdApplicazione(idApplicazione);
 		}
-		IdOperatore idOperatore = new IdOperatore();
-		idOperatore.setId(dto.getIdOperatore());
-		vo.setIdOperatore(idOperatore);
+		if(dto.getIdOperatore() != null) {
+			IdOperatore idOperatore = new IdOperatore();
+			idOperatore.setId(dto.getIdOperatore());
+			vo.setIdOperatore(idOperatore);
+		}
 		vo.setImporto(dto.getImporto().doubleValue());
 		vo.setTrn(dto.getTrn());
 		
