@@ -14,6 +14,8 @@ public class AvvisoPagamentoCostanti {
 	public static final String LOGO_PLACE = "avvisoPagamento.logo.place";
 	public static final String LOGO_IMPORTO = "avvisoPagamento.logo.importo";
 	public static final String LOGO_SCADENZA = "avvisoPagamento.logo.scadenza";
+	public static final String LOGO_TAGLIO = "avvisoPagamento.logo.taglio";
+	public static final String LOGO_TAGLIO1 = "avvisoPagamento.logo.taglio1";
 	
 	public static final String PREFIX_LOGO = "avvisoPagamento.logo";
 	

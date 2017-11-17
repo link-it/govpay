@@ -37652,7 +37652,7 @@ event and do your own custom submission:
         this.fire('advanced-search-request');
         this.isSimpleQuery = { value: '', active: false };
         this.offset = offset;
-        var temp = this.$.searchForm.serialize();
+        var temp = this.serializeForm(this.$.searchForm);
         var lista = Object.keys(temp);
         var query = [];
         for (var i = 0; i < lista.length; i++) {
@@ -37671,7 +37671,7 @@ event and do your own custom submission:
                 break;
             }
           }
-          if (newValue){
+          if (newValue !== null && String(newValue) != ''){
             query.push(obj+'='+newValue);
           }
         }

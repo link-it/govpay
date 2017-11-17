@@ -2152,6 +2152,8 @@
 			<xsd:element name="place_logo" type="xsd:string"/>
 			<xsd:element name="importo_logo" type="xsd:string"/>
 			<xsd:element name="scadenza_logo" type="xsd:string"/>
+			<xsd:element name="taglio" type="xsd:string"/>
+			<xsd:element name="taglio1" type="xsd:string"/>
 			<xsd:element name="ente_denominazione" type="xsd:string"/>
 			<xsd:element name="ente_area" type="xsd:string"/>
 			<xsd:element name="ente_identificativo" type="xsd:string"/>

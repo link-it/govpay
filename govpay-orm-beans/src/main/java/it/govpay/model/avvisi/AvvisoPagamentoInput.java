@@ -44,6 +44,8 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="place_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importo_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="scadenza_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ *  		&lt;element name="taglio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ *  		&lt;element name="taglio1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_area" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_identificativo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
@@ -89,6 +91,8 @@ import javax.xml.bind.annotation.XmlType;
   	"placeLogo",
   	"importoLogo",
   	"scadenzaLogo",
+  	"taglio",
+  	"taglio1",
   	"enteDenominazione",
   	"enteArea",
   	"enteIdentificativo",
@@ -389,8 +393,25 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   public void setAvvisoQrcode(java.lang.String avvisoQrcode) {
     this.avvisoQrcode = avvisoQrcode;
   }
+  
+	  public java.lang.String getTaglio() {
+		return taglio;
+	}
+	
+	public void setTaglio(java.lang.String taglio) {
+		this.taglio = taglio;
+	}
+	
+	public java.lang.String getTaglio1() {
+		return taglio1;
+	}
+	
+	public void setTaglio1(java.lang.String taglio1) {
+		this.taglio1 = taglio1;
+	}
 
-  private static final long serialVersionUID = 1L;
+
+private static final long serialVersionUID = 1L;
 
   @XmlTransient
   private Long id;
@@ -428,6 +449,14 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="scadenza_logo",required=true,nillable=false)
   protected java.lang.String scadenzaLogo;
+  
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="taglio",required=true,nillable=false)
+  protected java.lang.String taglio;
+  
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="taglio1",required=true,nillable=false)
+  protected java.lang.String taglio1;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ente_denominazione",required=true,nillable=false)
