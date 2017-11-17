@@ -38,6 +38,7 @@
 								<linkit:sql-table object-name="TipoTributo"
 									object-type="TipoTributo"/>
 								<linkit:sql-table object-name="Tributo" object-type="Tributo"/>
+								<linkit:sql-table object-name="Ruolo" object-type="Ruolo"/>
 								<linkit:sql-table object-name="ACL" object-type="ACL"/>
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
@@ -56,7 +57,6 @@
 								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
-								<linkit:sql-table object-name="Ruolo" object-type="Ruolo"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
 							</linkit:sql-table-list>
@@ -213,6 +213,7 @@
 		<xsd:sequence>
 			<xsd:element name="idPagamento" type="xsd:long"/>
 			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0"/>
+			<xsd:element name="indiceDati" type="xsd:int"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -489,8 +490,9 @@
 					<linkit:interface crud="true" id="id-dominio"/>
 					<linkit:sql-table-mapping generate-sql="true" name="domini"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_dom"/>
 						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="codDominio"/>
+						<linkit:sql-table-unique-field name="codDominio"/>
 						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -549,6 +551,7 @@
 					<linkit:interface crud="true" id="id-psp"/>
 					<linkit:sql-table-mapping generate-sql="true" name="psp"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_psp"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codPsp"/>
 						</linkit:sql-table-unique>
@@ -574,6 +577,7 @@
 					<linkit:interface crud="true" id="id-canale"/>
 					<linkit:sql-table-mapping generate-sql="true" name="canali"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_can"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_psp"/>
 							<linkit:sql-table-unique-field name="codCanale"/>
@@ -632,6 +636,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-uo"/>
 					<linkit:sql-table-mapping generate-sql="true" name="uo" on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_uo"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codUo"/>
 							<linkit:sql-table-unique-column name="id_dominio"/>
@@ -673,6 +678,7 @@
 					<linkit:interface crud="true" id="id-portale"/>
 					<linkit:sql-table-mapping generate-sql="true" name="portali"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_prt"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codPortale"/>
 						</linkit:sql-table-unique>
@@ -701,6 +707,7 @@
 					<linkit:interface crud="true" id="id-connettore"/>
 					<linkit:sql-table-mapping generate-sql="true" name="connettori"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_con"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codConnettore"/>
 							<linkit:sql-table-unique-field name="codProprieta"/>
@@ -724,6 +731,7 @@
 					<linkit:interface crud="true" id="id-intermediario"/>
 					<linkit:sql-table-mapping generate-sql="true" name="intermediari"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_int"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codIntermediario"/>
 						</linkit:sql-table-unique>
@@ -747,6 +755,7 @@
 					<linkit:interface crud="true" id="id-stazione"/>
 					<linkit:sql-table-mapping generate-sql="true" name="stazioni"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_stz"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codStazione"/>
 						</linkit:sql-table-unique>
@@ -786,6 +795,7 @@
 					<linkit:interface crud="true" id="id-applicazione"/>
 					<linkit:sql-table-mapping generate-sql="true" name="applicazioni"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_app"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codApplicazione"/>
 						</linkit:sql-table-unique>
@@ -817,6 +827,7 @@
 					<linkit:interface crud="true" id="id-iban-accredito"/>
 					<linkit:sql-table-mapping generate-sql="true" name="iban_accredito"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_iba"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codIban"/>
 							<linkit:sql-table-unique-column name="id_dominio"/>
@@ -857,6 +868,7 @@
 					<linkit:interface crud="true" id="id-tributo"/>
 					<linkit:sql-table-mapping generate-sql="true" name="tributi"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_trb"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_dominio"/>
 							<linkit:sql-table-unique-column name="id_tipo_tributo"/>
@@ -911,6 +923,7 @@
 					<linkit:interface crud="true" id="id-tipo-tributo"/>
 					<linkit:sql-table-mapping generate-sql="true" name="tipi_tributo"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_tpt"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codTributo"/>
 						</linkit:sql-table-unique>
@@ -935,6 +948,7 @@
 					<linkit:interface crud="true"/>
 					<linkit:sql-table-mapping generate-sql="true" name="gp_audit"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_aud"/>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -973,6 +987,7 @@
 					<linkit:interface crud="true" id="id-ruolo"/>
 					<linkit:sql-table-mapping generate-sql="true" name="ruoli"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_ruo"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codRuolo"/>
 						</linkit:sql-table-unique>
@@ -993,7 +1008,9 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-acl"/>
 					<linkit:sql-table-mapping generate-sql="true" name="acl"
-						on-delete-cascade="false"> </linkit:sql-table-mapping>
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_acl"/>
+					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1081,6 +1098,7 @@
 					<linkit:interface crud="true" id="id-operatore"/>
 					<linkit:sql-table-mapping generate-sql="true" name="operatori"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_opr"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="principal"/>
 						</linkit:sql-table-unique>
@@ -1106,6 +1124,7 @@
 					<linkit:interface crud="true" id="id-iuv"/>
 					<linkit:sql-table-mapping generate-sql="true" name="iuv"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_iuv"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_dominio"/>
 							<linkit:sql-table-unique-field name="iuv"/>
@@ -1158,6 +1177,7 @@
 					<linkit:interface crud="true" id="id-versamento"/>
 					<linkit:sql-table-mapping generate-sql="true" name="versamenti"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_vrs"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codVersamentoEnte"/>
 							<linkit:sql-table-unique-column name="id_applicazione"/>
@@ -1244,7 +1264,9 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true"/>
 					<linkit:sql-table-mapping generate-sql="true" name="eventi"
-						on-delete-cascade="false"> </linkit:sql-table-mapping>
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_evt"/>
+					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1281,6 +1303,7 @@
 					<linkit:interface crud="true" id="id-singolo-versamento"/>
 					<linkit:sql-table-mapping generate-sql="true" name="singoli_versamenti"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_sng"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_versamento"/>
 							<linkit:sql-table-unique-field name="codSingoloVersamentoEnte"/>
@@ -1369,6 +1392,7 @@
 					<linkit:interface crud="true" id="id-rpt"/>
 					<linkit:sql-table-mapping generate-sql="true" name="rpt"
 						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_rpt"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codMsgRichiesta"/>
 						</linkit:sql-table-unique>
@@ -1377,6 +1401,12 @@
 							<linkit:sql-table-unique-field name="ccp"/>
 							<linkit:sql-table-unique-field name="codDominio"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index>
+							<linkit:sql-table-index-field name="stato"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index>
+							<linkit:sql-table-index-column name="id_versamento"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1520,6 +1550,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-rr"/>
 					<linkit:sql-table-mapping generate-sql="true" name="rr" on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_rr"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codMsgRevoca"/>
 						</linkit:sql-table-unique>
@@ -1568,13 +1599,16 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-rendicontazione"/>
 					<linkit:sql-table-mapping generate-sql="true" name="rendicontazioni"
-						on-delete-cascade="false"> </linkit:sql-table-mapping>
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_rnd"/>
+					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="iuv" type="String35"/>
 			<xsd:element name="iur" type="String35"/>
+			<xsd:element name="indiceDati" type="xsd:int" minOccurs="0"/>
 			<xsd:element name="importoPagato" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="esito" type="xsd:positiveInteger" minOccurs="0"/>
 			<xsd:element name="data" type="xsd:dateTime" minOccurs="0"/>
@@ -1619,7 +1653,15 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-pagamento"/>
 					<linkit:sql-table-mapping generate-sql="true" name="pagamenti"
-						on-delete-cascade="false"> </linkit:sql-table-mapping>
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_pag"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="codDominio"/>
+							<linkit:sql-table-unique-field name="iuv"/>
+							<linkit:sql-table-unique-field name="iur"/>
+							<linkit:sql-table-unique-field name="indiceDati"/>
+						</linkit:sql-table-unique>
+					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1646,6 +1688,7 @@
 			</xsd:element>
 			<xsd:element name="codDominio" type="String35"/>
 			<xsd:element name="iuv" type="String35"/>
+			<xsd:element name="indiceDati" type="xsd:int"/>
 			<xsd:element name="importoPagato" type="xsd:double"/>
 			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>
 			<xsd:element name="iur" type="String35"/>
@@ -1703,7 +1746,9 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-notifica"/>
 					<linkit:sql-table-mapping generate-sql="true" name="notifiche"
-						on-delete-cascade="false"> </linkit:sql-table-mapping>
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_ntf"/>
+					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1757,7 +1802,9 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-incasso"/>
 					<linkit:sql-table-mapping generate-sql="true" name="incassi"
-						on-delete-cascade="false"> </linkit:sql-table-mapping>
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_inc"/>
+					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1793,6 +1840,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-fr"/>
 					<linkit:sql-table-mapping generate-sql="true" name="fr" on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_fr"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codFlusso"/>
 						</linkit:sql-table-unique>
@@ -1866,6 +1914,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-batch"/>
 					<linkit:sql-table-mapping generate-sql="true" name="batch" on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_btc"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codBatch"/>
 						</linkit:sql-table-unique>
@@ -1946,6 +1995,7 @@
 					<linkit:interface crud="true"/>
 					<linkit:sql-table-mapping generate-sql="true"
 						name="operazioni" on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_ope"/>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1990,6 +2040,7 @@
 					<linkit:interface crud="true" id="id-tracciato"/>
 					<linkit:sql-table-mapping generate-sql="true"
 						name="tracciati" on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_trc"/>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

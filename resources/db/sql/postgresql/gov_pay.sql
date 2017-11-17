@@ -38,7 +38,7 @@ CREATE TABLE canali
 	-- unique constraints
 	CONSTRAINT unique_canali_1 UNIQUE (id_psp,cod_canale,tipo_versamento),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_canali_1 FOREIGN KEY (id_psp) REFERENCES psp(id),
+	CONSTRAINT fk_can_id_psp FOREIGN KEY (id_psp) REFERENCES psp(id),
 	CONSTRAINT pk_canali PRIMARY KEY (id)
 );
 
@@ -82,7 +82,7 @@ CREATE TABLE stazioni
 	-- unique constraints
 	CONSTRAINT unique_stazioni_1 UNIQUE (cod_stazione),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_stazioni_1 FOREIGN KEY (id_intermediario) REFERENCES intermediari(id),
+	CONSTRAINT fk_stz_id_intermediario FOREIGN KEY (id_intermediario) REFERENCES intermediari(id),
 	CONSTRAINT pk_stazioni PRIMARY KEY (id)
 );
 
@@ -142,8 +142,8 @@ CREATE TABLE domini
 	-- unique constraints
 	CONSTRAINT unique_domini_1 UNIQUE (cod_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_domini_1 FOREIGN KEY (id_stazione) REFERENCES stazioni(id),
-	CONSTRAINT fk_domini_2 FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id),
+	CONSTRAINT fk_dom_id_stazione FOREIGN KEY (id_stazione) REFERENCES stazioni(id),
+	CONSTRAINT fk_dom_id_applicazione_default FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id),
 	CONSTRAINT pk_domini PRIMARY KEY (id)
 );
 
@@ -170,7 +170,7 @@ CREATE TABLE uo
 	-- unique constraints
 	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_uo_1 FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_uo PRIMARY KEY (id)
 );
 
@@ -255,7 +255,7 @@ CREATE TABLE iban_accredito
 	-- unique constraints
 	CONSTRAINT unique_iban_accredito_1 UNIQUE (cod_iban,id_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_iban_accredito_1 FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_iba_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_iban_accredito PRIMARY KEY (id)
 );
 
@@ -298,10 +298,27 @@ CREATE TABLE tributi
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_tributi_1 FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_tributi_2 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
-	CONSTRAINT fk_tributi_3 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
+	CONSTRAINT fk_trb_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_trb_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_trb_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_ruoli start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE ruoli
+(
+	cod_ruolo VARCHAR(35) NOT NULL,
+	descrizione VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_ruoli') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_ruoli PRIMARY KEY (id)
 );
 
 
@@ -324,12 +341,12 @@ CREATE TABLE acl
 	id_dominio BIGINT,
 	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_acl_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_acl_2 FOREIGN KEY (id_portale) REFERENCES portali(id),
-	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
-	CONSTRAINT fk_acl_6 FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
+	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_acl_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
+	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_acl_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
 
@@ -373,8 +390,8 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_versamenti_1 FOREIGN KEY (id_uo) REFERENCES uo(id),
-	-- CONSTRAINT fk_versamenti_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
+	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
@@ -406,9 +423,9 @@ CREATE TABLE singoli_versamenti
 	-- unique constraints
 	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_singoli_versamenti_1 FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	-- CONSTRAINT fk_singoli_versamenti_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id),
-	-- CONSTRAINT fk_singoli_versamenti_3 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 );
 
@@ -458,12 +475,15 @@ CREATE TABLE rpt
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_rpt_1 FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	-- CONSTRAINT fk_rpt_2 FOREIGN KEY (id_canale) REFERENCES canali(id),
-	-- CONSTRAINT fk_rpt_3 FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
+	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX index_rpt_1 ON rpt (stato);
+CREATE INDEX index_rpt_2 ON rpt (id_versamento);
 
 
 
@@ -492,7 +512,7 @@ CREATE TABLE rr
 	-- unique constraints
 	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_rr_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_rr PRIMARY KEY (id)
 );
 
@@ -516,9 +536,9 @@ CREATE TABLE notifiche
 	id_rpt BIGINT,
 	id_rr BIGINT,
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_notifiche_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	-- CONSTRAINT fk_notifiche_2 FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	-- CONSTRAINT fk_notifiche_3 FOREIGN KEY (id_rr) REFERENCES rr(id),
+	CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 );
 
@@ -543,8 +563,8 @@ CREATE TABLE iuv
 	-- unique constraints
 	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_iuv_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	-- CONSTRAINT fk_iuv_2 FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_iuv PRIMARY KEY (id)
 );
 
@@ -597,7 +617,7 @@ CREATE TABLE incassi
 	id BIGINT DEFAULT nextval('seq_incassi') NOT NULL,
 	id_applicazione BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_incassi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
 );
 
@@ -610,6 +630,7 @@ CREATE TABLE pagamenti
 (
 	cod_dominio VARCHAR(35) NOT NULL,
 	iuv VARCHAR(35) NOT NULL,
+	indice_dati INT NOT NULL DEFAULT 1,
 	importo_pagato DOUBLE PRECISION NOT NULL,
 	data_acquisizione TIMESTAMP NOT NULL,
 	iur VARCHAR(35) NOT NULL,
@@ -632,11 +653,13 @@ CREATE TABLE pagamenti
 	id_singolo_versamento BIGINT,
 	id_rr BIGINT,
 	id_incasso BIGINT,
+	-- unique constraints
+	CONSTRAINT unique_pagamenti_1 UNIQUE (cod_dominio,iuv,iur,indice_dati),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_pagamenti_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT fk_pagamenti_2 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
-	CONSTRAINT fk_pagamenti_3 FOREIGN KEY (id_rr) REFERENCES rr(id),
-	CONSTRAINT fk_pagamenti_4 FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
+	CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
+	CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 );
 
@@ -649,6 +672,7 @@ CREATE TABLE rendicontazioni
 (
 	iuv VARCHAR(35) NOT NULL,
 	iur VARCHAR(35) NOT NULL,
+	indice_dati INT,
 	importo_pagato DOUBLE PRECISION,
 	esito INT,
 	data TIMESTAMP,
@@ -659,8 +683,8 @@ CREATE TABLE rendicontazioni
 	id_fr BIGINT NOT NULL,
 	id_pagamento BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_rendicontazioni_1 FOREIGN KEY (id_fr) REFERENCES fr(id),
-	CONSTRAINT fk_rendicontazioni_2 FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
+	CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
+	CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 );
 
@@ -739,8 +763,8 @@ CREATE TABLE tracciati
 	-- check constraints
 	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_tracciati_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_tracciati_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 );
 
@@ -765,8 +789,8 @@ CREATE TABLE operazioni
 	-- check constraints
 	CONSTRAINT chk_operazioni_1 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_operazioni_1 FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
-	CONSTRAINT fk_operazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 );
 
@@ -785,25 +809,8 @@ CREATE TABLE gp_audit
 	id BIGINT DEFAULT nextval('seq_gp_audit') NOT NULL,
 	id_operatore BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_gp_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_aud_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_ruoli start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE ruoli
-(
-	cod_ruolo VARCHAR(35) NOT NULL,
-	descrizione VARCHAR(255) NOT NULL,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_ruoli') NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_ruoli PRIMARY KEY (id)
 );
 
 

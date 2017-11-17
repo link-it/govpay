@@ -58,6 +58,8 @@ public class RendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iuv", Rendicontazione.model().IUV.getFieldType()));
 				setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iur", Rendicontazione.model().IUR.getFieldType()));
+				setParameter(object, "setIndiceDati", Rendicontazione.model().INDICE_DATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "indice_dati", Rendicontazione.model().INDICE_DATI.getFieldType()));
 				setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
@@ -94,6 +96,8 @@ public class RendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"iuv"));
 				setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
 					this.getObjectFromMap(map,"iur"));
+				setParameter(object, "setIndiceDati", Rendicontazione.model().INDICE_DATI.getFieldType(),
+					this.getObjectFromMap(map,"indiceDati"));
 				setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
 					this.getObjectFromMap(map,"importoPagato"));
 				setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),

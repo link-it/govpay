@@ -45,6 +45,38 @@
 	</target>
 		
 	<target name="setup_properties">
+                 <echo>
+                  $${antinstaller_work_folder}    => ${antinstaller_work_folder}
+                  $${antinstaller_console_work_folder}    => ${antinstaller_console_work_folder}
+                  $${antinstaller_log_folder}    => ${antinstaller_log_folder}
+                 </echo>
+
+		 <script language="javascript">
+			  var sep = project.getProperty('file.separator');
+			  var workf = project.getProperty('antinstaller_work_folder');
+			  if (workf.endsWith(sep) ) {
+			        workf= workf.substring(0,workf.length() - 1);
+			  }
+			  project.setProperty('antinstaller_work_folder_noendsep', workf);
+                          var conworkf = project.getProperty('antinstaller_console_work_folder');
+                          if (conworkf.endsWith(sep) ) {
+                                conworkf= conworkf.substring(0,conworkf.length() - 1);
+                          }
+                          project.setProperty('antinstaller_console_work_folder_noendsep', conworkf);
+
+			  var logf = project.getProperty('antinstaller_log_folder');
+			  if (logf.endsWith(sep) ) {
+			        logf= logf.substring(0,logf.length() - 1);
+			  }
+			  project.setProperty('antinstaller_log_folder_noendsep', logf);
+		 </script>
+
+		 <echo>
+		  $${antinstaller_work_folder_noendsep}    => ${antinstaller_work_folder_noendsep}
+		  $${antinstaller_console_work_folder_noendsep}    => ${antinstaller_console_work_folder_noendsep}
+		  $${antinstaller_log_folder_noendsep}    => ${antinstaller_log_folder_noendsep}
+		 </echo>
+
 		
 		<!-- GovPay EAR -->
 		<antcall target="govpay_properties_settings">
@@ -101,23 +133,6 @@
 			<then>
 				<unzip src="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}.war" dest="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}"/>
 				<delete file="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}.war" />
-				<move todir="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}/WEB-INF/lib">
-					<fileset dir="${tmp_dir}/govpay/lib" >
-						<include name="log4j*.jar" />
-						<include name="jcs*.jar" />
-						<include name="openspcoop2*.jar" />
-						<include name="govpay*.jar" />
-					</fileset>
-				</move>
-				<delete>
-					<fileset dir="${tmp_dir}/govpay/lib" >
-						<include name="xalan*.jar"/>
-						<include name="xerces*.jar"/>
-						<include name="jaxb-impl*.jar"/>
-						<include name="xml-apis*.jar"/>
-						<include name="woodstox-core-asl*.jar"/>
-					</fileset>
-				</delete>
 				<antcall target="wildfly_govpay_securitydomain">
         	                	<param name="file" value="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}/WEB-INF/jboss-web.xml"/>
 				</antcall>

@@ -93,9 +93,16 @@ public class CSVUtils {
 		else 
 			oneLine.add("");
 		// Codice Rendicontazione
-		if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazione()))
-			oneLine.add(pagamento.getCodFlussoRendicontazione());
-		else 
+		if(pagamento.getCodFlussoRendicontazione() != null && pagamento.getCodFlussoRendicontazione().size() > 0) {
+			StringBuilder sbFr = new StringBuilder(); 
+			for (String codFr : pagamento.getCodFlussoRendicontazione()) {
+				if(sbFr.length() > 0)
+					sbFr.append(", ");
+
+				sbFr.append(codFr);
+			}
+			oneLine.add(sbFr.toString());
+		}else 
 			oneLine.add("");
 		//BicRiversamento
 		if(StringUtils.isNotEmpty(pagamento.getCodBicRiversamento()))

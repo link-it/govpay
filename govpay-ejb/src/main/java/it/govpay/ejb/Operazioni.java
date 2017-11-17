@@ -98,10 +98,9 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
 	}
 
+	@Schedule(hour="*/2", persistent=false)
+	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
 	public static String resetCacheAnagrafica(){
-		if(!GovpayConfig.getInstance().isBatchOn()) {
-			return "Batch non attivi";
-		}
 		return it.govpay.core.business.Operazioni.resetCacheAnagrafica();
 	}
 	

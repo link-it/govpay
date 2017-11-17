@@ -917,7 +917,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 			// Estratto Conto in formato CSV
 			EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
-			EstrattoContoFilter ecFilter = estrattiContoBD.newFilter();
+			EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(true);
 			ecFilter.setIdVersamento(idsToExport); 
 			List<EstrattoConto> findAllEstrattoConto =  estrattiContoBD.estrattoContoFromIdVersamenti(ecFilter); 
 

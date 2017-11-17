@@ -63,6 +63,7 @@ public class Rendicontazione extends BasicModel {
 	private Long id;
 	private String iuv;
 	private String iur;
+	private Integer indiceDati;
 	
 	private BigDecimal importo;
 	private Date data;
@@ -194,6 +195,12 @@ public class Rendicontazione extends BasicModel {
 			list.add(a);
 		}
 		return list;
+	}
+	public Integer getIndiceDati() {
+		return indiceDati;
+	}
+	public void setIndiceDati(Integer indiceDati) {
+		this.indiceDati = indiceDati;
 	}
 	
 }

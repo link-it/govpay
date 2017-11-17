@@ -266,7 +266,16 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
 			String stato = this.getParameter(uriInfo, statoId, String.class);
 			if(StringUtils.isNotEmpty(stato)){
-				filter.setStato(stato);
+				List<String> stati = new ArrayList<String>();
+				
+				if(stato.equals(Stato.PAGATO.name())) {
+					stati.add(Stato.PAGATO.name());
+					stati.add(Stato.PAGATO_SENZA_RPT.name());
+				} else {
+					stati.add(stato);
+				}
+				filter.setStati(stati);
+				
 				if(elementoCorrelato)
 					params.put(statoId,stato);
 			}
@@ -293,6 +302,14 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				filter.setIur(iur);
 				if(elementoCorrelato)
 					params.put(iurId,iur);
+			}
+			
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+			if(StringUtils.isNotEmpty(iuv)){
+				filter.setIuv(iuv);
+				if(elementoCorrelato)
+					params.put(iuvId,iuv);
 			}
 
 			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
@@ -393,7 +410,15 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
 			String stato = Utils.getValue(rawValues, statoId);
 			if(StringUtils.isNotEmpty(stato)){
-				filter.setStato(stato);
+				List<String> stati = new ArrayList<String>();
+				
+				if(stato.equals(Stato.PAGATO.name())) {
+					stati.add(Stato.PAGATO.name());
+					stati.add(Stato.PAGATO_SENZA_RPT.name());
+				} else {
+					stati.add(stato);
+				}
+				filter.setStati(stati);
 				if(elementoCorrelato)
 					params.put(statoId,stato);
 			}
@@ -420,6 +445,14 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				filter.setIur(iur);
 				if(elementoCorrelato)
 					params.put(iurId,iur);
+			}
+			
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = Utils.getValue(rawValues, iuvId);
+			if(StringUtils.isNotEmpty(iuv)){
+				filter.setIuv(iuv);
+				if(elementoCorrelato)
+					params.put(iuvId,iuv);
 			}
 
 			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
@@ -503,7 +536,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 					if(inRitardo ) {
 						statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+PagamentoFilter.STATO_RITARDO_INCASSO);
 					} else {
-						statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.PAGATO.name());
+						statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name());
 					}
 				}
 
@@ -670,8 +703,14 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				else 
 					statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+PagamentoFilter.STATO_RITARDO_INCASSO+".sogliaGiorno");
 			} else {
-				statoPagamento = Stato.PAGATO.name();
-				statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+Stato.PAGATO.name(), this.sdf.format(dataPagamento));
+				statoPagamento = stato.name();
+				statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+stato.name(), this.sdf.format(dataPagamento));
+				
+				//pagamento senza rpt
+				if(stato.equals(Stato.PAGATO_SENZA_RPT)) {
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".pagatoSenzaRpt.id"),
+						new Voce<String>(statoPagamentoLabel,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name())));
+				}
 			}
 		}
 
@@ -863,23 +902,24 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			int offset = 0;
 			
 			// esecuzione della ricerca di tutti i pagamenti paginata per problemi di performance, nel caso di esporta rt pdf c'e' il limit impostato e si fa solo un ciclo
-			do{
-				filter.setOffset(offset);
-				filter.setLimit(limit);
-				List<Pagamento> findAllPagTmp = pagamentiBD.findAll(filter);
-				countIterazione = findAllPagTmp != null ? findAllPagTmp.size() : 0;
-				offset += countIterazione;
-				
-				if(findAllPagTmp != null && findAllPagTmp.size() > 0)
-					findAllPag.addAll(findAllPagTmp);
-				
-			}while(countIterazione > 0 && !esportaRtPdf);
-			
-			
-			List<Long> ids = new ArrayList<Long>();
+//			do{
+//				filter.setOffset(offset);
+//				filter.setLimit(limit);
+//				List<Pagamento> findAllPagTmp = pagamentiBD.findAll(filter);
+//				
+//				findAllPag.addAll(findAllPagTmp);
+//				
+//				offset += limit;
+//				if(findAllPagTmp == null || findAllPagTmp.size() < limit)
+//					break;
+//				
+//			}while(true);
+			filter.setOffset(offset);
+			filter.setLimit(Integer.MAX_VALUE);
+			findAllPag = pagamentiBD.findAll(filter);
+			List<Long> idsPagamenti = new ArrayList<Long>();
 			for (Pagamento pagamento : findAllPag) {
-				if(pagamento.getIdSingoloVersamento() != null)
-					ids.add(pagamento.getIdSingoloVersamento());
+				idsPagamenti.add(pagamento.getId());
 				
 				if(esportaRtPdf || esportaRtBase64){
 					// ricevuta pagamento
@@ -925,11 +965,12 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			if(esportaCsv){
 				EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
-				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(); 
+				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(false); 
+				ecFilter.setFiltraDuplicati(true); 
 
 				// recupero oggetto
-				ecFilter.setIdSingoloVersamento(ids);
-				List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdSingoliVersamenti(ecFilter) : new ArrayList<EstrattoConto>();
+				ecFilter.setIdPagamento(idsPagamenti);
+				List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdPagamenti(ecFilter) : new ArrayList<EstrattoConto>();
 
 				if(findAll != null && findAll.size() > 0){
 					numeroZipEntries ++;
@@ -962,8 +1003,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				Map<String, Dominio> mappaInputDomini = new HashMap<String, Dominio>();
 				Map<String, List<Long>> mappaInputEstrattoConto = new HashMap<String, List<Long>>();
 				SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
-				for (Long idSingoloVersamento : ids) {
-					SingoloVersamento singoloVersamento = singoliVersamentiBD.getSingoloVersamento(idSingoloVersamento);
+				for (Pagamento pagamento : findAllPag) {
+					SingoloVersamento singoloVersamento = singoliVersamentiBD.getSingoloVersamento(pagamento.getIdSingoloVersamento());
 					Versamento versamento = singoloVersamento.getVersamento(bd);
 
 					// Prelevo il dominio
@@ -971,15 +1012,15 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 					Dominio dominio  = AnagraficaManager.getDominio(bd, uo.getIdDominio());
 
 					// Aggrego i versamenti per dominio per generare gli estratti conto
-					List<Long> idSingoliVersamentiDominio = null;
+					List<Long> idPagamentiDominio = null;
 					if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio())) {
-						idSingoliVersamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
+						idPagamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
 					} else{
-						idSingoliVersamentiDominio = new ArrayList<Long>();
-						mappaInputEstrattoConto.put(dominio.getCodDominio(), idSingoliVersamentiDominio);
+						idPagamentiDominio = new ArrayList<Long>();
+						mappaInputEstrattoConto.put(dominio.getCodDominio(), idPagamentiDominio);
 						mappaInputDomini.put(dominio.getCodDominio(), dominio);
 					}
-					idSingoliVersamentiDominio.add(idSingoloVersamento);
+					idPagamentiDominio.add(pagamento.getId());
 				}
 
 				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
@@ -1146,17 +1187,17 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				}
 
 				List<Long> ids = new ArrayList<Long>();
-				if(pagamento.getIdSingoloVersamento() != null)
-					ids.add(pagamento.getIdSingoloVersamento());
+				ids.add(pagamento.getId());
 
 				SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
 				EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
-				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter();
+				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(false);
+				ecFilter.setFiltraDuplicati(true); 
 
 				if(esportaCsv){
 					// recupero oggetto
-					ecFilter.setIdSingoloVersamento(ids);
-					List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdSingoliVersamenti(ecFilter) : new ArrayList<EstrattoConto>();
+					ecFilter.setIdPagamento(ids);
+					List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdPagamenti(ecFilter) : new ArrayList<EstrattoConto>();
 
 					if(findAll != null && findAll.size() > 0){
 						numeroZipEntries ++;
@@ -1190,10 +1231,10 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 					UnitaOperativa uo  = AnagraficaManager.getUnitaOperativa(bd, versamento.getIdUo());
 					Dominio dominio  = AnagraficaManager.getDominio(bd, uo.getIdDominio());
 					// Estratto conto per iban e codiceversamento.
-					List<Long> idSingoliVersamentiDominio = new ArrayList<Long>();
-					idSingoliVersamentiDominio.add(idToExport);
+					List<Long> idPagamentiDominio = new ArrayList<Long>();
+					idPagamentiDominio.add(pagamento.getId());
 
-					it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPagamentiPDF(dominio, idSingoliVersamentiDominio);
+					it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPagamentiPDF(dominio, idPagamentiDominio);
 					List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
 					listInputEstrattoConto.add(input);
 					List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoPagamenti(listInputEstrattoConto,pathLoghi);
@@ -1246,6 +1287,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
 			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 			String iurId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
 
 			if(this.infoRicercaMap == null){
@@ -1326,6 +1368,11 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				InputText iur = (InputText) infoRicercaMap.get(iurId);
 				iur.setDefaultValue(null);
 				sezioneRoot.addField(iur);
+				
+				// iuv
+				InputText iuv = (InputText) infoRicercaMap.get(iuvId);
+				iuv.setDefaultValue(null);
+				sezioneRoot.addField(iuv);
 
 				// codSingoloVersamentoEnte
 				InputText codSingoloVersamentoEnte = (InputText) infoRicercaMap.get(codSingoloVersamentoEnteId);
@@ -1347,6 +1394,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
 			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 			String iurId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -1375,6 +1423,11 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			String iurLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iur.label");
 			InputText iur = new InputText(iurId, iurLabel, null, false, false, true, 0, 35);
 			infoRicercaMap.put(iurId, iur);
+			
+			// iuv
+			String iuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
+			InputText iuv = new InputText(iuvId, iuvLabel, null, false, false, true, 0, 35);
+			infoRicercaMap.put(iuvId, iuv);
 
 			// codSingoloVersamentoEnte
 			String codSingoloVersamentoEnteLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label");

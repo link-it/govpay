@@ -9,12 +9,14 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idPagamento" field="idPagamento" usage="required"/>
     <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
+    <value name="indiceDati" field="indiceDati" usage="required"/>
   </mapping>
 
   <mapping type-name="_IdPagamento_Type" class="it.govpay.orm.IdPagamento" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idPagamento" field="idPagamento" usage="required"/>
     <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
+    <value name="indiceDati" field="indiceDati" usage="required"/>
   </mapping>
   <mapping name="id-rendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -570,6 +572,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="iuv" field="iuv" usage="required"/>
     <value name="iur" field="iur" usage="required"/>
+    <value name="indiceDati" field="indiceDati" usage="optional"/>
     <value name="importoPagato" field="importoPagato" usage="optional"/>
     <value name="esito" field="esito" usage="optional"/>
     <value name="data" field="data" usage="optional"/>
@@ -584,6 +587,7 @@
     <structure field="idSingoloVersamento" usage="optional" map-as="it.govpay.orm.IdSingoloVersamento"/>
     <value name="codDominio" field="codDominio" usage="required"/>
     <value name="iuv" field="iuv" usage="required"/>
+    <value name="indiceDati" field="indiceDati" usage="required"/>
     <value name="importoPagato" field="importoPagato" usage="required"/>
     <value name="dataAcquisizione" field="dataAcquisizione" usage="required"/>
     <value name="iur" field="iur" usage="required"/>

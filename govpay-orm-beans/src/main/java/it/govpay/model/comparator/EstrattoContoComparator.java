@@ -21,6 +21,7 @@ package it.govpay.model.comparator;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -31,8 +32,8 @@ public class EstrattoContoComparator implements Comparator<EstrattoConto>{
 	@Override
 	public int compare(EstrattoConto o1, EstrattoConto o2) {
 		//  cod_flusso_rendicontazione, iuv, data_pagamento
-		String codFlussoRendicontazione1 = o1.getCodFlussoRendicontazione() != null ? o1.getCodFlussoRendicontazione() : "";
-		String codFlussoRendicontazione2 = o2.getCodFlussoRendicontazione() != null ? o2.getCodFlussoRendicontazione() : "";
+		String codFlussoRendicontazione1 = EstrattoContoComparator.getCodFlussoAsString(o1.getCodFlussoRendicontazione());
+		String codFlussoRendicontazione2 = EstrattoContoComparator.getCodFlussoAsString(o2.getCodFlussoRendicontazione());
 		
 		
 		if(StringUtils.equals(codFlussoRendicontazione1, codFlussoRendicontazione2)){
@@ -59,4 +60,17 @@ public class EstrattoContoComparator implements Comparator<EstrattoConto>{
 		return codFlussoRendicontazione1.compareTo(codFlussoRendicontazione2); 
 	}
 
+	public static String getCodFlussoAsString(List<String> codFlussoRendicontazione) {
+		if(codFlussoRendicontazione != null && codFlussoRendicontazione.size() > 0) {
+			StringBuilder sb = new StringBuilder(); 
+			for (String string : codFlussoRendicontazione) {
+				if(sb.length() > 0)
+					sb.append(", ");
+				
+				sb.append(string);
+			}
+		}
+		
+		return "";
+	}
 }

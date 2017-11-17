@@ -319,6 +319,7 @@ public class Pagamento extends BasicBD {
 
 				// Verifico se ha uno IUV suggerito ed in caso lo assegno
 				if(versamento.getIuvProposto() != null) {
+					log.debug("IUV Proposto: " + versamento.getIuvProposto());
 					TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
 					iuvBusiness.checkIUV(versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv);
 					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv, versamento.getCodVersamentoEnte());
@@ -328,26 +329,22 @@ public class Pagamento extends BasicBD {
 						ccp = Rpt.CCP_NA;
 					ctx.log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {
-
-					// Gestione gentralizzata dello iuv. Verifico che il dominio lo consenta.
-					if(versamento.getUo(this).getDominio(this).isCustomIuv()) {
-						throw new GovPayException(EsitoOperazione.DOM_002, versamento.getUo(this).getDominio(this).getCodDominio());
-					}
-
-					// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso se il dominio e' configurato in tal senso. 
-					if(versamento.getUo(this).getDominio(this).isRiusoIuv()) {
-						try {
-							iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-							ccp = IuvUtils.buildCCP();
-							ctx.log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
-						} catch (NotFoundException e) {
-							iuv = iuvBusiness.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
+					// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso. 
+					try {
+						log.debug("Cerco iuv gia' assegnato....");
+						iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+						log.debug(".. iuv gia' assegnato: " + iuv.getIuv());
+						ccp = IuvUtils.buildCCP();
+						ctx.log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
+					} catch (NotFoundException e) {
+						log.debug("Iuv non assegnato. Generazione...");
+						// Non c'e' iuv assegnato. Glielo genero io.
+						iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
+						if(iuvBusiness.getTipoIUV(iuv.getIuv()).equals(TipoIUV.ISO11694)) {
 							ccp = Rpt.CCP_NA;
-							ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
+						} else {
+							ccp = IuvUtils.buildCCP();
 						}
-					} else {
-						iuv = iuvBusiness.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
-						ccp = Rpt.CCP_NA;
 						ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 					}
 				}
@@ -411,7 +408,7 @@ public class Pagamento extends BasicBD {
 						// si risolvera' poi nella verifica pendenti
 					} 
 					ctx.log("rpt.invioKo", risposta.getLog());
-					log.info("RPR rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
+					log.info("RPT rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
 					throw new GovPayException(risposta.getFaultBean(0));
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
@@ -611,6 +608,9 @@ public class Pagamento extends BasicBD {
 						continue;
 					}
 					
+					// Aggiorno il batch
+					BatchManager.aggiornaEsecuzione(this, Operazioni.pnd);
+					
 					String stato = statiRptPendenti.get(rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null) {
 						log.debug("Rpt confermata pendente dal nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: stato " + stato);
@@ -637,7 +637,7 @@ public class Pagamento extends BasicBD {
 							continue;
 						}
 
-						if(rpt.getStato().equals(StatoRpt.RPT_ATTIVATA)) {
+						if(rpt.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP) && (rpt.getStato().equals(StatoRpt.RPT_ATTIVATA) || rpt.getStato().equals(StatoRpt.RPT_ERRORE_INVIO_A_NODO))) {
 							ctx.log("pendenti.rptAttivata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 							log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt in stato " + rpt.getStato().toString() + ". Avviata rispedizione al Nodo.");
 						} else {

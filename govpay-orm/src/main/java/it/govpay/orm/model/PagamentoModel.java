@@ -45,6 +45,7 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Pagamento",Pagamento.class));
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.INDICE_DATI = new Field("indiceDati",int.class,"Pagamento",Pagamento.class);
 		this.IMPORTO_PAGATO = new Field("importoPagato",double.class,"Pagamento",Pagamento.class);
 		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.IUR = new Field("iur",java.lang.String.class,"Pagamento",Pagamento.class);
@@ -73,6 +74,7 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Pagamento",Pagamento.class));
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.INDICE_DATI = new ComplexField(father,"indiceDati",int.class,"Pagamento",Pagamento.class);
 		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",double.class,"Pagamento",Pagamento.class);
 		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"Pagamento",Pagamento.class);
@@ -102,6 +104,8 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	public IField COD_DOMINIO = null;
 	 
 	public IField IUV = null;
+	 
+	public IField INDICE_DATI = null;
 	 
 	public IField IMPORTO_PAGATO = null;
 	 

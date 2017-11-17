@@ -54,11 +54,16 @@ public class IuvUtils {
 	
 	private static byte[] buildQrCode002(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) throws JAXBException, SAXException {
 		// Da "L’Avviso di pagamento analogico nel sistema pagoPA" par. 2.1
-		String qrCode = "PAGOPA|002|" + auxDigit + String.format("%02d", applicationCode) + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+		String qrCode = null; 
+		if(auxDigit == 3)
+			qrCode = "PAGOPA|002|3" + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+		else 
+			qrCode = "PAGOPA|002|0" + String.format("%02d", applicationCode) + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+
 		return qrCode.getBytes();
 	}
 
-	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
+	private static final DecimalFormat nFormatter = new DecimalFormat("00.00", new DecimalFormatSymbols(Locale.ENGLISH));
 	
 	private static String buildBarCode(String gln, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) {
 		// Da Guida Tecnica di Adesione PA 3.8 pag 25 
@@ -66,7 +71,11 @@ public class IuvUtils {
 		String refNo = "8020";
 		String amount = "3902";
 		String importo = nFormatter.format(importoTotale).replace(".", "");
-		return payToLoc + gln + refNo + auxDigit + String.format("%02d", applicationCode) + iuv + amount + importo;
+		
+		if(auxDigit == 3)
+			return payToLoc + gln + refNo + "3" + iuv + amount + importo;
+		else 
+			return payToLoc + gln + refNo + "0" + String.format("%02d", applicationCode) + iuv + amount + importo;
 	}
 	
 	public static Iuv toIuv(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {

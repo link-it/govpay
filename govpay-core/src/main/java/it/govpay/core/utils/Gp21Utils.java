@@ -185,7 +185,7 @@ public class Gp21Utils {
 		fr.setIur(frModel.getIur());
 		
 		for(RendicontazionePagamento rend : rends) {
-			fr.setImportoTotale(rend.getPagamento().getImportoPagato().add(fr.getImportoTotale()));
+			fr.setImportoTotale(rend.getRendicontazione().getImporto().add(fr.getImportoTotale()));
 			fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
 			fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rend, versione, bd));
 		}

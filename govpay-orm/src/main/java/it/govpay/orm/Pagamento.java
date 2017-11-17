@@ -39,6 +39,7 @@ import java.io.Serializable;
  * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -74,6 +75,7 @@ import java.io.Serializable;
   	"idSingoloVersamento",
   	"codDominio",
   	"iuv",
+  	"indiceDati",
   	"importoPagato",
   	"dataAcquisizione",
   	"iur",
@@ -144,6 +146,14 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setIuv(java.lang.String iuv) {
     this.iuv = iuv;
+  }
+
+  public int getIndiceDati() {
+    return this.indiceDati;
+  }
+
+  public void setIndiceDati(int indiceDati) {
+    this.indiceDati = indiceDati;
   }
 
   public double getImportoPagato() {
@@ -314,6 +324,10 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuv",required=true,nillable=false)
   protected java.lang.String iuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @XmlElement(name="indiceDati",required=true,nillable=false)
+  protected int indiceDati;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoPagato",required=true,nillable=false)

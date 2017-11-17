@@ -51,11 +51,12 @@ public class PagamentoFilter extends AbstractFilter {
 	private Date dataFine;
 	private List<Long> idVersamenti;
 	private List<Long> idPagamenti;
-	private String stato;
+	private List<String> stati;
 	private Integer sogliaRitardo = null;
 	public static final String STATO_RITARDO_INCASSO = "RITARDO_INCASSO";
 	private String codSingoloVersamentoEnte = null;
 	private String iur;
+	private String iuv;
 	
 	public enum SortFields {
 		DATA
@@ -69,6 +70,7 @@ public class PagamentoFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE);
 		this.listaFieldSimpleSearch.add(Pagamento.model().IUR);
+		this.listaFieldSimpleSearch.add(Pagamento.model().IUV);
 	}
 
 	@Override
@@ -119,11 +121,11 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(stato != null){
+			if(stati != null && !stati.isEmpty()){
 				if(addAnd)
 					newExpression.and();
 				
-				if(stato.equals(STATO_RITARDO_INCASSO)) {
+				if(stati.contains(STATO_RITARDO_INCASSO)) {
 					if(this.sogliaRitardo != null && this.sogliaRitardo.intValue() > 0){
 						newExpression.notEquals(Pagamento.model().STATO,Stato.INCASSATO.name());
 						Calendar tempo = Calendar.getInstance();
@@ -132,7 +134,7 @@ public class PagamentoFilter extends AbstractFilter {
 						newExpression.lessThan(Pagamento.model().DATA_PAGAMENTO, tempo.getTime());
 					}
 				} else {
-					newExpression.equals(Pagamento.model().STATO,this.stato);
+					newExpression.in(Pagamento.model().STATO,this.stati);
 				}
 				
 				addAnd = true;
@@ -171,6 +173,14 @@ public class PagamentoFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.ilike(Pagamento.model().IUR, this.iur, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Pagamento.model().IUV, this.iuv, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
@@ -301,12 +311,12 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idDomini = idDomini;
 	}
 
-	public String getStato() {
-		return stato;
+	public List<String> getStati() {
+		return stati;
 	}
 
-	public void setStato(String stato) {
-		this.stato = stato;
+	public void setStati(List<String> stati) {
+		this.stati = stati;
 	}
 
 	public Integer getSogliaRitardo() {
@@ -339,6 +349,14 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setIdPagamenti(List<Long> idPagamenti) {
 		this.idPagamenti = idPagamenti;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
 	}
 	
 }

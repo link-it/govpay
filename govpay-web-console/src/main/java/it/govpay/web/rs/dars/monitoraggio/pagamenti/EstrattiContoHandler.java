@@ -68,7 +68,7 @@ public class EstrattiContoHandler   extends DarsHandler<it.govpay.model.reportis
 
 			List<String> idDomini = new ArrayList<String>();
 			EstrattiContoMetadata estrattiContoBD = new EstrattiContoMetadata(bd);
-			EstrattoContoFilter filter = estrattiContoBD.newFilter();
+			EstrattoContoFilter filter = estrattiContoBD.newFilter(false);
 
 			// Operatore per controllo domini che puo' vedere
 			filter.setOffset(offset);

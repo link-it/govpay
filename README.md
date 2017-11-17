@@ -4,7 +4,7 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 ## Documentazione
 
 * [Introduzione a GovPay](./resources/doc/pdf/GovPay-PagoPA.pdf)
-* [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazioneSOAP.pdf) ([Rest](./resources/doc/pdf/GovPay-ManualeIntegrazioneREST.pdf))
+* [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazioneSOAP.pdf)
 * [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
 
 ## Contatti
@@ -20,6 +20,7 @@ Di seguito un elenco delle principali funzionalità del prodotto.
 * supporto ai pagamenti su circuito MyBank.
 * supporto al pagamento della Marca da Bollo Telematica.
 * aggiornato alla versione 1.7.2 delle interfacce Nodo dei Pagamenti.
+* supporto specifica IUV pluri-intermediati
 * integrazione con gli applicativi dell'Ente preposti alla gestione delle posizioni creditorie tramite Web API.
 * integrazione semplificata del/i portali cittadini dell'Ente.
 * implementazione di servizi accessori ai pagamenti.

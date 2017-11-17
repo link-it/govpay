@@ -38,9 +38,11 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.core.business.model.LeggiIncassoDTO;
@@ -61,6 +63,8 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.Versamento.StatoVersamento;
 
 
 public class Incassi extends BasicBD {
@@ -77,29 +81,30 @@ public class Incassi extends BasicBD {
 			GpThreadLocal.get().log("incasso.richiesta");
 			
 			// Validazione dati obbligatori
-			if(richiestaIncasso.getTrn() == null) {
-				GpThreadLocal.get().log("incasso.sintassi", "trn mancante");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
-			}
-			
-			if(richiestaIncasso.getTrn().length() > 35) {
-				GpThreadLocal.get().log("incasso.sintassi", "trn troppo lungo");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Il valore del campo trn non rispetta la lunghezza massima di 35 caratteri");
-			}
 			
 			if(richiestaIncasso.getCausale() == null) {
 				GpThreadLocal.get().log("incasso.sintassi", "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
 			}
 			
-			if(richiestaIncasso.getCausale().length() > 512) {
-				GpThreadLocal.get().log("incasso.sintassi", "causale troppo lunga");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Il valore del campo causale non rispetta la lunghezza massima di 512 caratteri");
+			if(richiestaIncasso.getTrn() == null) {
+				GpThreadLocal.get().log("incasso.sintassi", "trn mancante");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
 			}
 			
-			if(richiestaIncasso.getTrn().length() > 35) {
+			if(richiestaIncasso.getTrn().length() > 512) {
 				GpThreadLocal.get().log("incasso.sintassi", "trn troppo lungo");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificato un trn che eccede il massimo numero di caratteri consentiti (512)");
+			}
+			
+			if(richiestaIncasso.getTrn().contains(" ")) {
+				GpThreadLocal.get().log("incasso.sintassi", "trn non deve contenere spazi");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificato un trn contenente spazi");
+			}
+			
+			if(richiestaIncasso.getCausale().length() > 512) {
+				GpThreadLocal.get().log("incasso.sintassi", "causale troppo lunga");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificata una causale che eccede il massimo numero di caratteri consentiti (512)");
 			}
 			
 			if(richiestaIncasso.getCodDominio() == null) {
@@ -111,7 +116,6 @@ public class Incassi extends BasicBD {
 				GpThreadLocal.get().log("incasso.sintassi", "importo mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio importo");
 			}
-
 			
 			// Verifica Dominio
 			try {
@@ -270,10 +274,23 @@ public class Incassi extends BasicBD {
 				incassiBD.insertIncasso(incasso);
 				
 				PagamentiBD pagamentiBD = new PagamentiBD(this);
+				VersamentiBD versamentiBD = new VersamentiBD(this);
 				for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
+					// Se il pagamento era Pagato senza RPT, aggiorno lo stato del versamento in incassato
+					if(pagamento.getStato().equals(Stato.PAGATO_SENZA_RPT)) {
+						SingoloVersamento sv = pagamento.getSingoloVersamento(this);
+						if(sv.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO)) {
+							versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.ESEGUITO);
+						}
+						it.govpay.bd.model.Versamento v = sv.getVersamento(this);
+						if(v.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+							versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.ESEGUITO, null);
+						}
+					}
 					pagamento.setStato(Stato.INCASSATO);
 					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
+					
 				}
 				commit();
 			} catch(Exception e) {
@@ -326,7 +343,7 @@ public class Incassi extends BasicBD {
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getTrn());
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, leggiIncassoDTO.getPrincipal());
 			Set<String> domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
-			if(!domini.contains(incasso.getCodDominio())) {
+			if(domini != null && !domini.contains(incasso.getCodDominio())) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.INCASSI + " per il dominio " + incasso.getCodDominio());
 			}
 			LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();

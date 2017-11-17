@@ -1,6 +1,7 @@
 package it.govpay.model;
 
 import java.util.Date;
+import java.util.List;
 
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -15,7 +16,7 @@ public class EstrattoConto {
 	private String codSingoloVersamentoEnte;
 	private String note;
 	private String ibanAccredito;
-	private String codFlussoRendicontazione;
+	private List<String> codFlussoRendicontazione;
 	private StatoVersamento statoVersamento;	
 	private String causale;
 	// Integrazione CSV
@@ -28,8 +29,10 @@ public class EstrattoConto {
 	private Long idSingoloVersamento;
 	private Long idVersamento;
 	private Long idRr;
+	private Long idIncasso;
 	
 	private String debitoreIdentificativo;
+	private String tipo;
 	
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -79,10 +82,10 @@ public class EstrattoConto {
 	public void setIbanAccredito(String ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
 	}
-	public String getCodFlussoRendicontazione() {
+	public List<String> getCodFlussoRendicontazione() {
 		return codFlussoRendicontazione;
 	}
-	public void setCodFlussoRendicontazione(String codFlussoRendicontazione) {
+	public void setCodFlussoRendicontazione(List<String> codFlussoRendicontazione) {
 		this.codFlussoRendicontazione = codFlussoRendicontazione;
 	}
 	public StatoVersamento getStatoVersamento() {
@@ -151,4 +154,17 @@ public class EstrattoConto {
 	public void setIdRr(Long idRr) {
 		this.idRr = idRr;
 	}
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
+	}
+	public String getTipo() {
+		return tipo;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+	
 }

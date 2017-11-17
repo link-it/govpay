@@ -301,8 +301,8 @@ public class GovPayException extends Exception {
 	public GpResponse getWsResponse(GpResponse response, String codMsgDiagnostico, Logger log) {
 		if(getFaultBean() == null) {
 			response.setMittente(Mittente.GOV_PAY);
-			response.setCodEsito(this.getCodEsito().toString());
-			response.setDescrizioneEsito(this.getDescrizioneEsito());
+			response.setCodEsito(this.getCodEsito() != null ? this.getCodEsito().toString() : "");
+			response.setDescrizioneEsito(this.getDescrizioneEsito() != null ? this.getDescrizioneEsito() : "");
 			response.setDettaglioEsito(this.getMessage());
 			log(log);
 			GpThreadLocal.get().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
@@ -312,8 +312,8 @@ public class GovPayException extends Exception {
 				response.setMittente(Mittente.NODO_DEI_PAGAMENTI_SPC);
 			else 
 				response.setMittente(Mittente.PSP);
-			response.setCodEsito(faultBean.getFaultCode());
-			response.setDescrizioneEsito(faultBean.getFaultString());
+			response.setCodEsito(faultBean.getFaultCode() != null ? faultBean.getFaultCode() : "");
+			response.setDescrizioneEsito(faultBean.getFaultString() != null ? faultBean.getFaultString() : "");
 			response.setDettaglioEsito(faultBean.getDescription());
 		}
 		return response;

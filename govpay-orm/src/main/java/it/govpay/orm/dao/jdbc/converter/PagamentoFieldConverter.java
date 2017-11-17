@@ -207,6 +207,13 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv";
 			}
 		}
+		if(field.equals(Pagamento.model().INDICE_DATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".indice_dati";
+			}else{
+				return "indice_dati";
+			}
+		}
 		if(field.equals(Pagamento.model().IMPORTO_PAGATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".importo_pagato";
@@ -397,6 +404,9 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Pagamento.model(), returnAlias);
 		}
 		if(field.equals(Pagamento.model().IUV)){
+			return this.toTable(Pagamento.model(), returnAlias);
+		}
+		if(field.equals(Pagamento.model().INDICE_DATI)){
 			return this.toTable(Pagamento.model(), returnAlias);
 		}
 		if(field.equals(Pagamento.model().IMPORTO_PAGATO)){
