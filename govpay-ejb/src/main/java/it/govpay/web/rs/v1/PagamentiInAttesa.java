@@ -32,12 +32,8 @@ import javax.ws.rs.core.UriInfo;
 
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTO;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
-import it.govpay.model.Dominio;
-import it.govpay.model.IAutorizzato;
-import it.govpay.model.Versamento.Causale;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.web.rs.v1.beans.PagamentoInAttesa;
 
@@ -73,12 +69,12 @@ public class PagamentiInAttesa extends BaseRsServiceV1 {
 			CausaleSemplice causale = versamento.new CausaleSemplice();
 			causale.setCausale(pia.getCausale());
 			versamento.setCausaleVersamento(causale);
-			versamento.setCodVersamentoEnte(pia.get);
-			versamento.setDataScadenza(pia.getScadenzaPagamento());
-			versamento.setImportoTotale(pia.getImporto());
+		//	versamento.setCodVersamentoEnte(pia.get);
+//			versamento.setDataScadenza(pia.getScadenzaPagamento());
+//			versamento.setImportoTotale(pia.getImporto());
 			//versamento.setIuvProposto(iuvProposto);
-			versamento.setUo(pia.getIdDominio(), Dominio.EC, bd)
-			CaricaVersamentoDTO caricaVersamentoDTO = new CaricaVersamentoDTO(applicazione, versamento);
+		//	versamento.setUo(pia.getIdDominio(), Dominio.EC, bd)
+			//CaricaVersamentoDTO caricaVersamentoDTO = new CaricaVersamentoDTO(applicazione, versamento);
 			return Response.status(Status.OK).entity(pia).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
