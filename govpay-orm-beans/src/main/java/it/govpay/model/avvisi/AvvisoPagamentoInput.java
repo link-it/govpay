@@ -58,6 +58,7 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="intestatario_indirizzo_1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="intestatario_indirizzo_2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_causale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avviso_mav" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_scadenza" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avviso_numero" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
@@ -102,6 +103,7 @@ import javax.xml.bind.annotation.XmlType;
   	"intestatarioIndirizzo1",
   	"intestatarioIndirizzo2",
   	"avvisoCausale",
+  	"avvisoMav",
   	"avvisoImporto",
   	"avvisoScadenza",
   	"avvisoNumero",
@@ -312,6 +314,18 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
     this.avvisoCausale = avvisoCausale;
   }
 
+  public boolean isAvvisoMav() {
+    return this.avvisoMav;
+  }
+
+  public boolean getAvvisoMav() {
+    return this.avvisoMav;
+  }
+
+  public void setAvvisoMav(boolean avvisoMav) {
+    this.avvisoMav = avvisoMav;
+  }
+
   public double getAvvisoImporto() {
     return this.avvisoImporto;
   }
@@ -470,6 +484,10 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avviso_causale",required=true,nillable=false)
   protected java.lang.String avvisoCausale;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="avviso_mav",required=true,nillable=false)
+  protected boolean avvisoMav;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="avviso_importo",required=true,nillable=false)
