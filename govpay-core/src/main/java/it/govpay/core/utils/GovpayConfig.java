@@ -77,6 +77,8 @@ public class GovpayConfig {
 	private boolean batchEstrattoConto, batchEstrattoContoPdf;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
 	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
+	
+	private boolean batchAvvisiPagamento;
 
 	private Properties[] props;
 	
@@ -372,6 +374,10 @@ public class GovpayConfig {
 				}
 				conservazionePlugin = (IConservazione) instance;
 			}
+
+			String batchAvvisiPagamentoStampaAvvisiString = getProperty("it.govpay.batch.avvisiPagamento.stampaAvvisiPagamento", props, false, log);
+			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
+				this.batchAvvisiPagamento = true;
 			
 
 		} catch (Exception e) {
@@ -543,4 +549,9 @@ public class GovpayConfig {
 	public IConservazione getConservazionPlugin(){
 		return conservazionePlugin;
 	}
+	
+	public boolean isBatchAvvisiPagamento() {
+		return batchAvvisiPagamento;
+	}
+
 }

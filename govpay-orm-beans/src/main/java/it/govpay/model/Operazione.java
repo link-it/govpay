@@ -26,7 +26,7 @@ public class Operazione {
 	}
 	
 	public enum TipoOperazioneType {
-		ADD, DEL, N_V
+		ADD, DEL, INC, N_V
 	}
 	
 	private long id;
@@ -40,6 +40,9 @@ public class Operazione {
 	private TipoOperazioneType tipoOperazione;
 	private Long idApplicazione;
 	private String codVersamentoEnte;
+	private String codDominio;
+	private String iuv;
+	private String trn;
 	
 	public long getId() {
 		return id;
@@ -107,4 +110,23 @@ public class Operazione {
 	public void setStato(StatoOperazioneType stato) {
 		this.stato = stato;
 	}
+	public String getCodDominio() {
+		return codDominio;
+	}
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+	public String getTrn() {
+		return trn;
+	}
+	public void setTrn(String trn) {
+		this.trn = trn;
+	}
+	
 }

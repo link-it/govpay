@@ -94,10 +94,14 @@ public class Utils {
 		}
 
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat sdf = newSimpleDateFormat();
 			return sdf.parse(validaESetta(nomeCampo, campo, null, null, nullable));
 		} catch (ParseException e) {
 			throw new ValidationException("Campo "+nomeValoreCampo+" non e' una data espressa in formato dd/MM/YYYY");
 		}
+	}
+
+	public static SimpleDateFormat newSimpleDateFormat() {
+		return new SimpleDateFormat("dd/MM/yyyy");
 	}
 }

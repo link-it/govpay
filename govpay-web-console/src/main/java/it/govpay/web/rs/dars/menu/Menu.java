@@ -46,6 +46,7 @@ import it.govpay.web.rs.dars.anagrafica.portali.Portali;
 import it.govpay.web.rs.dars.anagrafica.psp.Psp;
 import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo;
+import it.govpay.web.rs.dars.caricamenti.incassi.TracciatiIncasso;
 import it.govpay.web.rs.dars.caricamenti.tracciati.Tracciati;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.manutenzione.strumenti.Strumenti;
@@ -199,13 +200,24 @@ public class Menu extends BaseRsService {
 				VoceMenu voceMenuEventi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".titolo"),	eventiURI, VoceMenu.VOCE_MONITORAGGIO);
 				vociMenuMonitoraggio.add(voceMenuEventi);
 			}
-
 			// Preparazione voci menu' caricamenti
-			if(this.isServizioAbilitatoScrittura(bd, Servizio.Gestione_Pagamenti) || this.isOperatoreAdminServizio(bd, Servizio.Gestione_Pagamenti)){ 
-				Tracciati caricamentoTracciatiDars = new Tracciati();
-				URI caricamentoTracciatiURI = new URI(caricamentoTracciatiDars.getPathServizio());
-				VoceMenu voceMenuCaricamentoTracciati = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(caricamentoTracciatiDars.getNomeServizio() + ".titolo"),	caricamentoTracciatiURI, VoceMenu.VOCE_OPERAZIONIMASSIVE);
-				vociMenuCaricamenti.add(voceMenuCaricamentoTracciati);
+			if(this.isServizioAbilitatoScrittura(bd, Servizio.Gestione_Pagamenti) || this.isOperatoreAdminServizio(bd, Servizio.Gestione_Pagamenti) ||
+					this.isServizioAbilitatoScrittura(bd, Servizio.Gestione_Rendicontazioni) || this.isOperatoreAdminServizio(bd, Servizio.Gestione_Rendicontazioni)){ 
+				// Preparazione voci menu' caricamenti
+				if(this.isServizioAbilitatoScrittura(bd, Servizio.Gestione_Pagamenti) || this.isOperatoreAdminServizio(bd, Servizio.Gestione_Pagamenti)){ 
+					Tracciati caricamentoTracciatiDars = new Tracciati();
+					URI caricamentoTracciatiURI = new URI(caricamentoTracciatiDars.getPathServizio());
+					VoceMenu voceMenuCaricamentoTracciati = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(caricamentoTracciatiDars.getNomeServizio() + ".titolo"),	caricamentoTracciatiURI, VoceMenu.VOCE_OPERAZIONIMASSIVE);
+					vociMenuCaricamenti.add(voceMenuCaricamentoTracciati);
+				}
+				
+				if(this.isServizioAbilitatoScrittura(bd, Servizio.Gestione_Rendicontazioni) || this.isOperatoreAdminServizio(bd, Servizio.Gestione_Rendicontazioni)){ 
+					TracciatiIncasso caricamentoIncassiDars = new TracciatiIncasso();
+					URI caricamentoIncassiURI = new URI(caricamentoIncassiDars.getPathServizio());
+					VoceMenu voceMenuCaricamentoIncassi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(caricamentoIncassiDars.getNomeServizio() + ".titolo"),	caricamentoIncassiURI, VoceMenu.VOCE_OPERAZIONIMASSIVE);
+					vociMenuCaricamenti.add(voceMenuCaricamentoIncassi);
+				}
+				
 			}
 
 			// Preparazione voci menu' statistiche

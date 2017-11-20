@@ -284,7 +284,7 @@ public class TemplateRt {
 			StringBuilder sb = new StringBuilder();
 			boolean addBreak = false;
 			if(ricevuta.getImportoDovuto() != null) {
-				String importoDovutoAsString = "‎€"+ ricevuta.getImportoDovuto().doubleValue();
+				String importoDovutoAsString = Costanti.LABEL_EURO + String.format("%.2f",ricevuta.getImportoDovuto().doubleValue());
 				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_DOVUTO, importoDovutoAsString));
 				addBreak = true;
 			}
@@ -295,13 +295,13 @@ public class TemplateRt {
 				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_DATA_SCADENZA, TemplateBase.sdf_ddMMyyyy.format(ricevuta.getDataScadenza())));
 				addBreak = true;
 			}
-			String importoPagatoAsString = "‎€"+ ricevuta.getImportoPagato().doubleValue(); 
+			String importoPagatoAsString = Costanti.LABEL_EURO+ String.format("%.2f",ricevuta.getImportoPagato().doubleValue()); 
 			if(addBreak) 
 				sb.append("<br/>");
 
 			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_PAGATO, importoPagatoAsString));
 			if(ricevuta.getCommissioni() != null){
-				String commissioniAsString = "‎€"+ ricevuta.getCommissioni().doubleValue(); 
+				String commissioniAsString = Costanti.LABEL_EURO+ String.format("%.2f",ricevuta.getCommissioni().doubleValue()); 
 				sb.append("<br/>");
 				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_COMMISSIONI_PSP, commissioniAsString));
 			}

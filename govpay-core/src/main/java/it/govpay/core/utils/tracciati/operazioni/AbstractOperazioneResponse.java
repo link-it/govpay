@@ -1,5 +1,7 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
+import java.util.List;
+
 import it.govpay.model.Operazione.StatoOperazioneType;
 
 
@@ -30,7 +32,20 @@ public abstract class AbstractOperazioneResponse {
 		}
 		return dati;
 	}
-	protected abstract byte[] createDati();
+	protected byte[] createDati() {
+		StringBuilder sb = new StringBuilder();
+
+		for(String dato: this.listDati()) {
+			if(sb.length() > 0) {
+				sb.append(this.delim);
+			}
+			sb.append(dato);
+		}
+		
+		return sb.toString().getBytes();
+	}
+	
+	protected abstract List<String> listDati();
 	public String getEsito() {
 		return esito;
 	}

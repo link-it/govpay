@@ -35,7 +35,8 @@ public class Incasso extends BasicModel {
 	private Date dataIncasso;
 	private Date dataContabile;
 	private String dispositivo;
-	private long idApplicazione;
+	private Long idApplicazione;
+	private Long idOperatore;
 	
 	public Long getId() {
 		return id;
@@ -94,11 +95,17 @@ public class Incasso extends BasicModel {
 	public void setDataContabile(Date dataContabile) {
 		this.dataContabile = dataContabile;
 	}
-	public long getIdApplicazione() {
+	public Long getIdApplicazione() {
 		return idApplicazione;
 	}
-	public void setIdApplicazione(long idApplicazione) {
+	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
+	}
+	public Long getIdOperatore() {
+		return idOperatore;
+	}
+	public void setIdOperatore(Long idOperatore) {
+		this.idOperatore = idOperatore;
 	}
 }
 

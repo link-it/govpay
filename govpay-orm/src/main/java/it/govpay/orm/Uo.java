@@ -46,6 +46,10 @@ import java.io.Serializable;
  * 			&lt;element name="uoLocalita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="uoProvincia" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="uoNazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="uoArea" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="uoUrlSitoWeb" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="uoEmail" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="uoPec" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -70,7 +74,11 @@ import java.io.Serializable;
   	"uoCap",
   	"uoLocalita",
   	"uoProvincia",
-  	"uoNazione"
+  	"uoNazione",
+  	"uoArea",
+  	"uoUrlSitoWeb",
+  	"uoEmail",
+  	"uoPec"
   }
 )
 
@@ -186,6 +194,38 @@ public class Uo extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.uoNazione = uoNazione;
   }
 
+  public java.lang.String getUoArea() {
+    return this.uoArea;
+  }
+
+  public void setUoArea(java.lang.String uoArea) {
+    this.uoArea = uoArea;
+  }
+
+  public java.lang.String getUoUrlSitoWeb() {
+    return this.uoUrlSitoWeb;
+  }
+
+  public void setUoUrlSitoWeb(java.lang.String uoUrlSitoWeb) {
+    this.uoUrlSitoWeb = uoUrlSitoWeb;
+  }
+
+  public java.lang.String getUoEmail() {
+    return this.uoEmail;
+  }
+
+  public void setUoEmail(java.lang.String uoEmail) {
+    this.uoEmail = uoEmail;
+  }
+
+  public java.lang.String getUoPec() {
+    return this.uoPec;
+  }
+
+  public void setUoPec(java.lang.String uoPec) {
+    this.uoPec = uoPec;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -247,5 +287,21 @@ public class Uo extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="uoNazione",required=false,nillable=false)
   protected java.lang.String uoNazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="uoArea",required=false,nillable=false)
+  protected java.lang.String uoArea;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="uoUrlSitoWeb",required=false,nillable=false)
+  protected java.lang.String uoUrlSitoWeb;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="uoEmail",required=false,nillable=false)
+  protected java.lang.String uoEmail;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="uoPec",required=false,nillable=false)
+  protected java.lang.String uoPec;
 
 }

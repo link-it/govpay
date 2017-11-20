@@ -26,11 +26,11 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 public class TimeAdapter extends XmlAdapter<String, Date> {
 
 	public Date unmarshal(String value) {
-        return (org.apache.cxf.xjc.runtime.DataTypeAdapter.parseTime(value));
+        return (it.govpay.core.utils.adapter.DataTypeAdapterCXF.parseTime(value));
     }
 
     public String marshal(Date value) {
-        return (org.apache.cxf.xjc.runtime.DataTypeAdapter.printTime(value));
+        return (it.govpay.core.utils.adapter.DataTypeAdapterCXF.printTime(value));
     }
 
 }

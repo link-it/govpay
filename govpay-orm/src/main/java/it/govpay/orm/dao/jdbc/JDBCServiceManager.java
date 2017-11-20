@@ -19,10 +19,27 @@
  */
 package it.govpay.orm.dao.jdbc;
 
+import java.sql.Connection;
+import java.util.Properties;
+
+import javax.sql.DataSource;
+
+import org.apache.log4j.Logger;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.utils.ServiceManagerProperties;
+
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IACLServiceSearch;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IApplicazioneServiceSearch;
+import it.govpay.orm.dao.IAuditService;
+import it.govpay.orm.dao.IAuditServiceSearch;
+import it.govpay.orm.dao.IAvvisoService;
+import it.govpay.orm.dao.IAvvisoServiceSearch;
+import it.govpay.orm.dao.IBatchService;
+import it.govpay.orm.dao.IBatchServiceSearch;
 import it.govpay.orm.dao.ICanaleService;
 import it.govpay.orm.dao.ICanaleServiceSearch;
 import it.govpay.orm.dao.IConnettoreService;
@@ -37,12 +54,16 @@ import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIUVServiceSearch;
 import it.govpay.orm.dao.IIbanAccreditoService;
 import it.govpay.orm.dao.IIbanAccreditoServiceSearch;
+import it.govpay.orm.dao.IIncassoService;
+import it.govpay.orm.dao.IIncassoServiceSearch;
 import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.IIntermediarioServiceSearch;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.INotificaServiceSearch;
 import it.govpay.orm.dao.IOperatoreService;
 import it.govpay.orm.dao.IOperatoreServiceSearch;
+import it.govpay.orm.dao.IOperazioneService;
+import it.govpay.orm.dao.IOperazioneServiceSearch;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPagamentoServiceSearch;
 import it.govpay.orm.dao.IPortaleService;
@@ -54,6 +75,10 @@ import it.govpay.orm.dao.IRPTServiceSearch;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRRServiceSearch;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
+import it.govpay.orm.dao.IRendicontazioneService;
+import it.govpay.orm.dao.IRendicontazioneServiceSearch;
+import it.govpay.orm.dao.IRuoloService;
+import it.govpay.orm.dao.IRuoloServiceSearch;
 import it.govpay.orm.dao.IServiceManager;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
@@ -61,37 +86,14 @@ import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.IStazioneServiceSearch;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITipoTributoServiceSearch;
+import it.govpay.orm.dao.ITracciatoService;
+import it.govpay.orm.dao.ITracciatoServiceSearch;
 import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.ITributoServiceSearch;
 import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
-import it.govpay.orm.dao.IRuoloServiceSearch;
-import it.govpay.orm.dao.IRuoloService;
-
-import it.govpay.orm.dao.IRendicontazioneServiceSearch;
-import it.govpay.orm.dao.IRendicontazioneService;
-import it.govpay.orm.dao.IOperazioneServiceSearch;
-import it.govpay.orm.dao.IOperazioneService;
-import it.govpay.orm.dao.ITracciatoServiceSearch;
-import it.govpay.orm.dao.ITracciatoService;
-import it.govpay.orm.dao.IAuditServiceSearch;
-import it.govpay.orm.dao.IAuditService;
-import java.sql.Connection;
-import java.util.Properties;
-
-import javax.sql.DataSource;
-import it.govpay.orm.dao.IBatchServiceSearch;
-import it.govpay.orm.dao.IBatchService;
-import org.apache.log4j.Logger;
-import it.govpay.orm.dao.IIncassoServiceSearch;
-import it.govpay.orm.dao.IIncassoService;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.utils.ServiceManagerProperties;
 
 /**     
  * Manager that allows you to obtain the services of research and management of objects
@@ -1179,6 +1181,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public ITracciatoService getTracciatoService() throws ServiceException,NotImplementedException{
 		return new JDBCTracciatoService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Avviso type:Avviso
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Avviso}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Avviso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IAvvisoServiceSearch getAvvisoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCAvvisoServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Avviso}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Avviso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IAvvisoService getAvvisoService() throws ServiceException,NotImplementedException{
+		return new JDBCAvvisoService(this);
 	}
 	
 	

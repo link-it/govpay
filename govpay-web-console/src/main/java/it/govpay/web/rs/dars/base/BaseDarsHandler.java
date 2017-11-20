@@ -42,6 +42,7 @@ import org.openspcoop2.utils.csv.FormatReader;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.CSVSerializerProperties;
+import it.govpay.core.utils.CurrencyUtils;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -68,6 +69,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	protected Integer limit = null;
 	protected Format formatW= null;
 	protected Servizio funzionalita;
+	protected CurrencyUtils currencyUtils = null;
 	
 	protected Map<String, ParamField<?>> infoRicercaMap = null;
 	protected Map<String, ParamField<?>> infoCancellazioneMap = null;
@@ -82,6 +84,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 		this.funzionalita = this.darsService.getFunzionalita();
 		this.titoloServizio = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".titolo");
 		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
+		this.currencyUtils = CurrencyUtils.newInstance(this.log, this.getLanguage());
 
 		try{
 			// Setto le properties di scrittura

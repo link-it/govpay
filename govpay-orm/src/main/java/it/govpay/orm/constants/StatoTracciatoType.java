@@ -46,7 +46,9 @@ public enum StatoTracciatoType implements IEnumeration , Serializable , Cloneabl
 	@javax.xml.bind.annotation.XmlEnumValue("CARICAMENTO_OK")
 	CARICAMENTO_OK ("CARICAMENTO_OK"),
 	@javax.xml.bind.annotation.XmlEnumValue("CARICAMENTO_KO")
-	CARICAMENTO_KO ("CARICAMENTO_KO");
+	CARICAMENTO_KO ("CARICAMENTO_KO"),
+	@javax.xml.bind.annotation.XmlEnumValue("STAMPATO")
+	STAMPATO ("STAMPATO");
 	
 	
 	/** Value */

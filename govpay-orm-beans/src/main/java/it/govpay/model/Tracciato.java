@@ -24,7 +24,11 @@ import java.util.Date;
 public class Tracciato {
 
 	public enum StatoTracciatoType {
-		ANNULLATO ,NUOVO ,IN_CARICAMENTO ,CARICAMENTO_OK ,CARICAMENTO_KO;
+		ANNULLATO ,NUOVO ,IN_CARICAMENTO ,CARICAMENTO_OK ,CARICAMENTO_KO, STAMPATO;
+	}
+	
+	public enum TipoTracciatoType {
+		VERSAMENTI, INCASSI;
 	}
 	
 	
@@ -42,6 +46,7 @@ public class Tracciato {
 	private String nomeFile;
 	private byte[] rawDataRichiesta;
 	private byte[] rawDataRisposta;
+	private TipoTracciatoType tipoTracciato;
 	
 	public Long getIdOperatore() {
 		return idOperatore;
@@ -128,6 +133,10 @@ public class Tracciato {
 	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
-	
-
+	public TipoTracciatoType getTipoTracciato() {
+		return tipoTracciato;
+	}
+	public void setTipoTracciato(TipoTracciatoType tipoTracciato) {
+		this.tipoTracciato = tipoTracciato;
+	}
 }

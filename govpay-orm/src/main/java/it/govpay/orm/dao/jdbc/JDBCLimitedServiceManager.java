@@ -78,6 +78,8 @@ import it.govpay.orm.dao.IOperazioneServiceSearch;
 import it.govpay.orm.dao.IOperazioneService;
 import it.govpay.orm.dao.ITracciatoServiceSearch;
 import it.govpay.orm.dao.ITracciatoService;
+import it.govpay.orm.dao.IAvvisoServiceSearch;
+import it.govpay.orm.dao.IAvvisoService;
 import it.govpay.orm.dao.IAuditServiceSearch;
 import it.govpay.orm.dao.IAuditService;
 
@@ -1108,6 +1110,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public ITracciatoService getTracciatoService() throws ServiceException,NotImplementedException{
 		return new JDBCTracciatoService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Avviso type:Avviso
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Avviso}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Avviso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IAvvisoServiceSearch getAvvisoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCAvvisoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Avviso}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Avviso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IAvvisoService getAvvisoService() throws ServiceException,NotImplementedException{
+		return new JDBCAvvisoService(this.unlimitedJdbcServiceManager);
 	}
 	
 	

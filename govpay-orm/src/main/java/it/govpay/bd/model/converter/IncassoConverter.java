@@ -6,6 +6,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Incasso;
 import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdOperatore;
 
 public class IncassoConverter {
 
@@ -18,7 +19,11 @@ public class IncassoConverter {
 			dto.setDataValuta(vo.getDataValuta());
 			dto.setDispositivo(vo.getNomeDispositivo());
 			dto.setId(vo.getId());
-			dto.setIdApplicazione(vo.getIdApplicazione().getId());
+			if(vo.getIdApplicazione() != null)
+				dto.setIdApplicazione(vo.getIdApplicazione().getId());
+			if(vo.getIdOperatore() != null)
+				dto.setIdApplicazione(vo.getIdOperatore().getId());
+			
 			dto.setImporto(BigDecimal.valueOf(vo.getImporto()));
 			dto.setTrn(vo.getTrn());
 			
@@ -34,9 +39,16 @@ public class IncassoConverter {
 		vo.setDataValuta(dto.getDataValuta());
 		vo.setNomeDispositivo(dto.getDispositivo());
 		vo.setId(dto.getId());
-		IdApplicazione idApplicazione = new IdApplicazione();
-		idApplicazione.setId(dto.getIdApplicazione());
-		vo.setIdApplicazione(idApplicazione);
+		if(dto.getIdApplicazione() != null) {
+			IdApplicazione idApplicazione = new IdApplicazione();
+			idApplicazione.setId(dto.getIdApplicazione());
+			vo.setIdApplicazione(idApplicazione);
+		}
+		if(dto.getIdOperatore() != null) {
+			IdOperatore idOperatore = new IdOperatore();
+			idOperatore.setId(dto.getIdOperatore());
+			vo.setIdOperatore(idOperatore);
+		}
 		vo.setImporto(dto.getImporto().doubleValue());
 		vo.setTrn(dto.getTrn());
 		

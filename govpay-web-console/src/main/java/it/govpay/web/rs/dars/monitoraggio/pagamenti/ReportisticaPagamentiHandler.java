@@ -457,11 +457,13 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 				}
 				// Importo Dovuto
 				if(pagamento.getImportoDovuto() != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoDovuto.label"), pagamento.getImportoDovuto().toString()+ "€");
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoDovuto.label"), 
+							this.currencyUtils.getCurrencyAsEuro(pagamento.getImportoDovuto()));
 				}
 				// Importo Pagato
 				if(pagamento.getImportoPagato() != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"), pagamento.getImportoPagato().toString()+ "€");
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),
+							this.currencyUtils.getCurrencyAsEuro(pagamento.getImportoPagato()));
 				}
 				// Data Pagamento
 				if(pagamento.getDataPagamento() != null) {
@@ -496,8 +498,8 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 		String cfDebitore = entry.getDebitoreIdentificativo();
 		String iuv = entry.getIuv() != null ? entry.getIuv() : "--";
-		String importoPagato = entry.getImportoPagato()  != null ? entry.getImportoPagato().toString()+ "€" : "";
-		String importoDovuto = entry.getImportoDovuto() != null ? entry.getImportoDovuto().toString()+ "€" : "";
+		String importoPagato = this.currencyUtils.getCurrencyAsEuro(entry.getImportoPagato());
+		String importoDovuto = this.currencyUtils.getCurrencyAsEuro(entry.getImportoDovuto());
 
 		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", codVersamentoEnte,iuv,cfDebitore,importoPagato,importoDovuto));
 
@@ -540,7 +542,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),
-						importo.toString()+ "€"));
+						this.currencyUtils.getCurrencyAsEuro(importo)));
 
 		if(dataPagamento!= null){
 			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.id"),

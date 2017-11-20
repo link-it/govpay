@@ -50,6 +50,8 @@ public class ConsoleProperties {
 	
 	private boolean abilitaControlloPrincipalCaseInsensitive = false;
 	
+	private boolean abilitaDownloadAvvisiPagamento;
+	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
 			init();
@@ -167,6 +169,9 @@ public class ConsoleProperties {
 			String abilitaControlloPrincipalCaseInsensitiveS = ConsoleProperties.getProperty("it.govpay.console.login.controlloPrincipalCaseInsensitive.enabled", props, false);
 			this.abilitaControlloPrincipalCaseInsensitive = Boolean.parseBoolean(abilitaControlloPrincipalCaseInsensitiveS);
 			
+			String abilitaDownloadAvvisiPagamentoString = ConsoleProperties.getProperty("it.govpay.console.caricamentoTracciati.stampaAvvisiPagamento", props, false);
+			if(abilitaDownloadAvvisiPagamentoString != null && Boolean.valueOf(abilitaDownloadAvvisiPagamentoString))
+				this.abilitaDownloadAvvisiPagamento = true;
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
@@ -299,6 +304,10 @@ public class ConsoleProperties {
 
 	public boolean isAbilitaControlloPrincipalCaseInsensitive() {
 		return abilitaControlloPrincipalCaseInsensitive;
+	}
+
+	public boolean isAbilitaDownloadAvvisiPagamento() {
+		return abilitaDownloadAvvisiPagamento;
 	}
 	
 }

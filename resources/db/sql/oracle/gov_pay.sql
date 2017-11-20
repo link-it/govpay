@@ -193,6 +193,7 @@ CREATE TABLE domini
 	ndp_descrizione VARCHAR(1024),
 	ndp_data TIMESTAMP,
 	logo BLOB,
+	cbill VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,
@@ -237,6 +238,10 @@ CREATE TABLE uo
 	uo_localita VARCHAR2(35 CHAR),
 	uo_provincia VARCHAR2(35 CHAR),
 	uo_nazione VARCHAR2(2 CHAR),
+	uo_area VARCHAR2(255 CHAR),
+	uo_url_sito_web VARCHAR2(255 CHAR),
+	uo_email VARCHAR2(255 CHAR),
+	uo_pec VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -809,6 +814,9 @@ CREATE TABLE iuv
 
 -- index
 CREATE INDEX index_iuv_1 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
+
+ALTER TABLE iuv MODIFY aux_digit DEFAULT 0;
+
 CREATE TRIGGER trg_iuv
 BEFORE
 insert on iuv
@@ -877,8 +885,10 @@ CREATE TABLE incassi
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
+	id_operatore NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
 );
 
@@ -1072,12 +1082,11 @@ CREATE TABLE tracciati
 	nome_file VARCHAR2(255 CHAR) NOT NULL,
 	raw_data_richiesta BLOB NOT NULL,
 	raw_data_risposta BLOB,
+	tipo_tracciato VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_operatore NUMBER,
 	id_applicazione NUMBER,
-	-- check constraints
-	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -1109,12 +1118,13 @@ CREATE TABLE operazioni
 	dati_risposta BLOB,
 	dettaglio_esito VARCHAR2(255 CHAR),
 	cod_versamento_ente VARCHAR2(255 CHAR),
+	cod_dominio VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	trn VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tracciato NUMBER NOT NULL,
 	id_applicazione NUMBER,
-	-- check constraints
-	CONSTRAINT chk_operazioni_1 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -1158,6 +1168,38 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_gp_audit.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_avvisi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE avvisi
+(
+	cod_dominio VARCHAR(35) NOT NULL,
+	iuv VARCHAR(35) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR(255) NOT NULL,
+	pdf BLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_avvisi PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
+CREATE INDEX index_avvisi_2 ON avvisi (stato);
+CREATE TRIGGER trg_avvisi
+BEFORE
+insert on avvisi
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_avvisi.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;

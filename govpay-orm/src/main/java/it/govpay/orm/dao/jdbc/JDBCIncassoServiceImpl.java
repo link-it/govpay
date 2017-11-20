@@ -87,6 +87,23 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			}
 		}
 
+		// Object _operatore
+		Long id_operatore = null;
+		it.govpay.orm.IdOperatore idLogic_operatore = null;
+		idLogic_operatore = incasso.getIdOperatore();
+		if(idLogic_operatore!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findTableId(idLogic_operatore, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_operatore = idLogic_operatore.getId();
+				if(id_operatore==null || id_operatore<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object incasso
 		sqlQueryObjectInsert.addInsertTable(this.getIncassoFieldConverter().toTable(Incasso.model()));
@@ -99,6 +116,7 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().DATA_ORA_INCASSO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_DISPOSITIVO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
+		sqlQueryObjectInsert.addInsertField("id_operatore","?");
 
 		// Insert incasso
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getIncassoFetch().getKeyGeneratorObject(Incasso.model());
@@ -111,7 +129,8 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getDataContabile(),Incasso.model().DATA_CONTABILE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getDataOraIncasso(),Incasso.model().DATA_ORA_INCASSO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getNomeDispositivo(),Incasso.model().NOME_DISPOSITIVO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class)
 		);
 		incasso.setId(id);
 
@@ -176,6 +195,23 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			}
 		}
 
+		// Object _incasso_operatore
+		Long id_incasso_operatore = null;
+		it.govpay.orm.IdOperatore idLogic_incasso_operatore = null;
+		idLogic_incasso_operatore = incasso.getIdOperatore();
+		if(idLogic_incasso_operatore!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_incasso_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findTableId(idLogic_incasso_operatore, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_incasso_operatore = idLogic_incasso_operatore.getId();
+				if(id_incasso_operatore==null || id_incasso_operatore<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object incasso
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -202,7 +238,13 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_incasso.add(new JDBCObject(id_incasso_applicazione, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_incasso.add(new JDBCObject(id_incasso_operatore, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_incasso.add(new JDBCObject(tableId, Long.class));

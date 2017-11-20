@@ -144,6 +144,34 @@ public class UoFieldConverter extends AbstractSQLFieldConverter {
 				return "uo_nazione";
 			}
 		}
+		if(field.equals(Uo.model().UO_AREA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".uo_area";
+			}else{
+				return "uo_area";
+			}
+		}
+		if(field.equals(Uo.model().UO_URL_SITO_WEB)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".uo_url_sito_web";
+			}else{
+				return "uo_url_sito_web";
+			}
+		}
+		if(field.equals(Uo.model().UO_EMAIL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".uo_email";
+			}else{
+				return "uo_email";
+			}
+		}
+		if(field.equals(Uo.model().UO_PEC)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".uo_pec";
+			}else{
+				return "uo_pec";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -188,6 +216,18 @@ public class UoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Uo.model(), returnAlias);
 		}
 		if(field.equals(Uo.model().UO_NAZIONE)){
+			return this.toTable(Uo.model(), returnAlias);
+		}
+		if(field.equals(Uo.model().UO_AREA)){
+			return this.toTable(Uo.model(), returnAlias);
+		}
+		if(field.equals(Uo.model().UO_URL_SITO_WEB)){
+			return this.toTable(Uo.model(), returnAlias);
+		}
+		if(field.equals(Uo.model().UO_EMAIL)){
+			return this.toTable(Uo.model(), returnAlias);
+		}
+		if(field.equals(Uo.model().UO_PEC)){
 			return this.toTable(Uo.model(), returnAlias);
 		}
 

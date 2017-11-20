@@ -514,7 +514,8 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataRegolamento.label"), this.sdf.format(fr.getDataRegolamento()));
 				}
 
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), fr.getImportoTotalePagamenti().doubleValue()+ "€");
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"),
+						this.currencyUtils.getCurrencyAsEuro(fr.getImportoTotalePagamenti()));
 
 				StatoFr stato = fr.getStato();
 				if(stato!= null) {
@@ -570,14 +571,13 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 		StringBuilder sb = new StringBuilder();
 		StatoFr stato = entry.getStato();
 		long numeroPagamenti = entry.getNumeroPagamenti();
-		double importoTotalePagamenti = entry.getImportoTotalePagamenti().doubleValue();
 
 		switch (stato) {
 		case ACCETTATA:
 			sb.append(
 					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.accettata",
 							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ACCETTATA"),
-							numeroPagamenti,(importoTotalePagamenti + "€")));
+							numeroPagamenti,this.currencyUtils.getCurrencyAsEuro(entry.getImportoTotalePagamenti())));
 			break;
 		case ANOMALA:
 		default:

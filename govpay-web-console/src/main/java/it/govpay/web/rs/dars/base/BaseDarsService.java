@@ -231,10 +231,10 @@ public abstract class BaseDarsService extends BaseRsService {
 	@POST
 	@Path("/{id}/esporta")
 	@Consumes({MediaType.APPLICATION_JSON})
-	@Produces({MediaType.APPLICATION_OCTET_STREAM})
+	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM})
 	public Response esportaDettaglio(@PathParam("id") long id, InputStream is, @Context UriInfo uriInfo) throws Exception{
 
-		String methodName = "esporta " + this.getNomeServizio() + "[" + id+ "]";  
+		String methodName = "esporta " + this.getNomeServizio() + " [" + id+ "]";  
 		this.initLogger(methodName);
 
 		BasicBD bd = null;
@@ -266,6 +266,11 @@ public abstract class BaseDarsService extends BaseRsService {
 			String fileName = this.getDarsHandler().esporta(id, rawValues,uriInfo, bd, zout);
 			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
 			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
+		}	catch(ExportException e){
+			this.log.info("Esito operazione "+methodName+ ": " + e.getEsito() + ", causa: " +e.getMessaggi());
+			darsResponse.setEsitoOperazione(e.getEsito());
+			darsResponse.setDettaglioEsito(e.getMessaggi());
+			return Response.ok(darsResponse,MediaType.APPLICATION_JSON).build();
 		} catch(WebApplicationException e){
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;

@@ -130,6 +130,27 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_versamento_ente";
 			}
 		}
+		if(field.equals(Operazione.model().COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(Operazione.model().IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
+		if(field.equals(Operazione.model().TRN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trn";
+			}else{
+				return "trn";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -168,6 +189,15 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Operazione.model().ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(Operazione.model().COD_VERSAMENTO_ENTE)){
+			return this.toTable(Operazione.model(), returnAlias);
+		}
+		if(field.equals(Operazione.model().COD_DOMINIO)){
+			return this.toTable(Operazione.model(), returnAlias);
+		}
+		if(field.equals(Operazione.model().IUV)){
+			return this.toTable(Operazione.model(), returnAlias);
+		}
+		if(field.equals(Operazione.model().TRN)){
 			return this.toTable(Operazione.model(), returnAlias);
 		}
 

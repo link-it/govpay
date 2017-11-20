@@ -41,6 +41,10 @@ public class UnitaOperativaConverter {
 		anagrafica.setLocalita(toNull(vo.getUoLocalita()));
 		anagrafica.setNazione(toNull(vo.getUoNazione()));
 		anagrafica.setProvincia(toNull(vo.getUoProvincia()));
+		anagrafica.setArea(toNull(vo.getUoArea()));
+		anagrafica.setEmail(toNull(vo.getUoEmail()));
+		anagrafica.setPec(toNull(vo.getUoPec()));
+		anagrafica.setUrlSitoWeb(toNull(vo.getUoUrlSitoWeb()));
 		dto.setAnagrafica(anagrafica);
 		return dto;
 	}
@@ -58,6 +62,10 @@ public class UnitaOperativaConverter {
 		vo.setUoLocalita(toNull(dto.getAnagrafica().getLocalita()));
 		vo.setUoNazione(toNull(dto.getAnagrafica().getNazione()));
 		vo.setUoProvincia(toNull(dto.getAnagrafica().getProvincia()));
+		vo.setUoArea(toNull(dto.getAnagrafica().getArea()));
+		vo.setUoEmail(toNull(dto.getAnagrafica().getEmail()));
+		vo.setUoPec(toNull(dto.getAnagrafica().getPec()));
+		vo.setUoUrlSitoWeb(toNull(dto.getAnagrafica().getUrlSitoWeb()));
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

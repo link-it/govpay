@@ -475,7 +475,8 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 					}
 
 					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codMsgRicevuta.label"), rpt.getCodMsgRicevuta());
-					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagato.label"), rpt.getImportoTotalePagato() + "€");
+					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagato.label"),
+							this.currencyUtils.getCurrencyAsEuro(rpt.getImportoTotalePagato()));
 				}
 				else	{
 					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rtAssente"), null);
@@ -563,7 +564,8 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			BigDecimal importoTotalePagato = entry.getImportoTotalePagato();
 			int compareTo = importoTotalePagato.compareTo(BigDecimal.ZERO);
 			if(compareTo > 0){
-				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente.importoPositivo",esitoPagamentoString, ( entry.getImportoTotalePagato() + "€")));
+				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente.importoPositivo",esitoPagamentoString, 
+						this.currencyUtils.getCurrencyAsEuro(entry.getImportoTotalePagato())));
 			} else{
 				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente",esitoPagamentoString));
 			}
@@ -622,7 +624,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"),
-						importoTotalePagato.toString()+ "€"));
+						this.currencyUtils.getCurrencyAsEuro(importoTotalePagato)));
 
 		if(entry.getDataMsgRichiesta() != null){
 			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.id"),
