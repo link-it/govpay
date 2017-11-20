@@ -25,13 +25,9 @@ ALTER TABLE uo ADD COLUMN uo_url_sito_web VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_email VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_pec VARCHAR(255);
 
-
-
-alter table tracciati DROP CHECK chk_tracciati_1;
-
 alter table tracciati add COLUMN tipo_tracciato VARCHAR(255);
 update tracciati set tipo_tracciato = 'VERSAMENTI';
-alter table tracciati MODIFY COLUMN tipo_tracciato NOT NULL;
+alter table tracciati MODIFY COLUMN tipo_tracciato VARCHAR(255) NOT NULL;
 
 alter table operazioni add COLUMN cod_dominio VARCHAR(35);
 alter table operazioni add COLUMN iuv VARCHAR(35);
