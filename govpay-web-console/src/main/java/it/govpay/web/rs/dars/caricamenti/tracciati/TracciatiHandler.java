@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -337,13 +339,26 @@ public class TracciatiHandler extends BaseTracciatiHandler implements IDarsHandl
 					this.log.debug("Export Tracciato, verranno inclusi " + findAll.size()+ " Avvisi pagamento.");
 
 					AvvisoPagamento avvisoBD = new AvvisoPagamento(bd);
-					for (Operazione entry : findAll) {
+					Set<String> keys = new TreeSet<String>();
+					
+					for (int i=findAll.size()-1; i>=0; i--) {
+						Operazione entry = findAll.get(i);
+					
 						if(entry.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
+							
 							// creo una entry per pdf
 							OperazioneCaricamento opCaricamento = (OperazioneCaricamento) entry;
 							String codDominio = opCaricamento.getCodDominio();
 							String iuv = opCaricamento.getIuv();
 							String avvisoFilename = codDominio + "_" + iuv;
+							
+							//Controllo se l'avviso e' gia' stato stampato per questo IUV
+							if(keys.contains(avvisoFilename)) {
+								continue;
+							}
+							
+							keys.add(avvisoFilename);
+							
 							this.log.debug("Lettura dell'Avviso [Dominio: " + codDominio+ " | Iuv: "+ iuv +"] in corso...");
 							LeggiAvvisoDTO leggiAvviso = new LeggiAvvisoDTO();
 							leggiAvviso.setCodDominio(codDominio);
