@@ -475,9 +475,11 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return fileName;
-		}catch(WebApplicationException e){
+		} catch(ExportException e){
 			throw e;
-		}catch(Exception e){
+		} catch(WebApplicationException e){
+			throw e;
+		} catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}

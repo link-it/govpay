@@ -722,6 +722,8 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return fileName;
+		}catch(ExportException e){
+			throw e;
 		}catch(WebApplicationException e){
 			throw e;
 		}catch(Exception e){
@@ -792,6 +794,8 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return fileName;
+		}catch(ExportException e){
+			throw e;
 		}catch(WebApplicationException e){
 			throw e;
 		}catch(Exception e){
