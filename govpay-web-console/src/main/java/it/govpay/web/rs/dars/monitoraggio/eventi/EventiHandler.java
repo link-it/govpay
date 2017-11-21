@@ -195,7 +195,7 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 		String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
 		String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
 		SortOrder sortOrder = SortOrder.DESC;
-		boolean limitRicerca = true;
+//		boolean limitRicerca = true;
 		boolean elementoCorrelato = false;
 
 		// se visualizzo gli eventi nella pagina delle transazioni li ordino in ordine crescente
@@ -203,7 +203,7 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 			sortOrder = SortOrder.ASC;
 			params.put(idTransazioneId, idTransazione);
 			simpleSearch = false;
-			limitRicerca = false;
+//			limitRicerca = false;
 			elementoCorrelato = true;
 		}
 
@@ -214,10 +214,10 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 		filter.getFilterSortList().add(fsw);
 		filter.setSimpleSearch(simpleSearch);
 
-		if(limitRicerca){
-			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
-			filter.setLimit(limit);
-		}
+//		if(limitRicerca){
+//			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
+//			filter.setLimit(limit);
+//		}
 
 		if(simpleSearch) {
 			// simplesearch
@@ -254,7 +254,7 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 					params.put(ccpId, ccp);
 			}
 		}
-		return limitRicerca;
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -432,7 +432,8 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 			if(idsToExport != null && idsToExport.size() > 0)
 				filter.setIdEventi(idsToExport); 
 
-			boolean checkCount = this.popolaFiltroRicerca(rawValues, uriInfo, params, simpleSearch, filter);
+//			boolean checkCount = 
+					this.popolaFiltroRicerca(rawValues, uriInfo, params, simpleSearch, filter);
 
 			long count = eventiBD.count(filter);
 
@@ -442,15 +443,15 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			} 
 
-			if(checkCount && count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
-				List<String> msg = new ArrayList<String>();
-				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
-				throw new ExportException(msg, EsitoOperazione.ERRORE);
-			}
+//			if(checkCount && count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+//				List<String> msg = new ArrayList<String>();
+//				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
+//				throw new ExportException(msg, EsitoOperazione.ERRORE);
+//			}
 
 			filter.setOffset(0);
-			if(checkCount)
-				filter.setLimit(ConsoleProperties.getInstance().getNumeroMassimoElementiExport());
+//			if(checkCount)
+//				filter.setLimit(ConsoleProperties.getInstance().getNumeroMassimoElementiExport());
 
 			List<Evento> list = eventiBD.findAll(filter);
 
@@ -475,9 +476,11 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return fileName;
-		}catch(WebApplicationException e){
+		} catch(ExportException e){
 			throw e;
-		}catch(Exception e){
+		} catch(WebApplicationException e){
+			throw e;
+		} catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}

@@ -35,7 +35,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.Incasso;
-import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.IncassoFieldConverter;
 
 public class IncassoFilter extends AbstractFilter{
 
@@ -94,7 +94,7 @@ public class IncassoFilter extends AbstractFilter{
 			if(this.idIncasso != null && !this.idIncasso.isEmpty()){
 				if(addAnd)
 					newExpression.and();
-				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				IncassoFieldConverter converter = new IncassoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Incasso.model()));
 				newExpression.in(cf, this.idIncasso);
 				addAnd = true;
