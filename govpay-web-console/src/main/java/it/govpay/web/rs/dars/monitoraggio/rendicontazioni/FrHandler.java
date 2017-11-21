@@ -716,11 +716,11 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			} 
 
-			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
-				List<String> msg = new ArrayList<String>();
-				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
-				throw new ExportException(msg, EsitoOperazione.ERRORE);
-			}
+//			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+//				List<String> msg = new ArrayList<String>();
+//				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
+//				throw new ExportException(msg, EsitoOperazione.ERRORE);
+//			}
 
 			filter.setOffset(0);
 			filter.setLimit(limit);
