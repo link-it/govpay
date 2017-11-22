@@ -455,7 +455,12 @@ public class RendicontazioniHandler extends DarsHandler<Rendicontazione> impleme
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 					new Voce<String>(this.getSottotitolo(entry, bd),
 							stato.name()));
+			
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name())));
 		}
+		
 
 		EsitoRendicontazione esito = entry.getEsito();
 		if(stato!= null) {
