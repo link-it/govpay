@@ -42142,6 +42142,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         display: block;
       }
 
+      .shift-progress-status {
+        padding-left: 38px;
+      }
+
       paper-spinner {
         position: absolute;
         left: calc(50% - 19px);;
@@ -42182,7 +42186,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         <circle class="progress-track" cx="18" cy="18" r="10" stroke-dashoffset$="75.39" fill$="{{_progressColor}}"></circle>
       </svg>
     </div>
-    <div class="group">
+    <div class$="[[_classForProgress(_hasPercentuale)]]">
       <template is="juicy-html" content$="[[_element]]"></template>
     </div>
     <iron-ajax id="_polling" handle-as="json" on-response="_pollingInfo_responseHandler" on-error="_pollingInfo_errorHandler" debounce-duration="300"></iron-ajax>
@@ -42243,6 +42247,13 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           type: String
         }
 
+      },
+
+      _classForProgress: function(value){
+        if(value) {
+          return 'shift-progress-status';
+        }
+        return '';
       },
 
       _render: function(item){

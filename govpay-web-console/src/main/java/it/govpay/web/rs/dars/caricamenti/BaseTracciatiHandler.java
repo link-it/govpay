@@ -57,6 +57,7 @@ import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.InputFile;
+import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
@@ -195,9 +196,16 @@ public abstract class BaseTracciatiHandler extends DarsHandler<Tracciato> implem
 			// stato 
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
 			String stato = this.getParameter(uriInfo, statoId, String.class);
-
+			
 			if(StringUtils.isNotEmpty(stato)){
 				filter.addStatoTracciato(StatoTracciatoType.valueOf(stato));
+			}
+			
+			String nomeFileId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.id");
+			String nomeFile = this.getParameter(uriInfo, nomeFileId, String.class);
+			
+			if(StringUtils.isNotEmpty(nomeFile)){
+				filter.setNomeFile(nomeFile);
 			}
 		}
 
@@ -219,6 +227,7 @@ public abstract class BaseTracciatiHandler extends DarsHandler<Tracciato> implem
 
 		if(visualizzaRicerca) {
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+			String nomeFileId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.id");
 
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
@@ -230,6 +239,11 @@ public abstract class BaseTracciatiHandler extends DarsHandler<Tracciato> implem
 			stato.setDefaultValue(null);
 			stato.setEditable(true); 
 			sezioneRoot.addField(stato);
+			
+			// nomeFile
+			InputText nomeFile = (InputText) infoRicercaMap.get(nomeFileId);
+			nomeFile.setDefaultValue(null);
+			sezioneRoot.addField(nomeFile);
 		}
 		return infoRicerca;
 	}
@@ -239,7 +253,8 @@ public abstract class BaseTracciatiHandler extends DarsHandler<Tracciato> implem
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
-
+			String nomeFileId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.id");
+			
 			// stato
 			String statoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label");
 			List<Voce<String>> stati = new ArrayList<Voce<String>>();
@@ -257,6 +272,10 @@ public abstract class BaseTracciatiHandler extends DarsHandler<Tracciato> implem
 			SelectList<String> stato  = new SelectList<String>(statoId, statoLabel, null, false, false, true, stati );
 			this.infoRicercaMap.put(statoId, stato);
 
+			// nomeFile
+			String nomeFileLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.label");
+			InputText nomeFile = new InputText(nomeFileId, nomeFileLabel, null, false, false, true, 0, 255);
+			infoRicercaMap.put(nomeFileId, nomeFile);
 		}
 	}
 
@@ -436,8 +455,10 @@ public abstract class BaseTracciatiHandler extends DarsHandler<Tracciato> implem
 			Operazioni operazioniDars = new Operazioni();
 			String etichettaOperazioni = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.operazioni.titolo");
 			String tracciatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(operazioniDars.getNomeServizio() + ".idTracciato.id");
+			String tipoTracciatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(operazioniDars.getNomeServizio() + ".tipoTracciato.id");
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(tracciatoId, tracciato.getId()+"");
+			params.put(tipoTracciatoId, tracciato.getTipoTracciato()+"");
 			URI operazioniURI = Utils.creaUriConParametri(operazioniDars.getPathServizio(), params );
 			dettaglio.addElementoCorrelato(etichettaOperazioni, operazioniURI); 
 
