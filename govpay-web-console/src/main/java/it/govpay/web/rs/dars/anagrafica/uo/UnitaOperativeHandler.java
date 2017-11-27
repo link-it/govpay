@@ -608,7 +608,7 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 		try{
 			sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
-			sb.append(", Dominio: ").append(entry.getDominio(bd).getCodDominio());
+			//sb.append(", Dominio: ").append(entry.getDominio(bd).getCodDominio());
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}

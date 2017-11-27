@@ -51,6 +51,7 @@ import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
+import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
@@ -176,7 +177,8 @@ public class TracciatiHandler extends BaseTracciatiHandler implements IDarsHandl
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
-
+			String nomeFileId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.id");
+			
 			// stato
 			String statoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label");
 			List<Voce<String>> stati = new ArrayList<Voce<String>>();
@@ -196,6 +198,11 @@ public class TracciatiHandler extends BaseTracciatiHandler implements IDarsHandl
 				
 			SelectList<String> stato  = new SelectList<String>(statoId, statoLabel, null, false, false, true, stati );
 			this.infoRicercaMap.put(statoId, stato);
+			
+			// nomeFile
+			String nomeFileLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.label");
+			InputText nomeFile = new InputText(nomeFileId, nomeFileLabel, null, false, false, true, 0, 255);
+			infoRicercaMap.put(nomeFileId, nomeFile);
 
 		}
 	}
@@ -442,6 +449,10 @@ public class TracciatiHandler extends BaseTracciatiHandler implements IDarsHandl
 			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+statoS),
 							statoS));
+			
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+statoS)));
 		}
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numOperazioniOk.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numOperazioniOk.label"),entry.getNumOperazioniOk()+""));
