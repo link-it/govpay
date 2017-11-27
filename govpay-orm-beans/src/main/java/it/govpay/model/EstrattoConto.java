@@ -3,6 +3,7 @@ package it.govpay.model;
 import java.util.Date;
 import java.util.List;
 
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
@@ -30,9 +31,12 @@ public class EstrattoConto {
 	private Long idVersamento;
 	private Long idRr;
 	private Long idIncasso;
+	private Stato statoPagamento;
+	private String statoPagamentoDetail;
 	
 	private String debitoreIdentificativo;
 	private String tipo;
+	private Date dataIncasso;
 	
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -165,6 +169,24 @@ public class EstrattoConto {
 	}
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+	public Stato getStatoPagamento() {
+		return statoPagamento;
+	}
+	public void setStatoPagamento(Stato statoPagamento) {
+		this.statoPagamento = statoPagamento;
+	}
+	public String getStatoPagamentoDetail() {
+		return statoPagamentoDetail;
+	}
+	public void setStatoPagamentoDetail(String statoPagamentoDetail) {
+		this.statoPagamentoDetail = statoPagamentoDetail;
+	}
+	public Date getDataIncasso() {
+		return dataIncasso;
+	}
+	public void setDataIncasso(Date dataIncasso) {
+		this.dataIncasso = dataIncasso;
 	}
 	
 }

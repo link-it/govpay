@@ -108,6 +108,7 @@ import it.govpay.web.utils.Utils;
 public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
 
 	public static final String BOLLO = "BOLLO";
+	public static final String BOLLO_PAGATO = "BOLLO_PAGATO";
 	public static final String STATO_RITARDO_INCASSO = "RITARDO_INCASSO";
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
@@ -855,6 +856,39 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		}
 		return valori; 
 	}
+	
+	
+	public String calcolaStatoPagamentoCsv(EstrattoConto entry, BasicBD bd) throws ConsoleException {
+		Date dataPagamento = entry.getDataPagamento();
+		String ibanAccredito = entry.getIbanAccredito();
+		boolean bollo = ibanAccredito == null;
+		String statoPagamento = Stato.INCASSATO.name();
+		Stato stato = entry.getStatoPagamento();
+
+		if(!bollo) {
+			if(!stato.equals(Stato.INCASSATO)) {
+				boolean inRitardo = false;
+				Integer sogliaGiorniRitardoPagamenti = ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti();
+				if(sogliaGiorniRitardoPagamenti != null && sogliaGiorniRitardoPagamenti.intValue() > 0) {
+					Calendar c = Calendar.getInstance();
+					c.setTime(new Date());
+					c.add(Calendar.DAY_OF_YEAR, - sogliaGiorniRitardoPagamenti.intValue()); 
+					inRitardo = dataPagamento.getTime() < c.getTime().getTime();
+				}
+
+				if(inRitardo) {
+					statoPagamento = PagamentiHandler.STATO_RITARDO_INCASSO;
+				} else {
+					statoPagamento = stato.name();
+				}
+			}
+		} else {
+			// bollo
+			statoPagamento = PagamentiHandler.BOLLO_PAGATO;
+		}
+		
+		return statoPagamento;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -1029,6 +1063,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 						printer = new Printer(this.getFormat() , baos);
 						printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
 						for (EstrattoConto pagamento : findAll) {
+							String statoPagamentoDetail = this.calcolaStatoPagamentoCsv(pagamento, estrattiContoBD);
+							pagamento.setStatoPagamentoDetail(statoPagamentoDetail);
 							printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(pagamento,this.sdf));
 						}
 					}finally {
@@ -1256,6 +1292,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 							printer = new Printer(this.getFormat() , baos);
 							printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
 							for (EstrattoConto eConto : findAll) {
+								String statoPagamentoDetail = this.calcolaStatoPagamentoCsv(eConto, estrattiContoBD);
+								eConto.setStatoPagamentoDetail(statoPagamentoDetail);
 								printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(eConto,this.sdf));
 							}
 						}finally {

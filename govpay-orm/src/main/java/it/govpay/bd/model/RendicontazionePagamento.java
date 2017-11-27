@@ -10,6 +10,7 @@ public class RendicontazionePagamento {
 	private transient Versamento versamento;
 	private transient SingoloVersamento singoloVersamento;
 	private transient String tipo;
+	private transient Incasso incasso;
 	
 	public Fr getFr() {
 		return fr;
@@ -46,5 +47,11 @@ public class RendicontazionePagamento {
 	}
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+	public Incasso getIncasso() {
+		return incasso;
+	}
+	public void setIncasso(Incasso incasso) {
+		this.incasso = incasso;
 	}
 }
