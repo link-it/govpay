@@ -38,11 +38,9 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
-import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.core.business.model.LeggiIncassoDTO;
@@ -63,8 +61,6 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.model.Versamento.StatoVersamento;
 
 
 public class Incassi extends BasicBD {
