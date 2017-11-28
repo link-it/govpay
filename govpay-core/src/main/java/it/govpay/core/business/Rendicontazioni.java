@@ -55,7 +55,6 @@ import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -473,7 +472,7 @@ public class Rendicontazioni extends BasicBD {
 									
 									//Devo anche settare il versamento come pagato
 									versamentiBD.updateStatoSingoloVersamento(r.getPagamento(this).getIdSingoloVersamento(), StatoSingoloVersamento.ESEGUITO);
-									versamentiBD.updateStatoVersamento(r.getPagamento(this).getSingoloVersamento(this).getIdVersamento(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
+									versamentiBD.updateStatoVersamento(r.getPagamento(this).getSingoloVersamento(this).getIdVersamento(), StatoVersamento.ESEGUITO_SENZA_RPT, "Eseguito senza RPT");
 								}
 								rendicontazioniBD.insert(r);
 							}
