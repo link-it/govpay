@@ -274,19 +274,7 @@ public class Incassi extends BasicBD {
 				incassiBD.insertIncasso(incasso);
 				
 				PagamentiBD pagamentiBD = new PagamentiBD(this);
-				VersamentiBD versamentiBD = new VersamentiBD(this);
 				for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
-					// Se il pagamento era Pagato senza RPT, aggiorno lo stato del versamento in incassato
-					if(pagamento.getStato().equals(Stato.PAGATO_SENZA_RPT)) {
-						SingoloVersamento sv = pagamento.getSingoloVersamento(this);
-						if(sv.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO)) {
-							versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.ESEGUITO);
-						}
-						it.govpay.bd.model.Versamento v = sv.getVersamento(this);
-						if(v.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
-							versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.ESEGUITO, null);
-						}
-					}
 					pagamento.setStato(Stato.INCASSATO);
 					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
