@@ -74,7 +74,11 @@ window.onload = function() {
   
   // Build a system
   const ui = SwaggerUIBundle({
-    url: "http://localhost:8080/govpay/govpay_oas3.yaml",
+    urls: [
+	{ url:"http://localhost:8080/govpay/portale.yaml", name: "API Portale Pagamenti" },
+        { url:"http://localhost:8080/govpay/backoffice.yaml", name: "API Portale Backoffice" },
+	{ url:"http://localhost:8080/govpay/verticali.yaml", name: "API Gestionali" }
+    ],
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [
