@@ -318,34 +318,49 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			// idDominio
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-
-			DominiBD dominiBD = new DominiBD(bd);
-			DominioFilter filter;
-			try {
-				filter = dominiBD.newFilter();
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-				fsw.setSortOrder(SortOrder.ASC);
-				filter.getFilterSortList().add(fsw);
-				List<Dominio> findAll = dominiBD.findAll(filter );
-
-				domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-
-				Domini dominiDars = new Domini();
-				DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-
-				if(findAll != null && findAll.size() > 0){
-					for (Dominio dominio : findAll) {
-						domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+			try{
+				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+				boolean eseguiRicerca = !setDomini.isEmpty();
+				List<Long> idDomini = new ArrayList<Long>();
+	
+				DominiBD dominiBD = new DominiBD(bd);
+				DominioFilter filter;
+				try {
+					filter = dominiBD.newFilter();
+					
+					if(eseguiRicerca) {
+						if(!setDomini.contains(-1L)) {
+							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}
+						
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+						fsw.setSortOrder(SortOrder.ASC);
+						filter.getFilterSortList().add(fsw);
+						List<Dominio> findAll = dominiBD.findAll(filter );
+		
+						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+		
+						Domini dominiDars = new Domini();
+						DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+		
+						if(findAll != null && findAll.size() > 0){
+							for (Dominio dominio : findAll) {
+								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+							}
+						}
 					}
+				} catch (ServiceException e) {
+					throw new ConsoleException(e);
 				}
-			} catch (ServiceException e) {
+				SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
+				idDominio.setDefaultValue(-1L);
+				idDominio.setValues(domini); 
+				sezioneRoot.addField(idDominio);
+			}catch(Exception e){
 				throw new ConsoleException(e);
 			}
-			SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-			idDominio.setDefaultValue(-1L);
-			idDominio.setValues(domini); 
-			sezioneRoot.addField(idDominio);
 
 			// codFlusso
 			InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);

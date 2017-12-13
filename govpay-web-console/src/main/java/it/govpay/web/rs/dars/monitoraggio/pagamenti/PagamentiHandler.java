@@ -1384,6 +1384,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 				List<Long> idDomini = new ArrayList<Long>();
+				boolean eseguiRicerca = !setDomini.isEmpty();
 
 				// idDominio
 				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -1392,11 +1393,12 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				DominioFilter filter;
 				try {
 					filter = dominiBD.newFilter();
-					boolean eseguiRicerca = !setDomini.isEmpty();
 
 					if(eseguiRicerca) {
-						if(!setDomini.contains(-1L))
+						if(!setDomini.contains(-1L)) {
 							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}
 
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();
