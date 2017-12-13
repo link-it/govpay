@@ -38,6 +38,7 @@ import java.io.Serializable;
  * 			&lt;element name="idPagamento" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -54,7 +55,8 @@ import java.io.Serializable;
   propOrder = {
   	"idPagamento",
   	"idVersamento",
-  	"indiceDati"
+  	"indiceDati",
+  	"iuv"
   }
 )
 
@@ -102,6 +104,14 @@ public class IdPagamento extends org.openspcoop2.utils.beans.BaseBean implements
     this.indiceDati = indiceDati;
   }
 
+  public java.lang.String getIuv() {
+    return this.iuv;
+  }
+
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -119,5 +129,9 @@ public class IdPagamento extends org.openspcoop2.utils.beans.BaseBean implements
   @javax.xml.bind.annotation.XmlSchemaType(name="int")
   @XmlElement(name="indiceDati",required=true,nillable=false)
   protected int indiceDati;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuv",required=false,nillable=false)
+  protected java.lang.String iuv;
 
 }

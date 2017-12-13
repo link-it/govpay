@@ -214,6 +214,13 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "indice_dati";
 			}
 		}
+		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -288,6 +295,9 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.INDICE_DATI)){
+			return this.toTable(Rendicontazione.model().ID_PAGAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.IUV)){
 			return this.toTable(Rendicontazione.model().ID_PAGAMENTO, returnAlias);
 		}
 
