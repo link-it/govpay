@@ -96,6 +96,7 @@ import it.govpay.web.rs.dars.model.input.base.InputDate;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.pagamenti.input.EsportaRtPdf;
+import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Rendicontazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Revoche;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.RevocheHandler;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Transazioni;
@@ -662,6 +663,16 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.visualizza"),elemento.getUri());
 					}
 				}
+				
+				
+				Rendicontazioni rendicontazioniDars = new Rendicontazioni();
+				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazioni.titolo");
+				String idPagamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(rendicontazioniDars.getNomeServizio() + ".idPagamento.id");
+
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(idPagamentoId, pagamento.getId()+ "");
+				URI rendicontazioneDettaglio = Utils.creaUriConParametri(rendicontazioniDars.getPathServizio(), params );
+				dettaglio.addElementoCorrelato(etichettaPagamenti, rendicontazioneDettaglio); 
 
 			}
 			this.log.info("Esecuzione " + methodName + " completata.");

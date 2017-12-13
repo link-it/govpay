@@ -189,6 +189,12 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			if(StringUtils.isNotEmpty(trn))
 				filter.setTnr(trn);
+			
+			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+
+			if(StringUtils.isNotEmpty(iuv))
+				filter.setIuv(iuv);
 
 
 			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
@@ -263,6 +269,12 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			if(StringUtils.isNotEmpty(trn))
 				filter.setTnr(trn);
+			
+			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = Utils.getValue(rawValues, iuvId);
+
+			if(StringUtils.isNotEmpty(iuv))
+				filter.setIuv(iuv);
 
 
 			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
@@ -300,7 +312,8 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
 			String nascondiAltriIntermediariId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
 			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
-
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 			}
@@ -367,11 +380,15 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			codFlusso.setDefaultValue(null);
 			sezioneRoot.addField(codFlusso);
 
-
 			// trn
 			InputText trn = (InputText) infoRicercaMap.get(trnId);
 			trn.setDefaultValue(null);
 			sezioneRoot.addField(trn);
+			
+			// iuv
+			InputText iuv = (InputText) infoRicercaMap.get(iuvId);
+			iuv.setDefaultValue(null);
+			sezioneRoot.addField(iuv);
 
 			// nascondi altri intermediari
 			CheckButton nascondiAltriIntermediari = (CheckButton) infoRicercaMap.get(nascondiAltriIntermediariId);
@@ -391,6 +408,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
 			String nascondiAltriIntermediariId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
 			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 
 			// codFlusso
 			String codFlussoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label");
@@ -401,6 +419,11 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			String trnLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.label");
 			InputText trn = new InputText(trnId, trnLabel, null, false, false, true, 0, 35);
 			infoRicercaMap.put(trnId, trn);
+			
+			// iuv
+			String iuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
+			InputText iuv = new InputText(iuvId, iuvLabel, null, false, false, true, 0, 35);
+			infoRicercaMap.put(iuvId, iuv);
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			// idDominio
