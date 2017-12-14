@@ -187,17 +187,18 @@ public class Gp21Utils {
 		for(RendicontazionePagamento rend : rends) {
 			fr.setImportoTotale(rend.getPagamento().getImportoPagato().add(fr.getImportoTotale()));
 			fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
-			fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rend, versione, bd));
+			it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = Gp21Utils.toRendicontazionePagamento(rend, versione, bd);
+			if(rendicontazionePagamento!= null) fr.getPagamento().add(rendicontazionePagamento);
 		}
 		
 		return fr;
 	}
 
 	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(RendicontazionePagamento rend, Versione versione, BasicBD bd) throws ServiceException {
-		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
-		if(rend.getSingoloVersamento() != null)
-			p.setCodSingoloVersamentoEnte(rend.getSingoloVersamento().getCodSingoloVersamentoEnte());
+		if(rend.getSingoloVersamento() != null) return null;
 		
+		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
+		p.setCodSingoloVersamentoEnte(rend.getSingoloVersamento().getCodSingoloVersamentoEnte());
 		p.setImportoRendicontato(rend.getRendicontazione().getImporto().abs());
 		p.setIur(rend.getRendicontazione().getIur());
 		p.setEsitoRendicontazione(TipoRendicontazione.valueOf(rend.getRendicontazione().getEsito().toString()));
