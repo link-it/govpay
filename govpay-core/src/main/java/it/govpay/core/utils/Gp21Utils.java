@@ -185,17 +185,19 @@ public class Gp21Utils {
 		fr.setIur(frModel.getIur());
 		
 		for(RendicontazionePagamento rend : rends) {
-			fr.setImportoTotale(rend.getPagamento().getImportoPagato().add(fr.getImportoTotale()));
-			fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
 			it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = Gp21Utils.toRendicontazionePagamento(rend, versione, bd);
-			if(rendicontazionePagamento!= null) fr.getPagamento().add(rendicontazionePagamento);
+			if(rendicontazionePagamento != null) {
+				fr.setImportoTotale(rend.getPagamento().getImportoPagato().add(fr.getImportoTotale()));
+				fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
+				fr.getPagamento().add(rendicontazionePagamento);
+			}
 		}
 		
 		return fr;
 	}
 
 	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(RendicontazionePagamento rend, Versione versione, BasicBD bd) throws ServiceException {
-		if(rend.getSingoloVersamento() != null) return null;
+		if(rend.getVersamento() == null) return null;
 		
 		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
 		p.setCodSingoloVersamentoEnte(rend.getSingoloVersamento().getCodSingoloVersamentoEnte());
@@ -204,8 +206,7 @@ public class Gp21Utils {
 		p.setEsitoRendicontazione(TipoRendicontazione.valueOf(rend.getRendicontazione().getEsito().toString()));
 		p.setDataRendicontazione(rend.getRendicontazione().getData());
 		if(versione.compareTo(Versione.GP_02_02_00) >= 0) {
-			if(rend.getVersamento() != null)
-				p.setCodApplicazione(rend.getVersamento().getApplicazione(bd).getCodApplicazione());
+			p.setCodApplicazione(rend.getVersamento().getApplicazione(bd).getCodApplicazione());
 			p.setIuv(rend.getRendicontazione().getIuv());
 			p.setCodDominio(rend.getFr().getCodDominio());
 		}
