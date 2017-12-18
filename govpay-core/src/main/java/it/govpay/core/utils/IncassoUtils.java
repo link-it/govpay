@@ -1,44 +1,34 @@
 package it.govpay.core.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class IncassoUtils {
 
+	private static Pattern patternSingoloRFS = Pattern.compile("^.*[ \\/]RFS[ \\/]([^ \\/]+)[ \\/]?.*$");
+	private static Pattern patternSingoloRFB = Pattern.compile("^.*[ \\/]RFB[ \\/]([^ \\/]+)[ \\/]?.*$");
+	private static Pattern patternCumulativo = Pattern.compile("^.*[ \\/]PUR[ \\/]LGPE-RIVERSAMENTO[ \\/]([^ \\/]+)[ \\/]?.*$");
+
+
 	public static String getRiferimentoIncassoSingolo(String causale) {
-		if(causale.startsWith("/RFS") || causale.startsWith("/RFB")) {
-			int indexSlash = causale.indexOf("/", 6);
-			int indexBlank = causale.indexOf(" ", 6);
-			
-			if(indexSlash == -1 && indexBlank == -1)
-				return causale.substring(5);
-			
-			if(indexSlash == -1)
-				return causale.substring(5, indexBlank);
-			
-			if(indexBlank == -1)
-				return causale.substring(5, indexSlash);
-			
-			return causale.substring(5, indexSlash < indexBlank ? indexSlash : indexBlank);
+		Matcher matcher = patternSingoloRFS.matcher(causale);
+		if (matcher.find())
+			return matcher.group(1);
+		else {
+			matcher = patternSingoloRFB.matcher(causale);
+			if (matcher.find())
+				return matcher.group(1);
+			else
+				return null;
 		}
-		
-		return null;
 	}
-	
+
 	public static String getRiferimentoIncassoCumulativo(String causale) {
-		if(causale.startsWith("/PUR")) {
-			int indexSlash = causale.indexOf("/", 28);
-			int indexBlank = causale.indexOf(" ", 28);
-			
-			if(indexSlash == -1 && indexBlank == -1)
-				return causale.substring(27);
-			
-			if(indexSlash == -1)
-				return causale.substring(27, indexBlank);
-			
-			if(indexBlank == -1)
-				return causale.substring(27, indexSlash);
-			
-			return causale.substring(27, indexSlash < indexBlank ? indexSlash : indexBlank);
-		}
-		return null;
+		Matcher matcher = patternCumulativo.matcher(causale);
+		if (matcher.find())
+			return matcher.group(1);
+		else
+			return null;
 	}
 
 	public static String getRiferimentoIncasso(String causale) {
@@ -46,5 +36,5 @@ public class IncassoUtils {
 		if(idf!=null) return idf;
 		else return getRiferimentoIncassoSingolo(causale);
 	}
-	
+
 }
