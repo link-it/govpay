@@ -73,6 +73,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -139,13 +140,14 @@ public class Rendicontazioni extends BasicBD {
 					flussiDaAcquisire.addAll(chiediListaFr(client, null, stazione, null));
 				}
 
-				// Scarto i flussi gia acquisiti
 				setupConnection(GpThreadLocal.get().getTransactionId());
-				
+				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
 				FrBD frBD = new FrBD(this);
+				Set<String> idfs = new HashSet<String>();
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
-					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()))
+					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()) || idfs.contains(idRendicontazione.getIdentificativoFlusso()))
 						flussiDaAcquisire.remove(idRendicontazione);
+					idfs.add(idRendicontazione.getIdentificativoFlusso());
 				}
 				closeConnection();
 

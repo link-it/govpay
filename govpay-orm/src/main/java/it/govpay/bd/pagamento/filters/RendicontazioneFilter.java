@@ -27,6 +27,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	private Long idFr;
 	private Long idPagamento;
 	private String tipo;
+	private Integer indiceDati;
 	
 	// Esterni alla tabella
 	private String codDominio; // fr 
@@ -86,6 +87,10 @@ public class RendicontazioneFilter extends AbstractFilter{
 
 			if(this.iur != null) {
 				exp.equals(Rendicontazione.model().IUR, this.iur);
+			}
+			
+			if(this.indiceDati != null) {
+				exp.equals(Rendicontazione.model().INDICE_DATI, this.indiceDati);
 			}
 			
 			if(this.tipo!= null) {
@@ -229,6 +234,14 @@ public class RendicontazioneFilter extends AbstractFilter{
 
 	public void setIdRendicontazione(List<Long> idRendicontazione) {
 		this.idRendicontazione = idRendicontazione;
+	}
+
+	public Integer getIndiceDati() {
+		return indiceDati;
+	}
+
+	public void setIndiceDati(Integer indiceDati) {
+		this.indiceDati = indiceDati;
 	}
 	
 }
