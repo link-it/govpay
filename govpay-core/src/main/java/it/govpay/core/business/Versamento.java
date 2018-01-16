@@ -199,7 +199,7 @@ public class Versamento extends BasicBD {
 					return;
 				}
 				
-				// Se è in stato NON_ESEGUITO lo annullo
+				// Se è in stato NON_ESEGUITO lo eseguo senza RPT //TODO aggiungere uno stato opportuno
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) || versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 					versamentoLetto.setStatoVersamento(StatoVersamento.ESEGUITO_SENZA_RPT);
 					versamentiBD.updateVersamento(versamentoLetto);

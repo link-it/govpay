@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -50,6 +51,7 @@ public class FrFilter extends AbstractFilter {
 	private String codFlusso; // stringa da cercare in like tra i fr.cod_flusso
 	private String tnr;
 	private boolean nascondiSeSoloDiAltriIntermediari;
+	private String iuv;
 	
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
@@ -60,6 +62,7 @@ public class FrFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(FR.model().COD_FLUSSO);
 		this.listaFieldSimpleSearch.add(FR.model().IUR);
+		this.listaFieldSimpleSearch.add(FR.model().ID_PAGAMENTO.IUV);
 	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
@@ -67,6 +70,10 @@ public class FrFilter extends AbstractFilter {
 
 		if(this.idApplicazione != null){
 			obj.add(this.idApplicazione);
+		}
+		
+		if(this.iuv != null){
+			obj.add("%" + this.iuv.toLowerCase() + "%");
 		}
 
 		if(this.codDominio != null && !this.codDominio.isEmpty()){
@@ -136,6 +143,16 @@ public class FrFilter extends AbstractFilter {
 				}
 				placeholderWhereIn += "v.id_applicazione = ?";
 				placeholderJoin = " join pagamenti p on p.id=r.id_pagamento join singoli_versamenti sv on p.id_singolo_versamento=sv.id join versamenti v on sv.id_versamento=v.id ";
+			}
+			
+			if(this.iuv != null){
+				if(placeholderWhereIn.length() > 0) {
+					placeholderWhereIn += " AND ";
+				} else {
+					placeholderWhereIn += " WHERE ";
+				}
+				placeholderWhereIn += ilike("r.iuv") + " like ?";
+				// join non necessaria, tabella r gia' inserita nella query principale
 			}
 
 			if(this.codDominio != null && !this.codDominio.isEmpty()){
@@ -243,8 +260,14 @@ public class FrFilter extends AbstractFilter {
 					if(i > 0)
 						placeholderWhereIn += " OR ";
 					
-					String field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
-
+					IField iField = this.listaFieldSimpleSearch.get(i);
+					String field = null;
+					if(iField.getFieldName().equals(FR.model().ID_PAGAMENTO.IUV.getFieldName())) {
+						field = "r.iuv";
+					} else {
+						field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
+					}
+					
 					String iLikefield = ilike(field);		
 					
 					placeholderWhereIn += iLikefield +" like ?";
@@ -435,4 +458,13 @@ public class FrFilter extends AbstractFilter {
 			boolean nascondiSeSoloDiAltriIntermediari) {
 		this.nascondiSeSoloDiAltriIntermediari = nascondiSeSoloDiAltriIntermediari;
 	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+	
 }

@@ -371,7 +371,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 					if(StringUtils.isNotEmpty(opCaricamento.getAnagraficaDebitore()))
 						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anagraficaDebitore.label"), opCaricamento.getAnagraficaDebitore());
 					if(opCaricamento.getImporto() != null) {
-						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), opCaricamento.getImporto().toString()+ "€");
+						sezioneDatiRichiesta.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), this.currencyUtils.getCurrencyAsEuro(opCaricamento.getImporto()));
 					}
 
 					if(StringUtils.isNotEmpty(opCaricamento.getCausale()))

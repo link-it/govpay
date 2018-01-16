@@ -290,7 +290,7 @@ public class TemplateEstrattoContoPagamenti {
 
 			if(pagamento.getImportoPagato() != null){
 				tot = tot.doubleValue() + pagamento.getImportoPagato().doubleValue();
-				oneLine.add(pagamento.getImportoPagato()+"");
+				oneLine.add(String.format("%.2f",pagamento.getImportoPagato()));
 			}else 
 				oneLine.add("");
 

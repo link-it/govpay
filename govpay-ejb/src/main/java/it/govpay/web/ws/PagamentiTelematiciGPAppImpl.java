@@ -463,7 +463,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			List<RendicontazionePagamento> rendicontazionePagamenti = rendicontazionePagamentoBD.findAll(filter);
 			for(RendicontazionePagamento pagamento : rendicontazionePagamenti) {
-				flusso.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd));
+				it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd);
+				if(rendicontazionePagamento!=null) flusso.getPagamento().add(rendicontazionePagamento);
 			}
 			
 			response.setFlussoRendicontazione(flusso);

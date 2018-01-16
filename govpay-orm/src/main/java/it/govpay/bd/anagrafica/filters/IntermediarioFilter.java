@@ -58,6 +58,7 @@ public class IntermediarioFilter extends AbstractFilter {
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(Intermediario.model()));
 			this.listaFieldSimpleSearch.add(Intermediario.model().COD_INTERMEDIARIO);
 			this.listaFieldSimpleSearch.add(Intermediario.model().DENOMINAZIONE);
+			this.fieldAbilitato = it.govpay.orm.Intermediario.model().ABILITATO;
 		} catch(Exception e){
 			
 		}
@@ -96,6 +97,8 @@ public class IntermediarioFilter extends AbstractFilter {
 				
 				exp.ilike(Intermediario.model().DENOMINAZIONE, this.denominazione,LikeMode.ANYWHERE);
 			}
+			
+			addAnd = this.setFiltroAbilitato(exp, addAnd);
 
 			return exp;
 		} catch (NotImplementedException e) {

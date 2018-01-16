@@ -42,6 +42,7 @@ import org.openspcoop2.utils.csv.FormatReader;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.CSVSerializerProperties;
+import it.govpay.core.utils.CurrencyUtils;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -52,6 +53,7 @@ import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
@@ -68,6 +70,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	protected Integer limit = null;
 	protected Format formatW= null;
 	protected Servizio funzionalita;
+	protected CurrencyUtils currencyUtils = null;
 	
 	protected Map<String, ParamField<?>> infoRicercaMap = null;
 	protected Map<String, ParamField<?>> infoCancellazioneMap = null;
@@ -82,6 +85,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 		this.funzionalita = this.darsService.getFunzionalita();
 		this.titoloServizio = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".titolo");
 		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
+		this.currencyUtils = CurrencyUtils.newInstance(this.log, this.getLanguage());
 
 		try{
 			// Setto le properties di scrittura
@@ -91,7 +95,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 			log.error("Errore durante l'inizializzazione di EstrattoConto: " + e.getMessage(),e);
 		}
 	}
- 
+
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd ) throws ConsoleException{
 		return this.getInfoRicerca(uriInfo, bd, true);
@@ -125,12 +129,12 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		return Utils.creaUriConParametri(this.pathServizio,parameters);
 	}
-	
+
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException {
 		return this.getInfoEsportazione(uriInfo, bd, null);
 	}
-	
+
 	@Override
 	public abstract InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters)
 			throws ConsoleException ;
@@ -139,7 +143,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
 		return this.getUriEsportazione(uriInfo, bd, null);
 	}
-	
+
 	@Override
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		try{
@@ -149,10 +153,10 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public abstract InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo,BasicBD bd, T entry) throws ConsoleException;
-	
+
 	@Override
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
 		try{
@@ -166,7 +170,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	@Override
 	public abstract Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
 			throws WebApplicationException, ConsoleException;
-	
+
 	@Override
 	public URI getUriSearchField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
@@ -176,11 +180,11 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public abstract Object getExportField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
 			throws WebApplicationException, ConsoleException;
-	
+
 	@Override
 	public URI getUriExportField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
@@ -236,7 +240,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 
 		return toReturn;
 	}
-	
+
 	public boolean containsParameter(UriInfo uriInfo, String parameterName) throws ConsoleException{
 		boolean toReturn = false;
 		try{
@@ -273,7 +277,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 
 		String firmaRichiestaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label");
 		List<Voce<String>> valoriVersione = new ArrayList<Voce<String>>(); 
-		
+
 		Versione[] values = Versione.values();
 		for (Versione versione : values) {
 			valoriVersione.add(new Voce<String>(versione.getLabel(), versione.getLabel()));
@@ -299,7 +303,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	public Date convertJsonStringToDate(String dateJson) throws Exception{
 		return BaseDarsService.convertJsonStringToDate(dateJson);
 	}
-	
+
 	public Date convertJsonStringToDataInizio(String dateJson) throws Exception{
 		Date d = BaseDarsService.convertJsonStringToDate(dateJson);
 		Calendar c = Calendar.getInstance();
@@ -309,14 +313,14 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
-		
+
 		return c.getTime();
 	}
-	
+
 	public Date convertJsonStringToDataFine(String dateJson) throws Exception{
 		Date d = BaseDarsService.convertJsonStringToDate(dateJson);
 		Calendar c = Calendar.getInstance();
-		
+
 		c.setTime(d);
 		// imposto le ore 00:00:000
 		c.set(Calendar.HOUR_OF_DAY, 0);
@@ -326,7 +330,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 		// imposto le 23:59:59:999
 		c.add(Calendar.DAY_OF_YEAR, 1);
 		c.add(Calendar.MILLISECOND, -1); 
-		
+
 		return c.getTime();
 	}
 
@@ -338,12 +342,36 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	public Locale getLanguage(){
 		return this.darsService.getLanguage();
 	}
-	
+
 	public List<String > toListCodDomini(List<Long> lstCodDomini, BasicBD bd) throws ServiceException, NotFoundException {
 		List<String > lst = new ArrayList<String >();
 		for(Long codDominio: lstCodDomini) {
 			lst.add(AnagraficaManager.getDominio(bd, codDominio).getCodDominio());
 		}
 		return lst;
+	}
+
+	protected CheckButton creaCheckButtonSearchMostraDisabilitato(String abilitatoId) {
+		String abilitatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.mostraDisabilitati");
+		CheckButton abilitato = new CheckButton(abilitatoId, abilitatoLabel, false, false, false, true);
+		return abilitato;
+	}
+
+	protected Boolean getMostraDisabilitato(String abilitatoString) {
+		boolean mostraDisabilitato = false;
+
+		if(abilitatoString != null) {
+			if(abilitatoString.isEmpty()) {
+				mostraDisabilitato = false;
+			} else 
+				if(abilitatoString.equals("on")) {
+					return null;
+				} else {
+					mostraDisabilitato = Boolean.parseBoolean(abilitatoString);
+					if(mostraDisabilitato) return null;
+				}
+		}
+
+		return !mostraDisabilitato;
 	}
 }

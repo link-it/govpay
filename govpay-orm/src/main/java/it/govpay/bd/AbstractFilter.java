@@ -59,6 +59,9 @@ public abstract class AbstractFilter implements IFilter {
 	protected boolean simpleSearch = false;
 	protected String simpleSearchString = null;
 	protected List<IField> listaFieldSimpleSearch = null;
+	
+	protected IField fieldAbilitato = null;
+	protected Boolean searchAbilitato = null;
 
 	public Integer getOffset() {
 		return offset;
@@ -149,6 +152,8 @@ public abstract class AbstractFilter implements IFilter {
 				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
 			
+			this.setFiltroAbilitato(newExpression, true);
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -189,6 +194,26 @@ public abstract class AbstractFilter implements IFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	protected boolean setFiltroAbilitato(IExpression newExpression, boolean addAnd) throws ExpressionNotImplementedException, ExpressionException {
+		if(this.searchAbilitato != null && this.fieldAbilitato != null) {
+			if(addAnd)
+				newExpression.and();
+			
+			newExpression.equals(this.fieldAbilitato, this.searchAbilitato);
+			addAnd = true;
+		}
+		
+		return addAnd;
+	}
+
+	public Boolean getSearchAbilitato() {
+		return searchAbilitato;
+	}
+
+	public void setSearchAbilitato(Boolean searchAbilitato) {
+		this.searchAbilitato = searchAbilitato;
 	}
 
 	public boolean isSimpleSearch() {

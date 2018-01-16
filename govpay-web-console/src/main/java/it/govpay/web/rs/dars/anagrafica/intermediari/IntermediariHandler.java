@@ -98,6 +98,11 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 			fsw.setField(it.govpay.orm.Intermediario.model().DENOMINAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String abilitato = this.getParameter(uriInfo, abilitatoId, String.class);
+			
+			filter.setSearchAbilitato(this.getMostraDisabilitato(abilitato)); 
 
 			if(simpleSearch){
 				// simplesearch
@@ -158,7 +163,8 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 		if(visualizzaRicerca){
 			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 			String denominazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
-
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 
@@ -175,6 +181,10 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 			denominazione.setDefaultValue(null);
 			denominazione.setEditable(true); 
 			sezioneRoot.addField(denominazione);
+			
+			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
+			abilitato.setDefaultValue(false);
+			sezioneRoot.addField(abilitato);
 		}
 		return infoRicerca;
 	}
@@ -268,6 +278,10 @@ public class IntermediariHandler extends DarsHandler<Intermediario> implements I
 			String denominazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".denominazione.label");
 			InputText denominazione = new InputText(denominazioneId, denominazioneLabel, null, false, false, true, 11, 11);
 			this.infoRicercaMap.put(denominazioneId, denominazione);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			CheckButton abilitato = this.creaCheckButtonSearchMostraDisabilitato(abilitatoId);
+			this.infoRicercaMap.put(abilitatoId, abilitato);
 		}
 	}
 

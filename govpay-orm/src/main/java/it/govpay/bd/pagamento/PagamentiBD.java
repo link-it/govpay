@@ -78,8 +78,8 @@ public class PagamentiBD extends BasicBD {
 		try {
 			IPaginatedExpression exp = this.getPagamentoService().newPaginatedExpression();
 			
-			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO, codDominio);
-			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.IUV, iuv);
+			exp.equals(it.govpay.orm.Pagamento.model().COD_DOMINIO, codDominio);
+			exp.equals(it.govpay.orm.Pagamento.model().IUV, iuv);
 			if(iur != null) 
 				exp.equals(it.govpay.orm.Pagamento.model().IUR, iur);
 			if(indiceDati != null) 

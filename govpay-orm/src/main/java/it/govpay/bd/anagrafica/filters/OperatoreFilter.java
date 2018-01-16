@@ -48,6 +48,7 @@ public class OperatoreFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Operatore.model().PRINCIPAL);
 		this.listaFieldSimpleSearch.add(Operatore.model().NOME);
+		this.fieldAbilitato = it.govpay.orm.Operatore.model().ABILITATO;
 	}
 
 	@Override
@@ -65,6 +66,8 @@ public class OperatoreFilter extends AbstractFilter {
 				newExpression.ilike(Operatore.model().PROFILO, this.ruolo,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
+			
+			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

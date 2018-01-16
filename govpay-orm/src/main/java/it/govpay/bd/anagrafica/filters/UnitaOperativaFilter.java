@@ -59,6 +59,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.dbType = dbType;
 		this.listaFieldSimpleSearch.add(Uo.model().COD_UO);
+		this.fieldAbilitato = it.govpay.orm.Uo.model().ABILITATO;
 	}
 
 	@Override
@@ -108,6 +109,8 @@ public class UnitaOperativaFilter extends AbstractFilter {
 				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
 				newExpression.in(new CustomField("id", Long.class, "id", fieldConverter.toTable(it.govpay.orm.Uo.model())), listaIdUo);				
 			}
+			
+			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

@@ -228,6 +228,20 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "stato_versamento";
 			}
 		}
+		if(field.equals(FR.model().ID_PAGAMENTO.INDICE_DATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".indice_dati";
+			}else{
+				return "indice_dati";
+			}
+		}
+		if(field.equals(FR.model().ID_PAGAMENTO.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -309,6 +323,12 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
 			return this.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(FR.model().ID_PAGAMENTO.INDICE_DATI)){
+			return this.toTable(FR.model().ID_PAGAMENTO, returnAlias);
+		}
+		if(field.equals(FR.model().ID_PAGAMENTO.IUV)){
+			return this.toTable(FR.model().ID_PAGAMENTO, returnAlias);
 		}
 
 

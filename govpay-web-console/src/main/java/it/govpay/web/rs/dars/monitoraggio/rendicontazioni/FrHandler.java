@@ -189,6 +189,12 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			if(StringUtils.isNotEmpty(trn))
 				filter.setTnr(trn);
+			
+			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+
+			if(StringUtils.isNotEmpty(iuv))
+				filter.setIuv(iuv);
 
 
 			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
@@ -263,6 +269,12 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			if(StringUtils.isNotEmpty(trn))
 				filter.setTnr(trn);
+			
+			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = Utils.getValue(rawValues, iuvId);
+
+			if(StringUtils.isNotEmpty(iuv))
+				filter.setIuv(iuv);
 
 
 			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
@@ -300,7 +312,8 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
 			String nascondiAltriIntermediariId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
 			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
-
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 			}
@@ -318,45 +331,64 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			// idDominio
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-
-			DominiBD dominiBD = new DominiBD(bd);
-			DominioFilter filter;
-			try {
-				filter = dominiBD.newFilter();
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-				fsw.setSortOrder(SortOrder.ASC);
-				filter.getFilterSortList().add(fsw);
-				List<Dominio> findAll = dominiBD.findAll(filter );
-
-				domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-
-				Domini dominiDars = new Domini();
-				DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-
-				if(findAll != null && findAll.size() > 0){
-					for (Dominio dominio : findAll) {
-						domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+			try{
+				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+				boolean eseguiRicerca = !setDomini.isEmpty();
+				List<Long> idDomini = new ArrayList<Long>();
+	
+				DominiBD dominiBD = new DominiBD(bd);
+				DominioFilter filter;
+				try {
+					filter = dominiBD.newFilter();
+					
+					if(eseguiRicerca) {
+						if(!setDomini.contains(-1L)) {
+							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}
+						
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+						fsw.setSortOrder(SortOrder.ASC);
+						filter.getFilterSortList().add(fsw);
+						List<Dominio> findAll = dominiBD.findAll(filter );
+		
+						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+		
+						Domini dominiDars = new Domini();
+						DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+		
+						if(findAll != null && findAll.size() > 0){
+							for (Dominio dominio : findAll) {
+								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+							}
+						}
 					}
+				} catch (ServiceException e) {
+					throw new ConsoleException(e);
 				}
-			} catch (ServiceException e) {
+				SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
+				idDominio.setDefaultValue(-1L);
+				idDominio.setValues(domini); 
+				sezioneRoot.addField(idDominio);
+			}catch(Exception e){
 				throw new ConsoleException(e);
 			}
-			SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-			idDominio.setDefaultValue(-1L);
-			idDominio.setValues(domini); 
-			sezioneRoot.addField(idDominio);
 
 			// codFlusso
 			InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
 			codFlusso.setDefaultValue(null);
 			sezioneRoot.addField(codFlusso);
 
-
 			// trn
 			InputText trn = (InputText) infoRicercaMap.get(trnId);
 			trn.setDefaultValue(null);
 			sezioneRoot.addField(trn);
+			
+			// iuv
+			InputText iuv = (InputText) infoRicercaMap.get(iuvId);
+			iuv.setDefaultValue(null);
+			sezioneRoot.addField(iuv);
 
 			// nascondi altri intermediari
 			CheckButton nascondiAltriIntermediari = (CheckButton) infoRicercaMap.get(nascondiAltriIntermediariId);
@@ -376,6 +408,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
 			String nascondiAltriIntermediariId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
 			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 
 			// codFlusso
 			String codFlussoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label");
@@ -386,6 +419,11 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			String trnLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.label");
 			InputText trn = new InputText(trnId, trnLabel, null, false, false, true, 0, 35);
 			infoRicercaMap.put(trnId, trn);
+			
+			// iuv
+			String iuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
+			InputText iuv = new InputText(iuvId, iuvLabel, null, false, false, true, 0, 35);
+			infoRicercaMap.put(iuvId, iuv);
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			// idDominio
@@ -514,7 +552,8 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataRegolamento.label"), this.sdf.format(fr.getDataRegolamento()));
 				}
 
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), fr.getImportoTotalePagamenti().doubleValue()+ "€");
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"),
+						this.currencyUtils.getCurrencyAsEuro(fr.getImportoTotalePagamenti()));
 
 				StatoFr stato = fr.getStato();
 				if(stato!= null) {
@@ -570,14 +609,13 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 		StringBuilder sb = new StringBuilder();
 		StatoFr stato = entry.getStato();
 		long numeroPagamenti = entry.getNumeroPagamenti();
-		double importoTotalePagamenti = entry.getImportoTotalePagamenti().doubleValue();
 
 		switch (stato) {
 		case ACCETTATA:
 			sb.append(
 					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.accettata",
 							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ACCETTATA"),
-							numeroPagamenti,(importoTotalePagamenti + "€")));
+							numeroPagamenti,this.currencyUtils.getCurrencyAsEuro(entry.getImportoTotalePagamenti())));
 			break;
 		case ANOMALA:
 		default:
@@ -716,11 +754,11 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			} 
 
-			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
-				List<String> msg = new ArrayList<String>();
-				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
-				throw new ExportException(msg, EsitoOperazione.ERRORE);
-			}
+//			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+//				List<String> msg = new ArrayList<String>();
+//				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
+//				throw new ExportException(msg, EsitoOperazione.ERRORE);
+//			}
 
 			filter.setOffset(0);
 			filter.setLimit(limit);

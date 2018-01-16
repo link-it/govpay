@@ -10,6 +10,7 @@
     <value name="idPagamento" field="idPagamento" usage="required"/>
     <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
     <value name="indiceDati" field="indiceDati" usage="required"/>
+    <value name="iuv" field="iuv" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdPagamento_Type" class="it.govpay.orm.IdPagamento" abstract="true">
@@ -17,6 +18,7 @@
     <value name="idPagamento" field="idPagamento" usage="required"/>
     <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
     <value name="indiceDati" field="indiceDati" usage="required"/>
+    <value name="iuv" field="iuv" usage="optional"/>
   </mapping>
   <mapping name="id-rendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

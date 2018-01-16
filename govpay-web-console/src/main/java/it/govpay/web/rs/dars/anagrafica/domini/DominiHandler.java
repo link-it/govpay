@@ -140,6 +140,11 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
 			String ragioneSociale = this.getParameter(uriInfo, ragioneSocialeId, String.class);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String abilitato = this.getParameter(uriInfo, abilitatoId, String.class);
+			
+			filter.setSearchAbilitato(this.getMostraDisabilitato(abilitato)); 
 
 			if(simpleSearch){
 				// simplesearch
@@ -213,7 +218,8 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 			String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
-
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 
@@ -258,6 +264,10 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			stazione.setDefaultValue(-1L);
 			stazione.setValues(stazioni);
 			sezioneRoot.addField(stazione); 
+			
+			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
+			abilitato.setDefaultValue(false);
+			sezioneRoot.addField(abilitato);
 
 		}
 		return infoRicerca;
@@ -270,7 +280,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 			String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
-
+			
 			// codDominio
 			String codDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
 			InputText codDominio = new InputText(codDominioId, codDominioLabel, null, false, false, true, 1, 11);
@@ -286,6 +296,10 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
 			SelectList<Long> idStazione = new SelectList<Long>(idStazioneId, idStazionelabel, null, false, false, true, stazioni );
 			this.infoRicercaMap.put(idStazioneId, idStazione);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			CheckButton abilitato = this.creaCheckButtonSearchMostraDisabilitato(abilitatoId);
+			this.infoRicercaMap.put(abilitatoId, abilitato);
 
 		}
 	}

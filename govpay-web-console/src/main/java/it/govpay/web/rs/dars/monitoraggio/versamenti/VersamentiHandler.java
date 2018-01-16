@@ -356,11 +356,11 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 				DominioFilter filter;
 				try {
 					filter = dominiBD.newFilter();
-					if(eseguiRicerca &&!setDomini.contains(-1L)){
-						List<Long> lstCodDomini = new ArrayList<Long>();
-						lstCodDomini.addAll(setDomini);
-						idDomini.addAll(setDomini);
-						filter.setIdDomini(idDomini);
+					if(eseguiRicerca) {
+						if(!setDomini.contains(-1L)) {
+							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}
 
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();
@@ -543,7 +543,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 				}
 
 				if(versamento.getImportoTotale() != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), versamento.getImportoTotale().toString()+ "€");
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"),
+							this.currencyUtils.getCurrencyAsEuro(versamento.getImportoTotale()));
 				}
 
 				if(versamento.getStatoVersamento() != null) {
@@ -590,7 +591,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 							BigDecimal importoSingoloVersamento = entry.getImportoSingoloVersamento() != null ? entry.getImportoSingoloVersamento() : BigDecimal.ZERO;
 							sezioneSingoloVersamento.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(svDars.getNomeServizio() + ".importoSingoloVersamento.label"), 
-									importoSingoloVersamento.doubleValue() + "€");
+									this.currencyUtils.getCurrencyAsEuro(importoSingoloVersamento));
 
 							Tributo tributo = entry.getTributo(bd);
 							if(tributo != null){
@@ -692,8 +693,6 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			break;
 		}
 
-		//		sb.append("Versamento ").append(codVersamentoEnte).append(" di ").append(importoTotale).append("€");
-
 		return sb.toString();
 	}
 
@@ -783,7 +782,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 			if(entry.getImportoTotale() != null) {
 				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.id"),
-						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), entry.getImportoTotale().toString()+ "€"));
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), 
+								this.currencyUtils.getCurrencyAsEuro(entry.getImportoTotale())));
 			}
 
 			Anagrafica anagrafica = entry.getAnagraficaDebitore(); 

@@ -62,6 +62,7 @@ public class DominioFilter extends AbstractFilter {
 			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().ID_STAZIONE.COD_STAZIONE);
 			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().COD_DOMINIO);
 			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
+			this.fieldAbilitato = it.govpay.orm.Dominio.model().ABILITATO;
 		} catch(Exception e){
 			
 		}
@@ -124,6 +125,8 @@ public class DominioFilter extends AbstractFilter {
 				newExpression.equals(Dominio.model().ABILITATO, this.abilitato);
 				addAnd = true;
 			}
+			
+			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

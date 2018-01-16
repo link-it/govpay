@@ -124,6 +124,11 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String abilitato = this.getParameter(uriInfo, abilitatoId, String.class);
+			
+			filter.setSearchAbilitato(this.getMostraDisabilitato(abilitato)); 
 
 			if(simpleSearch){
 				// simplesearch
@@ -175,7 +180,8 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 
 		if(visualizzaRicerca){
 			String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 
@@ -185,6 +191,10 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 			InputText codApplicazione= (InputText) this.infoRicercaMap.get(codApplicazioneId);
 			codApplicazione.setDefaultValue(null);
 			sezioneRoot.addField(codApplicazione);
+			
+			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
+			abilitato.setDefaultValue(false);
+			sezioneRoot.addField(abilitato);
 		}
 
 		return infoRicerca;
@@ -198,6 +208,10 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 			String codApplicazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label");
 			InputText codApplicazione = new InputText(codApplicazioneId, codApplicazioneLabel, null, false, false, true, 1, 255);
 			this.infoRicercaMap.put(codApplicazioneId, codApplicazione);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			CheckButton abilitato = this.creaCheckButtonSearchMostraDisabilitato(abilitatoId);
+			this.infoRicercaMap.put(abilitatoId, abilitato);
 		}
 	}
 

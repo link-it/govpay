@@ -105,6 +105,15 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 			// tutte le unita' con codice uo = 'EC' sono nascoste
 			filter.setExcludeEC(true); 
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String abilitato = this.getParameter(uriInfo, abilitatoId, String.class);
+			
+			if(StringUtils.isNotEmpty(abilitato)) {
+				params.put(abilitatoId, abilitato);
+			}
+			
+			filter.setSearchAbilitato(this.getMostraDisabilitato(abilitato)); 
 
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
@@ -165,7 +174,8 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 		if(visualizzaRicerca) {
 			String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 			}
@@ -175,6 +185,10 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 			InputText codUnitaOperativa = (InputText) this.infoRicercaMap.get(codUoId);
 			codUnitaOperativa.setDefaultValue(null);
 			sezioneRoot.addField(codUnitaOperativa);
+			
+			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
+			abilitato.setDefaultValue(false);
+			sezioneRoot.addField(abilitato);
 
 		}
 		return infoRicerca;
@@ -190,6 +204,10 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 			String codUnitaOperativaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.label");
 			InputText codUnitaOperativa = new InputText(codUoId, codUnitaOperativaLabel, null, false, false, true, 1, 255);
 			this.infoRicercaMap.put(codUoId, codUnitaOperativa);
+			
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			CheckButton abilitato = this.creaCheckButtonSearchMostraDisabilitato(abilitatoId);
+			this.infoRicercaMap.put(abilitatoId, abilitato);
 
 		}
 	}

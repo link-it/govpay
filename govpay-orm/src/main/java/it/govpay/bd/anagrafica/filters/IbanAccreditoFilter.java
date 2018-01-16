@@ -54,11 +54,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	
 	public IbanAccreditoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-		try{
-			this.listaFieldSimpleSearch.add(it.govpay.orm.IbanAccredito.model().COD_IBAN);
-		} catch(Exception e){
-			
-		}
+		this.fieldAbilitato = it.govpay.orm.IbanAccredito.model().ABILITATO;
 	}
 
 	@Override
@@ -77,20 +73,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.codIbanAccredito != null){
-				if(addAnd)
-					expr.and();
-				expr.ilike(IbanAccredito.model().COD_IBAN, this.codIbanAccredito,LikeMode.ANYWHERE);
-				addAnd = true;
-			}
-			
-			
-			if(this.abilitato != null) {
-				if(addAnd)
-					expr.and();
-				expr.equals(IbanAccredito.model().ABILITATO, this.abilitato);
-				addAnd = true;
-			}
+			addAnd = this.setFiltroAbilitato(expr, addAnd);
 			
 			return expr;
 		} catch (NotImplementedException e) {

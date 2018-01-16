@@ -314,8 +314,10 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 					boolean eseguiRicerca = !setDomini.isEmpty();
 
 					if(eseguiRicerca) {
-						if(!setDomini.contains(-1L))
-							idDomini.addAll(setDomini);						
+						if(!setDomini.contains(-1L)) {
+							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}					
 
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();
@@ -498,7 +500,8 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 				} 
 
 				if(incasso.getImporto() != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), incasso.getImporto().toString()+ "€");
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), 
+							this.currencyUtils.getCurrencyAsEuro(incasso.getImporto()));
 				}
 				if(incasso.getDataIncasso() != null) {
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataIncasso.label"), this.sdf.format(incasso.getDataIncasso()));
@@ -556,9 +559,8 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 		StringBuilder sb = new StringBuilder();
 
 		String causale = entry.getCausale();
-		BigDecimal importo = entry.getImporto() != null ? entry.getImporto() : BigDecimal.ZERO;
 		sb.append(
-				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo", causale, importo.toString()+ "€"));
+				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo", causale, this.currencyUtils.getCurrencyAsEuro(entry.getImporto())));
 
 		return sb.toString();
 	} 
@@ -600,7 +602,7 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 
 		if(entry.getImporto() != null) {
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
-					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), entry.getImporto().toString()+ "€"));
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), this.currencyUtils.getCurrencyAsEuro(entry.getImporto())));
 		}
 
 		try{		
@@ -723,6 +725,8 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return fileName;
+		}catch(ExportException e){
+			throw e;
 		}catch(WebApplicationException e){
 			throw e;
 		}catch(Exception e){
@@ -793,6 +797,8 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return fileName;
+		}catch(ExportException e){
+			throw e;
 		}catch(WebApplicationException e){
 			throw e;
 		}catch(Exception e){

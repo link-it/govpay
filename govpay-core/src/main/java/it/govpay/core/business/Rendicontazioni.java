@@ -59,6 +59,8 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Stazione;
 import it.govpay.model.Acl.Servizio;
@@ -71,6 +73,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -137,13 +140,14 @@ public class Rendicontazioni extends BasicBD {
 					flussiDaAcquisire.addAll(chiediListaFr(client, null, stazione, null));
 				}
 
-				// Scarto i flussi gia acquisiti
 				setupConnection(GpThreadLocal.get().getTransactionId());
-				
+				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
 				FrBD frBD = new FrBD(this);
+				Set<String> idfs = new HashSet<String>();
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
-					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()))
+					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()) || idfs.contains(idRendicontazione.getIdentificativoFlusso()))
 						flussiDaAcquisire.remove(idRendicontazione);
+					idfs.add(idRendicontazione.getIdentificativoFlusso());
 				}
 				closeConnection();
 
@@ -303,7 +307,7 @@ public class Rendicontazioni extends BasicBD {
 										// Verifico che il pagamento non sia gia' rendicontato
 										if(pagamento.isPagamentoRendicontato(this)) {
 											GpThreadLocal.get().log("rendicontazioni.giaStornato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
-											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
+											log.info("Revoca [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
 											rendicontazione.addAnomalia("007113", "Lo storno riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
 										}
 
@@ -467,6 +471,10 @@ public class Rendicontazioni extends BasicBD {
 								if(r.isPagamentoDaCreare()) {
 									pagamentiBD.insertPagamento(r.getPagamento(this));
 									r.setIdPagamento(r.getPagamento(this).getId());
+									
+									//Devo anche settare il versamento come pagato
+									versamentiBD.updateStatoSingoloVersamento(r.getPagamento(this).getIdSingoloVersamento(), StatoSingoloVersamento.ESEGUITO);
+									versamentiBD.updateStatoVersamento(r.getPagamento(this).getSingoloVersamento(this).getIdVersamento(), StatoVersamento.ESEGUITO_SENZA_RPT, "Eseguito senza RPT");
 								}
 								rendicontazioniBD.insert(r);
 							}
