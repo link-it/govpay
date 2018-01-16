@@ -37,7 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="esito" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
@@ -108,11 +108,11 @@ public class Rendicontazione extends org.openspcoop2.utils.beans.BaseBean implem
     this.iur = iur;
   }
 
-  public int getIndiceDati() {
+  public java.lang.Integer getIndiceDati() {
     return this.indiceDati;
   }
 
-  public void setIndiceDati(int indiceDati) {
+  public void setIndiceDati(java.lang.Integer indiceDati) {
     this.indiceDati = indiceDati;
   }
 
@@ -199,9 +199,9 @@ public class Rendicontazione extends org.openspcoop2.utils.beans.BaseBean implem
   @XmlElement(name="iur",required=true,nillable=false)
   protected java.lang.String iur;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="indiceDati",required=false,nillable=false)
-  protected int indiceDati;
+  protected java.lang.Integer indiceDati;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
   @XmlElement(name="importoPagato",required=false,nillable=false)
