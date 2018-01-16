@@ -24,6 +24,18 @@
 			<type>war</type>
 		</dependency>
 		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-pagamento</artifactId>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-wc</artifactId>
+			<type>war</type>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -42,6 +54,7 @@
 				<artifactId>maven-ear-plugin</artifactId>
 				<version>2.9.1</version>
 				<configuration>
+					<initializeInOrder>true</initializeInOrder>
 					<filtering>true</filtering>
 					<filters>
 						<filter>${basedir}/../resources/filters/${env}.filter.properties</filter>
@@ -51,6 +64,16 @@
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-web</artifactId>
 							<contextRoot>/govpay</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>govpay-api-pagamento</artifactId>
+							<contextRoot>/govpay-api-pagamento</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>govpay-wc</artifactId>
+							<contextRoot>/govpay-wc</contextRoot>
 						</webModule>
 					</modules>
                 			<version>6</version>
