@@ -54,7 +54,7 @@ then
         echo "Manuale di Integrazione non esistente"
         exit 4
 fi 
-cp ${DOC}/GovPay-ManualeIntegrazioneSOAP.pdf core.template/doc/
+cp ${DOC}/GovPay-ManualeIntegrazione.pdf core.template/doc/
 
 if [ ! -e "${DOC}/GovPay-ManualeUtente.pdf" ]
 then
