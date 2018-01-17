@@ -216,6 +216,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getTributoFieldConverter().toTable(Tributo.model())));
+			fields.add(new CustomField("id_iban_accredito_alternativo", Long.class, "id_iban_accredito_alternativo", this.getTributoFieldConverter().toTable(Tributo.model())));
 
 			sqlQueryObject.setANDLogicOperator(true);
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
@@ -227,6 +228,11 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 				Long idIbanAccredito = null;
 				if(idIbanAccreditoObj instanceof Long)
 					idIbanAccredito = (Long) idIbanAccreditoObj;
+
+				Object idIbanAccreditoAlternativoObj = map.remove("id_iban_accredito_alternativo");
+				Long idIbanAccreditoAlternativo = null;
+				if(idIbanAccreditoAlternativoObj instanceof Long)
+					idIbanAccreditoAlternativo = (Long) idIbanAccreditoAlternativoObj;
 				
 				
 				Tributo tributo = (Tributo)this.getTributoFetch().fetch(jdbcProperties.getDatabase(), Tributo.model(), map);
@@ -254,6 +260,17 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 							}
 							id_tributo_ibanAccredito.setId(idIbanAccredito);
 							tributo.setIdIbanAccredito(id_tributo_ibanAccredito);
+						}
+
+						if(idIbanAccreditoAlternativo != null) {
+							it.govpay.orm.IdIbanAccredito id_tributo_ibanAccredito = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_tributo_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAccreditoAlternativo, false);
+							}else{
+								id_tributo_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
+							}
+							id_tributo_ibanAccredito.setId(idIbanAccreditoAlternativo);
+							tributo.setIdIbanAccreditoAlternativo(id_tributo_ibanAccredito);
 						}
 					}
 
