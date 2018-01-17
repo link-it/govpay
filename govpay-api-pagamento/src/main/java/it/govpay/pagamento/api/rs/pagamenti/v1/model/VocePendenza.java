@@ -23,6 +23,7 @@ public class VocePendenza {
 	private String tipoBollo = null;
 	private String hashDocumento = null;
 	private String provinciaResidenza = null;
+	
 	public String getIdVocePendenza() {
 		return idVocePendenza;
 	}

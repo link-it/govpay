@@ -30,7 +30,7 @@ public class PagamentiPortale extends BaseRsService{
 	
 	
 	public PagamentiPortale() {
-		super();
+		super("pagamentiPortale");
 	}
 
 	@POST
@@ -46,7 +46,8 @@ public class PagamentiPortale extends BaseRsService{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
 			copy(is, baos);
-			//this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
 			//ctx =  GpThreadLocal.get();
 			String principal = this.getPrincipal();
 			
@@ -60,6 +61,7 @@ public class PagamentiPortale extends BaseRsService{
 						
 			PagamentiPortaleResponseOk responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
 			
+			this.logResponse(uriInfo, httpHeaders, methodName, responseOk, 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(responseOk).build();
 		} catch (Exception e) {
@@ -68,8 +70,11 @@ public class PagamentiPortale extends BaseRsService{
 			respKo.setCategoria(CATEGORIA.INTERNO);
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
-			
-			//this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
 		} finally {
 			if(ctx != null) ctx.log();
