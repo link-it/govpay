@@ -22,7 +22,6 @@ package it.govpay.web.rs.dars.anagrafica.iban;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +43,11 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
+import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
+import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.model.Dominio;
 import it.govpay.model.IbanAccredito;
-import it.govpay.web.rs.dars.anagrafica.iban.input.IdNegozio;
-import it.govpay.web.rs.dars.anagrafica.iban.input.IdSellerBank;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -154,8 +153,8 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 				String codIbanAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.id");
 				String codBicAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.id");
 				String codBicAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.id");
-				String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
-				String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
+//				String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
+//				String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
 				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 				String attivatoObepId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
 				String postaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
@@ -179,37 +178,37 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 				codIban.setEditable(true);     
 				sezioneRoot.addField(codIban);
 
-				InputText codIbanAppoggio = (InputText) this.infoCreazioneMap.get(codIbanAppoggioId);
-				codIbanAppoggio.setDefaultValue(null);
-				sezioneRoot.addField(codIbanAppoggio);
-
 				InputText codBicAccredito = (InputText) this.infoCreazioneMap.get(codBicAccreditoId);
 				codBicAccredito.setDefaultValue(null);
 				sezioneRoot.addField(codBicAccredito);
 
-				InputText codBicAppoggio = (InputText) this.infoCreazioneMap.get(codBicAppoggioId);
-				codBicAppoggio.setDefaultValue(null);
-				sezioneRoot.addField(codBicAppoggio);
-
-				IdNegozio idNegozio = (IdNegozio) this.infoCreazioneMap.get(idNegozioId);
-				idNegozio.setDefaultValue(null);
-				sezioneRoot.addField(idNegozio);
-
-				IdSellerBank idSellerBank = (IdSellerBank) this.infoCreazioneMap.get(idSellerBankId);
-				idSellerBank.setDefaultValue(null);
-				sezioneRoot.addField(idSellerBank);
-
-				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-				abilitato.setDefaultValue(true); 
-				sezioneRoot.addField(abilitato);
-
-				CheckButton attivatoObep = (CheckButton) this.infoCreazioneMap.get(attivatoObepId);
-				attivatoObep.setDefaultValue(false); 
-				sezioneRoot.addField(attivatoObep);
+//				IdNegozio idNegozio = (IdNegozio) this.infoCreazioneMap.get(idNegozioId);
+//				idNegozio.setDefaultValue(null);
+//				sezioneRoot.addField(idNegozio);
+//
+//				IdSellerBank idSellerBank = (IdSellerBank) this.infoCreazioneMap.get(idSellerBankId);
+//				idSellerBank.setDefaultValue(null);
+//				sezioneRoot.addField(idSellerBank);
 
 				CheckButton postale = (CheckButton) this.infoCreazioneMap.get(postaleId);
 				postale.setDefaultValue(false); 
 				sezioneRoot.addField(postale);
+				
+				CheckButton attivatoObep = (CheckButton) this.infoCreazioneMap.get(attivatoObepId);
+				attivatoObep.setDefaultValue(false); 
+				sezioneRoot.addField(attivatoObep);
+				
+				InputText codIbanAppoggio = (InputText) this.infoCreazioneMap.get(codIbanAppoggioId);
+				codIbanAppoggio.setDefaultValue(null);
+				sezioneRoot.addField(codIbanAppoggio);
+				
+				InputText codBicAppoggio = (InputText) this.infoCreazioneMap.get(codBicAppoggioId);
+				codBicAppoggio.setDefaultValue(null);
+				sezioneRoot.addField(codBicAppoggio);
+				
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(true); 
+				sezioneRoot.addField(abilitato);
 
 			}
 		} catch (ServiceException e) {
@@ -227,8 +226,8 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 			String codIbanAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.id");
 			String codBicAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.id");
 			String codBicAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.id");
-			String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
-			String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
+//			String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
+//			String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
 			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			String attivatoObepId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
 			String postaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
@@ -277,24 +276,24 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 			CheckButton attivatoObep = new CheckButton(attivatoObepId, attivatoObepLabel, null, false, false, true);
 			this.infoCreazioneMap.put(attivatoObepId, attivatoObep);
 
-			List<RawParamValue> attivatoObepValues = new ArrayList<RawParamValue>();
-			attivatoObepValues.add(new RawParamValue(attivatoObepId, "false")); 
+//			List<RawParamValue> attivatoObepValues = new ArrayList<RawParamValue>();
+//			attivatoObepValues.add(new RawParamValue(attivatoObepId, "false")); 
 			// idNegozio
-			String idNegozioLabel =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.label");
-			URI idNegozioRefreshUri = this.getUriField(uriInfo, bd, idNegozioId); 
-
-			IdNegozio idNegozio = new IdNegozio(this.nomeServizio, idNegozioId, idNegozioLabel, 1, 255, idNegozioRefreshUri , attivatoObepValues,this.getLanguage()); 
-			idNegozio.addDependencyField(attivatoObep);
-			idNegozio.init(attivatoObepValues,this.getLanguage());
-			this.infoCreazioneMap.put(idNegozioId,idNegozio);
+//			String idNegozioLabel =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.label");
+//			URI idNegozioRefreshUri = this.getUriField(uriInfo, bd, idNegozioId); 
+//
+//			IdNegozio idNegozio = new IdNegozio(this.nomeServizio, idNegozioId, idNegozioLabel, 1, 255, idNegozioRefreshUri , attivatoObepValues,this.getLanguage()); 
+//			idNegozio.addDependencyField(attivatoObep);
+//			idNegozio.init(attivatoObepValues,this.getLanguage());
+//			this.infoCreazioneMap.put(idNegozioId,idNegozio);
 
 			// idSellerBank
-			String idSellerBankLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.label");
-			URI idSellerBankRefreshUri = this.getUriField(uriInfo, bd, idSellerBankId); 
-			IdSellerBank idSellerBank = new IdSellerBank(this.nomeServizio, idSellerBankId, idSellerBankLabel, 1, 255, idSellerBankRefreshUri , attivatoObepValues,this.getLanguage());
-			idSellerBank.addDependencyField(attivatoObep);
-			idSellerBank.init(attivatoObepValues,this.getLanguage());
-			this.infoCreazioneMap.put(idSellerBankId, idSellerBank);
+//			String idSellerBankLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.label");
+//			URI idSellerBankRefreshUri = this.getUriField(uriInfo, bd, idSellerBankId); 
+//			IdSellerBank idSellerBank = new IdSellerBank(this.nomeServizio, idSellerBankId, idSellerBankLabel, 1, 255, idSellerBankRefreshUri , attivatoObepValues,this.getLanguage());
+//			idSellerBank.addDependencyField(attivatoObep);
+//			idSellerBank.init(attivatoObepValues,this.getLanguage());
+//			this.infoCreazioneMap.put(idSellerBankId, idSellerBank);
 
 			// abilitato
 			String abilitatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
@@ -323,8 +322,8 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 				String codIbanAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.id");
 				String codBicAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.id");
 				String codBicAppoggioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.id");
-				String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
-				String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
+//				String idNegozioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.id");
+//				String idSellerBankId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.id");
 				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 				String attivatoObepId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
 				String postaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
@@ -348,37 +347,38 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 				codIban.setEditable(false);     
 				sezioneRoot.addField(codIban);
 
-				InputText codIbanAppoggio = (InputText) this.infoCreazioneMap.get(codIbanAppoggioId);
-				codIbanAppoggio.setDefaultValue(entry.getCodIbanAppoggio());
-				sezioneRoot.addField(codIbanAppoggio);
-
 				InputText codBicAccredito = (InputText) this.infoCreazioneMap.get(codBicAccreditoId);
 				codBicAccredito.setDefaultValue(entry.getCodBicAccredito());
 				sezioneRoot.addField(codBicAccredito);
 
-				InputText codBicAppoggio = (InputText) this.infoCreazioneMap.get(codBicAppoggioId);
-				codBicAppoggio.setDefaultValue(entry.getCodBicAppoggio());
-				sezioneRoot.addField(codBicAppoggio);
+//				IdNegozio idNegozio = (IdNegozio) this.infoCreazioneMap.get(idNegozioId);
+//				idNegozio.setDefaultValue(entry.getIdNegozio());
+//				sezioneRoot.addField(idNegozio);
+//
+//				IdSellerBank idSellerBank = (IdSellerBank) this.infoCreazioneMap.get(idSellerBankId);
+//				idSellerBank.setDefaultValue(entry.getIdSellerBank());
+//				sezioneRoot.addField(idSellerBank);
 
-				IdNegozio idNegozio = (IdNegozio) this.infoCreazioneMap.get(idNegozioId);
-				idNegozio.setDefaultValue(entry.getIdNegozio());
-				sezioneRoot.addField(idNegozio);
-
-				IdSellerBank idSellerBank = (IdSellerBank) this.infoCreazioneMap.get(idSellerBankId);
-				idSellerBank.setDefaultValue(entry.getIdSellerBank());
-				sezioneRoot.addField(idSellerBank);
-
-				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-				abilitato.setDefaultValue(entry.isAbilitato()); 
-				sezioneRoot.addField(abilitato);
+				CheckButton postale = (CheckButton) this.infoCreazioneMap.get(postaleId);
+				postale.setDefaultValue(entry.isPostale()); 
+				sezioneRoot.addField(postale);
 
 				CheckButton attivatoObep = (CheckButton) this.infoCreazioneMap.get(attivatoObepId);
 				attivatoObep.setDefaultValue(entry.isAttivatoObep()); 
 				sezioneRoot.addField(attivatoObep);
 
-				CheckButton postale = (CheckButton) this.infoCreazioneMap.get(postaleId);
-				postale.setDefaultValue(entry.isPostale()); 
-				sezioneRoot.addField(postale);
+				InputText codIbanAppoggio = (InputText) this.infoCreazioneMap.get(codIbanAppoggioId);
+				codIbanAppoggio.setDefaultValue(entry.getCodIbanAppoggio());
+				sezioneRoot.addField(codIbanAppoggio);
+				
+				InputText codBicAppoggio = (InputText) this.infoCreazioneMap.get(codBicAppoggioId);
+				codBicAppoggio.setDefaultValue(entry.getCodBicAppoggio());
+				sezioneRoot.addField(codBicAppoggio);
+				
+				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
+				abilitato.setDefaultValue(entry.isAbilitato()); 
+				sezioneRoot.addField(abilitato);
+				
 			}
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
@@ -477,12 +477,12 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 			if(StringUtils.isNotEmpty(ibanAccredito.getCodBicAppoggio())) {
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.label"), ibanAccredito.getCodBicAppoggio(),true);
 			}
-			if(StringUtils.isNotEmpty(ibanAccredito.getIdNegozio())) {
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.label"), ibanAccredito.getIdNegozio(),true);
-			}
-			if(StringUtils.isNotEmpty(ibanAccredito.getIdSellerBank())) {
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.label"), ibanAccredito.getIdSellerBank(),true);
-			}
+//			if(StringUtils.isNotEmpty(ibanAccredito.getIdNegozio())) {
+//				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.label"), ibanAccredito.getIdNegozio(),true);
+//			}
+//			if(StringUtils.isNotEmpty(ibanAccredito.getIdSellerBank())) {
+//				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.label"), ibanAccredito.getIdSellerBank(),true);
+//			}
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(ibanAccredito.isAbilitato()));
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.label"), Utils.getSiNoAsLabel(ibanAccredito.isAttivatoObep()));
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".postale.label"), Utils.getSiNoAsLabel(ibanAccredito.isPostale()));
@@ -641,6 +641,21 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 			IbanAccredito oldEntry = ibanAccreditoBD.getIbanAccredito(entry.getIdDominio(),entry.getCodIban());
 
 			this.checkEntry(entry, oldEntry); 
+			
+			// N.B. spostato qui perche nel metodo checkentry non ho la BD.
+			// controlla che il valore del postale non sia stato modificato e se lo e' controlla che non sia gia' utilizzato da un qualche tributo
+			if(entry.isPostale() != oldEntry.isPostale()) {
+				TributiBD tributiBD = new TributiBD(bd);
+				TributoFilter tributoFilter = tributiBD.newFilter();
+				if(oldEntry.isPostale())
+					tributoFilter.setIdIbanAccreditoPostale(oldEntry.getId());
+				else 
+					tributoFilter.setIdIbanAccredito(oldEntry.getId());
+				long count = tributiBD.count(tributoFilter);
+				
+				if(count > 0)
+					throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreModificatoPostaleGiaUsato"));
+			}
 
 			ibanAccreditoBD.updateIbanAccredito(entry); 
 
