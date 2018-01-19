@@ -33,6 +33,7 @@ import it.govpay.bd.model.RendicontazionePagamento;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Iuv;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Anomalia;
 import it.govpay.servizi.commons.EsitoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
@@ -198,7 +199,7 @@ public class Gp23Utils {
 		return v;
 	}
 
-	public static Storno toStorno(Rr rr, BasicBD bd) throws ServiceException {
+	public static Storno toStorno(Rr rr, Versione versione, BasicBD bd) throws ServiceException {
 		Storno storno = new Storno();
 		storno.setCcp(rr.getCcp());
 		storno.setCodDominio(rr.getCodDominio());
@@ -208,12 +209,12 @@ public class Gp23Utils {
 		storno.setRr(rr.getXmlRr());
 		storno.setStato(StatoRevoca.fromValue(rr.getStato().toString()));
 		for(Pagamento p : rr.getPagamenti(bd)) {
-			storno.getPagamento().add(toPagamento(p, bd));
+			storno.getPagamento().add(toPagamento(p, versione, bd));
 		}
 		return storno;
 	}
 
-	public static it.govpay.servizi.commons.Pagamento toPagamento(Pagamento pagamento, BasicBD bd) throws ServiceException {
+	public static it.govpay.servizi.commons.Pagamento toPagamento(Pagamento pagamento, Versione versione, BasicBD bd) throws ServiceException {
 		it.govpay.servizi.commons.Pagamento p = new it.govpay.servizi.commons.Pagamento();
 
 		if(pagamento.getAllegato() != null) {
@@ -234,6 +235,9 @@ public class Gp23Utils {
 		p.setImportoRevocato(pagamento.getImportoRevocato());
 		p.setDataAcquisizione(pagamento.getDataAcquisizione());
 		p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
+		if(versione.compareTo(Versione.GP_02_05_00) >= 0) {
+			p.setIbanAccredito(pagamento.getIbanAccredito());
+		}
 		return p;
 	}
 	

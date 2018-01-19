@@ -65,6 +65,7 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -257,23 +258,17 @@ public class RptUtils {
 
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-			datiVersamento.getDatiSingoloVersamento().add(buildDatiSingoloVersamento(rpt, singoloVersamento, bd));
+			datiVersamento.getDatiSingoloVersamento().add(buildDatiSingoloVersamento(rpt, singoloVersamento, canale, bd));
 		}
 
 		return datiVersamento;
 	}
 
-	private static CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, BasicBD bd) throws ServiceException  {
+	private static CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, Canale canale, BasicBD bd) throws ServiceException  {
 		CtDatiSingoloVersamentoRPT datiSingoloVersamento = new CtDatiSingoloVersamentoRPT();
 		datiSingoloVersamento.setImportoSingoloVersamento(singoloVersamento.getImportoSingoloVersamento());
 		
-		if(singoloVersamento.getIbanAccredito(bd) != null) {
-			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
-			datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBicAccredito()));
-			datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
-			datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
-			datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
-		} else {
+		if(singoloVersamento.getIdTributo() != null && singoloVersamento.getTributo(bd).getCodTributo().equals(Tributo.BOLLOT)) {
 			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
 			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
 			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
@@ -282,7 +277,23 @@ public class RptUtils {
 			else
 				marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
 			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
+		} else {
+			IbanAccredito ibanAccredito = null;
 			
+			if(singoloVersamento.getTributo(bd) != null) {
+				if(canale.getPsp(bd).isPostale()) {
+					ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccreditoPostale(bd);
+				} else {
+					ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccredito(bd);
+				}
+			}
+			if(ibanAccredito == null)
+				ibanAccredito = singoloVersamento.getIbanAccredito(bd);
+			
+			datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBicAccredito()));
+			datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
+			datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
+			datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
 		}
 		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
 		datiSingoloVersamento.setCausaleVersamento(buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento()));

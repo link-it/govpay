@@ -216,7 +216,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getTributoFieldConverter().toTable(Tributo.model())));
-			fields.add(new CustomField("id_iban_accredito_alternativo", Long.class, "id_iban_accredito_alternativo", this.getTributoFieldConverter().toTable(Tributo.model())));
+			fields.add(new CustomField("id_iban_accredito_postale", Long.class, "id_iban_accredito_postale", this.getTributoFieldConverter().toTable(Tributo.model())));
 
 			sqlQueryObject.setANDLogicOperator(true);
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
@@ -229,10 +229,10 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 				if(idIbanAccreditoObj instanceof Long)
 					idIbanAccredito = (Long) idIbanAccreditoObj;
 
-				Object idIbanAccreditoAlternativoObj = map.remove("id_iban_accredito_alternativo");
-				Long idIbanAccreditoAlternativo = null;
-				if(idIbanAccreditoAlternativoObj instanceof Long)
-					idIbanAccreditoAlternativo = (Long) idIbanAccreditoAlternativoObj;
+				Object idIbanAccreditoPostaleObj = map.remove("id_iban_accredito_postale");
+				Long idIbanAccreditoPostale = null;
+				if(idIbanAccreditoPostaleObj instanceof Long)
+					idIbanAccreditoPostale = (Long) idIbanAccreditoPostaleObj;
 				
 				
 				Tributo tributo = (Tributo)this.getTributoFetch().fetch(jdbcProperties.getDatabase(), Tributo.model(), map);
@@ -262,15 +262,15 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 							tributo.setIdIbanAccredito(id_tributo_ibanAccredito);
 						}
 
-						if(idIbanAccreditoAlternativo != null) {
+						if(idIbanAccreditoPostale != null) {
 							it.govpay.orm.IdIbanAccredito id_tributo_ibanAccredito = null;
 							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_tributo_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAccreditoAlternativo, false);
+								id_tributo_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAccreditoPostale, false);
 							}else{
 								id_tributo_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
 							}
-							id_tributo_ibanAccredito.setId(idIbanAccreditoAlternativo);
-							tributo.setIdIbanAccreditoAlternativo(id_tributo_ibanAccredito);
+							id_tributo_ibanAccredito.setId(idIbanAccreditoPostale);
+							tributo.setIdIbanAccreditoPostale(id_tributo_ibanAccredito);
 						}
 					}
 

@@ -900,13 +900,13 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="idIbanAccreditoAlternativo" type="id-iban-accredito" minOccurs="0">
+			<xsd:element name="idIbanAccreditoPostale" type="id-iban-accredito" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="IbanAccredito"
 								object-type="IbanAccredito" relationship="reversed"/>
-							<linkit:sql-column-mapping name="id_iban_accredito_alternativo"/>
+							<linkit:sql-column-mapping name="id_iban_accredito_postale"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
