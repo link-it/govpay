@@ -5,6 +5,8 @@ import java.util.List;
 
 public class PagamentiPortaleDTO {
 	
+	private String idSessione = null;
+	private String idSessionePortale =null;
 	private String principal = null; 
 	private String jsonRichiesta = null;
 	private String urlRitorno = null;
@@ -96,6 +98,18 @@ public class PagamentiPortaleDTO {
 	}
 	public void setKeyWISP(String keyWISP) {
 		this.keyWISP = keyWISP;
+	}
+	public String getIdSessione() {
+		return idSessione;
+	}
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
+	}
+	public String getIdSessionePortale() {
+		return idSessionePortale;
+	}
+	public void setIdSessionePortale(String idSessionePortale) {
+		this.idSessionePortale = idSessionePortale;
 	}
 	
 }

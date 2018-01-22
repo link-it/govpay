@@ -20,6 +20,7 @@ import org.openspcoop2.utils.logger.config.Log4jConfig;
 import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
 import org.openspcoop2.utils.logger.log4j.Log4jType;
 
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -128,7 +129,7 @@ public class InitListener implements ServletContextListener{
 			
 			//		per ora vengono inizializzate nel govpay web
 			
-			//			AnagraficaManager.newInstance(false);
+			AnagraficaManager.newInstance(false);
 			//			ConnectionManager.initialize();
 			//			OperazioneFactory.init();
 		} catch(Exception e){

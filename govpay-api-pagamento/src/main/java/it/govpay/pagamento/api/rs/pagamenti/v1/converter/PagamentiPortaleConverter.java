@@ -93,17 +93,19 @@ public class PagamentiPortaleConverter {
 	public static PagamentiPortaleResponseOk getPagamentiPortaleResponseOk(PagamentiPortaleDTOResponse dtoResponse) {
 		PagamentiPortaleResponseOk  json = new PagamentiPortaleResponseOk();
 		
-		json.setId(1);
-		json.setLocation("/pagamenti/1");
-		json.setRedirect("http://localhost:8080/wisp");
+		json.setId(dtoResponse.getId());
+		json.setLocation("/pagamenti/"+ dtoResponse.getId());
+		json.setRedirect(dtoResponse.getRedirectUrl());
 		
 		return json;
 	}
 	
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO (PagamentiPortaleRequest pagamentiPortaleRequest, String jsonRichiesta, String principal) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO (PagamentiPortaleRequest pagamentiPortaleRequest, String jsonRichiesta, String principal, String idSessione, String idSessionePortale) throws Exception {
 		
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO();
 		
+		pagamentiPortaleDTO.setIdSessione(idSessione);
+		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 		pagamentiPortaleDTO.setPrincipal(principal);
 		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
 		
@@ -232,7 +234,7 @@ public class PagamentiPortaleConverter {
 					bollo.setHash(vocePendenza.getHashDocumento());
 					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
 					bollo.setTipo(vocePendenza.getTipoBollo());
-					sv.setBolloTelematico(bollo );
+					sv.setBolloTelematico(bollo);
 				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
 					// ??	vocePendenza.getCodEntrata();
 					

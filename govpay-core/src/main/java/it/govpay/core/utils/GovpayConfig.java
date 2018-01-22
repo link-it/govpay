@@ -81,6 +81,8 @@ public class GovpayConfig {
 	private Properties[] props;
 	
 	private IConservazione conservazionePlugin;
+	
+	private String urlGovpayWC = null;
 
 	public GovpayConfig() throws Exception {
 		// Default values:
@@ -542,5 +544,9 @@ public class GovpayConfig {
 	
 	public IConservazione getConservazionPlugin(){
 		return conservazionePlugin;
+	}
+
+	public String getUrlGovpayWC() {
+		return this.urlGovpayWC;
 	}
 }
