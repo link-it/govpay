@@ -22,6 +22,9 @@ package it.govpay.bd.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.govpay.bd.GovpayConfig;
+
+
 public class Psp extends it.govpay.model.Psp {	
 	
 	private static final long serialVersionUID = 1L;
@@ -39,7 +42,7 @@ public class Psp extends it.govpay.model.Psp {
 	}
 
 	public boolean isPostale() {
-		return super.getCodPsp().equals("BPPIITRRXXX");
+		return GovpayConfig.getInstance().getPspPostali().contains(super.getCodPsp());
 	}
 
 }

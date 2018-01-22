@@ -79,7 +79,6 @@ public class GovpayConfig {
 	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
 
 	private Properties[] props;
-	
 	private IConservazione conservazionePlugin;
 
 	public GovpayConfig() throws Exception {
@@ -373,7 +372,6 @@ public class GovpayConfig {
 				conservazionePlugin = (IConservazione) instance;
 			}
 			
-
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -543,4 +541,5 @@ public class GovpayConfig {
 	public IConservazione getConservazionPlugin(){
 		return conservazionePlugin;
 	}
+
 }
