@@ -1,5 +1,8 @@
 package it.govpay.core.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -98,6 +101,27 @@ public class Utils {
 			return sdf.parse(validaESetta(nomeCampo, campo, null, null, nullable));
 		} catch (ParseException e) {
 			throw new ValidationException("Campo "+nomeValoreCampo+" non e' una data espressa in formato dd/MM/YYYY");
+		}
+	}
+	
+	// copy method from From E.R. Harold's book "Java I/O"
+	public static void copy(InputStream in, OutputStream out) 
+			throws IOException {
+
+		// do not allow other threads to read from the
+		// input or write to the output while copying is
+		// taking place
+
+		synchronized (in) {
+			synchronized (out) {
+
+				byte[] buffer = new byte[256];
+				while (true) {
+					int bytesRead = in.read(buffer);
+					if (bytesRead == -1) break;
+					out.write(buffer, 0, bytesRead);
+				}
+			}
 		}
 	}
 }

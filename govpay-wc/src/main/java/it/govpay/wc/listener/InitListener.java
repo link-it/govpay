@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.listener;
+package it.govpay.wc.listener;
 
 import java.io.File;
 import java.net.URI;
@@ -69,13 +69,13 @@ public class InitListener implements ServletContextListener{
 			} catch (Exception e) {
 				LogManager.getLogger().warn("Errore durante la configurazione del Logger: " + e);
 			}
-
+			
 			try {
 				gpConfig.readProperties();
 			} catch (Exception e) {
 				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
 			}
-			
+
 			// Configurazione del logger Diagnostici/Tracce/Dump
 			try {
 				DiagnosticConfig diagnosticConfig = new DiagnosticConfig();

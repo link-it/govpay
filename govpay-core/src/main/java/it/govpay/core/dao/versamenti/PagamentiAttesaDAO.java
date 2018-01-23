@@ -226,4 +226,7 @@ public class PagamentiAttesaDAO extends BasicBD {
 			}
 		}
 	}
+	
+	
+	
 }

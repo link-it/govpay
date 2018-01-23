@@ -20,6 +20,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
@@ -58,17 +60,13 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.model.PagamentoPortale;
 import it.govpay.model.Portale;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.orm.IdVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class PagamentiPortaleDAO extends BasicBD{
-	
-	public static String STATO_DA_REDIRIGERE_AL_WISP = "Da redirigere al WISP";
-	public static String STATO_PAGAMENTO_IN_CORSO_AL_PSP = "Pagamento in corso al PSP";
-	public static String STATO_PAGAMENTO_IN_ATTESA_DI_ESITO = "Pagamento in attesa di esito";
 	
 	private static Logger log = LogManager.getLogger();
 	
@@ -93,8 +91,8 @@ public class PagamentiPortaleDAO extends BasicBD{
 		ctx.log("ws.autorizzazione");
 		
 		String codDominio = null;
-		String ragioneSociale = null;
-		StringBuilder sbIdVersamento = new StringBuilder();
+		String enteCreditore = null;
+		List<IdVersamento> idVersamento = new ArrayList<IdVersamento>();
 		// 1. Lista Id_versamento
 		for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 			Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
@@ -146,16 +144,15 @@ public class PagamentiPortaleDAO extends BasicBD{
 				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+versamentoModel.getUo(this).getDominio(this).getCodDominio()+"].", EsitoOperazione.DOM_001, versamentoModel.getUo(this).getDominio(this).getCodDominio());
 			}
 			
-			if(sbIdVersamento.length() > 0)
-				sbIdVersamento.append("#");
-			
-			sbIdVersamento.append(versamentoModel.getCodVersamentoEnte());
+			IdVersamento idV = new IdVersamento();
+			idV.setCodVersamentoEnte(versamentoModel.getCodVersamentoEnte());
+			idVersamento.add(idV);
 			
 			if(i == 0) {
 				// 	2. Codice dominio della prima pendenza
 				codDominio = versamentoModel.getUo(this).getDominio(this).getCodDominio();
-				// 3. ragione sociale del dominio trovato
-				ragioneSociale = versamentoModel.getUo(this).getDominio(this).getRagioneSociale();
+				// 3. ente creditore
+				enteCreditore = versamentoModel.getUo(this).getDominio(this).getRagioneSociale();
 			}
 			versamenti.add(versamentoModel);
 		}
@@ -170,6 +167,8 @@ public class PagamentiPortaleDAO extends BasicBD{
 		IbanAccredito ibanAccredito = null;
 		// 7. conto postale se tutti gli iban sono postali
 		boolean contoPostale = true;
+		
+		boolean pagamentiModello2 = pagamentiPortaleDTO.getIbanAddebito() != null;
 		
 		for (Versamento vTmp : versamenti) {
 			List<SingoloVersamento> singoliVersamenti = vTmp.getSingoliVersamenti(this);
@@ -196,7 +195,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 				ibanAccredito = ibanAccreditoTmp;
 		}
 		
-		String stato = null;
+		STATO stato = null;
 		String redirectUrl = null;
 		String idSessionePsp = null;
 		String pspRedirect = null;
@@ -214,34 +213,43 @@ public class PagamentiPortaleDAO extends BasicBD{
 			
 			// se ho un redirect 			
 			if(rpt.getPspRedirectURL() != null) {
-				stato = STATO_PAGAMENTO_IN_CORSO_AL_PSP;
+				stato = STATO.PAGAMENTO_IN_CORSO_AL_PSP;
 				idSessionePsp = rpt.getCodSessione();
 				redirectUrl = rpt.getPspRedirectURL();
 			} else {
-				stato = STATO_PAGAMENTO_IN_ATTESA_DI_ESITO;
+				stato = STATO.PAGAMENTO_IN_ATTESA_DI_ESITO;
 				redirectUrl = pagamentiPortaleDTO.getUrlRitorno();
 			}
 			
 		} else {
-			// primo accesso creazione del pagamento
-			
-			stato = STATO_DA_REDIRIGERE_AL_WISP;
+			// sessione di pagamento non in corso
+			stato = STATO.DA_REDIRIGERE_AL_WISP;
 			redirectUrl = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentiPortaleDTO.getIdSessione();
-			
-			pagamentoPortale = new PagamentoPortale();
-			pagamentoPortale.setCodPortale(codPortale);
-			pagamentoPortale.setDataRichiesta(new Date());
-			pagamentoPortale.setIdSessione(pagamentiPortaleDTO.getIdSessione());
-			pagamentoPortale.setIdSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
-			pagamentoPortale.setIdSessionePsp(idSessionePsp);
-			pagamentoPortale.setJsonRequest(pagamentiPortaleDTO.getJsonRichiesta());
-			pagamentoPortale.setListaIDVersamento(sbIdVersamento.toString());
-			pagamentoPortale.setPspRedirect(pspRedirect);
-			pagamentoPortale.setStato(stato);
-			pagamentoPortale.setWispIdDominio(codDominio);
-			
-			pagamentiPortaleBD.insertPagamento(pagamentoPortale);
 		}
+		
+		pagamentoPortale = new PagamentoPortale();
+		pagamentoPortale.setCodPortale(codPortale);
+		pagamentoPortale.setDataRichiesta(new Date());
+		pagamentoPortale.setIdSessione(pagamentiPortaleDTO.getIdSessione());
+		pagamentoPortale.setIdSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
+		pagamentoPortale.setIdSessionePsp(idSessionePsp);
+		pagamentoPortale.setJsonRequest(pagamentiPortaleDTO.getJsonRichiesta());
+		pagamentoPortale.setIdVersamento(idVersamento); 
+		pagamentoPortale.setPspRedirect(pspRedirect);
+		pagamentoPortale.setStato(stato);
+		pagamentoPortale.setWispIdDominio(codDominio);
+		pagamentoPortale.setEnteCreditore(enteCreditore);
+		pagamentoPortale.setNumeroPagamenti(numeroPagamenti);
+		pagamentoPortale.setCodiceLingua(pagamentiPortaleDTO.getLingua());
+		if(ibanAccredito != null)
+		pagamentoPortale.setIbanAccredito(ibanAccredito.getCodIban());
+		pagamentoPortale.setContoPostale(contoPostale);
+		pagamentoPortale.setBolloDigitale(hasBollo);
+		pagamentoPortale.setImporto(sommaImporti);
+		pagamentoPortale.setUrlRitorno(pagamentiPortaleDTO.getUrlRitorno());
+		pagamentoPortale.setPagamentiModello2(pagamentiModello2); 
+		
+		pagamentiPortaleBD.insertPagamento(pagamentoPortale);
 
 		response.setRedirectUrl(redirectUrl);
 		response.setId(pagamentoPortale.getId());

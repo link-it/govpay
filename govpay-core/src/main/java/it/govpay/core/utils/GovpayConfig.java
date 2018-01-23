@@ -83,6 +83,7 @@ public class GovpayConfig {
 	private IConservazione conservazionePlugin;
 	
 	private String urlGovpayWC = null;
+	private String urlErrorGovpayWC = null;
 
 	public GovpayConfig() throws Exception {
 		// Default values:
@@ -375,6 +376,9 @@ public class GovpayConfig {
 				conservazionePlugin = (IConservazione) instance;
 			}
 			
+			this.urlGovpayWC = getProperty("it.govpay.wc.url", props, false, log);
+			this.urlErrorGovpayWC = getProperty("it.govpay.wc.urlError", props, false, log);
+			
 
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -548,5 +552,9 @@ public class GovpayConfig {
 
 	public String getUrlGovpayWC() {
 		return this.urlGovpayWC;
+	}
+	
+	public String getUrlErrorGovpayWC() {
+		return this.urlErrorGovpayWC;
 	}
 }
