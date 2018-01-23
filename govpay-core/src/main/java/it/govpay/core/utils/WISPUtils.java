@@ -59,6 +59,7 @@ public class WISPUtils {
 	public static final String KEY_PARAMETRO_CODICE_LINGUA = "codiceLingua";
 	public static final String KEY_PARAMETRO_TERZOMODELLO_PAGAMENTO = "terzoModelloPagamento";
 	public static final String KEY_PARAMETRI = "@LISTA_INPUT@";
+	public static final String KEY_URL_WISP = "@URL_WISP@";
 
 	public static final String TEMPLATE_WISP_HTML = "/wisp.html";
 
@@ -126,10 +127,12 @@ public class WISPUtils {
 		return sb.toString();
 	}
 
-	public static String getWispHtml(String template, PagamentoPortale pagamentoPortale, String urlReturn, String urlBack, String enteCreditore,
+	public static String getWispHtml(String urlWISP, String template, PagamentoPortale pagamentoPortale, String urlReturn, String urlBack, String enteCreditore,
 			int numeroPagamenti, IbanAccredito ibanAccredito, boolean contoPostale, boolean bollodigitale, double importoTotale, boolean pagamentiModello2, String codiceLingua) {
 		String parametri = creaListaParametriPagamentoPortaleAsString(pagamentoPortale, urlReturn, urlBack, enteCreditore, numeroPagamenti, ibanAccredito, contoPostale, bollodigitale, importoTotale, pagamentiModello2, codiceLingua);
-		return template.replace(KEY_PARAMETRI, parametri);
+		
+		String tmp = template.replace(KEY_PARAMETRI, parametri);
+		return tmp.replace(KEY_URL_WISP, urlWISP);
 	}
 
 	public static String readTemplate() throws ServiceException{

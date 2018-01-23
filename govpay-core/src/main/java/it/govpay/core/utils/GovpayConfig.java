@@ -84,6 +84,7 @@ public class GovpayConfig {
 	
 	private String urlGovpayWC = null;
 	private String urlErrorGovpayWC = null;
+	private String urlWISP = null;
 
 	public GovpayConfig() throws Exception {
 		// Default values:
@@ -378,6 +379,7 @@ public class GovpayConfig {
 			
 			this.urlGovpayWC = getProperty("it.govpay.wc.url", props, false, log);
 			this.urlErrorGovpayWC = getProperty("it.govpay.wc.urlError", props, false, log);
+			this.urlWISP = getProperty("it.govpay.wisp.url", props, false, log);
 			
 
 		} catch (Exception e) {
@@ -556,5 +558,8 @@ public class GovpayConfig {
 	
 	public String getUrlErrorGovpayWC() {
 		return this.urlErrorGovpayWC;
+	}
+	public String getUrlWISP() {
+		return urlWISP;
 	}
 }
