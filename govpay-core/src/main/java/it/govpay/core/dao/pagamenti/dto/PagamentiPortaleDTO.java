@@ -20,6 +20,7 @@ public class PagamentiPortaleDTO {
 	private String idDominio = null;
 	private String keyPA = null;
 	private String keyWISP = null;
+	private String autenticazione = null;
 	
 	public String getPrincipal() {
 		return principal;
@@ -110,6 +111,12 @@ public class PagamentiPortaleDTO {
 	}
 	public void setIdSessionePortale(String idSessionePortale) {
 		this.idSessionePortale = idSessionePortale;
+	}
+	public String getAutenticazione() {
+		return autenticazione;
+	}
+	public void setAutenticazione(String autenticazione) {
+		this.autenticazione = autenticazione;
 	}
 	
 }

@@ -47,6 +47,7 @@ public class PagamentoPortale extends BasicModel {
 	
 	private String idPsp = null;
 	private String tipoVersamento = null;
+	private String codCanale = null;
 	
 	public String getCodPortale() {
 		return codPortale;
@@ -78,11 +79,11 @@ public class PagamentoPortale extends BasicModel {
 	public void setStato(STATO stato) {
 		this.stato = stato;
 	}
-	public String getPspRedirect() {
+	public String getPspRedirectUrl() {
 		return pspRedirectUrl;
 	}
-	public void setPspRedirect(String pspRedirect) {
-		this.pspRedirectUrl = pspRedirect;
+	public void setPspRedirectUrl(String pspRedirectUrl) {
+		this.pspRedirectUrl = pspRedirectUrl;
 	}
 	public String getJsonRequest() {
 		return jsonRequest;
@@ -155,6 +156,12 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setTipoVersamento(String tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
+	}
+	public String getCodCanale() {
+		return codCanale;
+	}
+	public void setCodCanale(String codCanale) {
+		this.codCanale = codCanale;
 	}
 	
 }

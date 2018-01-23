@@ -52,7 +52,7 @@ public class WebControllerDAO extends BasicBD{
 			aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getUrlRitorno() + "?esito="+pagamentoPortale.getPspEsito());
 			break;
 		case PAGAMENTO_IN_CORSO_AL_PSP:
-			aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getPspRedirect());
+			aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getPspRedirectUrl());
 			break;
 		case PAGAMENTO_NON_ESEGUITO:
 			aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getUrlRitorno() + "?esito="+pagamentoPortale.getPspEsito());
@@ -75,6 +75,11 @@ public class WebControllerDAO extends BasicBD{
 							&& aggiornaPagamentiPortaleDTO.getWispKeyPA() != null
 							&& aggiornaPagamentiPortaleDTO.getWispKeyWisp() != null)  {
 						
+						pagamentoPortale.setWispIdDominio(aggiornaPagamentiPortaleDTO.getWispDominio());
+						pagamentoPortale.setWispKeyPA(aggiornaPagamentiPortaleDTO.getWispKeyPA());
+						pagamentoPortale.setWispKeyWisp(aggiornaPagamentiPortaleDTO.getWispKeyWisp());
+						
+						
 						// risoluzione del token wisp
 						String tokenWisp = "";
 						
@@ -86,11 +91,9 @@ public class WebControllerDAO extends BasicBD{
 							aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getUrlRitorno() + "?esito=TIMEOUT");
 						} else if(tokenWisp.equals("OK")) {
 							// leggere id psp , e tipo_versamento [TODO]
-							pagamentoPortale.setIdPsp(null);
-							pagamentoPortale.setTipoVersamento(null);
-							pagamentoPortale.setWispIdDominio(aggiornaPagamentiPortaleDTO.getWispDominio());
-							pagamentoPortale.setWispKeyPA(aggiornaPagamentiPortaleDTO.getWispKeyPA());
-							pagamentoPortale.setWispKeyWisp(aggiornaPagamentiPortaleDTO.getWispKeyWisp());
+//							pagamentoPortale.setIdPsp(null);
+//							pagamentoPortale.setTipoVersamento(null);
+//							pagamentoPortale.setCodCanale(null); 
 							
 							// invio RPT [TODO]
 							Rpt rpt = new Rpt();
@@ -99,7 +102,7 @@ public class WebControllerDAO extends BasicBD{
 							if(rpt.getPspRedirectURL() != null) {
 								pagamentoPortale.setStato(STATO.PAGAMENTO_IN_CORSO_AL_PSP);
 								pagamentoPortale.setIdSessionePsp(rpt.getCodSessione());
-								pagamentoPortale.setPspRedirect(rpt.getPspRedirectURL()); 
+								pagamentoPortale.setPspRedirectUrl(rpt.getPspRedirectURL()); 
 								aggiornaPagamentiPortaleDTOResponse.setLocation(rpt.getPspRedirectURL());
 							} else {							
 								pagamentoPortale.setStato(STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
