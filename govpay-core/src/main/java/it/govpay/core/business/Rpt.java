@@ -16,7 +16,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;

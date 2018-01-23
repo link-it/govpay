@@ -1,87 +1,160 @@
 package it.govpay.bd.pagamento;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.converter.PagamentoPortaleConverter;
+import it.govpay.orm.IdPagamentoPortale;
+import it.govpay.orm.IdVersamento;
+import it.govpay.orm.PagamentoPortaleVersamento;
+import it.govpay.orm.dao.IDBPagamentoPortaleService;
+import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleVersamentoFieldConverter;
 
 public class PagamentiPortaleBD extends BasicBD{
 	
 	
-	private static Map<Long, PagamentoPortale> dbPagamentiPortale;
-	private static Long nextId = 0L;
-	
-	public static Long getNextId() {
-		return  ++ nextId ;
-	}
-	
-	public static Map<Long, PagamentoPortale> getDB() {
-		if(dbPagamentiPortale == null)
-			init();
-		
-		return dbPagamentiPortale;
-	}
-	
-	public static synchronized void init() {
-		if(dbPagamentiPortale == null) {
-			dbPagamentiPortale = new HashMap<Long, PagamentoPortale>();
-			nextId = 0L;
-		}
-	}
-
 	public PagamentiPortaleBD(BasicBD basicBD) {
 		super(basicBD);
 	}
 
-	/**
-	 * Crea un nuovo pagamento.
-	 */
 	public void insertPagamento(PagamentoPortale pagamentoPortale) throws ServiceException {
-		// salvataggio della entry sul db [TODO] bussu
-		Long id = PagamentiPortaleBD.getNextId();
-		PagamentiPortaleBD.getDB().put(id, pagamentoPortale);
-		pagamentoPortale.setId(id); 
+		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamentoPortale);
+		try {
+			this.getPagamentoPortaleService().create(vo);
+			pagamentoPortale.setId(vo.getId());
+			
+			insertPagPortVers(pagamentoPortale);
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		}
+		
+	}
+
+	private void insertPagPortVers(PagamentoPortale pagamentoPortale)
+			throws ServiceException, NotImplementedException {
+		for(IdVersamento idVersamento: pagamentoPortale.getIdVersamento()) {
+			PagamentoPortaleVersamento pagamentoPortaleVersamento = new PagamentoPortaleVersamento();
+			IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
+			idPagamentoPortale.setId(pagamentoPortale.getId());
+			pagamentoPortaleVersamento.setIdPagamentoPortale(idPagamentoPortale);
+			pagamentoPortaleVersamento.setIdVersamento(idVersamento);
+			
+			this.getPagamentoPortaleVersamentoService().create(pagamentoPortaleVersamento);
+		}
+	}
+
+	private void deleteAllPagPortVers(PagamentoPortale pagamentoPortale)
+			throws ServiceException, NotImplementedException {
+		
+		try {
+			IExpression exp = this.getPagamentoPortaleVersamentoService().newExpression();
+			CustomField field = new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", new PagamentoPortaleVersamentoFieldConverter(this.getJdbcProperties().getDatabase()).toTable(it.govpay.orm.PagamentoPortaleVersamento.model()));
+			exp.equals(field, pagamentoPortale.getId());
+			this.getPagamentoPortaleVersamentoService().deleteAll(exp);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
+		}
+	}
+
+	private List<PagamentoPortaleVersamento> getAllPagPortVers(PagamentoPortale pagamentoPortale)
+			throws ServiceException, NotImplementedException {
+		
+		try {
+			IPaginatedExpression exp = this.getPagamentoPortaleVersamentoService().newPaginatedExpression();
+			CustomField field = new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", new PagamentoPortaleVersamentoFieldConverter(this.getJdbcProperties().getDatabase()).toTable(it.govpay.orm.PagamentoPortaleVersamento.model()));
+			exp.equals(field, pagamentoPortale.getId());
+			return this.getPagamentoPortaleVersamentoService().findAll(exp);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
+		}
 	}
 
 	public void updatePagamento(PagamentoPortale pagamento) throws ServiceException {
-		PagamentiPortaleBD.getDB().remove(pagamento.getId());
-		PagamentiPortaleBD.getDB().put(pagamento.getId(), pagamento);
+		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
+		try {
+			this.getPagamentoPortaleService().update(this.getPagamentoPortaleService().convertToId(vo), vo);
+			deleteAllPagPortVers(pagamento);
+			insertPagPortVers(pagamento);
+		} catch (NotFoundException e) {
+			throw new ServiceException();
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		}
 	}
 	
 	/**
 	 * Recupera il pagamento identificato dalla chiave fisica
 	 */
-	public PagamentoPortale getPagamento(long id) throws ServiceException {
-		return PagamentiPortaleBD.getDB().get(id);
+	public PagamentoPortale getPagamento(long id) throws ServiceException,NotFoundException {
+		try {
+			return PagamentoPortaleConverter.toDTO(((IDBPagamentoPortaleService)this.getPagamentoPortaleService()).get(id));
+		} catch (MultipleResultException e) {
+			throw new ServiceException();
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		}
 	}
 	
 	/**
 	 * Recupera il pagamento identificato dal codSessione
 	 */
 	public PagamentoPortale getPagamentoFromCodSessione(String codSessione) throws ServiceException,NotFoundException {
-		for (Long key : PagamentiPortaleBD.getDB().keySet()) {
-			PagamentoPortale pagamentoPortale = PagamentiPortaleBD.getDB().get(key);
-			if(pagamentoPortale.getIdSessione().equals(codSessione))
-				return pagamentoPortale;
+		try {
+			IdPagamentoPortale id = new IdPagamentoPortale();
+			id.setIdSessione(codSessione);;
+			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().get(id));
+			
+			return getPagamentoArricchito(dto);
+		} catch (MultipleResultException e) {
+			throw new ServiceException();
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
 		}
-		
-		throw new NotFoundException("Pagamento con idSessione "+codSessione+" non trovato.");
 	}
 	
+	private PagamentoPortale getPagamentoArricchito(PagamentoPortale dto) throws ServiceException, NotImplementedException {
+		List<PagamentoPortaleVersamento> allPagPortVers = this.getAllPagPortVers(dto);
+		List<IdVersamento> idVersamento = new ArrayList<IdVersamento>();
+		for(PagamentoPortaleVersamento vers: allPagPortVers) {
+			idVersamento.add(vers.getIdVersamento());
+		}
+		dto.setIdVersamento(idVersamento);
+		return dto;
+	}
+
 	/**
 	 * Recupera il pagamento identificato dal codsessionepsp
 	 */
-	public PagamentoPortale getPagamentoFromCodSessionePsp(String codSessione) throws ServiceException,NotFoundException {
-		for (Long key : PagamentiPortaleBD.getDB().keySet()) {
-			PagamentoPortale pagamentoPortale = PagamentiPortaleBD.getDB().get(key);
-			if(pagamentoPortale.getIdSessionePsp().equals(codSessione))
-				return pagamentoPortale;
+	public PagamentoPortale getPagamentoFromCodSessionePsp(String codSessionePsp) throws ServiceException,NotFoundException {
+		try {
+			IExpression exp = this.getPagamentoPortaleService().newExpression();
+			exp.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PSP, codSessionePsp);
+			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().find(exp));
+			return getPagamentoArricchito(dto);
+		} catch (MultipleResultException e) {
+			throw new ServiceException();
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
 		}
-		
-		throw new NotFoundException("Pagamento con idSessionePsp "+codSessione+" non trovato.");
 	}
 }

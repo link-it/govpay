@@ -33,7 +33,7 @@ import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdRpt;
+import it.govpay.orm.IdPagamentoPortale;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.InUse;
@@ -51,41 +51,41 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-import it.govpay.orm.dao.jdbc.converter.RPTFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.RPTFetch;
+import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.PagamentoPortaleFetch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
-import it.govpay.orm.RPT;
+import it.govpay.orm.PagamentoPortale;
 
 /**     
- * JDBCRPTServiceSearchImpl
+ * JDBCPagamentoPortaleServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, IdRpt, JDBCServiceManager> {
+public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<PagamentoPortale, IdPagamentoPortale, JDBCServiceManager> {
 
-	private RPTFieldConverter _rptFieldConverter = null;
-	public RPTFieldConverter getRPTFieldConverter() {
-		if(this._rptFieldConverter==null){
-			this._rptFieldConverter = new RPTFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
+	private PagamentoPortaleFieldConverter _pagamentoPortaleFieldConverter = null;
+	public PagamentoPortaleFieldConverter getPagamentoPortaleFieldConverter() {
+		if(this._pagamentoPortaleFieldConverter==null){
+			this._pagamentoPortaleFieldConverter = new PagamentoPortaleFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
 		}		
-		return this._rptFieldConverter;
+		return this._pagamentoPortaleFieldConverter;
 	}
 	@Override
 	public ISQLFieldConverter getFieldConverter() {
-		return this.getRPTFieldConverter();
+		return this.getPagamentoPortaleFieldConverter();
 	}
 	
-	private RPTFetch rptFetch = new RPTFetch();
-	public RPTFetch getRPTFetch() {
-		return this.rptFetch;
+	private PagamentoPortaleFetch pagamentoPortaleFetch = new PagamentoPortaleFetch();
+	public PagamentoPortaleFetch getPagamentoPortaleFetch() {
+		return this.pagamentoPortaleFetch;
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getRPTFetch();
+		return getPagamentoPortaleFetch();
 	}
 	
 	
@@ -103,175 +103,77 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 	
 
 	@Override
-	public IdRpt convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, RPT rpt) throws NotImplementedException, ServiceException, Exception{
+	public IdPagamentoPortale convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, PagamentoPortale pagamentoPortale) throws NotImplementedException, ServiceException, Exception{
 	
-		IdRpt idRPT = new IdRpt();
-		idRPT.setCodMsgRichiesta(rpt.getCodMsgRichiesta());
+		IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
+		idPagamentoPortale.setIdSessione(pagamentoPortale.getIdSessione());
 	
-		return idRPT;
+		return idPagamentoPortale;
 	}
 	
 	@Override
-	public RPT get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-		Long id_rpt = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdRPT(jdbcProperties, log, connection, sqlQueryObject, id, true));
-		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_rpt,idMappingResolutionBehaviour);
+	public PagamentoPortale get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
+		Long id_pagamentoPortale = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdPagamentoPortale(jdbcProperties, log, connection, sqlQueryObject, id, true));
+		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_pagamentoPortale,idMappingResolutionBehaviour);
 		
 		
 	}
 	
 	@Override
-	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
+	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-		Long id_rpt = this.findIdRPT(jdbcProperties, log, connection, sqlQueryObject, id, false);
-		return id_rpt != null && id_rpt > 0;
+		Long id_pagamentoPortale = this.findIdPagamentoPortale(jdbcProperties, log, connection, sqlQueryObject, id, false);
+		return id_pagamentoPortale != null && id_pagamentoPortale > 0;
 		
 	}
 	
 	@Override
-	public List<IdRpt> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
+	public List<IdPagamentoPortale> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		List<IdRpt> list = new ArrayList<IdRpt>();
+		List<IdPagamentoPortale> list = new ArrayList<IdPagamentoPortale>();
 
-		try{
-			List<IField> fields = new ArrayList<IField>();
-			fields.add(RPT.model().COD_MSG_RICHIESTA);
+		// TODO: implementazione non efficente. 
+		// Per ottenere una implementazione efficente:
+		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari a create l'ID logico
+		// 2. Usare metodo getPagamentoPortaleFetch() sul risultato della select per ottenere un oggetto PagamentoPortale
+		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
+		// 3. Usare metodo convertToId per ottenere l'id
 
+        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
         
-			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
-			for(Map<String, Object> map: returnMap) {
-				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (RPT)this.getRPTFetch().fetch(jdbcProperties.getDatabase(), RPT.model(), map)));
+        for(Long id: ids) {
+        	PagamentoPortale pagamentoPortale = this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour);
+			IdPagamentoPortale idPagamentoPortale = this.convertToId(jdbcProperties,log,connection,sqlQueryObject,pagamentoPortale);
+        	list.add(idPagamentoPortale);
         }
-		} catch(NotFoundException e) {}
 
         return list;
 		
 	}
 	
-	private Long getNullableValueFromMap(String key, Map<String, Object> map) {
-		if(map.containsKey(key)) {
-			Object idObj = map.remove(key);
-			if(idObj instanceof Long) {
-				return (Long) idObj;
-			}
-		}
-
-		return null;
-	}
 	@Override
-	public List<RPT> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
+	public List<PagamentoPortale> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        List<RPT> list = new ArrayList<RPT>();
+        List<PagamentoPortale> list = new ArrayList<PagamentoPortale>();
         
-		try{
+        // TODO: implementazione non efficente. 
+		// Per ottenere una implementazione efficente:
+		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari
+		// 2. Usare metodo getPagamentoPortaleFetch() sul risultato della select per ottenere un oggetto PagamentoPortale
+		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
 
-			List<IField> fields = new ArrayList<IField>();
-			fields.add(new CustomField("id", Long.class, "id", this.getRPTFieldConverter().toTable(RPT.model())));
-			fields.add(RPT.model().COD_CARRELLO);
-			fields.add(RPT.model().IUV);
-			fields.add(RPT.model().CCP);
-			fields.add(RPT.model().COD_DOMINIO);
-			fields.add(RPT.model().COD_MSG_RICHIESTA);
-			fields.add(RPT.model().DATA_MSG_RICHIESTA);
-			fields.add(RPT.model().STATO);
-			fields.add(RPT.model().DESCRIZIONE_STATO);
-			fields.add(RPT.model().COD_SESSIONE);
-			fields.add(RPT.model().COD_SESSIONE_PORTALE);
-			fields.add(RPT.model().PSP_REDIRECT_URL);
-			fields.add(RPT.model().XML_RPT);
-			fields.add(RPT.model().DATA_AGGIORNAMENTO_STATO);
-			fields.add(RPT.model().CALLBACK_URL);
-			fields.add(RPT.model().MODELLO_PAGAMENTO);
-			fields.add(RPT.model().CALLBACK_URL);
-			fields.add(RPT.model().COD_MSG_RICEVUTA);
-			fields.add(RPT.model().DATA_MSG_RICEVUTA);
-			fields.add(RPT.model().FIRMA_RICEVUTA);
-			fields.add(RPT.model().COD_ESITO_PAGAMENTO);
-			fields.add(RPT.model().IMPORTO_TOTALE_PAGATO);
-			fields.add(RPT.model().XML_RT);
-			fields.add(RPT.model().COD_STAZIONE);
-			fields.add(RPT.model().COD_TRANSAZIONE_RPT);
-			fields.add(RPT.model().COD_TRANSAZIONE_RT);
-			fields.add(RPT.model().STATO_CONSERVAZIONE);
-			fields.add(RPT.model().DESCRIZIONE_STATO_CONS);
-			fields.add(RPT.model().DATA_CONSERVAZIONE);
-
-			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getRPTFieldConverter().toTable(RPT.model())));
-			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getRPTFieldConverter().toTable(RPT.model())));
-			fields.add(new CustomField("id_portale", Long.class, "id_portale", this.getRPTFieldConverter().toTable(RPT.model())));
-			fields.add(new CustomField("id_canale", Long.class, "id_canale", this.getRPTFieldConverter().toTable(RPT.model())));
+        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
         
-			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
-			for(Map<String, Object> map: returnMap) {
-
-				Long idVersamento = (Long)map.remove("id_versamento");
-
-				Long idCanale = (Long)map.remove("id_canale");
-				Long idPortale = getNullableValueFromMap("id_portale", map);
-				Long idPagamentoPortale = getNullableValueFromMap("id_pagamento_portale", map);
-
-				RPT rpt = (RPT)this.getRPTFetch().fetch(jdbcProperties.getDatabase(), RPT.model(), map);
-				it.govpay.orm.IdVersamento id_rpt_versamento = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_rpt_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-				}else{
-					id_rpt_versamento = new it.govpay.orm.IdVersamento();
+        for(Long id: ids) {
+        	list.add(this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour));
         }
-				id_rpt_versamento.setId(idVersamento);
-				rpt.setIdVersamento(id_rpt_versamento);
-
-
-				it.govpay.orm.IdCanale id_rpt_canale = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_rpt_canale = ((JDBCCanaleServiceSearch)(this.getServiceManager().getCanaleServiceSearch())).findId(idCanale, false);
-				}else{
-					id_rpt_canale = new it.govpay.orm.IdCanale();
-				}
-				id_rpt_canale.setId(idCanale);
-
-				rpt.setIdCanale(id_rpt_canale);
-
-				if(idPortale != null && idPortale > 0){
-					it.govpay.orm.IdPortale id_rpt_portale = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_rpt_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findId(idPortale, false);
-					}else{
-						id_rpt_portale = new it.govpay.orm.IdPortale();
-					}
-					id_rpt_portale.setId(idPortale);
-					rpt.setIdPortale(id_rpt_portale);
-				}
-
-				if(idPagamentoPortale != null && idPagamentoPortale > 0){
-					it.govpay.orm.IdPagamentoPortale id_rpt_idPagamentoPortale = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_rpt_idPagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findId(idPagamentoPortale, false);
-					}else{
-						id_rpt_idPagamentoPortale = new it.govpay.orm.IdPagamentoPortale();
-					}
-					id_rpt_idPagamentoPortale.setId(idPagamentoPortale);
-					rpt.setIdPagamentoPortale(id_rpt_idPagamentoPortale);
-				}
-
-				list.add(rpt);
-			}
-		} catch(NotFoundException e) {}
 
         return list;      
 		
 	}
 	
 	@Override
-	public RPT find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public PagamentoPortale find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
         long id = this.findTableId(jdbcProperties, log, connection, sqlQueryObject, expression);
@@ -287,21 +189,21 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getRPTFieldConverter(), RPT.model());
+												this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model());
 		
-		sqlQueryObject.addSelectCountField(this.getRPTFieldConverter().toTable(RPT.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model())+".id","tot",true);
 		
 		_join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
-																			this.getRPTFieldConverter(), RPT.model(),listaQuery);
+																			this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(),listaQuery);
 	}
 
 	@Override
-	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
+	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
 		
-		Long id_rpt = this.findIdRPT(jdbcProperties, log, connection, sqlQueryObject, id, true);
-        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_rpt);
+		Long id_pagamentoPortale = this.findIdPagamentoPortale(jdbcProperties, log, connection, sqlQueryObject, id, true);
+        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_pagamentoPortale);
 		
 	}
 
@@ -336,7 +238,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		
 			ISQLQueryObject sqlQueryObjectDistinct = 
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
-												this.getRPTFieldConverter(), field);
+												this.getPagamentoPortaleFieldConverter(), field);
 
 			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
@@ -409,14 +311,14 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		List<Object> listaQuery = new ArrayList<Object>();
 		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
-        						expression, this.getRPTFieldConverter(), RPT.model(), 
+        						expression, this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(), 
         						listaQuery,listaParams);
 		
 		_join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
-        								expression, this.getRPTFieldConverter(), RPT.model(),
+        								expression, this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(),
         								listaQuery,listaParams,returnField);
 		if(list!=null && list.size()>0){
 			return list;
@@ -433,7 +335,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
 		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getRPTFieldConverter(), RPT.model(), 
+        						this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
@@ -445,7 +347,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		}
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getRPTFieldConverter(), RPT.model(), 
+        								this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(list!=null && list.size()>0){
 			return list;
@@ -462,7 +364,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
 		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getRPTFieldConverter(), RPT.model(), 
+        						this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
@@ -474,7 +376,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		}
         
         NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getRPTFieldConverter(), RPT.model(), 
+        								this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(number!=null && number.longValue()>=0){
 			return number;
@@ -491,7 +393,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCExpression(this.getRPTFieldConverter());
+			return new JDBCExpression(this.getPagamentoPortaleFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -501,7 +403,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 	@Override
 	public JDBCPaginatedExpression newPaginatedExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCPaginatedExpression(this.getRPTFieldConverter());
+			return new JDBCPaginatedExpression(this.getPagamentoPortaleFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -530,68 +432,76 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 	// -- DB
 
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id, RPT obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id, PagamentoPortale obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, RPT obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, PagamentoPortale obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
-	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, RPT obj, RPT imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, PagamentoPortale obj, PagamentoPortale imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		if(imgSaved==null){
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdVersamento()!=null && 
-				imgSaved.getIdVersamento()!=null){
-			obj.getIdVersamento().setId(imgSaved.getIdVersamento().getId());
-			if(obj.getIdVersamento().getIdApplicazione()!=null && 
-					imgSaved.getIdVersamento().getIdApplicazione()!=null){
-				obj.getIdVersamento().getIdApplicazione().setId(imgSaved.getIdVersamento().getIdApplicazione().getId());
-			}
-		}
-		if(obj.getIdCanale()!=null && 
-				imgSaved.getIdCanale()!=null){
-			obj.getIdCanale().setId(imgSaved.getIdCanale().getId());
-			if(obj.getIdCanale().getIdPsp()!=null && 
-					imgSaved.getIdCanale().getIdPsp()!=null){
-				obj.getIdCanale().getIdPsp().setId(imgSaved.getIdCanale().getIdPsp().getId());
-			}
-		}
-		if(obj.getIdPortale()!=null && 
-				imgSaved.getIdPortale()!=null){
-			obj.getIdPortale().setId(imgSaved.getIdPortale().getId());
-		}
 
 	}
 	
 	@Override
-	public RPT get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	public PagamentoPortale get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
 	
-	private RPT _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	private PagamentoPortale _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		IField idField = new CustomField("id", Long.class, "id", this.getRPTFieldConverter().toTable(RPT.model()));
-		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
-		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
-		List<RPT> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+		// default behaviour (id-mapping)
+		if(idMappingResolutionBehaviour==null){
+			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+		}
 		
-		if(lst.size() <=0)
-			throw new NotFoundException("Id ["+tableId+"]");
+		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 				
-		if(lst.size() > 1)
-			throw new MultipleResultException("Id ["+tableId+"]");
+		PagamentoPortale pagamentoPortale = new PagamentoPortale();
 		
 
-		return lst.get(0);
+		// Object pagamentoPortale
+		ISQLQueryObject sqlQueryObjectGet_pagamentoPortale = sqlQueryObjectGet.newSQLQueryObject();
+		sqlQueryObjectGet_pagamentoPortale.setANDLogicOperator(true);
+		sqlQueryObjectGet_pagamentoPortale.addFromTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField("id");
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PORTALE,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_CANALE,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE_PORTALE,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE_PSP,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().STATO,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_REDIRECT_URL,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_ESITO,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().JSON_REQUEST,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_ID_DOMINIO,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_KEY_PA,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_KEY_WISP,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_HTML,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().DATA_RICHIESTA,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().URL_RITORNO,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PSP,true));
+		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO_VERSAMENTO,true));
+		sqlQueryObjectGet_pagamentoPortale.addWhereCondition("id=?");
+
+		// Get pagamentoPortale
+		pagamentoPortale = (PagamentoPortale) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_pagamentoPortale.createSQLQuery(), jdbcProperties.isShowSql(), PagamentoPortale.model(), this.getPagamentoPortaleFetch(),
+			new JDBCObject(tableId,Long.class));
+
+
+
+		
+        return pagamentoPortale;  
 	
 	} 
 	
@@ -605,104 +515,53 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 				
-		boolean existsRPT = false;
+		boolean existsPagamentoPortale = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
 		sqlQueryObject.setANDLogicOperator(true);
 
-		sqlQueryObject.addFromTable(this.getRPTFieldConverter().toTable(RPT.model()));
-		sqlQueryObject.addSelectField(this.getRPTFieldConverter().toColumn(RPT.model().COD_CARRELLO,true));
+		sqlQueryObject.addFromTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
+		sqlQueryObject.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PORTALE,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
-		// Exists rpt
-		existsRPT = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
+		// Exists pagamentoPortale
+		existsPagamentoPortale = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
 			new JDBCObject(tableId,Long.class));
 
 		
-        return existsRPT;
+        return existsPagamentoPortale;
 	
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 	
-		if(expression.inUseModel(RPT.model().ID_VERSAMENTO,false)){
-			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
-			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_VERSAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_versmento="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(RPT.model().ID_CANALE,false)){
-			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
-			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_CANALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_canale="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(RPT.model().ID_PORTALE,false)){
-			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
-			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_PORTALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_portale="+tableName2+".id");
-		}
-		
 	}
 	
-	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
+	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-		Long longId = this.findIdRPT(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
+		Long longId = this.findIdPagamentoPortale(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
-        
         
         return rootTableIdValues;
 	}
 	
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
-		RPTFieldConverter converter = this.getRPTFieldConverter();
+		PagamentoPortaleFieldConverter converter = this.getPagamentoPortaleFieldConverter();
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
 
-		// RPT.model()
-		mapTableToPKColumn.put(converter.toTable(RPT.model()),
+		// PagamentoPortale.model()
+		mapTableToPKColumn.put(converter.toTable(PagamentoPortale.model()),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model()))
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortale.model()))
 			));
 
-		// RPT.model().ID_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_VERSAMENTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO))
-			));
-
-		// RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE))
-			));
-
-		// RPT.model().ID_CANALE
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_CANALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_CANALE))
-			));
-
-		// RPT.model().ID_CANALE.ID_PSP
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_CANALE.ID_PSP),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_CANALE.ID_PSP))
-			));
-
-		// RPT.model().ID_PORTALE
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_PORTALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_PORTALE))
-			));
-
-
-        
-        return mapTableToPKColumn;		
+		return mapTableToPKColumn;		
 	}
 	
 	@Override
@@ -712,16 +571,16 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getRPTFieldConverter().toTable(RPT.model())+".id");
+		sqlQueryObject.addSelectField(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-												this.getRPTFieldConverter(), RPT.model());
+												this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model());
 		
 		_join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-																			this.getRPTFieldConverter(), RPT.model(), objectIdClass, listaQuery);
+																			this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(), objectIdClass, listaQuery);
 		for(Object object: listObjects) {
 			list.add((Long)object);
 		}
@@ -732,18 +591,19 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 	
 	@Override
 	public long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException, Exception {
-		sqlQueryObject.setSelectDistinct(false);
+	
+		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getRPTFieldConverter().toTable(RPT.model())+".id");
+		sqlQueryObject.addSelectField(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getRPTFieldConverter(), RPT.model());
+												this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model());
 		
 		_join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
-														this.getRPTFieldConverter(), RPT.model(), objectIdClass, listaQuery);
+														this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model(), objectIdClass, listaQuery);
 		if(res!=null && (((Long) res).longValue()>0) ){
 			return ((Long) res).longValue();
 		}
@@ -763,19 +623,12 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the method
-
         return inUse;
 
 	}
 	
 	@Override
-	public IdRpt findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
+	public IdPagamentoPortale findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
@@ -783,39 +636,42 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-		sqlQueryObjectGet.addFromTable(this.getRPTFieldConverter().toTable(RPT.model()));
-		sqlQueryObjectGet.addSelectField(this.getRPTFieldConverter().toColumn(RPT.model().COD_MSG_RICHIESTA,true));
+		// Object _pagamentoPortale
+		sqlQueryObjectGet.addFromTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
+		sqlQueryObjectGet.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
-		// Recupero _rpt
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_rpt = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		// Recupero _pagamentoPortale
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_pagamentoPortale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_rpt = new ArrayList<Class<?>>();
-		listaFieldIdReturnType_rpt.add(RPT.model().COD_MSG_RICHIESTA.getFieldType());
-		it.govpay.orm.IdRpt id_rpt = null;
-		List<Object> listaFieldId_rpt = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-				listaFieldIdReturnType_rpt, searchParams_rpt);
-		if(listaFieldId_rpt==null || listaFieldId_rpt.size()<=0){
+		List<Class<?>> listaFieldIdReturnType_pagamentoPortale = new ArrayList<Class<?>>();
+		listaFieldIdReturnType_pagamentoPortale.add(PagamentoPortale.model().ID_SESSIONE.getFieldType());
+
+		it.govpay.orm.IdPagamentoPortale id_pagamentoPortale = null;
+		List<Object> listaFieldId_pagamentoPortale = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+				listaFieldIdReturnType_pagamentoPortale, searchParams_pagamentoPortale);
+		if(listaFieldId_pagamentoPortale==null || listaFieldId_pagamentoPortale.size()<=0){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 		else{
-			id_rpt = new it.govpay.orm.IdRpt();
-			id_rpt.setCodMsgRichiesta((String) listaFieldId_rpt.get(0));
+			// set _pagamentoPortale
+			id_pagamentoPortale = new it.govpay.orm.IdPagamentoPortale();
+			id_pagamentoPortale.setIdSessione((String)listaFieldId_pagamentoPortale.get(0));
 		}
 		
-		return id_rpt;
+		return id_pagamentoPortale;
 		
 	}
 
 	@Override
-	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id, boolean throwNotFound)
+	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 	
-		return this.findIdRPT(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
+		return this.findIdPagamentoPortale(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
 			
 	}
 	
@@ -828,40 +684,39 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 														
 	}
 	
-	protected Long findIdRPT(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
+	protected Long findIdPagamentoPortale(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-
-		// Object _rpt
-		sqlQueryObjectGet.addFromTable(this.getRPTFieldConverter().toTable(RPT.model()));
+		// Object _pagamentoPortale
+		sqlQueryObjectGet.addFromTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.setSelectDistinct(true);
-		sqlQueryObjectGet.addWhereCondition(this.getRPTFieldConverter().toColumn(RPT.model().COD_MSG_RICHIESTA,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE,true)+"=?");
 
-		// Recupero _rpt
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_rpt = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodMsgRichiesta(),RPT.model().COD_MSG_RICHIESTA.getFieldType())
+		// Recupero _pagamentoPortale
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_pagamentoPortale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdSessione(),PagamentoPortale.model().ID_SESSIONE.getFieldType()),
 		};
-		Long id_rpt = null;
+		Long id_pagamentoPortale = null;
 		try{
-			id_rpt = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-						Long.class, searchParams_rpt);
+			id_pagamentoPortale = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+						Long.class, searchParams_pagamentoPortale);
 		}catch(NotFoundException notFound){
 			if(throwNotFound){
 				throw new NotFoundException(notFound);
 			}
 		}
-		if(id_rpt==null || id_rpt<=0){
+		if(id_pagamentoPortale==null || id_pagamentoPortale<=0){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 		
-		return id_rpt;
+		return id_pagamentoPortale;
 	}
 }

@@ -43,6 +43,8 @@
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
 									object-type="SingoloVersamento"/>
+								<linkit:sql-table object-name="PagamentoPortale" object-type="PagamentoPortale"/>
+								<linkit:sql-table object-name="PagamentoPortaleVersamento" object-type="PagamentoPortaleVersamento"/>
 								<linkit:sql-table object-name="RPT" object-type="RPT"/>
 								<linkit:sql-table object-name="RR" object-type="RR"/>
 								<linkit:sql-table object-name="Notifica" object-type="Notifica"/>
@@ -215,6 +217,12 @@
 			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0"/>
 			<xsd:element name="indiceDati" type="xsd:int"/>
 			<xsd:element name="iuv" type="String35" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-pagamento-portale">
+		<xsd:sequence>
+			<xsd:element name="idSessione" type="String255"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -1423,6 +1431,17 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="idPagamentoPortale" type="id-pagamento-portale" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="PagamentoPortale" object-type="PagamentoPortale"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 
 			<xsd:element name="idCanale" type="id-canale">
 				<xsd:annotation>
@@ -1645,8 +1664,100 @@
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
-
-
+	
+	
+	<xsd:element name="PagamentoPortaleVersamento" type="PagamentoPortaleVersamento"/>
+	<xsd:complexType name="PagamentoPortaleVersamento">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" />
+					<linkit:sql-table-mapping generate-sql="true" name="pag_port_versamenti"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_ppv"/>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idPagamentoPortale" type="id-pagamento-portale">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="PagamentoPortale" object-type="PagamentoPortale"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idVersamento" type="id-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Versamento" object-type="Versamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	
+	<xsd:element name="PagamentoPortale" type="PagamentoPortale"/>
+	<xsd:complexType name="PagamentoPortale">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-pagamento-portale"/>
+					<linkit:sql-table-mapping generate-sql="true" name="pagamenti_portale"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_ppt"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="idSessione"/>
+						</linkit:sql-table-unique>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="codPortale" type="String35"/>
+			<xsd:element name="codCanale" type="String35"/>
+			<xsd:element name="idSessione" type="String35"/>
+			<xsd:element name="idSessionePortale" type="String35" minOccurs="0"/>
+			<xsd:element name="idSessionePsp" type="String35" minOccurs="0"/>
+			<xsd:element name="stato" type="String35" />
+			<xsd:element name="pspRedirectURL" type="String1024" minOccurs="0"/>
+			<xsd:element name="pspEsito" type="String255" minOccurs="0"/>
+			<xsd:element name="jsonRequest" type="String512" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="wispIdDominio" type="String255" minOccurs="0"/>
+			<xsd:element name="wispKeyPA" type="String255" minOccurs="0"/>
+			<xsd:element name="wispKeyWisp" type="String255" minOccurs="0"/>
+			<xsd:element name="wispHtml" type="String512" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="dataRichiesta" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="urlRitorno" type="String1024"/>
+			<xsd:element name="codPsp" type="String35" minOccurs="0"/>
+			<xsd:element name="tipoVersamento" type="String4" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	
 	<xsd:element name="Pagamento" type="Pagamento"/>
 	<xsd:complexType name="Pagamento">
 		<xsd:annotation>

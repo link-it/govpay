@@ -124,6 +124,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 			
 			IdVersamento idV = new IdVersamento();
 			idV.setCodVersamentoEnte(versamentoModel.getCodVersamentoEnte());
+			idV.setId(versamentoModel.getId());
 			idVersamento.add(idV);
 			
 			if(i == 0) {
@@ -253,7 +254,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		pagamentoPortale.setPspRedirectUrl(pspRedirect);
 		pagamentoPortale.setStato(stato);
 		pagamentoPortale.setWispIdDominio(codDominio);
-		pagamentoPortale.setIdPsp(idPsp);
+		pagamentoPortale.setCodPsp(idPsp);
 		pagamentoPortale.setTipoVersamento(tipoVersamento);
 		pagamentoPortale.setCodCanale(codCanale); 
 		

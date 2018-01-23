@@ -87,6 +87,23 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
+		// Object _pagamentoPortale
+		Long id_pagamentoPortale = null;
+		it.govpay.orm.IdPagamentoPortale idLogic_pagamentoPortale = null;
+		idLogic_pagamentoPortale = rpt.getIdPagamentoPortale();
+		if(idLogic_pagamentoPortale!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_pagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findTableId(idLogic_pagamentoPortale, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_pagamentoPortale = idLogic_pagamentoPortale.getId();
+				if(id_pagamentoPortale==null || id_pagamentoPortale<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 		// Object _canale
 		Long id_canale = null;
 		it.govpay.orm.IdCanale idLogic_canale = null;
@@ -186,6 +203,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDescrizioneStatoCons(),RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataConservazione(),RPT.model().DATA_CONSERVAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_canale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class)
 		);
@@ -247,6 +265,23 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
 				id_rpt_versamento = idLogic_rpt_versamento.getId();
 				if(id_rpt_versamento==null || id_rpt_versamento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+		// Object _rpt_pagamentoPortale
+		Long id_rpt_pagamentoPortale = null;
+		it.govpay.orm.IdPagamentoPortale idLogic_rpt_pagamentoPortale = null;
+		idLogic_rpt_pagamentoPortale = rpt.getIdPagamentoPortale();
+		if(idLogic_rpt_pagamentoPortale!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_rpt_pagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findTableId(idLogic_rpt_pagamentoPortale, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_rpt_pagamentoPortale = idLogic_rpt_pagamentoPortale.getId();
+				if(id_rpt_pagamentoPortale==null || id_rpt_pagamentoPortale<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -350,6 +385,9 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_pagamento_portale","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_canale","?");
 		}
 		if(setIdMappingResolutionBehaviour){
@@ -357,6 +395,9 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_versamento, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_rpt.add(new JDBCObject(id_rpt_pagamentoPortale, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_canale, Long.class));

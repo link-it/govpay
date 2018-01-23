@@ -75,6 +75,10 @@ public class ModelFactory {
 	
 	public static RendicontazioneModel RENDICONTAZIONE = new RendicontazioneModel();
 	
+	public static PagamentoPortaleVersamentoModel PAGAMENTO_PORTALE_VERSAMENTO = new PagamentoPortaleVersamentoModel();
+	
+	public static PagamentoPortaleModel PAGAMENTO_PORTALE = new PagamentoPortaleModel();
+	
 	public static PagamentoModel PAGAMENTO = new PagamentoModel();
 	
 	public static NotificaModel NOTIFICA = new NotificaModel();

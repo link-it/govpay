@@ -19,6 +19,14 @@
  */
 package it.govpay.bd;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.apache.log4j.Logger;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.anagrafica.AuditBD;
 import it.govpay.model.BasicModel;
 import it.govpay.orm.dao.IACLService;
@@ -43,6 +51,8 @@ import it.govpay.orm.dao.IDBIntermediarioService;
 import it.govpay.orm.dao.IDBNotificaService;
 import it.govpay.orm.dao.IDBOperatoreService;
 import it.govpay.orm.dao.IDBOperazioneService;
+import it.govpay.orm.dao.IDBPagamentoPortaleService;
+import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IDBPagamentoService;
 import it.govpay.orm.dao.IDBPortaleService;
 import it.govpay.orm.dao.IDBPspService;
@@ -67,6 +77,8 @@ import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IOperatoreService;
 import it.govpay.orm.dao.IOperazioneService;
+import it.govpay.orm.dao.IPagamentoPortaleService;
+import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IPspService;
@@ -83,14 +95,6 @@ import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class BasicBD {
 	
@@ -113,6 +117,8 @@ public class BasicBD {
 	private IOperatoreService operatoreService;
 	private IOperazioneService operazioneService;
 	private IPagamentoService pagamentoService;
+	private IPagamentoPortaleService pagamentoPortaleService;
+	private IPagamentoPortaleVersamentoService pagamentoPortaleVersamentoService;
 	private IPortaleService portaleService;
 	private IPspService pspService;
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
@@ -187,6 +193,8 @@ public class BasicBD {
 				this.operazioneService = this.serviceManager.getOperazioneService();
 				this.portaleService = this.serviceManager.getPortaleService();
 				this.pagamentoService = this.serviceManager.getPagamentoService();
+				this.pagamentoPortaleService = this.serviceManager.getPagamentoPortaleService();
+				this.pagamentoPortaleVersamentoService = this.serviceManager.getPagamentoPortaleVersamentoService();
 				this.pspService = this.serviceManager.getPspService();
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
@@ -231,6 +239,8 @@ public class BasicBD {
 			((IDBOperatoreService)this.operatoreService).enableSelectForUpdate();
 			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
+			((IDBPagamentoPortaleService)this.pagamentoPortaleService).enableSelectForUpdate();
+			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).enableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).enableSelectForUpdate();
 			((IDBPspService)this.pspService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
@@ -272,6 +282,8 @@ public class BasicBD {
 			((IDBOperatoreService)this.operatoreService).disableSelectForUpdate();
 			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
+			((IDBPagamentoPortaleService)this.pagamentoPortaleService).disableSelectForUpdate();
+			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).disableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).disableSelectForUpdate();
 			((IDBPspService)this.pspService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
@@ -410,6 +422,20 @@ public class BasicBD {
 			return father.getPagamentoService();
 		}
 		return pagamentoService;
+	}
+
+	public IPagamentoPortaleService getPagamentoPortaleService() {
+		if(father != null) {
+			return father.getPagamentoPortaleService();
+		}
+		return pagamentoPortaleService;
+	}
+
+	public IPagamentoPortaleVersamentoService getPagamentoPortaleVersamentoService() {
+		if(father != null) {
+			return father.getPagamentoPortaleVersamentoService();
+		}
+		return pagamentoPortaleVersamentoService;
 	}
 
 	public IPortaleService getPortaleService() {

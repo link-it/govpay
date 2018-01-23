@@ -130,6 +130,13 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "stato_versamento";
 			}
 		}
+		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_sessione";
+			}else{
+				return "id_sessione";
+			}
+		}
 		if(field.equals(RPT.model().ID_CANALE.ID_PSP.COD_PSP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_psp";
@@ -387,6 +394,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RPT.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
+			return this.toTable(RPT.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		}
 		if(field.equals(RPT.model().ID_CANALE.ID_PSP.COD_PSP)){
 			return this.toTable(RPT.model().ID_CANALE.ID_PSP, returnAlias);
 		}
@@ -501,6 +511,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
 			return "id_applicazione";
+		}
+		if(model.equals(RPT.model().ID_PAGAMENTO_PORTALE)){
+			return "pagamenti_portale";
 		}
 		if(model.equals(RPT.model().ID_CANALE)){
 			return "canali";

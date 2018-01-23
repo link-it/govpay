@@ -20,6 +20,15 @@
     <value name="indiceDati" field="indiceDati" usage="required"/>
     <value name="iuv" field="iuv" usage="optional"/>
   </mapping>
+  <mapping name="idPagamentoPortale" class="it.govpay.orm.IdPagamentoPortale" abstract="false">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idSessione" field="idSessione" usage="required"/>
+  </mapping>
+
+  <mapping type-name="_IdPagamentoPortale_Type" class="it.govpay.orm.IdPagamentoPortale" abstract="true">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idSessione" field="idSessione" usage="required"/>
+  </mapping>
   <mapping name="id-rendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idRendicontazione" field="idRendicontazione" usage="required"/>
@@ -520,7 +529,8 @@
   </mapping>
   <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
+    <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
+    <structure name="idPagamentoPortale" field="idPagamentoPortale" usage="required" map-as="_IdPagamentoPortale_Type"/>
     <structure field="idCanale" usage="required" map-as="it.govpay.orm.IdCanale"/>
     <structure name="idPortale" field="idPortale" usage="optional" map-as="_IdPortale_Type"/>
     <value name="codCarrello" field="codCarrello" usage="optional"/>
@@ -582,6 +592,31 @@
     <value name="anomalie" field="anomalie" usage="optional"/>
     <structure field="idFR" usage="required" map-as="it.govpay.orm.IdFr"/>
     <structure name="idPagamento" field="idPagamento" usage="optional" map-as="_IdPagamento_Type"/>
+  </mapping>
+  <mapping name="PagamentoPortaleVersamento" class="it.govpay.orm.PagamentoPortaleVersamento">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <structure name="idPagamentoPortale" field="idPagamentoPortale" usage="required" map-as="_IdPagamentoPortale_Type"/>
+    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
+  </mapping>
+  <mapping name="PagamentoPortale" class="it.govpay.orm.PagamentoPortale">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codPortale" field="codPortale" usage="required"/>
+    <value name="codCanale" field="codCanale" usage="required"/>
+    <value name="idSessione" field="idSessione" usage="required"/>
+    <value name="idSessionePortale" field="idSessionePortale" usage="optional"/>
+    <value name="idSessionePsp" field="idSessionePsp" usage="optional"/>
+    <value name="stato" field="stato" usage="required"/>
+    <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
+    <value name="pspEsito" field="pspEsito" usage="optional"/>
+    <value name="jsonRequest" field="jsonRequest" usage="optional"/>
+    <value name="wispIdDominio" field="wispIdDominio" usage="optional"/>
+    <value name="wispKeyPA" field="wispKeyPA" usage="optional"/>
+    <value name="wispKeyWisp" field="wispKeyWisp" usage="optional"/>
+    <value name="wispHtml" field="wispHtml" usage="optional"/>
+    <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
+    <value name="urlRitorno" field="urlRitorno" usage="required"/>
+    <value name="codPsp" field="codPsp" usage="optional"/>
+    <value name="tipoVersamento" field="tipoVersamento" usage="optional"/>
   </mapping>
   <mapping name="Pagamento" class="it.govpay.orm.Pagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

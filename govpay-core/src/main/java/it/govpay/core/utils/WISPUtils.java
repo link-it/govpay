@@ -90,8 +90,8 @@ public class WISPUtils {
 		// bollo digitale
 		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_BOLLO_DIGITALE, bollodigitale ? "SI" : "NO"));
 		// id_psp		
-		if(pagamentoPortale.getIdPsp() != null)
-			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_ID_PSP, pagamentoPortale.getIdPsp()));
+		if(pagamentoPortale.getCodPsp() != null)
+			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_ID_PSP, pagamentoPortale.getCodPsp()));
 		// tipo_versamento
 		if(pagamentoPortale.getTipoVersamento() != null)
 			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_TIPO_VERSAMENTO, pagamentoPortale.getTipoVersamento()));

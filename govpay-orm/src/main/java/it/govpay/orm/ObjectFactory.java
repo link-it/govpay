@@ -60,6 +60,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link PagamentoPortaleVersamento }
+     */
+    public PagamentoPortaleVersamento createPagamentoPortaleVersamento() {
+        return new PagamentoPortaleVersamento();
+    }
+
+    /**
      * Create an instance of {@link IdDominio }
      */
     public IdDominio createIdDominio() {
@@ -277,6 +284,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link PagamentoPortale }
+     */
+    public PagamentoPortale createPagamentoPortale() {
+        return new PagamentoPortale();
+    }
+
+    /**
      * Create an instance of {@link IdPagamento }
      */
     public IdPagamento createIdPagamento() {
@@ -309,6 +323,13 @@ public class ObjectFactory {
      */
     public RendicontazionePagamento createRendicontazionePagamento() {
         return new RendicontazionePagamento();
+    }
+
+    /**
+     * Create an instance of {@link IdPagamentoPortale }
+     */
+    public IdPagamentoPortale createIdPagamentoPortale() {
+        return new IdPagamentoPortale();
     }
 
     /**

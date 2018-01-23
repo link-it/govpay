@@ -45,7 +45,7 @@ public class PagamentoPortale extends BasicModel {
 	private Long id;
 	private String urlRitorno = null;
 	
-	private String idPsp = null;
+	private String codPsp = null;
 	private String tipoVersamento = null;
 	private String codCanale = null;
 	
@@ -145,11 +145,11 @@ public class PagamentoPortale extends BasicModel {
 	public void setWispKeyWisp(String wispKeyWisp) {
 		this.wispKeyWisp = wispKeyWisp;
 	}
-	public String getIdPsp() {
-		return idPsp;
+	public String getCodPsp() {
+		return codPsp;
 	}
-	public void setIdPsp(String idPsp) {
-		this.idPsp = idPsp;
+	public void setCodPsp(String codPsp) {
+		this.codPsp = codPsp;
 	}
 	public String getTipoVersamento() {
 		return tipoVersamento;

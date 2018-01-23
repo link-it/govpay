@@ -35,7 +35,8 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="RPT">
  * 		&lt;sequence>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idCanale" type="{http://www.govpay.it/orm}id-canale" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idPortale" type="{http://www.govpay.it/orm}id-portale" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codCarrello" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -80,6 +81,7 @@ import java.io.Serializable;
 @XmlType(name = "RPT", 
   propOrder = {
   	"idVersamento",
+  	"idPagamentoPortale",
   	"idCanale",
   	"idPortale",
   	"codCarrello",
@@ -138,6 +140,14 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
   public void setIdVersamento(IdVersamento idVersamento) {
     this.idVersamento = idVersamento;
+  }
+
+  public IdPagamentoPortale getIdPagamentoPortale() {
+    return this.idPagamentoPortale;
+  }
+
+  public void setIdPagamentoPortale(IdPagamentoPortale idPagamentoPortale) {
+    this.idPagamentoPortale = idPagamentoPortale;
   }
 
   public IdCanale getIdCanale() {
@@ -397,8 +407,11 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   }
 
 
-  @XmlElement(name="idVersamento",required=true,nillable=false)
+  @XmlElement(name="idVersamento",required=false,nillable=false)
   protected IdVersamento idVersamento;
+
+  @XmlElement(name="idPagamentoPortale",required=true,nillable=false)
+  protected IdPagamentoPortale idPagamentoPortale;
 
   @XmlElement(name="idCanale",required=true,nillable=false)
   protected IdCanale idCanale;
