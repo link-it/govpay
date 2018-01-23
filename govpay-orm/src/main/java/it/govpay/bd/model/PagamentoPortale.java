@@ -44,14 +44,7 @@ public class PagamentoPortale extends BasicModel {
 	private Date dataRichiesta = null;
 	private Long id;
 	private String urlRitorno = null;
-	private String enteCreditore = null;
-	private int numeroPagamenti = 0;
-	private boolean bolloDigitale= false;
-	private double importo = 0d;
-	private String ibanAccredito= null;
-	private boolean contoPostale = false;
-	private String codiceLingua = null;
-	private boolean pagamentiModello2 = false;
+	
 	private String idPsp = null;
 	private String tipoVersamento = null;
 	
@@ -127,42 +120,6 @@ public class PagamentoPortale extends BasicModel {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public int getNumeroPagamenti() {
-		return numeroPagamenti;
-	}
-	public void setNumeroPagamenti(int numeroPagamenti) {
-		this.numeroPagamenti = numeroPagamenti;
-	}
-	public boolean isBolloDigitale() {
-		return bolloDigitale;
-	}
-	public void setBolloDigitale(boolean bolloDigitale) {
-		this.bolloDigitale = bolloDigitale;
-	}
-	public double getImporto() {
-		return importo;
-	}
-	public void setImporto(double importo) {
-		this.importo = importo;
-	}
-	public String getIbanAccredito() {
-		return ibanAccredito;
-	}
-	public void setIbanAccredito(String ibanAccredito) {
-		this.ibanAccredito = ibanAccredito;
-	}
-	public boolean isContoPostale() {
-		return contoPostale;
-	}
-	public void setContoPostale(boolean contoPostale) {
-		this.contoPostale = contoPostale;
-	}
-	public String getCodiceLingua() {
-		return codiceLingua;
-	}
-	public void setCodiceLingua(String codiceLingua) {
-		this.codiceLingua = codiceLingua;
-	}
 	public String getUrlRitorno() {
 		return urlRitorno;
 	}
@@ -186,18 +143,6 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setWispKeyWisp(String wispKeyWisp) {
 		this.wispKeyWisp = wispKeyWisp;
-	}
-	public String getEnteCreditore() {
-		return enteCreditore;
-	}
-	public void setEnteCreditore(String enteCreditore) {
-		this.enteCreditore = enteCreditore;
-	}
-	public boolean isPagamentiModello2() {
-		return pagamentiModello2;
-	}
-	public void setPagamentiModello2(boolean pagamentiModello2) {
-		this.pagamentiModello2 = pagamentiModello2;
 	}
 	public String getIdPsp() {
 		return idPsp;

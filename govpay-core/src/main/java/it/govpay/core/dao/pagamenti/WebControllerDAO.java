@@ -1,7 +1,5 @@
 package it.govpay.core.dao.pagamenti;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -18,14 +16,12 @@ import it.govpay.core.dao.pagamenti.exception.RedirectException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.WISPUtils;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class WebControllerDAO extends BasicBD{
 	
 	private static final String ACTION_BACK = "back";
 	private static final String ACTION_RETURN = "return";
-	private static Logger log = LogManager.getLogger();
 	
 	public WebControllerDAO(BasicBD basicBD) {
 		super(basicBD);
@@ -45,18 +41,9 @@ public class WebControllerDAO extends BasicBD{
 			
 		switch (pagamentoPortale.getStato()) {
 		case DA_REDIRIGERE_AL_WISP:
-			// costruire html
-			String template = WISPUtils.readTemplate();
-			
-			String urlReturn = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() + "?action=" + ACTION_RETURN;
-			String urlBack = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() + "?action=" + ACTION_BACK;
-			
-			String wispHtml = WISPUtils.getWispHtml(template, pagamentoPortale, urlReturn, urlBack); 
-			// aggiornare entry con html creato e stato = SELEZIONE_WISP_IN_CORSO
-			
 			pagamentoPortale.setStato(STATO.SELEZIONE_WISP_IN_CORSO);
-			pagamentoPortale.setWispHtml(wispHtml);
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
+			aggiornaPagamentiPortaleDTOResponse.setWispHtml(pagamentoPortale.getWispHtml());
 			break;
 		case PAGAMENTO_ESEGUITO:
 			aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getUrlRitorno() + "?esito="+pagamentoPortale.getPspEsito());

@@ -48,6 +48,7 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.WISPUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
@@ -67,6 +68,9 @@ import it.govpay.orm.IdVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class PagamentiPortaleDAO extends BasicBD{
+	
+	private static final String ACTION_BACK = "back";
+	private static final String ACTION_RETURN = "return";
 	
 	private static Logger log = LogManager.getLogger();
 	
@@ -199,6 +203,8 @@ public class PagamentiPortaleDAO extends BasicBD{
 		String redirectUrl = null;
 		String idSessionePsp = null;
 		String pspRedirect = null;
+		String idPsp = null;
+		String tipoVersamento = null;
 		PagamentoPortale pagamentoPortale = null;
 		PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
 		
@@ -206,6 +212,8 @@ public class PagamentiPortaleDAO extends BasicBD{
 		if(pagamentiPortaleDTO.getKeyPA() != null && pagamentiPortaleDTO.getKeyWISP() != null && pagamentiPortaleDTO.getIdDominio() != null) {
 			// procedo al pagamento
 			Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(pagamentiPortaleDTO.getVersante());
+			
+			// decodifica di tipo versamento e id psp dal canale
 			
 			//List<Rpt> rpts = avviaTransazione(versamenti, portaleAutenticato, pagamentiPortaleDTO.getCanale(), dto.getIbanAddebito(), versanteModel, dto.getAutenticazione(), pagamentiPortaleDTO.getUrlRitorno(), false);
 			
@@ -238,17 +246,19 @@ public class PagamentiPortaleDAO extends BasicBD{
 		pagamentoPortale.setPspRedirect(pspRedirect);
 		pagamentoPortale.setStato(stato);
 		pagamentoPortale.setWispIdDominio(codDominio);
-		pagamentoPortale.setEnteCreditore(enteCreditore);
-		pagamentoPortale.setNumeroPagamenti(numeroPagamenti);
-		pagamentoPortale.setCodiceLingua(pagamentiPortaleDTO.getLingua());
-		if(ibanAccredito != null)
-		pagamentoPortale.setIbanAccredito(ibanAccredito.getCodIban());
-		pagamentoPortale.setContoPostale(contoPostale);
-		pagamentoPortale.setBolloDigitale(hasBollo);
-		pagamentoPortale.setImporto(sommaImporti);
-		pagamentoPortale.setUrlRitorno(pagamentiPortaleDTO.getUrlRitorno());
-		pagamentoPortale.setPagamentiModello2(pagamentiModello2); 
+		pagamentoPortale.setIdPsp(idPsp);
+		pagamentoPortale.setTipoVersamento(tipoVersamento);
 		
+		// costruire html
+		String template = WISPUtils.readTemplate();
+		
+		String urlReturn = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() + "?action=" + ACTION_RETURN;
+		String urlBack = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() + "?action=" + ACTION_BACK;
+		
+		String wispHtml = WISPUtils.getWispHtml(template, pagamentoPortale, urlReturn, urlBack, enteCreditore, numeroPagamenti, ibanAccredito, contoPostale, hasBollo, sommaImporti,pagamentiModello2,
+				pagamentiPortaleDTO.getLingua()); 
+		
+		pagamentoPortale.setWispHtml(wispHtml);
 		pagamentiPortaleBD.insertPagamento(pagamentoPortale);
 
 		response.setRedirectUrl(redirectUrl);

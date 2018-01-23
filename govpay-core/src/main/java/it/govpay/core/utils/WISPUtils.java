@@ -9,6 +9,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.model.IbanAccredito;
 
 public class WISPUtils {
 
@@ -61,15 +62,16 @@ public class WISPUtils {
 
 	public static final String TEMPLATE_WISP_HTML = "/wisp.html";
 
-	public static List<HiddenParameter> creaListaParametriPagamentoPortale(PagamentoPortale pagamentoPortale, String urlReturn, String urlBack) {
+	public static List<HiddenParameter> creaListaParametriPagamentoPortale(PagamentoPortale pagamentoPortale, String urlReturn, String urlBack,String enteCreditore,
+			int numeroPagamenti, IbanAccredito ibanAccredito, boolean contoPostale, boolean bollodigitale, double importoTotale, boolean pagamentiModello2, String codiceLingua) {
 		List<HiddenParameter> listaParametri = new ArrayList<HiddenParameter>();
 
 		// id Dominio 
 		if(pagamentoPortale.getWispIdDominio() != null)
 			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_ID_DOMINIO, pagamentoPortale.getWispIdDominio()));
 		// Entecreditore		
-		if(pagamentoPortale.getEnteCreditore() != null)
-			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_ENTE_CREDITORE, pagamentoPortale.getEnteCreditore()));
+		if(enteCreditore != null)
+			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_ENTE_CREDITORE, enteCreditore));
 		// keypa
 		if(pagamentoPortale.getIdSessione() != null)
 			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_KEYPA, pagamentoPortale.getIdSessione()));
@@ -81,11 +83,11 @@ public class WISPUtils {
 		int size = pagamentoPortale.getIdVersamento().size();
 		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_PRIMITIVA, size > 1 ? "nodoInviaCarrelloRPT" : "nodoInviaRPT"));
 		// numero pagamenti
-		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_NUMPAGAMENTI_RPT, pagamentoPortale.getNumeroPagamenti()));
+		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_NUMPAGAMENTI_RPT, numeroPagamenti));
 		// storno pagamento
 		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_STORNO_PAGAMENTO, "SI"));
 		// bollo digitale
-		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_BOLLO_DIGITALE, pagamentoPortale.isBolloDigitale() ? "SI" : "NO"));
+		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_BOLLO_DIGITALE, bollodigitale ? "SI" : "NO"));
 		// id_psp		
 		if(pagamentoPortale.getIdPsp() != null)
 			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_ID_PSP, pagamentoPortale.getIdPsp()));
@@ -93,19 +95,19 @@ public class WISPUtils {
 		if(pagamentoPortale.getTipoVersamento() != null)
 			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_TIPO_VERSAMENTO, pagamentoPortale.getTipoVersamento()));
 		// importo
-		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_IMPORTO_TRANSAZIONE, pagamentoPortale.getImporto()));
+		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_IMPORTO_TRANSAZIONE, importoTotale));
 		// versione interfaccia wisp
 		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_VERSIONE_INTERFACCIA_WISP, "1.3"));
 		// iban accredito
-		if(pagamentoPortale.getIbanAccredito() != null)
-			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_IBAN_ACCREDITO, pagamentoPortale.getIbanAccredito()));
+		if(ibanAccredito != null)
+			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_IBAN_ACCREDITO, ibanAccredito.getCodIban()));
 		// contoposte		
-		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_CONTO_POSTE, pagamentoPortale.isContoPostale() ? "SI" : "NO"));
+		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_CONTO_POSTE, contoPostale ? "SI" : "NO"));
 		// pagamenti modello 2
-		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_PAGAMENTIMODELLO2, pagamentoPortale.isPagamentiModello2()  ? "SI" : "NO"));
+		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_PAGAMENTIMODELLO2, pagamentiModello2  ? "SI" : "NO"));
 		// lingua
-		if(pagamentoPortale.getCodiceLingua() != null)
-			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_CODICE_LINGUA, pagamentoPortale.getCodiceLingua()));
+		if(codiceLingua != null)
+			listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_CODICE_LINGUA, codiceLingua));
 
 		// terzo modello pagamento (ignorato per ora)
 		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_TERZOMODELLO_PAGAMENTO, "SI"));
@@ -113,8 +115,9 @@ public class WISPUtils {
 		return listaParametri;
 	}
 
-	public static String creaListaParametriPagamentoPortaleAsString(PagamentoPortale pagamentoPortale, String urlReturn, String urlBack) {
-		List<HiddenParameter> listaParametri = creaListaParametriPagamentoPortale(pagamentoPortale, urlReturn, urlBack);
+	public static String creaListaParametriPagamentoPortaleAsString(PagamentoPortale pagamentoPortale, String urlReturn, String urlBack,String enteCreditore,
+			int numeroPagamenti, IbanAccredito ibanAccredito, boolean contoPostale, boolean bollodigitale, double importoTotale, boolean pagamentiModello2, String codiceLingua) {
+		List<HiddenParameter> listaParametri = creaListaParametriPagamentoPortale(pagamentoPortale, urlReturn, urlBack, enteCreditore, numeroPagamenti, ibanAccredito, contoPostale, bollodigitale, importoTotale, pagamentiModello2, codiceLingua);
 		StringBuilder sb = new StringBuilder();
 		for (HiddenParameter hiddenParameter : listaParametri) {
 			sb.append(" ");
@@ -123,8 +126,9 @@ public class WISPUtils {
 		return sb.toString();
 	}
 
-	public static String getWispHtml(String template, PagamentoPortale pagamentoPortale, String urlReturn, String urlBack) {
-		String parametri = creaListaParametriPagamentoPortaleAsString(pagamentoPortale, urlReturn, urlBack);
+	public static String getWispHtml(String template, PagamentoPortale pagamentoPortale, String urlReturn, String urlBack, String enteCreditore,
+			int numeroPagamenti, IbanAccredito ibanAccredito, boolean contoPostale, boolean bollodigitale, double importoTotale, boolean pagamentiModello2, String codiceLingua) {
+		String parametri = creaListaParametriPagamentoPortaleAsString(pagamentoPortale, urlReturn, urlBack, enteCreditore, numeroPagamenti, ibanAccredito, contoPostale, bollodigitale, importoTotale, pagamentiModello2, codiceLingua);
 		return template.replace(KEY_PARAMETRI, parametri);
 	}
 
