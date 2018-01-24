@@ -58,6 +58,8 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_portale", PagamentoPortale.model().COD_PORTALE.getFieldType()));
 				setParameter(object, "setCodCanale", PagamentoPortale.model().COD_CANALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_canale", PagamentoPortale.model().COD_CANALE.getFieldType()));
+				setParameter(object, "setNome", PagamentoPortale.model().NOME.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "nome", PagamentoPortale.model().NOME.getFieldType()));
 				setParameter(object, "setIdSessione", PagamentoPortale.model().ID_SESSIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "id_sessione", PagamentoPortale.model().ID_SESSIONE.getFieldType()));
 				setParameter(object, "setIdSessionePortale", PagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType(),
@@ -114,6 +116,8 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codPortale"));
 				setParameter(object, "setCodCanale", PagamentoPortale.model().COD_CANALE.getFieldType(),
 					this.getObjectFromMap(map,"codCanale"));
+				setParameter(object, "setNome", PagamentoPortale.model().NOME.getFieldType(),
+					this.getObjectFromMap(map,"nome"));
 				setParameter(object, "setIdSessione", PagamentoPortale.model().ID_SESSIONE.getFieldType(),
 					this.getObjectFromMap(map,"idSessione"));
 				setParameter(object, "setIdSessionePortale", PagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType(),

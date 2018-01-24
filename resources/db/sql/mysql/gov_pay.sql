@@ -436,8 +436,9 @@ CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod
 
 CREATE TABLE pagamenti_portale
 (
-	cod_portale VARCHAR(35),
-	cod_canale VARCHAR(35) NOT NULL,
+	cod_portale VARCHAR(35) NOT NULL,
+	cod_canale VARCHAR(35),
+	nome VARCHAR(255) NOT NULL,
 	id_sessione VARCHAR(35) NOT NULL,
 	id_sessione_portale VARCHAR(35),
 	id_sessione_psp VARCHAR(35),

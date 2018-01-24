@@ -35,8 +35,9 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="PagamentoPortale">
  * 		&lt;sequence>
- * 			&lt;element name="codPortale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codPortale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idSessionePortale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSessionePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -68,6 +69,7 @@ import java.io.Serializable;
   propOrder = {
   	"codPortale",
   	"codCanale",
+  	"nome",
   	"idSessione",
   	"idSessionePortale",
   	"idSessionePsp",
@@ -120,6 +122,14 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 
   public void setCodCanale(java.lang.String codCanale) {
     this.codCanale = codCanale;
+  }
+
+  public java.lang.String getNome() {
+    return this.nome;
+  }
+
+  public void setNome(java.lang.String nome) {
+    this.nome = nome;
   }
 
   public java.lang.String getIdSessione() {
@@ -262,12 +272,16 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codPortale",required=false,nillable=false)
+  @XmlElement(name="codPortale",required=true,nillable=false)
   protected java.lang.String codPortale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codCanale",required=true,nillable=false)
+  @XmlElement(name="codCanale",required=false,nillable=false)
   protected java.lang.String codCanale;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="nome",required=true,nillable=false)
+  protected java.lang.String nome;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="idSessione",required=true,nillable=false)
