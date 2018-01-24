@@ -639,7 +639,7 @@ CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 ST
 
 CREATE TABLE pagamenti_portale
 (
-	cod_portale VARCHAR2(35 CHAR) NOT NULL,
+	cod_portale VARCHAR2(35 CHAR,
 	cod_canale VARCHAR2(35 CHAR) NOT NULL,
 	id_sessione VARCHAR2(35 CHAR) NOT NULL,
 	id_sessione_portale VARCHAR2(35 CHAR),

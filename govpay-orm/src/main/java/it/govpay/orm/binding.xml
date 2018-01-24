@@ -529,8 +529,8 @@
   </mapping>
   <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
-    <structure name="idPagamentoPortale" field="idPagamentoPortale" usage="required" map-as="_IdPagamentoPortale_Type"/>
+    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
+    <structure name="idPagamentoPortale" field="idPagamentoPortale" usage="optional" map-as="_IdPagamentoPortale_Type"/>
     <structure field="idCanale" usage="required" map-as="it.govpay.orm.IdCanale"/>
     <structure name="idPortale" field="idPortale" usage="optional" map-as="_IdPortale_Type"/>
     <value name="codCarrello" field="codCarrello" usage="optional"/>
@@ -600,7 +600,7 @@
   </mapping>
   <mapping name="PagamentoPortale" class="it.govpay.orm.PagamentoPortale">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codPortale" field="codPortale" usage="required"/>
+    <value name="codPortale" field="codPortale" usage="optional"/>
     <value name="codCanale" field="codCanale" usage="required"/>
     <value name="idSessione" field="idSessione" usage="required"/>
     <value name="idSessionePortale" field="idSessionePortale" usage="optional"/>

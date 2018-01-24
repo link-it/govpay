@@ -35,7 +35,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="PagamentoPortale">
  * 		&lt;sequence>
- * 			&lt;element name="codPortale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codPortale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idSessionePortale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -262,7 +262,7 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codPortale",required=true,nillable=false)
+  @XmlElement(name="codPortale",required=false,nillable=false)
   protected java.lang.String codPortale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
