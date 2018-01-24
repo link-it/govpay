@@ -600,8 +600,9 @@
   </mapping>
   <mapping name="PagamentoPortale" class="it.govpay.orm.PagamentoPortale">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codPortale" field="codPortale" usage="optional"/>
-    <value name="codCanale" field="codCanale" usage="required"/>
+    <value name="codPortale" field="codPortale" usage="required"/>
+    <value name="codCanale" field="codCanale" usage="optional"/>
+    <value name="nome" field="nome" usage="required"/>
     <value name="idSessione" field="idSessione" usage="required"/>
     <value name="idSessionePortale" field="idSessionePortale" usage="optional"/>
     <value name="idSessionePsp" field="idSessionePsp" usage="optional"/>

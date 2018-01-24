@@ -23,23 +23,32 @@ import it.govpay.orm.dao.IDBPagamentoPortaleService;
 import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleVersamentoFieldConverter;
 
 public class PagamentiPortaleBD extends BasicBD{
-	
-	
+
+
 	public PagamentiPortaleBD(BasicBD basicBD) {
 		super(basicBD);
 	}
 
 	public void insertPagamento(PagamentoPortale pagamentoPortale) throws ServiceException {
-		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamentoPortale);
+		boolean oldAutocomit = this.isAutoCommit();
 		try {
-			this.getPagamentoPortaleService().create(vo);
-			pagamentoPortale.setId(vo.getId());
-			
-			insertPagPortVers(pagamentoPortale);
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
+			this.setAutoCommit(false);
+			it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamentoPortale);
+			try {
+				this.getPagamentoPortaleService().create(vo);
+				pagamentoPortale.setId(vo.getId());
+
+				insertPagPortVers(pagamentoPortale);
+			} catch (NotImplementedException e) {
+				throw new ServiceException();
+			}
+			this.commit();
+		} catch (ServiceException e) {
+			this.rollback();
+		} finally {
+			this.setAutoCommit(oldAutocomit);
 		}
-		
+
 	}
 
 	private void insertPagPortVers(PagamentoPortale pagamentoPortale)
@@ -50,14 +59,13 @@ public class PagamentiPortaleBD extends BasicBD{
 			idPagamentoPortale.setId(pagamentoPortale.getId());
 			pagamentoPortaleVersamento.setIdPagamentoPortale(idPagamentoPortale);
 			pagamentoPortaleVersamento.setIdVersamento(idVersamento);
-			
 			this.getPagamentoPortaleVersamentoService().create(pagamentoPortaleVersamento);
 		}
 	}
 
 	private void deleteAllPagPortVers(PagamentoPortale pagamentoPortale)
 			throws ServiceException, NotImplementedException {
-		
+
 		try {
 			IExpression exp = this.getPagamentoPortaleVersamentoService().newExpression();
 			CustomField field = new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", new PagamentoPortaleVersamentoFieldConverter(this.getJdbcProperties().getDatabase()).toTable(it.govpay.orm.PagamentoPortaleVersamento.model()));
@@ -72,7 +80,7 @@ public class PagamentiPortaleBD extends BasicBD{
 
 	private List<PagamentoPortaleVersamento> getAllPagPortVers(PagamentoPortale pagamentoPortale)
 			throws ServiceException, NotImplementedException {
-		
+
 		try {
 			IPaginatedExpression exp = this.getPagamentoPortaleVersamentoService().newPaginatedExpression();
 			CustomField field = new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", new PagamentoPortaleVersamentoFieldConverter(this.getJdbcProperties().getDatabase()).toTable(it.govpay.orm.PagamentoPortaleVersamento.model()));
@@ -86,18 +94,35 @@ public class PagamentiPortaleBD extends BasicBD{
 	}
 
 	public void updatePagamento(PagamentoPortale pagamento) throws ServiceException {
-		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
-		try {
-			this.getPagamentoPortaleService().update(this.getPagamentoPortaleService().convertToId(vo), vo);
-			deleteAllPagPortVers(pagamento);
-			insertPagPortVers(pagamento);
-		} catch (NotFoundException e) {
-			throw new ServiceException();
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		}
+		this.updatePagamento(pagamento, false);
 	}
+
+	public void updatePagamento(PagamentoPortale pagamento, boolean updateVersamenti) throws ServiceException {
+		boolean oldAutocomit = this.isAutoCommit();
+		try {
+			this.setAutoCommit(false);
 	
+			it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
+			try {
+				this.getPagamentoPortaleService().update(this.getPagamentoPortaleService().convertToId(vo), vo);
+				if(updateVersamenti) {
+					deleteAllPagPortVers(pagamento);
+					insertPagPortVers(pagamento);
+				}
+			} catch (NotFoundException e) {
+				throw new ServiceException();
+			} catch (NotImplementedException e) {
+				throw new ServiceException();
+			}
+			this.commit();
+		} catch (ServiceException e) {
+			this.rollback();
+		} finally {
+			this.setAutoCommit(oldAutocomit);
+		}
+
+	}
+
 	/**
 	 * Recupera il pagamento identificato dalla chiave fisica
 	 */
@@ -110,7 +135,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw new ServiceException();
 		}
 	}
-	
+
 	/**
 	 * Recupera il pagamento identificato dal codSessione
 	 */
@@ -119,7 +144,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			IdPagamentoPortale id = new IdPagamentoPortale();
 			id.setIdSessione(codSessione);;
 			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().get(id));
-			
+
 			return getPagamentoArricchito(dto);
 		} catch (MultipleResultException e) {
 			throw new ServiceException();
@@ -127,7 +152,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw new ServiceException();
 		}
 	}
-	
+
 	private PagamentoPortale getPagamentoArricchito(PagamentoPortale dto) throws ServiceException, NotImplementedException {
 		List<PagamentoPortaleVersamento> allPagPortVers = this.getAllPagPortVers(dto);
 		List<IdVersamento> idVersamento = new ArrayList<IdVersamento>();

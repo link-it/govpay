@@ -26,7 +26,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.model.Pagamento.Stato;
 
 
 public class PagamentoPortaleConverter {
@@ -60,6 +59,7 @@ public class PagamentoPortaleConverter {
 		dto.setUrlRitorno(vo.getUrlRitorno());
 		dto.setCodPsp(vo.getCodPsp());
 		dto.setTipoVersamento(vo.getTipoVersamento());
+		dto.setNome(vo.getNome());
 
 		return dto;
 	}
@@ -85,6 +85,7 @@ public class PagamentoPortaleConverter {
 		vo.setUrlRitorno(dto.getUrlRitorno());
 		vo.setCodPsp(dto.getCodPsp());
 		vo.setTipoVersamento(dto.getTipoVersamento());
+		vo.setNome(dto.getNome());
 
 		return vo;
 	}

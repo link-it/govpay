@@ -81,6 +81,13 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_canale";
 			}
 		}
+		if(field.equals(PagamentoPortale.model().NOME)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".nome";
+			}else{
+				return "nome";
+			}
+		}
 		if(field.equals(PagamentoPortale.model().ID_SESSIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".id_sessione";
@@ -203,6 +210,9 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().COD_CANALE)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().NOME)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().ID_SESSIONE)){

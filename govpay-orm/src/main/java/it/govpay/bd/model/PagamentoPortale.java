@@ -26,6 +26,7 @@ public class PagamentoPortale extends BasicModel {
 					}
 	
 	private String codPortale = null;
+	private String nome = null;
 	private String idSessione = null;
 	private String idSessionePortale = null;
 	private String idSessionePsp = null;
@@ -162,6 +163,12 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
+	}
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 	
 }
