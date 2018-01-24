@@ -1721,7 +1721,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="codPortale" type="String35"/>
+			<xsd:element name="codPortale" type="String35" minOccurs="0"/>
 			<xsd:element name="codCanale" type="String35"/>
 			<xsd:element name="idSessione" type="String35"/>
 			<xsd:element name="idSessionePortale" type="String35" minOccurs="0"/>

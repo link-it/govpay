@@ -1,6 +1,6 @@
 CREATE TABLE pagamenti_portale
 (
-       cod_portale VARCHAR(35) NOT NULL,
+       cod_portale VARCHAR(35),
        cod_canale VARCHAR(35) NOT NULL,
        id_sessione VARCHAR(35) NOT NULL,
        id_sessione_portale VARCHAR(35),
@@ -44,4 +44,4 @@ CREATE TABLE pag_port_versamenti
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 ALTER TABLE rpt ADD COLUMN id_pagamento_portale BIGINT;
-ALTER TABLE rpt ADD COLUMN CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
