@@ -8,6 +8,8 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
+import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.ActionNonValidaException;
@@ -94,6 +96,13 @@ public class WebControllerDAO extends BasicBD{
 //							pagamentoPortale.setIdPsp(null);
 //							pagamentoPortale.setTipoVersamento(null);
 //							pagamentoPortale.setCodCanale(null); 
+							// procedo al pagamento
+//							Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(pagamentoPortale.getVersante());
+//							
+//							it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(this);
+//							List<Rpt> rpts = rptBD.avviaTransazione(versamenti, portaleAutenticato, canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentoPortale.getAutenticazione(), pagamentoPortale.getUrlRitorno(), false);
+//							
+//							Rpt rpt = rpts.get(0);
 							
 							// invio RPT [TODO]
 							Rpt rpt = new Rpt();
@@ -150,5 +159,33 @@ public class WebControllerDAO extends BasicBD{
 		return aggiornaPagamentiPortaleDTOResponse;
 	}
 	
+	
+	public RedirectDaPspDTOResponse gestisciRedirectPsp(RedirectDaPspDTO redirectDaPspDTO) throws RedirectException, GovPayException, NotAuthorizedException, ServiceException{
+		RedirectDaPspDTOResponse redirectDaPspDTOResponse = new RedirectDaPspDTOResponse();
+		
+		
+		PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
+		PagamentoPortale pagamentoPortale = null;
+		
+		try {
+			pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessionePsp(redirectDaPspDTO.getIdSession());
+		}catch(NotFoundException e) {
+			throw new PagamentoPortaleNonTrovatoException(GovpayConfig.getInstance().getUrlErrorGovpayWC(), "Non esiste un pagamento associato all'ID sessione Psp ["+redirectDaPspDTO.getIdSession()+"]");
+		}
+			
+		switch (pagamentoPortale.getStato()) {
+		case PAGAMENTO_IN_CORSO_AL_PSP:
+			pagamentoPortale.setStato(STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
+			pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
+			redirectDaPspDTOResponse.setLocation(pagamentoPortale.getUrlRitorno() + "?esito="+pagamentoPortale.getPspEsito());
+			break;
+		default:
+			redirectDaPspDTOResponse.setLocation(pagamentoPortale.getUrlRitorno() + "?esito="+pagamentoPortale.getPspEsito());
+			break;
+		
+		}
+		
+		return redirectDaPspDTOResponse;
+	}
 	
 }

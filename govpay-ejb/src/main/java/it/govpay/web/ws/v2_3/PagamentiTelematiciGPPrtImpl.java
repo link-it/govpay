@@ -22,8 +22,25 @@ package it.govpay.web.ws.v2_3;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Resource;
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+import javax.xml.bind.JAXBElement;
+import javax.xml.ws.WebServiceContext;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.utils.logger.beans.Property;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.AvviaTransazioneDTO;
@@ -37,21 +54,16 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Psp;
 import it.govpay.model.Iuv;
 import it.govpay.model.Portale;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Versamento;
-import it.govpay.servizi.v2_3.PagamentiTelematiciGPPrt;
-import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;
-import it.govpay.servizi.commons.TipoVersamento;
 import it.govpay.servizi.commons.TipoSceltaWisp;
+import it.govpay.servizi.commons.TipoVersamento;
+import it.govpay.servizi.v2_3.PagamentiTelematiciGPPrt;
+import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.v2_3.gpprt.GpAvviaRichiestaStorno;
 import it.govpay.servizi.v2_3.gpprt.GpAvviaRichiestaStornoResponse;
 import it.govpay.servizi.v2_3.gpprt.GpAvviaTransazionePagamento;
@@ -70,20 +82,6 @@ import it.govpay.servizi.v2_3.gpprt.GpChiediStatoVersamento;
 import it.govpay.servizi.v2_3.gpprt.GpChiediStatoVersamentoResponse;
 import it.govpay.servizi.v2_3.gpprt.GpChiediStatoVersamentoResponse.SpezzoneCausaleStrutturata;
 import it.govpay.web.ws.Utils;
-
-import javax.annotation.Resource;
-import javax.jws.HandlerChain;
-import javax.jws.WebService;
-import javax.xml.bind.JAXBElement;
-import javax.xml.ws.WebServiceContext;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 @WebService(serviceName = "PagamentiTelematiciGPPrtService",
 endpointInterface = "it.govpay.servizi.v2_3.PagamentiTelematiciGPPrt",
@@ -111,8 +109,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			
-			getPortaleAutenticato(bd);
+			it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(bd);
+			portaleBusiness.getPortaleAutenticato(getPrincipal());
 			
 			ctx.log("ws.ricevutaRichiesta");
 			
@@ -152,10 +150,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.getPagamentoCtx().setCodSessionePortale(bodyrichiesta.getCodSessionePortale());
 			ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", bodyrichiesta.getCodSessionePortale() != null ? bodyrichiesta.getCodSessionePortale() : "--Non fornito--"));
 			
-			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(bd);
+			Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(getPrincipal());
 			ctx.log("ws.ricevutaRichiesta");
 			
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
+			portaleBusiness.autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");
 			
 			if(bodyrichiesta.getCanale() != null) {
@@ -371,10 +370,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(bd);
+			Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(getPrincipal());
 			ctx.log("ws.ricevutaRichiesta");
 			
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
+			portaleBusiness.autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Rpt rptBusiness = new it.govpay.core.business.Rpt(bd);
@@ -408,10 +408,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(bd);
+			Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(getPrincipal());
 			ctx.log("ws.ricevutaRichiesta");
 			
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
+			portaleBusiness.autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
@@ -467,10 +468,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(bd);
+			Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(getPrincipal());
 			ctx.log("ws.ricevutaRichiesta");
 			
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
+			portaleBusiness.autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
@@ -510,10 +512,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", bodyrichiesta.getIuv()));
 			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", bodyrichiesta.getCcp()));
 			
-			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(bd);
+			Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(getPrincipal());
 			ctx.log("ws.ricevutaRichiesta");
 			
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
+			portaleBusiness.autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
@@ -556,10 +559,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(bd);
+			Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(getPrincipal());
 			ctx.log("ws.ricevutaRichiesta");
 			
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
+			portaleBusiness.autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
@@ -593,10 +597,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(bd);
+			Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(getPrincipal());
 			ctx.log("ws.ricevutaRichiesta");
 			
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
+			portaleBusiness.autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");
 		
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
@@ -661,41 +666,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		return response;
 	}
 	
-	private Portale getPortaleAutenticato(BasicBD bd) throws GovPayException, ServiceException {
-		if(wsCtxt.getUserPrincipal() == null) {
-			throw new GovPayException(EsitoOperazione.AUT_000);
-		}
-		
-		Portale prt = null;
-		try {
-			prt =  AnagraficaManager.getPortaleByPrincipal(bd, wsCtxt.getUserPrincipal().getName());
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.AUT_002, wsCtxt.getUserPrincipal().getName());
-		}
-		
-		if(prt != null) {
-			Actor from = new Actor();
-			from.setName(prt.getCodPortale());
-			from.setType(GpContext.TIPO_SOGGETTO_PRT);
-			GpThreadLocal.get().getTransaction().setFrom(from);
-			GpThreadLocal.get().getTransaction().getClient().setName(prt.getCodPortale());
-		}
-		
-		return prt;
-	}
-	
-	private void autorizzaPortale(String codPortale, Portale portaleAutenticato, BasicBD bd) throws GovPayException, ServiceException {
-		Portale portale = null;
-		try {
-			portale = AnagraficaManager.getPortale(bd, codPortale);
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.PRT_000, codPortale);
-		}
-
-		if(!portale.isAbilitato())
-			throw new GovPayException(EsitoOperazione.PRT_001, codPortale);
-
-		if(!portale.getCodPortale().equals(portaleAutenticato.getCodPortale()))
-			throw new GovPayException(EsitoOperazione.PRT_002, portaleAutenticato.getCodPortale(), codPortale);
+	private String getPrincipal() {
+		if(wsCtxt.getUserPrincipal() != null)
+			return wsCtxt.getUserPrincipal().getName();
+		return null;
 	}
 }

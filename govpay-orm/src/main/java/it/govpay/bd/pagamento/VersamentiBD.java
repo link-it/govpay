@@ -158,6 +158,7 @@ public class VersamentiBD extends BasicBD {
 			it.govpay.orm.Versamento vo = VersamentoConverter.toVO(versamento);
 			IdVersamento idVersamento = this.getVersamentoService().convertToId(vo);
 			this.getVersamentoService().update(idVersamento, vo);
+			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

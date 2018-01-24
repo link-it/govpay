@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -20,14 +19,18 @@ import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.STATO;
+import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.core.business.Wisp;
 import it.govpay.core.business.model.SceltaWISP;
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
@@ -36,6 +39,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.WISPUtils;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Portale;
 import it.govpay.orm.IdVersamento;
@@ -61,31 +65,39 @@ public class PagamentiPortaleDAO extends BasicBD{
 		ctx.getPagamentoCtx().setCodSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
 		ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 		
-		Portale portaleAutenticato = getPortaleAutenticato(this,pagamentiPortaleDTO.getPrincipal());
+		it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(this);
+		Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(pagamentiPortaleDTO.getPrincipal());
 		ctx.log("ws.ricevutaRichiesta");
 		String codPortale = portaleAutenticato.getCodPortale();
 		
-		autorizzaPortale(codPortale, portaleAutenticato, this);
+		portaleBusiness.autorizzaPortale(codPortale, portaleAutenticato, this);
 		ctx.log("ws.autorizzazione");
 		
 		String codDominio = null;
 		String enteCreditore = null;
 		List<IdVersamento> idVersamento = new ArrayList<IdVersamento>();
+		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(this);
 		// 1. Lista Id_versamento
 		for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 			Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
 			Versamento versamentoModel = null;
+			String codDominioVKey = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
 		
 			if(v instanceof it.govpay.servizi.commons.Versamento) {
 				it.govpay.servizi.commons.Versamento versamento = (it.govpay.servizi.commons.Versamento) v;
 				ctx.log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
-				versamentoModel = VersamentoUtils.toVersamentoModel((it.govpay.servizi.commons.Versamento) versamento, this);
+//				versamentoModel = VersamentoUtils.toVersamentoModel(versamento, this);
+				codDominioVKey = versamento.getCodDominio();
+				codApplicazione = versamento.getCodApplicazione();
+				codVersamentoEnte = versamento.getCodVersamentoEnte();
+				iuv= versamento.getIuv();
+				bundlekey = versamento.getBundlekey();
+				if(versamento.getDebitore() != null)
+					codUnivocoDebitore = versamento.getDebitore().getCodUnivoco();
 				
 			} else {
 				it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
 				
-				String codDominioVKey = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
-
 				Iterator<JAXBElement<String>> iterator = versamento.getContent().iterator();
 				while(iterator.hasNext()){
 					JAXBElement<String> element = iterator.next();
@@ -109,10 +121,9 @@ public class PagamentiPortaleDAO extends BasicBD{
 						iuv = element.getValue();
 					}
 				}
-				
-				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(this);
-				versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominioVKey, iuv);
 			}
+			
+			versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominioVKey, iuv);
 		
 			if(!versamentoModel.getUo(this).isAbilitato()) {
 				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+versamentoModel.getUo(this).getCodUo()+"].", EsitoOperazione.UOP_001, versamentoModel.getUo(this).getCodUo());
@@ -257,6 +268,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		pagamentoPortale.setCodPsp(idPsp);
 		pagamentoPortale.setTipoVersamento(tipoVersamento);
 		pagamentoPortale.setCodCanale(codCanale); 
+		pagamentoPortale.setUrlRitorno(redirectUrl);
 		
 		// costruire html
 		String template = WISPUtils.readTemplate();
@@ -276,41 +288,39 @@ public class PagamentiPortaleDAO extends BasicBD{
 		return response;
 	}
 	
-	private Portale getPortaleAutenticato(BasicBD bd, String principal) throws GovPayException, ServiceException {
-		if(principal == null) {
-			throw new GovPayException(EsitoOperazione.AUT_000);
-		}
+	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException{
+		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
 		
-		Portale prt = null;
+		PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
+		PagamentoPortale pagamentoPortale = null;
+		
 		try {
-			prt =  AnagraficaManager.getPortaleByPrincipal(bd, principal);
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.AUT_002, principal);
+			pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getIdSessione());
+			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
+		}catch(NotFoundException e) {
+			throw new PagamentoPortaleNonTrovatoException(null, "Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getIdSessione()+"]");
 		}
 		
-		if(prt != null) {
-			Actor from = new Actor();
-			from.setName(prt.getCodPortale());
-			from.setType(GpContext.TIPO_SOGGETTO_PRT);
-			GpThreadLocal.get().getTransaction().setFrom(from);
-			GpThreadLocal.get().getTransaction().getClient().setName(prt.getCodPortale());
+		Psp psp = null;
+		Canale canale = null;
+		if(pagamentoPortale.getCodPsp() != null) {
+			
+			try {
+				psp = AnagraficaManager.getPsp(this, pagamentoPortale.getCodPsp());
+			} catch (NotFoundException e) {
+			}
+			
+			if(psp!= null) {
+				try {
+					canale = AnagraficaManager.getCanale(this, pagamentoPortale.getCodPsp(), pagamentoPortale.getCodCanale(), TipoVersamento.valueOf(pagamentoPortale.getTipoVersamento()));
+				} catch (NotFoundException e) {
+				}
+			}
 		}
 		
-		return prt;
-	}
-	
-	private void autorizzaPortale(String codPortale, Portale portaleAutenticato, BasicBD bd) throws GovPayException, ServiceException {
-		Portale portale = null;
-		try {
-			portale = AnagraficaManager.getPortale(bd, codPortale);
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.PRT_000, codPortale);
-		}
-
-		if(!portale.isAbilitato())
-			throw new GovPayException(EsitoOperazione.PRT_001, codPortale);
-
-		if(!portale.getCodPortale().equals(portaleAutenticato.getCodPortale()))
-			throw new GovPayException(EsitoOperazione.PRT_002, portaleAutenticato.getCodPortale(), codPortale);
+		leggiPagamentoPortaleDTOResponse.setPsp(psp);
+		leggiPagamentoPortaleDTOResponse.setCanale(canale); 
+		
+		return leggiPagamentoPortaleDTOResponse;
 	}
 }
