@@ -94,10 +94,83 @@ public class PagamentiPortale extends BaseRsService{
 	}
 	
 	@GET
+	@Path("/pagamenti")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response get(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
+			@QueryParam("from") String from,  @QueryParam("size") String size,  
+			@QueryParam("dataDa") String dataDa,  @QueryParam("dataA") String dataA,  @QueryParam("stato") String stato,@QueryParam("versante") String versante	) {
+		String methodName = "getListaPagamenti";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			String principal = this.getPrincipal();
+			
+			// Parametri - > DTO Input
+			
+//			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO();
+//			leggiPagamentoPortaleDTO.setIdSessione(id);
+//			leggiPagamentoPortaleDTO.setPrincipal(principal);
+			
+			// INIT DAO
+			
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			
+			// CHIAMATA AL DAO
+			
+			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse(); //pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
+			it.govpay.bd.model.Psp psp = pagamentoPortaleDTOResponse.getPsp();
+			it.govpay.bd.model.Canale canale = pagamentoPortaleDTOResponse.getCanale();
+			
+			PagamentoPortale response = PagamentiPortaleConverter.toJsonPagamentoPortale(pagamentoPortaleModel, psp, canale);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(Status.OK).entity(response).build();
+			
+//		}catch (PagamentoPortaleNonTrovatoException e) {
+//			log.error(e.getMessage(), e);
+//			FaultBean respKo = new FaultBean();
+//			respKo.setCategoria(CATEGORIA.OPERAZIONE);
+//			respKo.setCodice("");
+//			respKo.setDescrizione(e.getMessage());
+//			try {
+//				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+//			}catch(Exception e1) {
+//				log.error("Errore durante il log della risposta", e1);
+//			}
+//			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante il processo di pagamento", e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CATEGORIA.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+	}
+	
+	
+	@GET
 	@Path("/pagamenti/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response get(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id) {
-		String methodName = "getPagamento";  
+	public Response getPagamentoPortaleById(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id) {
+		String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
