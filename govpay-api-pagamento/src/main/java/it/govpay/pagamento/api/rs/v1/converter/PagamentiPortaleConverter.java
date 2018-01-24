@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.pagamenti.v1.converter;
+package it.govpay.pagamento.api.rs.v1.converter;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
@@ -9,13 +9,13 @@ import java.util.Map;
 
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.IdPendenza;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.IdVersamento;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.PagamentiPortaleRequest;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.PagamentiPortaleResponseOk;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.PagamentoPortale;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.Pendenza;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.VocePendenza;
+import it.govpay.pagamento.api.rs.v1.model.IdPendenza;
+import it.govpay.pagamento.api.rs.v1.model.IdVersamento;
+import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
+import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
+import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
+import it.govpay.pagamento.api.rs.v1.model.Pendenza;
+import it.govpay.pagamento.api.rs.v1.model.VocePendenza;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.TipoContabilita;
 import it.govpay.servizi.commons.Versamento.SingoloVersamento;
@@ -127,7 +127,7 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setLingua(pagamentiPortaleRequest.getLingua());
 		pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
 
-		it.govpay.pagamento.api.rs.pagamenti.v1.model.Anagrafica soggettoVersante = pagamentiPortaleRequest.getSoggettoVersante();
+		it.govpay.pagamento.api.rs.v1.model.Anagrafica soggettoVersante = pagamentiPortaleRequest.getSoggettoVersante();
 		Anagrafica versante = toAnagraficaCommons(soggettoVersante);
 		pagamentiPortaleDTO.setVersante(versante);
 
@@ -167,7 +167,7 @@ public class PagamentiPortaleConverter {
 	}
 
 
-	public static Anagrafica toAnagraficaCommons(it.govpay.pagamento.api.rs.pagamenti.v1.model.Anagrafica anagraficaRest) {
+	public static Anagrafica toAnagraficaCommons(it.govpay.pagamento.api.rs.v1.model.Anagrafica anagraficaRest) {
 		Anagrafica anagraficaCommons = null;
 		if(anagraficaRest != null) {
 			anagraficaCommons = new Anagrafica();

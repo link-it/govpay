@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.pagamenti;
+package it.govpay.pagamento.api.rs.v1.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -28,14 +28,14 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.pagamento.api.rs.BaseRsService;
-import it.govpay.pagamento.api.rs.pagamenti.v1.converter.PagamentiPortaleConverter;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.FaultBean;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.FaultBean.CATEGORIA;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.PagamentiPortaleRequest;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.PagamentiPortaleResponseOk;
-import it.govpay.pagamento.api.rs.pagamenti.v1.model.PagamentoPortale;
+import it.govpay.pagamento.api.rs.v1.converter.PagamentiPortaleConverter;
+import it.govpay.pagamento.api.rs.v1.model.FaultBean;
+import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
+import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
+import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
+import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
 
-@Path("/")
+@Path("/pagamenti")
 public class PagamentiPortale extends BaseRsService{
 	
 	
@@ -44,10 +44,10 @@ public class PagamentiPortale extends BaseRsService{
 	}
 
 	@POST
-	@Path("/pagamenti")
+	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response pagamenti(InputStream is , @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSessionePortale") String idSessionePortale) {
+	public Response inserisciPagamenti(InputStream is , @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSessionePortale") String idSessionePortale) {
 		String methodName = "pagamenti";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -94,7 +94,7 @@ public class PagamentiPortale extends BaseRsService{
 	}
 	
 	@GET
-	@Path("/pagamenti")
+	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response get(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@QueryParam("from") String from,  @QueryParam("size") String size,  
@@ -167,7 +167,7 @@ public class PagamentiPortale extends BaseRsService{
 	
 	
 	@GET
-	@Path("/pagamenti/{id}")
+	@Path("/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getPagamentoPortaleById(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id) {
 		String methodName = "getPagamentoPortaleById";  

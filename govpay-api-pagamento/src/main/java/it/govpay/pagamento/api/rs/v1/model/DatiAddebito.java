@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.pagamenti.v1.model;
+package it.govpay.pagamento.api.rs.v1.model;
 
 public class DatiAddebito {
 
