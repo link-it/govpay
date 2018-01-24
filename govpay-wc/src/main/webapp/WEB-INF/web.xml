@@ -7,22 +7,22 @@
 	    <listener-class>it.govpay.wc.listener.InitListener</listener-class>
 	</listener>
 
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Protetto</web-resource-name>
-			<url-pattern>/ecsp/*</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>*</role-name>
-		</auth-constraint>
-	</security-constraint>
+<!-- 	<security-constraint> -->
+<!-- 		<web-resource-collection> -->
+<!-- 			<web-resource-name>Protetto</web-resource-name> -->
+<!-- 			<url-pattern>/ecsp/*</url-pattern> -->
+<!-- 		</web-resource-collection> -->
+<!-- 		<auth-constraint> -->
+<!-- 			<role-name>*</role-name> -->
+<!-- 		</auth-constraint> -->
+<!-- 	</security-constraint> -->
 		
-	<security-role>
-		<role-name>*</role-name>
-	</security-role>
+<!-- 	<security-role> -->
+<!-- 		<role-name>*</role-name> -->
+<!-- 	</security-role> -->
 
-	<login-config>
-		<auth-method>BASIC</auth-method>
-	</login-config> 
+<!-- 	<login-config> -->
+<!-- 		<auth-method>BASIC</auth-method> -->
+<!-- 	</login-config>  -->
 
 </web-app>

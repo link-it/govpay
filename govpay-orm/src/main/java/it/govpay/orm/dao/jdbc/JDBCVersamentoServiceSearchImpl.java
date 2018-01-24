@@ -728,7 +728,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		sqlQueryObjectGet.addSelectField(this.getVersamentoFieldConverter().toColumn(Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE,true));
 		sqlQueryObjectGet.addSelectField(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_VERSAMENTO_ENTE,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.addWhereCondition("id=?");
+		sqlQueryObjectGet.addWhereCondition(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id=?");
 		sqlQueryObjectGet.addWhereCondition(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id_applicazione="+this.getVersamentoFieldConverter().toTable(Versamento.model().ID_APPLICAZIONE) + ".id");
 
 		// Recupero _versamento

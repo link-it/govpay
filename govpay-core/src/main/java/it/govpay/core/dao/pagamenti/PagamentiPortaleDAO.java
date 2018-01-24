@@ -75,8 +75,10 @@ public class PagamentiPortaleDAO extends BasicBD{
 		
 		String codDominio = null;
 		String enteCreditore = null;
+		String nome = null;
 		List<IdVersamento> idVersamento = new ArrayList<IdVersamento>();
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(this);
+		StringBuilder sbNomeVersamenti = new StringBuilder();
 		// 1. Lista Id_versamento
 		for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 			Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
@@ -144,6 +146,12 @@ public class PagamentiPortaleDAO extends BasicBD{
 				// 3. ente creditore
 				enteCreditore = versamentoModel.getUo(this).getDominio(this).getRagioneSociale();
 			}
+			
+			if(sbNomeVersamenti.length() >0)
+				sbNomeVersamenti.append("#");
+			
+			sbNomeVersamenti.append(versamentoModel.getCodVersamentoEnte());
+			
 			versamenti.add(versamentoModel);
 		}
 		
@@ -184,6 +192,8 @@ public class PagamentiPortaleDAO extends BasicBD{
 			if(!ibanAccreditoTmp.isPostale())
 				ibanAccredito = ibanAccreditoTmp;
 		}
+		
+		nome = sbNomeVersamenti.length() > 255 ? (sbNomeVersamenti.substring(0, 252) + "...") : sbNomeVersamenti.toString();
 		
 		STATO stato = null;
 		String redirectUrl = null;
@@ -269,6 +279,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		pagamentoPortale.setTipoVersamento(tipoVersamento);
 		pagamentoPortale.setCodCanale(codCanale); 
 		pagamentoPortale.setUrlRitorno(redirectUrl);
+		pagamentoPortale.setNome(nome);
 		
 		// costruire html
 		String template = WISPUtils.readTemplate();

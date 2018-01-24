@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>GovPay-WC Wisp AutoSubmit</title>
 </head>
-<body onload="forms[0].submit();"><form action="@URL_WISP@" method="post">@LISTA_INPUT@<input type="submit" /></form>
+<body onload="document.forms[0].submit();"><form action="@URL_WISP@" method="post">@LISTA_INPUT@ <noscript><center><input type="submit" value="Submit richiesta WISP" /></center></noscript></form>
 </body>
 </html>
