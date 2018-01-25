@@ -1,8 +1,14 @@
 package it.govpay.bd.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.BasicModel;
 import it.govpay.orm.IdVersamento;
 
@@ -12,19 +18,19 @@ public class PagamentoPortale extends BasicModel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	public enum STATO { DA_REDIRIGERE_AL_WISP, 
-						PAGAMENTO_IN_CORSO_AL_PSP, 
-						PAGAMENTO_IN_ATTESA_DI_ESITO, 
-						PAGAMENTO_ESEGUITO,
-						PAGAMENTO_NON_ESEGUITO,
-						PAGAMENTO_PARZIALMENTE_ESEGUITO,
-						SELEZIONE_WISP_IN_CORSO,
-						SELEZIONE_WISP_FALLITA,
-						SELEZIONE_WISP_TIMEOUT,
-						SELEZIONE_WISP_ANNULLATA
-					}
-	
+		PAGAMENTO_IN_CORSO_AL_PSP, 
+		PAGAMENTO_IN_ATTESA_DI_ESITO, 
+		PAGAMENTO_ESEGUITO,
+		PAGAMENTO_NON_ESEGUITO,
+		PAGAMENTO_PARZIALMENTE_ESEGUITO,
+		SELEZIONE_WISP_IN_CORSO,
+		SELEZIONE_WISP_FALLITA,
+		SELEZIONE_WISP_TIMEOUT,
+		SELEZIONE_WISP_ANNULLATA
+	}
+
 	private String codPortale = null;
 	private String nome = null;
 	private String idSessione = null;
@@ -35,21 +41,21 @@ public class PagamentoPortale extends BasicModel {
 	private String pspRedirectUrl = null;
 	private String pspEsito = null;
 	private String jsonRequest = null;
-	
+
 	private String wispIdDominio = null;
 	private String wispKeyPA = null;
 	private String wispKeyWisp = null;
-	
+
 	private String wispHtml =null;
-	
+
 	private Date dataRichiesta = null;
 	private Long id;
 	private String urlRitorno = null;
-	
+
 	private String codPsp = null;
 	private String tipoVersamento = null;
 	private String codCanale = null;
-	
+
 	public String getCodPortale() {
 		return codPortale;
 	}
@@ -170,5 +176,25 @@ public class PagamentoPortale extends BasicModel {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
+
+
+	// business
+	private transient List<Versamento> versamenti;
+
+	public List<Versamento> getVersamenti(BasicBD bd) throws ServiceException {
+		if(versamenti != null)
+			return versamenti;
+
+		if(this.idVersamento != null && this.idVersamento.size() > 0) {
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			VersamentoFilter filter = versamentiBD.newFilter();
+			List<Long> ids = new ArrayList<Long>();
+			for (IdVersamento idVs : this.idVersamento) {
+				ids.add(idVs.getId());
+			}
+			filter.setIdVersamento(ids);
+			this.versamenti = versamentiBD.findAll(filter );
+		}
+		return versamenti;
+	}
 }

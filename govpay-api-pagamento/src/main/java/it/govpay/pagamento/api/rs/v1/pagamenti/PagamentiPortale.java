@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.converter.PagamentoPortaleConverter;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
@@ -30,10 +29,10 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.pagamento.api.rs.BaseRsService;
 import it.govpay.pagamento.api.rs.v1.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean;
+import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
-import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
 
 @Path("/pagamenti")
 public class PagamentiPortale extends BaseRsService{

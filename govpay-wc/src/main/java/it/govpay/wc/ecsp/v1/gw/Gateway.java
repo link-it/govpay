@@ -3,8 +3,11 @@ package it.govpay.wc.ecsp.v1.gw;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,6 +19,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import org.apache.http.Consts;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.pagamenti.WebControllerDAO;
@@ -32,15 +39,22 @@ public class Gateway extends BaseRsService{
 
 	@POST
 	@Path("/v1/gw/{id}")
-	@Produces({MediaType.APPLICATION_JSON})
-	@Consumes({MediaType.TEXT_HTML})
-	public Response post_GW(InputStream is , @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, @QueryParam("action") String action) {
+	@Produces({MediaType.TEXT_HTML})
+	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+	public Response post_GW(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, 
+			@QueryParam("action") String action
+			
+//			@FormParam("keyPA")  String keyPA,
+//			@FormParam("keyWISP") String keyWISP,
+//			@FormParam("idDominio")String idDominio,
+//			@FormParam("type") String type
+			) {
 		String methodName = "post_gateway";  
 		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		String gwErrorLocation = null;
 		URI gwErrorLocationURI = null;
+		ByteArrayOutputStream baos= null;
 		try{
 			gwErrorLocation = GovpayConfig.getInstance().getUrlErrorGovpayWC();
 			gwErrorLocationURI = new URI(gwErrorLocation);
@@ -50,13 +64,24 @@ public class Gateway extends BaseRsService{
 			copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
-			ctx =  GpThreadLocal.get();
 			String principal = this.getPrincipal();
+			
+			List<NameValuePair> parametriBody = URLEncodedUtils.parse(baos.toString(), Consts.UTF_8);
 			
 			RichiestaWebControllerDTO aggiornaPagamentiPortaleDTO = new RichiestaWebControllerDTO();
 			aggiornaPagamentiPortaleDTO.setIdSessione(idSessione);
 			aggiornaPagamentiPortaleDTO.setPrincipal(principal);
 			aggiornaPagamentiPortaleDTO.setAction(action);
+			aggiornaPagamentiPortaleDTO.setParametriBody(parametriBody);
+			
+			this.log.info("Parametri ricevuti: \n" + aggiornaPagamentiPortaleDTO.toString()); 
+			
+//			aggiornaPagamentiPortaleDTO.setType(type);
+//			aggiornaPagamentiPortaleDTO.setWispDominio(idDominio);
+//			aggiornaPagamentiPortaleDTO.setWispKeyPA(keyPA);
+//			aggiornaPagamentiPortaleDTO.setWispKeyWisp(keyWISP);
+			
+			ctx =  GpThreadLocal.get();
 
 			WebControllerDAO webControllerDAO = new WebControllerDAO(BasicBD.newInstance(ctx.getTransactionId()));
 			
@@ -88,27 +113,31 @@ public class Gateway extends BaseRsService{
 	@GET
 	@Path("/v1/gw/{id}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response get_GW(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, @QueryParam("action") String action) {
+	public Response get_GW(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, @QueryParam("action") String action, @QueryParam("idDominio") String idDominio,
+			@QueryParam("keyPA") String keyPA, @QueryParam("keyWISP") String keyWISP ,@QueryParam("type") String type) {
 		String methodName = "get_gateway";  
 		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		String gwErrorLocation = null;
 		URI gwErrorLocationURI = null;
 		try{
 			gwErrorLocation = GovpayConfig.getInstance().getUrlErrorGovpayWC();
 			gwErrorLocationURI = new URI(gwErrorLocation);
-			
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
+
 			String principal = this.getPrincipal();
 			
 			RichiestaWebControllerDTO aggiornaPagamentiPortaleDTO = new RichiestaWebControllerDTO();
 			aggiornaPagamentiPortaleDTO.setIdSessione(idSessione);
 			aggiornaPagamentiPortaleDTO.setPrincipal(principal);
 			aggiornaPagamentiPortaleDTO.setAction(action);
+			aggiornaPagamentiPortaleDTO.setType(type);
+			aggiornaPagamentiPortaleDTO.setWispDominio(idDominio);
+			aggiornaPagamentiPortaleDTO.setWispKeyPA(keyPA);
+			aggiornaPagamentiPortaleDTO.setWispKeyWisp(keyWISP);
+			
+			this.logRequest(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTO.toString().getBytes());
+			
+			ctx =  GpThreadLocal.get();
 
 			WebControllerDAO webControllerDAO = new WebControllerDAO(BasicBD.newInstance(ctx.getTransactionId()));
 			

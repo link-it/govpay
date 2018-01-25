@@ -20,12 +20,14 @@
 package it.govpay.core.business.model;
 
 import it.govpay.bd.model.Canale;
+import it.govpay.core.exceptions.NdpException.FaultNodo;
 
 
 public class SceltaWISP {
 	private Canale canale;
 	private boolean sceltaEffettuata;
 	private boolean pagaDopo;
+	private FaultNodo fault = null;
 	
 	public Canale getCanale() {
 		return canale;
@@ -45,4 +47,11 @@ public class SceltaWISP {
 	public void setPagaDopo(boolean pagaDopo) {
 		this.pagaDopo = pagaDopo;
 	}
+	public FaultNodo getFault() {
+		return fault;
+	}
+	public void setFault(FaultNodo fault) {
+		this.fault = fault;
+	}
+	
 }
