@@ -169,6 +169,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DESCRIZIONE_STATO_CONS,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_CONSERVAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
+		sqlQueryObjectInsert.addInsertField("id_pagamento_portale","?");
 		sqlQueryObjectInsert.addInsertField("id_canale","?");
 		sqlQueryObjectInsert.addInsertField("id_portale","?");
 
