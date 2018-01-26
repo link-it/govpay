@@ -5,6 +5,7 @@ CREATE TABLE pagamenti_portale
        cod_portale VARCHAR2(35 CHAR) NOT NULL,
        cod_canale VARCHAR2(35 CHAR),
        nome VARCHAR2(255 CHAR) NOT NULL,
+       versante_identificativo VARCHAR2(35 CHAR),
        id_sessione VARCHAR2(35 CHAR) NOT NULL,
        id_sessione_portale VARCHAR2(35 CHAR),
        id_sessione_psp VARCHAR2(35 CHAR),
@@ -73,4 +74,15 @@ end;
 
 ALTER TABLE rpt ADD id_pagamento_portale NUMBER;
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
+
+ALTER TABLE versamenti ADD data_validita TIMESTAMP(3);
+ALTER TABLE versamenti ADD nome VARCHAR(35);
+--TODO not null
+ALTER TABLE versamenti ADD tassonomia_avviso VARCHAR(35);
+--TODO not null
+ALTER TABLE versamenti ADD tassonomia VARCHAR(35);
+ALTER TABLE versamenti ADD id_dominio BIGINT;
+update versamenti set id_dominio = (select id_dominio from uo where id = versamenti.id_uo);
+ALTER TABLE versamenti MODIFY (id_dominio NOT NULL);
+ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
