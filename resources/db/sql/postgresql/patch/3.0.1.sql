@@ -59,5 +59,6 @@ ALTER TABLE versamenti ADD COLUMN tassonomia VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN id_dominio BIGINT;
 update versamenti set id_dominio = (select id_dominio from uo where id = versamenti.id_uo);
 ALTER TABLE versamenti ALTER COLUMN id_dominio SET NOT NULL;
+ALTER TABLE versamenti ALTER COLUMN id_uo DROP NOT NULL;
 ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
