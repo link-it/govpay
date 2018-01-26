@@ -47,10 +47,6 @@ CREATE TABLE pag_port_versamenti
        CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
 );
 
-
-ALTER TABLE rpt ADD COLUMN id_pagamento_portale BIGINT;
-ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
-
 ALTER TABLE rpt ADD COLUMN id_pagamento_portale BIGINT;
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
 
@@ -62,6 +58,6 @@ ALTER TABLE versamenti ADD COLUMN tassonomia_avviso VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN tassonomia VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN id_dominio BIGINT;
 update versamenti set id_dominio = (select id_dominio from uo where id = versamenti.id_uo);
-ALTER TABLE versamenti MODIFY COLUMN id_dominio BIGINT NOT NULL;
+ALTER TABLE versamenti ALTER COLUMN id_dominio SET NOT NULL;
 ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
