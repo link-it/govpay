@@ -183,7 +183,6 @@ public class PagamentoPortale extends BasicModel {
 	public void setVersanteIdentificativo(String versanteIdentificativo) {
 		this.versanteIdentificativo = versanteIdentificativo;
 	}
-	
 
 	// business
 	private transient List<Versamento> versamenti;

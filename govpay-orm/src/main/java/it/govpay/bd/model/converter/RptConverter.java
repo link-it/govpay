@@ -25,6 +25,7 @@ import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdCanale;
+import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdPortale;
 import it.govpay.orm.IdVersamento;
 
@@ -86,6 +87,9 @@ public class RptConverter {
 			dto.setStatoConservazione(it.govpay.model.Rpt.StatoConservazione.valueOf(vo.getStatoConservazione()));
 		
 		dto.setDescrizioneStatoConservazione(vo.getDescrizioneStatoCons());
+		
+		if(vo.getIdPagamentoPortale() != null)
+			dto.setIdPagamentoPortale(vo.getIdPagamentoPortale().getId());
 
 		return dto;
 	}
@@ -138,6 +142,11 @@ public class RptConverter {
 		
 		vo.setDescrizioneStatoCons(dto.getDescrizioneStatoConservazione());
 		
+		if(dto.getIdPagamentoPortale() != null) {
+			IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
+			idPagamentoPortale.setId(dto.getIdPagamentoPortale());
+			vo.setIdPagamentoPortale(idPagamentoPortale );
+		}
 		
 
 		return vo;

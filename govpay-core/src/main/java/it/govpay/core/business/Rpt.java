@@ -233,6 +233,10 @@ public class Rpt extends BasicBD{
 				}
 				it.govpay.bd.model.Rpt rpt = RptUtils.buildRpt(intermediario, stazione, ctx.getPagamentoCtx().getCodCarrello(), versamento, iuv, ccp, portale, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
 				rpt.setCodSessionePortale(ctx.getPagamentoCtx().getCodSessionePortale());
+				
+				if(pagamentoPortale!= null)
+					rpt.setIdPagamentoPortale(pagamentoPortale.getId());
+				
 				rptBD.insertRpt(rpt);
 				rpts.add(rpt);
 				ctx.log("rpt.creazioneRpt", versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp, rpt.getCodMsgRichiesta());

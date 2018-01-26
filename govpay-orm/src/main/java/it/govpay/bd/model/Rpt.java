@@ -27,6 +27,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.model.Intermediario;
 
@@ -41,6 +42,7 @@ public class Rpt extends it.govpay.model.Rpt{
 	private transient Canale canale;
 	private transient Psp psp;
 	private transient List<Pagamento> pagamenti;
+	private transient PagamentoPortale pagamentoPortale;
 	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
 		if(this.versamento == null) {
@@ -113,4 +115,16 @@ public class Rpt extends it.govpay.model.Rpt{
 		return getDominio(bd).getStazione().getIntermediario(bd);
 	}
 
+	public PagamentoPortale getPagamentoPortale(BasicBD bd) throws ServiceException, NotFoundException  {
+		if(this.pagamentoPortale == null && this.getIdPagamentoPortale() != null) {
+			PagamentiPortaleBD versamentiBD = new PagamentiPortaleBD(bd);
+			this.pagamentoPortale = versamentiBD.getPagamento(this.getIdPagamentoPortale());
+		}
+		return this.pagamentoPortale;
+	}
+	
+	public void setPagamentoPortale(PagamentoPortale pagamentoPortale) {
+		this.pagamentoPortale = pagamentoPortale;
+	}
+	
 }
