@@ -35,10 +35,14 @@ public class PagamentiPortaleConverter {
 	public static final String IUV_KEY = "iuv";
 
 	public static PagamentiPortaleRequest readFromJson(ByteArrayOutputStream baos) {
+		return readFromJson(baos.toString());
+	}
+	
+	public static PagamentiPortaleRequest readFromJson(String jsonContent) {
 		PagamentiPortaleRequest pagamentiPortaleRequest = null;
 		JsonConfig jsonConfig = new JsonConfig();
 
-		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( baos.toString() );  
+		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonContent );  
 
 		JSONArray jsonArrayPendenze = jsonObjectPagamentiPortaleRequest.getJSONArray(PagamentiPortaleConverter.PENDENZE_KEY);
 
@@ -109,6 +113,7 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 		pagamentiPortaleDTO.setPrincipal(principal);
 		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
+		pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto());
 
 		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 		pagamentiPortaleDTO.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());

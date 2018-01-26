@@ -36,6 +36,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.WISPUtils;
 import it.govpay.model.Anagrafica;
@@ -241,10 +242,10 @@ public class PagamentiPortaleDAO extends BasicBD{
 			
 			// decodifica di tipo versamento e id psp dal canale
 			codCanale = canale.getCodCanale();
-			tipoVersamento = canale.getTipoVersamento().toString();
+			tipoVersamento = canale.getTipoVersamento().getCodifica();
 			idPsp = canale.getPsp(this).getCodPsp();
 			it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(this);
-			List<Rpt> rpts = rptBD.avviaTransazione(versamenti, portaleAutenticato, canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazione(), pagamentiPortaleDTO.getUrlRitorno(), false);
+			List<Rpt> rpts = rptBD.avviaTransazione(versamenti, portaleAutenticato, canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
 			
 			Rpt rpt = rpts.get(0);
 			
@@ -278,14 +279,14 @@ public class PagamentiPortaleDAO extends BasicBD{
 		pagamentoPortale.setCodPsp(idPsp);
 		pagamentoPortale.setTipoVersamento(tipoVersamento);
 		pagamentoPortale.setCodCanale(codCanale); 
-		pagamentoPortale.setUrlRitorno(redirectUrl);
+		pagamentoPortale.setUrlRitorno(pagamentiPortaleDTO.getUrlRitorno());
 		pagamentoPortale.setNome(nome);
 		
 		// costruire html
 		String template = WISPUtils.readTemplate();
 		
-		String urlReturn = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() + "?action=" + ACTION_RETURN;
-		String urlBack = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() + "?action=" + ACTION_BACK;
+		String urlReturn = UrlUtils.addParameter(GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() , "action" , ACTION_RETURN);
+		String urlBack = UrlUtils.addParameter(GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() ,"action" , ACTION_BACK);
 		
 		String wispHtml = WISPUtils.getWispHtml(GovpayConfig.getInstance().getUrlWISP(), template, pagamentoPortale, urlReturn, urlBack, enteCreditore, numeroPagamenti, ibanAccredito, contoPostale, hasBollo, sommaImporti,pagamentiModello2,
 				pagamentiPortaleDTO.getLingua()); 

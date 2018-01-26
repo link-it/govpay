@@ -7,7 +7,7 @@ public class TokenWISPNonValidoException extends RedirectException{
 	}
 	
 	public TokenWISPNonValidoException(String location, String message) {
-		super(message,location);
+		super(location,message);
 	}
 	
 	public TokenWISPNonValidoException(String location,Throwable t) {

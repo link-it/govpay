@@ -137,6 +137,8 @@ public class RptConverter {
 			vo.setStatoConservazione(dto.getStatoConservazione().name());
 		
 		vo.setDescrizioneStatoCons(dto.getDescrizioneStatoConservazione());
+		
+		
 
 		return vo;
 	}

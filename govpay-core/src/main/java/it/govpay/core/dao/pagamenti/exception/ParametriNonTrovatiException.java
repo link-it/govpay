@@ -7,7 +7,7 @@ public class ParametriNonTrovatiException extends RedirectException{
 	}
 	
 	public ParametriNonTrovatiException(String location, String message) {
-		super(message,location);
+		super(location,message);
 	}
 	
 	public ParametriNonTrovatiException(String location,Throwable t) {

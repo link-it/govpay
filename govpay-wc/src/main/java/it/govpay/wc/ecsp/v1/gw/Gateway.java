@@ -3,11 +3,9 @@ package it.govpay.wc.ecsp.v1.gw;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.http.Consts;
@@ -28,8 +27,10 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.pagamenti.WebControllerDAO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTOResponse;
-import it.govpay.core.dao.pagamenti.exception.RedirectException;
-import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.dao.pagamenti.exception.ActionNonValidaException;
+import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
+import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
+import it.govpay.core.dao.pagamenti.exception.TokenWISPNonValidoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.wc.ecsp.BaseRsService;
@@ -43,22 +44,12 @@ public class Gateway extends BaseRsService{
 	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
 	public Response post_GW(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, 
 			@QueryParam("action") String action
-			
-//			@FormParam("keyPA")  String keyPA,
-//			@FormParam("keyWISP") String keyWISP,
-//			@FormParam("idDominio")String idDominio,
-//			@FormParam("type") String type
 			) {
 		String methodName = "post_gateway";  
 		GpContext ctx = null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		String gwErrorLocation = null;
-		URI gwErrorLocationURI = null;
 		ByteArrayOutputStream baos= null;
 		try{
-			gwErrorLocation = GovpayConfig.getInstance().getUrlErrorGovpayWC();
-			gwErrorLocationURI = new URI(gwErrorLocation);
-			
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
 			copy(is, baos);
@@ -76,11 +67,6 @@ public class Gateway extends BaseRsService{
 			
 			this.log.info("Parametri ricevuti: \n" + aggiornaPagamentiPortaleDTO.toString()); 
 			
-//			aggiornaPagamentiPortaleDTO.setType(type);
-//			aggiornaPagamentiPortaleDTO.setWispDominio(idDominio);
-//			aggiornaPagamentiPortaleDTO.setWispKeyPA(keyPA);
-//			aggiornaPagamentiPortaleDTO.setWispKeyWisp(keyWISP);
-			
 			ctx =  GpThreadLocal.get();
 
 			WebControllerDAO webControllerDAO = new WebControllerDAO(BasicBD.newInstance(ctx.getTransactionId()));
@@ -96,6 +82,18 @@ public class Gateway extends BaseRsService{
 				this.log.info("Esecuzione " + methodName + " completata, html generato correttamente.");	
 				return Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()).build();
 			}
+		} catch (PagamentoPortaleNonTrovatoException e) {
+			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", restiuisco 404 - NotFound", e);
+			return Response.status(Status.NOT_FOUND).build();
+		} catch (ActionNonValidaException e) {
+			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
+			return Response.temporaryRedirect(e.getURILocation()).build();
+		} catch (TokenWISPNonValidoException e) {
+			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
+			return Response.temporaryRedirect(e.getURILocation()).build();
+		} catch (TransazioneRptException e) {
+			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
+			return Response.temporaryRedirect(e.getURILocation()).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione della funzionalita' di gateway: ", e);
 			try {
@@ -103,8 +101,7 @@ public class Gateway extends BaseRsService{
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
-			return Response.temporaryRedirect(gwErrorLocationURI).build();
-//			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -118,12 +115,7 @@ public class Gateway extends BaseRsService{
 		String methodName = "get_gateway";  
 		GpContext ctx = null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		String gwErrorLocation = null;
-		URI gwErrorLocationURI = null;
 		try{
-			gwErrorLocation = GovpayConfig.getInstance().getUrlErrorGovpayWC();
-			gwErrorLocationURI = new URI(gwErrorLocation);
-
 			String principal = this.getPrincipal();
 			
 			RichiestaWebControllerDTO aggiornaPagamentiPortaleDTO = new RichiestaWebControllerDTO();
@@ -152,30 +144,28 @@ public class Gateway extends BaseRsService{
 				this.log.info("Esecuzione " + methodName + " completata, html generato correttamente.");	
 				return Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()).build();
 			}
-		} catch (RedirectException e) {
+		} catch (PagamentoPortaleNonTrovatoException e) {
+			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", restiuisco 404 - NotFound", e);
+			return Response.status(Status.NOT_FOUND).build();
+		} catch (ActionNonValidaException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
 			return Response.temporaryRedirect(e.getURILocation()).build();
-		}catch (Exception e) {
+		} catch (TokenWISPNonValidoException e) {
+			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
+			return Response.temporaryRedirect(e.getURILocation()).build();
+		} catch (TransazioneRptException e) {
+			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
+			return Response.temporaryRedirect(e.getURILocation()).build();
+		} catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione della funzionalita' di gateway: ", e);
 			try {
 				this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
-			return Response.temporaryRedirect(gwErrorLocationURI).build();
-//			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
 		}
-	}
-	
-	
-	@GET
-	@Path("/error")
-	@Produces({MediaType.APPLICATION_JSON})
-	public Response errorHandler(InputStream is , @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders) {
-		String methodName = "Handler Errori";  
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		return Response.ok("Redirect alla url di error: Si e' verificato un errore").build();
 	}
 }

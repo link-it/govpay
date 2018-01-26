@@ -65,4 +65,16 @@ public class UrlUtils {
 		}
 		return new URL(urlString);
 	}
+	
+	public static String addParameter(String urlString, String paramName, String paramValue) {
+		if(urlString.contains("?")) {
+			if(urlString.endsWith("&")) 
+				urlString = urlString + paramName + "=" + paramValue;
+			else
+				urlString = urlString + "&" + paramName + "=" + paramValue;
+		} else {
+			urlString = urlString + "?" + paramName + "=" + paramValue;
+		}
+		return urlString;
+	}
 }

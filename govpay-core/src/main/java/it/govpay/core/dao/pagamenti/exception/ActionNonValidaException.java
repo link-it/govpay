@@ -7,7 +7,7 @@ public class ActionNonValidaException extends RedirectException{
 	}
 	
 	public ActionNonValidaException(String location, String message) {
-		super(message,location);
+		super(location,message);
 	}
 	
 	public ActionNonValidaException(String location,Throwable t) {

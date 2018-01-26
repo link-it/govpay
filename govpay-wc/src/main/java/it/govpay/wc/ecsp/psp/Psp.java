@@ -11,6 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.bd.BasicBD;
@@ -19,8 +20,6 @@ import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.ParametriNonTrovatiException;
-import it.govpay.core.dao.pagamenti.exception.RedirectException;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.wc.ecsp.BaseRsService;
@@ -31,29 +30,21 @@ public class Psp extends BaseRsService {
 	@GET
 	@Path("/psp")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response getPsp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSessione") String idSessione, @QueryParam("esito") String esito) {
+	public Response getPsp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSession") String idSession, @QueryParam("esito") String esito) {
 		String methodName = "get_gateway";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		String gwErrorLocation = null;
-		URI gwErrorLocationURI = null;
 		try{
-			gwErrorLocation = GovpayConfig.getInstance().getUrlErrorGovpayWC();
-			gwErrorLocationURI = new URI(gwErrorLocation);
-			
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
 			String principal = this.getPrincipal();
 			
-			if(esito == null || idSessione == null)
-				throw new ParametriNonTrovatiException(GovpayConfig.getInstance().getUrlErrorGovpayWC(), "Parametri 'idSessione' ed 'esito' obbligatori");
-			
 			RedirectDaPspDTO redirectDaPspDTO = new RedirectDaPspDTO();
 			redirectDaPspDTO.setEsito(esito);
-			redirectDaPspDTO.setIdSession(idSessione);
+			redirectDaPspDTO.setIdSession(idSession);
 			redirectDaPspDTO.setPrincipal(principal);
 			
 			WebControllerDAO webControllerDAO = new WebControllerDAO(BasicBD.newInstance(ctx.getTransactionId()));
@@ -65,7 +56,10 @@ public class Psp extends BaseRsService {
 			this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectDaPspDTOResponse.getLocation() +"].");	
 			return Response.temporaryRedirect(new URI(redirectDaPspDTOResponse.getLocation())).build();
 			
-		} catch (RedirectException e) {
+		} catch (PagamentoPortaleNonTrovatoException e) {
+			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", restiuisco 404 - NotFound", e);
+			return Response.status(Status.NOT_FOUND).build();
+		} catch (ParametriNonTrovatiException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
 			return Response.temporaryRedirect(e.getURILocation()).build();
 		}catch (Exception e) {
@@ -75,8 +69,7 @@ public class Psp extends BaseRsService {
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
-			return Response.temporaryRedirect(gwErrorLocationURI).build();
-//			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
 		}
