@@ -56,6 +56,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodVersamentoEnte", Versamento.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Versamento.model().COD_VERSAMENTO_ENTE.getFieldType()));
+				setParameter(object, "setNome", Versamento.model().NOME.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "nome", Versamento.model().NOME.getFieldType()));
 				setParameter(object, "setImportoTotale", Versamento.model().IMPORTO_TOTALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_totale", Versamento.model().IMPORTO_TOTALE.getFieldType()));
 				setParameter(object, "setStatoVersamento", Versamento.model().STATO_VERSAMENTO.getFieldType(),
@@ -66,6 +68,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "aggiornabile", Versamento.model().AGGIORNABILE.getFieldType()));
 				setParameter(object, "setDataCreazione", Versamento.model().DATA_CREAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_creazione", Versamento.model().DATA_CREAZIONE.getFieldType()));
+				setParameter(object, "setDataValidita", Versamento.model().DATA_VALIDITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_validita", Versamento.model().DATA_VALIDITA.getFieldType()));
 				setParameter(object, "setDataScadenza", Versamento.model().DATA_SCADENZA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_scadenza", Versamento.model().DATA_SCADENZA.getFieldType()));
 				setParameter(object, "setDataOraUltimoAggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
@@ -96,6 +100,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "debitore_cellulare", Versamento.model().DEBITORE_CELLULARE.getFieldType()));
 				setParameter(object, "setDebitoreFax", Versamento.model().DEBITORE_FAX.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "debitore_fax", Versamento.model().DEBITORE_FAX.getFieldType()));
+				setParameter(object, "setTassonomiaAvviso", Versamento.model().TASSONOMIA_AVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tassonomia_avviso", Versamento.model().TASSONOMIA_AVVISO.getFieldType()));
+				setParameter(object, "setTassonomia", Versamento.model().TASSONOMIA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tassonomia", Versamento.model().TASSONOMIA.getFieldType()));
 				setParameter(object, "setCodLotto", Versamento.model().COD_LOTTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_lotto", Versamento.model().COD_LOTTO.getFieldType()));
 				setParameter(object, "setCodVersamentoLotto", Versamento.model().COD_VERSAMENTO_LOTTO.getFieldType(),
@@ -128,6 +136,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setCodVersamentoEnte", Versamento.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codVersamentoEnte"));
+				setParameter(object, "setNome", Versamento.model().NOME.getFieldType(),
+					this.getObjectFromMap(map,"nome"));
 				setParameter(object, "setImportoTotale", Versamento.model().IMPORTO_TOTALE.getFieldType(),
 					this.getObjectFromMap(map,"importoTotale"));
 				setParameter(object, "setStatoVersamento", Versamento.model().STATO_VERSAMENTO.getFieldType(),
@@ -138,6 +148,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"aggiornabile"));
 				setParameter(object, "setDataCreazione", Versamento.model().DATA_CREAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataCreazione"));
+				setParameter(object, "setDataValidita", Versamento.model().DATA_VALIDITA.getFieldType(),
+					this.getObjectFromMap(map,"dataValidita"));
 				setParameter(object, "setDataScadenza", Versamento.model().DATA_SCADENZA.getFieldType(),
 					this.getObjectFromMap(map,"dataScadenza"));
 				setParameter(object, "setDataOraUltimoAggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
@@ -168,6 +180,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"debitoreCellulare"));
 				setParameter(object, "setDebitoreFax", Versamento.model().DEBITORE_FAX.getFieldType(),
 					this.getObjectFromMap(map,"debitoreFax"));
+				setParameter(object, "setTassonomiaAvviso", Versamento.model().TASSONOMIA_AVVISO.getFieldType(),
+					this.getObjectFromMap(map,"tassonomiaAvviso"));
+				setParameter(object, "setTassonomia", Versamento.model().TASSONOMIA.getFieldType(),
+					this.getObjectFromMap(map,"tassonomia"));
 				setParameter(object, "setCodLotto", Versamento.model().COD_LOTTO.getFieldType(),
 					this.getObjectFromMap(map,"codLotto"));
 				setParameter(object, "setCodVersamentoLotto", Versamento.model().COD_VERSAMENTO_LOTTO.getFieldType(),

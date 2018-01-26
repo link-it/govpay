@@ -38,6 +38,7 @@ import java.io.Serializable;
  * 			&lt;element name="codPortale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="versanteIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idSessionePortale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSessionePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -70,6 +71,7 @@ import java.io.Serializable;
   	"codPortale",
   	"codCanale",
   	"nome",
+  	"versanteIdentificativo",
   	"idSessione",
   	"idSessionePortale",
   	"idSessionePsp",
@@ -130,6 +132,14 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 
   public void setNome(java.lang.String nome) {
     this.nome = nome;
+  }
+
+  public java.lang.String getVersanteIdentificativo() {
+    return this.versanteIdentificativo;
+  }
+
+  public void setVersanteIdentificativo(java.lang.String versanteIdentificativo) {
+    this.versanteIdentificativo = versanteIdentificativo;
   }
 
   public java.lang.String getIdSessione() {
@@ -282,6 +292,10 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nome",required=true,nillable=false)
   protected java.lang.String nome;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="versanteIdentificativo",required=false,nillable=false)
+  protected java.lang.String versanteIdentificativo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="idSessione",required=true,nillable=false)

@@ -16,6 +16,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.converter.PagamentoPortaleConverter;
+import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.PagamentoPortaleVersamento;
@@ -27,6 +28,35 @@ public class PagamentiPortaleBD extends BasicBD{
 
 	public PagamentiPortaleBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+
+	public PagamentoPortaleFilter newFilter() throws ServiceException {
+		return new PagamentoPortaleFilter(this.getPagamentoService());
+	}
+	
+	public PagamentoPortaleFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new PagamentoPortaleFilter(this.getPagamentoService(),simpleSearch);
+	}
+
+	public List<PagamentoPortale> findAll(PagamentoPortaleFilter filter)
+			throws ServiceException {
+		try {
+			List<it.govpay.orm.PagamentoPortale> pagamentoVOLst = this
+					.getPagamentoPortaleService().findAll(
+							filter.toPaginatedExpression());
+			return PagamentoPortaleConverter.toDTO(pagamentoVOLst);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public long count(PagamentoPortaleFilter filter) throws ServiceException {
+		try {
+			return this.getPagamentoPortaleService().count(filter.toExpression())
+					.longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	public void insertPagamento(PagamentoPortale pagamentoPortale) throws ServiceException {

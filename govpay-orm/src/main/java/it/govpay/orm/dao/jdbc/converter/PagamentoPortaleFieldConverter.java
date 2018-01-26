@@ -88,6 +88,13 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "nome";
 			}
 		}
+		if(field.equals(PagamentoPortale.model().VERSANTE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".versante_identificativo";
+			}else{
+				return "versante_identificativo";
+			}
+		}
 		if(field.equals(PagamentoPortale.model().ID_SESSIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".id_sessione";
@@ -213,6 +220,9 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().NOME)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().VERSANTE_IDENTIFICATIVO)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().ID_SESSIONE)){

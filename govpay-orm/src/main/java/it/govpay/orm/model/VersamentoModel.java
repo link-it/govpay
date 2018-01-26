@@ -42,6 +42,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		super();
 	
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"Versamento",Versamento.class);
+		this.NOME = new Field("nome",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"Versamento",Versamento.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"Versamento",Versamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Versamento",Versamento.class));
 		this.IUV = new it.govpay.orm.model.IuvSearchModel(new Field("iuv",it.govpay.orm.IuvSearch.class,"Versamento",Versamento.class));
@@ -50,6 +52,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"Versamento",Versamento.class);
 		this.AGGIORNABILE = new Field("aggiornabile",boolean.class,"Versamento",Versamento.class);
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_VALIDITA = new Field("dataValidita",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new Field("dataOraUltimoAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
 		this.CAUSALE_VERSAMENTO = new Field("causaleVersamento",java.lang.String.class,"Versamento",Versamento.class);
@@ -65,6 +68,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DEBITORE_TELEFONO = new Field("debitoreTelefono",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_CELLULARE = new Field("debitoreCellulare",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_FAX = new Field("debitoreFax",java.lang.String.class,"Versamento",Versamento.class);
+		this.TASSONOMIA_AVVISO = new Field("tassonomiaAvviso",java.lang.String.class,"Versamento",Versamento.class);
+		this.TASSONOMIA = new Field("tassonomia",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_LOTTO = new Field("codLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_VERSAMENTO_LOTTO = new Field("codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_ANNO_TRIBUTARIO = new Field("codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
@@ -77,6 +82,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		super(father);
 	
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"Versamento",Versamento.class);
+		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"Versamento",Versamento.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"Versamento",Versamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Versamento",Versamento.class));
 		this.IUV = new it.govpay.orm.model.IuvSearchModel(new ComplexField(father,"iuv",it.govpay.orm.IuvSearch.class,"Versamento",Versamento.class));
@@ -85,6 +92,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"Versamento",Versamento.class);
 		this.AGGIORNABILE = new ComplexField(father,"aggiornabile",boolean.class,"Versamento",Versamento.class);
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_VALIDITA = new ComplexField(father,"dataValidita",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new ComplexField(father,"dataOraUltimoAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
 		this.CAUSALE_VERSAMENTO = new ComplexField(father,"causaleVersamento",java.lang.String.class,"Versamento",Versamento.class);
@@ -100,6 +108,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DEBITORE_TELEFONO = new ComplexField(father,"debitoreTelefono",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_CELLULARE = new ComplexField(father,"debitoreCellulare",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_FAX = new ComplexField(father,"debitoreFax",java.lang.String.class,"Versamento",Versamento.class);
+		this.TASSONOMIA_AVVISO = new ComplexField(father,"tassonomiaAvviso",java.lang.String.class,"Versamento",Versamento.class);
+		this.TASSONOMIA = new ComplexField(father,"tassonomia",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_LOTTO = new ComplexField(father,"codLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_VERSAMENTO_LOTTO = new ComplexField(father,"codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_ANNO_TRIBUTARIO = new ComplexField(father,"codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
@@ -110,6 +120,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	
 
 	public IField COD_VERSAMENTO_ENTE = null;
+	 
+	public IField NOME = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 	public it.govpay.orm.model.IdUoModel ID_UO = null;
 	 
@@ -126,6 +140,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField AGGIORNABILE = null;
 	 
 	public IField DATA_CREAZIONE = null;
+	 
+	public IField DATA_VALIDITA = null;
 	 
 	public IField DATA_SCADENZA = null;
 	 
@@ -156,6 +172,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField DEBITORE_CELLULARE = null;
 	 
 	public IField DEBITORE_FAX = null;
+	 
+	public IField TASSONOMIA_AVVISO = null;
+	 
+	public IField TASSONOMIA = null;
 	 
 	public IField COD_LOTTO = null;
 	 

@@ -462,7 +462,9 @@
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
-    <structure field="idUo" usage="required" map-as="it.govpay.orm.IdUo"/>
+    <value name="nome" field="nome" usage="required"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
+    <structure field="idUo" usage="optional" map-as="it.govpay.orm.IdUo"/>
     <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
     <structure field="iuv" usage="optional" map-as="it.govpay.orm.IuvSearch"/>
     <value name="importoTotale" field="importoTotale" usage="required"/>
@@ -470,6 +472,7 @@
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="aggiornabile" field="aggiornabile" usage="required"/>
     <value name="dataCreazione" field="dataCreazione" usage="required"/>
+    <value name="dataValidita" field="dataValidita" usage="optional"/>
     <value name="dataScadenza" field="dataScadenza" usage="optional"/>
     <value name="dataOraUltimoAggiornamento" field="dataOraUltimoAggiornamento" usage="required"/>
     <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
@@ -485,6 +488,8 @@
     <value name="debitoreTelefono" field="debitoreTelefono" usage="optional"/>
     <value name="debitoreCellulare" field="debitoreCellulare" usage="optional"/>
     <value name="debitoreFax" field="debitoreFax" usage="optional"/>
+    <value name="tassonomiaAvviso" field="tassonomiaAvviso" usage="required"/>
+    <value name="tassonomia" field="tassonomia" usage="optional"/>
     <value name="codLotto" field="codLotto" usage="optional"/>
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
@@ -603,6 +608,7 @@
     <value name="codPortale" field="codPortale" usage="required"/>
     <value name="codCanale" field="codCanale" usage="optional"/>
     <value name="nome" field="nome" usage="required"/>
+    <value name="versanteIdentificativo" field="versanteIdentificativo" usage="optional"/>
     <value name="idSessione" field="idSessione" usage="required"/>
     <value name="idSessionePortale" field="idSessionePortale" usage="optional"/>
     <value name="idSessionePsp" field="idSessionePsp" usage="optional"/>

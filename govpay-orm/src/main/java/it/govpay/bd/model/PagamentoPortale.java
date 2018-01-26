@@ -33,6 +33,7 @@ public class PagamentoPortale extends BasicModel {
 
 	private String codPortale = null;
 	private String nome = null;
+	private String versanteIdentificativo = null;
 	private String idSessione = null;
 	private String idSessionePortale = null;
 	private String idSessionePsp = null;
@@ -176,7 +177,13 @@ public class PagamentoPortale extends BasicModel {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
+	public String getVersanteIdentificativo() {
+		return versanteIdentificativo;
+	}
+	public void setVersanteIdentificativo(String versanteIdentificativo) {
+		this.versanteIdentificativo = versanteIdentificativo;
+	}
+	
 
 	// business
 	private transient List<Versamento> versamenti;
@@ -197,4 +204,5 @@ public class PagamentoPortale extends BasicModel {
 		}
 		return versamenti;
 	}
+
 }
