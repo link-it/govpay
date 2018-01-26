@@ -19,18 +19,19 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.Anagrafica;
-import it.govpay.bd.model.Versamento;
-import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdUo;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.bd.model.Versamento;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdUo;
 
 public class VersamentoConverter {
 
@@ -49,13 +50,19 @@ public class VersamentoConverter {
 			Versamento dto = new Versamento();
 			dto.setId(vo.getId());
 			dto.setIdApplicazione(vo.getIdApplicazione().getId());
-			dto.setIdUo(vo.getIdUo().getId());
+			
+			if(vo.getIdUo() != null)
+				dto.setIdUo(vo.getIdUo().getId());
+			
+			dto.setIdDominio(vo.getIdDominio().getId());
+			dto.setNome(vo.getNome());
 			dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 			dto.setStatoVersamento(StatoVersamento.valueOf(vo.getStatoVersamento()));
 			dto.setDescrizioneStato(vo.getDescrizioneStato());
 			dto.setImportoTotale(BigDecimal.valueOf(vo.getImportoTotale()));
 			dto.setAggiornabile(vo.isAggiornabile());
 			dto.setDataCreazione(vo.getDataCreazione());
+			dto.setDataValidita(vo.getDataValidita());
 			dto.setDataScadenza(vo.getDataScadenza());
 			dto.setDataUltimoAggiornamento(vo.getDataOraUltimoAggiornamento());
 			dto.setCausaleVersamento(vo.getCausaleVersamento());
@@ -73,9 +80,15 @@ public class VersamentoConverter {
 			debitore.setProvincia(vo.getDebitoreProvincia());
 			debitore.setTelefono(vo.getDebitoreTelefono());
 			dto.setAnagraficaDebitore(debitore);
+			
 			if(vo.getCodAnnoTributario() != null && !vo.getCodAnnoTributario().isEmpty())
 				dto.setCodAnnoTributario(Integer.parseInt(vo.getCodAnnoTributario()));
+			
 			dto.setCodLotto(vo.getCodLotto());
+			
+			dto.setTassonomiaAvviso(vo.getTassonomiaAvviso()); 
+			dto.setTassonomia(vo.getTassonomia());
+			
 			dto.setCodVersamentoLotto(vo.getCodVersamentoLotto()); 
 			dto.setCodBundlekey(vo.getCodBundlekey()); 
 			return dto;
@@ -91,15 +104,26 @@ public class VersamentoConverter {
 			IdApplicazione idApplicazione = new IdApplicazione();
 			idApplicazione.setId(dto.getIdApplicazione());
 			vo.setIdApplicazione(idApplicazione);
-			IdUo idUo = new IdUo();
-			idUo.setId(dto.getIdUo());
-			vo.setIdUo(idUo);
+			
+			if(dto.getIdUo() > 0) {
+				IdUo idUo = new IdUo();
+				idUo.setId(dto.getIdUo());
+				vo.setIdUo(idUo);
+			}
+
+			IdDominio idDominio = new IdDominio();
+			idDominio.setId(dto.getIdDominio());
+			vo.setIdDominio(idDominio);
+
+			vo.setNome(dto.getNome());
 			vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
+			
 			vo.setStatoVersamento(dto.getStatoVersamento().toString());
 			vo.setDescrizioneStato(dto.getDescrizioneStato());
 			vo.setImportoTotale(dto.getImportoTotale().doubleValue());
 			vo.setAggiornabile(dto.isAggiornabile());
 			vo.setDataCreazione(dto.getDataCreazione());
+			vo.setDataValidita(dto.getDataValidita());
 			vo.setDataScadenza(dto.getDataScadenza());
 			vo.setDataOraUltimoAggiornamento(dto.getDataUltimoAggiornamento());
 			if(dto.getCausaleVersamento() != null)
@@ -119,6 +143,9 @@ public class VersamentoConverter {
 			vo.setDebitoreTelefono(anagraficaDebitore.getTelefono());
 			vo.setCodAnnoTributario(dto.getCodAnnoTributario() != null ? dto.getCodAnnoTributario().toString() : null);
 			vo.setCodLotto(dto.getCodLotto());
+			
+			vo.setTassonomiaAvviso(dto.getTassonomiaAvviso()); 
+			vo.setTassonomia(dto.getTassonomia()); 
 			vo.setCodVersamentoLotto(dto.getCodVersamentoLotto()); 
 			vo.setCodBundlekey(dto.getCodBundlekey());
 			return vo;

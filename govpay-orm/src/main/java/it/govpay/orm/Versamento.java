@@ -36,7 +36,9 @@ import java.io.Serializable;
  * &lt;complexType name="Versamento">
  * 		&lt;sequence>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}iuv-search" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
@@ -44,6 +46,7 @@ import java.io.Serializable;
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="aggiornabile" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataValidita" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataOraUltimoAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -59,6 +62,8 @@ import java.io.Serializable;
  * 			&lt;element name="debitoreTelefono" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreCellulare" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreFax" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tassonomiaAvviso" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tassonomia" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codAnnoTributario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -78,6 +83,8 @@ import java.io.Serializable;
 @XmlType(name = "Versamento", 
   propOrder = {
   	"codVersamentoEnte",
+  	"nome",
+  	"idDominio",
   	"idUo",
   	"idApplicazione",
   	"iuv",
@@ -86,6 +93,7 @@ import java.io.Serializable;
   	"descrizioneStato",
   	"aggiornabile",
   	"dataCreazione",
+  	"dataValidita",
   	"dataScadenza",
   	"dataOraUltimoAggiornamento",
   	"causaleVersamento",
@@ -101,6 +109,8 @@ import java.io.Serializable;
   	"debitoreTelefono",
   	"debitoreCellulare",
   	"debitoreFax",
+  	"tassonomiaAvviso",
+  	"tassonomia",
   	"codLotto",
   	"codVersamentoLotto",
   	"codAnnoTributario",
@@ -134,6 +144,22 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setCodVersamentoEnte(java.lang.String codVersamentoEnte) {
     this.codVersamentoEnte = codVersamentoEnte;
+  }
+
+  public java.lang.String getNome() {
+    return this.nome;
+  }
+
+  public void setNome(java.lang.String nome) {
+    this.nome = nome;
+  }
+
+  public IdDominio getIdDominio() {
+    return this.idDominio;
+  }
+
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
   }
 
   public IdUo getIdUo() {
@@ -202,6 +228,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setDataCreazione(java.util.Date dataCreazione) {
     this.dataCreazione = dataCreazione;
+  }
+
+  public java.util.Date getDataValidita() {
+    return this.dataValidita;
+  }
+
+  public void setDataValidita(java.util.Date dataValidita) {
+    this.dataValidita = dataValidita;
   }
 
   public java.util.Date getDataScadenza() {
@@ -324,6 +358,22 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.debitoreFax = debitoreFax;
   }
 
+  public java.lang.String getTassonomiaAvviso() {
+    return this.tassonomiaAvviso;
+  }
+
+  public void setTassonomiaAvviso(java.lang.String tassonomiaAvviso) {
+    this.tassonomiaAvviso = tassonomiaAvviso;
+  }
+
+  public java.lang.String getTassonomia() {
+    return this.tassonomia;
+  }
+
+  public void setTassonomia(java.lang.String tassonomia) {
+    this.tassonomia = tassonomia;
+  }
+
   public java.lang.String getCodLotto() {
     return this.codLotto;
   }
@@ -379,7 +429,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @XmlElement(name="codVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codVersamentoEnte;
 
-  @XmlElement(name="idUo",required=true,nillable=false)
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="nome",required=true,nillable=false)
+  protected java.lang.String nome;
+
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
+
+  @XmlElement(name="idUo",required=false,nillable=false)
   protected IdUo idUo;
 
   @XmlElement(name="idApplicazione",required=true,nillable=false)
@@ -408,6 +465,11 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataCreazione",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataCreazione;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataValidita",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataValidita;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
@@ -470,6 +532,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="debitoreFax",required=false,nillable=false)
   protected java.lang.String debitoreFax;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tassonomiaAvviso",required=true,nillable=false)
+  protected java.lang.String tassonomiaAvviso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tassonomia",required=false,nillable=false)
+  protected java.lang.String tassonomia;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codLotto",required=false,nillable=false)

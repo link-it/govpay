@@ -60,6 +60,8 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_canale", PagamentoPortale.model().COD_CANALE.getFieldType()));
 				setParameter(object, "setNome", PagamentoPortale.model().NOME.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "nome", PagamentoPortale.model().NOME.getFieldType()));
+				setParameter(object, "setVersanteIdentificativo", PagamentoPortale.model().VERSANTE_IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "versante_identificativo", PagamentoPortale.model().VERSANTE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setIdSessione", PagamentoPortale.model().ID_SESSIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "id_sessione", PagamentoPortale.model().ID_SESSIONE.getFieldType()));
 				setParameter(object, "setIdSessionePortale", PagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType(),
@@ -118,6 +120,8 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codCanale"));
 				setParameter(object, "setNome", PagamentoPortale.model().NOME.getFieldType(),
 					this.getObjectFromMap(map,"nome"));
+				setParameter(object, "setVersanteIdentificativo", PagamentoPortale.model().VERSANTE_IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"versanteIdentificativo"));
 				setParameter(object, "setIdSessione", PagamentoPortale.model().ID_SESSIONE.getFieldType(),
 					this.getObjectFromMap(map,"idSessione"));
 				setParameter(object, "setIdSessionePortale", PagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType(),

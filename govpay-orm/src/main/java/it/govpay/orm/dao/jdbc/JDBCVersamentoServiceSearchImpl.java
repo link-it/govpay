@@ -164,11 +164,15 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 			fields.add(idField);
 			fields.add(Versamento.model().COD_VERSAMENTO_ENTE);
+			fields.add(Versamento.model().NOME);
 			fields.add(Versamento.model().IMPORTO_TOTALE);
 			fields.add(Versamento.model().STATO_VERSAMENTO);
 			fields.add(Versamento.model().DESCRIZIONE_STATO);
 			fields.add(Versamento.model().AGGIORNABILE);
+			fields.add(Versamento.model().TASSONOMIA);
+			fields.add(Versamento.model().TASSONOMIA_AVVISO);
 			fields.add(Versamento.model().DATA_CREAZIONE);
+			fields.add(Versamento.model().DATA_VALIDITA);
 			fields.add(Versamento.model().DATA_SCADENZA);
 			fields.add(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
 			fields.add(Versamento.model().CAUSALE_VERSAMENTO);
@@ -190,13 +194,15 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().COD_BUNDLEKEY);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				Long idApplicazione = (Long)map.remove("id_applicazione");
-				Long idUo = (Long)map.remove("id_uo");
+				Long idDominio = (Long)map.remove("id_dominio");
+				Object idUoObject = map.remove("id_uo");
 
 				Versamento versamento = (Versamento)this.getVersamentoFetch().fetch(jdbcProperties.getDatabase(), Versamento.model(), map);
 
@@ -209,14 +215,26 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 				id_versamento_applicazione.setId(idApplicazione);
 				versamento.setIdApplicazione(id_versamento_applicazione);
 
-				it.govpay.orm.IdUo id_versamento_ente = null;
+				it.govpay.orm.IdDominio id_versamento_dominio = null;
 				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_versamento_ente = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idUo, false);
+					id_versamento_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
 				}else{
-					id_versamento_ente = new it.govpay.orm.IdUo();
+					id_versamento_dominio = new it.govpay.orm.IdDominio();
 				}
-				id_versamento_ente.setId(idUo);
-				versamento.setIdUo(id_versamento_ente);
+				id_versamento_dominio.setId(idDominio);
+				versamento.setIdDominio(id_versamento_dominio);
+
+				if(idUoObject instanceof Long) {
+					Long idUo = (Long) map.remove("id_uo");
+					it.govpay.orm.IdUo id_versamento_ente = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_versamento_ente = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idUo, false);
+					}else{
+						id_versamento_ente = new it.govpay.orm.IdUo();
+					}
+					id_versamento_ente.setId(idUo);
+					versamento.setIdUo(id_versamento_ente);
+				}
 
 				list.add(versamento);
 			}

@@ -43,6 +43,7 @@ public class PagamentoPortaleConverter {
 
 		dto.setId(vo.getId());
 		dto.setCodPortale(vo.getCodPortale());
+		dto.setVersanteIdentificativo(vo.getVersanteIdentificativo());
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setIdSessione(vo.getIdSessione());
 		dto.setIdSessionePortale(vo.getIdSessionePortale());
@@ -69,6 +70,7 @@ public class PagamentoPortaleConverter {
 
 		vo.setId(dto.getId());
 		vo.setCodPortale(dto.getCodPortale());
+		vo.setVersanteIdentificativo(dto.getVersanteIdentificativo());
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setIdSessione(dto.getIdSessione());
 		vo.setIdSessionePortale(dto.getIdSessionePortale());
