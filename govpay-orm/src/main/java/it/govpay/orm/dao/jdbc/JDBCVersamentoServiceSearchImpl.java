@@ -225,7 +225,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 				versamento.setIdDominio(id_versamento_dominio);
 
 				if(idUoObject instanceof Long) {
-					Long idUo = (Long) map.remove("id_uo");
+					Long idUo = (Long) idUoObject;
 					it.govpay.orm.IdUo id_versamento_ente = null;
 					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
 						id_versamento_ente = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idUo, false);
