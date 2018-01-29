@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.v1.beans;
+package it.govpay.rs.v1.beans;
 
 import javax.ws.rs.core.UriBuilder;
 

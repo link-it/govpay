@@ -55,10 +55,11 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.v1.beans.Errore;
-import it.govpay.web.rs.v1.beans.Incasso;
-import it.govpay.web.rs.v1.beans.IncassoExt;
+import it.govpay.rs.BaseRsService;
+import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.beans.Errore;
+import it.govpay.rs.v1.beans.Incasso;
+import it.govpay.rs.v1.beans.IncassoExt;
 
 @Path("/v1/incassi")
 public class Incassi extends BaseRsServiceV1 {

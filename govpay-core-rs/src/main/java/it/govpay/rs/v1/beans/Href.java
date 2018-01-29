@@ -1,4 +1,4 @@
-package it.govpay.web.rs.v1.beans;
+package it.govpay.rs.v1.beans;
 
 public class Href {
 	

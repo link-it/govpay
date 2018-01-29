@@ -124,7 +124,7 @@ public class GpContext {
 		}
 	}
 	
-	public GpContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request,
+	public GpContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
 			String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws ServiceException {
 		try {
 			loggers = new ArrayList<ILogger>();

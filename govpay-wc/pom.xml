@@ -11,7 +11,7 @@
 
 	<artifactId>govpay-wc</artifactId>
 	<packaging>war</packaging>
-	<name>GovPay Web module</name>
+	<name>GovPay Web Controller module</name>
 	
 	<properties>
 		<rel-to-parent>..</rel-to-parent>

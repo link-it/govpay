@@ -35,7 +35,8 @@ import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Versamento.CausaleSemplice;
-import it.govpay.web.rs.v1.beans.PagamentoInAttesa;
+import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.beans.PagamentoInAttesa;
 
 @Path("/v1/versamenti")
 public class PagamentiInAttesa extends BaseRsServiceV1 {

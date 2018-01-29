@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.v1;
+package it.govpay.rs.v1;
 
 import java.io.IOException;
 
@@ -30,7 +30,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.web.rs.BaseRsService;
+import it.govpay.rs.BaseRsService;
 
 public class BaseRsServiceV1 extends BaseRsService {
 	

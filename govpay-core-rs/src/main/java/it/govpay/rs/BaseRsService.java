@@ -47,7 +47,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.model.Applicazione;
-import it.govpay.web.handler.MessageLoggingHandlerUtils;
+import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
 import net.sf.json.JSONObject;
 
 public abstract class BaseRsService {

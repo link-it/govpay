@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core</artifactId>
+			<artifactId>govpay-core-rs</artifactId>
 			<type>jar</type>
 		</dependency>
 

@@ -61,15 +61,16 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.web.rs.v1.beans.Dominio;
-import it.govpay.web.rs.v1.beans.Entrata;
-import it.govpay.web.rs.v1.beans.Errore;
-import it.govpay.web.rs.v1.beans.Iban;
-import it.govpay.web.rs.v1.beans.ListaDomini;
-import it.govpay.web.rs.v1.beans.ListaEntrate;
-import it.govpay.web.rs.v1.beans.ListaIbanAccredito;
-import it.govpay.web.rs.v1.beans.ListaUnitaOperative;
-import it.govpay.web.rs.v1.beans.UnitaOperativa;
+import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.beans.Dominio;
+import it.govpay.rs.v1.beans.Entrata;
+import it.govpay.rs.v1.beans.Errore;
+import it.govpay.rs.v1.beans.Iban;
+import it.govpay.rs.v1.beans.ListaDomini;
+import it.govpay.rs.v1.beans.ListaEntrate;
+import it.govpay.rs.v1.beans.ListaIbanAccredito;
+import it.govpay.rs.v1.beans.ListaUnitaOperative;
+import it.govpay.rs.v1.beans.UnitaOperativa;
 
 
 @Path("/v1/domini")

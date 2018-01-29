@@ -11,14 +11,19 @@
 
 	<artifactId>govpay-core-rs</artifactId>
 	<packaging>jar</packaging>
-
-	<name>GovPay Core Rest</name>
+	<name>GovPay CORE Rest</name>
 	
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-core</artifactId>
+			<type>jar</type>
+		</dependency>
+	
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -29,6 +34,13 @@
 		<dependency>
 			<groupId>org.jboss.spec.javax.ws.rs</groupId>
 			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.2</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

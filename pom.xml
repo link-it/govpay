@@ -78,12 +78,12 @@
 			</dependency>
 
 			<dependency>
-                                <groupId>it.govpay</groupId>
-                                <artifactId>govpay-core-rs</artifactId>
-                                <version>${project.version}</version>
-                                <type>jar</type>
-                                <scope>compile</scope>
-                        </dependency>
+	            <groupId>it.govpay</groupId>
+	            <artifactId>govpay-core-rs</artifactId>
+	            <version>${project.version}</version>
+	            <type>jar</type>
+	            <scope>compile</scope>
+            </dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>

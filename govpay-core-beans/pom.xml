@@ -12,7 +12,7 @@
 	<artifactId>govpay-core-beans</artifactId>
 	<packaging>jar</packaging>
 
-	<name>GovPay Core Beans</name>
+	<name>GovPay CORE Beans</name>
 	
 	<properties>
 		<rel-to-parent>..</rel-to-parent>

@@ -1,4 +1,4 @@
-package it.govpay.web.rs.v1.beans;
+package it.govpay.rs.v1.beans;
 
 import java.io.IOException;
 import java.util.HashMap;

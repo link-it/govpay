@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.v1.beans;
+package it.govpay.rs.v1.beans;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 

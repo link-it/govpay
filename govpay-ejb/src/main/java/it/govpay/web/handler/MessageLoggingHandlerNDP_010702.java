@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
 
 public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageContext> {
 

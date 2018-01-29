@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.handler;
+package it.govpay.core.utils.log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
