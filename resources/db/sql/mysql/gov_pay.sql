@@ -355,6 +355,7 @@ CREATE TABLE acl
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL,
+	nome VARCHAR(35) NOT NULL,
 	importo_totale DOUBLE NOT NULL,
 	stato_versamento VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(255),
@@ -363,6 +364,7 @@ CREATE TABLE versamenti
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_validita TIMESTAMP(3),
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_scadenza TIMESTAMP(3), 
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
@@ -380,17 +382,21 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR(35),
 	debitore_cellulare VARCHAR(35),
 	debitore_fax VARCHAR(35),
+	tassonomia_avviso VARCHAR(35) NOT NULL,
+	tassonomia VARCHAR(35),
 	cod_lotto VARCHAR(35),
 	cod_versamento_lotto VARCHAR(35),
 	cod_anno_tributario VARCHAR(35),
 	cod_bundlekey VARCHAR(256),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_uo BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
@@ -439,6 +445,7 @@ CREATE TABLE pagamenti_portale
 	cod_portale VARCHAR(35) NOT NULL,
 	cod_canale VARCHAR(35),
 	nome VARCHAR(255) NOT NULL,
+	versante_identificativo VARCHAR(35),
 	id_sessione VARCHAR(35) NOT NULL,
 	id_sessione_portale VARCHAR(35),
 	id_sessione_psp VARCHAR(35),

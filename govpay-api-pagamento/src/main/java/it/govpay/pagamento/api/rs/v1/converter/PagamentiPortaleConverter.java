@@ -252,25 +252,39 @@ public class PagamentiPortaleConverter {
 		}
 	}
 
-	public static PagamentoPortale toJsonPagamentoPortale(it.govpay.bd.model.PagamentoPortale model,it.govpay.bd.model.Psp psp,it.govpay.bd.model.Canale canale) {
+	public static PagamentoPortale toJsonPagamentoPortale(it.govpay.bd.model.PagamentoPortale model) {
 		PagamentoPortale json = new PagamentoPortale();
 
-		json.setId(model.getIdSessione());
-		json.setStato(model.getStato().toString());
-		
-		if(psp != null) {
-			json.setIdPsp(psp.getCodPsp());
-			json.setNomePsp(psp.getRagioneSociale());
-		}
-		if(canale != null) {
-			json.setIdCanale(canale.getCodCanale());
-			json.setModelloPagamento(canale.getModelloPagamento().toString());
-			json.setNomeCanale(canale.getDescrizione());
-			json.setTipoVersamento(canale.getTipoVersamento().toString());
-		}
+//		json.setId(model.getIdSessione());
+//		json.setStato(model.getStato().toString());
+//		
+//		if(psp != null) {
+//			json.setIdPsp(psp.getCodPsp());
+//			json.setNomePsp(psp.getRagioneSociale());
+//		}
+//		if(canale != null) {
+//			json.setIdCanale(canale.getCodCanale());
+//			json.setModelloPagamento(canale.getModelloPagamento().toString());
+//			json.setNomeCanale(canale.getDescrizione());
+//			json.setTipoVersamento(canale.getTipoVersamento().toString());
+//		}
 
-		// [TODO] RPTSS
+		// [TODO] psp canali rpts
 
 		return json;
+	}
+
+
+	/**
+	 * @param lstPagamenti
+	 * @return
+	 */
+	public static List<PagamentoPortale> toJsonPagamentoPortaleList(
+			List<it.govpay.bd.model.PagamentoPortale> lstPagamenti) {
+		List<PagamentoPortale> lst = new ArrayList<PagamentoPortale>();
+		for(it.govpay.bd.model.PagamentoPortale pagamento: lstPagamenti) {
+			lst.add(toJsonPagamentoPortale(pagamento));					
+		}
+		return lst;
 	}
 }

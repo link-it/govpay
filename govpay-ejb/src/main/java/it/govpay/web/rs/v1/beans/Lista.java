@@ -2,80 +2,82 @@ package it.govpay.web.rs.v1.beans;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.util.List;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
 @JsonFilter(value="lista") 
-public abstract class Lista extends JSONSerializable {
+public abstract class Lista<T> extends JSONSerializable {
 
-	private long start;
-	private long count;
-	private long totalCount;
-	private String prevResults;
-	private String nextResults;
+	private long numRisultati;
+	private long numPagine;
+	private long risultatiPerPagina;
+	private long pagina;
+	private String prossimiRisultati;
+	
+	private List<T> risultati;
+	
+	public List<T> getRisultati() {
+		return risultati;
+	}
+	public void setRisultati(List<T> risultati) {
+		this.risultati = risultati;
+	}
+	public long getNumRisultati() {
+		return numRisultati;
+	}
+	public void setNumRisultati(long numRisultati) {
+		this.numRisultati = numRisultati;
+	}
+	public long getNumPagine() {
+		return numPagine;
+	}
+	public void setNumPagine(long numPagine) {
+		this.numPagine = numPagine;
+	}
+	public long getRisultatiPerPagina() {
+		return risultatiPerPagina;
+	}
+	public void setRisultatiPerPagina(long risultatiPerPagina) {
+		this.risultatiPerPagina = risultatiPerPagina;
+	}
+	public long getPagina() {
+		return pagina;
+	}
+	public void setPagina(long pagina) {
+		this.pagina = pagina;
+	}
+	public String getProssimiRisultati() {
+		return prossimiRisultati;
+	}
+	public void setProssimiRisultati(String prossimiRisultati) {
+		this.prossimiRisultati = prossimiRisultati;
+	}
 	
 	@Override
 	public String getJsonIdFilter() {
 		return "lista";
 	}
 	
-	public Lista(URI requestUri, long count, long totalCount, long offset, long limit) {
-		this.start = offset;
-		this.count = count;
-		this.totalCount = totalCount;
+	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long risultatiPerPagina) {
+		this.risultati = risultati;
+		this.numPagine = (count < risultatiPerPagina) ? 1 : count / risultatiPerPagina;
+		this.pagina = pagina;
+		this.risultatiPerPagina = risultatiPerPagina;
+		this.numRisultati = risultati.size();
+		
 		
 		URIBuilder builder = new URIBuilder(requestUri);
-		builder.setParameter("limit", Long.toString(limit));
-		if(offset > 0) {
-			long prevOffset = offset - limit;
-			if(prevOffset < 0) prevOffset = 0;
-			
-			builder.setParameter("offset", Long.toString(prevOffset));
-			try {
-				this.prevResults = builder.build().toString();
-			} catch (URISyntaxException e) { }
-		}
+		builder.setParameter("risultatiPerPagina", Long.toString(this.risultatiPerPagina));
 		
-		if((offset + limit) < totalCount) {
-			long nextOffset = offset + limit;
-			builder.setParameter("offset", Long.toString(nextOffset));
+		if(this.pagina < this.numPagine) {
+			long nextPagina = this.pagina+1;
+			builder.setParameter("pagina", Long.toString(nextPagina));
 			try {
-				this.nextResults = builder.build().toString();
+				this.prossimiRisultati = builder.build().toString();
 			} catch (URISyntaxException e) { }
 		}
-	}
-	
-	public String getPrevResults() {
-		return prevResults;
-	}
-	public void setPrevResults(String prevResults) {
-		this.prevResults = prevResults;
-	}
-	public String getNextResults() {
-		return nextResults;
-	}
-	public void setNextResults(String nextResults) {
-		this.nextResults = nextResults;
-	}
-	public long getStart() {
-		return start;
-	}
-	public void setStart(long start) {
-		this.start = start;
-	}
-	public long getCount() {
-		return count;
-	}
-	public void setCount(long count) {
-		this.count = count;
-	}
-	public long getTotalCount() {
-		return totalCount;
-	}
-	public void setTotalCount(long totalCount) {
-		this.totalCount = totalCount;
 	}
 	
 }

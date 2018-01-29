@@ -1197,8 +1197,20 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="String35"/>
+			<xsd:element name="nome" type="String35"/>
 
-			<xsd:element name="idUo" type="id-uo">
+			<xsd:element name="idDominio" type="id-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idUo" type="id-uo" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1244,6 +1256,7 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="dataValidita" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataOraUltimoAggiornamento" type="xsd:dateTime"/>
 			<xsd:element name="causaleVersamento" type="String1024" minOccurs="0"/>
@@ -1259,6 +1272,8 @@
 			<xsd:element name="debitoreTelefono" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreCellulare" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreFax" type="String35" minOccurs="0"/>
+			<xsd:element name="tassonomiaAvviso" type="String35"/>
+			<xsd:element name="tassonomia" type="String35" minOccurs="0"/>
 			<xsd:element name="codLotto" type="String35" minOccurs="0"/>
 			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
 			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
@@ -1724,6 +1739,7 @@
 			<xsd:element name="codPortale" type="String35"/>
 			<xsd:element name="codCanale" type="String35" minOccurs="0"/>
 			<xsd:element name="nome" type="String255"/>
+			<xsd:element name="versanteIdentificativo" type="String35" minOccurs="0"/>
 			<xsd:element name="idSessione" type="String35"/>
 			<xsd:element name="idSessionePortale" type="String35" minOccurs="0"/>
 			<xsd:element name="idSessionePsp" type="String35" minOccurs="0"/>

@@ -106,7 +106,7 @@ public class Domini extends BaseRsServiceV1 {
 			FindDominiDTOResponse findDominiDTOResponse = new DominiDAO().findDomini(findDominiDTO);
 			
 			List<Dominio> domini = new ArrayList<Dominio>();
-			for(it.govpay.bd.model.Dominio d : findDominiDTOResponse.getDomini()) {
+			for(it.govpay.bd.model.Dominio d : findDominiDTOResponse.getResults()) {
 				domini.add(new Dominio(d, baseUriBuilder));
 			}
 			
@@ -176,7 +176,7 @@ public class Domini extends BaseRsServiceV1 {
 			FindUnitaOperativeDTOResponse findUnitaOperativeDTOResponse = new DominiDAO().findUnitaOperative(findUnitaOperativeDTO);
 			
 			List<UnitaOperativa> unitaOperative = new ArrayList<UnitaOperativa>();
-			for(it.govpay.bd.model.UnitaOperativa uo : findUnitaOperativeDTOResponse.getUnitaOperative()) {
+			for(it.govpay.bd.model.UnitaOperativa uo : findUnitaOperativeDTOResponse.getResults()) {
 				unitaOperative.add(new UnitaOperativa(uo, codDominio, baseUriBuilder));
 			}
 			ListaUnitaOperative listaUnitaOperative = new ListaUnitaOperative(unitaOperative, uriInfo.getRequestUri(), findUnitaOperativeDTOResponse.getTotalResults(), offset, limit);
@@ -261,7 +261,7 @@ public class Domini extends BaseRsServiceV1 {
 			FindIbanDTOResponse findIbanDTOResponse = new DominiDAO().findIban(findIbanDTO);
 			
 			List<Iban> ibans = new ArrayList<Iban>();
-			for(it.govpay.bd.model.IbanAccredito ibanAccredito : findIbanDTOResponse.getIban()) {
+			for(it.govpay.bd.model.IbanAccredito ibanAccredito : findIbanDTOResponse.getResults()) {
 				ibans.add(new Iban(ibanAccredito, codDominio, baseUriBuilder));
 			}
 			ListaIbanAccredito listaUnitaOperative = new ListaIbanAccredito(ibans, uriInfo.getRequestUri(), findIbanDTOResponse.getTotalResults(), offset, limit);
@@ -346,7 +346,7 @@ public class Domini extends BaseRsServiceV1 {
 			FindTributiDTOResponse findTributiDTOResponse = new DominiDAO().findTributi(findTributiDTO);
 			
 			List<Entrata> entrate = new ArrayList<Entrata>();
-			for(it.govpay.bd.model.Tributo tributo : findTributiDTOResponse.getTributi()) {
+			for(it.govpay.bd.model.Tributo tributo : findTributiDTOResponse.getResults()) {
 				entrate.add(new Entrata(tributo, codDominio, baseUriBuilder));
 			}
 			ListaEntrate listaUnitaOperative = new ListaEntrate(entrate, uriInfo.getRequestUri(), findTributiDTOResponse.getTotalResults(), offset, limit);

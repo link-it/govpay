@@ -358,12 +358,14 @@ CREATE SEQUENCE seq_versamenti start 1 increment 1 maxvalue 9223372036854775807 
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL,
+	nome VARCHAR(35) NOT NULL,
 	importo_totale DOUBLE PRECISION NOT NULL,
 	stato_versamento VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(255),
 	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
 	aggiornabile BOOLEAN NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
+	data_validita TIMESTAMP,
 	data_scadenza TIMESTAMP,
 	data_ora_ultimo_aggiornamento TIMESTAMP NOT NULL,
 	causale_versamento VARCHAR(1024),
@@ -379,17 +381,21 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR(35),
 	debitore_cellulare VARCHAR(35),
 	debitore_fax VARCHAR(35),
+	tassonomia_avviso VARCHAR(35) NOT NULL,
+	tassonomia VARCHAR(35),
 	cod_lotto VARCHAR(35),
 	cod_versamento_lotto VARCHAR(35),
 	cod_anno_tributario VARCHAR(35),
 	cod_bundlekey VARCHAR(256),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
-	id_uo BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
@@ -439,6 +445,7 @@ CREATE TABLE pagamenti_portale
 	cod_portale VARCHAR(35) NOT NULL,
 	cod_canale VARCHAR(35),
 	nome VARCHAR(255) NOT NULL,
+	versante_identificativo VARCHAR(35),
 	id_sessione VARCHAR(35) NOT NULL,
 	id_sessione_portale VARCHAR(35),
 	id_sessione_psp VARCHAR(35),

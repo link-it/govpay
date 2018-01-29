@@ -23,17 +23,10 @@ import java.util.List;
 
 import it.govpay.bd.model.Dominio;
 
-public class FindDominiDTOResponse extends BasicFindResponseDTO {
-	
-	private List<Dominio> domini;
+public class FindDominiDTOResponse extends BasicFindResponseDTO<Dominio> {
 
 	public FindDominiDTOResponse(long totalResults, List<Dominio> domini) {
-		super(totalResults);
-		this.domini = domini;
-	}
-
-	public List<Dominio> getDomini() {
-		return domini;
+		super(totalResults, domini);
 	}
 
 }

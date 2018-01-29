@@ -1,10 +1,20 @@
 package it.govpay.core.dao.pagamenti.dto;
 
-public class LeggiPagamentoPortaleDTO {
+import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
+import it.govpay.model.IAutorizzato;
 
-	private Long id= null;
-	private String principal = null;
-	private String idSessione = null;
+public class LeggiPagamentoPortaleDTO extends BasicCreateRequestDTO {
+
+	/**
+	 * @param user
+	 */
+	public LeggiPagamentoPortaleDTO(IAutorizzato user) {
+		super(user);
+	}
+	
+	private Long id;
+	private String principal;
+	private String idSessione;
 	
 	public Long getId() {
 		return id;

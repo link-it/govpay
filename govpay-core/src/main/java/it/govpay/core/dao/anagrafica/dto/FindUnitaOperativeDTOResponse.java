@@ -23,16 +23,9 @@ import java.util.List;
 
 import it.govpay.bd.model.UnitaOperativa;
 
-public class FindUnitaOperativeDTOResponse extends BasicFindResponseDTO {
+public class FindUnitaOperativeDTOResponse extends BasicFindResponseDTO<UnitaOperativa> {
 	
-	private List<UnitaOperativa> unitaOperative;
-
 	public FindUnitaOperativeDTOResponse(long totalResults, List<UnitaOperativa> unitaOperative) {
-		super(totalResults);
-		this.unitaOperative = unitaOperative;
-	}
-
-	public List<UnitaOperativa> getUnitaOperative() {
-		return unitaOperative;
+		super(totalResults, unitaOperative);
 	}
 }

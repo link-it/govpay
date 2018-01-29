@@ -23,17 +23,9 @@ import java.util.List;
 
 import it.govpay.bd.model.IbanAccredito;
 
-public class FindIbanDTOResponse extends BasicFindResponseDTO {
+public class FindIbanDTOResponse extends BasicFindResponseDTO<IbanAccredito> {
 	
-	private List<IbanAccredito> iban;
-
 	public FindIbanDTOResponse(long totalResults, List<IbanAccredito> iban) {
-		super(totalResults);
-		this.iban = iban;
+		super(totalResults, iban);
 	}
-
-	public List<IbanAccredito> getIban() {
-		return iban;
-	}
-
 }

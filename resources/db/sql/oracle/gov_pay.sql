@@ -539,12 +539,14 @@ CREATE SEQUENCE seq_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WIT
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR2(35 CHAR) NOT NULL,
+	nome VARCHAR2(35 CHAR) NOT NULL,
 	importo_totale BINARY_DOUBLE NOT NULL,
 	stato_versamento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione_stato VARCHAR2(255 CHAR),
 	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
 	aggiornabile NUMBER NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
+	data_validita TIMESTAMP,
 	data_scadenza TIMESTAMP,
 	data_ora_ultimo_aggiornamento TIMESTAMP NOT NULL,
 	causale_versamento VARCHAR2(1024 CHAR),
@@ -560,17 +562,21 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR2(35 CHAR),
 	debitore_cellulare VARCHAR2(35 CHAR),
 	debitore_fax VARCHAR2(35 CHAR),
+	tassonomia_avviso VARCHAR2(35 CHAR) NOT NULL,
+	tassonomia VARCHAR2(35 CHAR),
 	cod_lotto VARCHAR2(35 CHAR),
 	cod_versamento_lotto VARCHAR2(35 CHAR),
 	cod_anno_tributario VARCHAR2(35 CHAR),
 	cod_bundlekey VARCHAR2(256 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_uo NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	id_uo NUMBER,
 	id_applicazione NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
@@ -639,9 +645,10 @@ CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 ST
 
 CREATE TABLE pagamenti_portale
 (
-	cod_portale VARCHAR2(35 CHAR NOT NULL,
+	cod_portale VARCHAR2(35 CHAR) NOT NULL,
 	cod_canale VARCHAR2(35 CHAR),
-	nome VARCHAR(255) NOT NULL,
+	nome VARCHAR2(255 CHAR) NOT NULL,
+	versante_identificativo VARCHAR2(35 CHAR),
 	id_sessione VARCHAR2(35 CHAR) NOT NULL,
 	id_sessione_portale VARCHAR2(35 CHAR),
 	id_sessione_psp VARCHAR2(35 CHAR),

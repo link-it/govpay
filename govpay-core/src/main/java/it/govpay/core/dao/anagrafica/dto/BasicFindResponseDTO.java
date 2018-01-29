@@ -1,11 +1,15 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-public class BasicFindResponseDTO {
+import java.util.List;
+
+public class BasicFindResponseDTO<T> {
 	
 	private long totalResults;
+	private List<T> results;
 	
-	public BasicFindResponseDTO(long totalResults) {
+	public BasicFindResponseDTO(long totalResults, List<T> results) {
 		this.totalResults = totalResults;
+		this.results = results;
 	}
 
 	public long getTotalResults() {
@@ -14,6 +18,14 @@ public class BasicFindResponseDTO {
 
 	public void setTotalResults(long totalResults) {
 		this.totalResults = totalResults;
+	}
+
+	public List<T> getResults() {
+		return results;
+	}
+
+	public void setResults(List<T> results) {
+		this.results = results;
 	}
 
 

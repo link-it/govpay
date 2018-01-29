@@ -23,17 +23,10 @@ import java.util.List;
 
 import it.govpay.bd.model.Tributo;
 
-public class FindTributiDTOResponse extends BasicFindResponseDTO {
+public class FindTributiDTOResponse extends BasicFindResponseDTO<Tributo> {
 	
-	private List<Tributo> tributi;
-
 	public FindTributiDTOResponse(long totalResults, List<Tributo> tributi) {
-		super(totalResults);
-		this.tributi = tributi;
-	}
-
-	public List<Tributo> getTributi() {
-		return tributi;
+		super(totalResults, tributi);
 	}
 
 }
