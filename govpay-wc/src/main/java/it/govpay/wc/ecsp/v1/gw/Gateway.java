@@ -28,15 +28,19 @@ import it.govpay.core.dao.pagamenti.WebControllerDAO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.ActionNonValidaException;
-import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.TokenWISPNonValidoException;
+import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.wc.ecsp.BaseRsService;
+import it.govpay.rs.v1.BaseRsServiceV1;
 
 @Path("/")
-public class Gateway extends BaseRsService{
+public class Gateway extends BaseRsServiceV1{
+	
+	public Gateway() {
+		super("gateway");
+	}
 
 	@POST
 	@Path("/v1/gw/{id}")

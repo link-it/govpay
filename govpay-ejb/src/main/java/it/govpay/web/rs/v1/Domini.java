@@ -78,6 +78,10 @@ public class Domini extends BaseRsServiceV1 {
 	
 	public static final String NOME_SERVIZIO = "domini";
 	
+	public Domini() {
+		super(NOME_SERVIZIO);
+	}
+	
 	@GET
 	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})

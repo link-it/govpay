@@ -32,7 +32,6 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.pagamento.api.rs.BaseRsService;
 import it.govpay.pagamento.api.rs.v1.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
@@ -40,9 +39,10 @@ import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
 import it.govpay.pagamento.api.utils.SimpleDateFormatUtils;
+import it.govpay.rs.v1.BaseRsServiceV1;
 
 @Path("/pagamenti")
-public class PagamentiPortale extends BaseRsService{
+public class PagamentiPortale extends BaseRsServiceV1{
 	
 	
 	public PagamentiPortale() {
