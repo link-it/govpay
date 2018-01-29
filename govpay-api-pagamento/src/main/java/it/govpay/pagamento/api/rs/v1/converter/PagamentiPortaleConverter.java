@@ -16,6 +16,7 @@ import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
 import it.govpay.pagamento.api.rs.v1.model.Pendenza;
 import it.govpay.pagamento.api.rs.v1.model.VocePendenza;
+import it.govpay.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.TipoContabilita;
 import it.govpay.servizi.commons.Versamento.SingoloVersamento;
@@ -284,12 +285,7 @@ public class PagamentiPortaleConverter {
 	 * @param lstPagamenti
 	 * @return
 	 */
-	public static List<PagamentoPortale> toJsonPagamentoPortaleList(
-			List<it.govpay.bd.model.PagamentoPortale> lstPagamenti) {
-		List<PagamentoPortale> lst = new ArrayList<PagamentoPortale>();
-		for(it.govpay.bd.model.PagamentoPortale pagamento: lstPagamenti) {
-			lst.add(toJsonPagamentoPortale(pagamento));					
-		}
-		return lst;
+	public static ListaPagamentiPortale toJsonPagamentoPortaleList(List<it.govpay.bd.model.PagamentoPortale> lstPagamenti, long totalResults) {
+		new ListaPagamentiPortale(domini, requestUri, count, pagina, risultatiPerPagina)
 	}
 }

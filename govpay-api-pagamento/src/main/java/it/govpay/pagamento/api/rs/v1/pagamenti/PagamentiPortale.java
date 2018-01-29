@@ -3,6 +3,7 @@ package it.govpay.pagamento.api.rs.v1.pagamenti;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -40,6 +41,7 @@ import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
 import it.govpay.pagamento.api.utils.SimpleDateFormatUtils;
+import it.govpay.rs.v1.beans.ListaPagamentiPortale;
 
 @Path("/pagamenti")
 public class PagamentiPortale extends BaseRsService{
@@ -152,7 +154,11 @@ public class PagamentiPortale extends BaseRsService{
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<PagamentoPortale> response = PagamentiPortaleConverter.toJsonPagamentoPortaleList(pagamentoPortaleDTOResponse.getResults());
+			List<it.govpay.rs.v1.beans.PagamentoPortale> results = new ArrayList<it.govpay.rs.v1.beans.PagamentoPortale>();
+			for(it.govpay.bd.model.PagamentoPortale pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
+				results.add(new it.govpay.rs.v1.beans.PagamentoPortale(pagamentoPortale, uriInfo.getAbsolutePathBuilder()));
+			}
+			ListaPagamentiPortale response = new ListaPagamentiPortale(results, uriInfo.getRequestUri(), pagamentoPortaleDTOResponse.getTotalResults(), 0l, 0l);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

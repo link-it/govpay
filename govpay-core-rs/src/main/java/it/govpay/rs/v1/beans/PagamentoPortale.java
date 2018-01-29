@@ -33,6 +33,126 @@ import net.sf.json.JsonConfig;
 public class PagamentoPortale extends JSONSerializable {
 
 	private String id;
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getIdSessionePortale() {
+		return idSessionePortale;
+	}
+
+	public void setIdSessionePortale(String idSessionePortale) {
+		this.idSessionePortale = idSessionePortale;
+	}
+
+	public String getIdSessionePsp() {
+		return idSessionePsp;
+	}
+
+	public void setIdSessionePsp(String idSessionePsp) {
+		this.idSessionePsp = idSessionePsp;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getStato() {
+		return stato;
+	}
+
+	public void setStato(String stato) {
+		this.stato = stato;
+	}
+
+	public String getPspRedirectUrl() {
+		return pspRedirectUrl;
+	}
+
+	public void setPspRedirectUrl(String pspRedirectUrl) {
+		this.pspRedirectUrl = pspRedirectUrl;
+	}
+
+	public Date getDataRichiestaPagamento() {
+		return dataRichiestaPagamento;
+	}
+
+	public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
+		this.dataRichiestaPagamento = dataRichiestaPagamento;
+	}
+
+	public DatiAddebito getDatiAddebito() {
+		return datiAddebito;
+	}
+
+	public void setDatiAddebito(DatiAddebito datiAddebito) {
+		this.datiAddebito = datiAddebito;
+	}
+
+	public Date getDataEsecuzionePagamento() {
+		return dataEsecuzionePagamento;
+	}
+
+	public void setDataEsecuzionePagamento(Date dataEsecuzionePagamento) {
+		this.dataEsecuzionePagamento = dataEsecuzionePagamento;
+	}
+
+	public String getCredenzialiPagatore() {
+		return credenzialiPagatore;
+	}
+
+	public void setCredenzialiPagatore(String credenzialiPagatore) {
+		this.credenzialiPagatore = credenzialiPagatore;
+	}
+
+	public Anagrafica getSoggettoVersante() {
+		return soggettoVersante;
+	}
+
+	public void setSoggettoVersante(Anagrafica soggettoVersante) {
+		this.soggettoVersante = soggettoVersante;
+	}
+
+	public String getAutenticazioneSoggetto() {
+		return autenticazioneSoggetto;
+	}
+
+	public void setAutenticazioneSoggetto(String autenticazioneSoggetto) {
+		this.autenticazioneSoggetto = autenticazioneSoggetto;
+	}
+
+	public String getCanale() {
+		return canale;
+	}
+
+	public void setCanale(String canale) {
+		this.canale = canale;
+	}
+
+	public String getPendenze() {
+		return pendenze;
+	}
+
+	public void setPendenze(String pendenze) {
+		this.pendenze = pendenze;
+	}
+
+	public String getRpts() {
+		return rpts;
+	}
+
+	public void setRpts(String rpts) {
+		this.rpts = rpts;
+	}
+
 	private String idSessionePortale;
 	private String idSessionePsp;
 	private String nome;
@@ -68,7 +188,26 @@ public class PagamentoPortale extends JSONSerializable {
 	}
 	
 	public PagamentoPortale(it.govpay.bd.model.PagamentoPortale pagamentoPortale, UriBuilder uriBuilder) throws ServiceException {
-		
+		this.id = pagamentoPortale.getIdSessione();
+		this.idSessionePortale = pagamentoPortale.getIdSessionePortale();
+		this.idSessionePsp = pagamentoPortale.getIdSessionePsp();
+		this.nome = pagamentoPortale.getNome();
+		this.stato = pagamentoPortale.getStato().toString();
+		this.pspRedirectUrl = pagamentoPortale.getPspRedirectUrl();
+		this.dataRichiestaPagamento = pagamentoPortale.getDataRichiesta();
+//		this.datiAddebito = new DatiAddebito();
+//		this.datiAddebito.setBicAddebito(pagamentoPortale.get);
+//		this.datiAddebito.setIbanAddebito(pagamentoPortale.getibanaddebito);
+//		this.dataEsecuzionePagamento = pagamentoPortale.getDataRichiesta(); //TODO
+//
+//		this.credenzialiPagatore = pagamentoPortale.get;
+//		this.soggettoVersante = new Anagrafica();
+//		this.soggettoVersante.setCap(pagamentoPortale.get);
+//		this.autenticazioneSoggetto = pagamentoPortale.get;
+		this.canale = uriBuilder.clone().path("psp").path(pagamentoPortale.getCodPsp()).path("canali").path(pagamentoPortale.getCodCanale()).toString();
+		this.pendenze = uriBuilder.clone().path("pendenze").queryParam("idPagamento", pagamentoPortale.getIdSessione()).toString();
+		this.rpts = uriBuilder.clone().path("rpts").queryParam("idPagamento", pagamentoPortale.getIdSessione()).toString();
+
 	}
 
 }
