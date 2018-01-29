@@ -2,6 +2,8 @@ package it.govpay.pagamento.api.rs.v1.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,9 +20,12 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
@@ -34,6 +39,7 @@ import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
+import it.govpay.pagamento.api.utils.SimpleDateFormatUtils;
 
 @Path("/pagamenti")
 public class PagamentiPortale extends BaseRsService{
@@ -125,9 +131,16 @@ public class PagamentiPortale extends BaseRsService{
 			
 			// Parametri - > DTO Input
 			
-//			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO();
-//			leggiPagamentoPortaleDTO.setIdSessione(id);
-//			leggiPagamentoPortaleDTO.setPrincipal(principal);
+			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO();
+			listaPagamentiPortaleDTO.setPrincipal(principal);
+			listaPagamentiPortaleDTO.setOffset(Integer.parseInt(from));
+			listaPagamentiPortaleDTO.setLimit(Integer.parseInt(size));
+			SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormat();
+			listaPagamentiPortaleDTO.setDataDa(sdf.parse(dataDa));
+			listaPagamentiPortaleDTO.setDataA(sdf.parse(dataA));
+			listaPagamentiPortaleDTO.setStato(STATO.valueOf(stato));
+			listaPagamentiPortaleDTO.setVersante(versante);
+			
 			
 			// INIT DAO
 			
@@ -135,32 +148,16 @@ public class PagamentiPortale extends BaseRsService{
 			
 			// CHIAMATA AL DAO
 			
-			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse(); //pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
+			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.bd.model.Psp psp = pagamentoPortaleDTOResponse.getPsp();
-			it.govpay.bd.model.Canale canale = pagamentoPortaleDTOResponse.getCanale();
-			
-			PagamentoPortale response = PagamentiPortaleConverter.toJsonPagamentoPortale(pagamentoPortaleModel, psp, canale);
+			List<PagamentoPortale> response = PagamentiPortaleConverter.toJsonPagamentoPortaleList(pagamentoPortaleDTOResponse.getResults());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response).build();
 			
-//		}catch (PagamentoPortaleNonTrovatoException e) {
-//			log.error(e.getMessage(), e);
-//			FaultBean respKo = new FaultBean();
-//			respKo.setCategoria(CATEGORIA.OPERAZIONE);
-//			respKo.setCodice("");
-//			respKo.setDescrizione(e.getMessage());
-//			try {
-//				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-//			}catch(Exception e1) {
-//				log.error("Errore durante il log della risposta", e1);
-//			}
-//			return Response.status(Status.NOT_FOUND).entity(respKo).build();
 		}catch (Exception e) {
 			log.error("Errore interno durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
@@ -194,7 +191,7 @@ public class PagamentiPortale extends BaseRsService{
 			ctx =  GpThreadLocal.get();
 			String principal = this.getPrincipal();
 			
-			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO();
+			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(null); //TODO IAutorizzato
 			leggiPagamentoPortaleDTO.setIdSessione(id);
 			leggiPagamentoPortaleDTO.setPrincipal(principal);
 			
@@ -203,10 +200,7 @@ public class PagamentiPortale extends BaseRsService{
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.bd.model.Psp psp = pagamentoPortaleDTOResponse.getPsp();
-			it.govpay.bd.model.Canale canale = pagamentoPortaleDTOResponse.getCanale();
-			
-			PagamentoPortale response = PagamentiPortaleConverter.toJsonPagamentoPortale(pagamentoPortaleModel, psp, canale);
+			PagamentoPortale response = PagamentiPortaleConverter.toJsonPagamentoPortale(pagamentoPortaleModel);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

@@ -19,15 +19,17 @@ import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.core.business.Wisp;
 import it.govpay.core.business.model.SceltaWISP;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
@@ -40,7 +42,6 @@ import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.WISPUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Portale;
 import it.govpay.orm.IdVersamento;
@@ -313,26 +314,26 @@ public class PagamentiPortaleDAO extends BasicBD{
 			throw new PagamentoPortaleNonTrovatoException(null, "Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getIdSessione()+"]");
 		}
 		
-		Psp psp = null;
-		Canale canale = null;
-		if(pagamentoPortale.getCodPsp() != null) {
-			
-			try {
-				psp = AnagraficaManager.getPsp(this, pagamentoPortale.getCodPsp());
-			} catch (NotFoundException e) {
-			}
-			
-			if(psp!= null) {
-				try {
-					canale = AnagraficaManager.getCanale(this, pagamentoPortale.getCodPsp(), pagamentoPortale.getCodCanale(), TipoVersamento.valueOf(pagamentoPortale.getTipoVersamento()));
-				} catch (NotFoundException e) {
-				}
-			}
-		}
-		
-		leggiPagamentoPortaleDTOResponse.setPsp(psp);
-		leggiPagamentoPortaleDTOResponse.setCanale(canale); 
-		
 		return leggiPagamentoPortaleDTOResponse;
+	}
+	
+	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException{
+		PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
+		PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
+
+		filter.setOffset(listaPagamentiPortaleDTO.getOffset());
+		filter.setLimit(listaPagamentiPortaleDTO.getLimit());
+		filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
+		filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
+		filter.setStato(listaPagamentiPortaleDTO.getStato());
+		filter.setVersante(listaPagamentiPortaleDTO.getVersante());
+		
+		long count = pagamentiPortaleBD.count(filter);
+
+		if(count > 0) {
+			return new ListaPagamentiPortaleDTOResponse(count, pagamentiPortaleBD.findAll(filter));
+		} else {
+			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<PagamentoPortale>());
+		}
 	}
 }

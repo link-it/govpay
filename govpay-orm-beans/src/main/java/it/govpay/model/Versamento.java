@@ -45,13 +45,17 @@ public class Versamento extends BasicModel {
 	
 	private Long id;
 	private long idUo;
+	private long idDominio;
 	private long idApplicazione;
-	private String codVersamentoEnte; 
+
+	private String nome;
+	private String codVersamentoEnte;
 	private StatoVersamento statoVersamento;
 	private String descrizioneStato;
 	private BigDecimal importoTotale;
 	private boolean aggiornabile;
 	private Date dataCreazione;
+	private Date dataValidita;
 	private Date dataScadenza;
 	private Date dataUltimoAggiornamento;
 	private Causale causaleVersamento;
@@ -60,6 +64,50 @@ public class Versamento extends BasicModel {
 	private String codLotto;
 	private String codVersamentoLotto;
 	private Integer codAnnoTributario;
+	
+	private String tassonomiaAvviso;
+	private String tassonomia;
+
+	public long getIdDominio() {
+		return idDominio;
+	}
+
+	public void setIdDominio(long idDominio) {
+		this.idDominio = idDominio;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public Date getDataValidita() {
+		return dataValidita;
+	}
+
+	public void setDataValidita(Date dataValidita) {
+		this.dataValidita = dataValidita;
+	}
+
+	public String getTassonomiaAvviso() {
+		return tassonomiaAvviso;
+	}
+
+	public void setTassonomiaAvviso(String tassonomiaAvviso) {
+		this.tassonomiaAvviso = tassonomiaAvviso;
+	}
+
+	public String getTassonomia() {
+		return tassonomia;
+	}
+
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
+	}
+
 	private String codBundlekey;
 	private boolean bolloTelematico;
 	
