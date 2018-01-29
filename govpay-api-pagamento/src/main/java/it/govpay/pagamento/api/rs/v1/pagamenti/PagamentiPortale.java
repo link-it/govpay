@@ -24,6 +24,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.pagamento.api.rs.BaseRsService;
@@ -75,6 +76,19 @@ public class PagamentiPortale extends BaseRsService{
 			this.logResponse(uriInfo, httpHeaders, methodName, responseOk, 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(responseOk).build();
+		} catch(GovPayException e) {
+			log.error("Errore durante il processo di pagamento", e.getMessage());
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CATEGORIA.OPERAZIONE);
+			respKo.setCodice(e.getCodEsito().name());
+			respKo.setDescrizione(e.getDescrizioneEsito());
+			respKo.setDettaglio(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();

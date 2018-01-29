@@ -42,6 +42,11 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -50,11 +55,6 @@ import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Versamento;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rpt.FirmaRichiesta;
@@ -464,6 +464,12 @@ public class RtUtils extends NdpValidationUtils {
 		case PAGAMENTO_NON_ESEGUITO:
 			break;
 		}	
+		
+		// Aggiornamento dello stato del pagamento portale associato all'RPT
+		Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+		if(idPagamentoPortale != null) {
+			PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, bd); 
+		}
 		
 		Notifica notifica = new Notifica(rpt, TipoNotifica.RICEVUTA, bd);
 		NotificheBD notificheBD = new NotificheBD(bd);

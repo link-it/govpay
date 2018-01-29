@@ -49,6 +49,7 @@ public class RptFilter extends AbstractFilter {
 	private Boolean conservato;
 	private List<String> stato;
 	private List<Long> idRpt= null;
+	private Long idPagamentoPortale = null;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -126,6 +127,17 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.in(RPT.model().STATO, this.stato);
+				addAnd = true;
+			}
+			
+			if(this.idPagamentoPortale != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				
+				RPTFieldConverter rptFieldConverter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField idRptCustomField = new CustomField("id_pagamento_portale",  Long.class, "id_pagamento_portale",  rptFieldConverter.toTable(RPT.model()));
+				newExpression.equals(idRptCustomField, this.idPagamentoPortale);
 				addAnd = true;
 			}
 
@@ -225,6 +237,14 @@ public class RptFilter extends AbstractFilter {
 
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
+	}
+
+	public Long getIdPagamentoPortale() {
+		return idPagamentoPortale;
+	}
+
+	public void setIdPagamentoPortale(Long idPagamentoPortale) {
+		this.idPagamentoPortale = idPagamentoPortale;
 	}
 	
 }
