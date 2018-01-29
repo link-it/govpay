@@ -1,4 +1,4 @@
-package it.govpay.web.rs.handler;
+package it.govpay.rs.handler;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

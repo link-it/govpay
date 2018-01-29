@@ -34,6 +34,12 @@ import it.govpay.rs.BaseRsService;
 
 public class BaseRsServiceV1 extends BaseRsService {
 	
+	public BaseRsServiceV1() {super();}
+	
+	public BaseRsServiceV1(String nomeServizio) {
+		super(nomeServizio);
+	}
+	
 	@Override
 	public int getVersione() {
 		return 1;

@@ -66,6 +66,10 @@ public class Incassi extends BaseRsServiceV1 {
 	
 	public static final String NOME_SERVIZIO = "incassi";
 	
+	public Incassi() {
+		super(NOME_SERVIZIO);
+	}
+	
 	@POST
 	@Path("/")
 	@Consumes({MediaType.APPLICATION_JSON})

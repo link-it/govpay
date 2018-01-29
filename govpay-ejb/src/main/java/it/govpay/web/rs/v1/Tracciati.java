@@ -61,6 +61,10 @@ import it.govpay.rs.v1.beans.TracciatoExt;
 public class Tracciati extends BaseRsServiceV1 {
 
 	public static final String NOME_SERVIZIO = "caricamenti";
+	
+	public Tracciati() {
+		super(NOME_SERVIZIO);
+	}
 
 	@POST
 	@Path("/")

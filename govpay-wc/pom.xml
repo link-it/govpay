@@ -20,14 +20,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core</artifactId>
+			<artifactId>govpay-core-rs</artifactId>
 			<type>jar</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -44,22 +38,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.jboss.spec.javax.xml.ws</groupId>
-			<artifactId>jboss-jaxws-api_2.2_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.2</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-api</artifactId>
-			<version>2.7.11</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

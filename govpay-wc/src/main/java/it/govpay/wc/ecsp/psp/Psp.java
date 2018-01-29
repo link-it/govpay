@@ -22,10 +22,15 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.dao.pagamenti.exception.ParametriNonTrovatiException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.wc.ecsp.BaseRsService;
+import it.govpay.rs.v1.BaseRsServiceV1;
 
 @Path("/")
-public class Psp extends BaseRsService {
+public class Psp extends BaseRsServiceV1 {
+	
+	public Psp() {
+		super("psp");
+	}
+
 
 	@GET
 	@Path("/psp")

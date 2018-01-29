@@ -43,6 +43,10 @@ public class PagamentiInAttesa extends BaseRsServiceV1 {
 	
 	public static final String NOME_SERVIZIO = "pagamentiAttesa";
 	
+	public PagamentiInAttesa() {
+		super(NOME_SERVIZIO);
+	}
+	
 	@POST
 	@Path("/")
 	@Consumes({MediaType.APPLICATION_JSON})
