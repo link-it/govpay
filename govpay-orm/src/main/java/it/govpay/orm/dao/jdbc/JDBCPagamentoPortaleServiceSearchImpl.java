@@ -475,52 +475,24 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 
 	private PagamentoPortale _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(PagamentoPortale.model()));
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		expression.equals(idField, tableId);
+		expression.offset(0);
+		expression.limit(2);
+		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
+		List<PagamentoPortale> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
-		PagamentoPortale pagamentoPortale = new PagamentoPortale();
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
 
-
-		// Object pagamentoPortale
-		ISQLQueryObject sqlQueryObjectGet_pagamentoPortale = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_pagamentoPortale.setANDLogicOperator(true);
-		sqlQueryObjectGet_pagamentoPortale.addFromTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField("id");
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PORTALE,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_CANALE,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().NOME,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE_PORTALE,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE_PSP,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().STATO,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_REDIRECT_URL,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_ESITO,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().JSON_REQUEST,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_ID_DOMINIO,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_KEY_PA,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_KEY_WISP,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_HTML,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().DATA_RICHIESTA,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().URL_RITORNO,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PSP,true));
-		sqlQueryObjectGet_pagamentoPortale.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO_VERSAMENTO,true));
-		sqlQueryObjectGet_pagamentoPortale.addWhereCondition("id=?");
-
-		// Get pagamentoPortale
-		pagamentoPortale = (PagamentoPortale) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_pagamentoPortale.createSQLQuery(), jdbcProperties.isShowSql(), PagamentoPortale.model(), this.getPagamentoPortaleFetch(),
-				new JDBCObject(tableId,Long.class));
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 
 
-
-
-		return pagamentoPortale;  
+		return lst.get(0);
 
 	} 
 
