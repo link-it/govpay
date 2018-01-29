@@ -167,6 +167,7 @@ public class Rpt extends BasicModel{
 	private StatoConservazione statoConservazione;
 	private Date dataConservazione;
 	private String descrizioneStatoConservazione;
+	private Long idPagamentoPortale;
 	
 	public Long getId() {
 		return id;
@@ -354,6 +355,12 @@ public class Rpt extends BasicModel{
 	}
 	public void setDescrizioneStatoConservazione(String descrizioneStatoConservazione) {
 		this.descrizioneStatoConservazione = descrizioneStatoConservazione;
+	}
+	public Long getIdPagamentoPortale() {
+		return idPagamentoPortale;
+	}
+	public void setIdPagamentoPortale(Long idPagamentoPortale) {
+		this.idPagamentoPortale = idPagamentoPortale;
 	}
 
 }

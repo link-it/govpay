@@ -12,6 +12,7 @@ public class PagamentiPortaleRequest {
 	private String credenzialiPagatore= null;
 	private Anagrafica soggettoVersante = null;
 	private String lingua = null;
+	private String autenticazioneSoggetto= null;
 	
 	public String getUrlRitorno() {
 		return urlRitorno;
@@ -60,6 +61,12 @@ public class PagamentiPortaleRequest {
 	}
 	public void setPendenze(List<Object> pendenze) {
 		this.pendenze = pendenze;
+	}
+	public String getAutenticazioneSoggetto() {
+		return autenticazioneSoggetto;
+	}
+	public void setAutenticazioneSoggetto(String autenticazioneSoggetto) {
+		this.autenticazioneSoggetto = autenticazioneSoggetto;
 	}
 	private List<Object> pendenze = null;
 	

@@ -48,8 +48,12 @@ public class Wisp extends BasicBD {
 	public Wisp(BasicBD basicBD) {
 		super(basicBD);
 	}
-
+	
 	public SceltaWISP chiediScelta(Portale portaleAutenticato, Dominio dominio, String codKeyPA, String codKeyWISP) throws ServiceException, GovPayException {
+		return chiediScelta(portaleAutenticato, dominio, codKeyPA, codKeyWISP, true);
+	}
+
+	public SceltaWISP chiediScelta(Portale portaleAutenticato, Dominio dominio, String codKeyPA, String codKeyWISP, boolean throwExceptionOnFault) throws ServiceException, GovPayException {
 		String idTransaction = null;
 		GpContext ctx = GpThreadLocal.get();
 		NodoClient client = null;
@@ -75,18 +79,25 @@ public class Wisp extends BasicBD {
 			nodoChiediSceltaWISP.setPassword(stazione.getPassword());
 			NodoChiediSceltaWISPRisposta risposta = client.nodoChiediSceltaWISP(nodoChiediSceltaWISP, intermediario.getDenominazione());
 			setupConnection(GpThreadLocal.get().getTransactionId());
+			
 			if(risposta.getFault() != null) {
 				FaultNodo fault = FaultNodo.valueOf(risposta.getFault().getFaultCode());
-				switch (fault) {
-				case PPT_WISP_SESSIONE_SCONOSCIUTA:
-					ctx.log("wisp.risoluzioneWispKoSconosciuta");
-					throw new GovPayException(risposta.getFault());
-				case PPT_WISP_TIMEOUT_RECUPERO_SCELTA:
-					ctx.log("wisp.risoluzioneWispKoTimeout");
-					throw new GovPayException(risposta.getFault());
-				default:
-					ctx.log("wisp.risoluzioneWispKo", risposta.getFault().getFaultCode());
-					throw new GovPayException(risposta.getFault());
+				if(throwExceptionOnFault) {
+					switch (fault) {
+					case PPT_WISP_SESSIONE_SCONOSCIUTA:
+						ctx.log("wisp.risoluzioneWispKoSconosciuta");
+						throw new GovPayException(risposta.getFault());
+					case PPT_WISP_TIMEOUT_RECUPERO_SCELTA:
+						ctx.log("wisp.risoluzioneWispKoTimeout");
+						throw new GovPayException(risposta.getFault());
+					default:
+						ctx.log("wisp.risoluzioneWispKo", risposta.getFault().getFaultCode());
+						throw new GovPayException(risposta.getFault());
+					}
+				} else {
+					SceltaWISP scelta = new SceltaWISP();
+					scelta.setFault(fault); 
+					return scelta;
 				}
 			} else {
 				SceltaWISP scelta = new SceltaWISP();

@@ -7,7 +7,7 @@ public class PagamentoPortaleNonTrovatoException extends RedirectException{
 	}
 	
 	public PagamentoPortaleNonTrovatoException(String location, String message) {
-		super(message,location);
+		super(location,message);
 	}
 	
 	public PagamentoPortaleNonTrovatoException(String location,Throwable t) {

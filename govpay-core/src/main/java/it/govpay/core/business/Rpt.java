@@ -16,6 +16,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
@@ -58,8 +59,12 @@ public class Rpt extends BasicBD{
 	public Rpt(BasicBD basicBD) {
 		super(basicBD);
 	}
-
+	
 	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Portale portale, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
+		return avviaTransazione(versamenti, portale, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
+	}
+
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Portale portale, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		try {
 			Date adesso = new Date();
@@ -228,6 +233,10 @@ public class Rpt extends BasicBD{
 				}
 				it.govpay.bd.model.Rpt rpt = RptUtils.buildRpt(intermediario, stazione, ctx.getPagamentoCtx().getCodCarrello(), versamento, iuv, ccp, portale, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
 				rpt.setCodSessionePortale(ctx.getPagamentoCtx().getCodSessionePortale());
+				
+				if(pagamentoPortale!= null)
+					rpt.setIdPagamentoPortale(pagamentoPortale.getId());
+				
 				rptBD.insertRpt(rpt);
 				rpts.add(rpt);
 				ctx.log("rpt.creazioneRpt", versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp, rpt.getCodMsgRichiesta());
