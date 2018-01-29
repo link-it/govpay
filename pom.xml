@@ -12,6 +12,7 @@
 		<module>govpay-orm</module>
 		<module>govpay-core-beans</module>
 		<module>govpay-stampe</module>
+		<module>govpay-core-rs</module>
 		<module>govpay-core</module>
 		<module>govpay-ejb</module>
 		<module>govpay-web</module>
@@ -75,6 +76,14 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
+
+			<dependency>
+                                <groupId>it.govpay</groupId>
+                                <artifactId>govpay-core-rs</artifactId>
+                                <version>${project.version}</version>
+                                <type>jar</type>
+                                <scope>compile</scope>
+                        </dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
