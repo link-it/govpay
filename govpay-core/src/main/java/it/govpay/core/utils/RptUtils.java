@@ -297,18 +297,21 @@ public class RptUtils {
 	}
 
 
-
 	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException {
+		return inviaRPT(rpt, rpt.getIntermediario(bd), rpt.getStazione(bd), bd);
+	}
+
+	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, Intermediario intermediario, Stazione stazione, BasicBD bd) throws GovPayException, ClientException, ServiceException {
 		if(bd != null) bd.closeConnection();
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
 			inviaRPT.setIdentificativoCanale(rpt.getCanale(bd).getCodCanale());
 			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCanale(bd).getCodIntermediario());
 			inviaRPT.setIdentificativoPSP(rpt.getPsp(bd).getCodPsp());
-			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
+			inviaRPT.setPassword(stazione.getPassword());
 			inviaRPT.setRpt(rpt.getXmlRpt());
 			
 			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
@@ -316,7 +319,7 @@ public class RptUtils {
 				inviaRPT.setTipoFirma("");
 			else
 				inviaRPT.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
-			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
+			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(intermediario, stazione, rpt, inviaRPT)); 
 			return risposta;
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
@@ -339,7 +342,7 @@ public class RptUtils {
 
 	public static it.govpay.core.business.model.Risposta inviaRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, BasicBD bd) throws GovPayException, ClientException, ServiceException {
 		if(rpts.size() == 1) {
-			return inviaRPT(rpts.get(0), bd);
+			return inviaRPT(rpts.get(0), intermediario, stazione, bd);
 		} else {
 			bd.closeConnection();
 			Evento evento = new Evento();

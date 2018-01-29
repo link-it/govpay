@@ -21,6 +21,8 @@ public class PagamentoPortaleUtils {
 		PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 		try {
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamento(idPagamentoPortale);
+			// disabilito la select for update
+			bd.disableSelectForUpdate();
 
 			RptBD rptBD = new RptBD(bd);
 			RptFilter filter = rptBD.newFilter();
@@ -57,8 +59,11 @@ public class PagamentoPortaleUtils {
 					pagamentoPortale.setStato(STATO.PAGAMENTO_PARZIALMENTE_ESEGUITO); 
 				}
 				
-				pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
+				 
+			} else {
+				pagamentoPortale.setStato(STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 			}
+			pagamentiPortaleBD.updatePagamento(pagamentoPortale);
 		} catch (NotFoundException e) {
 		}
 	}
