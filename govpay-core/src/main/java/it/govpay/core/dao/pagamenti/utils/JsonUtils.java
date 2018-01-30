@@ -45,6 +45,17 @@ public class JsonUtils {
 		return ibanAddebito;
 	}
 
+	public static String getCredenzialiPagatoreFromJson(String jsonRequest) {
+		String autenticazione = "";
+
+		try {
+			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );  
+			autenticazione = jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore");
+		}catch(Exception ee) {	}
+
+		return autenticazione;
+	}
+
 	public static String getAutenticazioneFromJson(String jsonRequest) {
 		String autenticazione = "";
 

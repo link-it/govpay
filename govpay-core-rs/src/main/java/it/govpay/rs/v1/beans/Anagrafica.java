@@ -11,9 +11,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({
-	"identificativoUnivoco",
-	"tipoIdentificativoUnivoco",
-	"denominazione",
+	"tipo",
+	"identificativo",
+	"anagrafica",
 	"indirizzo",
 	"civico",
 	"cap",
@@ -30,22 +30,22 @@ public class Anagrafica {
 	 * (Required)
 	 * 
 	 */
-	@JsonProperty("identificativoUnivoco")
-	private String identificativoUnivoco;
+	@JsonProperty("identificativo")
+	private String identificativo;
 	/**
 	 * 
 	 * (Required)
 	 * 
 	 */
-	@JsonProperty("tipoIdentificativoUnivoco")
-	private Anagrafica.TipoIdentificativoUnivoco tipoIdentificativoUnivoco = Anagrafica.TipoIdentificativoUnivoco.fromValue("F");
+	@JsonProperty("tipo")
+	private Anagrafica.TipoIdentificativoUnivoco tipo = Anagrafica.TipoIdentificativoUnivoco.fromValue("F");
 	/**
 	 * Nominativo o ragione sociale del soggetto
 	 * (Required)
 	 * 
 	 */
-	@JsonProperty("denominazione")
-	private String denominazione;
+	@JsonProperty("anagrafica")
+	private String anagrafica;
 	@JsonProperty("indirizzo")
 	private String indirizzo;
 	@JsonProperty("civico")
@@ -70,9 +70,9 @@ public class Anagrafica {
 	 * (Required)
 	 * 
 	 */
-	@JsonProperty("identificativoUnivoco")
-	public String getIdentificativoUnivoco() {
-		return identificativoUnivoco;
+	@JsonProperty("identificativo")
+	public String getIdentificativo() {
+		return identificativo;
 	}
 
 	/**
@@ -80,9 +80,9 @@ public class Anagrafica {
 	 * (Required)
 	 * 
 	 */
-	@JsonProperty("identificativoUnivoco")
-	public void setIdentificativoUnivoco(String identificativoUnivoco) {
-		this.identificativoUnivoco = identificativoUnivoco;
+	@JsonProperty("identificativo")
+	public void setIdentificativo(String identificativoUnivoco) {
+		this.identificativo = identificativoUnivoco;
 	}
 
 	/**
@@ -90,9 +90,9 @@ public class Anagrafica {
 	 * (Required)
 	 * 
 	 */
-	@JsonProperty("tipoIdentificativoUnivoco")
-	public Anagrafica.TipoIdentificativoUnivoco getTipoIdentificativoUnivoco() {
-		return tipoIdentificativoUnivoco;
+	@JsonProperty("tipo")
+	public Anagrafica.TipoIdentificativoUnivoco getTipo() {
+		return tipo;
 	}
 
 	/**
@@ -100,19 +100,9 @@ public class Anagrafica {
 	 * (Required)
 	 * 
 	 */
-	@JsonProperty("tipoIdentificativoUnivoco")
-	public void setTipoIdentificativoUnivoco(Anagrafica.TipoIdentificativoUnivoco tipoIdentificativoUnivoco) {
-		this.tipoIdentificativoUnivoco = tipoIdentificativoUnivoco;
-	}
-
-	/**
-	 * Nominativo o ragione sociale del soggetto
-	 * (Required)
-	 * 
-	 */
-	@JsonProperty("denominazione")
-	public String getDenominazione() {
-		return denominazione;
+	@JsonProperty("tipo")
+	public void setTipo(Anagrafica.TipoIdentificativoUnivoco tipoIdentificativoUnivoco) {
+		this.tipo = tipoIdentificativoUnivoco;
 	}
 
 	/**
@@ -120,9 +110,19 @@ public class Anagrafica {
 	 * (Required)
 	 * 
 	 */
-	@JsonProperty("denominazione")
-	public void setDenominazione(String denominazione) {
-		this.denominazione = denominazione;
+	@JsonProperty("anagrafica")
+	public String getAnagrafica() {
+		return anagrafica;
+	}
+
+	/**
+	 * Nominativo o ragione sociale del soggetto
+	 * (Required)
+	 * 
+	 */
+	@JsonProperty("anagrafica")
+	public void setAnagrafica(String denominazione) {
+		this.anagrafica = denominazione;
 	}
 
 	@JsonProperty("indirizzo")

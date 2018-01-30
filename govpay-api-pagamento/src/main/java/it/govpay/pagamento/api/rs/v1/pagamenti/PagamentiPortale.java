@@ -33,13 +33,12 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.pagamento.api.rs.v1.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
-import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
-import it.govpay.pagamento.api.utils.SimpleDateFormatUtils;
 import it.govpay.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
@@ -206,7 +205,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			PagamentoPortale response = PagamentiPortaleConverter.toJsonPagamentoPortale(pagamentoPortaleModel);
+			it.govpay.rs.v1.beans.PagamentoPortale response = new it.govpay.rs.v1.beans.PagamentoPortale(pagamentoPortaleModel, uriInfo.getRequestUriBuilder());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

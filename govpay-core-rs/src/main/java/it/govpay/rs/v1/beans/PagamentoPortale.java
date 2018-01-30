@@ -1,175 +1,487 @@
-/*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
- * http://www.gov4j.it/govpay
- * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 3, as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+
 package it.govpay.rs.v1.beans;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.codehaus.jackson.map.annotate.JsonFilter;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonValue;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-@JsonFilter(value="pagamentiPortale")  
+@JsonPropertyOrder({
+    "id",
+    "idSessionePortale",
+    "idSessionePsp",
+    "nome",
+    "stato",
+    "pspRedirectUrl",
+    "dataRichiestaPagamento",
+    "datiAddebito",
+    "dataEsecuzionePagamento",
+    "credenzialiPagatore",
+    "soggettoVersante",
+    "autenticazioneSoggetto",
+    "canale",
+    "pendenze",
+    "rpts"
+})
 public class PagamentoPortale extends JSONSerializable {
 
-	private String id;
-	public String getId() {
-		return id;
-	}
+    /**
+     * Identificativo del pagamento assegnato da GovPay
+     * (Required)
+     * 
+     */
+    @JsonProperty("id")
+    private String id;
+    /**
+     * Identificativo del pagamento assegnato dal portale chiamante
+     * 
+     */
+    @JsonProperty("idSessionePortale")
+    private String idSessionePortale;
+    /**
+     * Identificativo del pagamento assegnato dal psp utilizzato
+     * 
+     */
+    @JsonProperty("idSessionePsp")
+    private String idSessionePsp;
+    /**
+     * Nome del pagamento da visualizzare all'utente.
+     * 
+     */
+    @JsonProperty("nome")
+    private String nome;
+    /**
+     * Stato del pagamento
+     * (Required)
+     * 
+     */
+    @JsonProperty("stato")
+    private PagamentoPortale.Stato stato;
+    /**
+     * Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
+     * 
+     */
+    @JsonProperty("pspRedirectUrl")
+    private String pspRedirectUrl;
+    /**
+     * Data e ora di avvio del pagamento
+     * (Required)
+     * 
+     */
+    @JsonProperty("dataRichiestaPagamento")
+    private String dataRichiestaPagamento;
+    /**
+     * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
+     * 
+     */
+    @JsonProperty("datiAddebito")
+    private DatiAddebito datiAddebito;
+    /**
+     * data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
+     * 
+     */
+    @JsonProperty("dataEsecuzionePagamento")
+    private String dataEsecuzionePagamento;
+    /**
+     * Eventuali credenziali richieste dal PSP necessarie per completare l'operazione (ad esempio un codice bilaterale utilizzabile una sola volta).
+     * 
+     */
+    @JsonProperty("credenzialiPagatore")
+    private String credenzialiPagatore;
+    @JsonProperty("soggettoVersante")
+    private SoggettoVersante soggettoVersante;
+    /**
+     * modalita' di autenticazione del soggetto versante
+     * 
+     */
+    @JsonProperty("autenticazioneSoggetto")
+    private PagamentoPortale.AutenticazioneSoggetto autenticazioneSoggetto;
+    /**
+     * Url per il canale di pagamento utilizzato
+     * 
+     */
+    @JsonProperty("canale")
+    private String canale;
+    /**
+     * Url per le pendenze oggetto del Pagamento
+     * 
+     */
+    @JsonProperty("pendenze")
+    private String pendenze;
+    /**
+     * Url oer le richieste di pagamento oggetto del Pagamento
+     * 
+     */
+    @JsonProperty("rpts")
+    private String rpts;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * Identificativo del pagamento assegnato da GovPay
+     * (Required)
+     * 
+     */
+    @JsonProperty("id")
+    public String getId() {
+        return id;
+    }
 
-	public String getIdSessionePortale() {
-		return idSessionePortale;
-	}
+    /**
+     * Identificativo del pagamento assegnato da GovPay
+     * (Required)
+     * 
+     */
+    @JsonProperty("id")
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setIdSessionePortale(String idSessionePortale) {
-		this.idSessionePortale = idSessionePortale;
-	}
+    /**
+     * Identificativo del pagamento assegnato dal portale chiamante
+     * 
+     */
+    @JsonProperty("idSessionePortale")
+    public String getIdSessionePortale() {
+        return idSessionePortale;
+    }
 
-	public String getIdSessionePsp() {
-		return idSessionePsp;
-	}
+    /**
+     * Identificativo del pagamento assegnato dal portale chiamante
+     * 
+     */
+    @JsonProperty("idSessionePortale")
+    public void setIdSessionePortale(String idSessionePortale) {
+        this.idSessionePortale = idSessionePortale;
+    }
 
-	public void setIdSessionePsp(String idSessionePsp) {
-		this.idSessionePsp = idSessionePsp;
-	}
+    /**
+     * Identificativo del pagamento assegnato dal psp utilizzato
+     * 
+     */
+    @JsonProperty("idSessionePsp")
+    public String getIdSessionePsp() {
+        return idSessionePsp;
+    }
 
-	public String getNome() {
-		return nome;
-	}
+    /**
+     * Identificativo del pagamento assegnato dal psp utilizzato
+     * 
+     */
+    @JsonProperty("idSessionePsp")
+    public void setIdSessionePsp(String idSessionePsp) {
+        this.idSessionePsp = idSessionePsp;
+    }
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    /**
+     * Nome del pagamento da visualizzare all'utente.
+     * 
+     */
+    @JsonProperty("nome")
+    public String getNome() {
+        return nome;
+    }
 
-	public String getStato() {
-		return stato;
-	}
+    /**
+     * Nome del pagamento da visualizzare all'utente.
+     * 
+     */
+    @JsonProperty("nome")
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-	public void setStato(String stato) {
-		this.stato = stato;
-	}
+    /**
+     * Stato del pagamento
+     * (Required)
+     * 
+     */
+    @JsonProperty("stato")
+    public PagamentoPortale.Stato getStato() {
+        return stato;
+    }
 
-	public String getPspRedirectUrl() {
-		return pspRedirectUrl;
-	}
+    /**
+     * Stato del pagamento
+     * (Required)
+     * 
+     */
+    @JsonProperty("stato")
+    public void setStato(PagamentoPortale.Stato stato) {
+        this.stato = stato;
+    }
 
-	public void setPspRedirectUrl(String pspRedirectUrl) {
-		this.pspRedirectUrl = pspRedirectUrl;
-	}
+    /**
+     * Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
+     * 
+     */
+    @JsonProperty("pspRedirectUrl")
+    public String getPspRedirectUrl() {
+        return pspRedirectUrl;
+    }
 
-	public Date getDataRichiestaPagamento() {
-		return dataRichiestaPagamento;
-	}
+    /**
+     * Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
+     * 
+     */
+    @JsonProperty("pspRedirectUrl")
+    public void setPspRedirectUrl(String pspRedirectUrl) {
+        this.pspRedirectUrl = pspRedirectUrl;
+    }
 
-	public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
-		this.dataRichiestaPagamento = dataRichiestaPagamento;
-	}
+    /**
+     * Data e ora di avvio del pagamento
+     * (Required)
+     * 
+     */
+    @JsonProperty("dataRichiestaPagamento")
+    public String getDataRichiestaPagamento() {
+        return dataRichiestaPagamento;
+    }
 
-	public DatiAddebito getDatiAddebito() {
-		return datiAddebito;
-	}
+    /**
+     * Data e ora di avvio del pagamento
+     * (Required)
+     * 
+     */
+    @JsonProperty("dataRichiestaPagamento")
+    public void setDataRichiestaPagamento(String dataRichiestaPagamento) {
+        this.dataRichiestaPagamento = dataRichiestaPagamento;
+    }
 
-	public void setDatiAddebito(DatiAddebito datiAddebito) {
-		this.datiAddebito = datiAddebito;
-	}
+    /**
+     * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
+     * 
+     */
+    @JsonProperty("datiAddebito")
+    public DatiAddebito getDatiAddebito() {
+        return datiAddebito;
+    }
 
-	public Date getDataEsecuzionePagamento() {
-		return dataEsecuzionePagamento;
-	}
+    /**
+     * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
+     * 
+     */
+    @JsonProperty("datiAddebito")
+    public void setDatiAddebito(DatiAddebito datiAddebito) {
+        this.datiAddebito = datiAddebito;
+    }
 
-	public void setDataEsecuzionePagamento(Date dataEsecuzionePagamento) {
-		this.dataEsecuzionePagamento = dataEsecuzionePagamento;
-	}
+    /**
+     * data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
+     * 
+     */
+    @JsonProperty("dataEsecuzionePagamento")
+    public String getDataEsecuzionePagamento() {
+        return dataEsecuzionePagamento;
+    }
 
-	public String getCredenzialiPagatore() {
-		return credenzialiPagatore;
-	}
+    /**
+     * data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
+     * 
+     */
+    @JsonProperty("dataEsecuzionePagamento")
+    public void setDataEsecuzionePagamento(String dataEsecuzionePagamento) {
+        this.dataEsecuzionePagamento = dataEsecuzionePagamento;
+    }
 
-	public void setCredenzialiPagatore(String credenzialiPagatore) {
-		this.credenzialiPagatore = credenzialiPagatore;
-	}
+    /**
+     * Eventuali credenziali richieste dal PSP necessarie per completare l'operazione (ad esempio un codice bilaterale utilizzabile una sola volta).
+     * 
+     */
+    @JsonProperty("credenzialiPagatore")
+    public String getCredenzialiPagatore() {
+        return credenzialiPagatore;
+    }
 
-	public Anagrafica getSoggettoVersante() {
-		return soggettoVersante;
-	}
+    /**
+     * Eventuali credenziali richieste dal PSP necessarie per completare l'operazione (ad esempio un codice bilaterale utilizzabile una sola volta).
+     * 
+     */
+    @JsonProperty("credenzialiPagatore")
+    public void setCredenzialiPagatore(String credenzialiPagatore) {
+        this.credenzialiPagatore = credenzialiPagatore;
+    }
 
-	public void setSoggettoVersante(Anagrafica soggettoVersante) {
-		this.soggettoVersante = soggettoVersante;
-	}
+    @JsonProperty("soggettoVersante")
+    public SoggettoVersante getSoggettoVersante() {
+        return soggettoVersante;
+    }
 
-	public String getAutenticazioneSoggetto() {
-		return autenticazioneSoggetto;
-	}
+    @JsonProperty("soggettoVersante")
+    public void setSoggettoVersante(SoggettoVersante soggettoVersante) {
+        this.soggettoVersante = soggettoVersante;
+    }
 
-	public void setAutenticazioneSoggetto(String autenticazioneSoggetto) {
-		this.autenticazioneSoggetto = autenticazioneSoggetto;
-	}
+    /**
+     * modalita' di autenticazione del soggetto versante
+     * 
+     */
+    @JsonProperty("autenticazioneSoggetto")
+    public PagamentoPortale.AutenticazioneSoggetto getAutenticazioneSoggetto() {
+        return autenticazioneSoggetto;
+    }
 
-	public String getCanale() {
-		return canale;
-	}
+    /**
+     * modalita' di autenticazione del soggetto versante
+     * 
+     */
+    @JsonProperty("autenticazioneSoggetto")
+    public void setAutenticazioneSoggetto(PagamentoPortale.AutenticazioneSoggetto autenticazioneSoggetto) {
+        this.autenticazioneSoggetto = autenticazioneSoggetto;
+    }
 
-	public void setCanale(String canale) {
-		this.canale = canale;
-	}
+    /**
+     * Url per il canale di pagamento utilizzato
+     * 
+     */
+    @JsonProperty("canale")
+    public String getCanale() {
+        return canale;
+    }
 
-	public String getPendenze() {
-		return pendenze;
-	}
+    /**
+     * Url per il canale di pagamento utilizzato
+     * 
+     */
+    @JsonProperty("canale")
+    public void setCanale(String canale) {
+        this.canale = canale;
+    }
 
-	public void setPendenze(String pendenze) {
-		this.pendenze = pendenze;
-	}
+    /**
+     * Url per le pendenze oggetto del Pagamento
+     * 
+     */
+    @JsonProperty("pendenze")
+    public String getPendenze() {
+        return pendenze;
+    }
 
-	public String getRpts() {
-		return rpts;
-	}
+    /**
+     * Url per le pendenze oggetto del Pagamento
+     * 
+     */
+    @JsonProperty("pendenze")
+    public void setPendenze(String pendenze) {
+        this.pendenze = pendenze;
+    }
 
-	public void setRpts(String rpts) {
-		this.rpts = rpts;
-	}
+    /**
+     * Url oer le richieste di pagamento oggetto del Pagamento
+     * 
+     */
+    @JsonProperty("rpts")
+    public String getRpts() {
+        return rpts;
+    }
 
-	private String idSessionePortale;
-	private String idSessionePsp;
-	private String nome;
-	private String stato;
-	private String pspRedirectUrl;
-	private Date dataRichiestaPagamento;
-	private DatiAddebito datiAddebito;
-	private Date dataEsecuzionePagamento;
+    /**
+     * Url oer le richieste di pagamento oggetto del Pagamento
+     * 
+     */
+    @JsonProperty("rpts")
+    public void setRpts(String rpts) {
+        this.rpts = rpts;
+    }
 
-	private String credenzialiPagatore;
-	private Anagrafica soggettoVersante;
-	private String autenticazioneSoggetto;
-	private String canale;
-	private String pendenze;
-	private String rpts;
+    public enum AutenticazioneSoggetto {
 
-	
+        CNS("CNS"),
+        USR("USR"),
+        OTH("OTH"),
+        N_A("N/A");
+        private final String value;
+        private final static Map<String, PagamentoPortale.AutenticazioneSoggetto> CONSTANTS = new HashMap<String, PagamentoPortale.AutenticazioneSoggetto>();
+
+        static {
+            for (PagamentoPortale.AutenticazioneSoggetto c: values()) {
+                CONSTANTS.put(c.value, c);
+            }
+        }
+
+        private AutenticazioneSoggetto(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        @JsonValue
+        public String value() {
+            return this.value;
+        }
+
+        @JsonCreator
+        public static PagamentoPortale.AutenticazioneSoggetto fromValue(String value) {
+            PagamentoPortale.AutenticazioneSoggetto constant = CONSTANTS.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            } else {
+                return constant;
+            }
+        }
+
+    }
+
+    public enum Stato {
+
+        DA_REDIRIGERE_AL_WISP("Da redirigere al WISP"),
+        SELEZIONE_WISP_IN_CORSO("Selezione WISP in corso"),
+        SELEZIONE_WISP_FALLITA("Selezione WISP fallita"),
+        SELEZIONE_WISP_TIMEOUT("Selezione WISP timeout"),
+        SELEZIONE_WISP_ANNULLATA("Selezione WISP annullata"),
+        PAGAMENTO_IN_CORSO_AL_PSP("Pagamento in corso al PSP"),
+        PAGAMENTO_IN_ATTESA_DI_ESITO("Pagamento in attesa di esito"),
+        PAGAMENTO_ESEGUITO("Pagamento eseguito"),
+        PAGAMENTO_NON_ESEGUITO("Pagamento non eseguito"),
+        PAGAMENTO_PARZIALMENTE_ESEGUITO("Pagamento parzialmente eseguito"),
+        PAGAMENTO_IN_ERRORE("Pagamento in errore");
+        private final String value;
+        private final static Map<String, PagamentoPortale.Stato> CONSTANTS = new HashMap<String, PagamentoPortale.Stato>();
+
+        static {
+            for (PagamentoPortale.Stato c: values()) {
+                CONSTANTS.put(c.value, c);
+            }
+        }
+
+        private Stato(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        @JsonValue
+        public String value() {
+            return this.value;
+        }
+
+        @JsonCreator
+        public static PagamentoPortale.Stato fromValue(String value) {
+            PagamentoPortale.Stato constant = CONSTANTS.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            } else {
+                return constant;
+            }
+        }
+
+    }
+    
 	private static JsonConfig jsonConfig = new JsonConfig();
 
 	static {
@@ -187,27 +499,30 @@ public class PagamentoPortale extends JSONSerializable {
 		return (PagamentoPortale) JSONObject.toBean( jsonObject, jsonConfig );
 	}
 	
+	
 	public PagamentoPortale(it.govpay.bd.model.PagamentoPortale pagamentoPortale, UriBuilder uriBuilder) throws ServiceException {
+		
+		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( pagamentoPortale.getJsonRequest() );  
+
 		this.id = pagamentoPortale.getIdSessione();
 		this.idSessionePortale = pagamentoPortale.getIdSessionePortale();
 		this.idSessionePsp = pagamentoPortale.getIdSessionePsp();
 		this.nome = pagamentoPortale.getNome();
-		this.stato = pagamentoPortale.getStato().toString();
+		this.stato = Stato.fromValue(pagamentoPortale.getStato().toString());
 		this.pspRedirectUrl = pagamentoPortale.getPspRedirectUrl();
-		this.dataRichiestaPagamento = pagamentoPortale.getDataRichiesta();
-//		this.datiAddebito = new DatiAddebito();
-//		this.datiAddebito.setBicAddebito(pagamentoPortale.get);
-//		this.datiAddebito.setIbanAddebito(pagamentoPortale.getibanaddebito);
-//		this.dataEsecuzionePagamento = pagamentoPortale.getDataRichiesta(); //TODO
-//
-//		this.credenzialiPagatore = pagamentoPortale.get;
-//		this.soggettoVersante = new Anagrafica();
-//		this.soggettoVersante.setCap(pagamentoPortale.get);
-//		this.autenticazioneSoggetto = pagamentoPortale.get;
+		this.dataRichiestaPagamento = SimpleDateFormatUtils.newSimpleDateFormat().format(pagamentoPortale.getDataRichiesta());
+		this.datiAddebito = DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito"));
+
+		this.dataEsecuzionePagamento = jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento");
+
+		this.credenzialiPagatore =jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore");
+		this.soggettoVersante = SoggettoVersante.parse(jsonObjectPagamentiPortaleRequest.getString("soggettoVersante"));
+		this.autenticazioneSoggetto = AutenticazioneSoggetto.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto"));
 		this.canale = uriBuilder.clone().path("psp").path(pagamentoPortale.getCodPsp()).path("canali").path(pagamentoPortale.getCodCanale()).toString();
 		this.pendenze = uriBuilder.clone().path("pendenze").queryParam("idPagamento", pagamentoPortale.getIdSessione()).toString();
 		this.rpts = uriBuilder.clone().path("rpts").queryParam("idPagamento", pagamentoPortale.getIdSessione()).toString();
 
 	}
+
 
 }

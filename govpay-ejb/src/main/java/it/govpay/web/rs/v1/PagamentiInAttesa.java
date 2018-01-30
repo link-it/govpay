@@ -62,13 +62,13 @@ public class PagamentiInAttesa extends BaseRsServiceV1 {
 			anagraficaDebitore.setCap(pia.getPagatore().getCap());
 			anagraficaDebitore.setCellulare(pia.getPagatore().getCellulare());
 			anagraficaDebitore.setCivico(pia.getPagatore().getCivico());
-			anagraficaDebitore.setCodUnivoco(pia.getPagatore().getIdentificativoUnivoco());
+			anagraficaDebitore.setCodUnivoco(pia.getPagatore().getIdentificativo());
 			anagraficaDebitore.setEmail(pia.getPagatore().getEmail());
 			anagraficaDebitore.setIndirizzo(pia.getPagatore().getIndirizzo());
 			anagraficaDebitore.setLocalita(pia.getPagatore().getLocalita());
 			anagraficaDebitore.setNazione(pia.getPagatore().getNazione());
 			anagraficaDebitore.setProvincia(pia.getPagatore().getProvincia());
-			anagraficaDebitore.setRagioneSociale(pia.getPagatore().getDenominazione());
+			anagraficaDebitore.setRagioneSociale(pia.getPagatore().getAnagrafica());
 			versamento.setAnagraficaDebitore(anagraficaDebitore);
 			versamento.setIdApplicazione(applicazione.getId());
 			CausaleSemplice causale = versamento.new CausaleSemplice();

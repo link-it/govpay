@@ -13,10 +13,8 @@ import it.govpay.pagamento.api.rs.v1.model.IdPendenza;
 import it.govpay.pagamento.api.rs.v1.model.IdVersamento;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
-import it.govpay.pagamento.api.rs.v1.model.PagamentoPortale;
 import it.govpay.pagamento.api.rs.v1.model.Pendenza;
 import it.govpay.pagamento.api.rs.v1.model.VocePendenza;
-import it.govpay.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.TipoContabilita;
 import it.govpay.servizi.commons.Versamento.SingoloVersamento;
@@ -258,34 +256,4 @@ public class PagamentiPortaleConverter {
 		}
 	}
 
-	public static PagamentoPortale toJsonPagamentoPortale(it.govpay.bd.model.PagamentoPortale model) {
-		PagamentoPortale json = new PagamentoPortale();
-
-//		json.setId(model.getIdSessione());
-//		json.setStato(model.getStato().toString());
-//		
-//		if(psp != null) {
-//			json.setIdPsp(psp.getCodPsp());
-//			json.setNomePsp(psp.getRagioneSociale());
-//		}
-//		if(canale != null) {
-//			json.setIdCanale(canale.getCodCanale());
-//			json.setModelloPagamento(canale.getModelloPagamento().toString());
-//			json.setNomeCanale(canale.getDescrizione());
-//			json.setTipoVersamento(canale.getTipoVersamento().toString());
-//		}
-
-		// [TODO] psp canali rpts
-
-		return json;
-	}
-
-
-	/**
-	 * @param lstPagamenti
-	 * @return
-	 */
-	public static ListaPagamentiPortale toJsonPagamentoPortaleList(List<it.govpay.bd.model.PagamentoPortale> lstPagamenti, long totalResults) {
-		new ListaPagamentiPortale(domini, requestUri, count, pagina, risultatiPerPagina)
-	}
 }
