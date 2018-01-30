@@ -180,7 +180,9 @@ public class PagamentiPortaleDAO extends BasicBD{
 				}
 				
 				IbanAccredito ibanAccreditoTmp = singoloVersamento.getIbanAccredito(this);
-				contoPostale = contoPostale && ibanAccreditoTmp.isPostale();
+				
+				if(ibanAccreditoTmp != null)
+					contoPostale = contoPostale && ibanAccreditoTmp.isPostale();
 			}
 			
 			sommaImporti += vTmp.getImportoTotale().doubleValue();
