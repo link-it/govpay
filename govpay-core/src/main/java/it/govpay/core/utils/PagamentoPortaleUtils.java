@@ -20,6 +20,8 @@ public class PagamentoPortaleUtils {
 	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, BasicBD bd) throws ServiceException {
 		PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 		try {
+			bd.enableSelectForUpdate();
+			
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamento(idPagamentoPortale);
 			// disabilito la select for update
 			bd.disableSelectForUpdate();
