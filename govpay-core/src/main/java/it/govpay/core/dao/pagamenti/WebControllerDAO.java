@@ -188,7 +188,7 @@ public class WebControllerDAO extends BasicBD{
 								}
 								pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
 							}catch(GovPayException e) {
-								throw new TransazioneRptException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"), e.getMessage());
+								throw new TransazioneRptException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"), e.getMessage(),e);
 							}
 						} else {
 							// caso non valido 
@@ -251,8 +251,8 @@ public class WebControllerDAO extends BasicBD{
 		switch (pagamentoPortale.getStato()) {
 		case PAGAMENTO_IN_CORSO_AL_PSP:
 			pagamentoPortale.setStato(STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
-			pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
 			pagamentoPortale.setPspEsito(redirectDaPspDTO.getEsito()); 
+			pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
 			redirectDaPspDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
 			break;
 		default:
