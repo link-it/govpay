@@ -24,6 +24,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 
 public class InitListener implements ServletContextListener{
 
@@ -135,6 +136,7 @@ public class InitListener implements ServletContextListener{
 			
 			//		per ora vengono inizializzate nel govpay web
 			
+			RicevutaPagamentoProperties.newInstance(gpConfig.getResourceDir());
 			AnagraficaManager.newInstance(false);
 			//			ConnectionManager.initialize();
 			//			OperazioneFactory.init();

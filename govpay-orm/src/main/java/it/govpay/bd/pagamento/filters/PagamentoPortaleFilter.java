@@ -20,7 +20,6 @@
 package it.govpay.bd.pagamento.filters;
 
 import java.util.Date;
-import java.util.List;
 
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -31,12 +30,8 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.orm.Pagamento;
-import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoPortaleFilter extends AbstractFilter {
 
@@ -101,7 +96,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		if(field.equals(SortFields.DATA)) 
-			filterSortWrapper.setField(Pagamento.model().DATA_ACQUISIZIONE); 
+			filterSortWrapper.setField(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA); 
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
 	}

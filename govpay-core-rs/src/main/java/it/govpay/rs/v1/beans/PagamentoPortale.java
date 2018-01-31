@@ -4,8 +4,6 @@ package it.govpay.rs.v1.beans;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.core.UriBuilder;
-
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -13,6 +11,7 @@ import org.codehaus.jackson.annotate.JsonValue;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.UriBuilderUtils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -500,7 +499,7 @@ public class PagamentoPortale extends JSONSerializable {
 	}
 	
 	
-	public PagamentoPortale(it.govpay.bd.model.PagamentoPortale pagamentoPortale, UriBuilder uriBuilder) throws ServiceException {
+	public PagamentoPortale(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
 		
 		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( pagamentoPortale.getJsonRequest() );  
 
@@ -508,9 +507,12 @@ public class PagamentoPortale extends JSONSerializable {
 		this.idSessionePortale = pagamentoPortale.getIdSessionePortale();
 		this.idSessionePsp = pagamentoPortale.getIdSessionePsp();
 		this.nome = pagamentoPortale.getNome();
-		this.stato = Stato.fromValue(pagamentoPortale.getStato().toString());
+		this.stato = Stato.valueOf(pagamentoPortale.getStato().toString());
 		this.pspRedirectUrl = pagamentoPortale.getPspRedirectUrl();
-		this.dataRichiestaPagamento = SimpleDateFormatUtils.newSimpleDateFormat().format(pagamentoPortale.getDataRichiesta());
+		
+		if(pagamentoPortale.getDataRichiesta() != null)
+			this.dataRichiestaPagamento = SimpleDateFormatUtils.newSimpleDateFormat().format(pagamentoPortale.getDataRichiesta());
+		
 		this.datiAddebito = DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito"));
 
 		this.dataEsecuzionePagamento = jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento");
@@ -518,9 +520,12 @@ public class PagamentoPortale extends JSONSerializable {
 		this.credenzialiPagatore =jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore");
 		this.soggettoVersante = SoggettoVersante.parse(jsonObjectPagamentiPortaleRequest.getString("soggettoVersante"));
 		this.autenticazioneSoggetto = AutenticazioneSoggetto.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto"));
-		this.canale = uriBuilder.clone().path("psp").path(pagamentoPortale.getCodPsp()).path("canali").path(pagamentoPortale.getCodCanale()).toString();
-		this.pendenze = uriBuilder.clone().path("pendenze").queryParam("idPagamento", pagamentoPortale.getIdSessione()).toString();
-		this.rpts = uriBuilder.clone().path("rpts").queryParam("idPagamento", pagamentoPortale.getIdSessione()).toString();
+		
+		if(pagamentoPortale.getCodPsp() != null &&  pagamentoPortale.getCodCanale() != null)
+			this.canale = UriBuilderUtils.getCanale(pagamentoPortale.getCodPsp(), pagamentoPortale.getCodCanale());
+		
+		this.pendenze = UriBuilderUtils.getPendenze(pagamentoPortale.getIdSessione());
+		this.rpts = UriBuilderUtils.getRpts(pagamentoPortale.getIdSessione());
 
 	}
 

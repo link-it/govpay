@@ -31,11 +31,11 @@ public class PagamentiPortaleBD extends BasicBD{
 	}
 
 	public PagamentoPortaleFilter newFilter() throws ServiceException {
-		return new PagamentoPortaleFilter(this.getPagamentoService());
+		return new PagamentoPortaleFilter(this.getPagamentoPortaleService());
 	}
 	
 	public PagamentoPortaleFilter newFilter(boolean simpleSearch) throws ServiceException {
-		return new PagamentoPortaleFilter(this.getPagamentoService(),simpleSearch);
+		return new PagamentoPortaleFilter(this.getPagamentoPortaleService(),simpleSearch);
 	}
 
 	public List<PagamentoPortale> findAll(PagamentoPortaleFilter filter)
