@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -117,7 +118,8 @@ public class PagamentiPortale extends BaseRsServiceV1{
 	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response get(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@QueryParam("from") String from,  @QueryParam("size") String size,  
+			@QueryParam(value="from") @DefaultValue(value="0") int from,
+			@QueryParam(value="size") @DefaultValue(value="25") int size,
 			@QueryParam("dataDa") String dataDa,  @QueryParam("dataA") String dataA,  @QueryParam("stato") String stato,@QueryParam("versante") String versante, @QueryParam("fields") String fields) {
 		String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
@@ -135,11 +137,8 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO();
 			listaPagamentiPortaleDTO.setPrincipal(principal);
 			
-			if(from != null) {
-				listaPagamentiPortaleDTO.setOffset(Integer.parseInt(from));
-			}
-			if(size != null)
-				listaPagamentiPortaleDTO.setLimit(Integer.parseInt(size));
+			listaPagamentiPortaleDTO.setOffset(from);
+			listaPagamentiPortaleDTO.setLimit(size);
 			
 			if(dataDa != null || dataA != null) {
 				SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormat();
@@ -173,9 +172,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 				results.add(new it.govpay.rs.v1.beans.PagamentoPortale(pagamentoPortale));
 			}
 			
-			long pagina = (listaPagamentiPortaleDTO.getOffset() == null || listaPagamentiPortaleDTO.getOffset() <= 0) ? 1 : (long) (pagamentoPortaleDTOResponse.getTotalResults() / listaPagamentiPortaleDTO.getOffset());
-			long pagineTotali = (listaPagamentiPortaleDTO.getOffset() == null || listaPagamentiPortaleDTO.getOffset() <= 0) ? 1 : (long) (pagamentoPortaleDTOResponse.getTotalResults() / listaPagamentiPortaleDTO.getLimit());
-			ListaPagamentiPortale response = new ListaPagamentiPortale(results, uriInfo.getRequestUri(), pagamentoPortaleDTOResponse.getTotalResults(), pagina, pagineTotali);
+			ListaPagamentiPortale response = new ListaPagamentiPortale(results, uriInfo.getRequestUri(), pagamentoPortaleDTOResponse.getTotalResults(), from, size);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(fields), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

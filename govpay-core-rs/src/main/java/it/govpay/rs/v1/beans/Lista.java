@@ -60,20 +60,21 @@ public abstract class Lista<T> extends JSONSerializable {
 		return "lista";
 	}
 	
-	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long risultatiPerPagina) {
+	public Lista(List<T> risultati, URI requestUri, long count, long offset, long limit) {
+
 		this.risultati = risultati;
-		this.numPagine = (count < risultatiPerPagina) ? 1 : count / risultatiPerPagina;
-		this.pagina = pagina;
-		this.risultatiPerPagina = risultatiPerPagina;
+		this.numPagine = count == 0 ? 1 : (long) Math.ceil(count/(double)limit);
+		this.pagina = (long) Math.ceil((offset+1)/(double)limit);
+		this.risultatiPerPagina = limit;
 		this.numRisultati = risultati.size();
 		
 		
 		URIBuilder builder = new URIBuilder(requestUri);
-		builder.setParameter("risultatiPerPagina", Long.toString(this.risultatiPerPagina));
+		builder.setParameter("size", Long.toString(this.risultatiPerPagina));
 		
 		if(this.pagina < this.numPagine) {
-			long nextPagina = this.pagina+1;
-			builder.setParameter("pagina", Long.toString(nextPagina));
+			long nextPagina = offset+limit;
+			builder.setParameter("from", Long.toString(nextPagina));
 			try {
 				this.prossimiRisultati = builder.build().toString();
 			} catch (URISyntaxException e) { }

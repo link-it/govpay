@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ListaEntrate extends Lista<Entrata> {
 
-	public ListaEntrate(List<Entrata> risultati, URI requestUri, long count, long pagina, long risultatiPerPagina) {
-		super(risultati, requestUri, count, pagina, risultatiPerPagina);
+	public ListaEntrate(List<Entrata> risultati, URI requestUri, long count, long offset, long limit) {
+		super(risultati, requestUri, count, offset, limit);
 	}
 	
 }

@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ListaDomini extends Lista<Dominio> {
 	
-	public ListaDomini(List<Dominio> domini, URI requestUri, long count, long pagina, long risultatiPerPagina) {
-		super(domini, requestUri, count, pagina, risultatiPerPagina);
+	public ListaDomini(List<Dominio> domini, URI requestUri, long count, long offset, long limit) {
+		super(domini, requestUri, count, offset, limit);
 	}
 	
 }
