@@ -545,9 +545,6 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
 		List<Versamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
@@ -810,7 +807,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			sqlQueryObjectGet.addFromTable(this.getVersamentoFieldConverter().toTable(Versamento.model()));
 			sqlQueryObjectGet.addSelectField("id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
-			sqlQueryObjectGet.setSelectDistinct(true);
+//			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition("id_applicazione=?");
 			sqlQueryObjectGet.addWhereCondition(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_VERSAMENTO_ENTE, true)+"=?");
 

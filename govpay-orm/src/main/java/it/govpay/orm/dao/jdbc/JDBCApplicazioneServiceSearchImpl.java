@@ -471,9 +471,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Applicazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -682,7 +679,7 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 		sqlQueryObjectGet.addFromTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE,true)+"=?");
 
 		// Recupero _applicazione

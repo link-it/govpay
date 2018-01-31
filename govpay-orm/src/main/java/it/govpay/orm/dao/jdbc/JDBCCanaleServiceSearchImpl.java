@@ -518,9 +518,6 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Canale> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
@@ -761,7 +758,7 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 		sqlQueryObjectGet.addSelectField("id");
 		// Devono essere mappati nella where condition i metodi dell'oggetto id.getXXX
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition("id_psp=?");
 		sqlQueryObjectGet.addWhereCondition(this.getCanaleFieldConverter().toColumn(Canale.model().COD_CANALE,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition(this.getCanaleFieldConverter().toColumn(Canale.model().TIPO_VERSAMENTO,true)+"=?");

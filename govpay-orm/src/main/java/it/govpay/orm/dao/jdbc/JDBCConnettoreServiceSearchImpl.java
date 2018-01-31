@@ -699,7 +699,7 @@ public class JDBCConnettoreServiceSearchImpl implements IJDBCServiceSearchWithId
 		sqlQueryObjectGet.addFromTable(this.getConnettoreFieldConverter().toTable(Connettore.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getConnettoreFieldConverter().toColumn(Connettore.model().COD_CONNETTORE,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition(this.getConnettoreFieldConverter().toColumn(Connettore.model().COD_PROPRIETA,true)+"=?");
 

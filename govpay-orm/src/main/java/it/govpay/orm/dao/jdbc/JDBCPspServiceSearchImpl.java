@@ -470,9 +470,6 @@ public class JDBCPspServiceSearchImpl implements IJDBCServiceSearchWithId<Psp, I
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Psp> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 				
 		if(lst.size() <=0)
@@ -683,7 +680,7 @@ public class JDBCPspServiceSearchImpl implements IJDBCServiceSearchWithId<Psp, I
 		sqlQueryObjectGet.addFromTable(this.getPspFieldConverter().toTable(Psp.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getPspFieldConverter().toColumn(Psp.model().COD_PSP,true)+"=?");
 
 		// Recupero _psp

@@ -54,7 +54,8 @@ public class VersamentoConverter {
 			if(vo.getIdUo() != null)
 				dto.setIdUo(vo.getIdUo().getId());
 			
-			dto.setIdDominio(vo.getIdDominio().getId());
+			if(vo.getIdDominio() != null)
+				dto.setIdDominio(vo.getIdDominio().getId());
 			dto.setNome(vo.getNome());
 			dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 			dto.setStatoVersamento(StatoVersamento.valueOf(vo.getStatoVersamento()));
@@ -111,9 +112,11 @@ public class VersamentoConverter {
 				vo.setIdUo(idUo);
 			}
 
-			IdDominio idDominio = new IdDominio();
-			idDominio.setId(dto.getIdDominio());
-			vo.setIdDominio(idDominio);
+			if(dto.getIdDominio() > 0) {
+				IdDominio idDominio = new IdDominio();
+				idDominio.setId(dto.getIdDominio());
+				vo.setIdDominio(idDominio);
+			}
 
 			vo.setNome(dto.getNome());
 			vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());

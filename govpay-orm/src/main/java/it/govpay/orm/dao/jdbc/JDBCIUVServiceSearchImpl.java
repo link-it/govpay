@@ -502,9 +502,6 @@ public class JDBCIUVServiceSearchImpl implements IJDBCServiceSearchWithId<IUV, I
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<IUV> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -749,7 +746,7 @@ public class JDBCIUVServiceSearchImpl implements IJDBCServiceSearchWithId<IUV, I
 		sqlQueryObjectGet.addFromTable(this.getIUVFieldConverter().toTable(IUV.model().ID_DOMINIO));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getIUVFieldConverter().toColumn(IUV.model().PRG,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition(this.getIUVFieldConverter().toColumn(IUV.model().ID_DOMINIO.COD_DOMINIO,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition(this.getIUVFieldConverter().toTable(IUV.model())+".id_dominio="+this.getIUVFieldConverter().toTable(IUV.model().ID_DOMINIO) + ".id");

@@ -155,6 +155,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 		}
 		List<PagamentoPortale> list = new ArrayList<PagamentoPortale>();
 
+		
 		try{
 			List<IField> fields = new ArrayList<IField>();
 
@@ -480,9 +481,6 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
 		List<PagamentoPortale> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
@@ -686,7 +684,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 		sqlQueryObjectGet.addFromTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE,true)+"=?");
 
 		// Recupero _pagamentoPortale

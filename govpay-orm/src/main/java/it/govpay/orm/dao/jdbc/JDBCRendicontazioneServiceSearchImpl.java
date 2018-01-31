@@ -516,9 +516,6 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Rendicontazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -761,7 +758,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		sqlQueryObjectGet.addFromTable(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _rendicontazione

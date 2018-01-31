@@ -2,6 +2,8 @@ package it.govpay.core.utils;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -16,12 +18,16 @@ import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 
 public class PagamentoPortaleUtils {
+	
+	private static Logger log = LogManager.getLogger();
 
 	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, BasicBD bd) throws ServiceException {
-		PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+		
 		try {
-			bd.enableSelectForUpdate();
-			
+//			bd.enableSelectForUpdate();
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD.enableSelectForUpdate();
+			log.debug("AAAAAAAA Leggo pagamento portale id ["+idPagamentoPortale+"]"); 
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamento(idPagamentoPortale);
 			// disabilito la select for update
 			bd.disableSelectForUpdate();
@@ -31,12 +37,15 @@ public class PagamentoPortaleUtils {
 			filter.setIdPagamentoPortale(idPagamentoPortale);
 			
 			List<Rpt> findAll = rptBD.findAll(filter);
+			
+			log.debug("AAAAAAAA Trovate  ["+findAll.size()+"] RPT associate"); 
 			boolean updateStato = true;
 			int numeroEseguiti = 0;
 			int numeroNonEseguiti = 0;
 			//int numeroResidui = 0;
 			for (int i = 0; i <findAll.size(); i++) {
 				Rpt rpt  = findAll.get(i);
+				log.debug("AAAAAAAA RT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
 				if(rpt.getEsitoPagamento() == null) {
 					updateStato = false;
 					break;
@@ -52,6 +61,8 @@ public class PagamentoPortaleUtils {
 				}
 			}
 			
+			log.debug("AAAAAAAA Esito analisi rpt Update ["+updateStato+"] #OK ["+numeroEseguiti+"], #KO ["+numeroNonEseguiti+"]"); 
+			
 			if(updateStato) {
 				if(numeroEseguiti == findAll.size()) {
 					pagamentoPortale.setStato(STATO.PAGAMENTO_ESEGUITO);
@@ -65,7 +76,11 @@ public class PagamentoPortaleUtils {
 			} else {
 				pagamentoPortale.setStato(STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 			}
+			
+			log.debug("AAAAAAAA Nuovo Stato ["+pagamentoPortale.getStato()+"]"); 
+			
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale);
+			log.debug("AAAAAAAA Update pagamento portale id ["+idPagamentoPortale+"] completato "); 
 		} catch (NotFoundException e) {
 		}
 	}

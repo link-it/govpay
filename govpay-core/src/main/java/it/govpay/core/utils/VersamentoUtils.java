@@ -128,6 +128,7 @@ public class VersamentoUtils {
 		Dominio dominio = null;
 		try {
 			dominio = AnagraficaManager.getDominio(bd, versamento.getCodDominio());
+			model.setIdDominio(dominio.getId()); 
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.DOM_000, versamento.getCodDominio());
 		}
@@ -178,6 +179,7 @@ public class VersamentoUtils {
 		Dominio dominio = null;
 		try {
 			dominio = AnagraficaManager.getDominio(bd, versamento.getCodDominio());
+			model.setIdDominio(dominio.getId()); 
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.DOM_000, versamento.getCodDominio());
 		}

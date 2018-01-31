@@ -518,9 +518,6 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-				
 		List<Tracciato> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -735,7 +732,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		sqlQueryObjectGet.addFromTable(this.getTracciatoFieldConverter().toTable(Tracciato.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _tracciato

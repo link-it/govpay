@@ -40,6 +40,8 @@ import it.govpay.bd.model.IbanAccredito;
 public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
 	
+	public Dominio() {}
+	
 	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
 		
 		super.setId(idDominio);
