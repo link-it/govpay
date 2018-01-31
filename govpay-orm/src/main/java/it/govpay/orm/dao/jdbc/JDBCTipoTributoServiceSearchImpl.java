@@ -686,7 +686,7 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 		sqlQueryObjectGet.addFromTable(this.getTipoTributoFieldConverter().toTable(TipoTributo.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO,true)+"=?");
 
 		// Recupero _tipoTributo

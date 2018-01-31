@@ -485,10 +485,6 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
-		
 		List<Stazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 				
 		if(lst.size() <=0)
@@ -711,7 +707,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 		sqlQueryObjectGet.addFromTable(this.getStazioneFieldConverter().toTable(Stazione.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getStazioneFieldConverter().toColumn(Stazione.model().COD_STAZIONE,true)+"=?");
 
 		// Recupero _stazione

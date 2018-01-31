@@ -804,7 +804,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 		sqlQueryObjectGet.addSelectField("id");
 		// Devono essere mappati nella where condition i metodi dell'oggetto id.getXXX
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().COD_IBAN,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition("id_dominio=?");
 

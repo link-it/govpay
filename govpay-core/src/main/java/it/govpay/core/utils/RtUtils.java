@@ -468,6 +468,7 @@ public class RtUtils extends NdpValidationUtils {
 		// Aggiornamento dello stato del pagamento portale associato all'RPT
 		Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 		if(idPagamentoPortale != null) {
+			log.debug("AAAAAAAA Aggiorno pagamento portale associato alla RT ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
 			PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, bd); 
 		}
 		

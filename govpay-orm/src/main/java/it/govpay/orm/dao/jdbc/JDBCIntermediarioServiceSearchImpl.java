@@ -696,7 +696,7 @@ public class JDBCIntermediarioServiceSearchImpl implements IJDBCServiceSearchWit
 		sqlQueryObjectGet.addFromTable(this.getIntermediarioFieldConverter().toTable(Intermediario.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_INTERMEDIARIO,true)+"=?");
 
 		// Recupero _intermediario

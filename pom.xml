@@ -39,7 +39,7 @@
 	<properties>
 		<javaVersion>1.6</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.version>2.3.8</openspcoop2.version>
+		<openspcoop2.version>2.3.8.3</openspcoop2.version>
 		<rel-to-parent>.</rel-to-parent>
 	</properties>
 

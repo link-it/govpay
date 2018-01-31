@@ -497,9 +497,6 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-				
 		List<Uo> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -738,7 +735,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		sqlQueryObjectGet.addFromTable(this.getUoFieldConverter().toTable(Uo.model()));
 		sqlQueryObjectGet.addSelectField(this.getUoFieldConverter().toTable(Uo.model())+".id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getUoFieldConverter().toColumn(Uo.model().COD_UO,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition("id_dominio=?");
 

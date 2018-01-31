@@ -28,6 +28,8 @@ import it.govpay.model.IbanAccredito;
 public class Tributo extends it.govpay.model.Tributo {
 	private static final long serialVersionUID = 1L;
 	
+	public Tributo() {	}
+	
 	public Tributo(BasicBD bd, Long idIbanAccredito) throws ServiceException {
 		super.setIdIbanAccredito(idIbanAccredito);
 		

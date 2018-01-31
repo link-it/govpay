@@ -602,9 +602,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Pagamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
@@ -907,7 +904,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		sqlQueryObjectGet.addFromTable(this.getPagamentoFieldConverter().toTable(Pagamento.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _pagamento

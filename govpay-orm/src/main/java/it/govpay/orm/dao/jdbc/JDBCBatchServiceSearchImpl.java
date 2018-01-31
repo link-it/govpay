@@ -468,9 +468,6 @@ public class JDBCBatchServiceSearchImpl implements IJDBCServiceSearchWithId<Batc
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Batch> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
@@ -681,7 +678,7 @@ public class JDBCBatchServiceSearchImpl implements IJDBCServiceSearchWithId<Batc
 		sqlQueryObjectGet.addFromTable(this.getBatchFieldConverter().toTable(Batch.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getBatchFieldConverter().toColumn(Batch.model().COD_BATCH,true)+"=?");
 
 		// Recupero _batch

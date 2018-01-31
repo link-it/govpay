@@ -563,9 +563,6 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-				
 		List<SingoloVersamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -881,7 +878,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObjectGet.addFromTable(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model()));
 			sqlQueryObjectGet.addSelectField("id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
-			sqlQueryObjectGet.setSelectDistinct(true);
+//			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition("id_versamento=?");
 
@@ -897,7 +894,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObjectGet.addFromTable(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE));
 			sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
-			sqlQueryObjectGet.setSelectDistinct(true);
+//			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,true)+"=?");

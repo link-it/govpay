@@ -63,29 +63,30 @@ public class ConnectionManager {
 			ConnectionManager.ds = DataSourceFactory.newInstance(GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);
 		} catch(Exception e) {
 			 if(e instanceof UtilsAlreadyExistsException){
-//               log.debug(e.getMessage(),e);
+				 log.debug("DataSource [" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] gia' inizializzato.");
 			 }else{
-                 log.error(e.getMessage(),e);
+				 log.error("DataSource [" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] non presente, provo a cercarlo col seguente nome [java:/" + GovpayConfig.getInstance().getDataSourceJNDIName() + "]");
                  try {
                 	 ConnectionManager.ds = DataSourceFactory.newInstance("java:/"+GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);    	 
                  }catch(Exception e2) {
                      if(e instanceof UtilsAlreadyExistsException){
-	//                       log.debug(e2.getMessage(),e2);
+                    	 log.debug("DataSource [java:/" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] gia' inizializzato.");
 	                 }else{
-	                         log.error(e2.getMessage(),e2);
+	                	 log.error("DataSource [java:/" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] non presente.");
 	                 }
                  }
 			 }
 		}
         try{
             if(ConnectionManager.ds==null){
-                    ConnectionManager.ds =  DataSourceFactory.getInstance(GovpayConfig.getInstance().getDataSourceAppName());
+            	log.debug("DataSource [" + GovpayConfig.getInstance().getDataSourceAppName() +"] getInstance in corso...");
+                ConnectionManager.ds =  DataSourceFactory.getInstance(GovpayConfig.getInstance().getDataSourceAppName());
+                log.debug("DataSource [" + GovpayConfig.getInstance().getDataSourceAppName() +"] getInstance completata.");
             }
 	    }catch(Exception e){
-	            log.error(e.getMessage(),e);
+            log.error(e.getMessage());//,e);
+            throw e;
 	    }
-
-		
 		
 		ConnectionManager.log.info("Init ConnectionManager terminata");
 		initialized = true;

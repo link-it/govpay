@@ -432,9 +432,6 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-				
 		List<Operazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
