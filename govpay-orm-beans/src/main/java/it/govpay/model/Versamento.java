@@ -44,7 +44,7 @@ public class Versamento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-	private long idUo;
+	private Long idUo;
 	private long idDominio;
 	private long idApplicazione;
 
@@ -119,11 +119,11 @@ public class Versamento extends BasicModel {
 		this.id = id;
 	}
 
-	public long getIdUo() {
+	public Long getIdUo() {
 		return idUo;
 	}
 
-	public void setIdUo(long idUo) {
+	public void setIdUo(Long idUo) {
 		this.idUo = idUo;
 	}
 

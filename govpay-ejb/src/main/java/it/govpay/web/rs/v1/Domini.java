@@ -112,7 +112,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			List<Dominio> domini = new ArrayList<Dominio>();
 			for(it.govpay.bd.model.Dominio d : findDominiDTOResponse.getResults()) {
-				domini.add(new Dominio(d, baseUriBuilder));
+				domini.add(new Dominio(d));
 			}
 			
 			ListaDomini listaDomini = new ListaDomini(domini, uriInfo.getRequestUri(), findDominiDTOResponse.getTotalResults(), offset, limit);
@@ -142,7 +142,7 @@ public class Domini extends BaseRsServiceV1 {
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, codDominio);
 			
 			GetDominioDTOResponse getDominioDTOResponse = new DominiDAO().getDominio(getDominioDTO);
-			Dominio dominio = new Dominio(getDominioDTOResponse.getDominio(), baseUriBuilder);
+			Dominio dominio = new Dominio(getDominioDTOResponse.getDominio());
 			
 			return Response.status(Status.OK).entity(dominio.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
@@ -182,7 +182,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			List<UnitaOperativa> unitaOperative = new ArrayList<UnitaOperativa>();
 			for(it.govpay.bd.model.UnitaOperativa uo : findUnitaOperativeDTOResponse.getResults()) {
-				unitaOperative.add(new UnitaOperativa(uo, codDominio, baseUriBuilder));
+				unitaOperative.add(new UnitaOperativa(uo));
 			}
 			ListaUnitaOperative listaUnitaOperative = new ListaUnitaOperative(unitaOperative, uriInfo.getRequestUri(), findUnitaOperativeDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
@@ -220,7 +220,7 @@ public class Domini extends BaseRsServiceV1 {
 			GetUnitaOperativaDTO getUnitaOperativaDTO = new GetUnitaOperativaDTO(user, codDominio, codUnivoco);
 			GetUnitaOperativaDTOResponse getUnitaOperativaDTOResponse = new DominiDAO().getUnitaOperativa(getUnitaOperativaDTO);
 			
-			UnitaOperativa unitaOperativa = new UnitaOperativa(getUnitaOperativaDTOResponse.getUnitaOperativa(), codDominio, baseUriBuilder);
+			UnitaOperativa unitaOperativa = new UnitaOperativa(getUnitaOperativaDTOResponse.getUnitaOperativa());
 			
 			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {

@@ -38,10 +38,10 @@ public class Ricevute extends BaseRsServiceV1{
 
 	@GET
 	@Path("/{idDominio}/{iuv}/{ccp}")
-	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML,"application/pdf"})
+	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM,MediaType.APPLICATION_XML,"application/pdf"})
 	public Response getByIdDominioIuvCcp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp) {
-		String methodName = "getRicevuteByIdDominioIuvCcp";  
+		String methodName = "getByIdDominioIuvCcp";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -69,24 +69,30 @@ public class Ricevute extends BaseRsServiceV1{
 			
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRpt(leggiPagamentoPortaleDTO);
 			
-			String tipoFirma = ricevutaDTOResponse.getRpt().getFirmaRichiesta().getCodifica();
-			byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, ricevutaDTOResponse.getRpt().getXmlRt(), ricevutaDTOResponse.getRpt().getCodDominio());
-			CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
-			
-			if(accept.equals("application/pdf")) {
-				ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
-				String auxDigit = ricevutaDTOResponse.getDominio().getAuxDigit() + "";
-				String applicationCode = String.format("%02d", ricevutaDTOResponse.getDominio().getStazione().getApplicationCode());
-				RicevutaPagamentoUtils.getPdfRicevutaPagamento(ricevutaDTOResponse.getDominio().getLogo(), ricevutaDTOResponse.getVersamento().getCausaleVersamento(), rt, null, auxDigit, applicationCode, baos1, this.log);
-				String rtPdfEntryName = "rt.pdf";
-			
-				byte[] b = baos1.toByteArray();
-				
-				this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
+			if(accept.equalsIgnoreCase(MediaType.APPLICATION_OCTET_STREAM)) {
+				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 				this.log.info("Esecuzione " + methodName + " completata."); 
-				return Response.status(Status.OK).type(accept).entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"").build();
+				return Response.status(Status.OK).type(accept).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())).build();
 			} else {
-				return Response.status(Status.OK).type(accept).entity(rt).build();
+				String tipoFirma = ricevutaDTOResponse.getRpt().getFirmaRichiesta().getCodifica();
+				byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, ricevutaDTOResponse.getRpt().getXmlRt(), ricevutaDTOResponse.getRpt().getCodDominio());
+				CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+				
+				if(accept.equalsIgnoreCase("application/pdf")) {
+					ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
+					String auxDigit = ricevutaDTOResponse.getDominio().getAuxDigit() + "";
+					String applicationCode = String.format("%02d", ricevutaDTOResponse.getDominio().getStazione().getApplicationCode());
+					RicevutaPagamentoUtils.getPdfRicevutaPagamento(ricevutaDTOResponse.getDominio().getLogo(), ricevutaDTOResponse.getVersamento().getCausaleVersamento(), rt, null, auxDigit, applicationCode, baos1, this.log);
+					String rtPdfEntryName = "rt.pdf";
+				
+					byte[] b = baos1.toByteArray();
+					
+					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
+					this.log.info("Esecuzione " + methodName + " completata."); 
+					return Response.status(Status.OK).type(accept).entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"").build();
+				} else {
+					return Response.status(Status.OK).type(accept).entity(rt).build();
+				}
 			}
 		}catch (RicevutaNonTrovataException e) {
 			log.error(e.getMessage(), e);

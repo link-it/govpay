@@ -19,39 +19,20 @@
  */
 package it.govpay.rs.v1.beans;
 
-import javax.ws.rs.core.UriBuilder;
-
-import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-@JsonFilter(value="unitaOperative")  
-public class UnitaOperativa extends JSONSerializable {
-	private String href;
-	private String codiceUnivoco;
-	private String ragioneSociale;
-	private String indirizzo;
-	private String civico;
-	private String cap;
-	private String localita;
-	private String provincia;
-	private String nazione;
-	private boolean abilitato;
-	
+public class UnitaOperativa extends it.govpay.rs.v1.beans.base.UnitaOperativa {
 	
 	public UnitaOperativa() {
 	}
 
-	public UnitaOperativa(it.govpay.bd.model.UnitaOperativa uo, String codDominio, UriBuilder uriBuilder) throws IllegalArgumentException, ServiceException {
-		this.href = uriBuilder.clone().path("domini").path(codDominio).path("unita_operative").path(uo.getAnagrafica().getCodUnivoco()).toString();
-		this.ragioneSociale = uo.getAnagrafica().getRagioneSociale();
-		this.abilitato = uo.isAbilitato();
-		this.codiceUnivoco = uo.getAnagrafica().getCodUnivoco();
-		this.indirizzo = uo.getAnagrafica().getIndirizzo();
-		this.civico = uo.getAnagrafica().getCivico();
-		this.cap = uo.getAnagrafica().getCap();
-		this.localita = uo.getAnagrafica().getLocalita();
-		this.provincia = uo.getAnagrafica().getProvincia();
-		this.nazione = uo.getAnagrafica().getNazione();
+	public UnitaOperativa(it.govpay.bd.model.UnitaOperativa uo) throws IllegalArgumentException, ServiceException {
+		this.setCap(uo.getAnagrafica().getRagioneSociale());
+		this.setCivico(uo.getAnagrafica().getCivico());
+		this.setIdUnita(uo.getAnagrafica().getCodUnivoco());
+		this.setIndirizzo(uo.getAnagrafica().getIndirizzo());
+		this.setLocalita(uo.getAnagrafica().getLocalita());
+		this.setRagioneSociale(uo.getAnagrafica().getRagioneSociale());
 	}
 	
 	@Override
@@ -59,84 +40,8 @@ public class UnitaOperativa extends JSONSerializable {
 		return "unitaOperative";
 	}
 
-	public String getHref() {
-		return href;
-	}
-
-	public void setHref(String href) {
-		this.href = href;
-	}
-
-	public String getCodiceUnivoco() {
-		return codiceUnivoco;
-	}
-
-	public void setCodiceUnivoco(String codiceUnivoco) {
-		this.codiceUnivoco = codiceUnivoco;
-	}
-
-	public String getRagioneSociale() {
-		return ragioneSociale;
-	}
-
-	public void setRagioneSociale(String ragioneSociale) {
-		this.ragioneSociale = ragioneSociale;
-	}
-
-	public String getIndirizzo() {
-		return indirizzo;
-	}
-
-	public void setIndirizzo(String indirizzo) {
-		this.indirizzo = indirizzo;
-	}
-
-	public String getCivico() {
-		return civico;
-	}
-
-	public void setCivico(String civico) {
-		this.civico = civico;
-	}
-
-	public String getCap() {
-		return cap;
-	}
-
-	public void setCap(String cap) {
-		this.cap = cap;
-	}
-
-	public String getLocalita() {
-		return localita;
-	}
-
-	public void setLocalita(String localita) {
-		this.localita = localita;
-	}
-
-	public String getProvincia() {
-		return provincia;
-	}
-
-	public void setProvincia(String provincia) {
-		this.provincia = provincia;
-	}
-
-	public String getNazione() {
-		return nazione;
-	}
-
-	public void setNazione(String nazione) {
-		this.nazione = nazione;
-	}
-
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
+	public static UnitaOperativa parse(String json) {
+		return (UnitaOperativa) parse(json, UnitaOperativa.class);
 	}
 
 }

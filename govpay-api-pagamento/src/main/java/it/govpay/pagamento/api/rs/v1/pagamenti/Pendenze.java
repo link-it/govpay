@@ -6,6 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -13,19 +14,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
-import it.govpay.core.dao.pagamenti.RicevuteDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
-import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
+import it.govpay.core.dao.pagamenti.PendenzeDAO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.JaxbUtils;
-import it.govpay.core.utils.RtUtils;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.beans.Pendenza;
 
 @Path("/pendenze")
 public class Pendenze extends BaseRsServiceV1{
@@ -46,7 +45,7 @@ public class Pendenze extends BaseRsServiceV1{
 	@Path("/{idA2A}/{idPendenza}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getByIda2aIdPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza) {
+			@PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, @QueryParam("fields") String fields) {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -60,22 +59,18 @@ public class Pendenze extends BaseRsServiceV1{
 			ctx =  GpThreadLocal.get();
 			String principal = this.getPrincipal();
 			
-			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(null); //TODO IAutorizzato
-//			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
-//			leggiPagamentoPortaleDTO.setIuv(iuv);
-//			leggiPagamentoPortaleDTO.setCcp(ccp);
+			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(null); //TODO IAutorizzato
 			
+			leggiPendenzaDTO.setCodA2A(idA2A);
+			leggiPendenzaDTO.setCodPendenza(idPendenza);
 			
-			RicevuteDAO ricevuteDAO = new RicevuteDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(BasicBD.newInstance(ctx.getTransactionId())); 
 			
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRpt(leggiPagamentoPortaleDTO);
-			
-			String tipoFirma = ricevutaDTOResponse.getRpt().getFirmaRichiesta().getCodifica();
-			byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, ricevutaDTOResponse.getRpt().getXmlRt(), ricevutaDTOResponse.getRpt().getCodDominio());
-			CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
-			
-			return Response.status(Status.OK).entity(rt).build();
-		}catch (RicevutaNonTrovataException e) {
+			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
+
+			Pendenza pendenza = new Pendenza(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio());
+			return Response.status(Status.OK).entity(pendenza.toJSON(fields)).build();
+		}catch (PendenzaNonTrovataException e) {
 			log.error(e.getMessage(), e);
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CATEGORIA.OPERAZIONE);

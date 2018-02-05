@@ -47,6 +47,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient List<SingoloVersamento> singoliVersamenti;
 	private transient List<Rpt> rpts;
 	private transient Applicazione applicazione;
+	private transient Dominio dominio;
 	private transient UnitaOperativa uo;
 	private transient Iuv iuv;
 	
@@ -87,10 +88,17 @@ public class Versamento extends it.govpay.model.Versamento {
 	}
 
 	public UnitaOperativa getUo(BasicBD bd) throws ServiceException {
-		if(uo == null) {
+		if(this.getIdUo() != null && uo == null) {
 			uo = AnagraficaManager.getUnitaOperativa(bd, getIdUo());
-		} 
+		}
 		return uo;
+	}
+
+	public Dominio getDominio(BasicBD bd) throws ServiceException {
+		if(dominio == null) {
+			dominio = AnagraficaManager.getDominio(bd, getIdUo());
+		} 
+		return dominio;
 	}
 	
 	public UnitaOperativa setUo(long idDominio, String codUo, BasicBD bd) throws ServiceException, NotFoundException {

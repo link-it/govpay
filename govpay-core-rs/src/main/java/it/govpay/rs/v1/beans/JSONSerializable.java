@@ -14,6 +14,9 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
 @JsonFilter(value="risultati")  
 public abstract class JSONSerializable {
 	
@@ -58,5 +61,15 @@ public abstract class JSONSerializable {
 		filters = filters.setFailOnUnknownId(false);
 		return mapper.writer(filters).writeValueAsString(this);
 	}
+	
+	public static Object parse(String json, Class<?> clazz) {
+		JSONObject jsonObject = JSONObject.fromObject( json );  
+		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.setRootClass(clazz);
+
+		return JSONObject.toBean( jsonObject, jsonConfig );
+	}
+	
+
 
 }
