@@ -9,8 +9,7 @@ import it.govpay.rs.v1.beans.base.StazionePost;
 "idStazione",
 "domini",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Stazione extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Stazione extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("password")
   private String password = null;
@@ -106,6 +105,15 @@ public abstract class Stazione extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(password, abilitato, idStazione, domini);
+  }
+
+  public static Stazione parse(String json) {
+    return (Stazione) parse(json, Stazione.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "stazione";
   }
 
   @Override

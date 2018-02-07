@@ -6,8 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "password",
 "abilitato",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class StazionePost extends it.govpay.rs.v1.beans.JSONSerializable {
+public class StazionePost extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("password")
   private String password = null;
@@ -63,6 +62,15 @@ public abstract class StazionePost extends it.govpay.rs.v1.beans.JSONSerializabl
   @Override
   public int hashCode() {
     return Objects.hash(password, abilitato);
+  }
+
+  public static StazionePost parse(String json) {
+    return (StazionePost) parse(json, StazionePost.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "stazionePost";
   }
 
   @Override

@@ -2,6 +2,7 @@ package it.govpay.rs.v1.beans.base;
 
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
+import it.govpay.rs.v1.beans.base.UnitaOperativaPost;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "ragioneSociale",
 "indirizzo",
@@ -10,8 +11,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "localita",
 "idUnita",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class UnitaOperativa extends it.govpay.rs.v1.beans.JSONSerializable {
+public class UnitaOperativa extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
@@ -147,6 +147,15 @@ public abstract class UnitaOperativa extends it.govpay.rs.v1.beans.JSONSerializa
   @Override
   public int hashCode() {
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, idUnita);
+  }
+
+  public static UnitaOperativa parse(String json) {
+    return (UnitaOperativa) parse(json, UnitaOperativa.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "unitaOperativa";
   }
 
   @Override

@@ -9,8 +9,7 @@ import org.codehaus.jackson.annotate.JsonValue;
 "descrizione",
 "dettaglio",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class FaultBean extends it.govpay.rs.v1.beans.JSONSerializable {
+public class FaultBean extends it.govpay.rs.v1.beans.JSONSerializable {
   
     
   /**
@@ -156,6 +155,15 @@ public abstract class FaultBean extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(categoria, codice, descrizione, dettaglio);
+  }
+
+  public static FaultBean parse(String json) {
+    return (FaultBean) parse(json, FaultBean.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "faultBean";
   }
 
   @Override

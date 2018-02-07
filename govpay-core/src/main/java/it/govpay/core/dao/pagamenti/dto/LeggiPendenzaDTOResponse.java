@@ -3,7 +3,10 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
+import java.util.List;
+
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Applicazione;
@@ -17,6 +20,7 @@ import it.govpay.model.Applicazione;
 public class LeggiPendenzaDTOResponse {
 
 	private Versamento versamento;
+	private List<SingoloVersamento> lstSingoliVersamenti;
 	private UnitaOperativa unitaOperativa;
 	private Dominio dominio;
 	private Applicazione applicazione;
@@ -51,5 +55,13 @@ public class LeggiPendenzaDTOResponse {
 
 	public void setUnitaOperativa(UnitaOperativa unitaOperativa) {
 		this.unitaOperativa = unitaOperativa;
+	}
+
+	public List<SingoloVersamento> getLstSingoliVersamenti() {
+		return lstSingoliVersamenti;
+	}
+
+	public void setLstSingoliVersamenti(List<SingoloVersamento> lstSingoliVersamenti) {
+		this.lstSingoliVersamenti = lstSingoliVersamenti;
 	}
 }

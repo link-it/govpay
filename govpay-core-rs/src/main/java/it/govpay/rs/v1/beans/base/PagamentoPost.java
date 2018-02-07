@@ -1,12 +1,14 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
-import it.govpay.rs.v1.beans.base.Soggetto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
+
+import it.govpay.rs.v1.beans.DatiAddebito;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "urlRitorno",
 "pendenze",
@@ -18,8 +20,7 @@ import java.util.List;
 "autenticazioneSoggetto",
 "lingua",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class PagamentoPost extends it.govpay.rs.v1.beans.JSONSerializable {
+public class PagamentoPost extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("urlRitorno")
   private String urlRitorno = null;
@@ -28,10 +29,10 @@ public abstract class PagamentoPost extends it.govpay.rs.v1.beans.JSONSerializab
   private List<Object> pendenze = new ArrayList<Object>();
   
   @JsonProperty("tokenWISP")
-  private Object tokenWISP = null;
+  private TokenWISP tokenWISP = null;
   
   @JsonProperty("datiAddebito")
-  private Object datiAddebito = null;
+  private DatiAddebito datiAddebito = null;
   
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
@@ -180,32 +181,32 @@ public abstract class PagamentoPost extends it.govpay.rs.v1.beans.JSONSerializab
   /**
    * Identificativo della scelta effettuata dal WISP se, al momento del pagamento, il versante ha gia' eseguito  la scelta del PSP sul WISP.
    **/
-  public PagamentoPost tokenWISP(Object tokenWISP) {
+  public PagamentoPost tokenWISP(TokenWISP tokenWISP) {
     this.tokenWISP = tokenWISP;
     return this;
   }
 
   @JsonProperty("tokenWISP")
-  public Object getTokenWISP() {
+  public TokenWISP getTokenWISP() {
     return tokenWISP;
   }
-  public void setTokenWISP(Object tokenWISP) {
+  public void setTokenWISP(TokenWISP tokenWISP) {
     this.tokenWISP = tokenWISP;
   }
 
   /**
    * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
    **/
-  public PagamentoPost datiAddebito(Object datiAddebito) {
+  public PagamentoPost datiAddebito(DatiAddebito datiAddebito) {
     this.datiAddebito = datiAddebito;
     return this;
   }
 
   @JsonProperty("datiAddebito")
-  public Object getDatiAddebito() {
+  public DatiAddebito getDatiAddebito() {
     return datiAddebito;
   }
-  public void setDatiAddebito(Object datiAddebito) {
+  public void setDatiAddebito(DatiAddebito datiAddebito) {
     this.datiAddebito = datiAddebito;
   }
 
@@ -311,6 +312,15 @@ public abstract class PagamentoPost extends it.govpay.rs.v1.beans.JSONSerializab
   @Override
   public int hashCode() {
     return Objects.hash(urlRitorno, pendenze, tokenWISP, datiAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua);
+  }
+
+  public static PagamentoPost parse(String json) {
+    return (PagamentoPost) parse(json, PagamentoPost.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "pagamentoPost";
   }
 
   @Override

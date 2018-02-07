@@ -38,10 +38,10 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.pagamento.api.rs.v1.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean;
 import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
-import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleRequest;
 import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.ListaPagamentiPortale;
+import it.govpay.rs.v1.beans.PagamentoPost;
 
 @Path("/pagamenti")
 public class PagamentiPortale extends BaseRsServiceV1{
@@ -69,11 +69,11 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			ctx =  GpThreadLocal.get();
 			String principal = this.getPrincipal();
 			
-			PagamentiPortaleRequest pagamentiPortaleRequest = PagamentiPortaleConverter.readFromJson(baos);
-			
+			String jsonRequest = baos.toString();
+			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class);
 			String transactionId = ctx.getTransactionId();
 			String idSession = transactionId.replace("-", "");
-			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, baos.toString(), principal,idSession, idSessionePortale);
+			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, principal,idSession, idSessionePortale);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(BasicBD.newInstance(transactionId)); 
 			

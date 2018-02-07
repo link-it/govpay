@@ -326,6 +326,24 @@ public class VersamentoUtils {
 		return anagraficaModel;
 	}
 	
+	public static it.govpay.model.Anagrafica toAnagraficaModel(it.govpay.core.dao.commons.Anagrafica anagrafica) {
+		if(anagrafica == null) return null;
+		it.govpay.model.Anagrafica anagraficaModel = new it.govpay.model.Anagrafica();
+		anagraficaModel.setCap(anagrafica.getCap());
+		anagraficaModel.setCellulare(anagrafica.getCellulare());
+		anagraficaModel.setCivico(anagrafica.getCivico());
+		anagraficaModel.setCodUnivoco(anagrafica.getCodUnivoco());
+		anagraficaModel.setEmail(anagrafica.getEmail());
+		anagraficaModel.setFax(anagrafica.getFax());
+		anagraficaModel.setIndirizzo(anagrafica.getIndirizzo());
+		anagraficaModel.setLocalita(anagrafica.getLocalita());
+		anagraficaModel.setNazione(anagrafica.getNazione());
+		anagraficaModel.setProvincia(anagrafica.getProvincia());
+		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
+		anagraficaModel.setTelefono(anagrafica.getTelefono());
+		return anagraficaModel;
+	}
+	
 	
 	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente

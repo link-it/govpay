@@ -32,14 +32,11 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Applicazione;
-import it.govpay.model.Iuv.TipoIUV;
-import it.govpay.model.Portale;
-import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -50,6 +47,11 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Portale;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Versamento extends BasicBD {
@@ -223,6 +225,22 @@ public class Versamento extends BasicBD {
 			else 
 				throw new GovPayException(e);
 		}
+	}
+
+	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref) throws ServiceException, GovPayException {
+		return this.chiediVersamento(null, null, null, null, ref.getIdDominio(), ref.getNumeroAvviso());
+	}
+
+	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoPendenza ref) throws ServiceException, GovPayException {
+		return this.chiediVersamento(ref.getIdA2A(), ref.getIdPendenza(), null, null, null, null);
+	}
+
+	public it.govpay.bd.model.Versamento chiediVersamento(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException {
+		String codUnivoco = null;
+		if(versamento.getDebitore() != null) {
+			codUnivoco = versamento.getDebitore().getCodUnivoco();
+		}
+		return chiediVersamento(versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getBundlekey(), codUnivoco, versamento.getCodDominio(), versamento.getIuv());
 	}
 
 	public it.govpay.bd.model.Versamento chiediVersamento(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {

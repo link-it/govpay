@@ -68,7 +68,7 @@ public class Pendenze extends BaseRsServiceV1{
 			
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza = new Pendenza(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio());
+			Pendenza pendenza = new Pendenza(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
 			return Response.status(Status.OK).entity(pendenza.toJSON(fields)).build();
 		}catch (PendenzaNonTrovataException e) {
 			log.error(e.getMessage(), e);

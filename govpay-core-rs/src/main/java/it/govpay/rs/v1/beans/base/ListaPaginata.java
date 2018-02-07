@@ -10,8 +10,7 @@ import java.math.BigDecimal;
 "pagina",
 "prossimiRisultati",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class ListaPaginata extends it.govpay.rs.v1.beans.JSONSerializable {
+public class ListaPaginata extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("numRisultati")
   private BigDecimal numRisultati = null;
@@ -122,6 +121,15 @@ public abstract class ListaPaginata extends it.govpay.rs.v1.beans.JSONSerializab
   @Override
   public int hashCode() {
     return Objects.hash(numRisultati, numPagine, risultatiPerPagina, pagina, prossimiRisultati);
+  }
+
+  public static ListaPaginata parse(String json) {
+    return (ListaPaginata) parse(json, ListaPaginata.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "listaPaginata";
   }
 
   @Override

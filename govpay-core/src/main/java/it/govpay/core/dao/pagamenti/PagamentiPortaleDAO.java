@@ -2,10 +2,7 @@ package it.govpay.core.dao.pagamenti;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.bind.JAXBElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +28,8 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
@@ -85,50 +84,16 @@ public class PagamentiPortaleDAO extends BasicBD{
 		for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 			Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
 			Versamento versamentoModel = null;
-			String codDominioVKey = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
-		
-			if(v instanceof it.govpay.servizi.commons.Versamento) {
-				it.govpay.servizi.commons.Versamento versamento = (it.govpay.servizi.commons.Versamento) v;
+			if(v instanceof it.govpay.core.dao.commons.Versamento) {
+				it.govpay.core.dao.commons.Versamento versamento = (it.govpay.core.dao.commons.Versamento) v;
 				ctx.log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
-//				versamentoModel = VersamentoUtils.toVersamentoModel(versamento, this);
-				codDominioVKey = versamento.getCodDominio();
-				codApplicazione = versamento.getCodApplicazione();
-				codVersamentoEnte = versamento.getCodVersamentoEnte();
-				iuv= versamento.getIuv();
-				bundlekey = versamento.getBundlekey();
-				if(versamento.getDebitore() != null)
-					codUnivocoDebitore = versamento.getDebitore().getCodUnivoco();
-				
-			} else {
-				it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
-				
-				Iterator<JAXBElement<String>> iterator = versamento.getContent().iterator();
-				while(iterator.hasNext()){
-					JAXBElement<String> element = iterator.next();
-
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
-						bundlekey = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME)) {
-						codUnivocoDebitore = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
-						codApplicazione = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodDominio_QNAME)) {
-						codDominioVKey = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME)) {
-						codVersamentoEnte = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyIuv_QNAME)) {
-						iuv = element.getValue();
-					}
-				}
+				versamentoModel = versamentoBusiness.chiediVersamento(versamento);
+			}  else if(v instanceof RefVersamentoAvviso) {
+				versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v);
+			}  else if(v instanceof RefVersamentoPendenza) {
+				versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
 			}
 			
-			versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominioVKey, iuv);
-		
 			if(!versamentoModel.getUo(this).isAbilitato()) {
 				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+versamentoModel.getUo(this).getCodUo()+"].", EsitoOperazione.UOP_001, versamentoModel.getUo(this).getCodUo());
 			}

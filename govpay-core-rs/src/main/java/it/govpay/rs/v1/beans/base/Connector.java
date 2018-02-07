@@ -4,13 +4,16 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "url",
+"versione",
 "auth",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("url")
   private String url = null;
+  
+  @JsonProperty("versione")
+  private String versione = "1.0";
   
   @JsonProperty("auth")
   private Object auth = null;
@@ -29,6 +32,22 @@ public abstract class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
   }
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  /**
+   * Versione del servizio da utilizzare
+   **/
+  public Connector versione(String versione) {
+    this.versione = versione;
+    return this;
+  }
+
+  @JsonProperty("versione")
+  public String getVersione() {
+    return versione;
+  }
+  public void setVersione(String versione) {
+    this.versione = versione;
   }
 
   /**
@@ -56,12 +75,22 @@ public abstract class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
     }
     Connector connector = (Connector) o;
     return Objects.equals(url, connector.url) &&
+        Objects.equals(versione, connector.versione) &&
         Objects.equals(auth, connector.auth);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(url, auth);
+    return Objects.hash(url, versione, auth);
+  }
+
+  public static Connector parse(String json) {
+    return (Connector) parse(json, Connector.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "connector";
   }
 
   @Override
@@ -70,6 +99,7 @@ public abstract class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("class Connector {\n");
     
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
+    sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
     sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("}");
     return sb.toString();

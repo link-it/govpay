@@ -23,8 +23,7 @@ import java.util.Date;
 "pendenze",
 "rpts",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("id")
   private String id = null;
@@ -385,6 +384,15 @@ public abstract class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(id, idSessionePortale, idSessionePsp, nome, stato, pspRedirectUrl, dataRichiestaPagamento, datiAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, canale, pendenze, rpts);
+  }
+
+  public static Pagamento parse(String json) {
+    return (Pagamento) parse(json, Pagamento.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "pagamento";
   }
 
   @Override
