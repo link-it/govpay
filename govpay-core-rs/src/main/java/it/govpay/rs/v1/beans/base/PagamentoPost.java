@@ -72,6 +72,7 @@ public class PagamentoPost extends it.govpay.rs.v1.beans.JSONSerializable {
       this.value = value;
     }
 
+    
     @Override
     @JsonValue
     public String toString() {
@@ -79,13 +80,14 @@ public class PagamentoPost extends it.govpay.rs.v1.beans.JSONSerializable {
     }
 
     public static AutenticazioneSoggettoEnum fromValue(String text) {
-      for (AutenticazioneSoggettoEnum b : AutenticazioneSoggettoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
+        for (AutenticazioneSoggettoEnum b : AutenticazioneSoggettoEnum.values()) {
+          if (String.valueOf(b.value).equals(text)) {
+            return b;
+          }
         }
+        return null;
       }
-      return null;
-    }
+    
   }
 
     
@@ -260,17 +262,41 @@ public class PagamentoPost extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * modalita' di autenticazione del soggetto versante
    **/
-  public PagamentoPost autenticazioneSoggetto(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
+  public PagamentoPost autenticazioneSoggettoEnum(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
     this.autenticazioneSoggetto = autenticazioneSoggetto;
     return this;
   }
 
-  @JsonProperty("autenticazioneSoggetto")
-  public AutenticazioneSoggettoEnum getAutenticazioneSoggetto() {
+  public AutenticazioneSoggettoEnum getAutenticazioneSoggettoEnum() {
     return autenticazioneSoggetto;
   }
   public void setAutenticazioneSoggetto(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
     this.autenticazioneSoggetto = autenticazioneSoggetto;
+  }
+
+  /**
+   * modalita' di autenticazione del soggetto versante
+   **/
+  public PagamentoPost autenticazioneSoggetto(String autenticazioneSoggetto) throws Exception{
+    this.setAutenticazioneSoggetto(autenticazioneSoggetto);
+    return this;
+  }
+
+  @JsonProperty("autenticazioneSoggetto")
+  public String getAutenticazioneSoggetto() {
+	  if(autenticazioneSoggetto != null) {
+		  return autenticazioneSoggetto.value;
+	  } else {
+		  return null;
+	  }
+    
+  }
+  public void setAutenticazioneSoggetto(String autenticazioneSoggetto) throws Exception{
+	  if(autenticazioneSoggetto != null) {
+		  this.autenticazioneSoggetto = AutenticazioneSoggettoEnum.fromValue(autenticazioneSoggetto);
+		  if(this.autenticazioneSoggetto == null)
+			  throw new Exception("valore ["+autenticazioneSoggetto+"] non ammesso per la property autenticazioneSoggetto");
+	  }
   }
 
   /**

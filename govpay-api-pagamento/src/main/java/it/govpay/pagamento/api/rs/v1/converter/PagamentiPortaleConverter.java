@@ -9,7 +9,7 @@ import it.govpay.core.dao.commons.Anagrafica;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
-import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
+import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.base.PagamentoPost;
 import it.govpay.rs.v1.beans.base.Pendenza;
 import it.govpay.rs.v1.beans.base.Soggetto;

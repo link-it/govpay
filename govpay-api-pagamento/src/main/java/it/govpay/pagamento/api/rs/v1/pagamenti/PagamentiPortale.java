@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -36,12 +38,13 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.pagamento.api.rs.v1.converter.PagamentiPortaleConverter;
-import it.govpay.pagamento.api.rs.v1.model.FaultBean;
-import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
-import it.govpay.pagamento.api.rs.v1.model.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.ListaPagamentiPortale;
+import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.PagamentoPost;
+import it.govpay.rs.v1.beans.FaultBean;
+import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import net.sf.json.JsonConfig;
 
 @Path("/pagamenti")
 public class PagamentiPortale extends BaseRsServiceV1{
@@ -70,7 +73,11 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			String principal = this.getPrincipal();
 			
 			String jsonRequest = baos.toString();
-			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class);
+			JsonConfig jsonConfig = new JsonConfig();
+			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			classMap.put("autenticazioneSoggetto", String.class);
+			jsonConfig.setClassMap(classMap);
+			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class, jsonConfig);
 			String transactionId = ctx.getTransactionId();
 			String idSession = transactionId.replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, principal,idSession, idSessionePortale);
@@ -87,7 +94,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 		} catch(GovPayException e) {
 			log.error("Errore durante il processo di pagamento", e.getMessage());
 			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CATEGORIA.OPERAZIONE);
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
 			respKo.setCodice(e.getCodEsito().name());
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessage());
@@ -100,7 +107,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CATEGORIA.INTERNO);
+			respKo.setCategoria(CategoriaEnum.INTERNO);
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {
@@ -181,7 +188,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 		}catch (Exception e) {
 			log.error("Errore interno durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CATEGORIA.INTERNO);
+			respKo.setCategoria(CategoriaEnum.INTERNO);
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {
@@ -228,7 +235,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 		}catch (PagamentoPortaleNonTrovatoException e) {
 			log.error(e.getMessage(), e);
 			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CATEGORIA.OPERAZIONE);
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {
@@ -240,7 +247,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 		}catch (Exception e) {
 			log.error("Errore interno durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CATEGORIA.INTERNO);
+			respKo.setCategoria(CategoriaEnum.INTERNO);
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {

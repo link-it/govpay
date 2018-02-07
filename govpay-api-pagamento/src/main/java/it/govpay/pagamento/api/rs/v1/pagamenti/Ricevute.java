@@ -23,9 +23,9 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
-import it.govpay.pagamento.api.rs.v1.model.FaultBean;
-import it.govpay.pagamento.api.rs.v1.model.FaultBean.CATEGORIA;
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.beans.base.FaultBean;
+import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
 @Path("/ricevute")
@@ -97,7 +97,7 @@ public class Ricevute extends BaseRsServiceV1{
 		}catch (RicevutaNonTrovataException e) {
 			log.error(e.getMessage(), e);
 			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CATEGORIA.OPERAZIONE);
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {
@@ -109,7 +109,7 @@ public class Ricevute extends BaseRsServiceV1{
 		}catch (Exception e) {
 			log.error("Errore interno durante la " + methodName, e);
 			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CATEGORIA.INTERNO);
+			respKo.setCategoria(CategoriaEnum.INTERNO);
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {
