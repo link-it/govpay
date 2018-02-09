@@ -91,14 +91,14 @@ public class OperazioneFactory {
 		try {
 			parserResult = parser.parseCsvFile(formatW, linea);
 		} catch(UtilsException e) {
-			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
+			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato: " + e.getMessage());
 		}
 
 		if(parserResult.getRecords() == null || parserResult.getRecords().size() == 0)
-			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
+			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Errore sintassi sconosciuto");
 
 		if(parserResult.getRecords().size() > 1) {
-			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record multipli trovati");
+			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Errore sintassi sconosciuto");
 		}
 
 		try {
@@ -118,7 +118,7 @@ public class OperazioneFactory {
 
 		String[] lineaSplitted = lineaString.split(delimiter);
 		if(lineaSplitted.length < 0) {
-			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
+			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Errore sintassi sconosciuto: risposta vuota");
 		}
 
 		Parser parser = null;
@@ -134,14 +134,14 @@ public class OperazioneFactory {
 		try {
 			parserResult = parser.parseCsvFile(formatW, linea);
 		} catch(UtilsException e) {
-			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato");
+			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato: " + e.getMessage());
 		}
 
 		if(parserResult.getRecords() == null || parserResult.getRecords().size() == 0)
 			return null;
 
 		if(parserResult.getRecords().size() > 1) {
-			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record multipli trovati");
+			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Errore sintassi sconosciuto");
 		}
 
 		try {

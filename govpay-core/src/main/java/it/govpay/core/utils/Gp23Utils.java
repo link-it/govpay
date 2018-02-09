@@ -29,7 +29,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.RendicontazionePagamento;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Iuv;
@@ -53,31 +52,34 @@ import it.govpay.servizi.v2_3.gpprt.GpChiediListaVersamentiResponse;
 
 public class Gp23Utils {
 
-	public static Rendicontazione toRendicontazione(RendicontazionePagamento rend, BasicBD bd) throws ServiceException {
+	public static Rendicontazione toRendicontazione(it.govpay.bd.model.Rendicontazione rend, BasicBD bd) throws ServiceException {
 		Rendicontazione rendicontazione = new Rendicontazione();
-		rendicontazione.setData(rend.getRendicontazione().getData());
-		rendicontazione.setEsito(EsitoRendicontazione.valueOf(rend.getRendicontazione().getEsito().toString()));
-		rendicontazione.setImportoRendicontato(rend.getRendicontazione().getImporto());
-		rendicontazione.setIur(rend.getRendicontazione().getIur());
-		rendicontazione.setIuv(rend.getRendicontazione().getIuv());
-		rendicontazione.setStato(StatoRendicontazione.valueOf(rend.getRendicontazione().getStato().toString()));
-		for(it.govpay.model.Rendicontazione.Anomalia a : rend.getRendicontazione().getAnomalie()) {
+		rendicontazione.setData(rend.getData());
+		rendicontazione.setEsito(EsitoRendicontazione.valueOf(rend.getEsito().toString()));
+		rendicontazione.setImportoRendicontato(rend.getImporto());
+		rendicontazione.setIur(rend.getIur());
+		rendicontazione.setIuv(rend.getIuv());
+		rendicontazione.setStato(StatoRendicontazione.valueOf(rend.getStato().toString()));
+		for(it.govpay.model.Rendicontazione.Anomalia a : rend.getAnomalie()) {
 			Anomalia anomalia = new Anomalia();
 			anomalia.setCodice(a.getCodice());
 			anomalia.setValue(a.getDescrizione());
 			rendicontazione.getAnomalia().add(anomalia);
 		}
-		if(rend.getPagamento() != null) {
+		if(rend.getVersamento(bd) != null) {
 			Rendicontazione.Pagamento pagamento = new Rendicontazione.Pagamento();
-			pagamento.setCodApplicazione(rend.getPagamento().getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd).getCodApplicazione());
-			pagamento.setCodVersamentoEnte(rend.getPagamento().getSingoloVersamento(bd).getVersamento(bd).getCodVersamentoEnte());
-			pagamento.setCodSingoloVersamentoEnte(rend.getPagamento().getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
+			pagamento.setCodApplicazione(rend.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+			pagamento.setCodVersamentoEnte(rend.getVersamento(bd).getCodVersamentoEnte());
+			if(rend.getEsito().equals(it.govpay.model.Rendicontazione.EsitoRendicontazione.ESEGUITO_SENZA_RPT))
+				pagamento.setCodSingoloVersamentoEnte(rend.getVersamento(bd).getSingoliVersamenti(bd).get(0).getCodSingoloVersamentoEnte());
+			else
+				pagamento.setCodSingoloVersamentoEnte(rend.getPagamento(bd).getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
 			rendicontazione.setPagamento(pagamento);
 		}
 		return rendicontazione;
 	}
 
-	public static FlussoRendicontazione toFr(Fr frModel, List<RendicontazionePagamento> rends, BasicBD bd) throws ServiceException {
+	public static FlussoRendicontazione toFr(Fr frModel, List<it.govpay.bd.model.Rendicontazione> rends, BasicBD bd) throws ServiceException {
 		FlussoRendicontazione fr = new FlussoRendicontazione();
 		fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
 		fr.setCodDominio(frModel.getCodDominio());
@@ -95,7 +97,7 @@ public class Gp23Utils {
 			anomalia.setValue(a.getDescrizione());
 			fr.getAnomalia().add(anomalia);
 		}
-		for(RendicontazionePagamento rend : rends) {
+		for(it.govpay.bd.model.Rendicontazione rend : rends) {
 			fr.getRendicontazione().add(toRendicontazione(rend, bd));
 		}
 		return fr;

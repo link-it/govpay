@@ -19,10 +19,28 @@
  */
 package it.govpay.web.ws;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Resource;
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.CaricaIuvDTO;
 import it.govpay.core.business.model.CaricaIuvDTOResponse;
 import it.govpay.core.business.model.GeneraIuvDTO;
@@ -35,12 +53,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.RendicontazionePagamento;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.wrapper.RendicontazionePagamentoBD;
-import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
 import it.govpay.servizi.PagamentiTelematiciGPApp;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.FlussoRendicontazione;
@@ -61,19 +73,6 @@ import it.govpay.servizi.gpapp.GpChiediStatoVersamentoResponse;
 import it.govpay.servizi.gpapp.GpGeneraIuv;
 import it.govpay.servizi.gpapp.GpGeneraIuvResponse;
 import it.govpay.servizi.gpapp.GpNotificaPagamento;
-
-import javax.annotation.Resource;
-import javax.jws.HandlerChain;
-import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 @WebService(serviceName = "PagamentiTelematiciGPAppService",
 endpointInterface = "it.govpay.servizi.PagamentiTelematiciGPApp",
@@ -433,41 +432,34 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			Fr fr = rendicontazioneBusiness.chiediRendicontazione(bodyrichiesta.getCodFlusso());
 			response.setCodApplicazione(applicazioneAutenticata.getCodApplicazione());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			FlussoRendicontazione flusso = new FlussoRendicontazione();
-			int annoFlusso = 0;
-			try {
-				annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(fr.getDataFlusso()));
-				flusso.setAnnoRiferimento(annoFlusso);
-			} catch(Exception e) {
-				log.error("Errore nell'estrazione dell'anno di riferimento dalla data flusso " + fr.getDataFlusso(), e);
-			}
-			flusso.setAnnoRiferimento(annoFlusso);
-			flusso.setCodBicRiversamento(fr.getCodBicRiversamento());
-			flusso.setCodFlusso(fr.getCodFlusso());
-			flusso.setCodPsp(fr.getPsp(bd).getCodPsp());
-			flusso.setDataFlusso(fr.getDataFlusso());
-			flusso.setDataRegolamento(fr.getDataRegolamento());
-			flusso.setIur(fr.getIur());
-			flusso.setImportoTotale(fr.getImportoTotalePagamenti());
-			flusso.setNumeroPagamenti(fr.getNumeroPagamenti());
-			RendicontazionePagamentoBD rendicontazionePagamentoBD = new RendicontazionePagamentoBD(bd);
-			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
 			
-			filter.setCodFlusso(fr.getCodFlusso());
-			try {
+			List<Rendicontazione> rends = fr.getRendicontazioni(bd);
+			for(Rendicontazione rend : rends) {
+				if(rend.getPagamento(bd) == null) {
+					try {
+						it.govpay.bd.model.Versamento versamento = new it.govpay.core.business.Versamento(bd).chiediVersamento(null, null, null, null,	fr.getDominio(bd).getCodDominio(), rend.getIuv());
+						rend.setVersamento(versamento);
+					}catch (Exception e) {
+						continue;
+					}
+				}
+			}
+			
+			if(bodyrichiesta.getCodApplicazione() != null) {
 				Long idApplicazione = AnagraficaManager.getApplicazione(bd, bodyrichiesta.getCodApplicazione()).getId();
-				filter.setCodApplicazione(idApplicazione);
-			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.APP_000, bodyrichiesta.getCodApplicazione());
+				List<Rendicontazione> rendsFiltrato = new ArrayList<Rendicontazione>();
+				
+				for(Rendicontazione rend : rends) {
+					if(rend.getVersamento(bd) ==  null || rend.getVersamento(bd).getIdApplicazione() != idApplicazione.longValue()) {
+						continue;
+					}
+					rendsFiltrato.add(rend);
+				}
+				
+				rends = rendsFiltrato;
 			}
 			
-			List<RendicontazionePagamento> rendicontazionePagamenti = rendicontazionePagamentoBD.findAll(filter);
-			for(RendicontazionePagamento pagamento : rendicontazionePagamenti) {
-				it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd);
-				if(rendicontazionePagamento!=null) flusso.getPagamento().add(rendicontazionePagamento);
-			}
-			
-			response.setFlussoRendicontazione(flusso);
+			response.setFlussoRendicontazione(Gp21Utils.toFr(fr, rends, applicazioneAutenticata.getVersione(), bd));
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());

@@ -40,7 +40,10 @@ import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
+import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.RendicontazioniBD;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.core.business.model.LeggiIncassoDTO;
@@ -49,18 +52,29 @@ import it.govpay.core.business.model.ListaIncassiDTO;
 import it.govpay.core.business.model.ListaIncassiDTOResponse;
 import it.govpay.core.business.model.RichiestaIncassoDTO;
 import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.VersamentoAnnullatoException;
+import it.govpay.core.exceptions.VersamentoDuplicatoException;
+import it.govpay.core.exceptions.VersamentoScadutoException;
+import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
+import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.servizi.commons.EsitoOperazione;
 
 
 public class Incassi extends BasicBD {
@@ -184,6 +198,7 @@ public class Incassi extends BasicBD {
 
 			// Sto selezionando i pagamenti per impostarli come Incassati.
 			this.enableSelectForUpdate();
+			setAutoCommit(false);
 			
 			List<it.govpay.bd.model.Pagamento> pagamenti = new ArrayList<it.govpay.bd.model.Pagamento>();
 			
@@ -229,6 +244,64 @@ public class Incassi extends BasicBD {
 						}
 						
 						it.govpay.bd.model.Pagamento pagamento = rendicontazione.getPagamento(this);
+						
+						
+						if(pagamento == null && rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
+							// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
+							
+							try {
+								pagamento = new PagamentiBD(this).getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
+								// Pagamento gia presente. 
+							} catch (NotFoundException e) {
+								// Pagamento non presente. Lo inserisco 
+								
+								it.govpay.bd.model.Versamento versamento = null;
+								try {
+									versamento = new Versamento(this).chiediVersamento(null, null, null, null, fr.getCodDominio(), rendicontazione.getIuv());
+								} catch (GovPayException gpe) {
+									// Non deve accadere... la rendicontazione e' ok
+									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste");
+								}
+								
+								pagamento = new it.govpay.bd.model.Pagamento();
+								pagamento.setStato(Stato.PAGATO_SENZA_RPT);
+								pagamento.setCodDominio(fr.getCodDominio());
+								pagamento.setDataAcquisizione(rendicontazione.getData());
+								pagamento.setDataPagamento(rendicontazione.getData());
+								pagamento.setImportoPagato(rendicontazione.getImporto());
+								pagamento.setIur(rendicontazione.getIur());
+								pagamento.setIuv(rendicontazione.getIuv());
+								pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati());
+								pagamento.setSingoloVersamento(versamento.getSingoliVersamenti(this).get(0));
+								pagamento.setIbanAccredito(versamento.getSingoliVersamenti(this).get(0).getIbanAccredito(this).getCodIban());
+								rendicontazione.setPagamento(pagamento);
+								new PagamentiBD(this).insertPagamento(pagamento);
+								rendicontazione.setIdPagamento(pagamento.getId());
+									
+								//Aggiorno lo stato del versamento:
+								VersamentiBD versamentiBD = new VersamentiBD(this);
+								switch (versamento.getSingoliVersamenti(this).get(0).getStatoSingoloVersamento()) {
+									case NON_ESEGUITO:
+										versamentiBD.updateStatoSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId(), StatoSingoloVersamento.ESEGUITO);
+										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO_SENZA_RPT, "Eseguito senza RPT");
+										break;
+									case ESEGUITO:
+										versamentiBD.updateStatoSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId(), StatoSingoloVersamento.ANOMALO);
+										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ANOMALO, "Pagamento duplicato");
+										break;
+									case ANOMALO:	
+										break;
+								}
+							} catch (MultipleResultException e) {
+								GpThreadLocal.get().log("incasso.frAnomala", idf);
+								throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");
+							}
+						}
+						
+						//Aggiorno la FK della rendicontazione
+						rendicontazione.setIdPagamento(pagamento.getId());
+						new RendicontazioniBD(this).updateRendicontazione(rendicontazione);
+						
 						pagamenti.add(pagamento);
 					}
 				} catch (NotFoundException nfe) {
@@ -254,7 +327,6 @@ public class Incassi extends BasicBD {
 			}
 			
 			// Inserisco l'incasso e aggiorno lo stato dei pagamenti
-			setAutoCommit(false);
 			try {
 				it.govpay.bd.model.Incasso incasso = new it.govpay.bd.model.Incasso();
 				incasso.setCausale(richiestaIncasso.getCausale());
@@ -274,7 +346,6 @@ public class Incassi extends BasicBD {
 					pagamento.setStato(Stato.INCASSATO);
 					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
-					
 				}
 				commit();
 			} catch(Exception e) {

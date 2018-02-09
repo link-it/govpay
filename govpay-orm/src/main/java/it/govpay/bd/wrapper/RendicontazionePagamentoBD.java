@@ -187,7 +187,6 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			for(List<Object> record: lstRecords) {
 				lstNonFiltrata.add(getRendicontazionePagamento(record));
 			}
-			//TODO filtrare lista applicativamente
 			return lstNonFiltrata;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

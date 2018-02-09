@@ -13,6 +13,7 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 	private transient Fr fr;
 	private transient Pagamento pagamento;
 	private transient boolean pagamentoDaCreare = false;
+	private transient Versamento versamento;
 	
 	public Fr getFr(BasicBD bd) throws ServiceException {
 		if(this.fr == null) {
@@ -39,5 +40,17 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 	}
 	public void setPagamentoDaCreare(boolean pagamentoDaCreare) {
 		this.pagamentoDaCreare = pagamentoDaCreare;
+	}
+	
+	public Versamento getVersamento(BasicBD bd) throws ServiceException {
+		if(this.versamento == null) {
+			if(getPagamento(bd) != null)
+				this.versamento = getPagamento(bd).getSingoloVersamento(bd).getVersamento(bd);
+		}
+		return this.versamento;
+	}
+	
+	public void setVersamento(Versamento versamento) {
+		this.versamento = versamento;
 	}
 }

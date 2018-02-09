@@ -340,7 +340,8 @@ public class VersamentoUtils {
 		}
 		return versamento;
 	}
-
+	
+	
 	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
 		
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
