@@ -117,13 +117,28 @@ public class RendicontazioniHandler extends DarsHandler<Rendicontazione> impleme
 			Map<String, String> params = new HashMap<String, String>();
 			String idFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idFr.id");
 			String idFlusso = this.getParameter(uriInfo, idFlussoId, String.class);
-			params.put(idFlussoId, idFlusso);
 
 			if(StringUtils.isNotEmpty(idFlusso)){
+				params.put(idFlussoId, idFlusso);
 				try{
 					filter.setIdFr(Long.parseLong(idFlusso));
 				}catch(Exception e){
 					filter.setIdFr(-1L);
+					eseguiRicerca = false;
+				}
+			}
+			
+			String idPagamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPagamento.id");
+			String idPagamento = this.getParameter(uriInfo, idPagamentoId, String.class);
+
+			boolean elementoCorrelatoPagamento = false;
+			if(StringUtils.isNotEmpty(idPagamento)){
+				params.put(idPagamentoId, idPagamento);
+				try{
+					filter.setIdPagamento(Long.parseLong(idPagamento));
+					elementoCorrelatoPagamento = true;
+				}catch(Exception e){
+					filter.setIdPagamento(-1L);
 					eseguiRicerca = false;
 				}
 			}
@@ -166,7 +181,8 @@ public class RendicontazioniHandler extends DarsHandler<Rendicontazione> impleme
 			long count = eseguiRicerca ? frBD.count(filter) : 0;
 
 			// visualizza la ricerca solo se i risultati sono > del limit
-			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			// se sono un elemento correlato del pagamento nascondo la ricerca.
+			boolean visualizzaRicerca = elementoCorrelatoPagamento ? false : this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params); 
 
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
@@ -554,12 +570,28 @@ public class RendicontazioniHandler extends DarsHandler<Rendicontazione> impleme
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
 		InfoForm infoEsportazione = null;
+//		try{
+//			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+//				URI esportazione = this.getUriEsportazione(uriInfo, bd);
+//				infoEsportazione = new InfoForm(esportazione);
+//			}
+//		}catch(ServiceException e){
+//			throw new ConsoleException(e);
+//		}
 		return infoEsportazione;
 	}
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rendicontazione entry)	throws ConsoleException {	
 		InfoForm infoEsportazione = null;
+//		try{
+//			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
+//				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+//				infoEsportazione = new InfoForm(esportazione);
+//			}
+//		}catch(ServiceException e){
+//			throw new ConsoleException(e);
+//		}
 		return infoEsportazione;
 	}
 	

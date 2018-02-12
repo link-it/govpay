@@ -23,6 +23,7 @@ package it.govpay.bd.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -37,13 +38,17 @@ public class Operatore extends it.govpay.model.Operatore {
 	
 	private transient List<Ruolo> ruoli;
 	
+	public Operatore() {
+        super();
+	}
 
 	public List<Ruolo> getRuoli(BasicBD bd) throws ServiceException {
 		if(ruoli == null && super.getRuoli() != null) {
 			ruoli = new ArrayList<Ruolo>();
 			for(String codRuolo : super.getRuoli()) {
 				try {
-					ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
+					if(StringUtils.isNotEmpty(codRuolo) && !codRuolo.equals(it.govpay.model.Operatore.RUOLO_SYSTEM))
+						ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
 				} catch (NotFoundException e) {
 					throw new ServiceException(e);
 				}

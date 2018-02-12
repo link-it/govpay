@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,9 +44,10 @@ public class RptFilter extends AbstractFilter {
 
 	private Long idVersamento;
 	private String iuv;
+	private String ccp;
 	private List<String> idDomini;
 	private Boolean conservato;
-	private StatoRpt stato;
+	private List<String> stato;
 	private List<Long> idRpt= null;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
@@ -55,6 +57,7 @@ public class RptFilter extends AbstractFilter {
 	public RptFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(RPT.model().IUV);
+		this.listaFieldSimpleSearch.add(RPT.model().CCP);
 	}
 
 	@Override
@@ -75,6 +78,14 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.ilike(RPT.model().IUV, this.iuv, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.ccp != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(RPT.model().CCP, this.ccp, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 
@@ -110,11 +121,11 @@ public class RptFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-			if(this.stato != null){
+			if(this.stato != null && !this.stato.isEmpty()){
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(RPT.model().STATO, this.stato.name());
+				newExpression.in(RPT.model().STATO, this.stato);
 				addAnd = true;
 			}
 
@@ -181,13 +192,15 @@ public class RptFilter extends AbstractFilter {
 		this.idDomini = idDomini;
 	}
 
-
-	public StatoRpt getStato() {
-		return stato;
-	}
-
 	public void setStato(StatoRpt stato) {
-		this.stato = stato;
+		this.stato = new ArrayList<String>();
+		if(stato!= null)
+			this.stato.add(stato.name());
+	}
+	
+	public void setStato(List<String> stato) {
+		this.stato = new ArrayList<String>();
+		this.stato.addAll(stato);
 	}
 
 	public Boolean getConservato() {
@@ -205,4 +218,13 @@ public class RptFilter extends AbstractFilter {
 	public void setIdRpt(List<Long> idRpt) {
 		this.idRpt = idRpt;
 	}
+
+	public String getCcp() {
+		return ccp;
+	}
+
+	public void setCcp(String ccp) {
+		this.ccp = ccp;
+	}
+	
 }

@@ -356,11 +356,11 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 				DominioFilter filter;
 				try {
 					filter = dominiBD.newFilter();
-					if(eseguiRicerca &&!setDomini.contains(-1L)){
-						List<Long> lstCodDomini = new ArrayList<Long>();
-						lstCodDomini.addAll(setDomini);
-						idDomini.addAll(setDomini);
-						filter.setIdDomini(idDomini);
+					if(eseguiRicerca) {
+						if(!setDomini.contains(-1L)) {
+							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}
 
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();

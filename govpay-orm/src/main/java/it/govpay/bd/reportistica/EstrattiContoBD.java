@@ -63,6 +63,7 @@ public class EstrattiContoBD extends BasicBD{
 		estrattoConto.setIbanAccredito(rp.getPagamento().getIbanAccredito()); // iban_accredito
 		estrattoConto.setIdRr(rp.getPagamento().getIdRr()); //id_rr
 		estrattoConto.setIdIncasso(rp.getPagamento().getIdIncasso()); //id_incasso
+		estrattoConto.setStatoPagamento(rp.getPagamento().getStato()); // stato_pagamento
 
 		if(rp.getFr() != null){
 			estrattoConto.setIdRegolamento(rp.getFr().getIur()); // iur 2
@@ -87,6 +88,10 @@ public class EstrattiContoBD extends BasicBD{
 			estrattoConto.setCodSingoloVersamentoEnte(rp.getSingoloVersamento().getCodSingoloVersamentoEnte()); // cod_singolo_versamento_ente
 			estrattoConto.setStatoSingoloVersamento(rp.getSingoloVersamento().getStatoSingoloVersamento()); // stato_singolo_versamento
 			estrattoConto.setNote(rp.getSingoloVersamento().getNote()); // note
+		}
+		
+		if(rp.getIncasso() != null) {
+			estrattoConto.setDataIncasso(rp.getIncasso().getDataIncasso()); // data incasso
 		}
 
 		return estrattoConto;

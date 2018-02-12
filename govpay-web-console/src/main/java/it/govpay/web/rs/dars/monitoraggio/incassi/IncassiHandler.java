@@ -313,8 +313,10 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 					boolean eseguiRicerca = !setDomini.isEmpty();
 
 					if(eseguiRicerca) {
-						if(!setDomini.contains(-1L))
-							idDomini.addAll(setDomini);						
+						if(!setDomini.contains(-1L)) {
+							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}					
 
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();

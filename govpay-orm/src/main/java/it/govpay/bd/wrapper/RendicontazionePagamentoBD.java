@@ -7,6 +7,7 @@ import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Fr.StatoFr;
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
@@ -15,6 +16,7 @@ import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.FR;
+import it.govpay.orm.Incasso;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.Rendicontazione;
 import it.govpay.orm.SingoloVersamento;
@@ -148,6 +150,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			lstReturnType.add(Pagamento.model().IBAN_ACCREDITO.getFieldType());
 			lstReturnType.add(Pagamento.model().COD_DOMINIO.getFieldType());
 			lstReturnType.add(Pagamento.model().IUV.getFieldType());
+			lstReturnType.add(Pagamento.model().STATO.getFieldType());
 
 			lstReturnType.add(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType());
 			lstReturnType.add(SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType());
@@ -165,7 +168,8 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			
 			
 			lstReturnType.add(String.class); //tipo
-
+			
+			lstReturnType.add(Incasso.model().DATA_ORA_INCASSO.getFieldType()); // data ora incasso
 			
 			String initialNativeQuery = NativeQueries.getInstance().getRendicontazionePagamentoQuery();
 			String nativeQueryString = filter.getSQLFilterString(initialNativeQuery);
@@ -183,7 +187,6 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			for(List<Object> record: lstRecords) {
 				lstNonFiltrata.add(getRendicontazionePagamento(record));
 			}
-			//TODO filtrare lista applicativamente
 			return lstNonFiltrata;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -220,7 +223,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		
 		boolean existsVersamento = false;
 		if(existsPagamento) {
-			Object idSingoloVersamento = record.get(82);
+			Object idSingoloVersamento = record.get(83);
 			existsVersamento = idSingoloVersamento != null;
 		}
 		
@@ -285,6 +288,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		rendicontazione.setIdPagamento((Long) record.get(i++));
 		rp.setRendicontazione(rendicontazione);
 		
+		boolean existsIncasso = false;
 		
 		if(existsPagamento) {
 			it.govpay.bd.model.Pagamento pagamento = new it.govpay.bd.model.Pagamento();
@@ -333,6 +337,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 				i++;
 			}
 			if(record.get(i) != null) {
+				existsIncasso = true;
 				pagamento.setIdIncasso((Long) record.get(i++));
 			} else {
 				i++;
@@ -341,9 +346,15 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			pagamento.setIbanAccredito((String) record.get(i++));
 			pagamento.setCodDominio((String) record.get(i++));
 			pagamento.setIuv((String) record.get(i++));
+			if(record.get(i) != null) {
+				pagamento.setStato(Stato.valueOf((String) record.get(i++)));
+			} else {
+				i++;
+			}
+			
 			rp.setPagamento(pagamento);
 		} else {
-			i+=21;
+			i+=22;
 		}
 		
 		
@@ -378,6 +389,17 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		}
 		
 		rp.setTipo(((String) record.get(i++)));
+		
+		if(existsIncasso) {
+			it.govpay.bd.model.Incasso incasso = new it.govpay.bd.model.Incasso();
+			incasso.setId(rp.getPagamento().getIdIncasso()); 
+			
+			if(record.get(i) != null) {
+				incasso.setDataIncasso((Date) record.get(i++)); 
+			}
+			
+			rp.setIncasso(incasso);
+		}
 		
 		return rp;
 	}

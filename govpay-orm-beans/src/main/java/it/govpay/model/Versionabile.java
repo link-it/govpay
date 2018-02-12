@@ -16,8 +16,10 @@ public abstract class Versionabile extends BasicModel {
 		GP_02_01_00("2.1"),
 		GP_02_02_00("2.2"),
 		GP_02_02_01("2.2.1"),
-		GP_02_03_00("2.3");
+		GP_02_03_00("2.3"),
+		GP_02_05_00("2.5");
 		private String label;
+		private static String[] labels = {"2.1","2.2","2.2.1","2.3","2.5"};
 		
 		Versione(String label){
 			this.label = label;
@@ -37,6 +39,8 @@ public abstract class Versionabile extends BasicModel {
 				return 020201;
 			case GP_02_03_00:
 				return 020300;
+			case GP_02_05_00:
+				return 020500;
 			default:
 				break;
 			}
@@ -44,7 +48,7 @@ public abstract class Versionabile extends BasicModel {
 		} 
 		
 		public static Versione getUltimaVersione(){
-			return GP_02_03_00;
+			return GP_02_05_00;
 		}
 		
 		public static Versione toEnum(String label) throws ServiceException {
@@ -52,8 +56,8 @@ public abstract class Versionabile extends BasicModel {
 				if(p.getLabel().equals(label))
 					return p;
 			}
-			
-			throw new ServiceException("Codifica inesistente per Versione. Valore fornito [" + label + "] valori possibili " + ArrayUtils.toString(Versione.values()));
+				
+			throw new ServiceException("Codifica inesistente per Versione. Valore fornito [" + label + "] valori possibili " + ArrayUtils.toString(labels));
 		}
 	}
 	

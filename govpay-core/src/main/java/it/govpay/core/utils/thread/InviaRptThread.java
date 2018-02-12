@@ -93,12 +93,12 @@ public class InviaRptThread implements Runnable {
 			
 			if(!risposta.getEsito().equals("OK") && !risposta.getFaultBean(0).getFaultCode().equals("PPT_RPT_DUPLICATA")) {
 				// RPT rifiutata dal Nodo
-				// Aggiorno lo stato e loggo l'errore
+				// Loggo l'errore ma lascio lo stato invariato.
 				FaultBean fb = risposta.getFaultBean(0);
 				String descrizione = null; 
 				if(fb != null)
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
-				rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
+				rptBD.updateRpt(rpt.getId(), null, descrizione, null, null);
 				log.error("RPT rifiutata dal nodo con fault " + descrizione);
 				ctx.log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 			} else {
@@ -121,7 +121,7 @@ public class InviaRptThread implements Runnable {
 			log.error("Errore nella spedizione della RPT", e);
 			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
 		} catch (Exception e) {
-			log.warn("Errore interno nella spedizione della RPT: " + e);
+			log.error("Errore nella spedizione della RPT", e);
 			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
 			if(bd != null) bd.rollback();
 		} finally {

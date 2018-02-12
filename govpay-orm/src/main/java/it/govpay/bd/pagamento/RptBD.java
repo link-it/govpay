@@ -140,7 +140,8 @@ public class RptBD extends BasicBD {
 	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl) throws NotFoundException, ServiceException{
 		try {
 			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
-			lstUpdateFields.add(new UpdateField(RPT.model().STATO, stato.toString()));
+			if(stato!= null) 
+				lstUpdateFields.add(new UpdateField(RPT.model().STATO, stato.toString()));
 			lstUpdateFields.add(new UpdateField(RPT.model().DESCRIZIONE_STATO, descrizione));
 			lstUpdateFields.add(new UpdateField(RPT.model().DATA_AGGIORNAMENTO_STATO, new Date()));
 			if(codSessione != null)

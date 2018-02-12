@@ -51,12 +51,12 @@ then
         exit 3
 fi
 cp ${DOC}/GovPay-ManualeInstallazione.pdf core.template/doc/
-if [ ! -e "${DOC}/GovPay-ManualeIntegrazioneSOAP.pdf" ]
+if [ ! -e "${DOC}/GovPay-ManualeIntegrazione.pdf" ]
 then
-        echo "Manuale di Integrazione SOAP non esistente"
+        echo "Manuale di Integrazione non esistente"
         exit 4
 fi 
-cp ${DOC}/GovPay-ManualeIntegrazioneSOAP.pdf core.template/doc/
+cp ${DOC}/GovPay-ManualeIntegrazione.pdf core.template/doc/
 
 if [ ! -e "${DOC}/GovPay-ManualeUtente.pdf" ]
 then

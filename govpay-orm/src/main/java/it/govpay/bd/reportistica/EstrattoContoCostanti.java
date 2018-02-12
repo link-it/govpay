@@ -20,12 +20,14 @@ public class EstrattoContoCostanti {
 	
 	public static final String COD_VERSAMENTO_HEADER = "Identificativo Versamento";
 	public static final String COD_SINGOLO_VERSAMENTO_HEADER = "Identificativo Singolo Versamento";
+	public static final String STATO_PAGAMENTO_HEADER = "Stato Pagamento";
 	public static final String STATO_VERSAMENTO_HEADER = "Stato Versamento";
 	public static final String STATO_SINGOLO_VERSAMENTO_HEADER = "Stato Singolo Versamento";
 	public static final String CODICE_FISCALE_DEBITORE_HEADER = "Codice Fiscale Debitore";
 	public static final String IMPORTO_PAGATO_HEADER = "Importo Pagato";
 	public static final String IMPORTO_DOVUTO_HEADER = "Importo Dovuto";
 	public static final String DATA_PAGAMENTO_HEADER = "Data Pagamento";
+	public static final String DATA_INCASSO_HEADER = "Data Incasso";
 	public static final String CODICE_RIVERSAMENTO_HEADER = "Codice Riversamento";
 	public static final String CODICE_RENDICONTAZIONE_HEADER = "Codice Rendicontazione";
 	public static final String NOTE_HEADER = "Note";

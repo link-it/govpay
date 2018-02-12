@@ -97,6 +97,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 			newFilter.setCodDominio(getCodDominio());
 			newFilter.setIuv(getIuv());
 			newFilter.setIur(getIur());
+			newFilter.setIndiceDati(getIndiceDati());
 			rendicontazioni = rendicontazioniBD.findAll(newFilter);
 		}
 		return rendicontazioni;

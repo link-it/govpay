@@ -96,6 +96,7 @@ import it.govpay.web.rs.dars.model.input.base.InputDate;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.pagamenti.input.EsportaRtPdf;
+import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Rendicontazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Revoche;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.RevocheHandler;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Transazioni;
@@ -108,6 +109,7 @@ import it.govpay.web.utils.Utils;
 public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
 
 	public static final String BOLLO = "BOLLO";
+	public static final String BOLLO_PAGATO = "BOLLO_PAGATO";
 	public static final String STATO_RITARDO_INCASSO = "RITARDO_INCASSO";
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
@@ -661,6 +663,16 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.visualizza"),elemento.getUri());
 					}
 				}
+				
+				
+				Rendicontazioni rendicontazioniDars = new Rendicontazioni();
+				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazioni.titolo");
+				String idPagamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(rendicontazioniDars.getNomeServizio() + ".idPagamento.id");
+
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(idPagamentoId, pagamento.getId()+ "");
+				URI rendicontazioneDettaglio = Utils.creaUriConParametri(rendicontazioniDars.getPathServizio(), params );
+				dettaglio.addElementoCorrelato(etichettaPagamenti, rendicontazioneDettaglio); 
 
 			}
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -863,6 +875,39 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		}
 		return valori; 
 	}
+	
+	
+	public String calcolaStatoPagamentoCsv(EstrattoConto entry, BasicBD bd) throws ConsoleException {
+		Date dataPagamento = entry.getDataPagamento();
+		String ibanAccredito = entry.getIbanAccredito();
+		boolean bollo = ibanAccredito == null;
+		String statoPagamento = Stato.INCASSATO.name();
+		Stato stato = entry.getStatoPagamento();
+
+		if(!bollo) {
+			if(!stato.equals(Stato.INCASSATO)) {
+				boolean inRitardo = false;
+				Integer sogliaGiorniRitardoPagamenti = ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti();
+				if(sogliaGiorniRitardoPagamenti != null && sogliaGiorniRitardoPagamenti.intValue() > 0) {
+					Calendar c = Calendar.getInstance();
+					c.setTime(new Date());
+					c.add(Calendar.DAY_OF_YEAR, - sogliaGiorniRitardoPagamenti.intValue()); 
+					inRitardo = dataPagamento.getTime() < c.getTime().getTime();
+				}
+
+				if(inRitardo) {
+					statoPagamento = PagamentiHandler.STATO_RITARDO_INCASSO;
+				} else {
+					statoPagamento = stato.name();
+				}
+			}
+		} else {
+			// bollo
+			statoPagamento = PagamentiHandler.BOLLO_PAGATO;
+		}
+		
+		return statoPagamento;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -1037,6 +1082,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 						printer = new Printer(this.getFormat() , baos);
 						printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
 						for (EstrattoConto pagamento : findAll) {
+							String statoPagamentoDetail = this.calcolaStatoPagamentoCsv(pagamento, estrattiContoBD);
+							pagamento.setStatoPagamentoDetail(statoPagamentoDetail);
 							printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(pagamento,this.sdf));
 						}
 					}finally {
@@ -1264,6 +1311,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 							printer = new Printer(this.getFormat() , baos);
 							printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
 							for (EstrattoConto eConto : findAll) {
+								String statoPagamentoDetail = this.calcolaStatoPagamentoCsv(eConto, estrattiContoBD);
+								eConto.setStatoPagamentoDetail(statoPagamentoDetail);
 								printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(eConto,this.sdf));
 							}
 						}finally {
@@ -1356,6 +1405,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 				List<Long> idDomini = new ArrayList<Long>();
+				boolean eseguiRicerca = !setDomini.isEmpty();
 
 				// idDominio
 				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -1364,11 +1414,12 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				DominioFilter filter;
 				try {
 					filter = dominiBD.newFilter();
-					boolean eseguiRicerca = !setDomini.isEmpty();
 
 					if(eseguiRicerca) {
-						if(!setDomini.contains(-1L))
+						if(!setDomini.contains(-1L)) {
 							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}
 
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();

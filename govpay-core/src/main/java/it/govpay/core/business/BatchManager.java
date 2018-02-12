@@ -135,7 +135,7 @@ public class BatchManager {
 					batch = batchBD.get(codBatch);
 					
 					// devo verificare che il blocco sia di proprieta' mia
-					if(batch.getNodo().equals(GovpayConfig.getInstance().getClusterId())) {
+					if(GovpayConfig.getInstance().getClusterId().equals(batch.getNodo())) {
 						batch = new Batch();
 						batch.setCodBatch(codBatch);
 						batch.setInizio(null); 

@@ -98,8 +98,6 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			RptBD rptBD = new RptBD(bd);
 			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID); 
 
-
-
 			RptFilter filter = rptBD.newFilter(simpleSearch);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
@@ -109,9 +107,10 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			filter.setLimit(limit);
 
 			boolean eseguiRicerca = popoloFiltroRicerca(uriInfo, bd, params, simpleSearch, filter);
-			boolean visualizzaRicerca = true;
+			String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
+			boolean visualizzaRicerca = !params.containsKey(versamentoId);
 			long count = eseguiRicerca ? rptBD.count(filter) : 0;
-			if(params.size() > 0) {
+			if(!visualizzaRicerca) {
 				// se elemento correlato visualizza la ricerca solo se i risultati sono > del limit
 				visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			}
@@ -203,6 +202,29 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 				}
 			}
 
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+			if(StringUtils.isNotEmpty(iuv)){
+				filter.setIuv(iuv);
+				if(elementoCorrelato)
+					params.put(iuvId,iuv);
+			}
+			
+			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
+			String ccp = this.getParameter(uriInfo, ccpId, String.class);
+			if(StringUtils.isNotEmpty(ccp)){
+				filter.setCcp(ccp);
+				if(elementoCorrelato)
+					params.put(ccpId,ccp);
+			}
+			
+			String statoTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.id");
+			String statoTransazione = this.getParameter(uriInfo, statoTransazioneId, String.class);
+			if(StringUtils.isNotEmpty(statoTransazione)){
+				this.setStatoTransazione(statoTransazione, filter); 
+				if(elementoCorrelato)
+					params.put(statoTransazioneId,statoTransazione);
+			}
 		}
 
 		if(eseguiRicerca &&!setDomini.contains(-1L)){
@@ -255,6 +277,29 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 				}
 			}
 
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = Utils.getValue(rawValues, iuvId);
+			if(StringUtils.isNotEmpty(iuv)){
+				filter.setIuv(iuv);
+				if(elementoCorrelato)
+					params.put(iuvId,iuv);
+			}
+			
+			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
+			String ccp = Utils.getValue(rawValues, ccpId);
+			if(StringUtils.isNotEmpty(ccp)){
+				filter.setCcp(ccp);
+				if(elementoCorrelato)
+					params.put(ccpId,ccp);
+			}
+			
+			String statoTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.id");
+			String statoTransazione = Utils.getValue(rawValues, statoTransazioneId);
+			if(StringUtils.isNotEmpty(statoTransazione)){
+				this.setStatoTransazione(statoTransazione, filter); 
+				if(elementoCorrelato)
+					params.put(statoTransazioneId,statoTransazione);
+			}
 		}
 
 		if(eseguiRicerca &&!setDomini.contains(-1L)){
@@ -872,7 +917,9 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 		if(visualizzaRicerca) {
 			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-
+			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
+			String statoTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.id");
+			
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 			}
@@ -892,11 +939,11 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 				try {
 					filter = dominiBD.newFilter();
 
-					if(eseguiRicerca &&!setDomini.contains(-1L)){
-						List<Long> lstCodDomini = new ArrayList<Long>();
-						lstCodDomini.addAll(setDomini);
-						idDomini.addAll(setDomini);
-						filter.setIdDomini(idDomini);
+					if(eseguiRicerca) {
+						if(!setDomini.contains(-1L)) {
+							idDomini.addAll(setDomini);	
+							filter.setIdDomini(idDomini);
+						}
 
 						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						FilterSortWrapper fsw = new FilterSortWrapper();
@@ -927,10 +974,18 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			}catch(Exception e){
 				throw new ConsoleException(e);
 			}
+			
+			SelectList<String> statoTransazione =  (SelectList<String>) this.infoRicercaMap.get(statoTransazioneId);
+			statoTransazione.setDefaultValue("");
+			sezioneRoot.addField(statoTransazione);
 
 			InputText iuv = (InputText) this.infoRicercaMap.get(iuvId);
 			iuv.setDefaultValue(null);
 			sezioneRoot.addField(iuv);
+			
+			InputText ccp = (InputText) this.infoRicercaMap.get(ccpId);
+			ccp.setDefaultValue(null);
+			sezioneRoot.addField(ccp);
 
 		}
 		return infoRicerca;
@@ -939,6 +994,8 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
+		String statoTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.id");
 
 
 		if(this.infoRicercaMap == null){
@@ -954,6 +1011,56 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			String idDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
 			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
 			this.infoRicercaMap.put(idDominioId, idDominio);
+			
+			// ccp
+			String ccpLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label");
+			InputText ccp = new InputText(ccpId, ccpLabel, null, false, false, true, 1, 35);
+			this.infoRicercaMap.put(ccpId, ccp);
+			
+			List<Voce<String>> stati = new ArrayList<Voce<String>>();
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso.label"), 
+					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso")));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleOk.label"), 
+					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleOk")));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo.label"), 
+					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo")));
+			// statoTransazione
+			String statoTransazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.label");
+			SelectList<String> statoTransazione = new SelectList<String>(statoTransazioneId, statoTransazioneLabel, null, false, false, true, stati);
+			this.infoRicercaMap.put(statoTransazioneId, statoTransazione);
+		}
+	}
+	
+	private void setStatoTransazione(String stato, RptFilter filter) {
+		if(StringUtils.isNotEmpty(stato)) {
+			List<String> listaStati = new ArrayList<String>();
+			if(stato.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso"))) {
+				listaStati.add(StatoRpt.INTERNO_NODO.name());
+				listaStati.add(StatoRpt.RPT_ACCETTATA_NODO.name());
+				listaStati.add(StatoRpt.RPT_ACCETTATA_PSP.name());
+				listaStati.add(StatoRpt.RPT_ATTIVATA.name());
+				listaStati.add(StatoRpt.RPT_DECORSI_TERMINI.name());
+				listaStati.add(StatoRpt.RPT_ERRORE_INVIO_A_NODO.name());
+				listaStati.add(StatoRpt.RPT_INVIATA_A_PSP.name());
+				listaStati.add(StatoRpt.RPT_RICEVUTA_NODO.name());
+				listaStati.add(StatoRpt.RT_ACCETTATA_NODO.name());
+				listaStati.add(StatoRpt.RT_ESITO_SCONOSCIUTO_PA.name());
+				listaStati.add(StatoRpt.RT_RICEVUTA_NODO.name());
+				listaStati.add(StatoRpt.RT_RIFIUTATA_NODO.name());
+				listaStati.add(StatoRpt.RT_RIFIUTATA_PA.name());
+			} else if(stato.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleOk"))) {
+				listaStati.add(StatoRpt.RT_ACCETTATA_PA.name());
+			} else if(stato.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo"))) {
+				listaStati.add(StatoRpt.RPT_RIFIUTATA_NODO.name());
+				listaStati.add(StatoRpt.RPT_RIFIUTATA_PSP.name());
+				listaStati.add(StatoRpt.RPT_ERRORE_INVIO_A_PSP.name());
+			} else {
+				// donothing
+			}
+			if(!listaStati.isEmpty()) {
+				filter.setStato(listaStati);
+			}
 		}
 	}
 

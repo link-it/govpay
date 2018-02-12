@@ -390,80 +390,78 @@ public class RtUtils extends NdpValidationUtils {
 				pagamento.setAllegato(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTestoAllegato());
 			}
 			
+			// Se ho solo aggiornato un pagamento che gia' c'era, non devo fare altro.
 			// Se gli importi corrispondono e lo stato era da pagare, il singoloVersamento e' eseguito. Altrimenti irregolare.
-			if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
-				singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
-			else {
-				List<String> anomalie = new ArrayList<String>();
-				
-				if(!singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO)) {
-					anomalie.add("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento e' in stato [" + singoloVersamento.getStatoSingoloVersamento().toString() + "].");
-					log.warn("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento e' in stato [" + singoloVersamento.getStatoSingoloVersamento().toString() + "].");
+			if(insert) {
+				if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
+					singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
+				else {
+					List<String> anomalie = new ArrayList<String>();
+					
+					if(!singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO)) {
+						anomalie.add("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento e' in stato [" + singoloVersamento.getStatoSingoloVersamento().toString() + "].");
+						log.warn("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento e' in stato [" + singoloVersamento.getStatoSingoloVersamento().toString() + "].");
+					}
+					
+					if(singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) != 0) {
+						anomalie.add("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento presenta un importo [" + singoloVersamento.getImportoSingoloVersamento() + "] che non corrisponde a quanto pagato [" + pagamento.getImportoPagato() + "].");
+						log.warn("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento presenta un importo [" + singoloVersamento.getImportoSingoloVersamento() + "] che non corrisponde a quanto pagato [" + pagamento.getImportoPagato() + "].");
+					}
+					ctx.log("pagamento.acquisizionePagamentoAnomalo", ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), StringUtils.join(anomalie,"\n"));
+					
+					singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ANOMALO);
+					irregolare = true;
 				}
-				
-				if(singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) != 0) {
-					anomalie.add("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento presenta un importo [" + singoloVersamento.getImportoSingoloVersamento() + "] che non corrisponde a quanto pagato [" + pagamento.getImportoPagato() + "].");
-					log.warn("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento presenta un importo [" + singoloVersamento.getImportoSingoloVersamento() + "] che non corrisponde a quanto pagato [" + pagamento.getImportoPagato() + "].");
-				}
-				ctx.log("pagamento.acquisizionePagamentoAnomalo", ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), StringUtils.join(anomalie,"\n"));
-				
-				singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ANOMALO);
-				irregolare = true;
-			}
-			
-			ctx.log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
-			
-			versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
-			
-			if(insert)
+				ctx.log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
+				versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 				pagamentiBD.insertPagamento(pagamento);
+				
+				switch (rpt.getEsitoPagamento()) {
+				case PAGAMENTO_ESEGUITO:
+					switch (versamento.getStatoVersamento()) {
+					case ANNULLATO:
+					case NON_ESEGUITO:
+						if(!irregolare) {
+							versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
+							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
+						} else {
+							versamento.setStatoVersamento(StatoVersamento.ANOMALO);
+							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
+						}
+						break;
+					default:
+						versamento.setStatoVersamento(StatoVersamento.ANOMALO);
+						versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
+						break;
+					}
+					break;
+					
+				case PAGAMENTO_PARZIALMENTE_ESEGUITO:
+				case DECORRENZA_TERMINI_PARZIALE:
+					switch (versamento.getStatoVersamento()) {
+					case ANNULLATO:
+					case NON_ESEGUITO:
+						if(!irregolare) {
+							versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
+							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
+						} else {
+							versamento.setStatoVersamento(StatoVersamento.ANOMALO);
+							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
+						}
+					default:
+						versamento.setStatoVersamento(StatoVersamento.ANOMALO);
+						versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
+						break;
+					}
+				case DECORRENZA_TERMINI:
+				case PAGAMENTO_NON_ESEGUITO:
+					break;
+				}	
+			}
 			else 
+				ctx.log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 				pagamentiBD.updatePagamento(pagamento);
 		}
-		
-		
-		
-		switch (rpt.getEsitoPagamento()) {
-		case PAGAMENTO_ESEGUITO:
-			switch (versamento.getStatoVersamento()) {
-			case ANNULLATO:
-			case NON_ESEGUITO:
-				if(!irregolare) {
-					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
-					versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-				} else {
-					versamento.setStatoVersamento(StatoVersamento.ANOMALO);
-					versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-				}
-				break;
-			default:
-				versamento.setStatoVersamento(StatoVersamento.ANOMALO);
-				versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-				break;
-			}
-			break;
-			
-		case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-		case DECORRENZA_TERMINI_PARZIALE:
-			switch (versamento.getStatoVersamento()) {
-			case ANNULLATO:
-			case NON_ESEGUITO:
-				if(!irregolare) {
-					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
-					versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-				} else {
-					versamento.setStatoVersamento(StatoVersamento.ANOMALO);
-					versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-				}
-			default:
-				versamento.setStatoVersamento(StatoVersamento.ANOMALO);
-				versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-				break;
-			}
-		case DECORRENZA_TERMINI:
-		case PAGAMENTO_NON_ESEGUITO:
-			break;
-		}	
 		
 		Notifica notifica = new Notifica(rpt, TipoNotifica.RICEVUTA, bd);
 		NotificheBD notificheBD = new NotificheBD(bd);
