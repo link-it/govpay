@@ -152,6 +152,9 @@ public class Gp21Utils {
 			p.setDataAcquisizione(pagamento.getDataAcquisizione());
 			p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
 		}
+		if(versione.compareTo(Versione.GP_02_05_00) >= 0) {
+			p.setIbanAccredito(pagamento.getIbanAccredito());
+		}
 		return p;
 	}
 

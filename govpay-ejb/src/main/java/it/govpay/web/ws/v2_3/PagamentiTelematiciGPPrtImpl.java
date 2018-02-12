@@ -567,7 +567,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			response.setCodEsito(EsitoOperazione.OK.toString());
 			response.setDescrizioneEsito("Operazione completata con successo");
 			response.setMittente(Mittente.GOV_PAY);
-			response.setStorno(Gp23Utils.toStorno(rr, bd));
+			response.setStorno(Gp23Utils.toStorno(rr, portaleAutenticato.getVersione(), bd));
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {
 			response = (GpChiediStatoRichiestaStornoResponse) gpe.getWsResponse(response, "ws.ricevutaRichiestaKo", log);

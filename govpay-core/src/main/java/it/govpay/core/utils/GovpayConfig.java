@@ -81,7 +81,6 @@ public class GovpayConfig {
 	private boolean batchAvvisiPagamento;
 
 	private Properties[] props;
-	
 	private IConservazione conservazionePlugin;
 
 	public GovpayConfig() throws Exception {
@@ -379,7 +378,6 @@ public class GovpayConfig {
 			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
 				this.batchAvvisiPagamento = true;
 			
-
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
