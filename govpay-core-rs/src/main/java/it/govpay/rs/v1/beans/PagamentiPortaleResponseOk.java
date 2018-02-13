@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.v1.model;
+package it.govpay.rs.v1.beans;
 
 public class PagamentiPortaleResponseOk {
 

@@ -6,9 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
@@ -23,7 +21,13 @@ public abstract class JSONSerializable {
 	@JsonIgnore
 	public abstract String getJsonIdFilter();
 	
-	public String toJSON(String fields) throws JsonGenerationException, JsonMappingException, IOException{
+	@Override
+	public String toString() {
+		return this.toJSON(null);
+	}
+	
+	public String toJSON(String fields) {
+		try {
 		ObjectMapper mapper = new ObjectMapper();
 		SimpleFilterProvider filters = new SimpleFilterProvider();
 		
@@ -60,11 +64,21 @@ public abstract class JSONSerializable {
 		}
 		filters = filters.setFailOnUnknownId(false);
 		return mapper.writer(filters).writeValueAsString(this);
+		} catch(IOException e) {
+			return null;
+		}
 	}
 	
 	public static Object parse(String json, Class<?> clazz) {
 		JSONObject jsonObject = JSONObject.fromObject( json );  
 		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.setRootClass(clazz);
+
+		return JSONObject.toBean( jsonObject, jsonConfig );
+	}
+	
+	public static Object parse(String json, Class<?> clazz, JsonConfig jsonConfig) {
+		JSONObject jsonObject = JSONObject.fromObject( json );  
 		jsonConfig.setRootClass(clazz);
 
 		return JSONObject.toBean( jsonObject, jsonConfig );

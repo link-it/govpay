@@ -22,8 +22,7 @@ import java.util.List;
 "tassonomia",
 "voci",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class PendenzaPost extends it.govpay.rs.v1.beans.JSONSerializable {
+public class PendenzaPost extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -277,6 +276,15 @@ public abstract class PendenzaPost extends it.govpay.rs.v1.beans.JSONSerializabl
   @Override
   public int hashCode() {
     return Objects.hash(idDominio, idUnitaOperativa, cartellaPagamento, soggettoPagatore, importo, causale, dataValidita, dataScadenza, annoRiferimento, datiAllegati, tassonomia, voci);
+  }
+
+  public static PendenzaPost parse(String json) {
+    return (PendenzaPost) parse(json, PendenzaPost.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "pendenzaPost";
   }
 
   @Override

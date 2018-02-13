@@ -20,8 +20,7 @@ import java.util.Date;
 "esito",
 "importo",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -275,6 +274,15 @@ public abstract class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(idDominio, iuv, ccp, pendenza, canale, modelloPagamento, stato, dettaglioStato, dataRichiesta, dataRicevuta, esito, importo);
+  }
+
+  public static Rpt parse(String json) {
+    return (Rpt) parse(json, Rpt.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "rpt";
   }
 
   @Override

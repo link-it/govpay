@@ -14,8 +14,7 @@ import it.govpay.rs.v1.beans.base.TipoVersamento;
 "psp",
 "abilitato",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Canale extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Canale extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("idCanale")
   private String idCanale = null;
@@ -128,6 +127,15 @@ public abstract class Canale extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(idCanale, tipoVersamento, modelloPagamento, psp, abilitato);
+  }
+
+  public static Canale parse(String json) {
+    return (Canale) parse(json, Canale.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "canale";
   }
 
   @Override

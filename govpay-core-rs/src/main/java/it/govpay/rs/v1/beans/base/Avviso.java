@@ -17,8 +17,7 @@ import java.util.Date;
 "qrcode",
 "barcode",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("pendenza")
   private String pendenza = null;
@@ -281,6 +280,15 @@ public abstract class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(pendenza, stato, importo, numeroAvviso, dataValidita, dataScadenza, descrizione, tassonomiaAvviso, qrcode, barcode);
+  }
+
+  public static Avviso parse(String json) {
+    return (Avviso) parse(json, Avviso.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "avviso";
   }
 
   @Override

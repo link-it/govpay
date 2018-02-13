@@ -35,6 +35,8 @@ public class PendenzeDAO extends BasicBD{
 			response.setApplicazione(versamento.getApplicazione(versamentiBD));
 			response.setDominio(versamento.getDominio(versamentiBD));
 			response.setUnitaOperativa(versamento.getUo(versamentiBD));
+			response.setLstSingoliVersamenti(versamento.getSingoliVersamenti(versamentiBD));
+			
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		}

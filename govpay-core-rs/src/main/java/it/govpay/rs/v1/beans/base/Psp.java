@@ -10,8 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "canali",
 "abilitato",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Psp extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Psp extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("idPsp")
   private String idPsp = null;
@@ -144,6 +143,15 @@ public abstract class Psp extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(idPsp, ragioneSociale, bollo, storno, canali, abilitato);
+  }
+
+  public static Psp parse(String json) {
+    return (Psp) parse(json, Psp.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "psp";
   }
 
   @Override

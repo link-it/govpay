@@ -1,36 +1,19 @@
-package it.govpay.pagamento.api.rs.v1.model;
+
+package it.govpay.core.dao.commons;
 
 public class Anagrafica {
 
-	private String tipo;
-	private String identificativo;
-	private String anagrafica;
-	private String indirizzo;
-	private String civico;
-	private String cap;
-	private String localita;
-	private String provincia;
-	private String nazione;
-	private String email;
-	private String cellulare;
-	
-	public String getTipo() {
-		return tipo;
+    public String getCodUnivoco() {
+		return codUnivoco;
 	}
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setCodUnivoco(String codUnivoco) {
+		this.codUnivoco = codUnivoco;
 	}
-	public String getIdentificativo() {
-		return identificativo;
+	public String getRagioneSociale() {
+		return ragioneSociale;
 	}
-	public void setIdentificativo(String identificativo) {
-		this.identificativo = identificativo;
-	}
-	public String getAnagrafica() {
-		return anagrafica;
-	}
-	public void setAnagrafica(String anagrafica) {
-		this.anagrafica = anagrafica;
+	public void setRagioneSociale(String ragioneSociale) {
+		this.ragioneSociale = ragioneSociale;
 	}
 	public String getIndirizzo() {
 		return indirizzo;
@@ -74,13 +57,36 @@ public class Anagrafica {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public String getTelefono() {
+		return telefono;
+	}
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
 	public String getCellulare() {
 		return cellulare;
 	}
 	public void setCellulare(String cellulare) {
 		this.cellulare = cellulare;
 	}
-	
-	
-	
+	public String getFax() {
+		return fax;
+	}
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
+	protected String codUnivoco;
+    protected String ragioneSociale;
+    protected String indirizzo;
+    protected String civico;
+    protected String cap;
+    protected String localita;
+    protected String provincia;
+    protected String nazione;
+    protected String email;
+    protected String telefono;
+    protected String cellulare;
+    protected String fax;
+
+
 }

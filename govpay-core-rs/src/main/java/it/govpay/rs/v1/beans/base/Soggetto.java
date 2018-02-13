@@ -19,8 +19,7 @@ import org.codehaus.jackson.annotate.JsonValue;
 "email",
 "cellulare",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Soggetto extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Soggetto extends it.govpay.rs.v1.beans.JSONSerializable {
   
     
   /**
@@ -289,6 +288,15 @@ public abstract class Soggetto extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare);
+  }
+
+  public static Soggetto parse(String json) {
+    return (Soggetto) parse(json, Soggetto.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "soggetto";
   }
 
   @Override

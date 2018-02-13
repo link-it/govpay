@@ -6,23 +6,22 @@ import it.govpay.rs.v1.beans.base.Connector;
 import it.govpay.rs.v1.beans.base.IntermediarioPost;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "denominazione",
-"pagopaPrincipal",
-"pagopaConnector",
+"principalPagoPa",
+"servizioPagoPa",
 "abilitato",
 "idIntermediario",
 "stazioni",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Intermediario extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Intermediario extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("denominazione")
   private String denominazione = null;
   
-  @JsonProperty("pagopaPrincipal")
-  private String pagopaPrincipal = null;
+  @JsonProperty("principalPagoPa")
+  private String principalPagoPa = null;
   
-  @JsonProperty("pagopaConnector")
-  private Connector pagopaConnector = null;
+  @JsonProperty("servizioPagoPa")
+  private Connector servizioPagoPa = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -52,32 +51,32 @@ public abstract class Intermediario extends it.govpay.rs.v1.beans.JSONSerializab
   /**
    * Principal autenticato le richieste ricevute da PagoPA
    **/
-  public Intermediario pagopaPrincipal(String pagopaPrincipal) {
-    this.pagopaPrincipal = pagopaPrincipal;
+  public Intermediario principalPagoPa(String principalPagoPa) {
+    this.principalPagoPa = principalPagoPa;
     return this;
   }
 
-  @JsonProperty("pagopaPrincipal")
-  public String getPagopaPrincipal() {
-    return pagopaPrincipal;
+  @JsonProperty("principalPagoPa")
+  public String getPrincipalPagoPa() {
+    return principalPagoPa;
   }
-  public void setPagopaPrincipal(String pagopaPrincipal) {
-    this.pagopaPrincipal = pagopaPrincipal;
+  public void setPrincipalPagoPa(String principalPagoPa) {
+    this.principalPagoPa = principalPagoPa;
   }
 
   /**
    **/
-  public Intermediario pagopaConnector(Connector pagopaConnector) {
-    this.pagopaConnector = pagopaConnector;
+  public Intermediario servizioPagoPa(Connector servizioPagoPa) {
+    this.servizioPagoPa = servizioPagoPa;
     return this;
   }
 
-  @JsonProperty("pagopaConnector")
-  public Connector getPagopaConnector() {
-    return pagopaConnector;
+  @JsonProperty("servizioPagoPa")
+  public Connector getServizioPagoPa() {
+    return servizioPagoPa;
   }
-  public void setPagopaConnector(Connector pagopaConnector) {
-    this.pagopaConnector = pagopaConnector;
+  public void setServizioPagoPa(Connector servizioPagoPa) {
+    this.servizioPagoPa = servizioPagoPa;
   }
 
   /**
@@ -138,8 +137,8 @@ public abstract class Intermediario extends it.govpay.rs.v1.beans.JSONSerializab
     }
     Intermediario intermediario = (Intermediario) o;
     return Objects.equals(denominazione, intermediario.denominazione) &&
-        Objects.equals(pagopaPrincipal, intermediario.pagopaPrincipal) &&
-        Objects.equals(pagopaConnector, intermediario.pagopaConnector) &&
+        Objects.equals(principalPagoPa, intermediario.principalPagoPa) &&
+        Objects.equals(servizioPagoPa, intermediario.servizioPagoPa) &&
         Objects.equals(abilitato, intermediario.abilitato) &&
         Objects.equals(idIntermediario, intermediario.idIntermediario) &&
         Objects.equals(stazioni, intermediario.stazioni);
@@ -147,7 +146,16 @@ public abstract class Intermediario extends it.govpay.rs.v1.beans.JSONSerializab
 
   @Override
   public int hashCode() {
-    return Objects.hash(denominazione, pagopaPrincipal, pagopaConnector, abilitato, idIntermediario, stazioni);
+    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, abilitato, idIntermediario, stazioni);
+  }
+
+  public static Intermediario parse(String json) {
+    return (Intermediario) parse(json, Intermediario.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "intermediario";
   }
 
   @Override
@@ -156,8 +164,8 @@ public abstract class Intermediario extends it.govpay.rs.v1.beans.JSONSerializab
     sb.append("class Intermediario {\n");
     
     sb.append("    denominazione: ").append(toIndentedString(denominazione)).append("\n");
-    sb.append("    pagopaPrincipal: ").append(toIndentedString(pagopaPrincipal)).append("\n");
-    sb.append("    pagopaConnector: ").append(toIndentedString(pagopaConnector)).append("\n");
+    sb.append("    principalPagoPa: ").append(toIndentedString(principalPagoPa)).append("\n");
+    sb.append("    servizioPagoPa: ").append(toIndentedString(servizioPagoPa)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    idIntermediario: ").append(toIndentedString(idIntermediario)).append("\n");
     sb.append("    stazioni: ").append(toIndentedString(stazioni)).append("\n");

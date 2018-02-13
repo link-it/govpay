@@ -3,12 +3,16 @@ package it.govpay.rs.v1.beans;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.rs.v1.beans.base.StatoPendenza;
+import it.govpay.rs.v1.beans.base.VocePendenza;
 
 public class Pendenza extends it.govpay.rs.v1.beans.base.Pendenza {
 
@@ -19,11 +23,7 @@ public class Pendenza extends it.govpay.rs.v1.beans.base.Pendenza {
 		return "pendenze";
 	}
 	
-	public static Pendenza parse(String json) {
-		return (Pendenza) parse(json, Pendenza.class);
-	}
-	
-	public Pendenza(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.model.Applicazione applicazione, it.govpay.bd.model.Dominio dominio) throws ServiceException {
+	public Pendenza(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.model.Applicazione applicazione, it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
 		
 		if(versamento.getCodAnnoTributario()!= null)
 			this.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
@@ -43,8 +43,8 @@ public class Pendenza extends it.govpay.rs.v1.beans.base.Pendenza {
 		this.setIdPendenza(versamento.getCodVersamentoEnte());
 		this.setImporto(versamento.getImportoTotale());
 		this.setNome(versamento.getNome());
-		this.setNumeroAvviso(versamento.getTassonomiaAvviso()); //TODO verifica
-//		this.setSoggettoPagatore(new Soggetto); TODO
+		this.setNumeroAvviso(versamento.getIuvProposto());
+		this.setSoggettoPagatore(new Soggetto(versamento.getAnagraficaDebitore()));
 		
 		StatoPendenza statoPendenza = null;
 
@@ -74,34 +74,13 @@ public class Pendenza extends it.govpay.rs.v1.beans.base.Pendenza {
 		
 		this.setPagamenti(UriBuilderUtils.getPagamentiByPendenza(versamento.getCodVersamentoEnte()));
 		this.setRpts(UriBuilderUtils.getRptsByPendenza(versamento.getCodVersamentoEnte()));
-
-//		this.setId(versamento.getIdSessione());
-//		this.setIdSessionePortale(versamento.getIdSessionePortale());
-//		this.setIdSessionePsp(versamento.getIdSessionePsp());
-//		this.setNome(versamento.getNome());
-//		this.setStato(StatoPagamento.valueOf(versamento.getStato().toString()));
-//		this.setPspRedirectUrl(versamento.getPspRedirectUrl());
-//		
-//		if(versamento.getDataRichiesta() != null)
-//			this.setDataRichiestaPagamento(versamento.getDataRichiesta());
-//		
-//		this.setDatiAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito")));
-//
-//		try {
-//			this.setDataEsecuzionePagamento(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento")));
-//		} catch (ParseException e) {
-//			throw new ServiceException(e);
-//		}
-//
-//		this.setCredenzialiPagatore(jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore"));
-//		this.setSoggettoVersante(Soggetto.parse(jsonObjectPagamentiPortaleRequest.getString("soggettoVersante")));
-//		this.setAutenticazioneSoggetto(AutenticazioneSoggettoEnum.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto")));
-//		
-//		if(versamento.getCodPsp() != null &&  versamento.getCodCanale() != null)
-//			this.setCanale(UriBuilderUtils.getCanale(versamento.getCodPsp(), versamento.getCodCanale()));
-//		
-//		this.setPendenze(UriBuilderUtils.getPendenze(versamento.getIdSessione()));
-//		this.setRpts(UriBuilderUtils.getRpts(versamento.getIdSessione()));
+		
+		List<VocePendenza> v = new ArrayList<VocePendenza>();
+		int indice = 1;
+		for(SingoloVersamento s: singoliVersamenti) {
+			v.add(new it.govpay.rs.v1.beans.VocePendenza(s, indice++));
+		}
+		this.setVoci(v);
 
 	}
 

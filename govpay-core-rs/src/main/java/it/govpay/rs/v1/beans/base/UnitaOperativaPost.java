@@ -9,8 +9,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "cap",
 "localita",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class UnitaOperativaPost extends it.govpay.rs.v1.beans.JSONSerializable {
+public class UnitaOperativaPost extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
@@ -126,6 +125,15 @@ public abstract class UnitaOperativaPost extends it.govpay.rs.v1.beans.JSONSeria
   @Override
   public int hashCode() {
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita);
+  }
+
+  public static UnitaOperativaPost parse(String json) {
+    return (UnitaOperativaPost) parse(json, UnitaOperativaPost.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "unitaOperativaPost";
   }
 
   @Override

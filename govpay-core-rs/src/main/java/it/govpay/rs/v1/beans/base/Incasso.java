@@ -12,8 +12,7 @@ import java.util.Date;
 "id",
 "riscossioni",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("causale")
   private String causale = null;
@@ -148,6 +147,15 @@ public abstract class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
   @Override
   public int hashCode() {
     return Objects.hash(causale, importo, dataValuta, dataContabile, id, riscossioni);
+  }
+
+  public static Incasso parse(String json) {
+    return (Incasso) parse(json, Incasso.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "incasso";
   }
 
   @Override

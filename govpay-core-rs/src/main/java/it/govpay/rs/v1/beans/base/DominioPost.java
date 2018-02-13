@@ -16,8 +16,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "logo",
 "abilitato",
 })
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-05T15:39:23.431+01:00")
-public abstract class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable {
+public class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
@@ -273,6 +272,15 @@ public abstract class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable
   @Override
   public int hashCode() {
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, gln, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato);
+  }
+
+  public static DominioPost parse(String json) {
+    return (DominioPost) parse(json, DominioPost.class);
+  }
+
+  @Override
+  public String getJsonIdFilter() {
+    return "dominioPost";
   }
 
   @Override

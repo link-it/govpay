@@ -22,6 +22,22 @@ public class Soggetto extends it.govpay.rs.v1.beans.base.Soggetto {
 		JSONObject jsonObject = JSONObject.fromObject( json );  
 		return (Soggetto) JSONObject.toBean( jsonObject, jsonConfig );
 	}
+	
+	public Soggetto(it.govpay.model.Anagrafica anagrafica) {
+
+//		this.setTipo();
+		this.setIdentificativo(anagrafica.getCodUnivoco());
+		this.setAnagrafica(anagrafica.getRagioneSociale());
+		this.setIndirizzo(anagrafica.getIndirizzo());
+		this.setCivico(anagrafica.getCivico());
+		this.setCap(anagrafica.getCap());
+		this.setLocalita(anagrafica.getLocalita());
+		this.setProvincia(anagrafica.getProvincia());
+		this.setNazione(anagrafica.getNazione());
+		this.setEmail(anagrafica.getEmail());
+		this.setCellulare(anagrafica.getCellulare());
+		  
+	}
 
 
 }

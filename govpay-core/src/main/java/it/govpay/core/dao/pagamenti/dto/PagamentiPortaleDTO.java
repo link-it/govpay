@@ -3,8 +3,10 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.Date;
 import java.util.List;
 
+import it.govpay.core.dao.commons.Anagrafica;
+
 public class PagamentiPortaleDTO {
-	
+
 	private String idSessione = null;
 	private String idSessionePortale =null;
 	private String principal = null; 
@@ -15,13 +17,13 @@ public class PagamentiPortaleDTO {
 	private Date dataEsecuzionePagamento = null;
 	private String credenzialiPagatore = null;
 	private String lingua = null;
-	private it.govpay.servizi.commons.Anagrafica versante = null;
+	private Anagrafica versante = null;
 	private List<Object> pendenzeOrPendenzeRef = null;
 	private String idDominio = null;
 	private String keyPA = null;
 	private String keyWISP = null;
 	private String autenticazioneSoggetto = null;
-	
+
 	public String getPrincipal() {
 		return principal;
 	}
@@ -70,10 +72,10 @@ public class PagamentiPortaleDTO {
 	public void setLingua(String lingua) {
 		this.lingua = lingua;
 	}
-	public it.govpay.servizi.commons.Anagrafica getVersante() {
+	public Anagrafica getVersante() {
 		return versante;
 	}
-	public void setVersante(it.govpay.servizi.commons.Anagrafica versante) {
+	public void setVersante(Anagrafica versante) {
 		this.versante = versante;
 	}
 	public List<Object> getPendenzeOrPendenzeRef() {
@@ -118,4 +120,43 @@ public class PagamentiPortaleDTO {
 	public void setAutenticazioneSoggetto(String autenticazioneSoggetto) {
 		this.autenticazioneSoggetto = autenticazioneSoggetto;
 	}
+
+
+	public class RefVersamentoAvviso {
+
+		private String idDominio;
+		private String numeroAvviso;
+		
+		public String getIdDominio() {
+			return idDominio;
+		}
+		public void setIdDominio(String idDominio) {
+			this.idDominio = idDominio;
+		}
+		public String getNumeroAvviso() {
+			return numeroAvviso;
+		}
+		public void setNumeroAvviso(String numeroAvviso) {
+			this.numeroAvviso = numeroAvviso;
+		}
+	}
+
+	public class RefVersamentoPendenza {
+
+		private String idA2A;
+		private String idPendenza;
+		public String getIdA2A() {
+			return idA2A;
+		}
+		public void setIdA2A(String idA2A) {
+			this.idA2A = idA2A;
+		}
+		public String getIdPendenza() {
+			return idPendenza;
+		}
+		public void setIdPendenza(String idPendenza) {
+			this.idPendenza = idPendenza;
+		}
+	}
+
 }
