@@ -61,7 +61,7 @@ import it.govpay.servizi.v2_3.gprnd.GpChiediListaFlussiRendicontazioneResponse;
 endpointInterface = "it.govpay.servizi.v2_3.PagamentiTelematiciGPRnd",
 targetNamespace = "http://www.govpay.it/servizi/v2_3",
 portName = "GPRndPort",
-wsdlLocation = "classpath:wsdl/GpRnd_2.3.wsdl",
+wsdlLocation = "/wsdl/GpRnd_2.3.wsdl",
 name="PagamentiTelematiciGPRndService")
 
 @HandlerChain(file="../../../../../handler-chains/handler-chain-gpws.xml")

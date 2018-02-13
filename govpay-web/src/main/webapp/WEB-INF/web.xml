@@ -80,6 +80,7 @@
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni</url-pattern>
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
 			<url-pattern>/rs/caricatore/*</url-pattern>
+			<url-pattern>/rs/v1/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>*</role-name>
@@ -98,7 +99,6 @@
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni?wsdl</url-pattern>
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali?wsdl</url-pattern>
 			<url-pattern>/rs/check/*</url-pattern>
-			<url-pattern>/rs/v1/*</url-pattern>
 		</web-resource-collection>
 	</security-constraint>
 

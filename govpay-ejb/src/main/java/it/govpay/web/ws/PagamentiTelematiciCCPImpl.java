@@ -96,7 +96,7 @@ import org.openspcoop2.utils.logger.beans.proxy.Actor;
 endpointInterface = "it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematiciccp.PagamentiTelematiciCCP",
 targetNamespace = "http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciCCP",
 portName = "PPTPort",
-wsdlLocation="classpath:wsdl/PaPerNodoPagamentoPsp.wsdl")
+wsdlLocation="/wsdl/PaPerNodoPagamentoPsp.wsdl")
 
 @HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
 

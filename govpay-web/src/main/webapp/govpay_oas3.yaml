@@ -2227,7 +2227,13 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+security:
+  - basicAuth: []
 components:
+  securitySchemes:
+    basicAuth:    
+      type: http
+      scheme: basic
   responses:
     '400':
       description: Richiesta non correttamente formata

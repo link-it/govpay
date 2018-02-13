@@ -63,7 +63,7 @@ import org.openspcoop2.utils.logger.beans.proxy.Actor;
 endpointInterface = "it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT",
 targetNamespace = "http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRT",
 portName = "PPTPort",
-wsdlLocation = "classpath:wsdl/PaPerNodo.wsdl")
+wsdlLocation = "/wsdl/PaPerNodo.wsdl")
 
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 
