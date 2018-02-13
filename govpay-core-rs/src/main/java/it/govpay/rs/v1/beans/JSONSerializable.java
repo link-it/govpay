@@ -21,11 +21,6 @@ public abstract class JSONSerializable {
 	@JsonIgnore
 	public abstract String getJsonIdFilter();
 	
-	@Override
-	public String toString() {
-		return this.toJSON(null);
-	}
-	
 	public String toJSON(String fields) {
 		try {
 		ObjectMapper mapper = new ObjectMapper();
@@ -65,7 +60,7 @@ public abstract class JSONSerializable {
 		filters = filters.setFailOnUnknownId(false);
 		return mapper.writer(filters).writeValueAsString(this);
 		} catch(IOException e) {
-			return null;
+			return "";
 		}
 	}
 	

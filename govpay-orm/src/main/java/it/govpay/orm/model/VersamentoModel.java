@@ -56,6 +56,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new Field("dataOraUltimoAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
 		this.CAUSALE_VERSAMENTO = new Field("causaleVersamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_TIPO = new Field("debitoreTipo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_IDENTIFICATIVO = new Field("debitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_ANAGRAFICA = new Field("debitoreAnagrafica",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_INDIRIZZO = new Field("debitoreIndirizzo",java.lang.String.class,"Versamento",Versamento.class);
@@ -96,6 +97,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new ComplexField(father,"dataOraUltimoAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
 		this.CAUSALE_VERSAMENTO = new ComplexField(father,"causaleVersamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_TIPO = new ComplexField(father,"debitoreTipo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_IDENTIFICATIVO = new ComplexField(father,"debitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_ANAGRAFICA = new ComplexField(father,"debitoreAnagrafica",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_INDIRIZZO = new ComplexField(father,"debitoreIndirizzo",java.lang.String.class,"Versamento",Versamento.class);
@@ -148,6 +150,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField DATA_ORA_ULTIMO_AGGIORNAMENTO = null;
 	 
 	public IField CAUSALE_VERSAMENTO = null;
+	 
+	public IField DEBITORE_TIPO = null;
 	 
 	public IField DEBITORE_IDENTIFICATIVO = null;
 	 

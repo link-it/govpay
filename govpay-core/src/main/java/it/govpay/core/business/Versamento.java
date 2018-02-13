@@ -240,7 +240,11 @@ public class Versamento extends BasicBD {
 		if(versamento.getDebitore() != null) {
 			codUnivoco = versamento.getDebitore().getCodUnivoco();
 		}
-		return chiediVersamento(versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getBundlekey(), codUnivoco, versamento.getCodDominio(), versamento.getIuv());
+		it.govpay.bd.model.Versamento chiediVersamento = chiediVersamento(versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getBundlekey(), codUnivoco, versamento.getCodDominio(), versamento.getIuv());
+		
+//		VersamentiBD versamentiBD = new VersamentiBD(this);
+//		versamentiBD.insertVersamento(chiediVersamento);
+		return chiediVersamento;
 	}
 
 	public it.govpay.bd.model.Versamento chiediVersamento(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {

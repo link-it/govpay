@@ -86,4 +86,4 @@ update versamenti set id_dominio = (select id_dominio from uo where id = versame
 ALTER TABLE versamenti MODIFY (id_dominio NOT NULL);
 ALTER TABLE versamenti MODIFY (id_uo NULL);
 ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
-
+ALTER TABLE versamenti ADD debitore_tipo VARCHAR2(1 CHAR);

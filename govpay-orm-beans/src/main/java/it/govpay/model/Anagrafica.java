@@ -36,6 +36,8 @@ public class Anagrafica extends BasicModel {
 	private String cellulare;
 	private String fax;
 	private String urlSitoWeb;
+	private TIPO tipo;
+	public enum TIPO {F,G}
 	
 	public String getRagioneSociale() {
 		return ragioneSociale;
@@ -114,5 +116,11 @@ public class Anagrafica extends BasicModel {
 	}
 	public void setUrlSitoWeb(String urlSitoWeb) {
 		this.urlSitoWeb = urlSitoWeb;
+	}
+	public TIPO getTipo() {
+		return tipo;
+	}
+	public void setTipo(TIPO tipo) {
+		this.tipo = tipo;
 	}
 }

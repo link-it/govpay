@@ -476,6 +476,7 @@
     <value name="dataScadenza" field="dataScadenza" usage="optional"/>
     <value name="dataOraUltimoAggiornamento" field="dataOraUltimoAggiornamento" usage="required"/>
     <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
+    <value name="debitoreTipo" field="debitoreTipo" usage="optional"/>
     <value name="debitoreIdentificativo" field="debitoreIdentificativo" usage="required"/>
     <value name="debitoreAnagrafica" field="debitoreAnagrafica" usage="required"/>
     <value name="debitoreIndirizzo" field="debitoreIndirizzo" usage="optional"/>

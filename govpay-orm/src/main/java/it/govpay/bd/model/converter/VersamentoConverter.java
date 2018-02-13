@@ -28,6 +28,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDominio;
@@ -68,6 +69,8 @@ public class VersamentoConverter {
 			dto.setDataUltimoAggiornamento(vo.getDataOraUltimoAggiornamento());
 			dto.setCausaleVersamento(vo.getCausaleVersamento());
 			Anagrafica debitore = new Anagrafica();
+			if(vo.getDebitoreTipo()!=null)
+				debitore.setTipo(TIPO.valueOf(vo.getDebitoreTipo()));
 			debitore.setRagioneSociale(vo.getDebitoreAnagrafica());
 			debitore.setCap(vo.getDebitoreCap());
 			debitore.setCellulare(vo.getDebitoreCellulare());
@@ -132,6 +135,8 @@ public class VersamentoConverter {
 			if(dto.getCausaleVersamento() != null)
 			vo.setCausaleVersamento(dto.getCausaleVersamento().encode());
 			Anagrafica anagraficaDebitore = dto.getAnagraficaDebitore();
+			if(anagraficaDebitore.getTipo()!=null)
+				vo.setDebitoreTipo(anagraficaDebitore.getTipo().toString());
 			vo.setDebitoreAnagrafica(anagraficaDebitore.getRagioneSociale());
 			vo.setDebitoreCap(anagraficaDebitore.getCap());
 			vo.setDebitoreCellulare(anagraficaDebitore.getCellulare());

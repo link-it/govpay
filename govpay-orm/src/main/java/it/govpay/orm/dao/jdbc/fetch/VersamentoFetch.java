@@ -76,6 +76,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_ora_ultimo_aggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType()));
 				setParameter(object, "setCausaleVersamento", Versamento.model().CAUSALE_VERSAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "causale_versamento", Versamento.model().CAUSALE_VERSAMENTO.getFieldType()));
+				setParameter(object, "setDebitoreTipo", Versamento.model().DEBITORE_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_tipo", Versamento.model().DEBITORE_TIPO.getFieldType()));
 				setParameter(object, "setDebitoreIdentificativo", Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "debitore_identificativo", Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setDebitoreAnagrafica", Versamento.model().DEBITORE_ANAGRAFICA.getFieldType(),
@@ -156,6 +158,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataOraUltimoAggiornamento"));
 				setParameter(object, "setCausaleVersamento", Versamento.model().CAUSALE_VERSAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"causaleVersamento"));
+				setParameter(object, "setDebitoreTipo", Versamento.model().DEBITORE_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"debitoreTipo"));
 				setParameter(object, "setDebitoreIdentificativo", Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType(),
 					this.getObjectFromMap(map,"debitoreIdentificativo"));
 				setParameter(object, "setDebitoreAnagrafica", Versamento.model().DEBITORE_ANAGRAFICA.getFieldType(),

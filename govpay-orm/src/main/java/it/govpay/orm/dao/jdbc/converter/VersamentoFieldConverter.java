@@ -179,6 +179,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "causale_versamento";
 			}
 		}
+		if(field.equals(Versamento.model().DEBITORE_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_tipo";
+			}else{
+				return "debitore_tipo";
+			}
+		}
 		if(field.equals(Versamento.model().DEBITORE_IDENTIFICATIVO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".debitore_identificativo";
@@ -364,6 +371,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().CAUSALE_VERSAMENTO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_TIPO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DEBITORE_IDENTIFICATIVO)){

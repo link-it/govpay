@@ -50,6 +50,7 @@ import java.io.Serializable;
  * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataOraUltimoAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="debitoreAnagrafica" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="debitoreIndirizzo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -97,6 +98,7 @@ import java.io.Serializable;
   	"dataScadenza",
   	"dataOraUltimoAggiornamento",
   	"causaleVersamento",
+  	"debitoreTipo",
   	"debitoreIdentificativo",
   	"debitoreAnagrafica",
   	"debitoreIndirizzo",
@@ -260,6 +262,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setCausaleVersamento(java.lang.String causaleVersamento) {
     this.causaleVersamento = causaleVersamento;
+  }
+
+  public java.lang.String getDebitoreTipo() {
+    return this.debitoreTipo;
+  }
+
+  public void setDebitoreTipo(java.lang.String debitoreTipo) {
+    this.debitoreTipo = debitoreTipo;
   }
 
   public java.lang.String getDebitoreIdentificativo() {
@@ -484,6 +494,10 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="causaleVersamento",required=false,nillable=false)
   protected java.lang.String causaleVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreTipo",required=false,nillable=false)
+  protected java.lang.String debitoreTipo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="debitoreIdentificativo",required=true,nillable=false)
