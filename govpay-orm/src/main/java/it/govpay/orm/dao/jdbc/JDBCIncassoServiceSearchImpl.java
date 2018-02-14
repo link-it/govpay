@@ -164,6 +164,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Incasso.model())));
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(Incasso.model())));
+			fields.add(new CustomField("id_operatore", Long.class, "id_operatore", this.getFieldConverter().toTable(Incasso.model())));
 			fields.add(Incasso.model().TRN);
 			fields.add(Incasso.model().COD_DOMINIO);
 			fields.add(Incasso.model().CAUSALE);
@@ -178,24 +179,37 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			for(Map<String, Object> map: returnMap) {
 				
 				Object idApplicazioneObj = map.remove("id_applicazione");
+				Object idOperatoreObj = map.remove("id_operatore");
 				
 				Incasso incasso = (Incasso)this.getFetch().fetch(jdbcProperties.getDatabase(), Incasso.model(), map);
 
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 					){
-						if(idApplicazioneObj instanceof Long) {
-	
-							it.govpay.orm.IdApplicazione id_incasso_applicazione = null;
-							long idFK_incasso_applicazione = (Long) idApplicazioneObj;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_incasso_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_incasso_applicazione, false);
-							}else{
-								id_incasso_applicazione = new it.govpay.orm.IdApplicazione();
-							}
-							id_incasso_applicazione.setId(idFK_incasso_applicazione);
-							incasso.setIdApplicazione(id_incasso_applicazione);
+					if(idApplicazioneObj instanceof Long) {
+						
+						it.govpay.orm.IdApplicazione id_incasso_applicazione = null;
+						long idFK_incasso_applicazione = (Long) idApplicazioneObj;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_incasso_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_incasso_applicazione, false);
+						}else{
+							id_incasso_applicazione = new it.govpay.orm.IdApplicazione();
 						}
+						id_incasso_applicazione.setId(idFK_incasso_applicazione);
+						incasso.setIdApplicazione(id_incasso_applicazione);
+					}
+					if(idOperatoreObj instanceof Long) {
+						
+						it.govpay.orm.IdOperatore id_incasso_operatore = null;
+						long idFK_incasso_operatore = (Long) idOperatoreObj;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_incasso_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idFK_incasso_operatore, false);
+						}else{
+							id_incasso_operatore = new it.govpay.orm.IdOperatore();
+						}
+						id_incasso_operatore.setId(idFK_incasso_operatore);
+						incasso.setIdOperatore(id_incasso_operatore);
+					}
 					}
 
 				list.add(incasso);
@@ -537,11 +551,17 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
+		
 		if(expression.inUseModel(Incasso.model().ID_APPLICAZIONE,false)){
 			String tableName1 = this.getIncassoFieldConverter().toAliasTable(Incasso.model());
 			String tableName2 = this.getIncassoFieldConverter().toAliasTable(Incasso.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(Incasso.model().ID_OPERATORE,false)){
+			String tableName1 = this.getIncassoFieldConverter().toAliasTable(Incasso.model());
+			String tableName2 = this.getIncassoFieldConverter().toAliasTable(Incasso.model().ID_OPERATORE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_operatore="+tableName2+".id");
 		}
 	}
 	

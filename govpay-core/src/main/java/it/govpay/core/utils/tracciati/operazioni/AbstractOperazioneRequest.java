@@ -40,7 +40,4 @@ public abstract class AbstractOperazioneRequest {
 	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
-	
-	public abstract String getCodApplicazione();
-	public abstract String getCodVersamentoEnte();
 }

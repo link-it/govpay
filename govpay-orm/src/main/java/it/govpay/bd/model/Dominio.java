@@ -35,28 +35,29 @@ import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.IbanAccredito;
 
 public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
-	
-	public Dominio() {}
-	
+
+
+	// Business
 	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
-		
+
 		super.setId(idDominio);
 		super.setIdStazione(idStazione);
-		
+
 		try {
 			anagrafica = AnagraficaManager.getUnitaOperativa(bd, idDominio, EC).getAnagrafica();
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}
-		
+
 		stazione = AnagraficaManager.getStazione(bd, idStazione);
 	}
 
+
 	// Business
+
 	private transient Anagrafica anagrafica;
 	private transient Stazione stazione;
 	private transient Applicazione applicazioneDefault;
@@ -88,6 +89,8 @@ public class Dominio extends it.govpay.model.Dominio {
 		this.setIdApplicazioneDefault(applicazioneDefault.getId());
 	}
 
+	// Business
+
 	public List<UnitaOperativa> getUnitaOperative(BasicBD bd) throws ServiceException {
 		if(unitaOperative == null) { 
 			UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
@@ -97,7 +100,7 @@ public class Dominio extends it.govpay.model.Dominio {
 		}
 		return unitaOperative;
 	}
-	
+
 	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco) throws ServiceException, NotFoundException {
 		List<UnitaOperativa> unitaOperative = getUnitaOperative(bd);
 		for(UnitaOperativa uo : unitaOperative) {
@@ -106,7 +109,7 @@ public class Dominio extends it.govpay.model.Dominio {
 		}
 		throw new NotFoundException();
 	}
-	
+
 	public List<IbanAccredito> getIbanAccredito(BasicBD bd) throws ServiceException {
 		if(ibanAccredito == null) { 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
@@ -116,7 +119,7 @@ public class Dominio extends it.govpay.model.Dominio {
 		}
 		return ibanAccredito;
 	}
-	
+
 	public IbanAccredito getIban(BasicBD bd, String iban) throws ServiceException, NotFoundException {
 		List<IbanAccredito> ibans = getIbanAccredito(bd);
 		for(IbanAccredito ibanAccredito : ibans) {
@@ -144,6 +147,5 @@ public class Dominio extends it.govpay.model.Dominio {
 		}
 		throw new NotFoundException();
 	}
-
 }
 

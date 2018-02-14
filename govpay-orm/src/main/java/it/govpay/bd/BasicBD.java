@@ -32,12 +32,14 @@ import it.govpay.model.BasicModel;
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IAuditService;
+import it.govpay.orm.dao.IAvvisoService;
 import it.govpay.orm.dao.IBatchService;
 import it.govpay.orm.dao.ICanaleService;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
 import it.govpay.orm.dao.IDBAuditService;
+import it.govpay.orm.dao.IDBAvvisoService;
 import it.govpay.orm.dao.IDBBatchService;
 import it.govpay.orm.dao.IDBCanaleService;
 import it.govpay.orm.dao.IDBConnettoreService;
@@ -134,6 +136,7 @@ public class BasicBD {
 	private IUoService uoService;
 	private IVersamentoService versamentoService;
 	private IIncassoService incassoService;
+	private IAvvisoService avvisoService;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -209,6 +212,7 @@ public class BasicBD {
 				this.uoService = this.serviceManager.getUoService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
 				this.incassoService = this.serviceManager.getIncassoService();
+				this.avvisoService = this.serviceManager.getAvvisoService();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -255,6 +259,7 @@ public class BasicBD {
 			((IDBUoService)this.uoService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).enableSelectForUpdate();
+			((IDBAvvisoService)this.avvisoService).enableSelectForUpdate();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -298,6 +303,7 @@ public class BasicBD {
 			((IDBUoService)this.uoService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).disableSelectForUpdate();
+			((IDBAvvisoService)this.avvisoService).disableSelectForUpdate();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -540,6 +546,13 @@ public class BasicBD {
 			return father.getIncassoService();
 		}
 		return incassoService;
+	}
+	
+	public IAvvisoService getAvvisoService() {
+		if(father != null) {
+			return father.getAvvisoService();
+		}
+		return avvisoService;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

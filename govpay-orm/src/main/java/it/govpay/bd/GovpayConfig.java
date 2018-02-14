@@ -22,7 +22,12 @@ package it.govpay.bd;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,6 +65,7 @@ public class GovpayConfig {
 	private Properties[] props;
 	private String resourceDir;
 	private CustomIuv defaultCustomIuvGenerator;
+	private List<String> pspPostali;
 	
 	
 
@@ -125,6 +131,14 @@ public class GovpayConfig {
 			this.defaultCustomIuvGenerator = (CustomIuv) instance;
 		} else {
 			this.defaultCustomIuvGenerator = new CustomIuv();
+		}
+		
+		String pspPostaliString = getProperty("psp.postali", props, false);
+		try{
+			this.pspPostali = Arrays.asList(pspPostaliString.split(","));
+		} catch(Throwable t) {
+			log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
+			this.pspPostali = new ArrayList<String>();
 		}
 
 	}
@@ -204,6 +218,10 @@ public class GovpayConfig {
 
 	public String getResourceDir() {
 		return resourceDir;
+	}
+
+	public List<String> getPspPostali() {
+		return pspPostali;
 	}
 
 }

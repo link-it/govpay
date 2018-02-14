@@ -49,6 +49,7 @@ public class Dominio extends BasicModel {
 	private String iuvPrefix;
 	private boolean iuvPrefixStrict;
 	private byte[] logo;
+	private String cbill;
 	
 	public Long getId() {
 		return id;
@@ -208,5 +209,14 @@ public class Dominio extends BasicModel {
 	public void setLogo(byte[] logo) {
 		this.logo = logo;
 	}
+
+	public String getCbill() {
+		return cbill;
+	}
+
+	public void setCbill(String cbill) {
+		this.cbill = cbill;
+	}
+	
 }
 

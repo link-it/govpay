@@ -23,7 +23,7 @@ public class Utils {
 			throw new ValidationException(e);
 		}
 	}
-	
+
 	public static String validaESetta(String nomeCampo, String campo, Integer lunghezzaMax, Integer lunghezzaMin, boolean nullable) throws ValidationException {
 		String nomeValoreCampo = nomeCampo + " - valore["+campo+"]"; 
 
@@ -34,24 +34,24 @@ public class Utils {
 				return null;
 			}
 		}
-		
+
 		if(lunghezzaMax != null) {
 			if(campo.length() > lunghezzaMax) {
 				throw new ValidationException("Lunghezza del campo "+nomeValoreCampo+" maggiore di " + lunghezzaMax);
 			}
 		}
-		
+
 		if(lunghezzaMin != null) {
 			if(campo.length() < lunghezzaMin) {
 				throw new ValidationException("Lunghezza del campo "+nomeValoreCampo+" minore di " + lunghezzaMin);
 			}
 		}
-		
+
 		return campo.trim();
 	}
-	
+
 	public static Double validaESettaDouble(String nomeCampo, String campo, Double max, Double min, boolean nullable) throws ValidationException {
-		
+
 		String nomeValoreCampo = nomeCampo + " - valore["+campo+"]"; 
 
 		if(campo == null) {
@@ -61,7 +61,7 @@ public class Utils {
 				return null;
 			}
 		}
-		
+
 		Double campoDouble = null;
 		try {
 			campoDouble = Double.parseDouble(validaESetta(nomeCampo, campo, null, null, nullable));
@@ -73,19 +73,19 @@ public class Utils {
 				throw new ValidationException("Campo "+nomeValoreCampo+" maggiore di " + max);
 			}
 		}
-		
+
 		if(min != null) {
 			if(campoDouble < min) {
 				throw new ValidationException("Campo "+nomeValoreCampo+" minore di " + min);
 			}
 		}
-		
+
 		return campoDouble;
 	}
-	
+
 	public static Date validaESettaDate(String nomeCampo, String campo, boolean nullable) throws ValidationException {
-		
-		
+
+
 		String nomeValoreCampo = nomeCampo + " - valore["+campo+"]"; 
 
 		if(campo == null) {
@@ -97,13 +97,17 @@ public class Utils {
 		}
 
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat sdf = newSimpleDateFormat();
 			return sdf.parse(validaESetta(nomeCampo, campo, null, null, nullable));
 		} catch (ParseException e) {
 			throw new ValidationException("Campo "+nomeValoreCampo+" non e' una data espressa in formato dd/MM/YYYY");
 		}
 	}
-	
+
+	public static SimpleDateFormat newSimpleDateFormat() {
+		return new SimpleDateFormat("dd/MM/yyyy");
+	}
+
 	// copy method from From E.R. Harold's book "Java I/O"
 	public static void copy(InputStream in, OutputStream out) 
 			throws IOException {

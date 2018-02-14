@@ -59,6 +59,7 @@
 								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
+								<linkit:sql-table object-name="Avviso" object-type="Avviso"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
 							</linkit:sql-table-list>
@@ -546,9 +547,9 @@
 			<xsd:element name="ndpOperazione" type="String256" minOccurs="0"/>
 			<xsd:element name="ndpDescrizione" type="String1024" minOccurs="0"/>
 			<xsd:element name="ndpData" type="xsd:dateTime" minOccurs="0"/>
-			
 			<xsd:element name="logo" type="xsd:base64Binary" minOccurs="0"/>
-
+			<xsd:element name="cbill" type="String255" minOccurs="0"/>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -675,6 +676,11 @@
 			<xsd:element name="uoLocalita" type="String35" minOccurs="0"/>
 			<xsd:element name="uoProvincia" type="String35" minOccurs="0"/>
 			<xsd:element name="uoNazione" type="String2" minOccurs="0"/>
+			<xsd:element name="uoArea" type="String255" minOccurs="0"/>
+			<xsd:element name="uoUrlSitoWeb" type="String255" minOccurs="0"/>
+			<xsd:element name="uoEmail" type="String255" minOccurs="0"/>
+			<xsd:element name="uoPec" type="String255" minOccurs="0"/>
+			
 
 		</xsd:sequence>
 	</xsd:complexType>
@@ -904,6 +910,17 @@
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="IbanAccredito"
 								object-type="IbanAccredito" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idIbanAccreditoPostale" type="id-iban-accredito" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="IbanAccredito"
+								object-type="IbanAccredito" relationship="reversed"/>
+							<linkit:sql-column-mapping name="id_iban_accredito_postale"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -1958,6 +1975,16 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="idOperatore" type="id-operatore" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Operatore" object-type="Operatore"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2141,9 +2168,9 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="tipoOperazione" type="TipoOperazioneType"/>
+			<xsd:element name="tipoOperazione" type="String16"/>
 			<xsd:element name="lineaElaborazione" type="xsd:long"/>
-			<xsd:element name="stato" type="StatoOperazioneType"/>
+			<xsd:element name="stato" type="String16"/>
 			<xsd:element name="datiRichiesta" type="xsd:base64Binary"/>
 			<xsd:element name="datiRisposta" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="dettaglioEsito" type="xsd:string" minOccurs="0"/>
@@ -2158,6 +2185,10 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codVersamentoEnte" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codDominio" type="String35" minOccurs="0"/>
+			<xsd:element name="iuv" type="String35" minOccurs="0"/>
+			<xsd:element name="trn" type="String35" minOccurs="0"/>
+			
 			
 		</xsd:sequence>
 	</xsd:complexType>
@@ -2198,7 +2229,7 @@
 			</xsd:element>
 			<xsd:element name="dataCaricamento" type="xsd:dateTime"/>
 			<xsd:element name="dataUltimoAggiornamento" type="xsd:dateTime"/>
-			<xsd:element name="stato" type="StatoTracciatoType"/>
+			<xsd:element name="stato" type="String16"/>
 			<xsd:element name="lineaElaborazione" type="xsd:long"/>
 			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
 			<xsd:element name="numLineeTotali" type="xsd:long"/>
@@ -2207,6 +2238,86 @@
 			<xsd:element name="nomeFile" type="xsd:string"/>
 			<xsd:element name="rawDataRichiesta" type="xsd:base64Binary"/>
 			<xsd:element name="rawDataRisposta" type="xsd:base64Binary" minOccurs="0"/>
+			<xsd:element name="tipoTracciato" type="String16"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	
+	<xsd:element name="Avviso" type="Avviso" />
+	<xsd:complexType name="Avviso">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true"/>
+					<linkit:sql-table-mapping generate-sql="true"
+						name="avvisi" on-delete-cascade="false">
+						<linkit:sql-table-index>
+							<linkit:sql-table-index-field name="codDominio"/>
+							<linkit:sql-table-index-field name="iuv"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index>
+							<linkit:sql-table-index-field name="stato"/>
+						</linkit:sql-table-index>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="codDominio" type="String35"/>
+			<xsd:element name="iuv" type="String35"/>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="stato" type="String16"/>
+			<xsd:element name="pdf" type="xsd:base64Binary" minOccurs="0"/>
+			
+			<xsd:element name="operazione" type="Operazione">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Operazione"
+								object-type="Operazione" relationship="none" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="AvvisoPagamentoInput" type="AvvisoPagamentoInput" />
+	<xsd:complexType name="AvvisoPagamentoInput">
+		<xsd:sequence>
+			<xsd:element name="ente_logo" type="xsd:string"/>
+			<xsd:element name="agid_logo" type="xsd:string"/>
+			<xsd:element name="pagopa_logo" type="xsd:string"/>
+			<xsd:element name="pagopa90_logo" type="xsd:string"/>
+			<xsd:element name="app_logo" type="xsd:string"/>
+			<xsd:element name="place_logo" type="xsd:string"/>
+			<xsd:element name="importo_logo" type="xsd:string"/>
+			<xsd:element name="scadenza_logo" type="xsd:string"/>
+			<xsd:element name="taglio" type="xsd:string"/>
+			<xsd:element name="taglio1" type="xsd:string"/>
+			<xsd:element name="ente_denominazione" type="xsd:string"/>
+			<xsd:element name="ente_area" type="xsd:string"/>
+			<xsd:element name="ente_identificativo" type="xsd:string"/>
+			<xsd:element name="ente_identificativo_split" type="xsd:string"/>
+			<xsd:element name="ente_cbill" type="xsd:string"/>
+			<xsd:element name="ente_url" type="xsd:string"/>
+			<xsd:element name="ente_peo" type="xsd:string"/>
+			<xsd:element name="ente_pec" type="xsd:string"/>
+			<xsd:element name="ente_partner" type="xsd:string"/>
+			<xsd:element name="intestatario_denominazione" type="xsd:string"/>
+			<xsd:element name="intestatario_identificativo" type="xsd:string"/>
+			<xsd:element name="intestatario_indirizzo_1" type="xsd:string"/>
+			<xsd:element name="intestatario_indirizzo_2" type="xsd:string"/>
+			<xsd:element name="avviso_causale" type="xsd:string"/>
+			<xsd:element name="avviso_mav" type="xsd:boolean"/>
+			<xsd:element name="avviso_importo" type="xsd:double"/>
+			<xsd:element name="avviso_scadenza" type="xsd:string"/>
+			<xsd:element name="avviso_numero" type="xsd:string"/>
+			<xsd:element name="avviso_numero_split" type="xsd:string"/>
+			<xsd:element name="avviso_iuv" type="xsd:string"/>
+			<xsd:element name="avviso_iuv_split" type="xsd:string"/>
+			<xsd:element name="avviso_barcode" type="xsd:string"/>
+			<xsd:element name="avviso_qrcode" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2217,6 +2328,14 @@
 			<xsd:enumeration value="IN_CARICAMENTO" />
 			<xsd:enumeration value="CARICAMENTO_OK" />
 			<xsd:enumeration value="CARICAMENTO_KO" />
+			<xsd:enumeration value="STAMPATO" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="TipoTracciatoType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="VERSAMENTI" />
+			<xsd:enumeration value="INCASSI" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -2224,7 +2343,15 @@
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="ADD" />
 			<xsd:enumeration value="DEL" />
+			<xsd:enumeration value="INC" />
 			<xsd:enumeration value="N_V" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="StatoAvvisoType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DA_STAMPARE" />
+			<xsd:enumeration value="STAMPATO" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	

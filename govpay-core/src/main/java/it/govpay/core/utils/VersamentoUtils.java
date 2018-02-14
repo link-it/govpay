@@ -156,6 +156,11 @@ public class VersamentoUtils {
 		it.govpay.model.Anagrafica anagrafica = new it.govpay.model.Anagrafica();
 		anagrafica.setCodUnivoco(versamento.getCfDebitore());
 		anagrafica.setRagioneSociale(versamento.getAnagraficaDebitore()); 
+		anagrafica.setIndirizzo(versamento.getDebitoreIndirizzo());
+		anagrafica.setCivico(versamento.getDebitoreCivico());
+		anagrafica.setProvincia(versamento.getDebitoreProvincia());
+		anagrafica.setCap(versamento.getDebitoreCap());
+		anagrafica.setLocalita(versamento.getDebitoreLocalita());
 		model.setAnagraficaDebitore(anagrafica);
 		
 		CausaleSemplice causale = model.new CausaleSemplice();
@@ -231,7 +236,7 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 			
-			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo(), bd)) {
+			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo())) {
 				throw new GovPayException(EsitoOperazione.VER_022, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 		}
@@ -241,7 +246,7 @@ public class VersamentoUtils {
 			if(!versamento.getApplicazione(bd).isTrusted())
 				throw new GovPayException(EsitoOperazione.VER_019);
 			
-			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd))
+			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null))
 				throw new GovPayException(EsitoOperazione.VER_021);
 			
 			try {
@@ -360,7 +365,8 @@ public class VersamentoUtils {
 		}
 		return versamento;
 	}
-
+	
+	
 	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
 		
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";

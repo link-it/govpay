@@ -45,6 +45,7 @@ import javax.ws.rs.core.UriInfo;
 import com.sun.istack.Nullable;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.business.model.LeggiIncassoDTO;
 import it.govpay.core.business.model.LeggiIncassoDTOResponse;
 import it.govpay.core.business.model.ListaIncassiDTO;
@@ -55,6 +56,7 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Applicazione;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.Errore;
@@ -93,7 +95,8 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			Incasso incasso = Incasso.parse(baos.toString());
 			RichiestaIncassoDTO richiestaIncassoDTO = incasso.toRichiestaIncassoDTO();
-			richiestaIncassoDTO.setPrincipal(getPrincipal());
+			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, getPrincipal());
+			richiestaIncassoDTO.setApplicazione(applicazione);
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);

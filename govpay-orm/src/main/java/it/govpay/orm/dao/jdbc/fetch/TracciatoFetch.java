@@ -58,8 +58,8 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_caricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType()));
 				setParameter(object, "setDataUltimoAggiornamento", Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ultimo_aggiornamento", Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO.getFieldType()));
-				setParameter(object, "set_value_stato", String.class,
-					jdbcParameterUtilities.readParameter(rs, "stato", Tracciato.model().STATO.getFieldType())+"");
+				setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Tracciato.model().STATO.getFieldType()));
 				setParameter(object, "setLineaElaborazione", Tracciato.model().LINEA_ELABORAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "linea_elaborazione", Tracciato.model().LINEA_ELABORAZIONE.getFieldType()));
 				setParameter(object, "setDescrizioneStato", Tracciato.model().DESCRIZIONE_STATO.getFieldType(),
@@ -76,6 +76,8 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "raw_data_richiesta", Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()));
 				setParameter(object, "setRawDataRisposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "raw_data_risposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()));
+				setParameter(object, "setTipoTracciato", Tracciato.model().TIPO_TRACCIATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_tracciato", Tracciato.model().TIPO_TRACCIATO.getFieldType()));
 				return object;
 			}
 			
@@ -102,7 +104,7 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataCaricamento"));
 				setParameter(object, "setDataUltimoAggiornamento", Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataUltimoAggiornamento"));
-				setParameter(object, "set_value_stato", String.class,
+				setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
 				setParameter(object, "setLineaElaborazione", Tracciato.model().LINEA_ELABORAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"lineaElaborazione"));
@@ -120,6 +122,8 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"rawDataRichiesta"));
 				setParameter(object, "setRawDataRisposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"rawDataRisposta"));
+				setParameter(object, "setTipoTracciato", Tracciato.model().TIPO_TRACCIATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoTracciato"));
 				return object;
 			}
 			

@@ -100,6 +100,10 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_LOCALITA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_PROVINCIA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_NAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_AREA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_URL_SITO_WEB,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_EMAIL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_PEC,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
 		// Insert uo
@@ -115,6 +119,10 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoLocalita(),Uo.model().UO_LOCALITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoProvincia(),Uo.model().UO_PROVINCIA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoNazione(),Uo.model().UO_NAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoArea(),Uo.model().UO_AREA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoUrlSitoWeb(),Uo.model().UO_URL_SITO_WEB.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoEmail(),Uo.model().UO_EMAIL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoPec(),Uo.model().UO_PEC.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
 		uo.setId(id);
@@ -205,6 +213,14 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 		lstObjects_uo.add(new JDBCObject(uo.getUoProvincia(), Uo.model().UO_PROVINCIA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().UO_NAZIONE,false), "?");
 		lstObjects_uo.add(new JDBCObject(uo.getUoNazione(), Uo.model().UO_NAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().UO_AREA,false), "?");
+		lstObjects_uo.add(new JDBCObject(uo.getUoArea(), Uo.model().UO_AREA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().UO_URL_SITO_WEB,false), "?");
+		lstObjects_uo.add(new JDBCObject(uo.getUoUrlSitoWeb(), Uo.model().UO_URL_SITO_WEB.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().UO_EMAIL,false), "?");
+		lstObjects_uo.add(new JDBCObject(uo.getUoEmail(), Uo.model().UO_EMAIL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().UO_PEC,false), "?");
+		lstObjects_uo.add(new JDBCObject(uo.getUoPec(), Uo.model().UO_PEC.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}

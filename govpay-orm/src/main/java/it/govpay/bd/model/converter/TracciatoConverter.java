@@ -27,6 +27,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Tracciato;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdOperatore;
 
@@ -46,7 +47,9 @@ public class TracciatoConverter {
 		Tracciato dto = new Tracciato();
 
 		dto.setId(vo.getId());
-		dto.setStato(StatoTracciatoType.valueOf(vo.getStato().name()));
+		dto.setStato(StatoTracciatoType.valueOf(vo.getStato()));
+		
+		dto.setTipoTracciato(TipoTracciatoType.valueOf(vo.getTipoTracciato()));
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 
 		if(vo.getIdOperatore()!= null)
@@ -75,7 +78,10 @@ public class TracciatoConverter {
 		
 		vo.setId(dto.getId());
 		if(dto.getStato()!= null)
-			vo.setStato(it.govpay.orm.constants.StatoTracciatoType.valueOf(dto.getStato().name()));
+			vo.setStato(dto.getStato().name());
+		if(dto.getTipoTracciato() != null)
+			vo.setTipoTracciato(dto.getTipoTracciato().name());
+		
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 
 		if(dto.getIdOperatore() != null) {

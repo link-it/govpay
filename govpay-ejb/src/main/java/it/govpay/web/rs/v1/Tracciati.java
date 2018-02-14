@@ -53,6 +53,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.Tracciato;
 import it.govpay.rs.v1.beans.TracciatoExt;
@@ -87,6 +88,7 @@ public class Tracciati extends BaseRsServiceV1 {
 			inserisciTracciatoDTO.setNomeTracciato(nome);
 			inserisciTracciatoDTO.setTracciato(incomingCsv.getBytes());
 			inserisciTracciatoDTO.setApplicazione(this.getApplicazioneAutenticata(bd));
+			inserisciTracciatoDTO.setTipo(TipoTracciatoType.VERSAMENTI); 
 			InserisciTracciatoDTOResponse inserisciTracciatoResponse = tracciati.inserisciTracciato(inserisciTracciatoDTO);
 			
 			Tracciato tracciato = new Tracciato(inserisciTracciatoResponse.getTracciato());

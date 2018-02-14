@@ -3,7 +3,6 @@ package it.govpay.core.utils;
 import java.util.HashSet;
 import java.util.Set;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
@@ -12,7 +11,7 @@ import it.govpay.model.Ruolo;
 
 public class AclEngine {
 
-	public static boolean isAuthorized(IAutorizzato user, Servizio servizio, String codDominio, String codTributo, BasicBD bd) {
+	public static boolean isAuthorized(IAutorizzato user, Servizio servizio, String codDominio, String codTributo) {
 
 		// Controllo se ho il dominio
 		boolean isDominioAbilitato = false;

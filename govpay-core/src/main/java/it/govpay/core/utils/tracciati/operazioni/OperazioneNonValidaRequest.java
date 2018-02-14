@@ -28,15 +28,4 @@ public class OperazioneNonValidaRequest extends AbstractOperazioneRequest {
 		this.codiceErrore = codiceErrore;
 	}
 
-	@Override
-	public String getCodApplicazione() {
-		return null;
-	}
-
-	@Override
-	public String getCodVersamentoEnte() {
-		return null;
-	}
-	
-	
 }

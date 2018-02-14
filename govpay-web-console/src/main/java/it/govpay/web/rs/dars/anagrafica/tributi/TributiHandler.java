@@ -150,9 +150,10 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
-
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
+			
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, 
-					this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
+					this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Tributo> findAll = tributiBD.findAll(filter);
 
@@ -228,6 +229,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 
 				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 				String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
+				String idIbanAccreditoPostaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccreditoPostale.id");
 				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 				String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 				String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
@@ -294,6 +296,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 					fsw.setSortOrder(SortOrder.ASC);
 					filterIban.getFilterSortList().add(fsw);
 					filterIban.setCodDominio(dominiBD.getDominio(this.idDominio).getCodDominio());   
+					filterIban.setPostale(false);
 					List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 					if(findAll != null && findAll.size() > 0){
@@ -307,10 +310,42 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 				}
 				idIbanAccredito.setEditable(true);
 				idIbanAccredito.setHidden(false);
-				idIbanAccredito.setRequired(true);
+//				idIbanAccredito.setRequired(true);
 				idIbanAccredito.setValues(listaIban);
 				idIbanAccredito.setDefaultValue(null);
 				sezioneRoot.addField(idIbanAccredito);
+				
+				SelectList<Long> idIbanAccreditoPostale  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoPostaleId);
+				List<Voce<Long>> listaIbanPostali = new ArrayList<Voce<Long>>();
+
+				try{
+					DominiBD dominiBD = new DominiBD(bd);
+					IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+					IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
+					fsw.setSortOrder(SortOrder.ASC);
+					filterIban.getFilterSortList().add(fsw);
+					filterIban.setCodDominio(dominiBD.getDominio(this.idDominio).getCodDominio());   
+					filterIban.setPostale(true);
+					List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+
+					if(findAll != null && findAll.size() > 0){
+						for (it.govpay.model.IbanAccredito ib : findAll) {
+							listaIbanPostali.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+						}
+					}
+
+				}catch(Exception e){
+					throw new ConsoleException(e);
+				}
+				idIbanAccreditoPostale.setEditable(true);
+				idIbanAccreditoPostale.setHidden(false);
+//				idIbanAccreditoPostale.setRequired(true);
+				idIbanAccreditoPostale.setValues(listaIbanPostali);
+				idIbanAccreditoPostale.setDefaultValue(null);
+				sezioneRoot.addField(idIbanAccreditoPostale);
+				
 
 				List<RawParamValue> idTipoTributoDependencyValues = new ArrayList<RawParamValue>();
 				idTipoTributoDependencyValues.add(new RawParamValue(idTipoTributoId, null));
@@ -346,6 +381,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
+			String idIbanAccreditoPostaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccreditoPostale.id");
 			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 			String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
@@ -370,8 +406,13 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 
 			String idIbanAccreditoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label");
 			List<Voce<Long>> ibanValues = new ArrayList<Voce<Long>>();
-			SelectList<Long> idIbanAccredito = new SelectList<Long>(idIbanAccreditoId, idIbanAccreditoLabel, null, true, false, true, ibanValues );
+			SelectList<Long> idIbanAccredito = new SelectList<Long>(idIbanAccreditoId, idIbanAccreditoLabel, null, false, false, true, ibanValues );
 			this.infoCreazioneMap.put(idIbanAccreditoId, idIbanAccredito);
+			
+			String idIbanAccreditoPostaleLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccreditoPostale.label");
+			List<Voce<Long>> ibanPostaliValues = new ArrayList<Voce<Long>>();
+			SelectList<Long> idIbanAccreditoPostale = new SelectList<Long>(idIbanAccreditoPostaleId, idIbanAccreditoPostaleLabel, null, false, false, true, ibanPostaliValues );
+			this.infoCreazioneMap.put(idIbanAccreditoPostaleId, idIbanAccreditoPostale);
 
 			List<RawParamValue> idTipoTributoDependencyValues = new ArrayList<RawParamValue>();
 			idTipoTributoDependencyValues.add(new RawParamValue(idTipoTributoId, null));
@@ -447,6 +488,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 
 				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 				String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
+				String idIbanAccreditoPostaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccreditoPostale.id");
 				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 				String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 				String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
@@ -484,6 +526,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 						fsw.setSortOrder(SortOrder.ASC);
 						filterIban.getFilterSortList().add(fsw);
 						filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
+						filterIban.setPostale(false);
 						List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 						if(findAll != null && findAll.size() > 0){
@@ -497,16 +540,55 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 					}
 					idIbanAccredito.setEditable(true);
 					idIbanAccredito.setHidden(false);
-					idIbanAccredito.setRequired(true);
+//					idIbanAccredito.setRequired(true);
 				} else {
 					idIbanAccredito.setEditable(false);
 					idIbanAccredito.setHidden(true);
-					idIbanAccredito.setRequired(false);
+//					idIbanAccredito.setRequired(false);
 				}
 
 				idIbanAccredito.setValues(listaIban);
 				idIbanAccredito.setDefaultValue(entry.getIdIbanAccredito());
 				sezioneRoot.addField(idIbanAccredito);
+				
+				SelectList<Long> idIbanAccreditoPostale  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoPostaleId);
+				List<Voce<Long>> listaIbanPostali = new ArrayList<Voce<Long>>();
+
+				if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)){
+					try{
+						DominiBD dominiBD = new DominiBD(bd);
+						IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+						IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
+						fsw.setSortOrder(SortOrder.ASC);
+						filterIban.getFilterSortList().add(fsw);
+						filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
+						filterIban.setPostale(true);
+						List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+
+						if(findAll != null && findAll.size() > 0){
+							for (it.govpay.model.IbanAccredito ib : findAll) {
+								listaIbanPostali.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+							}
+						}
+
+					}catch(Exception e){
+						throw new ConsoleException(e);
+					}
+					idIbanAccreditoPostale.setEditable(true);
+					idIbanAccreditoPostale.setHidden(false);
+					//idIbanAccreditoPostale.setRequired(true);
+				} else {
+					idIbanAccreditoPostale.setEditable(false);
+					idIbanAccreditoPostale.setHidden(true);
+					//idIbanAccreditoPostale.setRequired(false);
+				}
+
+				idIbanAccreditoPostale.setValues(listaIbanPostali);
+				idIbanAccreditoPostale.setDefaultValue(entry.getIdIbanAccreditoPostale());
+				sezioneRoot.addField(idIbanAccreditoPostale);
+				
 
 				// prelevo le versioni statiche per l'update
 				SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId+"_update");
@@ -803,7 +885,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 		if(entry == null || entry.getIdDominio() == 0) {
 			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDominioObbligatorio"));
 		}
-		if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT) && entry.getIdIbanAccredito() == null ) {
+		if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT) && (entry.getIdIbanAccredito() == null && entry.getIdIbanAccreditoPostale() == null)) {
 			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreIbanAccreditoObbligatorio"));
 		}
 		//		if(entry == null || entry.getTipoContabilita() == null) throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
@@ -811,6 +893,8 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 		if(entry.getCodContabilitaCustom() != null && StringUtils.contains(entry.getCodContabilitaCustom()," ")) {
 			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaNoSpazi"));
 		}
+		
+		
 
 		if(oldEntry != null) {
 			if(entry.getIdTipoTributo() != oldEntry.getIdTipoTributo()) {

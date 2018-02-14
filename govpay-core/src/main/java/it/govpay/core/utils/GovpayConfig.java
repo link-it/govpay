@@ -77,9 +77,10 @@ public class GovpayConfig {
 	private boolean batchEstrattoConto, batchEstrattoContoPdf;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
 	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
+	
+	private boolean batchAvvisiPagamento;
 
 	private Properties[] props;
-	
 	private IConservazione conservazionePlugin;
 	
 	private String urlGovpayWC = null;
@@ -380,6 +381,10 @@ public class GovpayConfig {
 			this.urlWISP = getProperty("it.govpay.wisp.url", props, false, log);
 			
 
+			String batchAvvisiPagamentoStampaAvvisiString = getProperty("it.govpay.batch.avvisiPagamento.stampaAvvisiPagamento", props, false, log);
+			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
+				this.batchAvvisiPagamento = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -557,4 +562,9 @@ public class GovpayConfig {
 	public String getUrlWISP() {
 		return urlWISP;
 	}
+	
+	public boolean isBatchAvvisiPagamento() {
+		return batchAvvisiPagamento;
+	}
+
 }

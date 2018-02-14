@@ -123,6 +123,9 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
     		fields.add(Operazione.model().DETTAGLIO_ESITO);
     		fields.add(Operazione.model().TIPO_OPERAZIONE);
     		fields.add(Operazione.model().COD_VERSAMENTO_ENTE);
+    		fields.add(Operazione.model().COD_DOMINIO);
+    		fields.add(Operazione.model().IUV);
+    		fields.add(Operazione.model().TRN);
     		
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

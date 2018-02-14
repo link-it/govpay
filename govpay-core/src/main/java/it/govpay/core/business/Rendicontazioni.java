@@ -56,11 +56,8 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Stazione;
 import it.govpay.model.Acl.Servizio;
@@ -305,11 +302,12 @@ public class Rendicontazioni extends BasicBD {
 										}
 
 										// Verifico che il pagamento non sia gia' rendicontato
-										if(pagamento.isPagamentoRendicontato(this)) {
-											GpThreadLocal.get().log("rendicontazioni.giaStornato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
-											log.info("Revoca [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
-											rendicontazione.addAnomalia("007113", "Lo storno riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
-										}
+										// Controllo RIMOSSO. Non e' un'anomalia una duplice rendicontazione. L'anomalia occorre se due rendicontazioni dello stesso pagamento vengono incassate entrambe.
+//										if(pagamento.isPagamentoRendicontato(this)) {
+//											GpThreadLocal.get().log("rendicontazioni.giaStornato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+//											log.info("Revoca [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
+//											rendicontazione.addAnomalia("007113", "Lo storno riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
+//										}
 
 									} else {
 										if(pagamento.getImportoPagato().compareTo(importoRendicontato) != 0) {
@@ -319,11 +317,12 @@ public class Rendicontazioni extends BasicBD {
 										}
 
 										// Verifico che il pagamento non sia gia' rendicontato
-										if(pagamento.isPagamentoRendicontato(this)) {
-											GpThreadLocal.get().log("rendicontazioni.giaRendicontato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
-											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: pagamento gia' rendicontato da altri flussi");
-											rendicontazione.addAnomalia("007103", "Il pagamento riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
-										}
+										// Controllo RIMOSSO. Non e' un'anomalia una duplice rendicontazione. L'anomalia occorre se due rendicontazioni dello stesso pagamento vengono incassate entrambe.
+//										if(pagamento.isPagamentoRendicontato(this)) {
+//											GpThreadLocal.get().log("rendicontazioni.giaRendicontato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+//											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: pagamento gia' rendicontato da altri flussi");
+//											rendicontazione.addAnomalia("007103", "Il pagamento riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
+//										}
 									}
 
 								} catch (NotFoundException e) {
@@ -387,21 +386,7 @@ public class Rendicontazioni extends BasicBD {
 												continue;
 											}
 											
-											// Trovato versamento. Creo il pagamento senza rpt 
-											pagamento = new it.govpay.bd.model.Pagamento();
-											pagamento.setStato(Stato.PAGATO_SENZA_RPT);
-											pagamento.setCodDominio(codDominio);
-											pagamento.setDataAcquisizione(rendicontazione.getData());
-											pagamento.setDataPagamento(rendicontazione.getData());
-											pagamento.setImportoPagato(rendicontazione.getImporto());
-											pagamento.setIur(rendicontazione.getIur());
-											pagamento.setIuv(rendicontazione.getIuv());
-											pagamento.setIndiceDati(indiceDati == null ? 0 : indiceDati);
-											pagamento.setCodDominio(fr.getCodDominio());
-											pagamento.setSingoloVersamento(versamento.getSingoliVersamenti(this).get(0));
-											
-											rendicontazione.setPagamento(pagamento);
-											rendicontazione.setPagamentoDaCreare(true);
+											// Trovato versamento.
 											continue;
 										}
 									}
@@ -465,17 +450,6 @@ public class Rendicontazioni extends BasicBD {
 							frBD.insertFr(fr);
 							for(Rendicontazione r : fr.getRendicontazioni(this)) {
 								r.setIdFr(fr.getId());
-								
-								// controllo se c'e' un pagamento da creare relativo alla rendicontazione
-								// deve anche essere creato il pagamento.
-								if(r.isPagamentoDaCreare()) {
-									pagamentiBD.insertPagamento(r.getPagamento(this));
-									r.setIdPagamento(r.getPagamento(this).getId());
-									
-									//Devo anche settare il versamento come pagato
-									versamentiBD.updateStatoSingoloVersamento(r.getPagamento(this).getIdSingoloVersamento(), StatoSingoloVersamento.ESEGUITO);
-									versamentiBD.updateStatoVersamento(r.getPagamento(this).getSingoloVersamento(this).getIdVersamento(), StatoVersamento.ESEGUITO_SENZA_RPT, "Eseguito senza RPT");
-								}
 								rendicontazioniBD.insert(r);
 							}
 							this.commit();
@@ -657,7 +631,7 @@ public class Rendicontazioni extends BasicBD {
 		
 		List<String> domini = new ArrayList<String>();
 		if(codDominio != null) {
-			if(AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null, this))
+			if(AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null))
 				domini.add(codDominio);
 			else
 				throw new GovPayException(EsitoOperazione.RND_001);

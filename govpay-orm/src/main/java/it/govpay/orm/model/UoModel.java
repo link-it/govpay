@@ -52,6 +52,10 @@ public class UoModel extends AbstractModel<Uo> {
 		this.UO_LOCALITA = new Field("uoLocalita",java.lang.String.class,"Uo",Uo.class);
 		this.UO_PROVINCIA = new Field("uoProvincia",java.lang.String.class,"Uo",Uo.class);
 		this.UO_NAZIONE = new Field("uoNazione",java.lang.String.class,"Uo",Uo.class);
+		this.UO_AREA = new Field("uoArea",java.lang.String.class,"Uo",Uo.class);
+		this.UO_URL_SITO_WEB = new Field("uoUrlSitoWeb",java.lang.String.class,"Uo",Uo.class);
+		this.UO_EMAIL = new Field("uoEmail",java.lang.String.class,"Uo",Uo.class);
+		this.UO_PEC = new Field("uoPec",java.lang.String.class,"Uo",Uo.class);
 	
 	}
 	
@@ -70,6 +74,10 @@ public class UoModel extends AbstractModel<Uo> {
 		this.UO_LOCALITA = new ComplexField(father,"uoLocalita",java.lang.String.class,"Uo",Uo.class);
 		this.UO_PROVINCIA = new ComplexField(father,"uoProvincia",java.lang.String.class,"Uo",Uo.class);
 		this.UO_NAZIONE = new ComplexField(father,"uoNazione",java.lang.String.class,"Uo",Uo.class);
+		this.UO_AREA = new ComplexField(father,"uoArea",java.lang.String.class,"Uo",Uo.class);
+		this.UO_URL_SITO_WEB = new ComplexField(father,"uoUrlSitoWeb",java.lang.String.class,"Uo",Uo.class);
+		this.UO_EMAIL = new ComplexField(father,"uoEmail",java.lang.String.class,"Uo",Uo.class);
+		this.UO_PEC = new ComplexField(father,"uoPec",java.lang.String.class,"Uo",Uo.class);
 	
 	}
 	
@@ -96,6 +104,14 @@ public class UoModel extends AbstractModel<Uo> {
 	public IField UO_PROVINCIA = null;
 	 
 	public IField UO_NAZIONE = null;
+	 
+	public IField UO_AREA = null;
+	 
+	public IField UO_URL_SITO_WEB = null;
+	 
+	public IField UO_EMAIL = null;
+	 
+	public IField UO_PEC = null;
 	 
 
 	@Override

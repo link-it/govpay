@@ -121,7 +121,7 @@ public class InviaRptThread implements Runnable {
 			log.error("Errore nella spedizione della RPT", e);
 			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
 		} catch (Exception e) {
-			log.warn("Errore interno nella spedizione della RPT: " + e);
+			log.error("Errore nella spedizione della RPT", e);
 			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
 			if(bd != null) bd.rollback();
 		} finally {

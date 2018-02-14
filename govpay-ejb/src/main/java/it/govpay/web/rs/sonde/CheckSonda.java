@@ -74,6 +74,9 @@ public class CheckSonda {
 		CheckSonda sondaBatchConservazioneEsito = new CheckSonda();
 		sondaBatchConservazioneEsito.setName(it.govpay.core.business.Operazioni.conservazione_esito);
 		check.add(sondaBatchConservazioneEsito);
+		CheckSonda sondaBatchStampaAvvisi = new CheckSonda();
+		sondaBatchStampaAvvisi.setName(it.govpay.core.business.Operazioni.batch_generazione_avvisi);
+		check.add(sondaBatchStampaAvvisi);
 		return check;
 	}
 }

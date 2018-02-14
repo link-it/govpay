@@ -31,12 +31,14 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.model.Tracciato.StatoTracciatoType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.orm.Tracciato;
 import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
 
@@ -45,6 +47,7 @@ public class TracciatoFilter extends AbstractFilter {
 	private List<Long> idTracciati = null; 
 	private CustomField cf;
 	
+	private TipoTracciatoType tipoTracciato;
 	private List<StatoTracciatoType> statoTracciato;
 	private Long idOperatore = null;
 	private Long idApplicazione = null;
@@ -52,6 +55,7 @@ public class TracciatoFilter extends AbstractFilter {
 	private Date dataUltimoAggiornamentoMin;
 	private Date dataCaricamentoMax;
 	private Date dataCaricamentoMin;
+	private String nomeFile = null;
 	
 	public enum SortFields {
 		DATA_CARICAMENTO
@@ -68,6 +72,8 @@ public class TracciatoFilter extends AbstractFilter {
 			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Tracciato.model()));
 			this.statoTracciato = new ArrayList<StatoTracciatoType>();
+			
+			this.listaFieldSimpleSearch.add(Tracciato.model().NOME_FILE);
 		} catch(Exception e){
 			
 		}
@@ -79,7 +85,15 @@ public class TracciatoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			
+			if(this.tipoTracciato != null) {
+				newExpression.equals(it.govpay.orm.Tracciato.model().TIPO_TRACCIATO, it.govpay.orm.constants.TipoTracciatoType.valueOf(tipoTracciato.toString()));
+				addAnd = true;
+			}
+			
 			if(this.statoTracciato != null && !this.statoTracciato.isEmpty()) {
+				if(addAnd)
+					newExpression.and(); 
+				
 				List<it.govpay.orm.constants.StatoTracciatoType> statoTracciatoOrm  = toStatoTracciatoOrm(this.statoTracciato);
 				newExpression.in(it.govpay.orm.Tracciato.model().STATO, statoTracciatoOrm);
 				addAnd = true;
@@ -100,6 +114,7 @@ public class TracciatoFilter extends AbstractFilter {
 					newExpression.and();
 				CustomField idOperatoreCustomField = new CustomField("id_operatore",  Long.class, "id_operatore",converter.toTable(it.govpay.orm.Tracciato.model()));
 				newExpression.equals(idOperatoreCustomField, this.idOperatore);
+				addAnd = true;
 			}
 			
 			if(this.idApplicazione != null){
@@ -110,19 +125,39 @@ public class TracciatoFilter extends AbstractFilter {
 			}
 			
 			if(this.dataUltimoAggiornamentoMax != null) {
+				if(addAnd)
+					newExpression.and();
 				newExpression.lessEquals(it.govpay.orm.Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, this.dataUltimoAggiornamentoMax);
+				addAnd = true;
 			}
 			
 			if(this.dataUltimoAggiornamentoMin != null) {
+				if(addAnd)
+					newExpression.and();
 				newExpression.greaterEquals(it.govpay.orm.Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, this.dataUltimoAggiornamentoMin);
+				addAnd = true;
 			}
 			
 			if(this.dataCaricamentoMax != null) {
+				if(addAnd)
+					newExpression.and();
 				newExpression.lessEquals(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO, this.dataCaricamentoMax);
+				addAnd = true;
 			}
 			
 			if(this.dataCaricamentoMin != null) {
+				if(addAnd)
+					newExpression.and();
 				newExpression.greaterEquals(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO, this.dataCaricamentoMin);
+				addAnd = true;
+			}
+			
+			if(this.nomeFile != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Tracciato.model().NOME_FILE, this.nomeFile, LikeMode.ANYWHERE);
+				addAnd = true;
 			}
 			
 			return newExpression;
@@ -148,6 +183,13 @@ public class TracciatoFilter extends AbstractFilter {
 				
 				newExpressionOr.and(newExpressionOperatore);
 			}
+			
+			if(this.tipoTracciato != null) {
+				IExpression newExpressionTipo = this.newExpression();
+				newExpressionTipo.equals(it.govpay.orm.Tracciato.model().TIPO_TRACCIATO, it.govpay.orm.constants.TipoTracciatoType.valueOf(tipoTracciato.toString()));
+				newExpressionOr.and(newExpressionTipo);
+			}
+			
 			return newExpressionOr;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
@@ -249,6 +291,20 @@ public class TracciatoFilter extends AbstractFilter {
 		this.dataCaricamentoMax = dataCaricamentoMax;
 	}
 
-	
+	public TipoTracciatoType getTipoTracciato() {
+		return tipoTracciato;
+	}
+
+	public void setTipoTracciato(TipoTracciatoType tipoTracciato) {
+		this.tipoTracciato = tipoTracciato;
+	}
+
+	public String getNomeFile() {
+		return nomeFile;
+	}
+
+	public void setNomeFile(String nomeFile) {
+		this.nomeFile = nomeFile;
+	}
 	
 }

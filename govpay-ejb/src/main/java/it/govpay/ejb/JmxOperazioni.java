@@ -50,7 +50,8 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 	public final static String ATTIVAZIONE_RECUPERO_TRACCIATI_PENDENTI = "attivazioneRecuperoTracciatiPendenti";
 	public final static String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
 	public final static String ESTRATTO_CONTO = "estrattoConto";
-	
+	public final static String GENERAZIONE_AVVISI_PAGAMENTO = "generaAvvisiPagamento";
+	public final static String ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO = "attivazioneGenerazioneAvvisiPagamento";
 
 	/** getAttribute */
 	@Override
@@ -132,6 +133,15 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 			return "Elaborazione tracciati schedulata";
 		}
 		
+		if(actionName.equals(GENERAZIONE_AVVISI_PAGAMENTO)){
+			it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
+			return "Generazione Avvisi Pagamento schedulata";
+		}
+		
+		if(actionName.equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
+			it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
+			return "Generazione Avvisi Pagamento schedulata";
+		}
 
 		throw new UnsupportedOperationException("Operazione "+actionName+" sconosciuta");
 	}

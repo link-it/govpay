@@ -19,6 +19,7 @@
  */
 package it.govpay.web.ws.v2_3;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +40,7 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.RendicontazionePagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
@@ -416,11 +418,34 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			verificaApplicazione(applicazione, bodyrichiesta.getCodApplicazione());
 			
-			RendicontazionePagamentoBD rendicontazionePagamentoBD = new RendicontazionePagamentoBD(bd); 
-			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
-			filter.setCodFlusso(bodyrichiesta.getCodFlusso());
-			filter.setCodApplicazione(applicazione.getId());
-			List<RendicontazionePagamento> rends = rendicontazionePagamentoBD.findAll(filter);
+			
+			List<Rendicontazione> rends = frModel.getRendicontazioni(bd);
+			for(Rendicontazione rend : rends) {
+				if(rend.getPagamento(bd) == null) {
+					try {
+						it.govpay.bd.model.Versamento versamento = new it.govpay.core.business.Versamento(bd).chiediVersamento(null, null, null, null,	frModel.getDominio(bd).getCodDominio(), rend.getIuv());
+						rend.setVersamento(versamento);
+					}catch (Exception e) {
+						continue;
+					}
+				}
+			}
+			
+			if(bodyrichiesta.getCodApplicazione() != null) {
+				Long idApplicazione = AnagraficaManager.getApplicazione(bd, bodyrichiesta.getCodApplicazione()).getId();
+				List<Rendicontazione> rendsFiltrato = new ArrayList<Rendicontazione>();
+				
+				for(Rendicontazione rend : rends) {
+					if(rend.getVersamento(bd) ==  null || rend.getVersamento(bd).getIdApplicazione() != idApplicazione.longValue()) {
+						continue;
+					}
+					rendsFiltrato.add(rend);
+				}
+				
+				rends = rendsFiltrato;
+			}
+			
+			
 			response.setFlussoRendicontazione(Gp23Utils.toFr(frModel, rends, bd));
 			response.setCodEsito(EsitoOperazione.OK.toString());
 			response.setMittente(Mittente.GOV_PAY);

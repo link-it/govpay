@@ -158,6 +158,13 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 				return "raw_data_risposta";
 			}
 		}
+		if(field.equals(Tracciato.model().TIPO_TRACCIATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_tracciato";
+			}else{
+				return "tipo_tracciato";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -208,6 +215,9 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
 		if(field.equals(Tracciato.model().RAW_DATA_RISPOSTA)){
+			return this.toTable(Tracciato.model(), returnAlias);
+		}
+		if(field.equals(Tracciato.model().TIPO_TRACCIATO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
 

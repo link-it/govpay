@@ -28,10 +28,10 @@ public class OperazioneConverter {
 		Operazione dto = new Operazione();
 		
 		dto.setId(vo.getId());
-		dto.setTipoOperazione(TipoOperazioneType.valueOf(vo.getTipoOperazione().name()));
+		dto.setTipoOperazione(TipoOperazioneType.valueOf(vo.getTipoOperazione()));
 		dto.setLineaElaborazione(vo.getLineaElaborazione());
 		if(vo.getStato() != null)
-		dto.setStato(StatoOperazioneType.valueOf(vo.getStato().name()));
+		dto.setStato(StatoOperazioneType.valueOf(vo.getStato()));
 
 		
 		dto.setDatiRichiesta(vo.getDatiRichiesta());
@@ -44,6 +44,9 @@ public class OperazioneConverter {
 			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 		
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setIuv(vo.getIuv());
+		dto.setTrn(vo.getTrn());
 
 		return dto;
 	}
@@ -51,10 +54,10 @@ public class OperazioneConverter {
 	public static it.govpay.orm.Operazione toVO(Operazione dto) throws ServiceException {
 		it.govpay.orm.Operazione vo = new it.govpay.orm.Operazione();
 		vo.setId(dto.getId());
-		vo.setTipoOperazione(it.govpay.orm.constants.TipoOperazioneType.valueOf(dto.getTipoOperazione().name()));
+		vo.setTipoOperazione(dto.getTipoOperazione().name());
 		vo.setLineaElaborazione(dto.getLineaElaborazione());
 		if(dto.getStato() != null)
-			vo.setStato(it.govpay.orm.constants.StatoOperazioneType.valueOf(dto.getStato().name()));
+			vo.setStato(dto.getStato().name());
 
 		
 		vo.setDatiRichiesta(dto.getDatiRichiesta());
@@ -72,7 +75,10 @@ public class OperazioneConverter {
 		}
 
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
-		
+		vo.setCodDominio(dto.getCodDominio());
+		vo.setIuv(dto.getIuv());
+		vo.setTrn(dto.getTrn());
+
 		return vo;
 	}
 	
@@ -80,10 +86,10 @@ public class OperazioneConverter {
 		Operazione dto = new Operazione();
 		
 		dto.setId(vo.getId());
-		dto.setTipoOperazione(TipoOperazioneType.valueOf(vo.getTipoOperazione().name()));
+		dto.setTipoOperazione(TipoOperazioneType.valueOf(vo.getTipoOperazione()));
 		dto.setLineaElaborazione(vo.getLineaElaborazione());
 		if(vo.getStato() != null)
-		dto.setStato(StatoOperazioneType.valueOf(vo.getStato().name()));
+		dto.setStato(StatoOperazioneType.valueOf(vo.getStato()));
 
 		
 		dto.setDatiRichiesta(vo.getDatiRichiesta());
@@ -99,6 +105,11 @@ public class OperazioneConverter {
 		}
 		
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+		
+		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setIuv(vo.getIuv());
+		dto.setTrn(vo.getTrn());
 
 		return dto;
 	}

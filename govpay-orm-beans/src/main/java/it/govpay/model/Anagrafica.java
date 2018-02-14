@@ -36,6 +36,8 @@ public class Anagrafica extends BasicModel {
 	private String cellulare;
 	private String fax;
 	private String urlSitoWeb;
+	private String area;
+	private String pec;
 	
 	public String getRagioneSociale() {
 		return ragioneSociale;
@@ -114,5 +116,17 @@ public class Anagrafica extends BasicModel {
 	}
 	public void setUrlSitoWeb(String urlSitoWeb) {
 		this.urlSitoWeb = urlSitoWeb;
+	}
+	public String getArea() {
+		return area;
+	}
+	public void setArea(String area) {
+		this.area = area;
+	}
+	public String getPec() {
+		return pec;
+	}
+	public void setPec(String pec) {
+		this.pec = pec;
 	}
 }

@@ -8,7 +8,7 @@ ENV JBOSS_USER gpadmin
 ENV JBOSS_PASSWORD secret
 
 # Set GovPay version
-ENV GP_VERSION 2.4.7
+ENV GP_VERSION 2.5.0
 
 # Set JDBC Driver version
 ENV JDBC_VERSION 42.0.0.jre7
@@ -32,7 +32,7 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 # Govpay download
 RUN cd /tmp/ \
-  && curl -L -O https://github.com/link-it/GovPay/releases/download/$GP_VERSION_MAJOR/govpay-installer-$GP_VERSION.tgz \
+  && curl -L -O https://github.com/link-it/GovPay/releases/download/$GP_VERSION/govpay-installer-$GP_VERSION.tgz \
   && tar xf govpay-installer-$GP_VERSION.tgz \
   && mv govpay-installer-$GP_VERSION govpay
   

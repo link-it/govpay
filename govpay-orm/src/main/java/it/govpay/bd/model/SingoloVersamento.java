@@ -75,6 +75,10 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			ibanAccredito = getTributo(bd).getIbanAccredito();
 		}
 		
+		if(ibanAccredito == null && this.getIdIbanAccredito() == null) {
+			ibanAccredito = getTributo(bd).getIbanAccreditoPostale(bd);
+		}
+		
 		return ibanAccredito;
 	}
 	

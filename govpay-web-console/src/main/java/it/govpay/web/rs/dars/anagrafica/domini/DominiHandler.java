@@ -329,6 +329,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 				String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 				String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
+				String cbillId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cbill.id");
 
 				AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio,this.getLanguage());
 				List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
@@ -384,6 +385,10 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				InputText gln = (InputText) this.infoCreazioneMap.get(glnId);
 				gln.setDefaultValue(null);
 				sezioneRoot.addField(gln);
+				
+				InputText cbill = (InputText) this.infoCreazioneMap.get(cbillId);
+				cbill.setDefaultValue(null);
+				sezioneRoot.addField(cbill);
 
 				List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
 
@@ -512,6 +517,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 			String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 			String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
+			String cbillId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cbill.id");
 
 			// codDominio
 			String codDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
@@ -531,6 +537,11 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			InputText gln = new InputText(glnId, glnLabel, null, true, false, true, 13, 13);
 			gln.setValidation("[0-9]{13}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.errorMessage"));
 			this.infoCreazioneMap.put(glnId, gln);
+			
+			// cbill
+			String cbillLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cbill.label");
+			InputText cbill = new InputText(cbillId, cbillLabel, null, false, false, true, 1, 255);
+			this.infoCreazioneMap.put(cbillId, cbill);
 
 			// idstazione
 			String idStazionelabel =Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.label");
@@ -654,6 +665,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 				String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 				String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
+				String cbillId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cbill.id");
 
 				UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
 				UnitaOperativa unitaOperativa = null;
@@ -720,6 +732,10 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				InputText gln = (InputText) this.infoCreazioneMap.get(glnId);
 				gln.setDefaultValue(entry.getGln());
 				sezioneRoot.addField(gln);
+				
+				InputText cbill = (InputText) this.infoCreazioneMap.get(cbillId);
+				cbill.setDefaultValue(entry.getCbill());
+				sezioneRoot.addField(cbill);
 
 				List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
 				applicazioni.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuna"), -1L));
@@ -1226,10 +1242,12 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			Boolean abilitaModificaLogo = false;
 			JSONArray jsonArrayFile =  null;
-			if(jsonObjectDominio.getBoolean(abilitaModificaLogoId)){
-				jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
-				abilitaModificaLogo = true;
-			}
+			try {
+				if(jsonObjectDominio.getBoolean(abilitaModificaLogoId)){
+					jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
+					abilitaModificaLogo = true;
+				}
+			}catch(Exception e) {	}
 
 			jsonObjectDominio.remove(logoId);
 			jsonObjectDominio.remove(abilitaModificaLogoId);
@@ -1464,16 +1482,27 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato.label"),
 							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato")));
+			
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato.label")));
 		} else {
 			if(entry.getNdpStato() == null){
 				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato.label"),
 								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato")));
+				
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.label"),
+								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato.label")));
 			} else {
 				if(entry.getNdpStato().intValue() == 0){
 					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok.label"),
 									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok")));
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.label"),
+									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok.label")));
 				} else {
 					String statoErrore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore.label");
 
@@ -1483,6 +1512,10 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 							new Voce<String>(statoErrore,
 									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore")));
+					
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoText.label"),
+									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore.label")));
 
 					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.id"),
 							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.label"),statoErrore));

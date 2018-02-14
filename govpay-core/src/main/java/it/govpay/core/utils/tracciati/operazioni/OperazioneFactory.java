@@ -1,5 +1,8 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,27 +16,39 @@ import org.openspcoop2.utils.csv.ParserResult;
 import org.openspcoop2.utils.csv.Record;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.core.business.Incassi;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
+import it.govpay.core.business.model.RichiestaIncassoDTO;
+import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
 import it.govpay.core.dao.versamenti.PagamentiAttesaDAO;
 import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTO;
 import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IncassiException;
+import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.tracciati.CSVReaderProperties;
 import it.govpay.core.utils.tracciati.CostantiCaricamento;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
+import it.govpay.model.Tracciato.TipoTracciatoType;
 
 public class OperazioneFactory {
 
 	private static Logger logger = LogManager.getLogger(OperazioneFactory.class);
 	private static Format formatW;
 	private static Parser caricamentoParser;
+	private static Parser caricamentoKoResponseParser;
+	private static Parser caricamentoOkResponseParser;
 	private static Parser annullamentoParser;
-	private static Parser caricamentoResponseParser;
-	private static Parser annullamentoResponseParser;
+	private static Parser annullamentoOkResponseParser;
+	private static Parser annullamentoKoResponseParser;
+	private static Parser incassoParser;
+	private static Parser incassoOkResponseParser;
+	private static Parser incassoKoResponseParser;
 	private static String delimiter;
 
 	public static void init() throws UtilsException, Exception {
@@ -42,33 +57,48 @@ public class OperazioneFactory {
 		delimiter = "" + formatW.getCsvFormat().getDelimiter();
 		caricamentoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.mapping.properties"), true);
 		annullamentoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.mapping.properties"), true);
-		caricamentoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.mapping.properties"), true);
-		annullamentoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.mapping.properties"), true);
+		incassoParser = new Parser(OperazioneFactory.class.getResourceAsStream("/incasso.mapping.properties"), true);
+		caricamentoOkResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.ok.mapping.properties"), true);
+		caricamentoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/caricamento.response.ko.mapping.properties"), true);
+		incassoOkResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/incasso.response.ok.mapping.properties"), true);
+		incassoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/incasso.response.ko.mapping.properties"), true);
+		annullamentoOkResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.ok.mapping.properties"), true);
+		annullamentoKoResponseParser = new Parser(OperazioneFactory.class.getResourceAsStream("/annullamento.response.ko.mapping.properties"), true);
 	}
 
-	public AbstractOperazioneRequest acquisisci(Record record, String op) throws ValidationException {
+	public AbstractOperazioneRequest acquisisci(Record record, TipoTracciatoType tipoTracciato, String op) throws ValidationException {
 		try {
-			if("ADD".equals(op)) {
-				return new CaricamentoRequest(record);
-			} else if("DEL".equals(op)) {
-				return new AnnullamentoRequest(record);
+			if(tipoTracciato.equals(TipoTracciatoType.VERSAMENTI)) {
+				if("ADD".equals(op)) {
+					return new CaricamentoRequest(record);
+				} else if("DEL".equals(op)) {
+					return new AnnullamentoRequest(record);
+				} else {
+					throw new ValidationException("Codice operazione "+op+" non supportata per il tipo tracciato " + tipoTracciato);
+				}
+			} else if(tipoTracciato.equals(TipoTracciatoType.INCASSI)) {
+				if("INC".equals(op)) {
+					return new IncassoRequest(record);
+				} else {
+					throw new ValidationException("Codice operazione "+op+" non supportata per il tipo tracciato " + tipoTracciato);
+				}
 			} else {
-				throw new ValidationException("Codice operazione "+op+" non supportata");
+				throw new ValidationException("Tipo tracciato "+tipoTracciato+" non supportato");
 			}
 		} catch(ValidationException e) {
 			throw new ValidationException(CostantiCaricamento.ERRORE_SINTASSI + " : " + e.getMessage());
 		}
 	}
 
-	public AbstractOperazioneRequest acquisisci(byte[] linea, long idtracciato, long numLinea) throws ServiceException {
-		AbstractOperazioneRequest request = parseLineaOperazioneRequest(linea);
+	public AbstractOperazioneRequest acquisisci(TipoTracciatoType tipoTracciato, byte[] linea, long idtracciato, long numLinea) throws ServiceException {
+		AbstractOperazioneRequest request = parseLineaOperazioneRequest(tipoTracciato, linea);
 		request.setIdTracciato(idtracciato);
 		request.setLinea(numLinea);
 		request.setDati(linea);
 		return request;
 	}
 
-	public AbstractOperazioneRequest parseLineaOperazioneRequest(byte[] linea) throws ServiceException {
+	public AbstractOperazioneRequest parseLineaOperazioneRequest(TipoTracciatoType tipoTracciato, byte[] linea) throws ServiceException {
 
 		String lineaString = new String(linea);
 
@@ -79,13 +109,24 @@ public class OperazioneFactory {
 		String op = lineaSplitted[0];
 
 		Parser parser = null;
-		if("ADD".equals(op)) {
-			parser = caricamentoParser;
-		} else if("DEL".equals(op)) {
-			parser = annullamentoParser;
+		if(tipoTracciato.equals(TipoTracciatoType.VERSAMENTI)) {
+			if("ADD".equals(op)) {
+				parser = caricamentoParser;
+			} else if("DEL".equals(op)) {
+				parser = annullamentoParser;
+			} else {
+				return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Codice operazione "+op+" non supportata per il tipo tracciato " + tipoTracciato);
+			}
+		} else if(tipoTracciato.equals(TipoTracciatoType.INCASSI)) {
+			if("INC".equals(op)) {
+				parser = incassoParser;
+			} else {
+				return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Codice operazione "+op+" non supportata per il tipo tracciato " + tipoTracciato);
+			}			
 		} else {
-			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Codice operazione "+op+" non supportata");
+			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Tipo tracciato "+tipoTracciato+" non supportato");
 		}
+ 
 
 		ParserResult parserResult = null;
 		try {
@@ -102,14 +143,14 @@ public class OperazioneFactory {
 		}
 
 		try {
-			return acquisisci(parserResult.getRecords().get(0), op);
+			return acquisisci(parserResult.getRecords().get(0), tipoTracciato, op);
 		} catch(ValidationException e) {
 			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Record non correttamente formato: " + e.getMessage());
 		}
 
 	}
 
-	public AbstractOperazioneResponse parseLineaOperazioneResponse(TipoOperazioneType tipoOperazione, byte[] linea) throws ServiceException {
+	public AbstractOperazioneResponse parseLineaOperazioneResponse(TipoOperazioneType tipoOperazione, StatoOperazioneType statoOperazione, byte[] linea) throws ServiceException {
 
 		String lineaString = new String(linea);
 
@@ -123,9 +164,26 @@ public class OperazioneFactory {
 
 		Parser parser = null;
 		if(tipoOperazione.equals(TipoOperazioneType.ADD)) {
-			parser = caricamentoResponseParser;
+			if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_OK))
+				parser = caricamentoOkResponseParser;
+			else if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_KO))
+				parser = caricamentoKoResponseParser;
+			else 
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" in stato "+statoOperazione+" non supportata");
 		} else if(tipoOperazione.equals(TipoOperazioneType.DEL)) {
-			parser = annullamentoResponseParser;
+			if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_OK))
+				parser = annullamentoOkResponseParser;
+			else if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_KO))
+				parser = annullamentoKoResponseParser;
+			else 
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" in stato "+statoOperazione+" non supportata");
+		} else if(tipoOperazione.equals(TipoOperazioneType.INC)) {
+			if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_OK))
+				parser = incassoOkResponseParser;
+			else if(statoOperazione.equals(StatoOperazioneType.ESEGUITO_KO))
+				parser = incassoKoResponseParser;
+			else 
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" in stato "+statoOperazione+" non supportata");
 		} else {
 			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" non supportata");
 		}
@@ -141,7 +199,9 @@ public class OperazioneFactory {
 			return null;
 
 		if(parserResult.getRecords().size() > 1) {
-			return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record multipli trovati");
+			if(!tipoOperazione.equals(TipoOperazioneType.INC)) {
+				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Record multipli trovati");
+			}
 		}
 
 		try {
@@ -149,6 +209,8 @@ public class OperazioneFactory {
 				return new CaricamentoResponse(parserResult.getRecords().get(0));
 			} else if(tipoOperazione.equals(TipoOperazioneType.DEL)) {
 				return new AnnullamentoResponse(parserResult.getRecords().get(0));
+			} else if(tipoOperazione.equals(TipoOperazioneType.INC)) {
+				return new IncassoResponse(parserResult.getRecords());
 			} else {
 				return getOperazioneNonValidaResponse(CostantiCaricamento.ERRORE_SINTASSI, "Tipo operazione "+tipoOperazione+" non supportata");
 			}
@@ -189,6 +251,9 @@ public class OperazioneFactory {
 		} else if(request instanceof AnnullamentoRequest) {
 			AnnullamentoRequest annullamentoRequest = (AnnullamentoRequest) request;
 			response = annullaVersamento(tracciato, annullamentoRequest, bd);
+		} else if(request instanceof IncassoRequest) {
+			IncassoRequest incassoRequest = (IncassoRequest) request;
+			response = eseguiIncasso(tracciato, incassoRequest, bd);
 		} else  if(request instanceof OperazioneNonValidaRequest) {
 			OperazioneNonValidaRequest operazioneNonValidaRequest = (OperazioneNonValidaRequest) request;
 			response = new OperazioneNonValidaResponse();
@@ -202,32 +267,6 @@ public class OperazioneFactory {
 		return response;
 	}
 
-	/**
-	 * @param request
-	 * @return
-	 */
-	public String getCodiceApplicazione(AbstractOperazioneRequest request) {
-		if(request instanceof CaricamentoRequest) {
-			return ((CaricamentoRequest)request).getCodApplicazione();
-		} else if(request instanceof AnnullamentoRequest) {
-			return ((AnnullamentoRequest) request).getCodApplicazione();
-		} else {
-			return null;
-		}
-	}
-	/**
-	 * @param request
-	 * @return
-	 */
-	public String getCodVersamentoEnte(AbstractOperazioneRequest request) {
-		if(request instanceof CaricamentoRequest) {
-			return ((CaricamentoRequest)request).getCodVersamentoEnte();
-		} else if(request instanceof AnnullamentoRequest) {
-			return ((AnnullamentoRequest) request).getCodVersamentoEnte();
-		} else {
-			return null;
-		}
-	}
 
 
 	private CaricamentoResponse caricaVersamento(Tracciato tracciato, CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
@@ -302,6 +341,78 @@ public class OperazioneFactory {
 			annullamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
 		}
 		return annullamentoResponse;
+
+	}
+
+	private IncassoResponse eseguiIncasso(Tracciato tracciato, IncassoRequest request, BasicBD bd) throws ServiceException {
+
+
+		Incassi incassi = new Incassi(bd);
+		RichiestaIncassoDTO richiestaIncasso = new RichiestaIncassoDTO();
+		richiestaIncasso.setCausale(request.getCausale());
+		richiestaIncasso.setImporto(new BigDecimal(request.getImporto(), MathContext.DECIMAL64));
+		richiestaIncasso.setDataContabile(request.getDataContabile());
+		richiestaIncasso.setTrn(request.getTrn());
+
+		richiestaIncasso.setCodDominio(request.getDominio());
+		richiestaIncasso.setDataValuta(request.getDataValuta());
+		richiestaIncasso.setDispositivo(request.getDispositivo());
+		richiestaIncasso.setOperatore(tracciato.getOperatore(bd));
+		
+		
+		
+		IncassoResponse response = new IncassoResponse();
+
+		RichiestaIncassoDTOResponse richiestaIncassoResponse = null;
+		try {
+			richiestaIncassoResponse = incassi.richiestaIncasso(richiestaIncasso);
+		} catch (IncassiException e) {
+			response.setTrn(request.getTrn());
+			response.setDominio(request.getDominio());
+			response.setFaultCode(e.getCode());
+			response.setFaultString(e.getMessage());
+			response.setFaultDescription(e.getDetails());
+			response.setEsito(IncassoResponse.ESITO_INC_KO);
+			response.setStato(StatoOperazioneType.ESEGUITO_KO);
+		} catch (NotAuthorizedException e) {
+			response.setTrn(request.getTrn());
+			response.setDominio(request.getDominio());
+			response.setFaultCode("INC_KO_NOT_AUTH");
+			response.setFaultString("Non autorizzato");
+			response.setFaultDescription(e.getMessage());
+			response.setEsito(IncassoResponse.ESITO_INC_KO);
+			response.setStato(StatoOperazioneType.ESEGUITO_KO);
+		} catch (InternalException e) {
+			response.setTrn(request.getTrn());
+			response.setFaultCode("INC_KO_INTERNAL");
+			response.setFaultString("Internal");
+			response.setFaultDescription(e.getMessage());
+			response.setEsito(IncassoResponse.ESITO_INC_KO);
+			response.setStato(StatoOperazioneType.ESEGUITO_KO);
+		}
+
+		if(richiestaIncassoResponse != null) {
+			response.setEsito(IncassoResponse.ESITO_INC_OK);
+			response.setStato(StatoOperazioneType.ESEGUITO_OK);
+			response.setTrn(richiestaIncassoResponse.getIncasso().getTrn());
+			response.setDominio(richiestaIncassoResponse.getIncasso().getCodDominio());
+
+			for(Pagamento pagamento: richiestaIncassoResponse.getIncasso().getPagamenti(bd)) {
+				SingoloIncassoResponse singoloIncassoResponse = new SingoloIncassoResponse();
+
+				singoloIncassoResponse.setTrn(richiestaIncassoResponse.getIncasso().getTrn());
+				singoloIncassoResponse.setDominio(richiestaIncassoResponse.getIncasso().getCodDominio());
+				singoloIncassoResponse.setIur(pagamento.getIur());
+				singoloIncassoResponse.setIuv(pagamento.getIuv());
+				singoloIncassoResponse.setImporto(pagamento.getImportoPagato().doubleValue());
+				singoloIncassoResponse.setDataPagamento(pagamento.getDataPagamento());
+				singoloIncassoResponse.setCodVersamentoEnte(pagamento.getSingoloVersamento(bd).getVersamento(bd).getCodVersamentoEnte());
+				singoloIncassoResponse.setCodSingoloVersamentoEnte(pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
+				response.add(singoloIncassoResponse);
+			}
+		}
+		
+		return response;
 
 	}
 

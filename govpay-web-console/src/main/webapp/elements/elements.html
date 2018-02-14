@@ -34057,6 +34057,11 @@ Polymer.AppLocalizeBehavior = {
   <template>
     <style include="shared-styles">
 
+      .listbox-selection-button{
+        font-size: 16px;
+        margin: 0;
+      }
+
       paper-icon-button{
         min-width: 40px;
       }
@@ -34182,12 +34187,13 @@ Polymer.AppLocalizeBehavior = {
                 [[localize('risultatiTrovati', 'numero', numResults)]]
               </div>
               <span class="space"></span>
+              <paper-button class="listbox-selection-button" on-tap="_listBoxSelection" hidden$="[[!isSelectable(results.length)]]">[[listboxButtonLabel]]</paper-button>
             </div>
           </div>
           <div class="mainContent over-hidden-x">
             <link-searchbox id="searchbox" on-append-response="appendResults" on-response="setResults" on-advanced-search-request="_onAdvRequest" hidden$="[[!advSearch]]"></link-searchbox>
             <span class="gap" hidden$="[[!advSearch]]"></span>
-            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
+            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" on-checkbox-selection="_countSelections"></link-listbox>
             <div class="noResults" hidden$="[[!noResults(results.length)]]">[[localize('nessunElemento')]]</div>
           </div>
         </div>
@@ -34346,6 +34352,14 @@ Polymer.AppLocalizeBehavior = {
           type: Object,
           value: null
         },
+        listboxButtonLabel: {
+          type: String,
+          value: ''
+        },
+        listboxButton: {
+          type: Object,
+          value: { all: '', none: ''}
+        },
         user: {
           type: Object,
           value: function(){
@@ -34384,6 +34398,7 @@ Polymer.AppLocalizeBehavior = {
           this.$.scrollThreshold.scrollTop = 0;
         }
         this._onAdvRequest();
+        this.listboxButton = { all: this.localize('selezionaTutti'), none: this.localize('deselezionaTutti') };
         if (response.simpleSearchPlaceHolder) {
           this.simplePlaceholder = response.simpleSearchPlaceHolder;
         }
@@ -34455,8 +34470,10 @@ Polymer.AppLocalizeBehavior = {
         if (event.detail.elenco){
           for (var i = 0; i < event.detail.elenco.length; i++) {
             var obj = event.detail.elenco[i];
+            obj.isHoverSelection=false;
             this.push('results', obj);
           }
+          this._autoListBoxSelection();
         }
         this.$.scrollThreshold.toggleScrollListener(true);
       },
@@ -34481,6 +34498,40 @@ Polymer.AppLocalizeBehavior = {
 
       isSelectable: function(numResults){
         return (this.cancellazioneUrl || this.esportazioneUrl) ? true : false;
+      },
+
+      _countSelections: function(event){
+        this.listboxButtonLabel = this.listboxButton.all;
+        if(this.results && event) {
+          if(this.results.length == event.detail.length && event.detail.length != 0) {
+            this.listboxButtonLabel = this.listboxButton.none;
+          }
+        }
+      },
+
+      _listBoxSelection: function(){
+        var rb = this.$$('#resultsBox');
+        if(rb) {
+            rb.autoSelection = !rb.autoSelection;
+          if(!rb.autoSelection){
+            rb.resetSelection();
+          } else {
+            rb.resetSelection(true);
+          }
+        }
+      },
+
+      _autoListBoxSelection: function(){
+        var rb = this.$$('#resultsBox');
+        if(rb) {
+          if(!rb.autoSelection){
+            if(rb.selections == 0) {
+              rb.resetSelection();
+            }
+          } else {
+            rb.resetSelection(true);
+          }
+        }
       },
 
       _setVisibility: function(url){
@@ -36633,8 +36684,12 @@ Polymer.AppLocalizeBehavior = {
       },
 
       _onTapAdvSearch: function(){
-        var _lsv = this.querySelector('link-search-view');
-        _lsv.toggleAdvancedSearch(!_lsv.advSearch);
+        var _lsv = this.querySelectorAll('link-search-view');
+        _lsv.forEach(function(view) {
+          if(!view._showAdvancedSearch(view.numResults, view.obj)) {
+            view.toggleAdvancedSearch(!view.advSearch);
+          }
+        });
       },
 
       classeValore: function(voce){
@@ -37692,6 +37747,7 @@ event and do your own custom submission:
           for (var i = 0; i < event.detail.response.response.elenco.length; i++) {
             var obj = event.detail.response.response.elenco[i];
             obj.checked=false;
+            obj.isHoverSelection=false;
           }
           if (this.offset!=0){
             //APPEND
@@ -37787,14 +37843,18 @@ event and do your own custom submission:
 
       .icon-checkmark {
         position: absolute;
-        padding-left: 20px;
+        padding-left: 24px;
         width: 48px;
         color: #fff;
-        height: 100%;
+        top: calc(50% - 12px);
       }
 
-      .icon-checkmark iron-icon {
-        height: 100%;
+      .icon-checkmark paper-checkbox {
+        --paper-checkbox-unchecked-color: white;
+      }
+
+      .icon-checkmark {
+        pointer-events: var(--icon-checkmark-swiped, 'auto');
       }
 
       paper-item {
@@ -37832,9 +37892,11 @@ event and do your own custom submission:
     <paper-material elevation="0">
       <paper-input hidden$="[[onlyOne(dataProvider.length)]]" class="header" label="filtra" bind-value="{{filtro}}" on-bind-value-changed="filtraRisultati"></paper-input>
       <template id="listTemplate" is="dom-repeat" items="[[dataProvider]]" filter="isVisible" on-dom-change="_domChanged">
-        <paper-item id="item_[[index]]" on-tap="nextLevel" on-track="_onswipe">
-          <div class="icon-checkmark"><iron-icon icon="check"></iron-icon></div>
-          <link-listbox-item class$="[[classFromIndex(index)]]" element="[[item]]" index$="[[index]]" on-loading="_setOpacity"></link-listbox-item>
+        <paper-item id="item_[[index]]" on-tap="nextLevel" on-track="_onswipe" on-mouseenter="_onItemOver" on-mouseleave="_onItemOut">
+          <div class="icon-checkmark">
+            <paper-checkbox checked="[[item.checked]]" noink="[[item.swiped]]" on-tap="_onBoxSelection"></paper-checkbox>
+          </div>
+          <link-listbox-item class$="[[classFromIndex(item, index)]]" element="[[item]]" index$="[[index]]" on-loading="_setOpacity"></link-listbox-item>
         </paper-item>
       </template>
     </paper-material>
@@ -37867,6 +37929,14 @@ event and do your own custom submission:
         swipeVelocity: {
           type: Number,
           value: 0
+        },
+        isHover: {
+          type: Boolean,
+          value: false
+        },
+        autoSelection: {
+          type: Boolean,
+          value: false
         }
       },
 
@@ -37882,22 +37952,54 @@ event and do your own custom submission:
         //this.fire('listbox-item-count', { elements: this.$.listTemplate.renderedItemCount });
       },
 
-      classFromIndex: function(index){
+      classFromIndex: function(item, index){
+        var c = '';
         if (index%2==0){
-          // Pari
-          return 'evenRow';
+          c += 'evenRow';
+        } else {
+          c += 'oddRow';
         }
-        return 'oddRow';
+        if(this.autoSelection || item.checked) {
+          c += ' item-selected layout-item-box-translate';
+        }
+
+        return c;
+      },
+
+      _countSelections: function(value) {
+        switch(value) {
+          case 1:
+            this.selections = (this.selections > 0)?this.selections + 1:1;
+          break;
+          case -1:
+            this.selections = (this.selections > 0)?this.selections - 1:0;
+          break;
+          default:
+            this.selections = value;
+        }
+        if(this.selections > this.dataProvider.length) {
+          this.selections = this.dataProvider.length;
+        }
+        if(this.selections == 0 || this.selections != this.dataProvider.length) {
+          this.autoSelection = false;
+        } else {
+          this.autoSelection = true;
+        }
+
+        this.fire('checkbox-selection', { length: this.selections });
       },
 
       nextLevel: function(event){
         //Cancel selection
+        if(this.dataProvider[event.model.index].isHoverSelection) { return; }
         var cib = event.currentTarget.querySelector('link-listbox-item');
-        if(cib.className.indexOf('item-selected') != -1) {
+        if(cib.className.indexOf('item-selected') != -1 && !this.isHover) {
           this.toggleClass('item-selected', false, cib);
           this.toggleClass('layout-item-box-translate', false, cib);
-          this.dataProvider[event.model.index].checked = false;
-          this.selections = (this.selections > 0)?this.selections - 1:0;
+          this._countSelections(-1);
+          this.set('dataProvider.'+event.model.index+'.checked', false);
+          this.set('dataProvider.'+event.model.index+'.swiped', false);
+          event.preventDefault();
           return;
         }
         //Enter detail
@@ -37907,15 +38009,7 @@ event and do your own custom submission:
       },
 
       isVisible: function (item) {
-        if (this.filtro && item.checked) {
-          item.checked = false;
-          var index = this.$.listTemplate.items.indexOf(item);
-          var el = this.querySelector('#item_'+index+' paper-item-body');
-          if(el) {
-            this.toggleClass('item-selected', false, el);
-            this.toggleClass('layout-item-box-translate', false, el);
-            this.selections = 0;
-          }
+        if (this.filtro) {
           return !!(item.titolo.toLowerCase().indexOf(this.filtro.toLowerCase()) != -1 ||
           item.sottotitolo.toLowerCase().indexOf(this.filtro.toLowerCase()) != -1);
         }
@@ -37927,10 +38021,11 @@ event and do your own custom submission:
       },
 
       selectAll: function(value){
+        this._countSelections(0);
         for (var i = 0; i < this.dataProvider.length; i++) {
-          var obj = this.dataProvider[i];
           this.set('dataProvider.'+i+'.checked', value);
         }
+        (value)?this._countSelections(this.dataProvider.length):null;
       },
 
       onlyOne: function(numresults){
@@ -37938,15 +38033,42 @@ event and do your own custom submission:
         return (numresults<=1 || !this.filtrabile);
       },
 
-      resetSelection: function() {
-        var selectedElements = this.querySelectorAll('.item-selected');
+      resetSelection: function(reset) {
+        reset = (reset || false);
+        var selectedElements = (!reset)?this.querySelectorAll('.item-selected'):this.querySelectorAll('link-listbox-item');
         for(var i = 0; i < selectedElements.length; i++) {
-            var el = selectedElements[i];
-            this.toggleClass('item-selected', false, el);
-            this.toggleClass('layout-item-box-translate', false, el);
+          var el = selectedElements[i];
+          this.toggleClass('item-selected', reset, el);
+          this.toggleClass('layout-item-box-translate', reset, el);
         }
-        this.selectAll(false);
-        this.selections = 0;
+        this.selectAll(reset);
+      },
+
+      _onBoxSelection: function(e) {
+        this.isHover = false;
+        this._countSelections(e.currentTarget.checked?1:-1);
+        this.set('dataProvider.'+e.model.index+'.isHoverSelection', e.currentTarget.checked);
+        this.set('dataProvider.'+e.model.index+'.checked', e.currentTarget.checked);
+        this.set('dataProvider.'+e.model.index+'.swiped', false);
+      },
+
+      _onItemOver: function(e) {
+        if(this.selectable) {
+          this.isHover = true;
+          var pib = e.currentTarget.querySelector('link-listbox-item');
+          if(pib.className.indexOf('item-selected') == -1) {
+            pib.className += ' layout-item-box-translate item-selected';
+          }
+        }
+      },
+
+      _onItemOut: function(e) {
+        var cib = event.currentTarget.querySelector('link-listbox-item');
+        if(cib.className.indexOf('item-selected') != -1 && !this.dataProvider[e.model.index].checked && this.isHover) {
+          this.toggleClass('item-selected', false, cib);
+          this.toggleClass('layout-item-box-translate', false, cib);
+        }
+        this.isHover = false;
       },
 
       _onswipe: function(e) {
@@ -37963,8 +38085,11 @@ event and do your own custom submission:
                 var pib = e.currentTarget.querySelector('link-listbox-item');
                 if(pib.className.indexOf('item-selected') == -1) {
                   pib.className += ' layout-item-box-translate item-selected';
-                  this.dataProvider[e.model.index].checked = true;
-                  this.selections = (this.selections < 0)?1:this.selections + 1;
+                  this.set('dataProvider.'+e.model.index+'.checked', true);
+                  this.set('dataProvider.'+e.model.index+'.swiped', true);
+                  this.customStyle['--icon-checkmark-swiped'] = 'none';
+                  this.updateStyles();
+                  this._countSelections(1);
                 }
               }
               break;
@@ -41189,7 +41314,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         },
 
         setResponse: function(_response){
-          this.buildForm(_response.infoRicerca, this.$.filterForm);
+          if(this._viewChanged || (this.$.filterForm && this.$.filterForm.children.length == 0)) {
+            this._viewChanged = false;
+            this.buildForm(_response.infoRicerca, this.$.filterForm);
+          }
 
           this._hideChart = false;
           this._hideDatepicker = !_response.attivaDate;
@@ -42021,8 +42149,8 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         display: block;
       }
 
-      .group {
-        width: 100%;
+      .shift-progress-status {
+        padding-left: 38px;
       }
 
       paper-spinner {
@@ -42065,7 +42193,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         <circle class="progress-track" cx="18" cy="18" r="10" stroke-dashoffset$="75.39" fill$="{{_progressColor}}"></circle>
       </svg>
     </div>
-    <div class="group">
+    <div class$="[[_classForProgress(_hasPercentuale)]]">
       <template is="juicy-html" content$="[[_element]]"></template>
     </div>
     <iron-ajax id="_polling" handle-as="json" on-response="_pollingInfo_responseHandler" on-error="_pollingInfo_errorHandler" debounce-duration="300"></iron-ajax>
@@ -42126,6 +42254,13 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           type: String
         }
 
+      },
+
+      _classForProgress: function(value){
+        if(value) {
+          return 'shift-progress-status';
+        }
+        return '';
       },
 
       _render: function(item){

@@ -193,6 +193,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Avviso }
+     */
+    public Avviso createAvviso() {
+        return new Avviso();
+    }
+
+    /**
      * Create an instance of {@link IdEvento }
      */
     public IdEvento createIdEvento() {

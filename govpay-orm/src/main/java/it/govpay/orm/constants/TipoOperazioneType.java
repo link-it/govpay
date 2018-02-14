@@ -41,6 +41,8 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 	ADD ("ADD"),
 	@javax.xml.bind.annotation.XmlEnumValue("DEL")
 	DEL ("DEL"),
+	@javax.xml.bind.annotation.XmlEnumValue("INC")
+	INC ("INC"),
 	@javax.xml.bind.annotation.XmlEnumValue("N_V")
 	N_V ("N_V");
 	

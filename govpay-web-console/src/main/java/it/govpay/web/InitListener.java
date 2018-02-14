@@ -23,6 +23,7 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
+import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 import it.govpay.web.utils.ConsoleProperties;
 
@@ -59,6 +60,7 @@ public class InitListener implements ServletContextListener {
 			
 			GovpayConfig.newInstance4GovPayConsole();
 			RicevutaPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
+			AvvisoPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
 			AnagraficaManager.newInstance(false);
 			ConnectionManager.initialize();
 			OperazioneFactory.init();

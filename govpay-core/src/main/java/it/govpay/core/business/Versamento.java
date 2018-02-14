@@ -339,13 +339,13 @@ public class Versamento extends BasicBD {
 	
 	
 	public it.govpay.bd.model.Versamento chiediVersamento(Portale portale, String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {
-		if(codDominio != null && !AclEngine.isAuthorized(portale, Servizio.PAGAMENTI_ATTESA, codDominio, null, this)) {
+		if(codDominio != null && !AclEngine.isAuthorized(portale, Servizio.PAGAMENTI_ATTESA, codDominio, null)) {
 			throw new GovPayException(EsitoOperazione.PRT_005);
 		}
 		
 		it.govpay.bd.model.Versamento v = chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
 		
-		if(AclEngine.isAuthorized(portale, Servizio.PAGAMENTI_ATTESA, v.getUo(this).getDominio(this).getCodDominio(), null, this)) {
+		if(AclEngine.isAuthorized(portale, Servizio.PAGAMENTI_ATTESA, v.getUo(this).getDominio(this).getCodDominio(), null)) {
 			return v;
 		} else {
 			throw new GovPayException(EsitoOperazione.PRT_005);

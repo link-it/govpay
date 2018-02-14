@@ -63,6 +63,7 @@ public class DominioConverter {
 		dto.setNdpDescrizione(vo.getNdpDescrizione());
 		dto.setNdpData(vo.getNdpData());
 		dto.setLogo(vo.getLogo());
+		dto.setCbill(vo.getCbill());
 		return dto;
 	}
 
@@ -94,6 +95,7 @@ public class DominioConverter {
 		vo.setNdpDescrizione(dto.getNdpDescrizione());
 		vo.setNdpData(dto.getNdpData());
 		vo.setLogo(dto.getLogo());
+		vo.setCbill(dto.getCbill());
 
 		return vo;
 	}

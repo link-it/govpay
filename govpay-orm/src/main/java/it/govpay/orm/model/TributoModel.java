@@ -44,6 +44,7 @@ public class TributoModel extends AbstractModel<Tributo> {
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"Tributo",Tributo.class));
 		this.ABILITATO = new Field("abilitato",boolean.class,"Tributo",Tributo.class);
 		this.ID_IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new Field("idIbanAccredito",it.govpay.orm.IdIbanAccredito.class,"Tributo",Tributo.class));
+		this.ID_IBAN_ACCREDITO_POSTALE = new it.govpay.orm.model.IdIbanAccreditoModel(new Field("idIbanAccreditoPostale",it.govpay.orm.IdIbanAccredito.class,"Tributo",Tributo.class));
 		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.CODICE_CONTABILITA = new Field("codiceContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.TIPO_TRIBUTO = new it.govpay.orm.model.TipoTributoModel(new Field("tipoTributo",it.govpay.orm.TipoTributo.class,"Tributo",Tributo.class));
@@ -58,6 +59,7 @@ public class TributoModel extends AbstractModel<Tributo> {
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"Tributo",Tributo.class));
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Tributo",Tributo.class);
 		this.ID_IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new ComplexField(father,"idIbanAccredito",it.govpay.orm.IdIbanAccredito.class,"Tributo",Tributo.class));
+		this.ID_IBAN_ACCREDITO_POSTALE = new it.govpay.orm.model.IdIbanAccreditoModel(new ComplexField(father,"idIbanAccreditoPostale",it.govpay.orm.IdIbanAccredito.class,"Tributo",Tributo.class));
 		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.CODICE_CONTABILITA = new ComplexField(father,"codiceContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.TIPO_TRIBUTO = new it.govpay.orm.model.TipoTributoModel(new ComplexField(father,"tipoTributo",it.govpay.orm.TipoTributo.class,"Tributo",Tributo.class));
@@ -72,6 +74,8 @@ public class TributoModel extends AbstractModel<Tributo> {
 	public IField ABILITATO = null;
 	 
 	public it.govpay.orm.model.IdIbanAccreditoModel ID_IBAN_ACCREDITO = null;
+	 
+	public it.govpay.orm.model.IdIbanAccreditoModel ID_IBAN_ACCREDITO_POSTALE = null;
 	 
 	public IField TIPO_CONTABILITA = null;
 	 

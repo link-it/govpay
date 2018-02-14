@@ -74,6 +74,14 @@ public class UoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "uo_provincia", Uo.model().UO_PROVINCIA.getFieldType()));
 				setParameter(object, "setUoNazione", Uo.model().UO_NAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_nazione", Uo.model().UO_NAZIONE.getFieldType()));
+				setParameter(object, "setUoArea", Uo.model().UO_AREA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "uo_area", Uo.model().UO_AREA.getFieldType()));
+				setParameter(object, "setUoUrlSitoWeb", Uo.model().UO_URL_SITO_WEB.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "uo_url_sito_web", Uo.model().UO_URL_SITO_WEB.getFieldType()));
+				setParameter(object, "setUoEmail", Uo.model().UO_EMAIL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "uo_email", Uo.model().UO_EMAIL.getFieldType()));
+				setParameter(object, "setUoPec", Uo.model().UO_PEC.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "uo_pec", Uo.model().UO_PEC.getFieldType()));
 				return object;
 			}
 			
@@ -116,6 +124,14 @@ public class UoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"uoProvincia"));
 				setParameter(object, "setUoNazione", Uo.model().UO_NAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"uoNazione"));
+				setParameter(object, "setUoArea", Uo.model().UO_AREA.getFieldType(),
+					this.getObjectFromMap(map,"uoArea"));
+				setParameter(object, "setUoUrlSitoWeb", Uo.model().UO_URL_SITO_WEB.getFieldType(),
+					this.getObjectFromMap(map,"uoUrlSitoWeb"));
+				setParameter(object, "setUoEmail", Uo.model().UO_EMAIL.getFieldType(),
+					this.getObjectFromMap(map,"uoEmail"));
+				setParameter(object, "setUoPec", Uo.model().UO_PEC.getFieldType(),
+					this.getObjectFromMap(map,"uoPec"));
 				return object;
 			}
 			

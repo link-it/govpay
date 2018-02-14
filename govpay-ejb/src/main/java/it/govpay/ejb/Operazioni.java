@@ -36,7 +36,7 @@ public class Operazioni{
 
 	@Resource
 	TimerService timerservice;
-	
+
 	@Schedule(hour="4,12,18", persistent=false)
 	@AccessTimeout(value=30, unit=TimeUnit.MINUTES)
 	public static String acquisizioneRendicontazioni(){
@@ -84,7 +84,10 @@ public class Operazioni{
 			return "";
 		}
 		String esito = it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
-		
+
+		// forzo la generazione degli avvisi 
+		it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
+
 		it.govpay.core.business.Operazioni.resetEseguiElaborazioneTracciati();
 		return esito;
 	}
@@ -103,7 +106,7 @@ public class Operazioni{
 	public static String resetCacheAnagrafica(){
 		return it.govpay.core.business.Operazioni.resetCacheAnagrafica();
 	}
-	
+
 	@Schedule(hour="0", persistent=false)
 	@AccessTimeout(value=5, unit=TimeUnit.MINUTES)
 	public void generaEstrattoConto(Timer timer) {
@@ -121,7 +124,7 @@ public class Operazioni{
 		}
 		return it.govpay.core.business.Operazioni.richiestaConservazioneRt("Batch");
 	}
-	
+
 	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
 	@AccessTimeout(value=60, unit=TimeUnit.MINUTES)
 	public static String esitoConservazioneRt(){
@@ -129,5 +132,47 @@ public class Operazioni{
 			return "Batch non attivi";
 		}
 		return it.govpay.core.business.Operazioni.esitoConservazioneRt("Batch");
+	}
+
+	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
+	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
+	public static String generazioneAvvisiPagamento(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+
+		if(!GovpayConfig.getInstance().isBatchAvvisiPagamento()) {
+			return "Generazione avvisi pagamento non attiva";
+		}
+
+		if(!it.govpay.core.business.Operazioni.getEseguiGenerazioneAvvisi()) {
+			return "";
+		}
+		String esito = it.govpay.core.business.Operazioni.generaAvvisi("Batch");
+
+		// aggiorno lo stato di eventuali tracciati
+		it.govpay.core.business.Operazioni.concludiStampaTracciati("Batch");
+
+		it.govpay.core.business.Operazioni.resetEseguiGenerazioneAvvisi();
+		return esito;
+	}
+
+	@Schedule(hour="*", minute="*/30", persistent=false)
+	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
+	public static String generazioneAvvisiPagamentoSchedule(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+
+		if(!GovpayConfig.getInstance().isBatchAvvisiPagamento()) {
+			return "Generazione avvisi pagamento non attiva";
+		}
+
+		String esito = it.govpay.core.business.Operazioni.generaAvvisi("Batch");
+
+		// aggiorno lo stato di eventuali tracciati
+		it.govpay.core.business.Operazioni.concludiStampaTracciati("Batch");
+
+		return esito;
 	}
 }
