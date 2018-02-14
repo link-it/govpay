@@ -12,8 +12,8 @@ import java.util.List;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idA2A",
 "idPendenza",
-"dominio",
-"unitaOperativa",
+"idDominio",
+"idUnitaOperativa",
 "soggettoPagatore",
 "stato",
 "importo",
@@ -38,11 +38,11 @@ public class Pendenza extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("idPendenza")
   private String idPendenza = null;
   
-  @JsonProperty("dominio")
-  private String dominio = null;
+  @JsonProperty("idDominio")
+  private String idDominio = null;
   
-  @JsonProperty("unitaOperativa")
-  private String unitaOperativa = null;
+  @JsonProperty("idUnitaOperativa")
+  private String idUnitaOperativa = null;
   
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
@@ -124,33 +124,33 @@ public class Pendenza extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * Url per il dominio creditore
    **/
-  public Pendenza dominio(String dominio) {
-    this.dominio = dominio;
+  public Pendenza idDominio(String dominio) {
+    this.idDominio = dominio;
     return this;
   }
 
-  @JsonProperty("dominio")
-  public String getDominio() {
-    return dominio;
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
   }
-  public void setDominio(String dominio) {
-    this.dominio = dominio;
+  public void setIdDominio(String dominio) {
+    this.idDominio = dominio;
   }
 
   /**
    * Url per l'unita operativa creditrice
    **/
-  public Pendenza unitaOperativa(String unitaOperativa) {
-    this.unitaOperativa = unitaOperativa;
+  public Pendenza idUnitaOperativa(String unitaOperativa) {
+    this.idUnitaOperativa = unitaOperativa;
     return this;
   }
 
-  @JsonProperty("unitaOperativa")
-  public String getUnitaOperativa() {
-    return unitaOperativa;
+  @JsonProperty("idUnitaOperativa")
+  public String getIdUnitaOperativa() {
+    return idUnitaOperativa;
   }
-  public void setUnitaOperativa(String unitaOperativa) {
-    this.unitaOperativa = unitaOperativa;
+  public void setIdUnitaOperativa(String unitaOperativa) {
+    this.idUnitaOperativa = unitaOperativa;
   }
 
   /**
@@ -401,8 +401,8 @@ public class Pendenza extends it.govpay.rs.v1.beans.JSONSerializable {
     Pendenza pendenza = (Pendenza) o;
     return Objects.equals(idA2A, pendenza.idA2A) &&
         Objects.equals(idPendenza, pendenza.idPendenza) &&
-        Objects.equals(dominio, pendenza.dominio) &&
-        Objects.equals(unitaOperativa, pendenza.unitaOperativa) &&
+        Objects.equals(idDominio, pendenza.idDominio) &&
+        Objects.equals(idUnitaOperativa, pendenza.idUnitaOperativa) &&
         Objects.equals(soggettoPagatore, pendenza.soggettoPagatore) &&
         Objects.equals(stato, pendenza.stato) &&
         Objects.equals(importo, pendenza.importo) &&
@@ -422,7 +422,7 @@ public class Pendenza extends it.govpay.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, dominio, unitaOperativa, soggettoPagatore, stato, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, nome, causale, tassonomiaAvviso, tassonomia, voci, rpts, pagamenti);
+    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, soggettoPagatore, stato, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, nome, causale, tassonomiaAvviso, tassonomia, voci, rpts, pagamenti);
   }
 
   public static Pendenza parse(String json) {
@@ -441,8 +441,8 @@ public class Pendenza extends it.govpay.rs.v1.beans.JSONSerializable {
     
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
-    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
-    sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    unitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");

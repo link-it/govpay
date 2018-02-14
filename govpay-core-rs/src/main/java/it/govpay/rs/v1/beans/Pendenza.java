@@ -38,7 +38,7 @@ public class Pendenza extends it.govpay.rs.v1.beans.base.Pendenza {
 		this.setDataCaricamento(versamento.getDataCreazione());
 		this.setDataScadenza(versamento.getDataScadenza());
 		this.setDataValidita(versamento.getDataValidita());
-		this.setDominio(UriBuilderUtils.getDominio(dominio.getCodDominio()));
+		this.setIdDominio(UriBuilderUtils.getDominio(dominio.getCodDominio()));
 		this.setIdA2A(applicazione.getCodApplicazione());
 		this.setIdPendenza(versamento.getCodVersamentoEnte());
 		this.setImporto(versamento.getImportoTotale());
@@ -49,17 +49,17 @@ public class Pendenza extends it.govpay.rs.v1.beans.base.Pendenza {
 		StatoPendenza statoPendenza = null;
 
 		switch(versamento.getStatoVersamento()) {
-		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
+		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATO;
 			break;
-		case ANOMALO: statoPendenza = StatoPendenza.ANOMALIA;
+		case ANOMALO: statoPendenza = StatoPendenza.NON_ESEGUITO;
 			break;
-		case ESEGUITO: statoPendenza = StatoPendenza.PAGATA;
+		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITO;
 			break;
-		case ESEGUITO_SENZA_RPT:  statoPendenza = StatoPendenza.PAGATA;
+		case ESEGUITO_SENZA_RPT:  statoPendenza = StatoPendenza.ESEGUITO;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_PAGATA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTO;} else { statoPendenza = StatoPendenza.NON_ESEGUITO;}
 			break;
-		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.PAGATA_PARZIALMENTE;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITO_PARZIALE;
 			break;
 		default:
 			break;
@@ -70,7 +70,7 @@ public class Pendenza extends it.govpay.rs.v1.beans.base.Pendenza {
 		this.setTassonomia(versamento.getTassonomia());
 		this.setTassonomiaAvviso(versamento.getTassonomiaAvviso());
 		if(unitaOperativa != null)
-			this.setUnitaOperativa(UriBuilderUtils.getUoByDominio(dominio.getCodDominio(), unitaOperativa.getCodUo()));
+			this.setIdUnitaOperativa(UriBuilderUtils.getUoByDominio(dominio.getCodDominio(), unitaOperativa.getCodUo()));
 		
 		this.setPagamenti(UriBuilderUtils.getPagamentiByPendenza(versamento.getCodVersamentoEnte()));
 		this.setRpts(UriBuilderUtils.getRptsByPendenza(versamento.getCodVersamentoEnte()));

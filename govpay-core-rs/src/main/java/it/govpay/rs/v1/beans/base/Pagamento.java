@@ -5,12 +5,14 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
 import it.govpay.rs.v1.beans.base.Soggetto;
 import it.govpay.rs.v1.beans.base.StatoPagamento;
+import java.math.BigDecimal;
 import java.util.Date;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "id",
 "idSessionePortale",
 "idSessionePsp",
 "nome",
+"importo",
 "stato",
 "pspRedirectUrl",
 "dataRichiestaPagamento",
@@ -36,6 +38,9 @@ public class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("nome")
   private String nome = null;
+  
+  @JsonProperty("importo")
+  private BigDecimal importo = null;
   
   @JsonProperty("stato")
   private StatoPagamento stato = null;
@@ -179,6 +184,22 @@ public class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
   }
   public void setNome(String nome) {
     this.nome = nome;
+  }
+
+  /**
+   * Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
+   **/
+  public Pagamento importo(BigDecimal importo) {
+    this.importo = importo;
+    return this;
+  }
+
+  @JsonProperty("importo")
+  public BigDecimal getImporto() {
+    return importo;
+  }
+  public void setImporto(BigDecimal importo) {
+    this.importo = importo;
   }
 
   /**
@@ -368,6 +389,7 @@ public class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
         Objects.equals(idSessionePortale, pagamento.idSessionePortale) &&
         Objects.equals(idSessionePsp, pagamento.idSessionePsp) &&
         Objects.equals(nome, pagamento.nome) &&
+        Objects.equals(importo, pagamento.importo) &&
         Objects.equals(stato, pagamento.stato) &&
         Objects.equals(pspRedirectUrl, pagamento.pspRedirectUrl) &&
         Objects.equals(dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
@@ -383,7 +405,7 @@ public class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idSessionePortale, idSessionePsp, nome, stato, pspRedirectUrl, dataRichiestaPagamento, datiAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, canale, pendenze, rpts);
+    return Objects.hash(id, idSessionePortale, idSessionePsp, nome, importo, stato, pspRedirectUrl, dataRichiestaPagamento, datiAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, canale, pendenze, rpts);
   }
 
   public static Pagamento parse(String json) {
@@ -404,6 +426,7 @@ public class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
     sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
     sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import it.govpay.model.Anagrafica.TIPO;
+
 
 public class Versamento {
 
@@ -143,18 +145,84 @@ public class Versamento {
 		this.singoloVersamento = singoloVersamento;
 	}
 
+	public Date getDataValidita() {
+		return dataValidita;
+	}
+
+	public void setDataValidita(Date dataValidita) {
+		this.dataValidita = dataValidita;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getCodLotto() {
+		return codLotto;
+	}
+
+	public void setCodLotto(String codLotto) {
+		this.codLotto = codLotto;
+	}
+
+	public String getCodVersamentoLotto() {
+		return codVersamentoLotto;
+	}
+
+	public void setCodVersamentoLotto(String codVersamentoLotto) {
+		this.codVersamentoLotto = codVersamentoLotto;
+	}
+
+	public String getTassonomiaAvviso() {
+		return tassonomiaAvviso;
+	}
+
+	public void setTassonomiaAvviso(String tassonomiaAvviso) {
+		this.tassonomiaAvviso = tassonomiaAvviso;
+	}
+
+	public String getTassonomia() {
+		return tassonomia;
+	}
+
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
+	}
+
+	public TIPO getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TIPO tipo) {
+		this.tipo = tipo;
+	}
+
 	private String codVersamentoEnte;
     private String iuv;
+    private String nome;
     private String codDominio;
+    private String codLotto;
+    private String codVersamentoLotto;
+    private String tassonomia;
+    private String tassonomiaAvviso;
+    
     private String codUnitaOperativa;
     private Anagrafica debitore;
     private BigDecimal importoTotale;
     private Date dataScadenza;
+    private Date dataValidita;
     private Boolean aggiornabile;
     private String codDebito;
     private Integer annoTributario;
     private String bundlekey;
     private String causale;
+    
+    
+    private TIPO tipo;
     private List<String> spezzoneCausale;
     private List<Versamento.SpezzoneCausaleStrutturata> spezzoneCausaleStrutturata;
     private List<Versamento.SingoloVersamento> singoloVersamento;

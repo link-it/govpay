@@ -19,7 +19,9 @@
  */
 package it.govpay.core.business;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -32,9 +34,14 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IbanAccredito;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.core.dao.commons.Anagrafica;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.exceptions.GovPayException;
@@ -51,6 +58,8 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Portale;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
@@ -235,16 +244,110 @@ public class Versamento extends BasicBD {
 		return this.chiediVersamento(ref.getIdA2A(), ref.getIdPendenza(), null, null, null, null);
 	}
 
-	public it.govpay.bd.model.Versamento chiediVersamento(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException {
-		String codUnivoco = null;
-		if(versamento.getDebitore() != null) {
-			codUnivoco = versamento.getDebitore().getCodUnivoco();
+	public it.govpay.bd.model.Versamento chiediVersamento(it.govpay.core.dao.commons.Versamento versamentoIn) throws ServiceException, GovPayException {
+		it.govpay.bd.model.Versamento versamento = new it.govpay.bd.model.Versamento();
+
+		try {
+			Applicazione applicazione = AnagraficaManager.getApplicazione(this, versamentoIn.getCodApplicazione());
+			versamento.setIdApplicazione(applicazione.getId());
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.APP_000, versamentoIn.getCodApplicazione());
 		}
-		it.govpay.bd.model.Versamento chiediVersamento = chiediVersamento(versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getBundlekey(), codUnivoco, versamento.getCodDominio(), versamento.getIuv());
+
+		try {
+			Dominio dominio = AnagraficaManager.getDominio(this, versamentoIn.getCodDominio());
+			versamento.setIdDominio(dominio.getId());
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.DOM_000, versamentoIn.getCodDominio());
+		}
+
+		try {
+			UnitaOperativa uo = AnagraficaManager.getUnitaOperativa(this, versamento.getIdDominio(), versamentoIn.getCodUnitaOperativa());
+			versamento.setIdUo(uo.getId());
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.UOP_000, versamentoIn.getCodUnitaOperativa());
+		}
+
+
+		versamento.setNome(versamentoIn.getNome());
+		versamento.setCodVersamentoEnte(versamentoIn.getCodVersamentoEnte());
+		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+		versamento.setImportoTotale(versamentoIn.getImportoTotale());
+		if(versamentoIn.getAggiornabile() != null)
+			versamento.setAggiornabile(versamentoIn.getAggiornabile());
+
+		versamento.setDataCreazione(new Date());
+		versamento.setDataValidita(versamentoIn.getDataValidita());
+		versamento.setDataScadenza(versamentoIn.getDataScadenza());
+		try {
+			versamento.setCausaleVersamento(versamentoIn.getCausale());
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
+		}
+
+		if(versamentoIn.getDebitore() != null) {
+			it.govpay.model.Anagrafica anagrafica = new it.govpay.model.Anagrafica();
+			Anagrafica debitore = versamentoIn.getDebitore();
+			anagrafica.setRagioneSociale(debitore.getRagioneSociale());
+			anagrafica.setCodUnivoco(debitore.getCodUnivoco());
+			anagrafica.setIndirizzo(debitore.getIndirizzo());
+			anagrafica.setCivico(debitore.getCivico());
+			anagrafica.setCap(debitore.getCap());
+			anagrafica.setLocalita(debitore.getLocalita());
+			anagrafica.setProvincia(debitore.getProvincia());
+			anagrafica.setNazione(debitore.getNazione());
+			anagrafica.setEmail(debitore.getEmail());
+			anagrafica.setTelefono(debitore.getTelefono());
+			anagrafica.setCellulare(debitore.getCellulare());
+			anagrafica.setFax(debitore.getFax());
+			anagrafica.setTipo(versamentoIn.getTipo());
+			versamento.setAnagraficaDebitore(anagrafica);			
+		}
+
 		
-//		VersamentiBD versamentiBD = new VersamentiBD(this);
-//		versamentiBD.insertVersamento(chiediVersamento);
-		return chiediVersamento;
+		for(it.govpay.core.dao.commons.Versamento.SingoloVersamento sing: versamentoIn.getSingoloVersamento()) {
+			SingoloVersamento singoloVersamento = new SingoloVersamento();
+
+			if(sing.getCodTributo() != null) {
+				try {
+					Tributo tributo = AnagraficaManager.getTributo(this, versamento.getIdDominio(), sing.getCodTributo());
+					singoloVersamento.setIdTributo(tributo.getId());
+				} catch (NotFoundException e) {
+					throw new GovPayException(EsitoOperazione.APP_000, sing.getCodTributo());
+				}
+			}
+			singoloVersamento.setCodSingoloVersamentoEnte(sing.getCodSingoloVersamentoEnte());
+			singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
+			singoloVersamento.setImportoSingoloVersamento(sing.getImporto());
+			if(sing.getBolloTelematico()!= null) {
+				singoloVersamento.setHashDocumento(sing.getBolloTelematico().getHash());
+				singoloVersamento.setTipoBollo(TipoBollo.toEnum(sing.getBolloTelematico().getTipo()));
+				singoloVersamento.setProvinciaResidenza(sing.getBolloTelematico().getProvincia());
+			}
+			
+			if(sing.getTributo() != null) {
+				try {
+					IbanAccredito ibanacc = AnagraficaManager.getIbanAccredito(this, versamento.getIdDominio(), sing.getTributo().getIbanAccredito());
+					singoloVersamento.setIdIbanAccredito(ibanacc.getId());
+				} catch (NotFoundException e) {
+					throw new ServiceException("Iban di accredito " + sing.getTributo().getIbanAccredito() + " non censito in Anagrafica per il dominio " + versamentoIn.getCodDominio());
+				}
+				singoloVersamento.setTipoContabilita(it.govpay.model.Tributo.TipoContabilta.valueOf(sing.getTributo().getTipoContabilita().toString()));
+				singoloVersamento.setCodContabilita(sing.getTributo().getCodContabilita());
+			}
+			
+			singoloVersamento.setNote(sing.getNote());
+			versamento.addSingoloVersamento(singoloVersamento);
+		}
+		versamento.setIuvProposto(versamentoIn.getIuv());
+		versamento.setCodLotto(versamentoIn.getCodLotto());
+		versamento.setCodVersamentoLotto(versamentoIn.getCodVersamentoLotto());
+		versamento.setCodAnnoTributario(versamentoIn.getAnnoTributario());
+		versamento.setTassonomiaAvviso(versamentoIn.getTassonomiaAvviso());
+		versamento.setTassonomia(versamentoIn.getTassonomia());
+
+		
+		return versamento;
 	}
 
 	public it.govpay.bd.model.Versamento chiediVersamento(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {

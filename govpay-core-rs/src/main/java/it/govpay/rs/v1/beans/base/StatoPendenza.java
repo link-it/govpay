@@ -4,34 +4,31 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * Stato della pendenza
+ * Stato della pendenza:   * ESEGUITO: Pagata  * NON_ESEGUITO: Da pagare  * ESEGUITO_PARZIALE: Pagata parzialmente  * ANNULLATO: Annullata  * SCADUTO: Scaduta
  **/
 
 
 /**
- * Stato della pendenza
+ * Stato della pendenza:   * ESEGUITO: Pagata  * NON_ESEGUITO: Da pagare  * ESEGUITO_PARZIALE: Pagata parzialmente  * ANNULLATO: Annullata  * SCADUTO: Scaduta
  */
 public enum StatoPendenza {
   
   
   
   
-  PAGATA("Pagata"),
+  ESEGUITO("ESEGUITO"),
   
   
-  NON_PAGATA("Non pagata"),
+  NON_ESEGUITO("NON_ESEGUITO"),
   
   
-  PAGATA_PARZIALMENTE("Pagata parzialmente"),
+  ESEGUITO_PARZIALE("ESEGUITO_PARZIALE"),
   
   
-  SCADUTA("Scaduta"),
+  ANNULLATO("ANNULLATO"),
   
   
-  ANNULLATA("Annullata"),
-  
-  
-  ANOMALIA("Anomalia");
+  SCADUTO("SCADUTO");
   
   
   

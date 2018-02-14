@@ -88,9 +88,9 @@ public class PagamentiPortale extends BaseRsServiceV1{
 						
 			PagamentiPortaleResponseOk responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, responseOk, 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(responseOk).build();
+			return Response.status(Status.OK).entity(responseOk.toJSON(null)).build();
 		} catch(GovPayException e) {
 			log.error("Errore durante il processo di pagamento", e.getMessage());
 			FaultBean respKo = new FaultBean();
@@ -99,7 +99,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessage());
 			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}

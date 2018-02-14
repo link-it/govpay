@@ -4,31 +4,37 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * Esito della richiesta di pagamento
+ * Esito della richiesta di pagamento:  * IN_CORSO: Pagamento in corso  * RIFIUTATO: Pagamento rifiutato  * ESEGUITO: Pagamento eseguito  * NON_ESEGUITO: Pagamento non eseguito  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito  * DECORRENZA: Decorrenza termini  * DECORRENZA_PARZIALE: Decorrenza termini parziale 
  **/
 
 
 /**
- * Esito della richiesta di pagamento
+ * Esito della richiesta di pagamento:  * IN_CORSO: Pagamento in corso  * RIFIUTATO: Pagamento rifiutato  * ESEGUITO: Pagamento eseguito  * NON_ESEGUITO: Pagamento non eseguito  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito  * DECORRENZA: Decorrenza termini  * DECORRENZA_PARZIALE: Decorrenza termini parziale 
  */
 public enum EsitoRpt {
   
   
   
   
-  PAGAMENTO_ESEGUITO("Pagamento eseguito"),
+  IN_CORSO("IN_CORSO"),
   
   
-  PAGAMENTO_NON_ESEGUITO("Pagamento non eseguito"),
+  RIFIUTATO("RIFIUTATO"),
   
   
-  PAGAMENTO_PARZIALMENTE_ESEGUITO("Pagamento parzialmente eseguito"),
+  ESEGUITO("ESEGUITO"),
   
   
-  DECORRENZA_TERMINI("Decorrenza termini"),
+  NON_ESEGUITO("NON_ESEGUITO"),
   
   
-  DECORRENZA_TERMINI_PARZIALE("Decorrenza termini parziale");
+  ESEGUITO_PARZIALE("ESEGUITO_PARZIALE"),
+  
+  
+  DECORRENZA("DECORRENZA"),
+  
+  
+  DECORENNZA_PARZIALE("DECORENNZA_PARZIALE");
   
   
   

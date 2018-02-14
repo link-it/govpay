@@ -4,49 +4,37 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * Stato del pagamento
+ * Stato del pagamento  * IN_CORSO: Pagamento in corso  * RIFIUTATO: Pagamento rifiutato  * ESEGUITO: Pagamento eseguito  * NON_ESEGUITO: Pagamento non eseguito  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito  * DECORRENZA: Decorrenza termini  * DECORRENZA_PARZIALE: Decorrenza termini parziale 
  **/
 
 
 /**
- * Stato del pagamento
+ * Stato del pagamento  * IN_CORSO: Pagamento in corso  * RIFIUTATO: Pagamento rifiutato  * ESEGUITO: Pagamento eseguito  * NON_ESEGUITO: Pagamento non eseguito  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito  * DECORRENZA: Decorrenza termini  * DECORRENZA_PARZIALE: Decorrenza termini parziale 
  */
 public enum StatoPagamento {
   
   
   
   
-  DA_REDIRIGERE_AL_WISP("Da redirigere al WISP"),
+  IN_CORSO("IN_CORSO"),
   
   
-  SELEZIONE_WISP_IN_CORSO("Selezione WISP in corso"),
+  RIFIUTATO("RIFIUTATO"),
   
   
-  SELEZIONE_WISP_FALLITA("Selezione WISP fallita"),
+  ESEGUITO("ESEGUITO"),
   
   
-  SELEZIONE_WISP_TIMEOUT("Selezione WISP timeout"),
+  NON_ESEGUITO("NON_ESEGUITO"),
   
   
-  SELEZIONE_WISP_ANNULLATA("Selezione WISP annullata"),
+  ESEGUITO_PARZIALE("ESEGUITO_PARZIALE"),
   
   
-  PAGAMENTO_IN_CORSO_AL_PSP("Pagamento in corso al PSP"),
+  DECORRENZA("DECORRENZA"),
   
   
-  PAGAMENTO_IN_ATTESA_DI_ESITO("Pagamento in attesa di esito"),
-  
-  
-  PAGAMENTO_ESEGUITO("Pagamento eseguito"),
-  
-  
-  PAGAMENTO_NON_ESEGUITO("Pagamento non eseguito"),
-  
-  
-  PAGAMENTO_PARZIALMENTE_ESEGUITO("Pagamento parzialmente eseguito"),
-  
-  
-  PAGAMENTO_IN_ERRORE("Pagamento in errore");
+  DECORENNZA_PARZIALE("DECORENNZA_PARZIALE");
   
   
   

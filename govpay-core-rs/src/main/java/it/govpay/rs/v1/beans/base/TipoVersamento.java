@@ -4,12 +4,12 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * Tipologia di versamento
+ * Tipologia di versamento:  * PO: Pagamento da PSP  * BP: Bollettino postale  * BBT: Bonifico bancario  * CP: Carta di pagamento  * AD: Addebito diretto  * OBEP: Pagamento Mybank  * OTH: Altro tipo di pagamento 
  **/
 
 
 /**
- * Tipologia di versamento
+ * Tipologia di versamento:  * PO: Pagamento da PSP  * BP: Bollettino postale  * BBT: Bonifico bancario  * CP: Carta di pagamento  * AD: Addebito diretto  * OBEP: Pagamento Mybank  * OTH: Altro tipo di pagamento 
  */
 public enum TipoVersamento {
   

@@ -92,21 +92,21 @@ public class PagamentiPortaleConverter {
 
 				Pendenza pendenza = (Pendenza) JSONObject.toBean( jsonObjectPendenza, jsonConfigPendenza );
 
-				if((pendenza.getDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = new PagamentiPortaleDTO(). new RefVersamentoAvviso();
-					ref.setIdDominio(pendenza.getDominio());
+					ref.setIdDominio(pendenza.getIdDominio());
 					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
 					listRefs.add(ref);
 
-				} else	if((pendenza.getDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
+				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
 					
 					PagamentiPortaleDTO.RefVersamentoPendenza ref = new PagamentiPortaleDTO(). new RefVersamentoPendenza();
 					ref.setIdA2A(pendenza.getIdA2A());
 					ref.setIdPendenza(pendenza.getIdPendenza());
 					listRefs.add(ref);
 
-				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getDominio() != null) {
+				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
 					listRefs.add(versamento);
 				} else {
@@ -148,8 +148,8 @@ public class PagamentiPortaleConverter {
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(pendenza.getIdA2A());
 
-		versamento.setCodDominio(pendenza.getDominio());
-		versamento.setCodUnitaOperativa(pendenza.getUnitaOperativa());
+		versamento.setCodDominio(pendenza.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
