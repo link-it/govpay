@@ -11,6 +11,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.base.PagamentoPost;
+import it.govpay.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.rs.v1.beans.base.Pendenza;
 import it.govpay.rs.v1.beans.base.Soggetto;
 import it.govpay.rs.v1.beans.base.VocePendenza;
@@ -45,30 +46,33 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 		pagamentiPortaleDTO.setPrincipal(principal);
 		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
-		pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
-
+		if(pagamentiPortaleRequest.getAutenticazioneSoggetto() != null)
+			pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
+		else 
+			pagamentiPortaleDTO.setAutenticazioneSoggetto(AutenticazioneSoggettoEnum.N_A.toString());
+		
 		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 		pagamentiPortaleDTO.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 
 		if(pagamentiPortaleRequest.getDatiAddebito() != null) {
-
 			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getDatiAddebito().getBicAddebito());
 			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getDatiAddebito().getIbanAddebito());
 		}
 
 		if(pagamentiPortaleRequest.getTokenWISP() != null) {
-
 			pagamentiPortaleDTO.setIdDominio(pagamentiPortaleRequest.getTokenWISP().getIdDominio());
 			pagamentiPortaleDTO.setKeyPA(pagamentiPortaleRequest.getTokenWISP().getKeyPA());
 			pagamentiPortaleDTO.setKeyWISP(pagamentiPortaleRequest.getTokenWISP().getKeyWISP());
 		}
-
-		pagamentiPortaleDTO.setLingua(pagamentiPortaleRequest.getLingua().toString());
+		
+		if(pagamentiPortaleRequest.getLingua() != null)
+			pagamentiPortaleDTO.setLingua(pagamentiPortaleRequest.getLingua().toString());
+		
 		pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
 
-		Soggetto soggettoVersante = pagamentiPortaleRequest.getSoggettoVersante();
-		Anagrafica versante = toAnagraficaCommons(soggettoVersante);
-		pagamentiPortaleDTO.setVersante(versante);
+		
+		if(pagamentiPortaleRequest.getSoggettoVersante() != null);
+			pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
 		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRichiesta );  
 		JSONArray jsonArrayPendenze = jsonObjectPagamentiPortaleRequest.getJSONArray(PagamentiPortaleConverter.PENDENZE_KEY);

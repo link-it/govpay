@@ -377,6 +377,7 @@ CREATE TABLE versamenti
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	causale_versamento VARCHAR(1024),
+	debitore_tipo VARCHAR(1),
 	debitore_identificativo VARCHAR(35) NOT NULL,
 	debitore_anagrafica VARCHAR(70) NOT NULL,
 	debitore_indirizzo VARCHAR(70),

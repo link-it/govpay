@@ -38,6 +38,8 @@ public class Anagrafica extends BasicModel {
 	private String urlSitoWeb;
 	private String area;
 	private String pec;
+	private TIPO tipo;
+	public enum TIPO {F,G}
 	
 	public String getRagioneSociale() {
 		return ragioneSociale;
@@ -128,5 +130,11 @@ public class Anagrafica extends BasicModel {
 	}
 	public void setPec(String pec) {
 		this.pec = pec;
+	}
+	public TIPO getTipo() {
+		return tipo;
+	}
+	public void setTipo(TIPO tipo) {
+		this.tipo = tipo;
 	}
 }

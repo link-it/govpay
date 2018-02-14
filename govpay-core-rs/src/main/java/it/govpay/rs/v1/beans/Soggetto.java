@@ -25,7 +25,9 @@ public class Soggetto extends it.govpay.rs.v1.beans.base.Soggetto {
 	
 	public Soggetto(it.govpay.model.Anagrafica anagrafica) {
 
-//		this.setTipo();
+		if(anagrafica.getTipo() != null)
+			this.setTipo(TipoEnum.fromValue(anagrafica.getTipo().toString()));
+
 		this.setIdentificativo(anagrafica.getCodUnivoco());
 		this.setAnagrafica(anagrafica.getRagioneSociale());
 		this.setIndirizzo(anagrafica.getIndirizzo());

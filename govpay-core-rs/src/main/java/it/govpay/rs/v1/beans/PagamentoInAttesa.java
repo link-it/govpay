@@ -77,7 +77,7 @@ public class PagamentoInAttesa {
 	 * 
 	 */
 	@JsonProperty("pagatore")
-	private Anagrafica pagatore;
+	private Soggetto pagatore;
 	/**
 	 * 
 	 * (Required)
@@ -259,7 +259,7 @@ public class PagamentoInAttesa {
 	 * 
 	 */
 	@JsonProperty("pagatore")
-	public Anagrafica getPagatore() {
+	public Soggetto getPagatore() {
 		return pagatore;
 	}
 
@@ -269,7 +269,7 @@ public class PagamentoInAttesa {
 	 * 
 	 */
 	@JsonProperty("pagatore")
-	public void setPagatore(Anagrafica pagatore) {
+	public void setPagatore(Soggetto pagatore) {
 		this.pagatore = pagatore;
 	}
 

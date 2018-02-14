@@ -177,6 +177,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
 			fields.add(Versamento.model().CAUSALE_VERSAMENTO);
 			fields.add(Versamento.model().DEBITORE_IDENTIFICATIVO);
+			fields.add(Versamento.model().DEBITORE_TIPO);
 			fields.add(Versamento.model().DEBITORE_ANAGRAFICA);
 			fields.add(Versamento.model().DEBITORE_INDIRIZZO);
 			fields.add(Versamento.model().DEBITORE_CIVICO);
