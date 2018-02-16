@@ -155,6 +155,7 @@ public class PagamentiPortaleConverter {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setIuv(pendenza.getNumeroAvviso());
+		versamento.setNome(pendenza.getNome());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza);

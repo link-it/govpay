@@ -362,7 +362,7 @@ CREATE TABLE acl
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL,
-	nome VARCHAR(35) NOT NULL,
+	nome VARCHAR(35),
 	importo_totale DOUBLE NOT NULL,
 	stato_versamento VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(255),

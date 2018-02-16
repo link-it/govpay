@@ -365,7 +365,7 @@ CREATE SEQUENCE seq_versamenti start 1 increment 1 maxvalue 9223372036854775807 
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL,
-	nome VARCHAR(35) NOT NULL,
+	nome VARCHAR(35),
 	importo_totale DOUBLE PRECISION NOT NULL,
 	stato_versamento VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(255),
