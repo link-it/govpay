@@ -32,6 +32,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
+import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTO;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
@@ -102,10 +103,12 @@ public class PagamentiPortaleDAO extends BasicBD{
 				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+versamentoModel.getUo(this).getDominio(this).getCodDominio()+"].", EsitoOperazione.DOM_001, versamentoModel.getUo(this).getDominio(this).getCodDominio());
 			}
 			
-			IdVersamento idV = new IdVersamento();
-			idV.setCodVersamentoEnte(versamentoModel.getCodVersamentoEnte());
-			idV.setId(versamentoModel.getId());
-			idVersamento.add(idV);
+			if(versamentoModel.getId() != null) {
+				IdVersamento idV = new IdVersamento();
+				idV.setCodVersamentoEnte(versamentoModel.getCodVersamentoEnte());
+				idV.setId(versamentoModel.getId());
+				idVersamento.add(idV);
+			}
 			
 			if(i == 0) {
 				// 	2. Codice dominio della prima pendenza
@@ -231,6 +234,16 @@ public class PagamentiPortaleDAO extends BasicBD{
 			// sessione di pagamento non in corso
 			stato = STATO.DA_REDIRIGERE_AL_WISP;
 			redirectUrl = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentiPortaleDTO.getIdSessione();
+			for(Versamento versamento: versamenti) {
+				if(versamento.getId() == null) {
+					versamentoBusiness.caricaVersamento(versamento, false, true);
+					IdVersamento idV = new IdVersamento();
+					idV.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+					idV.setId(versamento.getId());
+					idVersamento.add(idV);
+
+				}
+			}
 		}
 		
 		pagamentoPortale = new PagamentoPortale();

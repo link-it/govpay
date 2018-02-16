@@ -116,6 +116,9 @@ public class Versamento extends BasicBD {
 				ctx.log("versamento.validazioneSemanticaAggiornamentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				
 				versamentiBD.updateVersamento(versamento, true);
+				if(versamento.getId()==null)
+					versamento.setId(versamentoLetto.getId());
+				
 				ctx.log("versamento.aggioramentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") aggiornato");

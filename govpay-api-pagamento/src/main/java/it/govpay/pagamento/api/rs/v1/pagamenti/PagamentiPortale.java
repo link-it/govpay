@@ -92,7 +92,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(responseOk.toJSON(null)).build();
 		} catch(GovPayException e) {
-			log.error("Errore durante il processo di pagamento", e.getMessage());
+			log.error("Errore durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
 			respKo.setCodice(e.getCodEsito().name());
