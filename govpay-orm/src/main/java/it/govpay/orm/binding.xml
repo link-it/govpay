@@ -620,6 +620,8 @@
     <value name="idSessionePortale" field="idSessionePortale" usage="optional"/>
     <value name="idSessionePsp" field="idSessionePsp" usage="optional"/>
     <value name="stato" field="stato" usage="required"/>
+    <value name="codiceStato" field="codiceStato" usage="required"/>
+    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
     <value name="pspEsito" field="pspEsito" usage="optional"/>
     <value name="jsonRequest" field="jsonRequest" usage="optional"/>
@@ -773,6 +775,8 @@
     <value name="place_logo" field="placeLogo" usage="required"/>
     <value name="importo_logo" field="importoLogo" usage="required"/>
     <value name="scadenza_logo" field="scadenzaLogo" usage="required"/>
+    <value name="taglio" field="taglio" usage="required"/>
+    <value name="taglio1" field="taglio1" usage="required"/>
     <value name="ente_denominazione" field="enteDenominazione" usage="required"/>
     <value name="ente_area" field="enteArea" usage="required"/>
     <value name="ente_identificativo" field="enteIdentificativo" usage="required"/>
@@ -787,6 +791,7 @@
     <value name="intestatario_indirizzo_1" field="intestatarioIndirizzo1" usage="required"/>
     <value name="intestatario_indirizzo_2" field="intestatarioIndirizzo2" usage="required"/>
     <value name="avviso_causale" field="avvisoCausale" usage="required"/>
+    <value name="avviso_mav" field="avvisoMav" usage="required"/>
     <value name="avviso_importo" field="avvisoImporto" usage="required"/>
     <value name="avviso_scadenza" field="avvisoScadenza" usage="required"/>
     <value name="avviso_numero" field="avvisoNumero" usage="required"/>

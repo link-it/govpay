@@ -123,6 +123,20 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "stato";
 			}
 		}
+		if(field.equals(PagamentoPortale.model().CODICE_STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".codice_stato";
+			}else{
+				return "codice_stato";
+			}
+		}
+		if(field.equals(PagamentoPortale.model().DESCRIZIONE_STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione_stato";
+			}else{
+				return "descrizione_stato";
+			}
+		}
 		if(field.equals(PagamentoPortale.model().PSP_REDIRECT_URL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".psp_redirect_url";
@@ -235,6 +249,12 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().STATO)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().CODICE_STATO)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().DESCRIZIONE_STATO)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().PSP_REDIRECT_URL)){

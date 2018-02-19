@@ -19,12 +19,21 @@ public class PagamentoPortale extends BasicModel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public enum STATO { DA_REDIRIGERE_AL_WISP, 
+	public enum STATO { IN_CORSO,
+		ANNULLATO,
+		FALLITO,
+		ESEGUITO,
+		NON_ESEGUITO,
+		ESEGUITO_PARZIALE
+	}
+
+	public enum CODICE_STATO { DA_REDIRIGERE_AL_WISP, 
 		PAGAMENTO_IN_CORSO_AL_PSP, 
 		PAGAMENTO_IN_ATTESA_DI_ESITO, 
 		PAGAMENTO_ESEGUITO,
 		PAGAMENTO_NON_ESEGUITO,
 		PAGAMENTO_PARZIALMENTE_ESEGUITO,
+		PAGAMENTO_FALLITO,
 		SELEZIONE_WISP_IN_CORSO,
 		SELEZIONE_WISP_FALLITA,
 		SELEZIONE_WISP_TIMEOUT,
@@ -39,6 +48,8 @@ public class PagamentoPortale extends BasicModel {
 	private String idSessionePsp = null;
 	private List<IdVersamento> idVersamento = null;
 	private STATO stato = null;
+	private CODICE_STATO codiceStato = null;
+	private String descrizioneStato = null;
 	private String pspRedirectUrl = null;
 	private String pspEsito = null;
 	private String jsonRequest = null;
@@ -202,6 +213,18 @@ public class PagamentoPortale extends BasicModel {
 			this.versamenti = versamentiBD.findAll(filter );
 		}
 		return versamenti;
+	}
+	public CODICE_STATO getCodiceStato() {
+		return codiceStato;
+	}
+	public void setCodiceStato(CODICE_STATO codiceStato) {
+		this.codiceStato = codiceStato;
+	}
+	public String getDescrizioneStato() {
+		return descrizioneStato;
+	}
+	public void setDescrizioneStato(String descrizioneStato) {
+		this.descrizioneStato = descrizioneStato;
 	}
 
 }

@@ -49,6 +49,8 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.ID_SESSIONE_PORTALE = new Field("idSessionePortale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.ID_SESSIONE_PSP = new Field("idSessionePsp",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.STATO = new Field("stato",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.CODICE_STATO = new Field("codiceStato",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.PSP_REDIRECT_URL = new Field("pspRedirectURL",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.PSP_ESITO = new Field("pspEsito",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.JSON_REQUEST = new Field("jsonRequest",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
@@ -75,6 +77,8 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.ID_SESSIONE_PORTALE = new ComplexField(father,"idSessionePortale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.ID_SESSIONE_PSP = new ComplexField(father,"idSessionePsp",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.CODICE_STATO = new ComplexField(father,"codiceStato",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.PSP_REDIRECT_URL = new ComplexField(father,"pspRedirectURL",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.PSP_ESITO = new ComplexField(father,"pspEsito",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.JSON_REQUEST = new ComplexField(father,"jsonRequest",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
@@ -106,6 +110,10 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	public IField ID_SESSIONE_PSP = null;
 	 
 	public IField STATO = null;
+	 
+	public IField CODICE_STATO = null;
+	 
+	public IField DESCRIZIONE_STATO = null;
 	 
 	public IField PSP_REDIRECT_URL = null;
 	 

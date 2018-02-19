@@ -81,6 +81,8 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE_PORTALE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().ID_SESSIONE_PSP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().STATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().CODICE_STATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().DESCRIZIONE_STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_REDIRECT_URL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().JSON_REQUEST,false),"?");
@@ -104,6 +106,8 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getIdSessionePortale(),PagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getIdSessionePsp(),PagamentoPortale.model().ID_SESSIONE_PSP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getStato(),PagamentoPortale.model().STATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getCodiceStato(),PagamentoPortale.model().CODICE_STATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getDescrizioneStato(),PagamentoPortale.model().DESCRIZIONE_STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getPspRedirectURL(),PagamentoPortale.model().PSP_REDIRECT_URL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getPspEsito(),PagamentoPortale.model().PSP_ESITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getJsonRequest(),PagamentoPortale.model().JSON_REQUEST.getFieldType()),
@@ -184,6 +188,10 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getIdSessionePsp(), PagamentoPortale.model().ID_SESSIONE_PSP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().STATO,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getStato(), PagamentoPortale.model().STATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().CODICE_STATO,false), "?");
+		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getCodiceStato(), PagamentoPortale.model().CODICE_STATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().DESCRIZIONE_STATO,false), "?");
+		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getDescrizioneStato(), PagamentoPortale.model().DESCRIZIONE_STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_REDIRECT_URL,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getPspRedirectURL(), PagamentoPortale.model().PSP_REDIRECT_URL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_ESITO,false), "?");
