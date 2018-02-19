@@ -9,7 +9,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.PagamentoPortale;
-import it.govpay.bd.model.PagamentoPortale.STATO;
+import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -64,17 +64,18 @@ public class PagamentoPortaleUtils {
 			log.debug("AAAAAAAA Esito analisi rpt Update ["+updateStato+"] #OK ["+numeroEseguiti+"], #KO ["+numeroNonEseguiti+"]"); 
 			
 			if(updateStato) {
+				//TODO pintori
 				if(numeroEseguiti == findAll.size()) {
-					pagamentoPortale.setStato(STATO.PAGAMENTO_ESEGUITO);
+					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_ESEGUITO);
 				} else if(numeroNonEseguiti == findAll.size()) {
-					pagamentoPortale.setStato(STATO.PAGAMENTO_NON_ESEGUITO);
+					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_NON_ESEGUITO);
 				} else{
-					pagamentoPortale.setStato(STATO.PAGAMENTO_PARZIALMENTE_ESEGUITO); 
+					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_PARZIALMENTE_ESEGUITO); 
 				}
 				
 				 
 			} else {
-				pagamentoPortale.setStato(STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
+				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 			}
 			
 			log.debug("AAAAAAAA Nuovo Stato ["+pagamentoPortale.getStato()+"]"); 

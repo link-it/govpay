@@ -10,7 +10,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
-import it.govpay.bd.model.PagamentoPortale.STATO;
+import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
@@ -20,10 +20,10 @@ import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.ActionNonValidaException;
-import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.ParametriNonTrovatiException;
 import it.govpay.core.dao.pagamenti.exception.TokenWISPNonValidoException;
+import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
 import it.govpay.core.dao.pagamenti.utils.JsonUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException.FaultNodo;
@@ -60,9 +60,10 @@ public class WebControllerDAO extends BasicBD{
 			throw new PagamentoPortaleNonTrovatoException(null, "Non esiste un pagamento associato all'ID sessione ["+aggiornaPagamentiPortaleDTO.getIdSessione()+"]");
 		}
 
-		switch (pagamentoPortale.getStato()) {
+		//TODO pintori
+		switch (pagamentoPortale.getCodiceStato()) {
 		case DA_REDIRIGERE_AL_WISP:
-			pagamentoPortale.setStato(STATO.SELEZIONE_WISP_IN_CORSO);
+			pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_IN_CORSO);
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
 			aggiornaPagamentiPortaleDTOResponse.setWispHtml(pagamentoPortale.getWispHtml());
 			break;
@@ -152,11 +153,11 @@ public class WebControllerDAO extends BasicBD{
 						}
 						
 						if(tokenWisp.equals(FaultNodo.PPT_WISP_SESSIONE_SCONOSCIUTA.toString())) {
-							pagamentoPortale.setStato(STATO.SELEZIONE_WISP_FALLITA);
+							pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_FALLITA);
 							aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"));
 							pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
 						} else if(tokenWisp.equals(FaultNodo.PPT_WISP_TIMEOUT_RECUPERO_SCELTA.toString())) {
-							pagamentoPortale.setStato(STATO.SELEZIONE_WISP_TIMEOUT);
+							pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_TIMEOUT);
 							aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","TIMEOUT"));
 							pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
 						} else if(tokenWisp.equals(OK)) {
@@ -178,12 +179,12 @@ public class WebControllerDAO extends BasicBD{
 	
 								// se ho un redirect 			
 								if(rpt.getPspRedirectURL() != null) {
-									pagamentoPortale.setStato(STATO.PAGAMENTO_IN_CORSO_AL_PSP);
+									pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
 									pagamentoPortale.setIdSessionePsp(rpt.getCodSessione());
 									pagamentoPortale.setPspRedirectUrl(rpt.getPspRedirectURL()); 
 									aggiornaPagamentiPortaleDTOResponse.setLocation(rpt.getPspRedirectURL());
 								} else {							
-									pagamentoPortale.setStato(STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
+									pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 									aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getUrlRitorno());
 								}
 								pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
@@ -203,13 +204,13 @@ public class WebControllerDAO extends BasicBD{
 					} else {
 						// controllo del valore di type
 						if(aggiornaPagamentiPortaleDTO.getType().equals("ANNULLO")) {
-							pagamentoPortale.setStato(STATO.SELEZIONE_WISP_ANNULLATA);
+							pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_ANNULLATA);
 							aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","ANNULLO"));
 						} else if(aggiornaPagamentiPortaleDTO.getType().equals("TIMEOUT")) {
-							pagamentoPortale.setStato(STATO.SELEZIONE_WISP_TIMEOUT);
+							pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_TIMEOUT);
 							aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","TIMEOUT"));
 						} else if(aggiornaPagamentiPortaleDTO.getType().equals("IBAN")) {
-							pagamentoPortale.setStato(STATO.SELEZIONE_WISP_FALLITA);
+							pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_FALLITA);
 							aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() ,"esito","FAIL"));
 						} else {
 							// caso non valido 
@@ -248,9 +249,9 @@ public class WebControllerDAO extends BasicBD{
 		if(redirectDaPspDTO.getEsito() == null || redirectDaPspDTO.getIdSession() == null)
 		throw new ParametriNonTrovatiException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() ,"esito","FAIL"), "Parametri 'idSession' ed 'esito' obbligatori");
 
-		switch (pagamentoPortale.getStato()) {
+		switch (pagamentoPortale.getCodiceStato()) {
 		case PAGAMENTO_IN_CORSO_AL_PSP:
-			pagamentoPortale.setStato(STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
+			pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 			pagamentoPortale.setPspEsito(redirectDaPspDTO.getEsito()); 
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
 			redirectDaPspDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
