@@ -38,6 +38,10 @@ import it.govpay.model.Applicazione;
 
 public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
+	
+	public Dominio() {
+		// Costruttore per nuovi domini
+	}
 
 
 	// Business
