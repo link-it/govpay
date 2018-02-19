@@ -733,6 +733,11 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 				IbanAccredito ibanAccredito = tributo.getIbanAccredito(); 
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label"), ibanAccredito.getCodIban());
 			}
+			
+			if(tributo.getIdIbanAccreditoPostale() != null){
+				IbanAccredito ibanAccredito = tributo.getIbanAccreditoPostale(bd); 
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccreditoPostale.label"), ibanAccredito.getCodIban());
+			}
 
 			TipoContabilta tipoContabilita = tributo.getTipoContabilita() != null ? tributo.getTipoContabilita() : TipoContabilta.CAPITOLO;
 			String tipoContabilitaValue = null;

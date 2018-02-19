@@ -39,7 +39,10 @@ import it.govpay.model.Applicazione;
 public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
 
-
+	public Dominio() {
+		super();
+	}
+	
 	// Business
 	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
 
