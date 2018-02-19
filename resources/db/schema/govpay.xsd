@@ -1214,7 +1214,7 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="String35"/>
-			<xsd:element name="nome" type="String35"/>
+			<xsd:element name="nome" type="String35" minOccurs="0"/>
 
 			<xsd:element name="idDominio" type="id-dominio">
 				<xsd:annotation>
@@ -1756,12 +1756,14 @@
 		<xsd:sequence>
 			<xsd:element name="codPortale" type="String35"/>
 			<xsd:element name="codCanale" type="String35" minOccurs="0"/>
-			<xsd:element name="nome" type="String255"/>
+			<xsd:element name="nome" type="String255" />
 			<xsd:element name="versanteIdentificativo" type="String35" minOccurs="0"/>
 			<xsd:element name="idSessione" type="String35"/>
 			<xsd:element name="idSessionePortale" type="String35" minOccurs="0"/>
 			<xsd:element name="idSessionePsp" type="String35" minOccurs="0"/>
 			<xsd:element name="stato" type="String35" />
+			<xsd:element name="codiceStato" type="String35" />
+			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
 			<xsd:element name="pspRedirectURL" type="String1024" minOccurs="0"/>
 			<xsd:element name="pspEsito" type="String255" minOccurs="0"/>
 			<xsd:element name="jsonRequest" type="String512" minOccurs="0">

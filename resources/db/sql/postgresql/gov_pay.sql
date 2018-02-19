@@ -365,7 +365,7 @@ CREATE SEQUENCE seq_versamenti start 1 increment 1 maxvalue 9223372036854775807 
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL,
-	nome VARCHAR(35) NOT NULL,
+	nome VARCHAR(35),
 	importo_totale DOUBLE PRECISION NOT NULL,
 	stato_versamento VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(255),
@@ -458,6 +458,8 @@ CREATE TABLE pagamenti_portale
 	id_sessione_portale VARCHAR(35),
 	id_sessione_psp VARCHAR(35),
 	stato VARCHAR(35) NOT NULL,
+	codice_stato VARCHAR(35) NOT NULL,
+	descrizione_stato VARCHAR(1024),
 	psp_redirect_url VARCHAR(1024),
 	psp_esito VARCHAR(255),
 	json_request TEXT,

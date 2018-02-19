@@ -43,6 +43,8 @@ import java.io.Serializable;
  * 			&lt;element name="idSessionePortale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSessionePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codiceStato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pspRedirectURL" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pspEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="jsonRequest" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -76,6 +78,8 @@ import java.io.Serializable;
   	"idSessionePortale",
   	"idSessionePsp",
   	"stato",
+  	"codiceStato",
+  	"descrizioneStato",
   	"pspRedirectURL",
   	"pspEsito",
   	"jsonRequest",
@@ -172,6 +176,22 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 
   public void setStato(java.lang.String stato) {
     this.stato = stato;
+  }
+
+  public java.lang.String getCodiceStato() {
+    return this.codiceStato;
+  }
+
+  public void setCodiceStato(java.lang.String codiceStato) {
+    this.codiceStato = codiceStato;
+  }
+
+  public java.lang.String getDescrizioneStato() {
+    return this.descrizioneStato;
+  }
+
+  public void setDescrizioneStato(java.lang.String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
   }
 
   public java.lang.String getPspRedirectURL() {
@@ -312,6 +332,14 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
   protected java.lang.String stato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codiceStato",required=true,nillable=false)
+  protected java.lang.String codiceStato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrizioneStato",required=false,nillable=false)
+  protected java.lang.String descrizioneStato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pspRedirectURL",required=false,nillable=false)

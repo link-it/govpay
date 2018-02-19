@@ -15,6 +15,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -32,7 +33,6 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
-import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTO;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
@@ -166,8 +166,8 @@ public class PagamentiPortaleDAO extends BasicBD{
 		}
 		
 		nome = sbNomeVersamenti.length() > 255 ? (sbNomeVersamenti.substring(0, 252) + "...") : sbNomeVersamenti.toString();
-		
 		STATO stato = null;
+		CODICE_STATO codiceStato = null;
 		String redirectUrl = null;
 		String idSessionePsp = null;
 		String pspRedirect = null;
@@ -222,17 +222,20 @@ public class PagamentiPortaleDAO extends BasicBD{
 			
 			// se ho un redirect 			
 			if(rpt.getPspRedirectURL() != null) {
-				stato = STATO.PAGAMENTO_IN_CORSO_AL_PSP;
+				codiceStato = CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP;
+				stato = STATO.IN_CORSO;
 				idSessionePsp = rpt.getCodSessione();
 				redirectUrl = rpt.getPspRedirectURL();
 			} else {
-				stato = STATO.PAGAMENTO_IN_ATTESA_DI_ESITO;
+				stato = STATO.IN_CORSO;
+				codiceStato = CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO;
 				redirectUrl = pagamentiPortaleDTO.getUrlRitorno();
 			}
 			
 		} else {
 			// sessione di pagamento non in corso
-			stato = STATO.DA_REDIRIGERE_AL_WISP;
+			codiceStato = CODICE_STATO.DA_REDIRIGERE_AL_WISP;
+			stato = STATO.IN_CORSO;
 			redirectUrl = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentiPortaleDTO.getIdSessione();
 			for(Versamento versamento: versamenti) {
 				if(versamento.getId() == null) {
@@ -255,6 +258,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		pagamentoPortale.setJsonRequest(pagamentiPortaleDTO.getJsonRichiesta());
 		pagamentoPortale.setIdVersamento(idVersamento); 
 		pagamentoPortale.setPspRedirectUrl(pspRedirect);
+		pagamentoPortale.setCodiceStato(codiceStato);
 		pagamentoPortale.setStato(stato);
 		pagamentoPortale.setWispIdDominio(codDominio);
 		pagamentoPortale.setCodPsp(idPsp);

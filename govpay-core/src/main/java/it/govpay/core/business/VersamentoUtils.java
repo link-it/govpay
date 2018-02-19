@@ -93,6 +93,7 @@ public class VersamentoUtils {
 		model.setDataScadenza(versamento.getDataScadenza());
 		model.setDataUltimoAggiornamento(new Date());
 		model.setDescrizioneStato(null);
+		model.setNome(versamento.getNome());
 		model.setId(null);
 		try {
 			model.setApplicazione(versamento.getCodApplicazione(), bd);

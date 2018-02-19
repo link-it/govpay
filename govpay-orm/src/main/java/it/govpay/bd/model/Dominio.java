@@ -43,7 +43,10 @@ public class Dominio extends it.govpay.model.Dominio {
 		// Costruttore per nuovi domini
 	}
 
-
+	public Dominio() {
+		super();
+	}
+	
 	// Business
 	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
 

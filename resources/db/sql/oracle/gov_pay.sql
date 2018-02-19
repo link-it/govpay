@@ -546,7 +546,7 @@ CREATE SEQUENCE seq_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WIT
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR2(35 CHAR) NOT NULL,
-	nome VARCHAR2(35 CHAR) NOT NULL,
+	nome VARCHAR2(35 CHAR),
 	importo_totale BINARY_DOUBLE NOT NULL,
 	stato_versamento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione_stato VARCHAR2(255 CHAR),
@@ -661,6 +661,8 @@ CREATE TABLE pagamenti_portale
 	id_sessione_portale VARCHAR2(35 CHAR),
 	id_sessione_psp VARCHAR2(35 CHAR),
 	stato VARCHAR2(35 CHAR) NOT NULL,
+	codice_stato VARCHAR2(35 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(1024 CHAR),
 	psp_redirect_url VARCHAR2(1024 CHAR),
 	psp_esito VARCHAR2(255 CHAR),
 	json_request CLOB,

@@ -25,6 +25,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 
 
@@ -49,6 +50,8 @@ public class PagamentoPortaleConverter {
 		dto.setIdSessionePortale(vo.getIdSessionePortale());
 		dto.setIdSessionePsp(vo.getIdSessionePsp());
 		dto.setStato(STATO.valueOf(vo.getStato()));
+		dto.setCodiceStato(CODICE_STATO.valueOf(vo.getCodiceStato()));
+		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setPspRedirectUrl(vo.getPspRedirectURL());
 		dto.setPspEsito(vo.getPspEsito());
 		dto.setJsonRequest(vo.getJsonRequest());
@@ -76,6 +79,9 @@ public class PagamentoPortaleConverter {
 		vo.setIdSessionePortale(dto.getIdSessionePortale());
 		vo.setIdSessionePsp(dto.getIdSessionePsp());
 		vo.setStato(dto.getStato().toString());
+		vo.setCodiceStato(dto.getCodiceStato().toString());
+		vo.setDescrizioneStato(dto.getDescrizioneStato());
+
 		vo.setPspRedirectURL(dto.getPspRedirectUrl());
 		vo.setPspEsito(dto.getPspEsito());
 		vo.setJsonRequest(dto.getJsonRequest());

@@ -26,6 +26,7 @@ import java.io.InputStream;
 
 import org.openspcoop2.generic_project.exception.DeserializerException;
 
+import it.govpay.model.avvisi.AvvisoPagamentoInput;
 import it.govpay.orm.ACL;
 import it.govpay.orm.Applicazione;
 import it.govpay.orm.Audit;
@@ -4766,6 +4767,69 @@ public abstract class AbstractDeserializer {
 	
 	/*
 	 =================================================================================
+	 Object: AvvisoPagamentoInput
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @return Object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public AvvisoPagamentoInput readAvvisoPagamentoInput(String fileName) throws DeserializerException {
+		return (AvvisoPagamentoInput) this.xmlToObj(fileName, AvvisoPagamentoInput.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @return Object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public AvvisoPagamentoInput readAvvisoPagamentoInput(File file) throws DeserializerException {
+		return (AvvisoPagamentoInput) this.xmlToObj(file, AvvisoPagamentoInput.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @return Object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public AvvisoPagamentoInput readAvvisoPagamentoInput(InputStream in) throws DeserializerException {
+		return (AvvisoPagamentoInput) this.xmlToObj(in, AvvisoPagamentoInput.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @return Object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public AvvisoPagamentoInput readAvvisoPagamentoInput(byte[] in) throws DeserializerException {
+		return (AvvisoPagamentoInput) this.xmlToObj(in, AvvisoPagamentoInput.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @return Object type {@link it.govpay.orm.AvvisoPagamentoInput}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public AvvisoPagamentoInput readAvvisoPagamentoInputFromString(String in) throws DeserializerException {
+		return (AvvisoPagamentoInput) this.xmlToObj(in.getBytes(), AvvisoPagamentoInput.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
 	 Object: id-er
 	 =================================================================================
 	*/
@@ -4824,6 +4888,7 @@ public abstract class AbstractDeserializer {
 	public IdEr readIdErFromString(String in) throws DeserializerException {
 		return (IdEr) this.xmlToObj(in.getBytes(), IdEr.class);
 	}	
+	
 	
 	
 	/*
