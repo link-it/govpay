@@ -21,6 +21,8 @@ package it.govpay.orm;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
+import it.govpay.model.avvisi.AvvisoPagamentoInput;
+
 
 /**
  * This object contains factory methods for each 
@@ -491,6 +493,13 @@ public class ObjectFactory {
      */
     public Canale createCanale() {
         return new Canale();
+    }
+
+    /**
+     * Create an instance of {@link AvvisoPagamentoInput }
+     */
+    public AvvisoPagamentoInput createAvvisoPagamentoInput() {
+        return new AvvisoPagamentoInput();
     }
 
     /**

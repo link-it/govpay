@@ -70,6 +70,10 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id_sessione_psp", PagamentoPortale.model().ID_SESSIONE_PSP.getFieldType()));
 				setParameter(object, "setStato", PagamentoPortale.model().STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato", PagamentoPortale.model().STATO.getFieldType()));
+				setParameter(object, "setCodiceStato", PagamentoPortale.model().CODICE_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "codice_stato", PagamentoPortale.model().CODICE_STATO.getFieldType()));
+				setParameter(object, "setDescrizioneStato", PagamentoPortale.model().DESCRIZIONE_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", PagamentoPortale.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setPspRedirectURL", PagamentoPortale.model().PSP_REDIRECT_URL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "psp_redirect_url", PagamentoPortale.model().PSP_REDIRECT_URL.getFieldType()));
 				setParameter(object, "setPspEsito", PagamentoPortale.model().PSP_ESITO.getFieldType(),
@@ -130,6 +134,10 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"idSessionePsp"));
 				setParameter(object, "setStato", PagamentoPortale.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
+				setParameter(object, "setCodiceStato", PagamentoPortale.model().CODICE_STATO.getFieldType(),
+					this.getObjectFromMap(map,"codiceStato"));
+				setParameter(object, "setDescrizioneStato", PagamentoPortale.model().DESCRIZIONE_STATO.getFieldType(),
+					this.getObjectFromMap(map,"descrizioneStato"));
 				setParameter(object, "setPspRedirectURL", PagamentoPortale.model().PSP_REDIRECT_URL.getFieldType(),
 					this.getObjectFromMap(map,"pspRedirectURL"));
 				setParameter(object, "setPspEsito", PagamentoPortale.model().PSP_ESITO.getFieldType(),

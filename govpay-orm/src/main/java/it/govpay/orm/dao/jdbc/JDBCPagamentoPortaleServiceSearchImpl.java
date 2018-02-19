@@ -168,6 +168,8 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			fields.add(PagamentoPortale.model().ID_SESSIONE_PORTALE);
 			fields.add(PagamentoPortale.model().ID_SESSIONE_PSP);
 			fields.add(PagamentoPortale.model().STATO);
+			fields.add(PagamentoPortale.model().CODICE_STATO);
+			fields.add(PagamentoPortale.model().DESCRIZIONE_STATO);
 			fields.add(PagamentoPortale.model().PSP_REDIRECT_URL);
 			fields.add(PagamentoPortale.model().PSP_ESITO);
 			fields.add(PagamentoPortale.model().JSON_REQUEST);
