@@ -1,7 +1,6 @@
 package it.govpay.pagamento.api.rs.v1.converter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,9 +87,6 @@ public class PagamentiPortaleConverter {
 			jsonConfigPendenza.setRootClass(Pendenza.class);
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 			classMap.put("voci", VocePendenza.class);
-//			classMap.put("dataScadenza", Date.class);
-//			classMap.put("dataValidita", Date.class);
-//			classMap.put("dataCaricamento", Date.class);
 			jsonConfigPendenza.setClassMap(classMap);
 			
 			JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(BaseRsService.datePatterns.toArray(new String[1])) , true);
