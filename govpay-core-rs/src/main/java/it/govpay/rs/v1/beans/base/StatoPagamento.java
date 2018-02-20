@@ -3,12 +3,12 @@ package it.govpay.rs.v1.beans.base;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * Stato del pagamento  * IN_CORSO: Pagamento in corso  * RIFIUTATO: Pagamento rifiutato  * ESEGUITO: Pagamento eseguito  * NON_ESEGUITO: Pagamento non eseguito  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito  * DECORRENZA: Decorrenza termini  * DECORRENZA_PARZIALE: Decorrenza termini parziale 
+ * Stato del pagamento  * IN_CORSO: Pagamento in corso  * ANNULLATO: Pagamento annullato dall&#x27;utente o scaduto per timeout  * FALLITO: Pagamento non perfezionato per errori della piattaforma  * ESEGUITO: Pagamento concluso con successo  * NON_ESEGUITO: Processo concluso senza il perfezionamento del pagamento  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito 
  **/
 
 
 /**
- * Stato del pagamento  * IN_CORSO: Pagamento in corso  * RIFIUTATO: Pagamento rifiutato  * ESEGUITO: Pagamento eseguito  * NON_ESEGUITO: Pagamento non eseguito  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito  * DECORRENZA: Decorrenza termini  * DECORRENZA_PARZIALE: Decorrenza termini parziale 
+ * Stato del pagamento  * IN_CORSO: Pagamento in corso  * ANNULLATO: Pagamento annullato dall'utente o scaduto per timeout  * FALLITO: Pagamento non perfezionato per errori della piattaforma  * ESEGUITO: Pagamento concluso con successo  * NON_ESEGUITO: Processo concluso senza il perfezionamento del pagamento  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito 
  */
 public enum StatoPagamento {
   
@@ -16,9 +16,6 @@ public enum StatoPagamento {
   
   
   IN_CORSO("IN_CORSO"),
-  
-  
-  RIFIUTATO("RIFIUTATO"),
   
   
   ESEGUITO("ESEGUITO"),
@@ -30,10 +27,10 @@ public enum StatoPagamento {
   ESEGUITO_PARZIALE("ESEGUITO_PARZIALE"),
   
   
-  DECORRENZA("DECORRENZA"),
+  ANNULLATO("ANNULLATO"),
   
   
-  DECORENNZA_PARZIALE("DECORENNZA_PARZIALE");
+  FALLITO("FALLITO");
   
   
   
