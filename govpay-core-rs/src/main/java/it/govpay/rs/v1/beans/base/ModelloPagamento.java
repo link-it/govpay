@@ -4,12 +4,12 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * Modello di versamento realizzata dal canale
+ * Modello di versamento realizzata dal canale * 0: Immediato mono-beneficiario * 1: Immediato pluri-beneficiario * 2: Pagamento differito * 4: Pagamento da PSP 
  **/
 
 
 /**
- * Modello di versamento realizzata dal canale
+ * Modello di versamento realizzata dal canale * 0: Immediato mono-beneficiario * 1: Immediato pluri-beneficiario * 2: Pagamento differito * 4: Pagamento da PSP 
  */
 public enum ModelloPagamento {
   
