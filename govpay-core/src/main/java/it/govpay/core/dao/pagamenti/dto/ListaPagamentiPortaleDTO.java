@@ -1,7 +1,9 @@
 package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
+import java.util.List;
 
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 
 public class ListaPagamentiPortaleDTO {
@@ -13,7 +15,7 @@ public class ListaPagamentiPortaleDTO {
 	private Date dataDa;
 	private STATO stato;
 	private String versante;
-	
+	private List<FilterSortWrapper> sort;
 	public Integer getOffset() {
 		return offset;
 	}
@@ -55,5 +57,11 @@ public class ListaPagamentiPortaleDTO {
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;
+	}
+	public List<FilterSortWrapper> getSort() {
+		return sort;
+	}
+	public void setSort(List<FilterSortWrapper> sort) {
+		this.sort = sort;
 	}
 }
