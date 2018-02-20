@@ -6,14 +6,14 @@ import net.sf.json.JSONObject;
 public class JsonUtils {
 
 	public static Anagrafica getAnagraficaFromJson(String jsonRequest) {
-		Anagrafica anagrafica = new Anagrafica();
+		Anagrafica anagrafica = null;
 
 		try {
 			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );  
 
-			JSONObject jsonObjectSoggettoVersante = jsonObjectPagamentiPortaleRequest.getJSONObject("soggettoVersante");
-
-			if(jsonObjectSoggettoVersante != null) {
+			if(jsonObjectPagamentiPortaleRequest.containsKey("soggettoVersante")) {
+				JSONObject jsonObjectSoggettoVersante = jsonObjectPagamentiPortaleRequest.getJSONObject("soggettoVersante");
+				anagrafica = new Anagrafica();
 				anagrafica.setCap(jsonObjectSoggettoVersante.getString("cap"));
 				anagrafica.setCellulare(jsonObjectSoggettoVersante.getString("cellulare"));
 				anagrafica.setCivico(jsonObjectSoggettoVersante.getString("civico"));
@@ -31,13 +31,13 @@ public class JsonUtils {
 	}
 
 	public static String getIbanAddebitoFromJson(String jsonRequest) {
-		String ibanAddebito = "";
+		String ibanAddebito = null;
 
 		try {
 			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );  
-			JSONObject jsonObjectDatiAddebito = jsonObjectPagamentiPortaleRequest.getJSONObject("datiAddebito");
 
-			if(jsonObjectDatiAddebito != null) {
+			if(jsonObjectPagamentiPortaleRequest.containsKey("datiAddebito")) {
+				JSONObject jsonObjectDatiAddebito = jsonObjectPagamentiPortaleRequest.getJSONObject("datiAddebito");
 				ibanAddebito = jsonObjectDatiAddebito.getString("ibanAddebito");
 			}
 		}catch(Exception ee) {	}
@@ -46,7 +46,7 @@ public class JsonUtils {
 	}
 
 	public static String getCredenzialiPagatoreFromJson(String jsonRequest) {
-		String autenticazione = "";
+		String autenticazione = null;
 
 		try {
 			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );  
@@ -57,7 +57,7 @@ public class JsonUtils {
 	}
 
 	public static String getAutenticazioneFromJson(String jsonRequest) {
-		String autenticazione = "";
+		String autenticazione = null;
 
 		try {
 			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );  

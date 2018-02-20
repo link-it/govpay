@@ -1,10 +1,10 @@
 package it.govpay.rs.v1.beans.base;
 
+import java.math.BigDecimal;
 import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
-import it.govpay.rs.v1.beans.base.EntrataPost;
-import java.math.BigDecimal;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "descrizione",
 "ibanAccredito",

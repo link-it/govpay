@@ -281,6 +281,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 
 		response.setRedirectUrl(redirectUrl);
 		response.setId(pagamentoPortale.getId());
+		response.setIdSessione(pagamentoPortale.getIdSessione()); 
 		
 		return response;
 	}
