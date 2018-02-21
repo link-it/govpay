@@ -22,11 +22,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
-import org.openspcoop2.generic_project.expression.SortOrder;
-
 import javax.ws.rs.core.UriInfo;
+
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -46,10 +44,10 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.orm.PagamentoPortale;
 import it.govpay.pagamento.api.rs.v1.converter.PagamentiPortaleConverter;
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.beans.FaultBean;
 import it.govpay.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.PagamentoPost;
-import it.govpay.rs.v1.beans.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import net.sf.json.JsonConfig;
 

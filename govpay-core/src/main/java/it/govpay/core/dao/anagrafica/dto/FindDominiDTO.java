@@ -19,29 +19,11 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
-import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.core.exceptions.InternalException;
-import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.model.IAutorizzato;
 
 public class FindDominiDTO extends BasicFindRequestDTO {
-	
-	public enum Field {
-		codDominio(it.govpay.orm.Dominio.model().COD_DOMINIO),
-		ragioneSociale(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
-		
-		private IField ifield;
-
-		private Field(IField ifield) {
-			this.ifield = ifield;
-		}
-		
-		public IField getField(){
-			return ifield;
-		}
-	}
 	
 	private String codStazione = null;
 	private String codDominio = null;
@@ -50,6 +32,8 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 	
 	public FindDominiDTO(IAutorizzato user) throws ServiceException {
 		super(user);
+		this.addSortField("codDominio", it.govpay.orm.Dominio.model().COD_DOMINIO);
+		this.addSortField("ragioneSociale", it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
 	}
 
 	public String getCodStazione() {
@@ -84,8 +68,4 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 		this.abilitato = abilitato;
 	}
 	
-	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {
-		setOrderBy(Field.class, orderBy);
-	}
-
 }
