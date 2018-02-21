@@ -463,6 +463,12 @@ public class RtUtils extends NdpValidationUtils {
 				pagamentiBD.updatePagamento(pagamento);
 		}
 		
+		// Aggiornamento dello stato del pagamento portale associato all'RPT
+		Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+		if(idPagamentoPortale != null) {
+			PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, bd); 
+		}
+		
 		Notifica notifica = new Notifica(rpt, TipoNotifica.RICEVUTA, bd);
 		NotificheBD notificheBD = new NotificheBD(bd);
 		notificheBD.insertNotifica(notifica);

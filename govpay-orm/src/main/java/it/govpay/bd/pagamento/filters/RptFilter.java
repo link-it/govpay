@@ -21,6 +21,7 @@ package it.govpay.bd.pagamento.filters;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -50,6 +51,11 @@ public class RptFilter extends AbstractFilter {
 	private List<String> stato;
 	private List<Long> idRpt= null;
 	private Long idPagamentoPortale = null;
+	private String codPagamentoPortale = null;
+	private Date dataInizio;
+	private Date dataFine;
+	private String codApplicazione = null;
+	private String idPendenza = null;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -138,6 +144,45 @@ public class RptFilter extends AbstractFilter {
 				RPTFieldConverter rptFieldConverter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField idRptCustomField = new CustomField("id_pagamento_portale",  Long.class, "id_pagamento_portale",  rptFieldConverter.toTable(RPT.model()));
 				newExpression.equals(idRptCustomField, this.idPagamentoPortale);
+				addAnd = true;
+			}
+			
+			if(this.codPagamentoPortale != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
+				addAnd = true;
+			}
+			
+			if(this.codApplicazione != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.idPendenza != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE, this.idPendenza);
+				addAnd = true;
+			}
+			
+			if(this.dataInizio != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(RPT.model().DATA_MSG_RICHIESTA, this.dataInizio);
+				addAnd = true;
+			}
+			if(this.dataFine != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(RPT.model().DATA_MSG_RICHIESTA, this.dataFine);
 				addAnd = true;
 			}
 
@@ -246,5 +291,44 @@ public class RptFilter extends AbstractFilter {
 	public void setIdPagamentoPortale(Long idPagamentoPortale) {
 		this.idPagamentoPortale = idPagamentoPortale;
 	}
-	
+	public Date getDataInizio() {
+		return dataInizio;
+	}
+
+	public void setDataInizio(Date dataInizio) {
+		this.dataInizio = dataInizio;
+	}
+
+	public Date getDataFine() {
+		return dataFine;
+	}
+
+	public void setDataFine(Date dataFine) {
+		this.dataFine = dataFine;
+	}
+
+	public String getCodPagamentoPortale() {
+		return codPagamentoPortale;
+	}
+
+	public void setCodPagamentoPortale(String codPagamentoPortale) {
+		this.codPagamentoPortale = codPagamentoPortale;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getIdPendenza() {
+		return idPendenza;
+	}
+
+	public void setIdPendenza(String idPendenza) {
+		this.idPendenza = idPendenza;
+	}
+
 }

@@ -17,16 +17,16 @@ import it.govpay.model.IAutorizzato;
 
 public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	
-	private int offset;
 	private int limit;
 	private String simpleSearch;
 	private List<FilterSortWrapper> fieldsSort;
 	private Map<String, IField> fieldMap;
+	private int pagina;
 
 	public BasicFindRequestDTO(IAutorizzato user) {
 		super(user);
 		this.setLimit(50);
-		this.setOffset(0);
+		this.setPagina(1);
 		this.fieldsSort = new ArrayList<FilterSortWrapper>();
 		this.fieldMap = new HashMap<String, IField>();
 	}
@@ -35,20 +35,21 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		this.fieldMap.put(key, value);
 	}
 	public int getOffset() {
-		return offset;
+		return (this.pagina - 1) * this.limit;
 	}
 
-	public void setOffset(int offset) {
-		this.offset = offset;
+	public void setPagina(int pagina) {
+		this.pagina = pagina;
+	}
+	
+	public int getPagina() {
+		return this.pagina;
 	}
 
 	public int getLimit() {
 		return limit;
 	}
-
-	
 	public void setLimit(int limit) {
-		if(limit > 500) return;
 		this.limit = limit;
 	}
 

@@ -281,6 +281,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 
 		response.setRedirectUrl(redirectUrl);
 		response.setId(pagamentoPortale.getId());
+		response.setIdSessione(pagamentoPortale.getIdSessione()); 
 		
 		return response;
 	}
@@ -311,7 +312,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
 		filter.setStato(listaPagamentiPortaleDTO.getStato());
 		filter.setVersante(listaPagamentiPortaleDTO.getVersante());
-		filter.setFilterSortList(listaPagamentiPortaleDTO.getSort());
+		filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 		
 		long count = pagamentiPortaleBD.count(filter);
 

@@ -32,6 +32,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 
 	private Date inizio;
 	private Date fine;
+	private String principal;
 
 	public Date getInizio() {
 		return inizio;
@@ -44,6 +45,12 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	}
 	public void setFine(Date fine) {
 		this.fine = fine;
+	}
+	public String getPrincipal() {
+		return principal;
+	}
+	public void setPrincipal(String principal) {
+		this.principal = principal;
 	}
 	
 }

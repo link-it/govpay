@@ -60,6 +60,7 @@ import it.govpay.rs.v1.beans.Errore;
 import it.govpay.rs.v1.beans.IncassoPost;
 import it.govpay.rs.v1.beans.Incasso;
 import it.govpay.rs.v1.beans.ListaIncassi;
+import it.govpay.rs.v1.costanti.Costanti;
 import net.sf.json.JsonConfig;
 
 @Path("/incassi")
@@ -131,11 +132,9 @@ public class Incassi extends BaseRsServiceV1 {
 	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response cercaIncassi(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
-			@QueryParam(value="limit") @DefaultValue(value="25") int limit) {
-		
+			@QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
+			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina) {		
 		String methodName = "cercaIncassi"; 
-		if(limit > 25) limit = 25;
 		
 		BasicBD bd = null;
 		GpContext ctx = null; 
@@ -147,9 +146,8 @@ public class Incassi extends BaseRsServiceV1 {
 			ctx =  GpThreadLocal.get();
 			
 			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(null);
-			listaIncassoDTO.setOffset(offset);
-			listaIncassoDTO.setLimit(limit);
-			listaIncassoDTO.setPrincipal(getPrincipal());
+			listaIncassoDTO.setPagina(pagina);
+			listaIncassoDTO.setLimit(risultatiPerPagina);
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			ListaIncassiDTOResponse listaIncassiDTOResponse = incassi.listaIncassi(listaIncassoDTO);
@@ -159,7 +157,7 @@ public class Incassi extends BaseRsServiceV1 {
 				listaIncassi.add(new Incasso(i));
 			}
 			
-			return Response.status(Status.OK).entity(new ListaIncassi(listaIncassi, uriInfo.getBaseUri(), listaIncassiDTOResponse.getTotalResults(), offset, limit).toJSON(null)).build();
+			return Response.status(Status.OK).entity(new ListaIncassi(listaIncassi, uriInfo.getBaseUri(), listaIncassiDTOResponse.getTotalResults(), pagina, risultatiPerPagina).toJSON(null)).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();

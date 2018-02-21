@@ -1,9 +1,9 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.rs.v1.beans.base.IncassoPost;
 import java.util.Date;
+import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "causale",
 "importo",

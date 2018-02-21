@@ -37,17 +37,26 @@ public class PagamentoPortale extends it.govpay.rs.v1.beans.base.Pagamento {
 		if(pagamentoPortale.getDataRichiesta() != null)
 			this.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
 		
-		this.setDatiAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito")));
+		if(jsonObjectPagamentiPortaleRequest.containsKey("datiAddebito")) {
+			this.setDatiAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito")));
+		}
 
 		try {
-			this.setDataEsecuzionePagamento(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento")));
+			if(jsonObjectPagamentiPortaleRequest.containsKey("dataEsecuzionePagamento")) {
+				this.setDataEsecuzionePagamento(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento")));
+			}
 		} catch (ParseException e) {
 			throw new ServiceException(e);
 		}
-
-		this.setCredenzialiPagatore(jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore"));
-		this.setSoggettoVersante(Soggetto.parse(jsonObjectPagamentiPortaleRequest.getString("soggettoVersante")));
-		this.setAutenticazioneSoggetto(AutenticazioneSoggettoEnum.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto")));
+		if(jsonObjectPagamentiPortaleRequest.containsKey("credenzialiPagatore")) {
+			this.setCredenzialiPagatore(jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore"));
+		}
+		if(jsonObjectPagamentiPortaleRequest.containsKey("soggettoVersante")) {
+			this.setSoggettoVersante(Soggetto.parse(jsonObjectPagamentiPortaleRequest.getString("soggettoVersante")));
+		}
+		if(jsonObjectPagamentiPortaleRequest.containsKey("autenticazioneSoggetto")) {
+			this.setAutenticazioneSoggetto(AutenticazioneSoggettoEnum.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto")));
+		}
 		
 		if(pagamentoPortale.getCodPsp() != null &&  pagamentoPortale.getCodCanale() != null)
 			this.setCanale(UriBuilderUtils.getCanale(pagamentoPortale.getCodPsp(), pagamentoPortale.getCodCanale()));

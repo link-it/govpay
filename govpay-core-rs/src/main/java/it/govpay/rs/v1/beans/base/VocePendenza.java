@@ -1,11 +1,9 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-
-import it.govpay.core.dao.commons.Versamento;
-
 import java.math.BigDecimal;
+import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "indice",
 "idVocePendenza",

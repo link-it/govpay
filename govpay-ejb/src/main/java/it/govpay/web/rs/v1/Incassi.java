@@ -151,10 +151,10 @@ public class Incassi extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO();
+			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(null);
 			listaIncassoDTO.setInizio(inizio);
 			listaIncassoDTO.setFine(fine);
-			listaIncassoDTO.setOffset(offset);
+			listaIncassoDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			listaIncassoDTO.setLimit(limit);
 			listaIncassoDTO.setPrincipal(getPrincipal());
 			
