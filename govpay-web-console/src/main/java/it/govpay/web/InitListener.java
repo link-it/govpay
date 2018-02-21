@@ -19,6 +19,8 @@
  */
 package it.govpay.web;
 
+import java.net.URI;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -44,16 +46,17 @@ public class InitListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent sce) {
 		try{
 			
-//			URI log4j2Config = null;
-//			try {
-//				log4j2Config = ConsoleProperties.getInstance().getLog4j2Config();
-//				if(log4j2Config != null) {
-//					LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-//					context.setConfigLocation(log4j2Config);
-//				}
-//			} catch (Exception e) {
-//				LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore durante la configurazione del Logger: " + e);
-//			}
+			URI log4j2Config = null;
+			try {
+				log4j2Config = ConsoleProperties.getInstance().getLog4j2Config();
+				if(log4j2Config != null) {
+					LoggerWrapperFactory.setLogConfiguration(log4j2Config);
+				} else {
+					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
+				}
+			} catch (Exception e) {
+				LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore durante la configurazione del Logger: " + e);
+			}
 			
 			GovpayConfig.newInstance4GovPayConsole();
 			RicevutaPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
