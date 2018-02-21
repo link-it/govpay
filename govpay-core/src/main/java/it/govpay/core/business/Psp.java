@@ -23,15 +23,16 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.psp.CtInformativaDetail;
 import it.gov.digitpa.schemas._2011.psp.CtInformativaMaster;
@@ -43,19 +44,19 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSPRisposta;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.PspBD;
 import it.govpay.bd.anagrafica.StazioniBD;
-import it.govpay.servizi.commons.EsitoOperazione;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Stazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.bd.model.Canale;
 import it.govpay.model.Intermediario;
-import it.govpay.bd.model.Stazione;
+import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Psp extends BasicBD {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(Psp.class);
 
 	public Psp(BasicBD basicBD) {
 		super(basicBD);

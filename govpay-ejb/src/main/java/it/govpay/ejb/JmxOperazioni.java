@@ -34,9 +34,11 @@ import javax.management.MBeanOperationInfo;
 import javax.management.NotificationBroadcasterSupport;
 import javax.management.ReflectionException;
 
-import org.openspcoop2.utils.resources.CostantiJMX;
-import org.openspcoop2.utils.resources.GestoreRisorseJMX;
-import org.openspcoop2.utils.resources.RisorseJMXException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.jmx.CostantiJMX;
+import org.openspcoop2.utils.jmx.GestoreRisorseJMX;
+import org.openspcoop2.utils.jmx.RisorseJMXException;
+
 
 public class JmxOperazioni extends NotificationBroadcasterSupport implements DynamicMBean {
 	
@@ -220,7 +222,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 	}
 	
 	protected static void register() throws RisorseJMXException{
-		gestoreJMX = new GestoreRisorseJMX(org.apache.log4j.Logger.getLogger(StartupEjb.class));
+		gestoreJMX = new GestoreRisorseJMX(LoggerWrapperFactory.getLogger(StartupEjb.class));
 		gestoreJMX.registerMBean(JmxOperazioni.class, "it.govpay.core", CostantiJMX.JMX_TYPE, "operazioni");
 	}
 	

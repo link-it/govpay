@@ -52,7 +52,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
@@ -128,11 +128,11 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.findAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,null);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -169,11 +169,11 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.findAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,idMappingResolutionBehaviour);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -207,15 +207,15 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.find(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,null);			
 
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(MultipleResultException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -252,15 +252,15 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.find(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,idMappingResolutionBehaviour);			
 
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(MultipleResultException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -294,11 +294,11 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.count(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Count not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Count not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -333,13 +333,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,field);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -373,13 +373,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,distinct,field);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -413,13 +413,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,field);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -452,13 +452,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.select(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,distinct,field);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Select not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -492,13 +492,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.aggregate(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -532,13 +532,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.aggregate(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -572,13 +572,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.groupBy(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -612,13 +612,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.groupBy(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,functionField);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -647,13 +647,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.union(this.jdbcProperties,this.log,connection,sqlQueryObject,union,unionExpression);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Union not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Union not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -682,13 +682,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.unionCount(this.jdbcProperties,this.log,connection,sqlQueryObject,union,unionExpression);			
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("UnionCount not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UnionCount not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -749,15 +749,15 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,null);
 		
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(MultipleResultException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Get(tableId) not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Get(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -789,15 +789,15 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,idMappingResolutionBehaviour);
 		
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(MultipleResultException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Get(tableId,idMappingResolutionBehaviour) not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Get(tableId,idMappingResolutionBehaviour) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -826,13 +826,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.exists(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);			
 	
 		}catch(MultipleResultException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("Exists(tableId) not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Exists(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -866,11 +866,11 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.findAllTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression);
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("findAllTableIds not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("findAllTableIds not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -904,15 +904,15 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.findTableId(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);			
 
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(MultipleResultException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("findTableId not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("findTableId not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -941,13 +941,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.inUse(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);		
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("InUse(tableId) not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("InUse(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -988,13 +988,13 @@ public class JDBCPagamentoPortaleVersamentoServiceSearch implements IDBPagamento
 			return this.serviceSearch.nativeQuery(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,returnClassTypes,param);		
 	
 		}catch(ServiceException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e,e); throw new ServiceException("nativeQuery not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("nativeQuery not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);

@@ -54,16 +54,15 @@ import javax.xml.bind.JAXBElement;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Message;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.constants.MessageType;
 
 public class BasicClient {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(BasicClient.class);
 	
 	public class ClientException extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -276,7 +275,7 @@ public class BasicClient {
 			ctx.getIntegrationCtx().setMsg(baos.toByteArray());
 			invokeOutHandlers();
 			
-			if(log.getLevel().isMoreSpecificThan(Level.TRACE)) {
+			if(log.isTraceEnabled()) {
 				StringBuffer sb = new StringBuffer();
 				for(String key : connection.getRequestProperties().keySet()) {
 					sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
@@ -353,7 +352,7 @@ public class BasicClient {
 				ctx.log(responseMsg);
 			}
 
-			if(log.getLevel().isMoreSpecificThan(Level.TRACE) && connection != null && connection.getHeaderFields() != null) {
+			if(log.isTraceEnabled() && connection != null && connection.getHeaderFields() != null) {
 				StringBuffer sb = new StringBuffer();
 				for(String key : connection.getHeaderFields().keySet()) { 
 					sb.append("\n\t" + key + ": " + connection.getHeaderField(key));

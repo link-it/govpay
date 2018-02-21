@@ -22,28 +22,27 @@ package it.govpay.core.utils.client;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
-import it.govpay.servizi.pa.ObjectFactory;
-import it.govpay.servizi.pa.PaNotificaStorno;
-import it.govpay.servizi.pa.PaNotificaStorno.RichiestaStorno;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Rpt;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.Gp21Utils;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Rpt;
-import it.govpay.model.Rr;
 import it.govpay.model.Connettore.Tipo;
+import it.govpay.model.Rr;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.StatoRevoca;
+import it.govpay.servizi.pa.ObjectFactory;
+import it.govpay.servizi.pa.PaNotificaStorno;
+import it.govpay.servizi.pa.PaNotificaStorno.RichiestaStorno;
 import it.govpay.servizi.pa.PaNotificaTransazione;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class NotificaClient extends BasicClient {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Tipo tipo;
 	private Versione versione;
 	private static ObjectFactory objectFactory;

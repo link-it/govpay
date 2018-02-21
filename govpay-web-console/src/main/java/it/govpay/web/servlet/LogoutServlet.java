@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 public class LogoutServlet extends HttpServlet {
 
@@ -39,12 +39,12 @@ public class LogoutServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(LogoutServlet.class);
 
 	protected void initLogger(String cmd,HttpServletResponse response) {
 		String codOperazione = UUID.randomUUID().toString();
-		ThreadContext.put("cmd", cmd);
-		ThreadContext.put("op",  codOperazione);
+		MDC.put("cmd", cmd);
+		MDC.put("op",  codOperazione);
 		response.setHeader("X-GP-CMDID", cmd);
 	}
 

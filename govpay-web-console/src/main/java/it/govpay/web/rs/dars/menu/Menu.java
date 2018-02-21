@@ -32,8 +32,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Acl.Servizio;
@@ -69,7 +69,7 @@ import it.govpay.web.utils.Utils;
 @Path("/dars/")
 public class Menu extends BaseRsService {
 
-	private Logger log = LogManager.getLogger();
+	private Logger log = LoggerWrapperFactory.getLogger(Menu.class);
 	private String pathServizio;
 	private String nomeServizio;
 

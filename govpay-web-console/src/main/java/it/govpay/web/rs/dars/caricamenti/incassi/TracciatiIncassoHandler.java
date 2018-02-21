@@ -1,6 +1,6 @@
 package it.govpay.web.rs.dars.caricamenti.incassi;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.bd.model.Tracciato;
 import it.govpay.model.Tracciato.TipoTracciatoType;

@@ -22,10 +22,10 @@ package it.govpay.core.business;
 
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.BatchBD;
@@ -34,7 +34,7 @@ import it.govpay.model.Batch;
 
 public class BatchManager {
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(BatchManager.class);
 
 	public static boolean startEsecuzione(BasicBD bd, String codBatch) throws ServiceException {
 		log.debug("Verifico possibilita di avviare il batch " + codBatch);

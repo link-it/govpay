@@ -19,13 +19,13 @@
  */
 package it.govpay.core.utils.thread;
 
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.GovpayConfig;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.logging.log4j.LogManager;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GovpayConfig;
 
 public class ThreadExecutorManager {
 	
@@ -33,7 +33,7 @@ public class ThreadExecutorManager {
 	
 	public static void setup() throws GovPayException {
 		int threadPoolSize = GovpayConfig.getInstance().getDimensionePool();
-		LogManager.getLogger().info("Predisposizione pool di spedizione messaggi [NumThread: "+threadPoolSize+"]" );
+		LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi [NumThread: "+threadPoolSize+"]" );
 		executor = Executors.newFixedThreadPool(threadPoolSize);
 	}
 	

@@ -19,10 +19,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -564,7 +565,7 @@ public abstract class BaseTracciatiHandler extends DarsHandler<Tracciato> implem
 				String url = urlJMX.get(nodo);
 
 				try{
-					invoke = Utils.invocaOperazioneJMX(nomeMetodo, url, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
+					invoke = Utils.invocaOperazioneJMX(nomeMetodo, url, LoggerWrapperFactory.getLogger(StrumentiHandler.class));
 
 					if(invoke != null && invoke instanceof String){
 						String esito = (String) invoke;

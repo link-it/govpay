@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
@@ -40,21 +40,21 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.model.Anagrafica;
-import it.govpay.model.Intermediario;
-import it.govpay.model.Portale;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Portale;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Rpt extends BasicBD{
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(Rpt.class);
 
 	public Rpt(BasicBD basicBD) {
 		super(basicBD);

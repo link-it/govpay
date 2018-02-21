@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.stampe.pdf.TemplateBase;

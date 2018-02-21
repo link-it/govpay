@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.sql.Connection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;

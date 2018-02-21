@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.stampe.pdf.Costanti;

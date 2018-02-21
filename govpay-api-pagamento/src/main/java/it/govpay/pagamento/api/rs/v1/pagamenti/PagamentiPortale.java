@@ -218,9 +218,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 	private List<FilterSortWrapper> getSort(String ordinamento) {
 		List<FilterSortWrapper> lst = new ArrayList<FilterSortWrapper>();
 		
-//		Arrays.asList(ordinamento.split(",")).stream().forEach(sortValue -> {
-		List<String> asList = Arrays.asList(ordinamento.split(","));
-		for(String sortValue: asList) {
+		Arrays.asList(ordinamento.split(",")).stream().forEach(sortValue -> {
 			FilterSortWrapper e = new FilterSortWrapper();
 			
 			char firstChar = sortValue.charAt(0);
@@ -241,8 +239,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			}
 
 			lst.add(e);
-//		});
-		}
+		});
 		
 		return lst;
 	}

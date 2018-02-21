@@ -25,12 +25,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -71,7 +71,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class Incassi extends BasicBD {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(Incassi.class);
 
 	public Incassi(BasicBD basicBD) {
 		super(basicBD);
@@ -388,16 +388,24 @@ public class Incassi extends BasicBD {
 		fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);
 		fsw.setSortOrder(SortOrder.DESC);
 		newFilter.getFilterSortList().add(fsw);
+
+		List<Incasso> findAll = incassiBD.findAll(newFilter);
+		long count = incassiBD.count(newFilter);
 		
-		ListaIncassiDTOResponse response = new ListaIncassiDTOResponse();
-		response.setIncassi(incassiBD.findAll(newFilter));
+		ListaIncassiDTOResponse response = new ListaIncassiDTOResponse(count, findAll);
 		return response;
 	}
 	
 	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws NotAuthorizedException, ServiceException {
 		IncassiBD incassiBD = new IncassiBD(this);
 		try {
-			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getTrn());
+			Incasso incasso = null;
+			if(leggiIncassoDTO.getId() != null) {
+				incasso = incassiBD.getIncasso(leggiIncassoDTO.getId());
+			} else {
+				incasso = incassiBD.getIncasso(leggiIncassoDTO.getTrn());
+			}
+			
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, leggiIncassoDTO.getPrincipal());
 			Set<String> domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
 			if(domini != null && !domini.contains(incasso.getCodDominio())) {

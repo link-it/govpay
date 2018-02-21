@@ -3,7 +3,7 @@ package it.govpay.stampe.pdf.rt;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.model.RicevutaPagamento;
 

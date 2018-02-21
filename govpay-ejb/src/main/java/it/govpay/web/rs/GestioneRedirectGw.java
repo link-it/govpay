@@ -32,14 +32,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 @Path("/pub")
 public class GestioneRedirectGw {
 	
-	Logger log = LogManager.getLogger(this.getClass());
+	Logger log = LoggerWrapperFactory.getLogger(this.getClass());
 
 	@GET
 	@Path("/backUrl")

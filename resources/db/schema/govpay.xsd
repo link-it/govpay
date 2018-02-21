@@ -17,7 +17,6 @@
 			<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 				<linkit:dao id-mapping-behaviour="use_table_id">
 					<linkit:jdbc generate="true"/>
-					<linkit:jpa generate="false"/>
 					<linkit:sql>
 						<linkit:sql-script generate="true">
 							<linkit:sql-table-list>

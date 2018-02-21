@@ -20,15 +20,33 @@
 package it.govpay.web.ws;
 
 import java.util.Date;
+
+import javax.annotation.Resource;
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
+
+import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
+import org.openspcoop2.generic_project.exception.NotAuthorizedException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
+import org.slf4j.Logger;
+
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.ws.nodo.EsitoPaaInviaRT;
+import it.gov.digitpa.schemas._2011.ws.nodo.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRT;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRTRisposta;
 import it.gov.digitpa.schemas._2011.ws.nodo.TipoInviaEsitoStornoRisposta;
-import it.gov.digitpa.schemas._2011.ws.nodo.FaultBean;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Stazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -38,26 +56,9 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
-import it.govpay.bd.model.Dominio;
 import it.govpay.model.Evento;
-import it.govpay.model.Intermediario;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Stazione;
 import it.govpay.model.Evento.TipoEvento;
-
-import javax.annotation.Resource;
-import javax.jws.HandlerChain;
-import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
-
-import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.exception.NotAuthorizedException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
+import it.govpay.model.Intermediario;
 
 @WebService(serviceName = "PagamentiTelematiciRTservice",
 endpointInterface = "it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT",
@@ -74,7 +75,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 	@Resource
 	WebServiceContext wsCtxt;
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciRTImpl.class);
 
 	@Override
 	public TipoInviaEsitoStornoRisposta paaInviaEsitoStorno(
@@ -194,7 +195,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					ctx.log();
 				}
 			}catch(Exception e){
-				log.error(e,e);
+				log.error(e.getMessage(),e);
 			}
 
 			if(bd != null) bd.closeConnection();
@@ -326,7 +327,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				}
 
 			}catch(Exception e){
-				log.error(e,e);
+				log.error(e.getMessage(),e);
 			}
 
 			if(bd != null) bd.closeConnection();

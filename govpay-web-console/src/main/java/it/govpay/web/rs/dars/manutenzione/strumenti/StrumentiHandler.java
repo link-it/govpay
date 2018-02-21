@@ -28,8 +28,9 @@ import java.util.zip.ZipOutputStream;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.web.rs.dars.base.DarsHandler;
@@ -125,7 +126,7 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 				String url = urlJMX.get(nodo);
 
 				try{
-					invoke = Utils.invocaOperazioneJMX(nomeMetodo, url, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
+					invoke = Utils.invocaOperazioneJMX(nomeMetodo, url, LoggerWrapperFactory.getLogger(StrumentiHandler.class));
 
 					if(id==3) {
 						root.addVoce("Esito operazione sul nodo " + nodo, (String) invoke);

@@ -22,10 +22,11 @@ package it.govpay.bd;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.anagrafica.AuditBD;
 import it.govpay.model.BasicModel;
@@ -143,7 +144,7 @@ public class BasicBD {
 	
 	private Connection connection;
 	private boolean isClosed;
-	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 	private Long idOperatore;
 	
 	BasicBD father;

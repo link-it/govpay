@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
@@ -34,7 +34,7 @@ public class AvvisoPagamento extends BasicBD {
 
 
 	private SimpleDateFormat sdfDataScadenza = new SimpleDateFormat("dd/MM/yyyy");
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(AvvisoPagamento.class);
 
 	public AvvisoPagamento(BasicBD basicBD) {
 		super(basicBD);

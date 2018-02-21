@@ -35,14 +35,14 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.csv.Format;
 import org.openspcoop2.utils.csv.FormatReader;
 import org.openspcoop2.utils.csv.Printer;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -68,7 +68,7 @@ public class EstrattoConto extends BasicBD {
 
 	private static final String CSV_SEPARATOR = "|";
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(EstrattoConto.class);
 
 	private static final int LIMIT = 50;
 
@@ -421,7 +421,7 @@ public class EstrattoConto extends BasicBD {
 			}
 		} catch(Exception e) {
 			ctx.log("estrattoConto.erroreProcedura",e.getMessage());
-			log.error(e,e);
+			log.error(e.getMessage(),e);
 			throw e;
 		} finally {
 		}
@@ -481,7 +481,7 @@ public class EstrattoConto extends BasicBD {
 		}	catch(Exception e) {
 
 			ctx.log("estrattoConto.listaEstrattoContoDominioKo",e.getMessage());
-			log.error(e,e);
+			log.error(e.getMessage(),e);
 			throw e;
 		} finally {
 		}
@@ -543,7 +543,7 @@ public class EstrattoConto extends BasicBD {
 			throw new Exception("Dominio ["+codDominio+"] non registrato in GovPay.");
 		}	 catch(Exception e) {
 			ctx.log("estrattoConto.scaricaEstrattoContoDominioKo",e.getMessage());
-			log.error(e,e);
+			log.error(e.getMessage(),e);
 			throw e;
 		} finally {
 		}
@@ -685,7 +685,7 @@ public class EstrattoConto extends BasicBD {
 			log.debug("Generazione dei PDF estratto Conto in completata.");
 			return inputEstrattoConto;
 		}catch(Exception e){
-			log.error(e,e);
+			log.error(e.getMessage(),e);
 			throw e;
 		}
 	}
@@ -765,7 +765,7 @@ public class EstrattoConto extends BasicBD {
 			log.debug("Generazione dei PDF estratto Conto in completata.");
 			return inputEstrattoConto;
 		}catch(Exception e){
-			log.error(e,e);
+			log.error(e.getMessage(),e);
 			throw e;
 		}
 	}

@@ -23,13 +23,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
+
+import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
+import org.openspcoop2.generic_project.exception.NotAuthorizedException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
+import org.slf4j.Logger;
+
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.digitpa.schemas._2011.ws.psp.CtSpezzoniCausaleVersamento;
-import it.gov.digitpa.schemas._2011.ws.psp.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.psp.EsitoAttivaRPT;
 import it.gov.digitpa.schemas._2011.ws.psp.EsitoVerificaRPT;
+import it.gov.digitpa.schemas._2011.ws.psp.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.psp.PaaAttivaRPT;
 import it.gov.digitpa.schemas._2011.ws.psp.PaaAttivaRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.psp.PaaTipoDatiPagamentoPA;
@@ -38,28 +51,15 @@ import it.gov.digitpa.schemas._2011.ws.psp.PaaVerificaRPTRisposta;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematiciccp.PagamentiTelematiciCCP;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Anagrafica;
 import it.govpay.bd.model.Canale;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.bd.model.Dominio;
-import it.govpay.model.Evento;
-import it.govpay.model.Evento.TipoEvento;
-import it.govpay.model.IbanAccredito;
-import it.govpay.model.Intermediario;
-import it.govpay.model.Iuv;
-import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Versamento;
-import it.govpay.model.Versamento.CausaleSemplice;
-import it.govpay.model.Versamento.CausaleSpezzoni;
-import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
-import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -67,31 +67,31 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.Evento;
+import it.govpay.model.Evento.TipoEvento;
+import it.govpay.model.IbanAccredito;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Iuv;
+import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.Versamento.CausaleSemplice;
+import it.govpay.model.Versamento.CausaleSpezzoni;
+import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata;
-
-import javax.annotation.Resource;
-import javax.jws.HandlerChain;
-import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
-
-import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.exception.NotAuthorizedException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 
 @WebService(serviceName = "PagamentiTelematiciCCPservice",
@@ -108,7 +108,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	@Resource
 	WebServiceContext wsCtxt;
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciCCPImpl.class);
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Override
@@ -384,7 +384,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					ge.registraEvento(evento);
 				}
 			}catch(Exception e){
-				log.error(e,e);
+				log.error(e.getMessage(),e);
 			}
 
 			if(ctx != null) {
@@ -633,7 +633,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
 						evento.setDataRisposta(new Date());
 						ge.registraEvento(evento);
-					}catch(Exception e){log.error(e,e);}
+					}catch(Exception e){log.error(e.getMessage(),e);}
 				}
 
 				if(ctx != null) {
@@ -641,7 +641,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					ctx.log();
 				}
 			}catch(Exception e1){
-				log.error(e1,e1);
+				log.error(e1.getMessage(),e1);
 			}
 
 			if(bd != null) bd.closeConnection();

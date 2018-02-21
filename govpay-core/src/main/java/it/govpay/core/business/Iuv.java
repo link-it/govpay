@@ -21,14 +21,15 @@ package it.govpay.core.business;
 
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.util.CustomIuv;
 import it.govpay.core.business.model.CaricaIuvDTO;
@@ -40,13 +41,12 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Dominio;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Iuv extends BasicBD {
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(Iuv.class);
 	
 	public Iuv(BasicBD basicBD) {
 		super(basicBD);

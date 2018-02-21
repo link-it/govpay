@@ -27,12 +27,12 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
@@ -105,7 +105,7 @@ public class RtUtils extends NdpValidationUtils {
 		}
 	}
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(RtUtils.class);
 
 	public static byte[] validaFirma(String tipoFirma,  byte[] rt, String idDominio) throws NdpException {
 		try {

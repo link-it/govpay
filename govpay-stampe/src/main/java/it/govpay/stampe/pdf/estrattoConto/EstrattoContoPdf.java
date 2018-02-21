@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;

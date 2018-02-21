@@ -28,45 +28,45 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(LoggerSetupHandler.class);
 	
     public Set<QName> getHeaders() {
         return null;
     }
 
     public boolean handleMessage(SOAPMessageContext smc) {
-    	setupThreadContext(smc);
+    	setupMDC(smc);
         return true;
     }
 
     public boolean handleFault(SOAPMessageContext smc) {
-    	setupThreadContext(smc);
+    	setupMDC(smc);
         return true;
     }
 
     public void close(MessageContext messageContext) {
     }
 
-    private void setupThreadContext(SOAPMessageContext smc) {
+    private void setupMDC(SOAPMessageContext smc) {
         Boolean outboundProperty = (Boolean) smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         if (outboundProperty.booleanValue()) {
         	try { 
-        		smc.getMessage().setProperty("X-GP-CMDID", ThreadContext.get("cmd"));
+        		smc.getMessage().setProperty("X-GP-CMDID", MDC.get("cmd"));
         	} catch (SOAPException e) {
         		log.warn("Impossibile impostare l'header HTTP X-GP-CMDID nella risposta.");
         	}
         } else {
     		String codOperazione = UUID.randomUUID().toString().replace("-", "");
     		if(smc.get(SOAPMessageContext.WSDL_OPERATION) != null)
-    			ThreadContext.put("cmd", ((QName) smc.get(SOAPMessageContext.WSDL_OPERATION)).getLocalPart());
-    		ThreadContext.put("op",  codOperazione);
+    			MDC.put("cmd", ((QName) smc.get(SOAPMessageContext.WSDL_OPERATION)).getLocalPart());
+    		MDC.put("op",  codOperazione);
         }
     }
 }

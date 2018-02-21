@@ -34,8 +34,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
@@ -55,7 +55,7 @@ public class Domini extends DarsService {
 		super();
 	}
 
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(Domini.class);
 
 	@Override
 	public String getNomeServizio() {

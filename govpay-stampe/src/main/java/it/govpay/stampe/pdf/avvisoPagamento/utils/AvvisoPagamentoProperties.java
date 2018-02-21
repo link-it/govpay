@@ -9,9 +9,9 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.Utilities;
+import org.slf4j.Logger;
 
 
 public class AvvisoPagamentoProperties {
@@ -21,7 +21,7 @@ public class AvvisoPagamentoProperties {
 
 	private static AvvisoPagamentoProperties instance;
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(AvvisoPagamentoProperties.class);
 
 	private String govpayResourceDir = null;
 

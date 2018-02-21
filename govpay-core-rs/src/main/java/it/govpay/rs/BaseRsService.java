@@ -37,10 +37,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -63,7 +63,7 @@ public abstract class BaseRsService {
 	protected String codOperazione;
 
 	public BaseRsService(){
-		this.log = LogManager.getLogger();
+		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
 	}
 
 	public BaseRsService(String nomeServizio){

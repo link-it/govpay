@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.beans.WriteToSerializerType;
+import org.slf4j.Logger;
 
 import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.model.avvisi.AvvisoPagamentoInput;
@@ -109,7 +109,7 @@ public class AvvisoPagamentoPdf {
 
 
 	public static void main(String[] args) throws Exception {
-		Logger log = LogManager.getLogger();
+		Logger log = LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class);
 
 		AvvisoPagamentoProperties.newInstance("/var/govpay");
 

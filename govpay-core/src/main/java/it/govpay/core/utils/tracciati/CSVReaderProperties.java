@@ -2,7 +2,7 @@ package it.govpay.core.utils.tracciati;
 
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 public class CSVReaderProperties {
 	
@@ -38,14 +38,14 @@ public class CSVReaderProperties {
 
 	
 	
-	private static synchronized void initialize(org.apache.logging.log4j.Logger log) throws Exception{
+	private static synchronized void initialize(org.slf4j.Logger log) throws Exception{
 
 		if(CSVReaderProperties.instance==null)
 			CSVReaderProperties.instance = new CSVReaderProperties(log);	
 
 	}
 
-	public static CSVReaderProperties getInstance(org.apache.logging.log4j.Logger log) throws Exception{
+	public static CSVReaderProperties getInstance(org.slf4j.Logger log) throws Exception{
 
 		if(CSVReaderProperties.instance==null)
 			CSVReaderProperties.initialize(log);

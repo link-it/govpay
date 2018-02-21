@@ -1,14 +1,5 @@
 package it.govpay.core.utils;
 
-import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
-import it.govpay.core.exceptions.NdpException.FaultPa;
-import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.core.utils.client.handler.IntegrationContext;
-import it.govpay.model.Rpt;
-import it.govpay.model.Versionabile.Versione;
-import it.govpay.servizi.PagamentiTelematiciPAService;
-import it.govpay.servizi.commons.GpResponse;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,8 +10,8 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import javax.xml.ws.handler.MessageContext;
 
-import org.apache.logging.log4j.LogManager;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.ILogger;
 import org.openspcoop2.utils.logger.LoggerFactory;
@@ -36,6 +27,15 @@ import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.beans.proxy.Transaction;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
+
+import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
+import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.core.utils.client.handler.IntegrationContext;
+import it.govpay.model.Rpt;
+import it.govpay.model.Versionabile.Versione;
+import it.govpay.servizi.PagamentiTelematiciPAService;
+import it.govpay.servizi.commons.GpResponse;
 
 public class GpContext {
 
@@ -366,7 +366,7 @@ public class GpContext {
 		try {
 			getActiveLogger().log(string, params);
 		} catch (Exception e) {
-			LogManager.getLogger().error("Errore nell'emissione del diagnostico", e);
+			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione del diagnostico", e);
 		}
 	}
 	
@@ -384,7 +384,7 @@ public class GpContext {
 		try {
 			getActiveLogger().log(m);
 		} catch (Exception e) {
-			LogManager.getLogger().error("Errore nell'emissione della transazione", e);
+			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione della transazione", e);
 		}
 	}
 	
