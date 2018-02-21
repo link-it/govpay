@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ListaPagamentiPortale extends Lista<PagamentoPortale> {
 	
-	public ListaPagamentiPortale(List<PagamentoPortale> pagamentiPortale, URI requestUri, long count, long offset, long limit) {
-		super(pagamentiPortale, requestUri, count, offset, limit);
+	public ListaPagamentiPortale(List<PagamentoPortale> pagamentiPortale, URI requestUri, long count, long pagina, long limit) {
+		super(pagamentiPortale, requestUri, count, pagina, limit);
 	}
 	
 }

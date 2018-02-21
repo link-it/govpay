@@ -1,33 +1,40 @@
 package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
-import java.util.List;
 
-import it.govpay.bd.FilterSortWrapper;
+import org.openspcoop2.generic_project.beans.IField;
+
 import it.govpay.bd.model.PagamentoPortale.STATO;
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.core.exceptions.InternalException;
+import it.govpay.core.exceptions.RequestParamException;
+import it.govpay.model.IAutorizzato;
+import it.govpay.orm.PagamentoPortale;
 
-public class ListaPagamentiPortaleDTO {
+public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
+	
+	public enum Field {
+		dataRichiestaPagamento(PagamentoPortale.model().DATA_RICHIESTA),
+		stato(PagamentoPortale.model().STATO);
+		
+		private IField ifield;
 
-	private String principal;
-	private Integer offset;
-	private Integer limit;
+		private Field(IField ifield) {
+			this.ifield = ifield;
+		}
+		
+		public IField getField(){
+			return ifield;
+		}
+	}
+
+	public ListaPagamentiPortaleDTO(IAutorizzato user) {
+		super(user);
+	}
 	private Date dataA;
 	private Date dataDa;
 	private STATO stato;
 	private String versante;
-	private List<FilterSortWrapper> sort;
-	public Integer getOffset() {
-		return offset;
-	}
-	public void setOffset(Integer offset) {
-		this.offset = offset;
-	}
-	public Integer getLimit() {
-		return limit;
-	}
-	public void setLimit(Integer limit) {
-		this.limit = limit;
-	}
 	public Date getDataA() {
 		return dataA;
 	}
@@ -52,16 +59,7 @@ public class ListaPagamentiPortaleDTO {
 	public void setVersante(String versante) {
 		this.versante = versante;
 	}
-	public String getPrincipal() {
-		return principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
-	public List<FilterSortWrapper> getSort() {
-		return sort;
-	}
-	public void setSort(List<FilterSortWrapper> sort) {
-		this.sort = sort;
+	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {
+		setOrderBy(Field.class, orderBy);
 	}
 }

@@ -103,7 +103,7 @@ public class Domini extends BaseRsServiceV1 {
 			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			FindDominiDTO findDominiDTO = new FindDominiDTO(user);
-			findDominiDTO.setOffset(offset);
+			findDominiDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			findDominiDTO.setLimit(limit);
 			findDominiDTO.setSimpleSearch(simpleSearch);
 			findDominiDTO.setAbilitato(abilitato);
@@ -176,7 +176,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			FindUnitaOperativeDTO findUnitaOperativeDTO = new FindUnitaOperativeDTO(user, codDominio);
 			findUnitaOperativeDTO.setLimit(limit);
-			findUnitaOperativeDTO.setOffset(offset);
+			findUnitaOperativeDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			findUnitaOperativeDTO.setSimpleSearch(simpleSearch);
 			FindUnitaOperativeDTOResponse findUnitaOperativeDTOResponse = new DominiDAO().findUnitaOperative(findUnitaOperativeDTO);
 			
@@ -261,7 +261,7 @@ public class Domini extends BaseRsServiceV1 {
 			FindIbanDTO findIbanDTO = new FindIbanDTO(user, codDominio);
 			findIbanDTO.setIban(iban);
 			findIbanDTO.setLimit(limit);
-			findIbanDTO.setOffset(offset);
+			findIbanDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			findIbanDTO.setAbilitato(abilitato);
 			FindIbanDTOResponse findIbanDTOResponse = new DominiDAO().findIban(findIbanDTO);
 			
@@ -346,7 +346,7 @@ public class Domini extends BaseRsServiceV1 {
 			FindTributiDTO findTributiDTO = new FindTributiDTO(user, codDominio);
 			findTributiDTO.setCodTributo(codEntrata);
 			findTributiDTO.setLimit(limit);
-			findTributiDTO.setOffset(offset);
+			findTributiDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			findTributiDTO.setDescrizione(descrizione);
 			FindTributiDTOResponse findTributiDTOResponse = new DominiDAO().findTributi(findTributiDTO);
 			

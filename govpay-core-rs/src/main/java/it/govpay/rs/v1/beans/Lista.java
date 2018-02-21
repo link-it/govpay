@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.http.client.utils.URIBuilder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
+import it.govpay.rs.v1.costanti.Costanti;
+
 @JsonFilter(value="lista") 
 public abstract class Lista<T> extends JSONSerializable {
 
@@ -60,21 +62,23 @@ public abstract class Lista<T> extends JSONSerializable {
 		return "lista";
 	}
 	
-	public Lista(List<T> risultati, URI requestUri, long count, long offset, long limit) {
+	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long limit) {
 
 		this.risultati = risultati;
 		this.numPagine = count == 0 ? 1 : (long) Math.ceil(count/(double)limit);
-		this.pagina = (long) Math.ceil((offset+1)/(double)limit);
+//		this.pagina = (long) Math.ceil((offset+1)/(double)limit);
+		this.pagina = pagina;
 		this.risultatiPerPagina = limit;
 		this.numRisultati = risultati.size();
 		
 		
 		URIBuilder builder = new URIBuilder(requestUri);
-		builder.setParameter("size", Long.toString(this.risultatiPerPagina));
+		builder.setParameter(Costanti.PARAMETRO_RISULTATI_PER_PAGINA, Long.toString(this.risultatiPerPagina));
 		
 		if(this.pagina < this.numPagine) {
-			long nextPagina = offset+limit;
-			builder.setParameter("from", Long.toString(nextPagina));
+//			long nextPagina = offset+limit;
+			long nextPagina = pagina + 1 ;
+			builder.setParameter(Costanti.PARAMETRO_PAGINA, Long.toString(nextPagina));
 			try {
 				this.prossimiRisultati = builder.build().toString();
 			} catch (URISyntaxException e) { }

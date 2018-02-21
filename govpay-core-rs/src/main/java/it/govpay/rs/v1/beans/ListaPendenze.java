@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ListaPendenze extends Lista<Pendenza> {
 	
-	public ListaPendenze(List<Pendenza> pagamentiPortale, URI requestUri, long count, long offset, long limit) {
-		super(pagamentiPortale, requestUri, count, offset, limit);
+	public ListaPendenze(List<Pendenza> pagamentiPortale, URI requestUri, long count, long pagina, long limit) {
+		super(pagamentiPortale, requestUri, count, pagina, limit);
 	}
 	
 }
