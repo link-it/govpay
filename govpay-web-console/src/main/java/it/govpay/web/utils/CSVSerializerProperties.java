@@ -2,7 +2,7 @@ package it.govpay.web.utils;
 
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 public class CSVSerializerProperties {
 	
@@ -38,14 +38,14 @@ public class CSVSerializerProperties {
 
 	
 	
-	private static synchronized void initialize(org.apache.logging.log4j.Logger log) throws Exception{
+	private static synchronized void initialize(org.slf4j.Logger log) throws Exception{
 
 		if(CSVSerializerProperties.instance==null)
 			CSVSerializerProperties.instance = new CSVSerializerProperties(log);	
 
 	}
 
-	public static CSVSerializerProperties getInstance(org.apache.logging.log4j.Logger log) throws Exception{
+	public static CSVSerializerProperties getInstance(org.slf4j.Logger log) throws Exception{
 
 		if(CSVSerializerProperties.instance==null)
 			CSVSerializerProperties.initialize(log);

@@ -24,7 +24,7 @@ import it.govpay.orm.IdFr;
 
 import java.sql.Connection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;

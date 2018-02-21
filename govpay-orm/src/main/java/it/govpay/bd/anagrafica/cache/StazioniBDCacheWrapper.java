@@ -22,7 +22,7 @@ package it.govpay.bd.anagrafica.cache;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;

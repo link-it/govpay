@@ -24,14 +24,14 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 public class HttpSessionCheckListener implements HttpSessionListener {
 
 //	private static Logger log = LoggerManager.getGUILogger();
 	
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(HttpSessionCheckListener.class);
 	
 	@Override
 	public void sessionCreated(HttpSessionEvent e) {

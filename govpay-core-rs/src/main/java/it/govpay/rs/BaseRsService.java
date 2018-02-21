@@ -42,17 +42,17 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.model.Applicazione;
 import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
+import it.govpay.model.Applicazione;
 import net.sf.json.JSONObject;
 
 public abstract class BaseRsService {
@@ -78,7 +78,7 @@ public abstract class BaseRsService {
 	protected String codOperazione;
 
 	public BaseRsService(){
-		this.log = LogManager.getLogger();
+		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
 	}
 
 	public BaseRsService(String nomeServizio){

@@ -59,11 +59,11 @@ public class RendicontazioneFetch extends AbstractJDBCFetch {
 				setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iur", Rendicontazione.model().IUR.getFieldType()));
 				setParameter(object, "setIndiceDati", Rendicontazione.model().INDICE_DATI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "indice_dati", Rendicontazione.model().INDICE_DATI.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "indice_dati", Rendicontazione.model().INDICE_DATI.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "esito", Rendicontazione.model().ESITO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "esito", Rendicontazione.model().ESITO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setData", Rendicontazione.model().DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data", Rendicontazione.model().DATA.getFieldType()));
 				setParameter(object, "setStato", Rendicontazione.model().STATO.getFieldType(),

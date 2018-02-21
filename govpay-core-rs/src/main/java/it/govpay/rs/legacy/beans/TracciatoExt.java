@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.rs.v1.beans;
+package it.govpay.rs.legacy.beans;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.rs.v1.beans.Operazione;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

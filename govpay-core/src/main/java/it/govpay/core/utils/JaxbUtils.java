@@ -19,17 +19,6 @@
  */
 package it.govpay.core.utils;
 
-import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.ObjectFactory;
-import it.gov.digitpa.schemas._2011.psp.InformativaContoAccredito;
-import it.gov.digitpa.schemas._2011.psp.InformativaControparte;
-import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,8 +41,19 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.logging.log4j.LogManager;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.xml.sax.SAXException;
+
+import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
+import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.gov.digitpa.schemas._2011.pagamenti.ObjectFactory;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
+import it.gov.digitpa.schemas._2011.psp.InformativaContoAccredito;
+import it.gov.digitpa.schemas._2011.psp.InformativaControparte;
+import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
 
 public class JaxbUtils {
 
@@ -225,7 +225,7 @@ public class JaxbUtils {
 		@Override
 		public boolean handleEvent(ValidationEvent ve) {
 			if(ve.getSeverity() == 0) {
-				LogManager.getLogger().warn("Ricevuto warning di validazione durante il marshalling del messaggio: " + ve.getMessage());
+				LoggerWrapperFactory.getLogger(JaxbUtils.class).warn("Ricevuto warning di validazione durante il marshalling del messaggio: " + ve.getMessage());
 				return true;
 			} else {
 				return false;

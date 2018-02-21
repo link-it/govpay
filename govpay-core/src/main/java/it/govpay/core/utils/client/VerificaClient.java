@@ -23,13 +23,12 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
-import it.govpay.servizi.pa.ObjectFactory;
-import it.govpay.servizi.pa.PaVerificaVersamento;
-import it.govpay.servizi.pa.PaVerificaVersamentoResponse;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -40,16 +39,16 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Versamento;
 import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.EsitoOperazione;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.servizi.pa.ObjectFactory;
+import it.govpay.servizi.pa.PaVerificaVersamento;
+import it.govpay.servizi.pa.PaVerificaVersamentoResponse;
 
 public class VerificaClient extends BasicClient {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(VerificaClient.class);
 	private Versione versione;
 	private Tipo tipo;
 	private static ObjectFactory objectFactory;

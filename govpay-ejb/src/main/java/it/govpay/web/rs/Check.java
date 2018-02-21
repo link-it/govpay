@@ -56,11 +56,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Server;
@@ -81,7 +81,7 @@ public class Check {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonde() {
 		BasicBD bd = null;
-		Logger log = LogManager.getLogger();
+		Logger log = LoggerWrapperFactory.getLogger(Check.class);
 		try {
 			try {
 				bd = BasicBD.newInstance(UUID.randomUUID().toString());
@@ -146,7 +146,7 @@ public class Check {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonda(@PathParam(value = "nome") String nome) {
 		BasicBD bd = null;
-		Logger log = LogManager.getLogger();
+		Logger log = LoggerWrapperFactory.getLogger(Check.class);
 		try {
 			try {
 				bd = BasicBD.newInstance(UUID.randomUUID().toString());
@@ -197,7 +197,7 @@ public class Check {
 	@Path("/db")
 	public Response verificaDB() {
 		BasicBD bd = null;
-		Logger log = LogManager.getLogger();
+		Logger log = LoggerWrapperFactory.getLogger(Check.class);
 		try {
 			DominiBD dominiBD = null;
 			try {
@@ -221,7 +221,7 @@ public class Check {
 	@Path("/pdd")
 	public Response verificaPDD(
 			@QueryParam(value = "matchString") String matchString) {
-		Logger log = LogManager.getLogger();
+		Logger log = LoggerWrapperFactory.getLogger(Check.class);
 		try {
 			try {
 				URL url = GovpayConfig.getInstance().getUrlPddVerifica();
@@ -332,7 +332,7 @@ public class Check {
 			to.setType(GpContext.TIPO_SOGGETTO_GOVPAY);
 			ctx.getTransaction().setTo(to);
 			
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("op", ctx.getTransactionId());
 			GpThreadLocal.set(ctx);
 			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

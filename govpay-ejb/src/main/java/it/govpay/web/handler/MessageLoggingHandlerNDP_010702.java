@@ -26,15 +26,15 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
 
 public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageContext> {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(MessageLoggingHandlerNDP_010702.class);
 	
 	public Set<QName> getHeaders() {
 		return null;

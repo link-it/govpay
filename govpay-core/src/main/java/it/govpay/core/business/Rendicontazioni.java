@@ -19,6 +19,27 @@
  */
 package it.govpay.core.business;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.activation.DataHandler;
+
+import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.MultipleResultException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
+
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoliPagamenti;
 import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazione;
@@ -33,6 +54,11 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PspBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -51,44 +77,18 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Rendicontazione;
+import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Stazione;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Fr.StatoFr;
 import it.govpay.servizi.commons.EsitoOperazione;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.activation.DataHandler;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.SortOrder;
-import org.openspcoop2.utils.logger.beans.Property;
 
 
 public class Rendicontazioni extends BasicBD {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(Rendicontazioni.class);
 
 	public Rendicontazioni(BasicBD basicBD) {
 		super(basicBD);

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -63,7 +63,7 @@ public class TipiTributoVersamenti extends MultiSelectList<Long, List<Long>>{
 		this.versamentiId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
 		this.trustedId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 		
-		this.log = LogManager.getLogger();
+		this.log = LoggerWrapperFactory.getLogger(TipiTributoVersamenti.class);
 	}
 
 	@Override

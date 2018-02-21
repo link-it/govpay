@@ -55,8 +55,8 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.rs.v1.beans.Tracciato;
-import it.govpay.rs.v1.beans.TracciatoExt;
+import it.govpay.rs.legacy.beans.Tracciato;
+import it.govpay.rs.legacy.beans.TracciatoExt;
 
 @Path("/v1/caricamenti")
 public class Tracciati extends BaseRsServiceV1 {

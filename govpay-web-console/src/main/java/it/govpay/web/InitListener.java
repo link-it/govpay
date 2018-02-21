@@ -19,6 +19,13 @@
  */
 package it.govpay.web;
 
+import java.net.URI;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.openspcoop2.utils.LoggerWrapperFactory;
+
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -26,14 +33,6 @@ import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 import it.govpay.web.utils.ConsoleProperties;
-
-import java.net.URI;
-
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
 
 public class InitListener implements ServletContextListener {
 
@@ -51,11 +50,12 @@ public class InitListener implements ServletContextListener {
 			try {
 				log4j2Config = ConsoleProperties.getInstance().getLog4j2Config();
 				if(log4j2Config != null) {
-					LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-					context.setConfigLocation(log4j2Config);
+					LoggerWrapperFactory.setLogConfiguration(log4j2Config);
+				} else {
+					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
 				}
 			} catch (Exception e) {
-				LogManager.getLogger().warn("Errore durante la configurazione del Logger: " + e);
+				LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore durante la configurazione del Logger: " + e);
 			}
 			
 			GovpayConfig.newInstance4GovPayConsole();
@@ -76,7 +76,7 @@ public class InitListener implements ServletContextListener {
 		try {
 			ConnectionManager.shutdown();
 		} catch (Exception e) {
-			LogManager.getLogger().warn("Errore nella de-registrazione JMX: " + e);
+			LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore nella de-registrazione JMX: " + e);
 		}
 	}
 }

@@ -38,7 +38,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
@@ -675,7 +675,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 				Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), null, bd);
 				dominioLabel = elemento.getTitolo(); 
 			}
-		}catch(Exception e){this.log.error(e);}
+		}catch(Exception e){this.log.error(e.getMessage(), e);}
 
 		switch (statoVersamento) {
 		case NON_ESEGUITO:

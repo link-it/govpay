@@ -40,21 +40,21 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
+import it.govpay.bd.model.Operatore;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl;
-import it.govpay.bd.model.Operatore;
 import it.govpay.model.Ruolo;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
@@ -87,8 +87,8 @@ public abstract class BaseRsService {
 	protected void initLogger(String cmd) {
 		if(this.response != null){
 			this.codOperazione = UUID.randomUUID().toString();
-			ThreadContext.put("cmd", cmd);
-			ThreadContext.put("op",  this.codOperazione);
+			MDC.put("cmd", cmd);
+			MDC.put("op",  this.codOperazione);
 			this.response.setHeader("X-GP-CMDID", cmd);
 		}
 	}

@@ -37,8 +37,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Acl.Servizio;
@@ -62,7 +62,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	public static final String IDS_TO_EXPORT_PARAMETER_ID = "ids";
 	public static final String PATH_REFRESH = "refresh";
 
-	protected Logger log = LogManager.getLogger();
+	protected Logger log = LoggerWrapperFactory.getLogger(BaseDarsService.class);
 
 	public BaseDarsService() {
 		super();

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;

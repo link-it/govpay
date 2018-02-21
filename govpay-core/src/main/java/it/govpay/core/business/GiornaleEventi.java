@@ -19,8 +19,8 @@
  */
 package it.govpay.core.business;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.EventiBD;
@@ -28,7 +28,7 @@ import it.govpay.model.Evento;
 
 public class GiornaleEventi extends BasicBD {
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(GiornaleEventi.class	);
 	
 	public GiornaleEventi(BasicBD basicBD) {
 		super(basicBD);

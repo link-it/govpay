@@ -33,11 +33,11 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPT;
@@ -86,7 +86,7 @@ import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Pagamento extends BasicBD {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(Pagamento.class);
 
 	public Pagamento(BasicBD bd) {
 		super(bd);

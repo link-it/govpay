@@ -34,8 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 
 /**
@@ -52,7 +52,7 @@ public class SessionTimeoutFilter implements Filter {
 	private String loginPage = "public/login.jsp";
 	private String loginErrorPage = "public/login.jsp";
 	private List<String> excludedPages = null;
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(SessionTimeoutFilter.class);
 
 	@Override
 	public void destroy() {

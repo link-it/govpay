@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
@@ -250,7 +250,7 @@ public class RicevutaPagamentoUtils {
 
 			return msgs;
 		}catch(Exception e){
-			log.error(e,e);
+			log.error(e.getMessage(),e);
 			throw e;
 		}
 	}

@@ -1,6 +1,6 @@
 package it.govpay.stampe.pdf.rt.factory;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.stampe.pdf.rt.IRicevutaPagamento;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;

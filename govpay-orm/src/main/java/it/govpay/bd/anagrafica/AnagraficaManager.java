@@ -19,10 +19,10 @@
  */
 package it.govpay.bd.anagrafica;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.CacheJMXUtils;
 
@@ -53,18 +53,18 @@ import it.govpay.bd.anagrafica.cache.TributiBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.TributiBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.UoBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.UoBDCacheWrapper;
-import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
-import it.govpay.model.Intermediario;
 import it.govpay.bd.model.Operatore;
-import it.govpay.model.Portale;
-import it.govpay.model.Ruolo;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Portale;
+import it.govpay.model.Ruolo;
 import it.govpay.model.TipoTributo;
 
 public class AnagraficaManager {
@@ -86,34 +86,34 @@ public class AnagraficaManager {
 	private static TipiTributoBDCacheWrapper tipiTributoBDCacheWrapper;
 
 	private AnagraficaManager(boolean enableCaching) throws UtilsException {
-		dominiBDCacheWrapper = new DominiBDCacheWrapper(enableCaching, Logger.getLogger(DominiBDCacheWrapper.class));
-		applicazioniBDCacheWrapper = new ApplicazioniBDCacheWrapper(enableCaching, Logger.getLogger(ApplicazioniBDCacheWrapper.class));
-		canaliBDCacheWrapper = new CanaliBDCacheWrapper(enableCaching, Logger.getLogger(CanaliBDCacheWrapper.class));
-		uoBDCacheWrapper = new UoBDCacheWrapper(enableCaching, Logger.getLogger(UoBDCacheWrapper.class));
-		ibanAccreditoBDCacheWrapper = new IbanAccreditoBDCacheWrapper(enableCaching, Logger.getLogger(IbanAccreditoBDCacheWrapper.class));
-		intermediariBDCacheWrapper = new IntermediariBDCacheWrapper(enableCaching, Logger.getLogger(IntermediariBDCacheWrapper.class));
-		operatoriBDCacheWrapper = new OperatoriBDCacheWrapper(enableCaching, Logger.getLogger(OperatoriBDCacheWrapper.class));
-		ruoliBDCacheWrapper = new RuoliBDCacheWrapper(enableCaching, Logger.getLogger(RuoliBDCacheWrapper.class));
-		portaliBDCacheWrapper = new PortaliBDCacheWrapper(enableCaching, Logger.getLogger(PortaliBDCacheWrapper.class));
-		pspBDCacheWrapper = new PspBDCacheWrapper(enableCaching, Logger.getLogger(PspBDCacheWrapper.class));
-		stazioniBDCacheWrapper = new StazioniBDCacheWrapper(enableCaching, Logger.getLogger(StazioniBDCacheWrapper.class));
-		tributiBDCacheWrapper = new TributiBDCacheWrapper(enableCaching, Logger.getLogger(TributiBDCacheWrapper.class));
-		tipiTributoBDCacheWrapper = new TipiTributoBDCacheWrapper(enableCaching, Logger.getLogger(TipiTributoBDCacheWrapper.class));
+		dominiBDCacheWrapper = new DominiBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(DominiBDCacheWrapper.class));
+		applicazioniBDCacheWrapper = new ApplicazioniBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(ApplicazioniBDCacheWrapper.class));
+		canaliBDCacheWrapper = new CanaliBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(CanaliBDCacheWrapper.class));
+		uoBDCacheWrapper = new UoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(UoBDCacheWrapper.class));
+		ibanAccreditoBDCacheWrapper = new IbanAccreditoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(IbanAccreditoBDCacheWrapper.class));
+		intermediariBDCacheWrapper = new IntermediariBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(IntermediariBDCacheWrapper.class));
+		operatoriBDCacheWrapper = new OperatoriBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(OperatoriBDCacheWrapper.class));
+		ruoliBDCacheWrapper = new RuoliBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(RuoliBDCacheWrapper.class));
+		portaliBDCacheWrapper = new PortaliBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(PortaliBDCacheWrapper.class));
+		pspBDCacheWrapper = new PspBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(PspBDCacheWrapper.class));
+		stazioniBDCacheWrapper = new StazioniBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(StazioniBDCacheWrapper.class));
+		tributiBDCacheWrapper = new TributiBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
+		tipiTributoBDCacheWrapper = new TipiTributoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
 
 		if(enableCaching) {
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), jmxDomain, "domini");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), jmxDomain, "applicazioni");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new CanaliBDCacheJmx(), jmxDomain, "canali");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new UoBDCacheJmx(), jmxDomain, "uo");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new IbanAccreditoBDCacheJmx(), jmxDomain, "ibanAccredito");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new IntermediariBDCacheJmx(), jmxDomain, "intermediari");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new OperatoriBDCacheJmx(), jmxDomain, "operatori");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new RuoliBDCacheJmx(), jmxDomain, "ruoli");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new PortaliBDCacheJmx(), jmxDomain, "portali");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new PspBDCacheJmx(), jmxDomain, "psp");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), jmxDomain, "stazioni");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), jmxDomain, "tributi");
-			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), jmxDomain, "tipiTributo");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), jmxDomain, "domini");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), jmxDomain, "applicazioni");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new CanaliBDCacheJmx(), jmxDomain, "canali");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UoBDCacheJmx(), jmxDomain, "uo");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IbanAccreditoBDCacheJmx(), jmxDomain, "ibanAccredito");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IntermediariBDCacheJmx(), jmxDomain, "intermediari");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new OperatoriBDCacheJmx(), jmxDomain, "operatori");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new RuoliBDCacheJmx(), jmxDomain, "ruoli");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new PortaliBDCacheJmx(), jmxDomain, "portali");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new PspBDCacheJmx(), jmxDomain, "psp");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), jmxDomain, "stazioni");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), jmxDomain, "tributi");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), jmxDomain, "tipiTributo");
 		}
 	}
 

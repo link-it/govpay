@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.core.utils.GovpayConfig;
 
@@ -22,7 +22,7 @@ public class ConsoleProperties {
 
 	private static ConsoleProperties instance;
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(ConsoleProperties.class);
 	
 	private int numeroRisultatiPerPagina;
 	private int numeroMassimoElementiExport;

@@ -2,10 +2,10 @@ package it.govpay.core.utils;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.PagamentoPortale;
@@ -20,7 +20,7 @@ import it.govpay.model.Rpt.StatoRpt;
 
 public class PagamentoPortaleUtils {
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(PagamentoPortaleUtils.class);
 
 	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, BasicBD bd) throws ServiceException {
 		

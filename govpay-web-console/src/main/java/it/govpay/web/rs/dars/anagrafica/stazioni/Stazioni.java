@@ -21,8 +21,8 @@ package it.govpay.web.rs.dars.anagrafica.stazioni;
 
 import javax.ws.rs.Path;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.dars.base.DarsService;
@@ -31,7 +31,7 @@ import it.govpay.web.rs.dars.handler.IDarsHandler;
 @Path("/dars/stazioni")
 public class Stazioni extends DarsService {
 
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(Stazioni.class);
 	
 	public Stazioni(){
 		super();

@@ -19,23 +19,19 @@
  */
 package it.govpay.core.business.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import it.govpay.bd.model.Incasso;
+import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
-public class ListaIncassiDTOResponse {
+public class ListaIncassiDTOResponse extends BasicFindResponseDTO<Incasso> {
+
+	/**
+	 * @param totalResults
+	 * @param results
+	 */
+	public ListaIncassiDTOResponse(long totalResults, List<Incasso> results) {
+		super(totalResults, results);
+	}
 	
-	private List<Incasso> incassi;
-
-	public ListaIncassiDTOResponse() {
-		incassi = new ArrayList<Incasso>();
-	}
-	public List<Incasso> getIncassi() {
-		return incassi;
-	}
-
-	public void setIncassi(List<Incasso> incassi) {
-		this.incassi = incassi;
-	}
 }
