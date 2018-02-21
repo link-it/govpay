@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,14 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
+import org.openspcoop2.generic_project.expression.SortOrder;
+
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
@@ -37,6 +43,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.orm.PagamentoPortale;
 import it.govpay.pagamento.api.rs.v1.converter.PagamentiPortaleConverter;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.ListaPagamentiPortale;
@@ -127,7 +134,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 	public Response get(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@QueryParam(value="from") @DefaultValue(value="0") int from,
 			@QueryParam(value="size") @DefaultValue(value="25") int size,
-			@QueryParam("dataDa") String dataDa,  @QueryParam("dataA") String dataA,  @QueryParam("stato") String stato,@QueryParam("versante") String versante, @QueryParam("fields") String fields) {
+			@QueryParam("dataDa") String dataDa,  @QueryParam("dataA") String dataA,  @QueryParam("stato") String stato,@QueryParam("versante") String versante,@QueryParam("ordinamento") String ordinamento, @QueryParam("fields") String fields) {
 		String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -162,8 +169,9 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			
 			if(versante != null)
 				listaPagamentiPortaleDTO.setVersante(versante);
-			
-			
+
+			if(ordinamento != null)
+				listaPagamentiPortaleDTO.setSort(getSort(ordinamento));
 			// INIT DAO
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(BasicBD.newInstance(ctx.getTransactionId()));
@@ -203,6 +211,39 @@ public class PagamentiPortale extends BaseRsServiceV1{
 	}
 	
 	
+	/**
+	 * @param ordinamento
+	 * @return
+	 */
+	private List<FilterSortWrapper> getSort(String ordinamento) {
+		List<FilterSortWrapper> lst = new ArrayList<FilterSortWrapper>();
+		
+		Arrays.asList(ordinamento.split(",")).stream().forEach(sortValue -> {
+			FilterSortWrapper e = new FilterSortWrapper();
+			
+			char firstChar = sortValue.charAt(0);
+			String sort = null;
+			if(firstChar != '-' &&
+					firstChar != '+') {
+				firstChar = '+';
+				sort = sortValue;
+			} else {
+				sort = sortValue.substring(1);
+			}
+			
+			e.setSortOrder(firstChar== '-' ? SortOrder.DESC: SortOrder.ASC);
+			if(sort.equals("data")) {
+				e.setField(PagamentoPortale.model().DATA_RICHIESTA);				
+			} else if(sort.equals("stato")) {
+				e.setField(PagamentoPortale.model().STATO);
+			}
+
+			lst.add(e);
+		});
+		
+		return lst;
+	}
+
 	@GET
 	@Path("/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
