@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 
@@ -25,6 +26,14 @@ public class RuoliCache {
 	
 	public RuoliCache () {
 		this.mappaRuoli = new HashMap<String,Ruolo>();
+	}
+	
+	public Set<String> getChiavi() {
+		return this.mappaRuoli.keySet();
+	}
+	
+	public Ruolo getRuolo(String key) {
+		return this.mappaRuoli.get(key);
 	}
 	
 	public List<Ruolo> getListaRuoli(List<String> ruoliS) {

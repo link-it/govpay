@@ -39,15 +39,18 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.ListaRpt;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.rs.v1.controllers.base.RptController;
 import it.govpay.rs.v1.costanti.Costanti;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
 @Path("/rpt")
 public class Rpt extends BaseRsServiceV1{
 	
+	private RptController controller = null;
 	
 	public Rpt() {
 		super("rpt");
+		this.controller = new RptController(this.nomeServizio,this.log);
 	}
 	
 	@GET

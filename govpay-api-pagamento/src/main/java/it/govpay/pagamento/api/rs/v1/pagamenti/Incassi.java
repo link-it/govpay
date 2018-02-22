@@ -60,6 +60,8 @@ import it.govpay.rs.v1.beans.Errore;
 import it.govpay.rs.v1.beans.IncassoPost;
 import it.govpay.rs.v1.beans.Incasso;
 import it.govpay.rs.v1.beans.ListaIncassi;
+import it.govpay.rs.v1.controllers.base.IncassiController;
+import it.govpay.rs.v1.controllers.base.PendenzeController;
 import it.govpay.rs.v1.costanti.Costanti;
 import net.sf.json.JsonConfig;
 
@@ -67,9 +69,11 @@ import net.sf.json.JsonConfig;
 public class Incassi extends BaseRsServiceV1 {
 	
 	public static final String NOME_SERVIZIO = "incassi";
+	private IncassiController controller = null;
 	
 	public Incassi() {
 		super(NOME_SERVIZIO);
+		this.controller = new IncassiController(this.nomeServizio,this.log);
 	}
 	
 	@POST

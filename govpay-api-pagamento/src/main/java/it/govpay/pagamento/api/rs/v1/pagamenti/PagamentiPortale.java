@@ -44,15 +44,19 @@ import it.govpay.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.PagamentoPost;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.rs.v1.controllers.base.PagamentiController;
+import it.govpay.rs.v1.controllers.base.PendenzeController;
 import it.govpay.rs.v1.costanti.Costanti;
 import net.sf.json.JsonConfig;
 
 @Path("/pagamenti")
 public class PagamentiPortale extends BaseRsServiceV1{
 	
+	private PagamentiController controller = null;
 	
 	public PagamentiPortale() {
 		super("pagamentiPortale");
+		this.controller = new PagamentiController(this.nomeServizio,this.log);
 	}
 
 	@POST
