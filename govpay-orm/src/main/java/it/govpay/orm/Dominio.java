@@ -356,7 +356,7 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="auxDigit",required=true,nillable=false,defaultValue="0")
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_auxDigit = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,  0);
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected int auxDigit;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
@@ -372,7 +372,7 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="segregationCode",required=false,nillable=false)
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_segregationCode = null;
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer segregationCode;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")

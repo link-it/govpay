@@ -221,7 +221,7 @@ public class Canale extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @XmlElement(name="modelloPagamento",required=true,nillable=false)
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_modelloPagamento = null;
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer modelloPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")

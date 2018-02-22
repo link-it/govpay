@@ -499,7 +499,7 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @XmlElement(name="codEsitoPagamento",required=false,nillable=false)
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_codEsitoPagamento = null;
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer codEsitoPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
