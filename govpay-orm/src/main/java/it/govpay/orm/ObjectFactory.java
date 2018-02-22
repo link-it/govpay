@@ -494,13 +494,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AvvisoPagamentoInput }
-     */
-    public AvvisoPagamentoInput createAvvisoPagamentoInput() {
-        return new AvvisoPagamentoInput();
-    }
-
-    /**
      * Create an instance of {@link IUV }
      */
     public IUV createIUV() {
