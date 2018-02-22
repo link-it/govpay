@@ -79,6 +79,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			classMap.put("autenticazioneSoggetto", String.class);
 			jsonConfig.setClassMap(classMap);
 			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class, jsonConfig);
+			
 			String transactionId = ctx.getTransactionId();
 			String idSession = transactionId.replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, principal,idSession, idSessionePortale);
