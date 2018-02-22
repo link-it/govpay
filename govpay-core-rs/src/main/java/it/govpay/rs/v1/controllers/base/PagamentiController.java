@@ -20,7 +20,7 @@ public class PagamentiController  {
         return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
     }
   */
-
+	
 
   /*
     public ResponseContext pagamentiGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , StatoPagamento stato , String versante , String idSessionePortale ) {
