@@ -50,7 +50,6 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.IMPORTO_TOTALE = new Field("importoTotale",double.class,"id-versamento",IdVersamento.class);
 		this.CAUSALE_VERSAMENTO = new Field("causaleVersamento",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.STATO_VERSAMENTO = new Field("statoVersamento",java.lang.String.class,"id-versamento",IdVersamento.class);
-		this.ID_PAGAMENTO_PORTALE = new Field("idPagamentoPortale",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -67,7 +66,6 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.IMPORTO_TOTALE = new ComplexField(father,"importoTotale",double.class,"id-versamento",IdVersamento.class);
 		this.CAUSALE_VERSAMENTO = new ComplexField(father,"causaleVersamento",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.STATO_VERSAMENTO = new ComplexField(father,"statoVersamento",java.lang.String.class,"id-versamento",IdVersamento.class);
-		this.ID_PAGAMENTO_PORTALE = new ComplexField(father,"idPagamentoPortale",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -90,8 +88,6 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 	public IField CAUSALE_VERSAMENTO = null;
 	 
 	public IField STATO_VERSAMENTO = null;
-	 
-	public IField ID_PAGAMENTO_PORTALE = null;
 	 
 
 	@Override

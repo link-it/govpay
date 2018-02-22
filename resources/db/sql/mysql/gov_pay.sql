@@ -453,6 +453,7 @@ CREATE TABLE pagamenti_portale
 	cod_portale VARCHAR(35) NOT NULL,
 	cod_canale VARCHAR(35),
 	nome VARCHAR(255) NOT NULL,
+	importo DOUBLE NOT NULL,
 	versante_identificativo VARCHAR(35),
 	id_sessione VARCHAR(35) NOT NULL,
 	id_sessione_portale VARCHAR(35),

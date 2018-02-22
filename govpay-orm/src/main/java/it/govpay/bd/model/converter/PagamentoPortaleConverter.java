@@ -64,6 +64,7 @@ public class PagamentoPortaleConverter {
 		dto.setCodPsp(vo.getCodPsp());
 		dto.setTipoVersamento(vo.getTipoVersamento());
 		dto.setNome(vo.getNome());
+		dto.setImporto(vo.getImporto());
 
 		return dto;
 	}
@@ -94,6 +95,7 @@ public class PagamentoPortaleConverter {
 		vo.setCodPsp(dto.getCodPsp());
 		vo.setTipoVersamento(dto.getTipoVersamento());
 		vo.setNome(dto.getNome());
+		vo.setImporto(dto.getImporto());
 
 		return vo;
 	}

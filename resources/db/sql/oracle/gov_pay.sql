@@ -656,6 +656,7 @@ CREATE TABLE pagamenti_portale
 	cod_portale VARCHAR2(35 CHAR) NOT NULL,
 	cod_canale VARCHAR2(35 CHAR),
 	nome VARCHAR2(255 CHAR) NOT NULL,
+	importo BINARY_DOUBLE NOT NULL,
 	versante_identificativo VARCHAR2(35 CHAR),
 	id_sessione VARCHAR2(35 CHAR) NOT NULL,
 	id_sessione_portale VARCHAR2(35 CHAR),

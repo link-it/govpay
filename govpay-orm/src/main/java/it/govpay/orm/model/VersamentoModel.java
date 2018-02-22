@@ -46,6 +46,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"Versamento",Versamento.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"Versamento",Versamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Versamento",Versamento.class));
+		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"Versamento",Versamento.class));
 		this.IUV = new it.govpay.orm.model.IuvSearchModel(new Field("iuv",it.govpay.orm.IuvSearch.class,"Versamento",Versamento.class));
 		this.IMPORTO_TOTALE = new Field("importoTotale",double.class,"Versamento",Versamento.class);
 		this.STATO_VERSAMENTO = new Field("statoVersamento",java.lang.String.class,"Versamento",Versamento.class);
@@ -87,6 +88,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"Versamento",Versamento.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"Versamento",Versamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Versamento",Versamento.class));
+		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"Versamento",Versamento.class));
 		this.IUV = new it.govpay.orm.model.IuvSearchModel(new ComplexField(father,"iuv",it.govpay.orm.IuvSearch.class,"Versamento",Versamento.class));
 		this.IMPORTO_TOTALE = new ComplexField(father,"importoTotale",double.class,"Versamento",Versamento.class);
 		this.STATO_VERSAMENTO = new ComplexField(father,"statoVersamento",java.lang.String.class,"Versamento",Versamento.class);
@@ -130,6 +132,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public it.govpay.orm.model.IdUoModel ID_UO = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
+	 
+	public it.govpay.orm.model.IdPagamentoPortaleModel ID_PAGAMENTO_PORTALE = null;
 	 
 	public it.govpay.orm.model.IuvSearchModel IUV = null;
 	 

@@ -21,8 +21,6 @@ package it.govpay.orm;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
-import it.govpay.model.avvisi.AvvisoPagamentoInput;
-
 
 /**
  * This object contains factory methods for each 

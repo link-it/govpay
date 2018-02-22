@@ -44,7 +44,6 @@ import java.io.Serializable;
  * 			&lt;element name="importoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="statoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -67,8 +66,7 @@ import java.io.Serializable;
   	"codAnnoTributario",
   	"importoTotale",
   	"causaleVersamento",
-  	"statoVersamento",
-  	"idPagamentoPortale"
+  	"statoVersamento"
   }
 )
 
@@ -164,14 +162,6 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
     this.statoVersamento = statoVersamento;
   }
 
-  public java.lang.String getIdPagamentoPortale() {
-    return this.idPagamentoPortale;
-  }
-
-  public void setIdPagamentoPortale(java.lang.String idPagamentoPortale) {
-    this.idPagamentoPortale = idPagamentoPortale;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -213,9 +203,5 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="statoVersamento",required=false,nillable=false)
   protected java.lang.String statoVersamento;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="idPagamentoPortale",required=false,nillable=false)
-  protected java.lang.String idPagamentoPortale;
 
 }

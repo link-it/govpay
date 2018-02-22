@@ -88,6 +88,10 @@ public class VersamentoFilter extends AbstractFilter {
 				
 				newExpressionOr.and(newExpressionDomini);
 			}
+			
+			if(this.codPagamentoPortale != null) {
+				newExpressionOr.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
+			}
 
 //			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
 //				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
