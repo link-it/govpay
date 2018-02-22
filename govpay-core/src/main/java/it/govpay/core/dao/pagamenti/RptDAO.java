@@ -12,6 +12,8 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
@@ -21,6 +23,30 @@ public class RptDAO extends BasicBD{
 	
 	public RptDAO(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public LeggiRptDTOResponse leggiRpt(LeggiRptDTO leggiRptDTO) throws ServiceException,RicevutaNonTrovataException{
+		
+		LeggiRptDTOResponse response = new LeggiRptDTOResponse();
+		
+		RptBD rptBD = new RptBD(this);
+		Rpt rpt;
+		try {
+			rpt = rptBD.getRpt(leggiRptDTO.getIdDominio(), leggiRptDTO.getIuv(), leggiRptDTO.getCcp());
+			
+			if(rpt.getXmlRt() == null)
+				throw new RicevutaNonTrovataException();
+			
+			response.setRpt(rpt);
+			response.setRpt(rpt);
+			response.setVersamento(rpt.getVersamento(this));
+			response.setApplicazione(rpt.getVersamento(this).getApplicazione(this)); 
+			response.setCanale(rpt.getCanale(this));
+			response.setPsp(rpt.getPsp(this));
+		} catch (NotFoundException e) {
+			throw new RicevutaNonTrovataException(e.getMessage(), e);
+		}
+		return response;
 	}
 
 	public LeggiRicevutaDTOResponse leggiRpt(LeggiRicevutaDTO leggiRicevutaDTO) throws ServiceException,RicevutaNonTrovataException{
@@ -67,19 +93,22 @@ public class RptDAO extends BasicBD{
 		
 		long count = rptBD.count(filter);
 
+		List<LeggiRptDTOResponse> resList = new ArrayList<LeggiRptDTOResponse>();
 		if(count > 0) {
 			List<Rpt> findAll = rptBD.findAll(filter);
+		
 			for (Rpt rpt : findAll) {
-				rpt.getVersamento(this);
-				rpt.getVersamento(this).getApplicazione(this); 
-				rpt.getCanale(this);
-				rpt.getPsp(this);
+				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
+				elem.setRpt(rpt);
+				elem.setVersamento(rpt.getVersamento(this));
+				elem.setApplicazione(rpt.getVersamento(this).getApplicazione(this)); 
+				elem.setCanale(rpt.getCanale(this));
+				elem.setPsp(rpt.getPsp(this));
 				
+				resList.add(elem);
 			}
-			
-			return new ListaRptDTOResponse(count, findAll);
-		} else {
-			return new ListaRptDTOResponse(count, new ArrayList<Rpt>());
-		}
+		} 
+
+		return new ListaRptDTOResponse(count, resList);
 	}
 }

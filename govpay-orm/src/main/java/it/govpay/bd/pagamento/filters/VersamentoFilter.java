@@ -46,12 +46,16 @@ public class VersamentoFilter extends AbstractFilter {
 	private List<StatoVersamento> statiVersamento =  null;
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
-	private Date datainizio;
-	private Date dataFine;
 	private List<Long> idVersamento= null;
 	private String codVersamento = null;
 	private List<String> codVersamentoEnte = null;
 	private List<Long> idApplicazione = null;
+	private Long idPagamentoPortale = null;
+	private String codPagamentoPortale = null;
+	private Date dataInizio;
+	private Date dataFine;
+	private String codApplicazione = null;
+	private String codDominio = null;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -130,11 +134,11 @@ public class VersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-			if(this.datainizio != null && this.dataFine != null) {
+			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.datainizio,this.dataFine);
+				newExpression.between(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataInizio,this.dataFine);
 				addAnd = true;
 			}
 
@@ -154,16 +158,27 @@ public class VersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
+//			if(this.idDomini != null){
+//				idDomini.removeAll(Collections.singleton(null));
+//				if(addAnd)
+//					newExpression.and();
+//				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+//				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
+//				newExpression.in(cf, this.idDomini);
+//				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
+//				addAnd = true;
+//			}
+			
 			if(this.idDomini != null){
 				idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
+				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
 				newExpression.in(cf, this.idDomini);
-				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
 				addAnd = true;
 			}
+
 
 			if(this.codVersamento != null){
 				if(addAnd)
@@ -201,6 +216,22 @@ public class VersamentoFilter extends AbstractFilter {
 					
 					addAnd = true;
 				}
+			}
+			
+			if(this.codApplicazione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().ID_DOMINIO.COD_DOMINIO, this.codDominio);
+				addAnd = true;
 			}
 			
 
@@ -329,7 +360,55 @@ public class VersamentoFilter extends AbstractFilter {
 	public void setIdApplicazione(List<Long> idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
-	
+
+	public Long getIdPagamentoPortale() {
+		return idPagamentoPortale;
+	}
+
+	public void setIdPagamentoPortale(Long idPagamentoPortale) {
+		this.idPagamentoPortale = idPagamentoPortale;
+	}
+
+	public String getCodPagamentoPortale() {
+		return codPagamentoPortale;
+	}
+
+	public void setCodPagamentoPortale(String codPagamentoPortale) {
+		this.codPagamentoPortale = codPagamentoPortale;
+	}
+
+	public Date getDataInizio() {
+		return dataInizio;
+	}
+
+	public void setDataInizio(Date dataInizio) {
+		this.dataInizio = dataInizio;
+	}
+
+	public Date getDataFine() {
+		return dataFine;
+	}
+
+	public void setDataFine(Date dataFine) {
+		this.dataFine = dataFine;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
 	
 
 }
