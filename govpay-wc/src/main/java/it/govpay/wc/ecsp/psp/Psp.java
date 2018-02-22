@@ -23,12 +23,16 @@ import it.govpay.core.dao.pagamenti.exception.ParametriNonTrovatiException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.controllers.base.PspController;
 
 @Path("/")
 public class Psp extends BaseRsServiceV1 {
 	
+	private PspController controller = null;
+	
 	public Psp() {
 		super("psp");
+		this.controller = new PspController(this.nomeServizio,this.log);
 	}
 
 
@@ -42,7 +46,7 @@ public class Psp extends BaseRsServiceV1 {
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
 			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
 			String principal = this.getPrincipal();
@@ -56,7 +60,7 @@ public class Psp extends BaseRsServiceV1 {
 			
 			RedirectDaPspDTOResponse redirectDaPspDTOResponse = webControllerDAO.gestisciRedirectPsp(redirectDaPspDTO);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, redirectDaPspDTOResponse, 200);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, redirectDaPspDTOResponse, 200);
 			
 			this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectDaPspDTOResponse.getLocation() +"].");	
 			return Response.temporaryRedirect(new URI(redirectDaPspDTOResponse.getLocation())).build();
@@ -70,7 +74,7 @@ public class Psp extends BaseRsServiceV1 {
 		}catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione della funzionalita' di gateway: ", e);
 			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
