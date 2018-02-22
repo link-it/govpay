@@ -29,10 +29,14 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-1.2-api</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
 		
 		 <dependency>
             <groupId>net.sourceforge.dynamicreports</groupId>
@@ -113,14 +117,5 @@
 				</includes>
 			</resource>
 		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 </project>

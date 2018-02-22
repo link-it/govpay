@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.rs.v1.beans;
+package it.govpay.rs.legacy.beans;
 
 import java.util.Date;
 

@@ -29,6 +29,10 @@ public class UriBuilderUtils {
 		return getList(getFromPsp(codPsp), "canali").path(codCanale).build().toString();
 	}
 	
+	public static String getPendenzaByIdA2AIdPendenza(String idA2A, String idPendenza) {
+		return getListPendenze().path(idA2A).path(idPendenza).build().toString();
+	}
+	
 	public static String getPendenzeByPagamento(String idPagamento) {
 		return getByPagamento(getListPendenze(), idPagamento);
 	}
@@ -86,7 +90,7 @@ public class UriBuilderUtils {
 	}
 
 	private static UriBuilder getListRpt() {
-		return getBaseList("rpts");
+		return getBaseList("rpt");
 	}
 	
 	private static UriBuilder getListPendenze() {

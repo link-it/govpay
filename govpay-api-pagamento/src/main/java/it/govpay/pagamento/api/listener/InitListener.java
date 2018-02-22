@@ -1,15 +1,14 @@
 package it.govpay.pagamento.api.listener;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
+import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.LoggerFactory;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
@@ -18,7 +17,8 @@ import org.openspcoop2.utils.logger.config.DatabaseConfigDatasource;
 import org.openspcoop2.utils.logger.config.DiagnosticConfig;
 import org.openspcoop2.utils.logger.config.Log4jConfig;
 import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
-import org.openspcoop2.utils.logger.log4j.Log4jType;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.GovpayConfig;
@@ -28,8 +28,8 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 
 public class InitListener implements ServletContextListener{
 
-	private static Logger log = LogManager.getLogger("boot");	
-	private static org.apache.log4j.Logger logv1 = org.apache.log4j.LogManager.getLogger(InitListener.class);	
+	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
+	private static Logger logv1 = LoggerWrapperFactory.getLogger(InitListener.class);	
 	private static boolean initialized = false;
 
 	public static boolean isInitialized() {
@@ -57,18 +57,19 @@ public class InitListener implements ServletContextListener{
 			try {
 				log4j2Config = gpConfig.getLog4j2Config();
 				if(log4j2Config != null) {
-					LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-					context.setConfigLocation(log4j2Config);
-					log = LogManager.getLogger("boot");	
+					LoggerWrapperFactory.setLogConfiguration(log4j2Config);
+					log = LoggerWrapperFactory.getLogger("boot");	
 
 					log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") in corso");
 					log.info("Caricata configurazione logger: " + log4j2Config.getPath());
 				} else {
+					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
+
 					log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") in corso.");
 					log.info("Configurazione logger da classpath.");
 				}
 			} catch (Exception e) {
-				LogManager.getLogger().warn("Errore durante la configurazione del Logger: " + e);
+				LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore durante la configurazione del Logger: " + e);
 			}
 
 			try {
@@ -80,15 +81,17 @@ public class InitListener implements ServletContextListener{
 			// Configurazione del logger Diagnostici/Tracce/Dump
 			try {
 				DiagnosticConfig diagnosticConfig = new DiagnosticConfig();
-				diagnosticConfig.setDiagnosticPropertiesResourceURI("/msgDiagnostici.properties");
+				InputStream is = InitListener.class.getResourceAsStream("/msgDiagnostici.properties");
+				Properties props = new Properties();
+				props.load(is);
+				diagnosticConfig.setDiagnosticConfigProperties(props);
 				diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
 
 				Log4jConfig log4jConfig = new Log4jConfig();
-				log4jConfig.setLog4jType(Log4jType.LOG4Jv2);
 				if(log4j2Config != null) {
-					log4jConfig.setLog4jPropertiesResource(new File(log4j2Config));
+					log4jConfig.setLog4jConfigFile(new File(log4j2Config));
 				} else {
-					log4jConfig.setLog4jPropertiesResourceURI("/log4j2.xml");
+					log4jConfig.setLog4jConfigURL(InitListener.class.getResource("/log4j2.xml"));
 				}
 
 				MultiLoggerConfig mConfig = new MultiLoggerConfig();
@@ -107,7 +110,7 @@ public class InitListener implements ServletContextListener{
 					dbConfig.setLogSql(GovpayConfig.getInstance().ismLogSql());
 					mConfig.setDatabaseConfig(dbConfig);
 				}
-				LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), logv1, mConfig);
+				LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), mConfig);
 
 			} catch (Exception e) {
 				log.error("Errore durante la configurazione dei diagnostici", e);
@@ -118,8 +121,8 @@ public class InitListener implements ServletContextListener{
 
 			try {
 				ctx = new GpContext();
-				ThreadContext.put("cmd", "Inizializzazione");
-				ThreadContext.put("op", ctx.getTransactionId());
+				MDC.put("cmd", "Inizializzazione");
+				MDC.put("op", ctx.getTransactionId());
 				Service service = new Service();
 				service.setName("Inizializzazione");
 				service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_JSON);
@@ -156,7 +159,7 @@ public class InitListener implements ServletContextListener{
 		//		try {
 		//			ConnectionManager.shutdown();
 		//		} catch (Exception e) {
-		//			LogManager.getLogger().warn("Errore nella de-registrazione JMX: " + e);
+		//			LoggerWrapperFactory.getLogger().warn("Errore nella de-registrazione JMX: " + e);
 		//		}
 	}
 }

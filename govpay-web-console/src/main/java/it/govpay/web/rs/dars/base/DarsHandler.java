@@ -27,7 +27,7 @@ import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;

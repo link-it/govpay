@@ -30,7 +30,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaFilter;

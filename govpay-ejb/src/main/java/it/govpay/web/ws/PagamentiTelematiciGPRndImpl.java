@@ -29,12 +29,12 @@ import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -70,7 +70,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 	@Resource
 	WebServiceContext wsCtxt;
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciGPRndImpl.class);
 	
 	@Override
 	public GpChiediListaFlussiRendicontazioneResponse gpChiediListaFlussiRendicontazione(GpChiediListaFlussiRendicontazione bodyrichiesta) {
@@ -130,7 +130,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			}
 			if(bd != null) bd.closeConnection();
 		}
-		response.setCodOperazione(ThreadContext.get("op"));
+		response.setCodOperazione(MDC.get("op"));
 		return response;
 	}
 
@@ -203,7 +203,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			}
 			if(bd != null) bd.closeConnection();
 		}
-		response.setCodOperazione(ThreadContext.get("op"));
+		response.setCodOperazione(MDC.get("op"));
 		return response;
 	}
 	

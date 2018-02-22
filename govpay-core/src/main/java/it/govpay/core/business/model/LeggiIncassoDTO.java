@@ -4,6 +4,7 @@ public class LeggiIncassoDTO {
 	
 	private String principal;
 	private String trn;
+	private Long id;
 	
 	public String getPrincipal() {
 		return principal;
@@ -16,6 +17,12 @@ public class LeggiIncassoDTO {
 	}
 	public void setTrn(String trn) {
 		this.trn = trn;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id= id;
 	}
 
 }

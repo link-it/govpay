@@ -102,7 +102,7 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 				setParameter(object, "setImportoPagato", RendicontazionePagamento.model().RENDICONTAZIONE.IMPORTO_PAGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_pagato", RendicontazionePagamento.model().RENDICONTAZIONE.IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setEsito", RendicontazionePagamento.model().RENDICONTAZIONE.ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "esito", RendicontazionePagamento.model().RENDICONTAZIONE.ESITO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "esito", RendicontazionePagamento.model().RENDICONTAZIONE.ESITO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setData", RendicontazionePagamento.model().RENDICONTAZIONE.DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data", RendicontazionePagamento.model().RENDICONTAZIONE.DATA.getFieldType()));
 				setParameter(object, "setStato", RendicontazionePagamento.model().RENDICONTAZIONE.STATO.getFieldType(),

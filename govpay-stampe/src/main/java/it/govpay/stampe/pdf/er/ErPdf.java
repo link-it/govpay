@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiEsitoRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiSingoloEsitoRevoca;

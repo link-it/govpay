@@ -28,8 +28,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Acl.Servizio;
@@ -48,7 +48,7 @@ import it.govpay.web.utils.Utils;
 @Path("/dars/operatori")
 public class Operatori extends DarsService {
 
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(Operatori.class);
 	
 	public Operatori(){
 		super();

@@ -32,10 +32,11 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
+//import org.slf4j.Level;
+//import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Message;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.constants.MessageType;
@@ -45,10 +46,10 @@ import it.govpay.core.utils.GpThreadLocal;
 
 public class MessageLoggingHandlerUtils {
 
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(MessageLoggingHandlerUtils.class);
 
 	public void logToSystemOut(boolean outboundProperty, Map<String, List<String>> httpHeaders, byte[] msg) {
-		if(log.getLevel().compareTo(Level.DEBUG) > 0) {
+		if(log.isDebugEnabled()) {
 	
 			StringBuffer sb = new StringBuffer();
 	
@@ -96,7 +97,7 @@ public class MessageLoggingHandlerUtils {
 		} else {
 			try {
 				ctx = new GpContext(smc, tipoServizio, versioneServizio);
-				ThreadContext.put("op", ctx.getTransactionId());
+				MDC.put("op", ctx.getTransactionId());
 				GpThreadLocal.set(ctx);
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);
@@ -168,7 +169,7 @@ public class MessageLoggingHandlerUtils {
 		} else {
 			try {
 				ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
-				ThreadContext.put("op", ctx.getTransactionId());
+				MDC.put("op", ctx.getTransactionId());
 				GpThreadLocal.set(ctx);
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);

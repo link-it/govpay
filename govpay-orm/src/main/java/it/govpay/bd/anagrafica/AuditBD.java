@@ -19,14 +19,14 @@
  */
 package it.govpay.bd.anagrafica;
 
+import java.util.Date;
+
+import org.openspcoop2.utils.LoggerWrapperFactory;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.model.BasicModel;
 import it.govpay.orm.Audit;
 import it.govpay.orm.IdOperatore;
-
-import java.util.Date;
-
-import org.apache.log4j.Logger;
 
 public class AuditBD extends BasicBD {
 
@@ -48,7 +48,7 @@ public class AuditBD extends BasicBD {
 			
 			this.getAuditService().create(audit);
 		} catch(Throwable e) {
-			Logger.getLogger(AuditBD.class).error("Errore durante la registrazione dell'audit: " + e.getMessage(),e);
+			LoggerWrapperFactory.getLogger(AuditBD.class).error("Errore durante la registrazione dell'audit: " + e.getMessage(),e);
 		}
 	}
 }

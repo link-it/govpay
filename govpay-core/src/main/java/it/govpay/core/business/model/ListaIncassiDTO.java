@@ -21,20 +21,19 @@ package it.govpay.core.business.model;
 
 import java.util.Date;
 
-public class ListaIncassiDTO {
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.IAutorizzato;
+
+public class ListaIncassiDTO extends BasicFindRequestDTO {
 	
-	private String principal;
+	public ListaIncassiDTO(IAutorizzato user) {
+		super(user);
+	}
+
 	private Date inizio;
 	private Date fine;
-	private int offset;
-	private int limit;
-	
-	public String getPrincipal() {
-		return principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
+	private String principal;
+
 	public Date getInizio() {
 		return inizio;
 	}
@@ -47,17 +46,11 @@ public class ListaIncassiDTO {
 	public void setFine(Date fine) {
 		this.fine = fine;
 	}
-	public int getOffset() {
-		return offset;
+	public String getPrincipal() {
+		return principal;
 	}
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
-	public int getLimit() {
-		return limit;
-	}
-	public void setLimit(int limit) {
-		this.limit = limit;
+	public void setPrincipal(String principal) {
+		this.principal = principal;
 	}
 	
 }

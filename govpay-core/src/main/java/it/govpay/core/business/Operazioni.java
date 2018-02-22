@@ -25,16 +25,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.sonde.Sonda;
 import org.openspcoop2.utils.sonde.SondaException;
 import org.openspcoop2.utils.sonde.SondaFactory;
 import org.openspcoop2.utils.sonde.impl.SondaBatch;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -66,7 +66,7 @@ import it.govpay.model.avvisi.AvvisoPagamentoInput;
 
 public class Operazioni{
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
 	public static final String rnd = "update-rnd";
 	public static final String psp = "update-psp";
 	public static final String pnd = "update-pnd";
@@ -113,8 +113,8 @@ public class Operazioni{
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "AcquisizioneRendicontazioni");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "AcquisizioneRendicontazioni");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -147,8 +147,8 @@ public class Operazioni{
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "AggiornamentoRegistroPsp");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "AggiornamentoRegistroPsp");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -182,8 +182,8 @@ public class Operazioni{
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "RecuperoRptPendenti");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "RecuperoRptPendenti");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -217,8 +217,8 @@ public class Operazioni{
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "SpedizioneNotifiche");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "SpedizioneNotifiche");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -306,8 +306,8 @@ public class Operazioni{
 			}
 
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "RichiestaConservazioneRT");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "RichiestaConservazioneRT");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -364,8 +364,8 @@ public class Operazioni{
 			}
 
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "EsitoConservazioneRT");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "EsitoConservazioneRT");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -418,8 +418,8 @@ public class Operazioni{
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "ElaborazioneTracciati");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "ElaborazioneTracciati");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -483,8 +483,8 @@ public class Operazioni{
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "ConcludiStampaTracciati");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "ConcludiStampaTracciati");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -550,8 +550,8 @@ public class Operazioni{
 	}
 
 	public static String resetCacheAnagrafica(){
-		ThreadContext.put("cmd", "ResetCacheAnagrafica");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
+		MDC.put("cmd", "ResetCacheAnagrafica");
+		MDC.put("op", UUID.randomUUID().toString() );
 		try {
 			AnagraficaManager.cleanCache();
 			return "Reset cache completata con successo.";
@@ -569,8 +569,8 @@ public class Operazioni{
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "EstrattoConto");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "EstrattoConto");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -603,8 +603,8 @@ public class Operazioni{
 		GpContext ctx = null;
 		try {
 			ctx = new GpContext();
-			ThreadContext.put("cmd", "GenerazioneAvvisi");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "GenerazioneAvvisi");
+			MDC.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);

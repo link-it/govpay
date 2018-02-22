@@ -23,8 +23,8 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 /***
  * Utility per la formattazione degli importi
@@ -47,7 +47,7 @@ public class CurrencyUtils {
 	private Locale locale = null;
 	
 	public static CurrencyUtils getInstance() {
-		return newInstance(LogManager.getLogger());
+		return newInstance(LoggerWrapperFactory.getLogger(CurrencyUtils.class));
 	}
 	 
 	public static CurrencyUtils newInstance(Logger log) {
@@ -176,7 +176,7 @@ public class CurrencyUtils {
 		Double d2 = 100D;
 		Double d3 = 100.01D;
 		Double d4 = 10000000000.01D;
-		Logger log = LogManager.getLogger();
+		Logger log = LoggerWrapperFactory.getLogger(CurrencyUtils.class);
 		CurrencyUtils currencyUtils = CurrencyUtils.newInstance(log,Locale.ITALIAN);
 
 		System.out.println("=======D1=======");

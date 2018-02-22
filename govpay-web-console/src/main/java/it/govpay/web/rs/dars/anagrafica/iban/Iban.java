@@ -21,8 +21,8 @@ package it.govpay.web.rs.dars.anagrafica.iban;
 
 import javax.ws.rs.Path;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.dars.base.DarsService;
@@ -31,7 +31,7 @@ import it.govpay.web.rs.dars.handler.IDarsHandler;
 @Path("/dars/iban")
 public class Iban extends DarsService {
 
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(Iban.class);
 	
 	public Iban(){
 		super();

@@ -1,6 +1,5 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**

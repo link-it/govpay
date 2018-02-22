@@ -60,8 +60,8 @@ import it.govpay.model.Applicazione;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.Errore;
-import it.govpay.rs.v1.beans.Incasso;
-import it.govpay.rs.v1.beans.IncassoExt;
+import it.govpay.rs.legacy.beans.Incasso;
+import it.govpay.rs.legacy.beans.IncassoExt;
 
 @Path("/v1/incassi")
 public class Incassi extends BaseRsServiceV1 {
@@ -114,7 +114,7 @@ public class Incassi extends BaseRsServiceV1 {
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (IncassiException e) {
 			Errore errore = new Errore(e);
-			try { this.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2);}
+			try { this.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2.getMessage());}
 			return Response.status(422).entity(errore).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
@@ -151,10 +151,10 @@ public class Incassi extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO();
+			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(null);
 			listaIncassoDTO.setInizio(inizio);
 			listaIncassoDTO.setFine(fine);
-			listaIncassoDTO.setOffset(offset);
+			listaIncassoDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			listaIncassoDTO.setLimit(limit);
 			listaIncassoDTO.setPrincipal(getPrincipal());
 			
@@ -162,11 +162,11 @@ public class Incassi extends BaseRsServiceV1 {
 			ListaIncassiDTOResponse listaIncassiDTOResponse = incassi.listaIncassi(listaIncassoDTO);
 			
 			List<Incasso> listaIncassi = new ArrayList<Incasso>();
-			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getIncassi()) {
+			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getResults()) {
 				listaIncassi.add(new Incasso(i));
 			}
 			
-				return Response.status(Status.OK).entity(listaIncassi).build();
+			return Response.status(Status.OK).entity(listaIncassi).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();

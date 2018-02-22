@@ -24,13 +24,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.pagamento.util.CustomIuv;
 
@@ -71,7 +69,7 @@ public class GovpayConfig {
 
 	public GovpayConfig(String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
 
-		Logger log = LogManager.getLogger("boot");
+		Logger log = LoggerWrapperFactory.getLogger("boot");
 
 		// Recupero il property all'interno dell'EAR
 		InputStream is = GovpayConfig.class.getResourceAsStream(propertyFileName);
@@ -94,7 +92,7 @@ public class GovpayConfig {
 					throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
 			}
 		} catch (Exception e) {
-			LogManager.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
+			LoggerWrapperFactory.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
 		}
 
 		Properties props0 = null;
@@ -144,7 +142,7 @@ public class GovpayConfig {
 	}
 
 	private String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig) throws Exception {
-		Logger log = LogManager.getLogger("boot");
+		Logger log = LoggerWrapperFactory.getLogger("boot");
 
 		String value = System.getProperty(name);
 
@@ -178,7 +176,7 @@ public class GovpayConfig {
 	}
 
 	private String getProperty(String name, Properties[] props, boolean required) throws Exception {
-		Logger log = LogManager.getLogger("boot");
+		Logger log = LoggerWrapperFactory.getLogger("boot");
 
 		String value = null;
 		for(int i=0; i<props.length; i++) {

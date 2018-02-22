@@ -2,8 +2,8 @@ package it.govpay.web.rs.dars.monitoraggio.versamenti;
 
 import javax.ws.rs.Path;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.dars.base.DarsService;
@@ -16,7 +16,7 @@ public class Transazioni extends DarsService {
 		super();
 	}
 	
-	Logger log = LogManager.getLogger();
+	Logger log = LoggerWrapperFactory.getLogger(Transazioni.class);
 	
 	@Override
 	public String getNomeServizio() {

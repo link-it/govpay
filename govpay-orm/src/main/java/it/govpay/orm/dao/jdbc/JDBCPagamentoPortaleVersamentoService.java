@@ -121,16 +121,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("Create not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Create not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -215,19 +215,19 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -315,19 +315,19 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -385,16 +385,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -455,16 +455,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -522,16 +522,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -589,16 +589,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -659,16 +659,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -726,16 +726,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -820,16 +820,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -917,16 +917,16 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -981,13 +981,13 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("Delete not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Delete not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -1039,13 +1039,13 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("DeleteAll not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteAll not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -1105,13 +1105,13 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 	
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("DeleteAll(expression) not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteAll(expression) not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -1168,13 +1168,13 @@ public class JDBCPagamentoPortaleVersamentoService extends JDBCPagamentoPortaleV
 	
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){

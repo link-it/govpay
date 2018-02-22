@@ -19,31 +19,31 @@
  */
 package it.govpay.core.utils.thread;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.model.Notifica.StatoSpedizione;
-import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.client.NotificaClient;
-
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NotificaClient;
+import it.govpay.model.Notifica.StatoSpedizione;
+import it.govpay.model.Notifica.TipoNotifica;
 
 public class InviaNotificaThread implements Runnable {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(InviaNotificaThread.class);
 	private Notifica notifica;
 	private boolean completed = false;
 
@@ -116,7 +116,7 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getVersione());
 					
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("op", ctx.getTransactionId());
 			
 			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
 			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null || notifica.getApplicazione(bd).getConnettoreNotifica().getUrl() == null) {

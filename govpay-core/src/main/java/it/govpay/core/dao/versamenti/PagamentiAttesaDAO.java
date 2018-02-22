@@ -19,11 +19,11 @@
  */
 package it.govpay.core.dao.versamenti;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -48,7 +48,7 @@ import it.govpay.servizi.commons.EsitoOperazione;
 
 public class PagamentiAttesaDAO extends BasicBD {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiAttesaDAO.class);
 	
 	public PagamentiAttesaDAO(BasicBD basicBD) {
 		super(basicBD);

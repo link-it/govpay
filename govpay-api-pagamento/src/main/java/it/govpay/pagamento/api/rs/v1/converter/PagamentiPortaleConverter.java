@@ -9,15 +9,18 @@ import it.govpay.core.dao.commons.Anagrafica;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.base.PagamentoPost;
 import it.govpay.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.rs.v1.beans.base.Pendenza;
 import it.govpay.rs.v1.beans.base.Soggetto;
 import it.govpay.rs.v1.beans.base.VocePendenza;
+import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import net.sf.json.util.JSONUtils;
 
 public class PagamentiPortaleConverter {
 
@@ -32,7 +35,7 @@ public class PagamentiPortaleConverter {
 		PagamentiPortaleResponseOk  json = new PagamentiPortaleResponseOk();
 
 		json.setId(dtoResponse.getId());
-		json.setLocation("/pagamenti/"+ dtoResponse.getId());
+		json.setLocation("/pagamenti/"+ dtoResponse.getIdSessione());
 		json.setRedirect(dtoResponse.getRedirectUrl());
 
 		return json;
@@ -85,6 +88,8 @@ public class PagamentiPortaleConverter {
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 			classMap.put("voci", VocePendenza.class);
 			jsonConfigPendenza.setClassMap(classMap);
+			
+			JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(BaseRsService.datePatterns.toArray(new String[1])) , true);
 
 			for (int i = 0; i < jsonArrayPendenze.size(); i++) {
 
@@ -152,6 +157,7 @@ public class PagamentiPortaleConverter {
 		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
+		versamento.setDataValidita(pendenza.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setIuv(pendenza.getNumeroAvviso());

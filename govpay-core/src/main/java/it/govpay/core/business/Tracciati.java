@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -82,7 +82,7 @@ import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 
 public class Tracciati extends BasicBD {
 
-	private static Logger log = LogManager.getLogger();;
+	private static Logger log = LoggerWrapperFactory.getLogger(Tracciati.class);
 
 	public Tracciati(BasicBD basicBD) {
 		super(basicBD);

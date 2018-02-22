@@ -1,9 +1,10 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.expression.SortOrder;
@@ -16,33 +17,39 @@ import it.govpay.model.IAutorizzato;
 
 public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	
-	private int offset;
 	private int limit;
 	private String simpleSearch;
 	private List<FilterSortWrapper> fieldsSort;
+	private Map<String, IField> fieldMap;
+	private int pagina;
 
 	public BasicFindRequestDTO(IAutorizzato user) {
 		super(user);
 		this.setLimit(50);
-		this.setOffset(0);
+		this.setPagina(1);
 		this.fieldsSort = new ArrayList<FilterSortWrapper>();
+		this.fieldMap = new HashMap<String, IField>();
 	}
 
+	public void addSortField(String key, IField value) {
+		this.fieldMap.put(key, value);
+	}
 	public int getOffset() {
-		return offset;
+		return (this.pagina - 1) * this.limit;
 	}
 
-	public void setOffset(int offset) {
-		this.offset = offset;
+	public void setPagina(int pagina) {
+		this.pagina = pagina;
+	}
+	
+	public int getPagina() {
+		return this.pagina;
 	}
 
 	public int getLimit() {
 		return limit;
 	}
-
-	
 	public void setLimit(int limit) {
-		if(limit > 500) return;
 		this.limit = limit;
 	}
 
@@ -73,8 +80,8 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	public List<FilterSortWrapper> getFieldSortList(){
 		return fieldsSort;
 	}
-	
-	protected void setOrderBy(Class<? extends Enum<?>> enumType, String orderBy) throws InternalException, RequestParamException {
+
+	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {
 		
 		if(orderBy==null || orderBy.trim().isEmpty()) return;
 
@@ -93,11 +100,9 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 			boolean added = false;
 			 
 			try {
-				for (Enum<?> enum1 : enumType.getEnumConstants()) {
-					if(enum1.toString().equals(fieldname)) {
-						Method getFieldMethod = enumType.getMethod("getField");
-						IField field = (IField) getFieldMethod.invoke(enum1);
-						addSort(field, sortOrder);
+				for (String key : this.fieldMap.keySet()) {
+					if(key.equals(fieldname)) {
+						addSort(this.fieldMap.get(key), sortOrder);
 						added = true;
 						continue;
 					}
@@ -107,7 +112,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 			}
 			
 			if(!added)
-				throw new RequestParamException(FaultType.PARAMETRO_ORDERBY_NON_VALIDO, "Il campo " + fieldname + " non e' valido per ordinare la ricerca in corso. Campi consentiti: " + Arrays.toString(enumType.getEnumConstants()));
+				throw new RequestParamException(FaultType.PARAMETRO_ORDERBY_NON_VALIDO, "Il campo " + fieldname + " non e' valido per ordinare la ricerca in corso. Campi consentiti: " + Arrays.toString(this.fieldMap.keySet().toArray()));
 		}
 	}
 }

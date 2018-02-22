@@ -19,9 +19,6 @@
  */
 package it.govpay.core.utils;
 
-import it.govpay.core.business.IConservazione;
-import it.govpay.core.utils.client.handler.IntegrationOutHandler;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -32,11 +29,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.logger.constants.Severity;
 import org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext;
+import org.slf4j.Logger;
+
+import it.govpay.core.business.IConservazione;
+import it.govpay.core.utils.client.handler.IntegrationOutHandler;
 
 public class GovpayConfig {
 
@@ -136,7 +136,7 @@ public class GovpayConfig {
 					}
 				}
 			} catch (Exception e) {
-				LogManager.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
+				LoggerWrapperFactory.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
 			}
 		} catch (Exception e) {
 			throw e;
@@ -144,7 +144,7 @@ public class GovpayConfig {
 	}
 
 	public void readProperties() throws Exception {
-		Logger log = LogManager.getLogger("boot");
+		Logger log = LoggerWrapperFactory.getLogger("boot");
 		try {
 			Properties props0 = null;
 			props[0] = props0;

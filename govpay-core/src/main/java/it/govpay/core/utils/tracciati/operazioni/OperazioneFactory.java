@@ -4,16 +4,16 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.csv.Format;
 import org.openspcoop2.utils.csv.FormatReader;
 import org.openspcoop2.utils.csv.Parser;
 import org.openspcoop2.utils.csv.ParserResult;
 import org.openspcoop2.utils.csv.Record;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
@@ -38,7 +38,7 @@ import it.govpay.model.Tracciato.TipoTracciatoType;
 
 public class OperazioneFactory {
 
-	private static Logger logger = LogManager.getLogger(OperazioneFactory.class);
+	private static Logger logger = LoggerWrapperFactory.getLogger(OperazioneFactory.class);
 	private static Format formatW;
 	private static Parser caricamentoParser;
 	private static Parser caricamentoKoResponseParser;

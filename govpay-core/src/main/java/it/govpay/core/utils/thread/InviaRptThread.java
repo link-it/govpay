@@ -20,14 +20,16 @@
 package it.govpay.core.utils.thread;
 
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.business.model.Risposta;
@@ -36,15 +38,13 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Rpt;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
 
 public class InviaRptThread implements Runnable {
 	
 	private Rpt rpt;
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(InviaRptThread.class);
 	
 	public InviaRptThread(Rpt rpt, BasicBD bd) throws ServiceException {
 		this.rpt = rpt;
@@ -60,8 +60,8 @@ public class InviaRptThread implements Runnable {
 		try {
 			ctx = new GpContext(rpt.getIdTransazioneRpt());
 			GpThreadLocal.set(ctx);
-			ThreadContext.put("cmd", "InviaRptThread");
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("cmd", "InviaRptThread");
+			MDC.put("op", ctx.getTransactionId());
 			
 			ctx.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoInviaRPT);
 			

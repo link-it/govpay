@@ -1,12 +1,11 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.rs.v1.beans.base.ApplicazionePost;
-import it.govpay.rs.v1.beans.base.Connector;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "principal",
 "codificaIUV",

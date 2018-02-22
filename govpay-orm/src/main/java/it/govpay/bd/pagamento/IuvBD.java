@@ -25,7 +25,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -35,9 +34,11 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
 import org.openspcoop2.utils.id.serial.InfoStatistics;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
@@ -53,7 +54,7 @@ import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
 
 public class IuvBD extends BasicBD {
 
-	private static Logger log = Logger.getLogger(IuvBD.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(IuvBD.class);
 
 	public IuvBD(BasicBD basicBD) {
 		super(basicBD);

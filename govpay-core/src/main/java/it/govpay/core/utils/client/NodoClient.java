@@ -19,6 +19,11 @@
  */
 package it.govpay.core.utils.client;
 
+import javax.xml.bind.JAXBElement;
+
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
+
 import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRT;
@@ -54,11 +59,6 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt;
 import it.govpay.model.Stazione;
 
-import javax.xml.bind.JAXBElement;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class NodoClient extends BasicClient {
 	
 	
@@ -69,7 +69,7 @@ public class NodoClient extends BasicClient {
 
 	private static ObjectFactory objectFactory;
 	private boolean isAzioneInUrl;
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(NodoClient.class);
 	private String azione, dominio, stazione, errore, faultCode;
 	private BasicBD bd;
 
@@ -235,7 +235,7 @@ public class NodoClient extends BasicClient {
 				}
 			}
 		} catch (Exception e ) {
-			LogManager.getLogger().error("Fallito aggiornamento dello stato ndp Dominio/Stazione", e);
+			LoggerWrapperFactory.getLogger(NodoClient.class).error("Fallito aggiornamento dello stato ndp Dominio/Stazione", e);
 		} finally {
 			if(wasNull || wasClosed) bd.closeConnection();
 		}

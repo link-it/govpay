@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,20 +39,33 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.model.Applicazione;
 import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
+import it.govpay.model.Applicazione;
 import net.sf.json.JSONObject;
 
 public abstract class BaseRsService {
+	
+	public static List<String> datePatterns = null;
+	static {
+
+		datePatterns = new ArrayList<String>();
+		datePatterns.add(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
+		datePatterns.add(DateFormatUtils.ISO_DATETIME_FORMAT.getPattern());
+		datePatterns.add(DateFormatUtils.ISO_DATE_TIME_ZONE_FORMAT.getPattern());
+		datePatterns.add(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
+	}
 
 	public static final String ERRORE_INTERNO = "Errore Interno";
 
@@ -63,7 +78,7 @@ public abstract class BaseRsService {
 	protected String codOperazione;
 
 	public BaseRsService(){
-		this.log = LogManager.getLogger();
+		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
 	}
 
 	public BaseRsService(String nomeServizio){
@@ -214,6 +229,14 @@ public abstract class BaseRsService {
 	
 	public int getVersione() {
 		return 1;
+	}
+	
+	public static Date convertJsonStringToDate(String dateJson) throws Exception{
+		if(StringUtils.isNotEmpty(dateJson)){
+			String []datPat = datePatterns.toArray(new String[datePatterns.size()]);
+			return DateUtils.parseDate(dateJson, datPat);
+		}
+		return null;
 	}
 }
 

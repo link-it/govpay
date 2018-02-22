@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
@@ -53,7 +52,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 	private static final String ACTION_BACK = "back";
 	private static final String ACTION_RETURN = "return";
 	
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiPortaleDAO.class);
 	
 	public PagamentiPortaleDAO(BasicBD basicBD) {
 		super(basicBD);
@@ -282,6 +281,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 
 		response.setRedirectUrl(redirectUrl);
 		response.setId(pagamentoPortale.getId());
+		response.setIdSessione(pagamentoPortale.getIdSessione()); 
 		
 		return response;
 	}
@@ -312,7 +312,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
 		filter.setStato(listaPagamentiPortaleDTO.getStato());
 		filter.setVersante(listaPagamentiPortaleDTO.getVersante());
-		filter.setFilterSortList(listaPagamentiPortaleDTO.getSort());
+		filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 		
 		long count = pagamentiPortaleBD.count(filter);
 

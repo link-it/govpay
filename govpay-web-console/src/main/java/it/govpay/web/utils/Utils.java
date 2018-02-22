@@ -39,8 +39,9 @@ import java.util.ResourceBundle;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.openspcoop2.utils.resources.GestoreRisorseJMX;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.jmx.GestoreRisorseJMX;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
@@ -543,7 +544,7 @@ public class Utils {
 			}
 
 		} catch (Exception e) {
-			LogManager.getLogger().error(e);
+			LoggerWrapperFactory.getLogger(Utils.class).error(e.getMessage(), e);
 		}
 
 		return c;
@@ -727,7 +728,7 @@ public class Utils {
 	}
 	
 	
-	public static GestoreRisorseJMX getGestoreJMX(String url, org.apache.log4j.Logger log) throws Exception {
+	public static GestoreRisorseJMX getGestoreJMX(String url, Logger log) throws Exception {
 //		String dominio= ConsoleProperties.getInstance().getDominioOperazioniJMX();
 //		String tipo = ConsoleProperties.getInstance().getTipoOperazioniJMX();
 //		String nomeRisorsa = ConsoleProperties.getInstance().getNomeRisorsaOperazioniJMX();
@@ -746,7 +747,7 @@ public class Utils {
 		return gestoreJMX;
 	}
 	
-	public static Object invocaOperazioneJMX(String nomeMetodo, String url, org.apache.log4j.Logger log) throws Exception {
+	public static Object invocaOperazioneJMX(String nomeMetodo, String url, Logger log) throws Exception {
 		String dominio= ConsoleProperties.getInstance().getDominioOperazioniJMX();
 		String tipo = ConsoleProperties.getInstance().getTipoOperazioniJMX();
 		String nomeRisorsa = ConsoleProperties.getInstance().getNomeRisorsaOperazioniJMX();
