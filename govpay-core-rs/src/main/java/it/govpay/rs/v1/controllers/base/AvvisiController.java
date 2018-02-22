@@ -1,34 +1,43 @@
 package it.govpay.rs.v1.controllers.base;
 
 import org.slf4j.Logger;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-22T15:29:19.014+01:00")
+import java.io.File;
+import java.util.List;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import it.govpay.model.Ruolo;
+
+
+import it.govpay.rs.v1.beans.base.*;
+
+import it.govpay.rs.v1.beans.base.Avviso;
+
+
 
 public class AvvisiController extends it.govpay.rs.BaseController {
-	
-	public AvvisiController(String nomeServizio,Logger log) {
+
+     public AvvisiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-	}
-	
-  /** 
-   * Uncomment and implement as you see fit.  These operations will map
-   * Directly to operation calls from the routing logic.  Because the inflector
-   * Code allows you to implement logic incrementally, they are disabled.
-   **/
+     }
 
 
-  /*
-    public ResponseContext avvisiIdDominioNumeroAvvisoGET(RequestContext request , String idDominio , String numeroAvviso ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response avvisiIdDominioNumeroAvvisoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String numeroAvviso ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext avvisiIdDominioNumeroAvvisoGET(RequestContext request , String idDominio , String numeroAvviso ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response avvisiIdDominioNumeroAvvisoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String numeroAvviso ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
 }

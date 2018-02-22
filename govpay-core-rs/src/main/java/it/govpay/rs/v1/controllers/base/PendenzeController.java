@@ -2,6 +2,10 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import java.io.File;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -27,8 +31,16 @@ import it.govpay.rs.v1.beans.ListaPendenze;
 import it.govpay.rs.v1.beans.Pendenza;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.model.Ruolo;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-22T15:29:19.014+01:00")
+
+import it.govpay.rs.v1.beans.base.*;
+
+import it.govpay.rs.v1.beans.base.Avviso;
+import it.govpay.rs.v1.beans.base.PendenzaPost;
+import it.govpay.rs.v1.beans.base.StatoPendenza;
+
+
 
 public class PendenzeController extends it.govpay.rs.BaseController {
 	
@@ -36,12 +48,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		super(nomeServizio,log);
 	}
 	
-  /** 
-   * Uncomment and implement as you see fit.  These operations will map
-   * Directly to operation calls from the routing logic.  Because the inflector
-   * Code allows you to implement logic incrementally, they are disabled.
-   **/
-
 
     public Response pendenzeGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders, Integer pagina , Integer risultatiPerPagina , String ordinamento ,
     		String campi , String idDominio , String idA2A , String idDebitore , String idPagamento , String stato ) {
@@ -116,19 +122,18 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		}
     }
 
-
-  /*
-    public ResponseContext pendenzeGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String idDominio , String idA2A , String idDebitore , StatoPendenza stato ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pendenzeGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String idDominio , String idA2A , String idDebitore , StatoPendenza stato ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pendenzeGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String idDominio , String idA2A , String idDebitore , StatoPendenza stato ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pendenzeGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String idDominio , String idA2A , String idDebitore , StatoPendenza stato ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
  
     public Response pendenzeIdA2AIdPendenzaGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders, String idA2A , String idPendenza ) {
@@ -184,40 +189,39 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     }
   
 
-
-  /*
-    public ResponseContext pendenzeIdA2AIdPendenzaGET(RequestContext request , String idA2A , String idPendenza ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pendenzeIdA2AIdPendenzaGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pendenzeIdA2AIdPendenzaGET(RequestContext request , String idA2A , String idPendenza ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pendenzeIdA2AIdPendenzaGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pendenzeIdA2AIdPendenzaPATCH(RequestContext request , String idA2A , String idPendenza , Object body ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pendenzeIdA2AIdPendenzaPATCH(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza , Object body ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pendenzeIdA2AIdPendenzaPATCH(RequestContext request , String idA2A , String idPendenza , Object body ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pendenzeIdA2AIdPendenzaPATCH(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza , Object body ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pendenzeIdA2AIdPendenzaPUT(RequestContext request , String idA2A , String idPendenza , PendenzaPost pendenzapost ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pendenzeIdA2AIdPendenzaPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza , PendenzaPost pendenzapost ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
 }
