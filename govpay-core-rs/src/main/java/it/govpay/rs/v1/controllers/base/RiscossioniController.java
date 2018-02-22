@@ -1,32 +1,44 @@
 package it.govpay.rs.v1.controllers.base;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import java.io.File;
+import java.util.List;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import it.govpay.model.Ruolo;
 
 
+import it.govpay.rs.v1.beans.base.*;
+
+import it.govpay.rs.v1.beans.base.Riscossione;
+import it.govpay.rs.v1.beans.base.StatoRiscossione;
 
 
-
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-22T15:29:19.014+01:00")
 
 public class RiscossioniController extends it.govpay.rs.BaseController {
-  /** 
-   * Uncomment and implement as you see fit.  These operations will map
-   * Directly to operation calls from the routing logic.  Because the inflector
-   * Code allows you to implement logic incrementally, they are disabled.
-   **/
 
 
-  /*
-    public ResponseContext riscossioniGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String idDominio , String idA2A , String idPendenza , StatoRiscossione stato ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+     public RiscossioniController(String nomeServizio,Logger log) {
+		super(nomeServizio,log);
+     }
+
+
+/*  
+    public Response riscossioniGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String idDominio , String idA2A , String idPendenza , StatoRiscossione stato ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext riscossioniIdDominioIuvIurIndiceGET(RequestContext request , String idDominio , String iuv , String iur , String indice ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response riscossioniIdDominioIuvIurIndiceGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String iur , String indice ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
 }

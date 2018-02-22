@@ -1,74 +1,88 @@
 package it.govpay.rs.v1.controllers.base;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import java.io.File;
+import java.util.List;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import it.govpay.model.Ruolo;
 
 
+import it.govpay.rs.v1.beans.base.*;
+
+import it.govpay.rs.v1.beans.base.Canale;
+import it.govpay.rs.v1.beans.base.ModelloPagamento;
+import it.govpay.rs.v1.beans.base.Psp;
+import it.govpay.rs.v1.beans.base.TipoVersamento;
 
 
-
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-22T15:29:19.014+01:00")
 
 public class PspController extends it.govpay.rs.BaseController {
-  /** 
-   * Uncomment and implement as you see fit.  These operations will map
-   * Directly to operation calls from the routing logic.  Because the inflector
-   * Code allows you to implement logic incrementally, they are disabled.
-   **/
 
 
-  /*
-    public ResponseContext pspGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , Boolean bollo , Boolean storno ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+     public PspController(String nomeServizio,Logger log) {
+		super(nomeServizio,log);
+     }
+
+
+/*  
+    public Response pspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , Boolean bollo , Boolean storno ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pspGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , Boolean bollo , Boolean storno ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , Boolean bollo , Boolean storno ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pspIdPspCanaliGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , ModelloPagamento modello , TipoVersamento abilitato2 ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pspIdPspCanaliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , ModelloPagamento modello , TipoVersamento abilitato2 ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pspIdPspCanaliGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , ModelloPagamento modello , TipoVersamento abilitato2 ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pspIdPspCanaliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , ModelloPagamento modello , TipoVersamento abilitato2 ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pspIdPspCanaliIdCanaleGET(RequestContext request , String idPsp , String idCanale ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pspIdPspCanaliIdCanaleGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp , String idCanale ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pspIdPspCanaliIdCanaleGET(RequestContext request , String idPsp , String idCanale ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pspIdPspCanaliIdCanaleGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp , String idCanale ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pspIdPspGET(RequestContext request , String idPsp ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pspIdPspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext pspIdPspGET(RequestContext request , String idPsp ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response pspIdPspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
 }

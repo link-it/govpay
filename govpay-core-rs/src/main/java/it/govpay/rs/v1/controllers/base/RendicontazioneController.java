@@ -1,32 +1,42 @@
 package it.govpay.rs.v1.controllers.base;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import java.io.File;
+import java.util.List;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import it.govpay.model.Ruolo;
+
+
+import it.govpay.rs.v1.beans.base.*;
 
 
 
-
-
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaInflectorServerCodegen", date = "2018-02-22T15:29:19.014+01:00")
 
 public class RendicontazioneController extends it.govpay.rs.BaseController {
-  /** 
-   * Uncomment and implement as you see fit.  These operations will map
-   * Directly to operation calls from the routing logic.  Because the inflector
-   * Code allows you to implement logic incrementally, they are disabled.
-   **/
 
 
-  /*
-    public ResponseContext rendicontazioneGET(RequestContext request , Integer pagina , Integer risultatiPerPagina , String idDominio ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+     public RendicontazioneController(String nomeServizio,Logger log) {
+		super(nomeServizio,log);
+     }
+
+
+/*  
+    public Response rendicontazioneGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String idDominio ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
-  /*
-    public ResponseContext rendicontazioneIdFlussoGET(RequestContext request , String idFlusso ) {
-        return new ResponseContext().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" );
+/*  
+    public Response rendicontazioneIdFlussoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso ) {
+        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-  */
+*/
 
 
 }
