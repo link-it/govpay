@@ -266,6 +266,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		pagamentoPortale.setCodCanale(codCanale); 
 		pagamentoPortale.setUrlRitorno(pagamentiPortaleDTO.getUrlRitorno());
 		pagamentoPortale.setNome(nome);
+		pagamentoPortale.setImporto(sommaImporti); 
 		
 		// costruire html
 		String template = WISPUtils.readTemplate();
