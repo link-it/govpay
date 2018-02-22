@@ -31,7 +31,7 @@ public class RuoliFilter implements Filter {
 		
 		HttpServletRequest request = (HttpServletRequest) req;
 		
-		request.getUserPrincipal()
+		request.getUserPrincipal();
 	}
 
 	@Override
