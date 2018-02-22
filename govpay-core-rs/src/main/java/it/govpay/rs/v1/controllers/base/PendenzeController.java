@@ -33,6 +33,7 @@ import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.model.Ruolo;
 
+import org.slf4j.Logger;
 
 import it.govpay.rs.v1.beans.base.*;
 

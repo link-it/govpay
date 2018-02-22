@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import it.govpay.model.Ruolo;
 
+import org.slf4j.Logger;
 
 import it.govpay.rs.v1.beans.base.*;
 
