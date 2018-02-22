@@ -60,6 +60,7 @@ import it.govpay.model.Applicazione;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.Errore;
+import it.govpay.rs.v1.controllers.base.IncassiController;
 import it.govpay.rs.legacy.beans.Incasso;
 import it.govpay.rs.legacy.beans.IncassoExt;
 
@@ -67,9 +68,11 @@ import it.govpay.rs.legacy.beans.IncassoExt;
 public class Incassi extends BaseRsServiceV1 {
 	
 	public static final String NOME_SERVIZIO = "incassi";
+	private IncassiController controller = null;
 	
 	public Incassi() {
 		super(NOME_SERVIZIO);
+		this.controller = new IncassiController(NOME_SERVIZIO, this.log);
 	}
 	
 	@POST
@@ -88,7 +91,7 @@ public class Incassi extends BaseRsServiceV1 {
 			baos = new ByteArrayOutputStream();
 			BaseRsService.copy(is, baos);
 
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
@@ -103,22 +106,22 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			IncassoExt incassoExt = new IncassoExt(richiestaIncassoDTOResponse.getIncasso(), bd);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, incassoExt);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, incassoExt);
 
 			if(richiestaIncassoDTOResponse.isCreato())
 				return Response.status(Status.CREATED).entity(incassoExt).build();
 			else 
 				return Response.status(Status.OK).entity(incassoExt).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (IncassiException e) {
 			Errore errore = new Errore(e);
-			try { this.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2.getMessage());}
+			try { this.controller.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2.getMessage());}
 			return Response.status(422).entity(errore).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -147,7 +150,7 @@ public class Incassi extends BaseRsServiceV1 {
 		
 		try{
 
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
@@ -168,11 +171,11 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(listaIncassi).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -192,7 +195,7 @@ public class Incassi extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
@@ -205,11 +208,11 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(new IncassoExt(leggiIncassoDTOResponse.getIncasso(), bd)).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();

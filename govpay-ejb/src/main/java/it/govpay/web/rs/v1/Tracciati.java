@@ -55,6 +55,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.model.Tracciato.TipoTracciatoType;
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.controllers.base.PendenzeController;
 import it.govpay.rs.legacy.beans.Tracciato;
 import it.govpay.rs.legacy.beans.TracciatoExt;
 
@@ -62,9 +63,11 @@ import it.govpay.rs.legacy.beans.TracciatoExt;
 public class Tracciati extends BaseRsServiceV1 {
 
 	public static final String NOME_SERVIZIO = "caricamenti";
+	private PendenzeController controller = null;
 	
 	public Tracciati() {
 		super(NOME_SERVIZIO);
+		this.controller = new PendenzeController(NOME_SERVIZIO, this.log);
 	}
 
 	@POST
@@ -78,7 +81,7 @@ public class Tracciati extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, incomingCsv.getBytes());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, incomingCsv.getBytes());
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
@@ -92,20 +95,20 @@ public class Tracciati extends BaseRsServiceV1 {
 			InserisciTracciatoDTOResponse inserisciTracciatoResponse = tracciati.inserisciTracciato(inserisciTracciatoDTO);
 			
 			Tracciato tracciato = new Tracciato(inserisciTracciatoResponse.getTracciato());
-			this.logResponse(uriInfo, httpHeaders, methodName, tracciato);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, tracciato);
 			
 			
 			return Response.status(Status.CREATED).entity(tracciato).build();
 			
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (NotAuthenticatedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il caricamento del tracciato", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -123,7 +126,7 @@ public class Tracciati extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new byte[0]);
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new byte[0]);
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
@@ -135,19 +138,19 @@ public class Tracciati extends BaseRsServiceV1 {
 			LeggiTracciatoDTOResponse leggiTracciatoDTOResponse = tracciati.leggiTracciato(leggiTracciatoDTO);
 			
 			TracciatoExt tracciato = new TracciatoExt(leggiTracciatoDTOResponse.getTracciato(), bd);
-			this.logResponse(uriInfo, httpHeaders, methodName, tracciato);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, tracciato);
 			
 			return Response.status(Status.OK).entity(tracciato).build();
 			
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (NotAuthenticatedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante la lettura del tracciato", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -170,7 +173,7 @@ public class Tracciati extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new byte[0]);
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new byte[0]);
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
@@ -190,19 +193,19 @@ public class Tracciati extends BaseRsServiceV1 {
 				listaTracciati.add(new Tracciato(t));
 			}
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, listaTracciati);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, listaTracciati);
 			
 			return Response.status(Status.OK).entity(listaTracciati).build();
 			
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (NotAuthenticatedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante la lettura del tracciato", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
