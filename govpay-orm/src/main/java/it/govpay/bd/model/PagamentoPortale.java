@@ -69,6 +69,8 @@ public class PagamentoPortale extends BasicModel {
 	private String codPsp = null;
 	private String tipoVersamento = null;
 	private String codCanale = null;
+	
+	private Double importo = null; 
 
 	public String getCodPortale() {
 		return codPortale;
@@ -227,6 +229,12 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
 		this.descrizioneStato = descrizioneStato;
+	}
+	public Double getImporto() {
+		return importo;
+	}
+	public void setImporto(Double importo) {
+		this.importo = importo;
 	}
 
 }

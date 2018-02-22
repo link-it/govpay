@@ -6,6 +6,7 @@ import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.model.Applicazione;
 import it.govpay.rs.v1.beans.base.EsitoRpt;
 import it.govpay.rs.v1.beans.base.ModelloPagamento;
 
@@ -23,11 +24,9 @@ public Rpt() {}
 	}
 	
 	
-	public Rpt(it.govpay.bd.model.Rpt rpt) throws ServiceException {
-		Canale can = rpt.getCanale(null);
-		Psp psp = rpt.getPsp(null);
+	public Rpt(it.govpay.bd.model.Rpt rpt, Versamento versamento, Applicazione applicazione, Canale canale, Psp psp) throws ServiceException {
 		
-		this.setCanale(UriBuilderUtils.getCanale(psp.getCodPsp(), can.getCodCanale()));
+		this.setCanale(UriBuilderUtils.getCanale(psp.getCodPsp(), canale.getCodCanale()));
 		this.setCcp(rpt.getCcp());
 		this.setDataRicevuta(rpt.getDataMsgRicevuta());
 		this.setDataRichiesta(rpt.getDataMsgRichiesta());
@@ -57,9 +56,9 @@ public Rpt() {}
 		this.setIdDominio(rpt.getCodDominio());
 		this.setImporto(rpt.getImportoTotalePagato());
 		this.setIuv(rpt.getIuv());
-		if(can.getModelloPagamento() != null) {
+		if(canale.getModelloPagamento() != null) {
 			ModelloPagamento mod = null;
-			switch(can.getModelloPagamento()) {
+			switch(canale.getModelloPagamento()) {
 			case ATTIVATO_PRESSO_PSP:
 				mod = ModelloPagamento._4;
 				break;
@@ -79,8 +78,7 @@ public Rpt() {}
 			
 			this.setModelloPagamento(mod);
 		}
-		Versamento versamento = rpt.getVersamento(null);
-		this.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(), versamento.getCodVersamentoEnte()));
+		this.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
 		this.setStato(rpt.getStato().toString());
 	}
 }

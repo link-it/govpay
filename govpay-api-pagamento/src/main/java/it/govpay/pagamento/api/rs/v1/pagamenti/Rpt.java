@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.Encoded;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,6 +24,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
@@ -114,8 +115,8 @@ public class Rpt extends BaseRsServiceV1{
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.rs.v1.beans.Rpt> results = new ArrayList<it.govpay.rs.v1.beans.Rpt>();
-			for(it.govpay.bd.model.Rpt rpt: listaRptDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Rpt(rpt));
+			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
+				results.add(new it.govpay.rs.v1.beans.Rpt(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),leggiRptDtoResponse.getCanale(),leggiRptDtoResponse.getPsp()));
 			}
 			
 			ListaRpt response = new ListaRpt(results, uriInfo.getRequestUri(),
@@ -141,6 +142,67 @@ public class Rpt extends BaseRsServiceV1{
 			if(ctx != null) ctx.log();
 		}
 	}
+	
+	
+	@GET
+	@Path("/{idDominio}/{iuv}/{ccp}")
+	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM,MediaType.APPLICATION_XML,"application/pdf"})
+	public Response getRptByIdDominioIuvCcp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
+			@PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp) {
+		String methodName = "getRptByIdDominioIuvCcp";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			String principal = this.getPrincipal();
+			
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(null); //TODO IAutorizzato
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			leggiRptDTO.setCcp(ccp);
+			
+			RptDAO ricevuteDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+			
+			it.govpay.rs.v1.beans.Rpt response = new it.govpay.rs.v1.beans.Rpt(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
+			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			
+		}catch (RicevutaNonTrovataException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante la " + methodName, e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+	}
+	
 
 
 	@GET
@@ -148,7 +210,7 @@ public class Rpt extends BaseRsServiceV1{
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM,MediaType.APPLICATION_XML,"application/pdf"})
 	public Response getRtByIdDominioIuvCcp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp) {
-		String methodName = "getByIdDominioIuvCcp";  
+		String methodName = "getRtByIdDominioIuvCcp";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 

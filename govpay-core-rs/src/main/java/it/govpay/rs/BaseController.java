@@ -3,6 +3,10 @@
  */
 package it.govpay.rs;
 
+import java.util.List;
+
+import it.govpay.model.Ruolo;
+
 /**
  * @author Bussu Giovanni (bussu@link.it)
  * @author  $Author: bussu $
@@ -11,4 +15,6 @@ package it.govpay.rs;
  */
 public class BaseController {
 
+	private List<Ruolo> listaRuoli = null;
+	private String principal = null;
 }
