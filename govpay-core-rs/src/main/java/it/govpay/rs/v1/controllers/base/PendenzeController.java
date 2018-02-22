@@ -2,19 +2,14 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import java.io.File;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
-
-import javax.ws.rs.core.Response.Status;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
@@ -31,15 +26,6 @@ import it.govpay.rs.v1.beans.ListaPendenze;
 import it.govpay.rs.v1.beans.Pendenza;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.model.Ruolo;
-
-import org.slf4j.Logger;
-
-import it.govpay.rs.v1.beans.base.*;
-
-import it.govpay.rs.v1.beans.base.Avviso;
-import it.govpay.rs.v1.beans.base.PendenzaPost;
-import it.govpay.rs.v1.beans.base.StatoPendenza;
 
 
 
