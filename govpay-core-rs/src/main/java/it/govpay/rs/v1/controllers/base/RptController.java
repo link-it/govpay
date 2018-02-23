@@ -45,7 +45,7 @@ public class RptController extends it.govpay.rs.BaseController {
 
     public Response rptGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina ,
     			String ordinamento , String campi , String idDominio , String iuv , String ccp , String idA2A , String idPendenza , String idPagamento , String esito ) {
-    	String methodName = "getListaRpt";  
+    	String methodName = "rptGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 

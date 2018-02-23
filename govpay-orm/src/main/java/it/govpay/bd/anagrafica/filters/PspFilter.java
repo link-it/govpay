@@ -36,6 +36,8 @@ public class PspFilter extends AbstractFilter {
 	
 	private String codPsp = null;
 	private String ragioneSociale = null;
+	private Boolean bollo = null;
+	private Boolean storno = null;
 
 	public enum SortFields {
 	}
@@ -77,6 +79,22 @@ public class PspFilter extends AbstractFilter {
 			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
+			if(this.bollo != null && this.bollo != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Psp.model().MARCA_BOLLO, this.bollo);
+				addAnd = true;
+			}
+			
+			if(this.storno != null && this.storno != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Psp.model().STORNO, this.storno);
+				addAnd = true;
+			}
+			
 			
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -108,6 +126,22 @@ public class PspFilter extends AbstractFilter {
 
 	public void setRagioneSociale(String ragioneSociale) {
 		this.ragioneSociale = ragioneSociale;
+	}
+
+	public Boolean getBollo() {
+		return bollo;
+	}
+
+	public void setBollo(Boolean bollo) {
+		this.bollo = bollo;
+	}
+
+	public Boolean getStorno() {
+		return storno;
+	}
+
+	public void setStorno(Boolean storno) {
+		this.storno = storno;
 	}
 	
 	
