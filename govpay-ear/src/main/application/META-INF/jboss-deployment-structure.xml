@@ -8,7 +8,7 @@
 	</deployment>
 	<sub-deployment name="govpay-web-${project.version}.war">
 		<exclusions>
-			<module name="org.slf4j" />
+<!-- 			<module name="org.slf4j" /> -->
 			<module name="org.apache.commons.logging" />
 			<module name="org.log4j" />
 			<module name="org.jboss.logging" />
@@ -23,7 +23,7 @@
 		<sub-deployment name="govpay-wc-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
-			<module name="org.slf4j" />
+<!-- 			<module name="org.slf4j" /> -->
 			<module name="org.apache.commons.logging" />
 			<module name="org.log4j" />
 			<module name="org.jboss.logging" />
@@ -39,7 +39,7 @@
 		<sub-deployment name="govpay-api-pagamento-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
-			<module name="org.slf4j" />
+<!-- 			<module name="org.slf4j" /> -->
 			<module name="org.apache.commons.logging" />
 			<module name="org.log4j" />
 			<module name="org.jboss.logging" />
