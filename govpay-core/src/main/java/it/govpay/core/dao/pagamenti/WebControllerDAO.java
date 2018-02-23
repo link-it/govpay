@@ -179,8 +179,12 @@ public class WebControllerDAO extends BasicBD{
 							try {
 								it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(this);
 															
+								String autenticazioneFromJson = JsonUtils.getAutenticazioneFromJson(pagamentoPortale.getJsonRequest());
+								if(autenticazioneFromJson == null)
+									autenticazioneFromJson = "N/A";
+								
 								List<Rpt> rpts = rptBD.avviaTransazione(versamenti, portaleAutenticato, canale, JsonUtils.getIbanAddebitoFromJson(pagamentoPortale.getJsonRequest()),
-										versanteModel, JsonUtils.getAutenticazioneFromJson(pagamentoPortale.getJsonRequest()), pagamentoPortale.getUrlRitorno(), false,pagamentoPortale);
+										versanteModel, autenticazioneFromJson, pagamentoPortale.getUrlRitorno(), false,pagamentoPortale);
 	
 								Rpt rpt = rpts.get(0);
 	

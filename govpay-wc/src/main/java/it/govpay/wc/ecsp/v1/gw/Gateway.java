@@ -86,7 +86,7 @@ public class Gateway extends BaseRsServiceV1{
 			
 			if(aggiornaPagamentiPortaleDTOResponse.getLocation() != null) {
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ aggiornaPagamentiPortaleDTOResponse.getLocation() +"].");	
-				return Response.temporaryRedirect(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())).build();
+				return Response.seeOther(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())).build();
 			} else {
 				this.log.info("Esecuzione " + methodName + " completata, html generato correttamente.");	
 				return Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()).build();
@@ -96,13 +96,13 @@ public class Gateway extends BaseRsServiceV1{
 			return Response.status(Status.NOT_FOUND).build();
 		} catch (ActionNonValidaException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
-			return Response.temporaryRedirect(e.getURILocation()).build();
+			return Response.seeOther(e.getURILocation()).build();
 		} catch (TokenWISPNonValidoException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
-			return Response.temporaryRedirect(e.getURILocation()).build();
+			return Response.seeOther(e.getURILocation()).build();
 		} catch (TransazioneRptException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
-			return Response.temporaryRedirect(e.getURILocation()).build();
+			return Response.seeOther(e.getURILocation()).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione della funzionalita' di gateway: ", e);
 			try {
@@ -148,7 +148,7 @@ public class Gateway extends BaseRsServiceV1{
 			
 			if(aggiornaPagamentiPortaleDTOResponse.getLocation() != null) {
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ aggiornaPagamentiPortaleDTOResponse.getLocation() +"].");	
-				return Response.temporaryRedirect(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())).build();
+				return Response.seeOther(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())).build();
 			} else {
 				this.log.info("Esecuzione " + methodName + " completata, html generato correttamente.");	
 				return Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()).build();
@@ -158,13 +158,13 @@ public class Gateway extends BaseRsServiceV1{
 			return Response.status(Status.NOT_FOUND).build();
 		} catch (ActionNonValidaException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
-			return Response.temporaryRedirect(e.getURILocation()).build();
+			return Response.seeOther(e.getURILocation()).build();
 		} catch (TokenWISPNonValidoException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
-			return Response.temporaryRedirect(e.getURILocation()).build();
+			return Response.seeOther(e.getURILocation()).build();
 		} catch (TransazioneRptException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
-			return Response.temporaryRedirect(e.getURILocation()).build();
+			return Response.seeOther(e.getURILocation()).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione della funzionalita' di gateway: ", e);
 			try {
