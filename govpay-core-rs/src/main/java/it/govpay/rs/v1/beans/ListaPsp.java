@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ListaPsp extends Lista<Psp> {
 	
-	public ListaPsp(List<Psp> rpt, URI requestUri, long count, long pagina, long limit) {
-		super(rpt, requestUri, count, pagina, limit);
+	public ListaPsp(List<Psp> psp, URI requestUri, long count, long pagina, long limit) {
+		super(psp, requestUri, count, pagina, limit);
 	}
 	
 }

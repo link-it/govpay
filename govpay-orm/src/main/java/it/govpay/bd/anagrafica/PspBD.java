@@ -22,6 +22,7 @@ package it.govpay.bd.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -44,6 +45,7 @@ import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPsp;
 import it.govpay.orm.dao.IDBCanaleServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCPspServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.CanaleFieldConverter;
 
 public class PspBD extends BasicBD {
 
@@ -205,6 +207,40 @@ public class PspBD extends BasicBD {
 			it.govpay.orm.Canale canale = ((IDBCanaleServiceSearch)this.getCanaleService()).get(idCanale);
 			return CanaleConverter.toDTO(canale, psp);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public List<Canale> findAllCanali(String codPsp) throws NotFoundException, ServiceException, MultipleResultException{
+		try {
+			Psp psp = AnagraficaManager.getPsp(this, codPsp);
+			IPaginatedExpression iexp = this.getCanaleService().newPaginatedExpression();
+			CustomField customField = new CustomField("id_psp", Long.class, "id_psp", new CanaleFieldConverter(this.getJdbcProperties().getDatabaseType()).toTable(it.govpay.orm.Canale.model()));
+			iexp.equals(customField, psp.getId());
+			List<it.govpay.orm.Canale> canale = this.getCanaleService().findAll(iexp);
+			return CanaleConverter.toDTO(canale, psp);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public List<Canale> findAllCanali(Long idPsp) throws NotFoundException, ServiceException, MultipleResultException{
+		try {
+			Psp psp = AnagraficaManager.getPsp(this, idPsp);
+			IPaginatedExpression iexp = this.getCanaleService().newPaginatedExpression();
+			CustomField customField = new CustomField("id_psp", Long.class, "id_psp", new CanaleFieldConverter(this.getJdbcProperties().getDatabaseType()).toTable(it.govpay.orm.Canale.model()));
+			iexp.equals(customField, psp.getId());
+			List<it.govpay.orm.Canale> canale = this.getCanaleService().findAll(iexp);
+			return CanaleConverter.toDTO(canale, psp);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
