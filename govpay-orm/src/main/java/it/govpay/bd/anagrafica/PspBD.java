@@ -22,7 +22,6 @@ package it.govpay.bd.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -35,6 +34,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.CanaleFilter;
 import it.govpay.bd.anagrafica.filters.PspFilter;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Psp;
@@ -45,7 +45,6 @@ import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPsp;
 import it.govpay.orm.dao.IDBCanaleServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCPspServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.CanaleFieldConverter;
 
 public class PspBD extends BasicBD {
 
@@ -211,36 +210,25 @@ public class PspBD extends BasicBD {
 		}
 	}
 	
-	public List<Canale> findAllCanali(String codPsp) throws NotFoundException, ServiceException, MultipleResultException{
+	public long countCanali(CanaleFilter filter) throws ServiceException{
 		try {
-			Psp psp = AnagraficaManager.getPsp(this, codPsp);
-			IPaginatedExpression iexp = this.getCanaleService().newPaginatedExpression();
-			CustomField customField = new CustomField("id_psp", Long.class, "id_psp", new CanaleFieldConverter(this.getJdbcProperties().getDatabaseType()).toTable(it.govpay.orm.Canale.model()));
-			iexp.equals(customField, psp.getId());
-			List<it.govpay.orm.Canale> canale = this.getCanaleService().findAll(iexp);
-			return CanaleConverter.toDTO(canale, psp);
+			return this.getCanaleService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
 	
-	public List<Canale> findAllCanali(Long idPsp) throws NotFoundException, ServiceException, MultipleResultException{
+	public List<Canale> findAllCanali(CanaleFilter filter) throws ServiceException {
 		try {
-			Psp psp = AnagraficaManager.getPsp(this, idPsp);
-			IPaginatedExpression iexp = this.getCanaleService().newPaginatedExpression();
-			CustomField customField = new CustomField("id_psp", Long.class, "id_psp", new CanaleFieldConverter(this.getJdbcProperties().getDatabaseType()).toTable(it.govpay.orm.Canale.model()));
-			iexp.equals(customField, psp.getId());
-			List<it.govpay.orm.Canale> canale = this.getCanaleService().findAll(iexp);
-			return CanaleConverter.toDTO(canale, psp);
+			List<it.govpay.orm.Canale> canaleLst = this.getCanaleService().findAll(filter.toPaginatedExpression());
+			List<Canale> canaleLstModel = new ArrayList<>();
+			for(it.govpay.orm.Canale canale: canaleLst) {
+				it.govpay.model.Psp psp = new it.govpay.model.Psp();
+				psp.setId(canale.getIdPsp().getId());
+				canaleLstModel.add(CanaleConverter.toDTO(canale, psp));
+			}
+			return canaleLstModel;
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -386,6 +374,14 @@ public class PspBD extends BasicBD {
 	
 	public PspFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new PspFilter(this.getPspService(),simpleSearch);
+	}
+
+	public CanaleFilter newCanaleFilter() throws ServiceException {
+		return new CanaleFilter(this.getCanaleService());
+	}
+	
+	public CanaleFilter newCanaleFilter(boolean simpleSearch) throws ServiceException {
+		return new CanaleFilter(this.getCanaleService(),simpleSearch);
 	}
 
 	public long count(PspFilter filter) throws ServiceException {

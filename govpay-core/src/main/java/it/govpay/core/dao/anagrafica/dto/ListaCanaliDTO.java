@@ -1,17 +1,17 @@
 package it.govpay.core.dao.anagrafica.dto;
 
 import it.govpay.model.IAutorizzato;
-import it.govpay.orm.Psp;
+import it.govpay.orm.Canale;
 
 public class ListaCanaliDTO extends BasicFindRequestDTO{
 
 	private Boolean abilitato;
-	private Boolean bollo;
-	private Boolean storno;
+	private String modello;
+	private String tipoVersamento;
 	
 	public ListaCanaliDTO(IAutorizzato user) {
 		super(user);
-		this.addSortField("ragioneSociale", Psp.model().RAGIONE_SOCIALE);
+		this.addSortField("idCanale", Canale.model().COD_CANALE);
 	}
 
 	public Boolean getAbilitato() {
@@ -22,20 +22,21 @@ public class ListaCanaliDTO extends BasicFindRequestDTO{
 		this.abilitato = abilitato;
 	}
 
-	public Boolean getBollo() {
-		return bollo;
+	public String getTipoVersamento() {
+		return tipoVersamento;
 	}
 
-	public void setBollo(Boolean bollo) {
-		this.bollo = bollo;
+	public void setTipoVersamento(String tipoVersamento) {
+		this.tipoVersamento = tipoVersamento;
 	}
 
-	public Boolean getStorno() {
-		return storno;
+	public String getModello() {
+		return modello;
 	}
 
-	public void setStorno(Boolean storno) {
-		this.storno = storno;
+	public void setModello(String modello) {
+		this.modello = modello;
 	}
+
 
 }

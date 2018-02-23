@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.anagrafica.PspDAO;
+import it.govpay.core.dao.anagrafica.dto.LeggiCanaleDTO;
+import it.govpay.core.dao.anagrafica.dto.LeggiCanaleDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiPspDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiPspDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaCanaliDTO;
@@ -108,7 +110,7 @@ public class PspController extends it.govpay.rs.BaseController {
 
 
     public Response pspIdPspCanaliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
-    	String methodName = "pspGET";  
+    	String methodName = "pspIdPspCanaliGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -120,14 +122,14 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			ListaCanaliDTO listaPspDTO = new ListaCanaliDTO(null); //TODO IAutorizzato
+			ListaCanaliDTO listaCanaliDTO = new ListaCanaliDTO(null); //TODO IAutorizzato
 			
-			listaPspDTO.setPagina(pagina);
-			listaPspDTO.setLimit(risultatiPerPagina);
-			listaPspDTO.setOrderBy(ordinamento);
-			listaPspDTO.setAbilitato(abilitato);
-//			listaPspDTO.setBollo(bollo);
-//			listaPspDTO.setStorno(storno);
+			listaCanaliDTO.setPagina(pagina);
+			listaCanaliDTO.setLimit(risultatiPerPagina);
+			listaCanaliDTO.setOrderBy(ordinamento);
+			listaCanaliDTO.setAbilitato(abilitato);
+			listaCanaliDTO.setModello(modello);
+			listaCanaliDTO.setTipoVersamento(tipoVersamento);
 			
 			// INIT DAO
 			
@@ -135,17 +137,17 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			ListaCanaliDTOResponse listaPspDTOResponse = pspDAO.listaCanali(listaPspDTO);
+			ListaCanaliDTOResponse listaDTOResponse = pspDAO.listaCanali(listaCanaliDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.rs.v1.beans.Canale> results = new ArrayList<it.govpay.rs.v1.beans.Canale>();
-			for(it.govpay.bd.model.Canale psp: listaPspDTOResponse.getResults()) {
+			for(it.govpay.bd.model.Canale psp: listaDTOResponse.getResults()) {
 				results.add(new it.govpay.rs.v1.beans.Canale(psp, pspDAO));
 			}
 			
 			ListaCanali response = new ListaCanali(results, uriInfo.getRequestUri(),
-					listaPspDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -179,7 +181,56 @@ public class PspController extends it.govpay.rs.BaseController {
 
 
     public Response pspIdPspCanaliIdCanaleGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "pspIdPspCanaliIdCanaleGET";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+			
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			LeggiCanaleDTO leggiPspDTO = new LeggiCanaleDTO(null); //TODO IAutorizzato
+			leggiPspDTO.setIdPsp(idPsp);
+			leggiPspDTO.setIdCanale(idCanale);
+			leggiPspDTO.setTipoVersamento(null); //TODO RIGENERO
+			
+			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			
+			LeggiCanaleDTOResponse leggiPspDTOResponse = pspDAO.leggiCanale(leggiPspDTO);
+			
+			it.govpay.rs.v1.beans.Canale response = new it.govpay.rs.v1.beans.Canale(leggiPspDTOResponse.getCanale(), pspDAO);
+			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			
+		}catch (PspNonTrovatoException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante la " + methodName, e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 

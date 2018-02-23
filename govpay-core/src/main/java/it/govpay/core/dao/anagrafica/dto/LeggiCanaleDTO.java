@@ -27,14 +27,6 @@ public class LeggiCanaleDTO extends BasicCreateRequestDTO {
 		this.idCanale = idCanale;
 	}
 
-	public String getCodPsp() {
-		return codPsp;
-	}
-
-	public void setCodPsp(String codPsp) {
-		this.codPsp = codPsp;
-	}
-
 	public TipoVersamento getTipoVersamento() {
 		return tipoVersamento;
 	}
@@ -43,8 +35,16 @@ public class LeggiCanaleDTO extends BasicCreateRequestDTO {
 		this.tipoVersamento = tipoVersamento;
 	}
 
+	public String getIdPsp() {
+		return idPsp;
+	}
+
+	public void setIdPsp(String idPsp) {
+		this.idPsp = idPsp;
+	}
+
 	private String idCanale;
-	private String codPsp;
+	private String idPsp;
 	private TipoVersamento tipoVersamento;
 	
 }

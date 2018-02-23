@@ -9,6 +9,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.PspBD;
+import it.govpay.bd.anagrafica.filters.CanaleFilter;
 import it.govpay.bd.anagrafica.filters.PspFilter;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Psp;
@@ -21,6 +22,7 @@ import it.govpay.core.dao.anagrafica.dto.ListaCanaliDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
+import it.govpay.model.Canale.TipoVersamento;
 
 public class PspDAO extends BasicBD{
 
@@ -68,20 +70,20 @@ public class PspDAO extends BasicBD{
 
 	public ListaCanaliDTOResponse listaCanali(ListaCanaliDTO listaPspDTO) throws ServiceException{
 		PspBD pspBD = new PspBD(this);
-		PspFilter filter = pspBD.newFilter();
+		CanaleFilter filter = pspBD.newCanaleFilter();
 
 		filter.setOffset(listaPspDTO.getOffset());
 		filter.setLimit(listaPspDTO.getLimit());
-		filter.setSearchAbilitato(listaPspDTO.getAbilitato());
-		filter.setBollo(listaPspDTO.getBollo());
-		filter.setStorno(listaPspDTO.getStorno()); 
+		filter.setAbilitato(listaPspDTO.getAbilitato());
+		filter.setModello(listaPspDTO.getModello());
+		filter.setTipoVersamento(TipoVersamento.valueOf(listaPspDTO.getTipoVersamento())); 
 		filter.setFilterSortList(listaPspDTO.getFieldSortList());
 
-		long count = pspBD.count(filter);
+		long count = pspBD.countCanali(filter);
 
 		List<Canale> resList = new ArrayList<Canale>();
 		if(count > 0) {
-//			resList = pspBD.findAllCanali(listaPsp);
+			resList = pspBD.findAllCanali(filter);
 		} 
 
 		return new ListaCanaliDTOResponse(count, resList);
@@ -94,7 +96,7 @@ public class PspDAO extends BasicBD{
 		PspBD pspBD = new PspBD(this);
 		Canale canale;
 		try {
-			canale = pspBD.getCanale(leggiCanaleDTO.getCodPsp(), leggiCanaleDTO.getIdCanale(), leggiCanaleDTO.getTipoVersamento());
+			canale = pspBD.getCanale(leggiCanaleDTO.getIdPsp(), leggiCanaleDTO.getIdCanale(), leggiCanaleDTO.getTipoVersamento());
 			response.setCanale(canale);
 		} catch (NotFoundException e) {
 			throw new PspNonTrovatoException(e.getMessage(), e);
