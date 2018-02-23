@@ -217,7 +217,7 @@ public class IUV extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @XmlElement(name="auxDigit",required=true,nillable=false,defaultValue="0")
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_auxDigit = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,  0);
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected int auxDigit;
 
 }

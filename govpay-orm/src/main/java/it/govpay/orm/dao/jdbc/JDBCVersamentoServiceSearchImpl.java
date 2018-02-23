@@ -609,6 +609,16 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			sqlQueryObject.addWhereCondition(versamenti+".cod_versamento_ente="+iuv+".cod_versamento_ente");
 		}
 
+		if(expression.inUseModel(Versamento.model().ID_PAGAMENTO_PORTALE,false)){
+			String versamenti = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
+			String pagPortVers = "pag_port_versamenti";
+			String pagPort = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_PAGAMENTO_PORTALE);
+			sqlQueryObject.addFromTable(pagPortVers);
+			sqlQueryObject.addWhereCondition(versamenti+".id="+pagPortVers+".id_versamento");
+			
+			sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
+		}
+
 	}
 
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id) throws NotFoundException, ServiceException, NotImplementedException, Exception{

@@ -44,6 +44,7 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.COD_PORTALE = new Field("codPortale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.COD_CANALE = new Field("codCanale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.NOME = new Field("nome",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.IMPORTO = new Field("importo",double.class,"PagamentoPortale",PagamentoPortale.class);
 		this.VERSANTE_IDENTIFICATIVO = new Field("versanteIdentificativo",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.ID_SESSIONE_PORTALE = new Field("idSessionePortale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
@@ -72,6 +73,7 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.COD_PORTALE = new ComplexField(father,"codPortale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.COD_CANALE = new ComplexField(father,"codCanale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.IMPORTO = new ComplexField(father,"importo",double.class,"PagamentoPortale",PagamentoPortale.class);
 		this.VERSANTE_IDENTIFICATIVO = new ComplexField(father,"versanteIdentificativo",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.ID_SESSIONE_PORTALE = new ComplexField(father,"idSessionePortale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
@@ -100,6 +102,8 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	public IField COD_CANALE = null;
 	 
 	public IField NOME = null;
+	 
+	public IField IMPORTO = null;
 	 
 	public IField VERSANTE_IDENTIFICATIVO = null;
 	 

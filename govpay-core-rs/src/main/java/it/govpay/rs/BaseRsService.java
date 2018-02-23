@@ -49,10 +49,12 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.core.cache.RuoliCache;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
 import it.govpay.model.Applicazione;
+import it.govpay.model.Ruolo;
 import net.sf.json.JSONObject;
 
 public abstract class BaseRsService {
@@ -76,9 +78,11 @@ public abstract class BaseRsService {
 	protected Logger log;
 
 	protected String codOperazione;
+	protected RuoliCache ruoliCache = null; 
 
 	public BaseRsService(){
 		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
+		this.ruoliCache = RuoliCache.getInstance();
 	}
 
 	public BaseRsService(String nomeServizio){
@@ -89,32 +93,6 @@ public abstract class BaseRsService {
 
 	public void setHttpServletRequest(HttpServletRequest request) {
 		this.request = request;
-	}
-	
-
-	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) {
-		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, false);
-	}
-	
-	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) {
-		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, false);
-	}
-
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) {
-		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, true);
-	}
-	
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes) {
-		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, true);
-	}
-	
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) {
-		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, true, responseCode);
 	}
 
 	@OPTIONS
@@ -133,6 +111,17 @@ public abstract class BaseRsService {
 			return this.request.getUserPrincipal().getName();
 		}
 		return null;
+	}
+	
+	protected List<Ruolo> getListaRuoli(){
+		List<Ruolo> listaRuoliPosseduti = new ArrayList<Ruolo>();
+		// caricamento dei ruoli ricevuti nella richiesta http
+		for (String chiaveRuolo : this.ruoliCache.getChiavi()) {
+			if(this.request.isUserInRole(chiaveRuolo)){
+				listaRuoliPosseduti.add(this.ruoliCache.getRuolo(chiaveRuolo));
+			}
+		}
+		return listaRuoliPosseduti;
 	}
 
 	protected Response getUnauthorizedResponse(){

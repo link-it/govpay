@@ -86,7 +86,7 @@ public class WISPUtils {
 		// numero pagamenti
 		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_NUMPAGAMENTI_RPT, numeroPagamenti));
 		// storno pagamento
-		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_STORNO_PAGAMENTO, "SI"));
+		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_STORNO_PAGAMENTO, "NO"));
 		// bollo digitale
 		listaParametri.add(WISPUtils.createHiddenParameter(KEY_PARAMETRO_BOLLO_DIGITALE, bollodigitale ? "SI" : "NO"));
 		// id_psp		

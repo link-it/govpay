@@ -368,7 +368,7 @@
 			<xsd:element name="statoVersamento" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
 	<xsd:complexType name="id-singolo-versamento">
 		<xsd:sequence>
 			<xsd:element name="idVersamento" type="id-versamento"/>
@@ -379,7 +379,7 @@
 			<xsd:element name="importoSingoloVersamento" type="xsd:double" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
 	<xsd:complexType name="id-carrello">
 		<xsd:sequence>
 			<xsd:element name="codCarrello" type="xsd:string"/>
@@ -1248,6 +1248,17 @@
 				</xsd:annotation>
 			</xsd:element>
 			
+			<xsd:element name="idPagamentoPortale" type="id-pagamento-portale">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="PagamentoPortale"
+								object-type="PagamentoPortale" relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
 			<xsd:element name="iuv" type="iuv-search" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1756,6 +1767,7 @@
 			<xsd:element name="codPortale" type="String35"/>
 			<xsd:element name="codCanale" type="String35" minOccurs="0"/>
 			<xsd:element name="nome" type="String255" />
+			<xsd:element name="importo" type="xsd:double" />
 			<xsd:element name="versanteIdentificativo" type="String35" minOccurs="0"/>
 			<xsd:element name="idSessione" type="String35"/>
 			<xsd:element name="idSessionePortale" type="String35" minOccurs="0"/>

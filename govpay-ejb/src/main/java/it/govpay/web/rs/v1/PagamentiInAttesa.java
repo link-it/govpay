@@ -37,14 +37,17 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.PagamentoInAttesa;
+import it.govpay.rs.v1.controllers.base.PendenzeController;
 
 @Path("/v1/versamenti")
 public class PagamentiInAttesa extends BaseRsServiceV1 {
 	
 	public static final String NOME_SERVIZIO = "pagamentiAttesa";
+	private PendenzeController controller = null;
 	
 	public PagamentiInAttesa() {
 		super(NOME_SERVIZIO);
+		this.controller = new PendenzeController(NOME_SERVIZIO, this.log);
 	}
 	
 	@POST
@@ -83,7 +86,7 @@ public class PagamentiInAttesa extends BaseRsServiceV1 {
 			return Response.status(Status.OK).entity(pia).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 

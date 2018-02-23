@@ -44,21 +44,4 @@ public class BaseRsServiceV1 extends BaseRsService {
 	public int getVersione() {
 		return 1;
 	}
-	
-	public void setupContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione) throws ServiceException {
-		GpContext ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione());
-		MDC.put("op", ctx.getTransactionId());
-		GpThreadLocal.set(ctx);
-	}
-	
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o) throws IOException {
-		logResponse(uriInfo, rsHttpHeaders, nomeOperazione, o, null);
-	}
-	
-
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(o);
-		super.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, json.getBytes(), responseCode);
-	}
 }

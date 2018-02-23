@@ -1,6 +1,7 @@
 
 package it.govpay.rs.v1.beans;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -8,6 +9,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.rs.v1.beans.base.StatoPagamento;
+import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 
 public class PagamentoPortale extends it.govpay.rs.v1.beans.base.Pagamento {
@@ -34,8 +36,7 @@ public class PagamentoPortale extends it.govpay.rs.v1.beans.base.Pagamento {
 		this.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
 		this.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		
-		if(pagamentoPortale.getDataRichiesta() != null)
-			this.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
+		this.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
 		
 		if(jsonObjectPagamentiPortaleRequest.containsKey("datiAddebito")) {
 			this.setDatiAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito")));
@@ -43,7 +44,13 @@ public class PagamentoPortale extends it.govpay.rs.v1.beans.base.Pagamento {
 
 		try {
 			if(jsonObjectPagamentiPortaleRequest.containsKey("dataEsecuzionePagamento")) {
-				this.setDataEsecuzionePagamento(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento")));
+				Object object = jsonObjectPagamentiPortaleRequest.get("dataEsecuzionePagamento");
+				if(object instanceof JSONNull) {
+					
+				} else {
+					String dataEsecuzionePagamentoString = jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento");
+					this.setDataEsecuzionePagamento(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataEsecuzionePagamentoString));
+				}
 			}
 		} catch (ParseException e) {
 			throw new ServiceException(e);
@@ -63,6 +70,8 @@ public class PagamentoPortale extends it.govpay.rs.v1.beans.base.Pagamento {
 		
 		this.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
 		this.setRpts(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
+		if(pagamentoPortale.getImporto() != null) // TODO rimuovere
+			this.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
 
 	}
 

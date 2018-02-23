@@ -163,6 +163,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			fields.add(PagamentoPortale.model().COD_PORTALE);
 			fields.add(PagamentoPortale.model().COD_CANALE);
 			fields.add(PagamentoPortale.model().NOME);
+			fields.add(PagamentoPortale.model().IMPORTO);
 			fields.add(PagamentoPortale.model().VERSANTE_IDENTIFICATIVO);
 			fields.add(PagamentoPortale.model().ID_SESSIONE);
 			fields.add(PagamentoPortale.model().ID_SESSIONE_PORTALE);

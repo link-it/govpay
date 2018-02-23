@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.v1.converter;
+package it.govpay.rs.v1.beans.converter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

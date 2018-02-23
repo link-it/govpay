@@ -34,12 +34,16 @@ import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.controllers.base.PspController;
 
 @Path("/")
 public class Gateway extends BaseRsServiceV1{
 	
+	private PspController controller = null;
+	
 	public Gateway() {
 		super("gateway");
+		this.controller = new PspController(this.nomeServizio,this.log);
 	}
 
 	@POST
@@ -57,7 +61,7 @@ public class Gateway extends BaseRsServiceV1{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
 			copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			String principal = this.getPrincipal();
 			
@@ -77,7 +81,7 @@ public class Gateway extends BaseRsServiceV1{
 			
 			RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = webControllerDAO.gestisciRichiestaWebController(aggiornaPagamentiPortaleDTO);
 		
-			this.logResponse(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTOResponse, 200);
+			this.controller .logResponse(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTOResponse, 200);
 			
 			if(aggiornaPagamentiPortaleDTOResponse.getLocation() != null) {
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ aggiornaPagamentiPortaleDTOResponse.getLocation() +"].");	
@@ -101,7 +105,7 @@ public class Gateway extends BaseRsServiceV1{
 		} catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione della funzionalita' di gateway: ", e);
 			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+				this.controller .logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
@@ -131,7 +135,7 @@ public class Gateway extends BaseRsServiceV1{
 			aggiornaPagamentiPortaleDTO.setWispKeyPA(keyPA);
 			aggiornaPagamentiPortaleDTO.setWispKeyWisp(keyWISP);
 			
-			this.logRequest(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTO.toString().getBytes());
+			this.controller .logRequest(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTO.toString().getBytes());
 			
 			ctx =  GpThreadLocal.get();
 
@@ -139,7 +143,7 @@ public class Gateway extends BaseRsServiceV1{
 			
 			RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = webControllerDAO.gestisciRichiestaWebController(aggiornaPagamentiPortaleDTO);
 		
-			this.logResponse(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTOResponse, 200);
+			this.controller .logResponse(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTOResponse, 200);
 			
 			if(aggiornaPagamentiPortaleDTOResponse.getLocation() != null) {
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ aggiornaPagamentiPortaleDTOResponse.getLocation() +"].");	
@@ -163,7 +167,7 @@ public class Gateway extends BaseRsServiceV1{
 		} catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione della funzionalita' di gateway: ", e);
 			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+				this.controller .logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}

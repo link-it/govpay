@@ -211,7 +211,7 @@ public class Stazione extends org.openspcoop2.utils.beans.BaseBean implements Se
   @XmlElement(name="applicationCode",required=true,nillable=false)
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_applicationCode = null;
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer applicationCode;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")

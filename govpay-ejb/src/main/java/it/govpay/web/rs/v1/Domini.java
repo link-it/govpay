@@ -71,15 +71,18 @@ import it.govpay.rs.v1.beans.ListaEntrate;
 import it.govpay.rs.v1.beans.ListaIbanAccredito;
 import it.govpay.rs.v1.beans.ListaUnitaOperative;
 import it.govpay.rs.v1.beans.UnitaOperativa;
+import it.govpay.rs.v1.controllers.base.DominiController;
 
 
 @Path("/v1/domini")
 public class Domini extends BaseRsServiceV1 {
 	
 	public static final String NOME_SERVIZIO = "domini";
+	private DominiController controller = null;
 	
 	public Domini() {
 		super(NOME_SERVIZIO);
+		this.controller = new DominiController(NOME_SERVIZIO, this.log);
 	}
 	
 	@GET
@@ -96,7 +99,7 @@ public class Domini extends BaseRsServiceV1 {
 		if(limit > 25) limit = 500;
 		
 		try{
-			setupContext(uriInfo, httpHeaders, "findDomini");
+			this.controller.setupContext(uriInfo, httpHeaders, "findDomini");
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
@@ -133,7 +136,7 @@ public class Domini extends BaseRsServiceV1 {
 			@QueryParam(value="fields") String fields) {
 		
 		try{
-			setupContext(uriInfo, httpHeaders, "findDomini");
+			this.controller.setupContext(uriInfo, httpHeaders, "findDomini");
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
@@ -167,7 +170,7 @@ public class Domini extends BaseRsServiceV1 {
 		String methodName = "findUnitaOperative"; 
 		GpContext ctx = null; 
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
@@ -187,11 +190,11 @@ public class Domini extends BaseRsServiceV1 {
 			ListaUnitaOperative listaUnitaOperative = new ListaUnitaOperative(unitaOperative, uriInfo.getRequestUri(), findUnitaOperativeDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -210,7 +213,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
@@ -224,11 +227,11 @@ public class Domini extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -251,7 +254,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
@@ -272,11 +275,11 @@ public class Domini extends BaseRsServiceV1 {
 			ListaIbanAccredito listaUnitaOperative = new ListaIbanAccredito(ibans, uriInfo.getRequestUri(), findIbanDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -295,7 +298,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
@@ -309,11 +312,11 @@ public class Domini extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -336,7 +339,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
@@ -357,11 +360,11 @@ public class Domini extends BaseRsServiceV1 {
 			ListaEntrate listaUnitaOperative = new ListaEntrate(entrate, uriInfo.getRequestUri(), findTributiDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -380,7 +383,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
+			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
@@ -394,11 +397,11 @@ public class Domini extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(entrata.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();

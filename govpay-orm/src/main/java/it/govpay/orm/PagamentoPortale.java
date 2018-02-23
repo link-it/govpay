@@ -38,6 +38,7 @@ import java.io.Serializable;
  * 			&lt;element name="codPortale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="versanteIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idSessionePortale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -73,6 +74,7 @@ import java.io.Serializable;
   	"codPortale",
   	"codCanale",
   	"nome",
+  	"importo",
   	"versanteIdentificativo",
   	"idSessione",
   	"idSessionePortale",
@@ -136,6 +138,14 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 
   public void setNome(java.lang.String nome) {
     this.nome = nome;
+  }
+
+  public double getImporto() {
+    return this.importo;
+  }
+
+  public void setImporto(double importo) {
+    this.importo = importo;
   }
 
   public java.lang.String getVersanteIdentificativo() {
@@ -312,6 +322,10 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nome",required=true,nillable=false)
   protected java.lang.String nome;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="importo",required=true,nillable=false)
+  protected double importo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="versanteIdentificativo",required=false,nillable=false)
