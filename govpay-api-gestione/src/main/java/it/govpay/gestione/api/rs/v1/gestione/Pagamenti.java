@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.v1.pagamenti;
+package it.govpay.gestione.api.rs.v1.gestione;
 
 import java.io.InputStream;
 

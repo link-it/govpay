@@ -52,7 +52,7 @@ public class InitListener implements ServletContextListener{
 				it.govpay.bd.GovpayConfig.newInstance4GovPay();
 				it.govpay.bd.GovpayCustomConfig.newInstance();
 			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
+				throw new RuntimeException("Inizializzazione di Govpay-API-Gestione fallita: " + e, e);
 			}
 			
 			
@@ -63,12 +63,12 @@ public class InitListener implements ServletContextListener{
 					LoggerWrapperFactory.setLogConfiguration(log4j2Config);
 					log = LoggerWrapperFactory.getLogger("boot");	
 
-					log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
+					log.info("Inizializzazione Govpay-API-Gestione ${project.version} (build " + commit + ") in corso");
 					log.info("Caricata configurazione logger: " + log4j2Config.getPath());
 				} else {
 					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
 
-					log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso.");
+					log.info("Inizializzazione Govpay-API-Gestione ${project.version} (build " + commit + ") in corso.");
 					log.info("Configurazione logger da classpath.");
 				}
 			} catch (Exception e) {
@@ -78,7 +78,7 @@ public class InitListener implements ServletContextListener{
 			try {
 				gpConfig.readProperties();
 			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
+				throw new RuntimeException("Inizializzazione di Govpay-API-Gestione fallita: " + e, e);
 			}
 			
 			// Configurazione del logger Diagnostici/Tracce/Dump
@@ -117,7 +117,7 @@ public class InitListener implements ServletContextListener{
 
 			} catch (Exception e) {
 				log.error("Errore durante la configurazione dei diagnostici", e);
-				throw new RuntimeException("Inizializzazione GovPay ${project.version} (build " + commit + ") fallita.", e);
+				throw new RuntimeException("Inizializzazione Govpay-API-Gestione ${project.version} (build " + commit + ") fallita.", e);
 			}
 
 
@@ -137,7 +137,7 @@ public class InitListener implements ServletContextListener{
 			} catch (Exception e) {
 				log.error("Errore durante predisposizione del contesto: " + e);
 				if(ctx != null) ctx.log();
-				throw new RuntimeException("Inizializzazione GovPay ${project.version} (build " + commit + ") fallita.", e);
+				throw new RuntimeException("Inizializzazione Govpay-API-Gestione ${project.version} (build " + commit + ") fallita.", e);
 			}
 			
 			RicevutaPagamentoProperties.newInstance(gpConfig.getResourceDir());
@@ -146,12 +146,12 @@ public class InitListener implements ServletContextListener{
 			RuoliCache.newInstance(log);
 			//			OperazioneFactory.init();
 		} catch(Exception e){
-			throw new RuntimeException("Inizializzazione di GovPay-API-Pagamento fallita: " + e, e);
+			throw new RuntimeException("Inizializzazione di GovPay-API-Gestione fallita: " + e, e);
 		}
 
 		ctx.log();
 
-		log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") completata con successo.");
+		log.info("Inizializzazione Govpay-API-Gestione ${project.version} (build " + commit + ") completata con successo.");
 		initialized = true;
 	}
 
@@ -161,7 +161,7 @@ public class InitListener implements ServletContextListener{
 		MDC.put("cmd", "Shutdown");
 		MDC.put("op", UUID.randomUUID().toString() );
 		
-		log.info("Shutdown GovPay in corso...");
+		log.info("Shutdown Govpay-API-Gestione in corso...");
 		
 		log.info("De-registrazione delle cache ...");
 		AnagraficaManager.unregister();
@@ -175,6 +175,6 @@ public class InitListener implements ServletContextListener{
 			log.warn("Errore nello shutdown del Connection Manager: " + e);
 		}
 		
-		log.info("Shutdown di GovPay completato.");
+		log.info("Shutdown di Govpay-API-Gestione completato.");
 	}
 }
