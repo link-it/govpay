@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.v1.pagamenti;
+package it.govpay.backoffice.api.rs.v1.backoffice;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;

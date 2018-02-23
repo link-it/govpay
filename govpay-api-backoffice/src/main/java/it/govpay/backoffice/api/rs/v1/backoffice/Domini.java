@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.v1.pagamenti;
+package it.govpay.backoffice.api.rs.v1.backoffice;
 
 import it.govpay.rs.v1.beans.base.Dominio;
 import it.govpay.rs.v1.beans.base.DominioPost;
