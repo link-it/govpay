@@ -64,14 +64,14 @@ public class Psp extends BaseRsServiceV1 {
 			this.controller.logResponse(uriInfo, httpHeaders, methodName, redirectDaPspDTOResponse, 200);
 			
 			this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectDaPspDTOResponse.getLocation() +"].");	
-			return Response.temporaryRedirect(new URI(redirectDaPspDTOResponse.getLocation())).build();
+			return Response.seeOther(new URI(redirectDaPspDTOResponse.getLocation())).build();
 			
 		} catch (PagamentoPortaleNonTrovatoException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", restiuisco 404 - NotFound", e);
 			return Response.status(Status.NOT_FOUND).build();
 		} catch (ParametriNonTrovatiException e) {
 			log.error("Esecuzione della funzionalita' di gateway si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
-			return Response.temporaryRedirect(e.getURILocation()).build();
+			return Response.seeOther(e.getURILocation()).build();
 		}catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione della funzionalita' di gateway: ", e);
 			try {

@@ -1,9 +1,23 @@
 package it.govpay.core.dao.pagamenti.utils;
 
 import it.govpay.servizi.commons.Anagrafica;
+import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 
 public class JsonUtils {
+	
+	
+	public static String eliminaJSONNull(JSONObject jsonObject,String key) {
+		if(jsonObject.containsKey(key)) {
+			Object object = jsonObject.get(key);
+			if(object instanceof JSONNull) {
+				return null;
+			}
+			
+			return jsonObject.getString(key);
+		}
+		return null;
+	}
 
 	public static Anagrafica getAnagraficaFromJson(String jsonRequest) {
 		Anagrafica anagrafica = null;
@@ -13,17 +27,20 @@ public class JsonUtils {
 
 			if(jsonObjectPagamentiPortaleRequest.containsKey("soggettoVersante")) {
 				JSONObject jsonObjectSoggettoVersante = jsonObjectPagamentiPortaleRequest.getJSONObject("soggettoVersante");
+				if(jsonObjectSoggettoVersante.isNullObject()) {
+					return null;
+				}
 				anagrafica = new Anagrafica();
-				anagrafica.setCap(jsonObjectSoggettoVersante.getString("cap"));
-				anagrafica.setCellulare(jsonObjectSoggettoVersante.getString("cellulare"));
-				anagrafica.setCivico(jsonObjectSoggettoVersante.getString("civico"));
-				anagrafica.setCodUnivoco(jsonObjectSoggettoVersante.getString("identificativo"));
-				anagrafica.setEmail(jsonObjectSoggettoVersante.getString("email"));
-				anagrafica.setIndirizzo(jsonObjectSoggettoVersante.getString("indirizzo"));
-				anagrafica.setLocalita(jsonObjectSoggettoVersante.getString("localita"));
-				anagrafica.setNazione(jsonObjectSoggettoVersante.getString("nazione"));
-				anagrafica.setProvincia(jsonObjectSoggettoVersante.getString("provincia"));
-				anagrafica.setRagioneSociale(jsonObjectSoggettoVersante.getString("anagrafica"));
+				anagrafica.setCap(eliminaJSONNull(jsonObjectSoggettoVersante,"cap"));
+				anagrafica.setCellulare(eliminaJSONNull(jsonObjectSoggettoVersante,"cellulare"));
+				anagrafica.setCivico(eliminaJSONNull(jsonObjectSoggettoVersante,"civico"));
+				anagrafica.setCodUnivoco(eliminaJSONNull(jsonObjectSoggettoVersante,"identificativo"));
+				anagrafica.setEmail(eliminaJSONNull(jsonObjectSoggettoVersante,"email"));
+				anagrafica.setIndirizzo(eliminaJSONNull(jsonObjectSoggettoVersante,"indirizzo"));
+				anagrafica.setLocalita(eliminaJSONNull(jsonObjectSoggettoVersante,"localita"));
+				anagrafica.setNazione(eliminaJSONNull(jsonObjectSoggettoVersante,"nazione"));
+				anagrafica.setProvincia(eliminaJSONNull(jsonObjectSoggettoVersante,"provincia"));
+				anagrafica.setRagioneSociale(eliminaJSONNull(jsonObjectSoggettoVersante,"anagrafica"));
 			}
 		}catch(Exception ee) {	}
 
@@ -35,10 +52,15 @@ public class JsonUtils {
 
 		try {
 			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );  
-
+			
 			if(jsonObjectPagamentiPortaleRequest.containsKey("datiAddebito")) {
+				Object object = jsonObjectPagamentiPortaleRequest.get("datiAddebito");
+				if(object instanceof JSONNull) {
+					return null;
+				}
+				
 				JSONObject jsonObjectDatiAddebito = jsonObjectPagamentiPortaleRequest.getJSONObject("datiAddebito");
-				ibanAddebito = jsonObjectDatiAddebito.getString("ibanAddebito");
+				ibanAddebito = eliminaJSONNull(jsonObjectDatiAddebito,"ibanAddebito");
 			}
 		}catch(Exception ee) {	}
 
@@ -49,8 +71,8 @@ public class JsonUtils {
 		String autenticazione = null;
 
 		try {
-			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );  
-			autenticazione = jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore");
+			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );
+			autenticazione = eliminaJSONNull(jsonObjectPagamentiPortaleRequest, "credenzialiPagatore");
 		}catch(Exception ee) {	}
 
 		return autenticazione;
@@ -61,7 +83,7 @@ public class JsonUtils {
 
 		try {
 			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRequest );  
-			autenticazione = jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto");
+			autenticazione = eliminaJSONNull(jsonObjectPagamentiPortaleRequest, "autenticazioneSoggetto");
 		}catch(Exception ee) {	}
 
 		return autenticazione;
