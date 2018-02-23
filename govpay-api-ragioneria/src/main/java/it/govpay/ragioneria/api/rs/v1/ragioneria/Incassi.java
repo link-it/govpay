@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.pagamento.api.rs.v1.pagamenti;
+package it.govpay.ragioneria.api.rs.v1.ragioneria;
 
 import java.io.InputStream;
 

@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.v1.pagamenti;
+package it.govpay.ragioneria.api.rs.v1.ragioneria;
 
 import it.govpay.rs.v1.beans.base.Riscossione;
 import it.govpay.rs.v1.beans.base.StatoRiscossione;

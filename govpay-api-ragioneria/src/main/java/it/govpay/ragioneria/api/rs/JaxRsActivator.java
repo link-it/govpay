@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs;
+package it.govpay.ragioneria.api.rs;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
