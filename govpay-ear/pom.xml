@@ -36,6 +36,30 @@
 			<type>war</type>
 		</dependency>
 		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-pendenze</artifactId>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-backoffice</artifactId>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-gestione</artifactId>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-ragioneria</artifactId>
+			<type>war</type>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -75,8 +99,28 @@
 							<artifactId>govpay-wc</artifactId>
 							<contextRoot>/govpay-wc</contextRoot>
 						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>govpay-api-pendenze</artifactId>
+							<contextRoot>/govpay-api-pendenze</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>govpay-api-gestione</artifactId>
+							<contextRoot>/govpay-api-gestione</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>govpay-api-ragioneria</artifactId>
+							<contextRoot>/govpay-api-ragioneria</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>govpay-api-backoffice</artifactId>
+							<contextRoot>/govpay-api-backoffice</contextRoot>
+						</webModule>
 					</modules>
-                			<version>6</version>
+           			<version>6</version>
 				</configuration>
 			</plugin>
 		</plugins>

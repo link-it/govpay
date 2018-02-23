@@ -9,9 +9,9 @@
 		<version>3.0.0</version>
 	</parent>
 
-	<artifactId>govpay-api-pagamento</artifactId>
+	<artifactId>govpay-api-gestione</artifactId>
 	<packaging>war</packaging>
-	<name>GovPay API Pagamento</name>
+	<name>GovPay API Gestione</name>
 	
 	<properties>
 		<rel-to-parent>..</rel-to-parent>

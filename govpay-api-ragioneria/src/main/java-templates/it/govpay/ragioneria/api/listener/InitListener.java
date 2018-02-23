@@ -1,9 +1,10 @@
-package it.govpay.pagamento.api.listener;
+package it.govpay.ragioneria.api.listener;
 
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -20,6 +21,7 @@ import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.cache.RuoliCache;
 import it.govpay.core.utils.GovpayConfig;
@@ -41,7 +43,7 @@ public class InitListener implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent sce) {
 		GpContext ctx = null;
 		// Commit id
-		String commit = "9e3d8bab6d416d659be45a4f32a7697da47fa54d";
+		String commit = "${git.commit.id}";
 		if(commit.length() > 7) commit = commit.substring(0, 7);
 		try{
 			GovpayConfig gpConfig = null;
@@ -50,7 +52,7 @@ public class InitListener implements ServletContextListener{
 				it.govpay.bd.GovpayConfig.newInstance4GovPay();
 				it.govpay.bd.GovpayCustomConfig.newInstance();
 			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
+				throw new RuntimeException("Inizializzazione di Govpay-API-Ragioneria fallita: " + e, e);
 			}
 			
 			
@@ -61,12 +63,12 @@ public class InitListener implements ServletContextListener{
 					LoggerWrapperFactory.setLogConfiguration(log4j2Config);
 					log = LoggerWrapperFactory.getLogger("boot");	
 
-					log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") in corso");
+					log.info("Inizializzazione Govpay-API-Ragioneria ${project.version} (build " + commit + ") in corso");
 					log.info("Caricata configurazione logger: " + log4j2Config.getPath());
 				} else {
 					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
 
-					log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") in corso.");
+					log.info("Inizializzazione Govpay-API-Ragioneria ${project.version} (build " + commit + ") in corso.");
 					log.info("Configurazione logger da classpath.");
 				}
 			} catch (Exception e) {
@@ -76,7 +78,7 @@ public class InitListener implements ServletContextListener{
 			try {
 				gpConfig.readProperties();
 			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
+				throw new RuntimeException("Inizializzazione di Govpay-API-Ragioneria fallita: " + e, e);
 			}
 			
 			// Configurazione del logger Diagnostici/Tracce/Dump
@@ -115,7 +117,7 @@ public class InitListener implements ServletContextListener{
 
 			} catch (Exception e) {
 				log.error("Errore durante la configurazione dei diagnostici", e);
-				throw new RuntimeException("Inizializzazione GovPay 2.4.7 (build " + commit + ") fallita.", e);
+				throw new RuntimeException("Inizializzazione Govpay-API-Ragioneria ${project.version} (build " + commit + ") fallita.", e);
 			}
 
 
@@ -135,33 +137,44 @@ public class InitListener implements ServletContextListener{
 			} catch (Exception e) {
 				log.error("Errore durante predisposizione del contesto: " + e);
 				if(ctx != null) ctx.log();
-				throw new RuntimeException("Inizializzazione GovPay 2.4.7 (build " + commit + ") fallita.", e);
+				throw new RuntimeException("Inizializzazione Govpay-API-Ragioneria ${project.version} (build " + commit + ") fallita.", e);
 			}
-			
-			//		per ora vengono inizializzate nel govpay web
 			
 			RicevutaPagamentoProperties.newInstance(gpConfig.getResourceDir());
 			AnagraficaManager.newInstance(false);
+			ConnectionManager.initialize();
 			RuoliCache.newInstance(log);
-			//			ConnectionManager.initialize();
 			//			OperazioneFactory.init();
 		} catch(Exception e){
-			throw new RuntimeException("Inizializzazione di GovPay-API-Pagamento fallita: " + e, e);
+			throw new RuntimeException("Inizializzazione di GovPay-API-Ragioneria fallita: " + e, e);
 		}
 
 		ctx.log();
 
-		log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") completata con successo.");
+		log.info("Inizializzazione Govpay-API-Ragioneria ${project.version} (build " + commit + ") completata con successo.");
 		initialized = true;
 	}
 
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		//		try {
-		//			ConnectionManager.shutdown();
-		//		} catch (Exception e) {
-		//			LoggerWrapperFactory.getLogger().warn("Errore nella de-registrazione JMX: " + e);
-		//		}
+		MDC.put("cmd", "Shutdown");
+		MDC.put("op", UUID.randomUUID().toString() );
+		
+		log.info("Shutdown Govpay-API-Ragioneria in corso...");
+		
+		log.info("De-registrazione delle cache ...");
+		AnagraficaManager.unregister();
+		log.info("De-registrazione delle cache completato");
+		
+		log.info("Shutdown del Connection Manager ...");
+		try {
+			ConnectionManager.shutdown();
+			log.info("Shutdown del Connection Manager completato.");
+		} catch (Exception e) {
+			log.warn("Errore nello shutdown del Connection Manager: " + e);
+		}
+		
+		log.info("Shutdown di Govpay-API-Ragioneria completato.");
 	}
 }
