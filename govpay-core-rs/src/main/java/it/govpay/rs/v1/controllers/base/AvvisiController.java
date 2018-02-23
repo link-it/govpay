@@ -1,6 +1,5 @@
 package it.govpay.rs.v1.controllers.base;
 
-import org.slf4j.Logger;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -28,15 +27,15 @@ public class AvvisiController extends it.govpay.rs.BaseController {
 
 
 /*  
-    public Response avvisiIdDominioNumeroAvvisoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String numeroAvviso ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response avvisiIdDominioNumeroAvvisoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
 
 /*  
-    public Response avvisiIdDominioNumeroAvvisoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String numeroAvviso ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response avvisiIdDominioNumeroAvvisoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 

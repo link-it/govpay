@@ -40,23 +40,14 @@ import it.govpay.rs.v1.controllers.base.IncassiController;
 import it.govpay.rs.v1.costanti.Costanti;
 
 @Path("/incassi")
-public class Incassi extends BaseRsServiceV1 {
-	
-	public static final String NOME_SERVIZIO = "incassi";
+public class Incassi extends BaseRsServiceV1{
+
+
 	private IncassiController controller = null;
-	
+
 	public Incassi() {
-		super(NOME_SERVIZIO);
+		super("incassi");
 		this.controller = new IncassiController(this.nomeServizio,this.log);
-	}
-	
-	@POST
-	@Path("/")
-	@Consumes({MediaType.APPLICATION_JSON})
-	@Produces({MediaType.APPLICATION_JSON})
-	public Response inserisciIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.incassiPOST(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, is);
 	}
 	
 	
@@ -79,4 +70,14 @@ public class Incassi extends BaseRsServiceV1 {
 		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.incassiIdGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, id);
 	}
+	
+	@POST
+	@Path("/")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response inserisciIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+		this.controller.setRequestResponse(this.request, this.response);
+		return this.controller.incassiPOST(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, is);
+	}
+
 }

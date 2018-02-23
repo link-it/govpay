@@ -1,6 +1,5 @@
 package it.govpay.rs.v1.controllers.base;
 
-import org.slf4j.Logger;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -29,22 +28,22 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 
 
 /*  
-    public Response applicazioniGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response applicazioniGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
 
 /*  
-    public Response applicazioniIdA2AGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response applicazioniIdA2AGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
 
 /*  
-    public Response applicazioniIdA2APUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , ApplicazionePost applicazionepost ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response applicazioniIdA2APUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
