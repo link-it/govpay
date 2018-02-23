@@ -18,6 +18,10 @@
 		<module>govpay-web</module>
 		<module>govpay-wc</module>
 		<module>govpay-api-pagamento</module>
+		<module>govpay-api-pendenze</module>
+		<module>govpay-api-gestione</module>
+		<module>govpay-api-ragioneria</module>
+		<module>govpay-api-backoffice</module>
 		<module>govpay-ear</module>
 		<module>govpay-web-console</module>
 	</modules>
@@ -136,6 +140,38 @@
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-api-pagamento</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-api-pendenze</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-api-gestione</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-api-ragioneria</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-api-backoffice</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
