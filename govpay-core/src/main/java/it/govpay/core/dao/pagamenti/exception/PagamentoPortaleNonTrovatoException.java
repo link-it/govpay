@@ -1,5 +1,7 @@
 package it.govpay.core.dao.pagamenti.exception;
 
+import it.govpay.core.dao.commons.exception.RedirectException;
+
 public class PagamentoPortaleNonTrovatoException extends RedirectException{
 
 	public PagamentoPortaleNonTrovatoException(String location) {

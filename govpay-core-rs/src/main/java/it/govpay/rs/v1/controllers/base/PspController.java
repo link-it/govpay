@@ -13,8 +13,11 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.anagrafica.PspDAO;
+import it.govpay.core.dao.anagrafica.dto.LeggiPspDTO;
+import it.govpay.core.dao.anagrafica.dto.LeggiPspDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Ruolo;
@@ -128,11 +131,56 @@ public class PspController extends it.govpay.rs.BaseController {
 */
 
 
-/*  
     public Response pspIdPspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "pspIdPspGET";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+			
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			LeggiPspDTO leggiPspDTO = new LeggiPspDTO(null); //TODO IAutorizzato
+			leggiPspDTO.setIdPsp(idPsp);
+			
+			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			
+			LeggiPspDTOResponse leggiPspDTOResponse = pspDAO.leggiPsp(leggiPspDTO);
+			
+			it.govpay.rs.v1.beans.Psp response = new it.govpay.rs.v1.beans.Psp(leggiPspDTOResponse.getPsp());
+			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			
+		}catch (PspNonTrovatoException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante la " + methodName, e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
-*/
 
 
 /*  

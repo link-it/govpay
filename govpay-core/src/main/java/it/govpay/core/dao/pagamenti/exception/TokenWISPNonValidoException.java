@@ -1,5 +1,7 @@
 package it.govpay.core.dao.pagamenti.exception;
 
+import it.govpay.core.dao.commons.exception.RedirectException;
+
 public class TokenWISPNonValidoException extends RedirectException{
 
 	public TokenWISPNonValidoException(String location) {

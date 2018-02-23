@@ -1,4 +1,4 @@
-package it.govpay.core.dao.pagamenti.exception;
+package it.govpay.core.dao.commons.exception;
 
 import java.net.URI;
 import java.net.URISyntaxException;

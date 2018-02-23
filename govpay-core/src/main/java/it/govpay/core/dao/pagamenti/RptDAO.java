@@ -38,7 +38,6 @@ public class RptDAO extends BasicBD{
 				throw new RicevutaNonTrovataException();
 			
 			response.setRpt(rpt);
-			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento(this));
 			response.setApplicazione(rpt.getVersamento(this).getApplicazione(this)); 
 			response.setCanale(rpt.getCanale(this));

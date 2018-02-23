@@ -25,6 +25,10 @@ public class UriBuilderUtils {
 		return getFromDomini(codCominio).path("unitaOperative").path(codUo).build().toString();
 	}
 	
+	public static String getCanali(String codPsp) {
+		return getList(getFromPsp(codPsp), "canali").build().toString();
+	}
+	
 	public static String getCanale(String codPsp, String codCanale) {
 		return getList(getFromPsp(codPsp), "canali").path(codCanale).build().toString();
 	}
