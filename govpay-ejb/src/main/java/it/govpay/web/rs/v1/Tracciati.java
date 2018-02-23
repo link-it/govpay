@@ -81,6 +81,7 @@ public class Tracciati extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, incomingCsv.getBytes());
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -126,6 +127,7 @@ public class Tracciati extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new byte[0]);
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -173,6 +175,7 @@ public class Tracciati extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new byte[0]);
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

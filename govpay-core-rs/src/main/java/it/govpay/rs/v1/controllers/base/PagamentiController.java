@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -44,8 +46,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 	public PagamentiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
 	}
-
-
+	
     public Response pagamentiGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String stato , String versante , String idSessionePortale ) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;

@@ -34,16 +34,16 @@ import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.rs.v1.controllers.base.PspController;
+import it.govpay.rs.v1.controllers.GatewayController;
 
 @Path("/")
 public class Gateway extends BaseRsServiceV1{
 	
-	private PspController controller = null;
+	private GatewayController controller = null;
 	
 	public Gateway() {
 		super("gateway");
-		this.controller = new PspController(this.nomeServizio,this.log);
+		this.controller = new GatewayController(this.nomeServizio,this.log);
 	}
 
 	@POST
@@ -61,6 +61,7 @@ public class Gateway extends BaseRsServiceV1{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
 			copy(is, baos);
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			String principal = this.getPrincipal();
@@ -134,7 +135,7 @@ public class Gateway extends BaseRsServiceV1{
 			aggiornaPagamentiPortaleDTO.setWispDominio(idDominio);
 			aggiornaPagamentiPortaleDTO.setWispKeyPA(keyPA);
 			aggiornaPagamentiPortaleDTO.setWispKeyWisp(keyWISP);
-			
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller .logRequest(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTO.toString().getBytes());
 			
 			ctx =  GpThreadLocal.get();

@@ -35,6 +35,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 	@Produces({MediaType.APPLICATION_JSON})
 	@Consumes({MediaType.APPLICATION_JSON})
 	public Response inserisciPagamenti(InputStream is , @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSessionePortale") String idSessionePortale) {
+		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.pagamentiPOST(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, is, idSessionePortale);
 	}
 	
@@ -45,6 +46,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 			@QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina,@QueryParam("idSessionePortale") String idSessionePortale,
 			@QueryParam("stato") String stato,@QueryParam("versante") String versante,@QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi) {
+		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.pagamentiGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, stato, versante, idSessionePortale);
 	}
 
@@ -52,6 +54,7 @@ public class PagamentiPortale extends BaseRsServiceV1{
 	@Path("/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getPagamentoPortaleById(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id) {
+		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.pagamentiIdGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, id);
 	}
 }

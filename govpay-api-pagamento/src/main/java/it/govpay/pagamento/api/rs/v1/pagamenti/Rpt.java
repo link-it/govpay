@@ -35,6 +35,7 @@ public class Rpt extends BaseRsServiceV1{
 			@QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp,
 			@QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("idPagamento") String idPagamento,   
 			@QueryParam("dataDa") String dataDa,  @QueryParam("dataA") String dataA,  @QueryParam("esito") String esito, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi) {
+		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.rptGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, esito);
 	}
 	
@@ -44,6 +45,7 @@ public class Rpt extends BaseRsServiceV1{
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getRptByIdDominioIuvCcp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp) {
+		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.rptIdDominioIuvCcpGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idDominio, iuv, ccp);
 	}
 	
@@ -54,6 +56,7 @@ public class Rpt extends BaseRsServiceV1{
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM,MediaType.APPLICATION_XML,"application/pdf"})
 	public Response getRtByIdDominioIuvCcp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp) {
+		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.rptIdDominioIuvCcpRtGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idDominio, iuv, ccp);
 	}
 	

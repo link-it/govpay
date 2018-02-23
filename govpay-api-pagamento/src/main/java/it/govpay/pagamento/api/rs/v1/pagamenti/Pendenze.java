@@ -35,6 +35,7 @@ public class Pendenze extends BaseRsServiceV1{
 			@QueryParam("idDominio") String idDominio, @QueryParam("idDebitore") String idDebitore,
 			@QueryParam("idA2A") String idA2A, @QueryParam("idPagamento") String idPagamento,   
 			@QueryParam("stato") String stato, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi) {
+		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.pendenzeGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, idPagamento, stato);
 	}
 
@@ -44,6 +45,7 @@ public class Pendenze extends BaseRsServiceV1{
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getByIda2aIdPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza) {
+		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.pendenzeIdA2AIdPendenzaGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idA2A, idPendenza);
 	}
 }

@@ -90,7 +90,7 @@ public class Incassi extends BaseRsServiceV1 {
 		try{
 			baos = new ByteArrayOutputStream();
 			BaseRsService.copy(is, baos);
-
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -149,7 +149,7 @@ public class Incassi extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
-
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
@@ -195,6 +195,7 @@ public class Incassi extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();

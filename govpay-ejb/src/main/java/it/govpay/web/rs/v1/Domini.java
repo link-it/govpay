@@ -99,6 +99,7 @@ public class Domini extends BaseRsServiceV1 {
 		if(limit > 25) limit = 500;
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.setupContext(uriInfo, httpHeaders, "findDomini");
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
@@ -136,6 +137,7 @@ public class Domini extends BaseRsServiceV1 {
 			@QueryParam(value="fields") String fields) {
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.setupContext(uriInfo, httpHeaders, "findDomini");
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
@@ -170,6 +172,7 @@ public class Domini extends BaseRsServiceV1 {
 		String methodName = "findUnitaOperative"; 
 		GpContext ctx = null; 
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
@@ -213,6 +216,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
@@ -254,6 +258,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
@@ -298,6 +303,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
@@ -339,6 +345,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
@@ -383,6 +390,7 @@ public class Domini extends BaseRsServiceV1 {
 		GpContext ctx = null; 
 		
 		try{
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			

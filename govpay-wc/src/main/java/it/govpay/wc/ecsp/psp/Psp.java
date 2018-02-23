@@ -46,6 +46,7 @@ public class Psp extends BaseRsServiceV1 {
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
 			baos = new ByteArrayOutputStream();
+			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();

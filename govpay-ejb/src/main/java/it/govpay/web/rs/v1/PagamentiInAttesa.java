@@ -56,6 +56,7 @@ public class PagamentiInAttesa extends BaseRsServiceV1 {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response inserisciIncasso(PagamentoInAttesa pia, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
 		String methodName = "inserisciIncasso"; 
+		this.controller.setRequestResponse(this.request, this.response);
 		try{
 			Applicazione applicazione = new UtentiDAO().getApplicazione(getPrincipal());
 			
