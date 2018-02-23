@@ -133,7 +133,7 @@ public class VersamentoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			// Filtro sullo stato pagamenti
-			if(this.statiVersamento != null){
+			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
 				newExpression.in(Versamento.model().STATO_VERSAMENTO, toString(this.statiVersamento));
 				addAnd = true;
 			}
@@ -346,7 +346,9 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setStatoVersamento(StatoVersamento stato) {
 		this.statiVersamento = new ArrayList<StatoVersamento>();
-		this.statiVersamento.add(stato);
+		if(stato != null) {
+			this.statiVersamento.add(stato);
+		}
 	}
 
 	public List<String> getCodVersamentoEnte() {

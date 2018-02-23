@@ -626,7 +626,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		if(expression.inUseModel(RPT.model().ID_VERSAMENTO,false)){
 			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
 			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_VERSAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_versmento="+tableName2+".id");
+			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 		}
 		
 		if(expression.inUseModel(RPT.model().ID_CANALE,false)){
