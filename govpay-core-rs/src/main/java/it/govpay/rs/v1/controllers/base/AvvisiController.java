@@ -1,21 +1,15 @@
 package it.govpay.rs.v1.controllers.base;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import java.io.File;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import it.govpay.model.Ruolo;
 
 import org.slf4j.Logger;
 
-import it.govpay.rs.v1.beans.base.*;
-
-import it.govpay.rs.v1.beans.base.Avviso;
+import it.govpay.model.Ruolo;
 
 
 
@@ -26,15 +20,28 @@ public class AvvisiController extends it.govpay.rs.BaseController {
      }
 
 
+
+    public Response avvisiIdDominioIuvGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
 /*  
-    public Response avvisiIdDominioNumeroAvvisoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    public Response avvisiIdDominioIuvGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
 
+
+    public Response avvisiIdDominioPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+    
+
 /*  
-    public Response avvisiIdDominioNumeroAvvisoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    public Response avvisiIdDominioPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */

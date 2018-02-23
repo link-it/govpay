@@ -40,12 +40,114 @@ public class Pendenze extends BaseRsServiceV1{
 	}
 
 
-	@GET
-	@Path("/{idA2A}/{idPendenza}")
-	@Produces({MediaType.APPLICATION_JSON})
-	public Response getByIda2aIdPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza) {
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.pendenzeIdA2AIdPendenzaGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idA2A, idPendenza);
-	}
+/*
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") StatoPendenza stato, @QueryParam("idPagamento") String idPagamento){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento);
+    }
+*/
+
+/*
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeGET_1(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") StatoPendenza stato, @QueryParam("idPagamento") String idPagamento){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeGET_1(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento);
+    }
+*/
+
+/*
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeGET_2(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") StatoPendenza stato, @QueryParam("idPagamento") String idPagamento){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeGET_2(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento);
+    }
+*/
+
+
+    @GET
+    @Path("/{idA2A}/{idPendenza}")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeIdA2AIdPendenzaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeIdA2AIdPendenzaGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idA2A,  idPendenza);
+    }
+
+
+/*
+    @GET
+    @Path("/{idA2A}/{idPendenza}")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeIdA2AIdPendenzaGET_3(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeIdA2AIdPendenzaGET_3(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idA2A,  idPendenza);
+    }
+*/
+
+/*
+    @GET
+    @Path("/{idA2A}/{idPendenza}")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeIdA2AIdPendenzaGET_4(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeIdA2AIdPendenzaGET_4(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idA2A,  idPendenza);
+    }
+*/
+
+/*
+    @PATCH
+    @Path("/{idA2A}/{idPendenza}")
+    @Consumes({ "application/json" })
+    
+    public Response pendenzeIdA2AIdPendenzaPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeIdA2AIdPendenzaPATCH(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idA2A,  idPendenza, is);
+    }
+*/
+
+/*
+    @PATCH
+    @Path("/{idA2A}/{idPendenza}")
+    @Consumes({ "application/json" })
+    
+    public Response pendenzeIdA2AIdPendenzaPATCH_5(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeIdA2AIdPendenzaPATCH_5(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idA2A,  idPendenza, is);
+    }
+*/
+
+/*
+    @PUT
+    @Path("/{idA2A}/{idPendenza}")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json""application/json" })
+    public Response pendenzeIdA2AIdPendenzaPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeIdA2AIdPendenzaPUT(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idA2A,  idPendenza, is);
+    }
+*/
+
+/*
+    @GET
+    @Path("/{idDominio}/{iuv}")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeIdDominioIuvGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pendenzeIdDominioIuvGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idDominio, iuv);
+    }
+*/
+
 }

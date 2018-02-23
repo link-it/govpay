@@ -40,9 +40,9 @@ public class Riscossioni extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response riscossioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("stato") StatoRiscossione stato){
+    public Response riscossioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("stato") StatoRiscossione stato, @QueryParam("dataRiscossioneDa") String dataRiscossioneDa, @QueryParam("dataRiscossioneA") String dataRiscossioneA, @QueryParam("tipo") String tipo){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.riscossioniGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idPendenza, stato);
+	return this.controller.riscossioniGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idPendenza, stato, dataRiscossioneDa, dataRiscossioneA, tipo);
     }
 */
 

@@ -54,6 +54,16 @@ public class Pagamenti extends BaseRsServiceV1{
     }
 */
 
+/*
+    @POST
+    @Path("/{idDominio}/{iuv}")
+    @Consumes({ "application/json" })
+    
+    public Response pagamentiIdDominioIuvPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+	return this.controller.pagamentiIdDominioIuvPOST(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idDominio, iuv, is);
+    }
+*/
 
 	@GET
 	@Path("/{id}")

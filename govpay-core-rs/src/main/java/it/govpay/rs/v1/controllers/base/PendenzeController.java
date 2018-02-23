@@ -177,38 +177,37 @@ public class PendenzeController extends it.govpay.rs.BaseController {
   
 
 /*  
-    public Response pendenzeIdA2AIdPendenzaGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response pendenzeIdA2AIdPendenzaGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
 
 /*  
-    public Response pendenzeIdA2AIdPendenzaGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response pendenzeIdA2AIdPendenzaPATCH(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
 
 /*  
-    public Response pendenzeIdA2AIdPendenzaPATCH(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza , Object body ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response pendenzeIdA2AIdPendenzaPATCH(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
 
 /*  
-    public Response pendenzeIdA2AIdPendenzaPATCH(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza , Object body ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response pendenzeIdA2AIdPendenzaPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
 
 
-/*  
-    public Response pendenzeIdA2AIdPendenzaPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A , String idPendenza , PendenzaPost pendenzapost ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+
+    public Response pendenzeIdDominioIuvGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-*/
 
 
 }
