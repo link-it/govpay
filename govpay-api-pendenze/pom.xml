@@ -9,7 +9,7 @@
 		<version>3.0.0</version>
 	</parent>
 
-	<artifactId>govpay-api-pagamento</artifactId>
+	<artifactId>govpay-api-pendenze</artifactId>
 	<packaging>war</packaging>
 	<name>GovPay Web module</name>
 	
