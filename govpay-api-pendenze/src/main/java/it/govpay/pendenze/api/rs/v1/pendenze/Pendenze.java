@@ -1,4 +1,4 @@
-package it.govpay.pagamento.api.rs.v1.pagamenti;
+package it.govpay.pendenze.api.rs.v1.pendenze;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
