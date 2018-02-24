@@ -19,98 +19,26 @@
  */
 package it.govpay.rs.v1.beans;
 
-import javax.ws.rs.core.UriBuilder;
+import java.math.BigDecimal;
 
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 @JsonFilter(value="entrate")  
-public class Entrata extends JSONSerializable {
-	private String href;
-	private String idEntrata;
-	private String descrizione;
-	private String ibanAccredito;
-	private String tipoContabilita;
-	private String codContabilita;
-	private boolean abilitato;
-	
-	public Entrata() {
+public class Entrata extends it.govpay.rs.v1.beans.base.Entrata{
 
-	}
-
-	public Entrata(it.govpay.bd.model.Tributo tributo, String codDominio, UriBuilder uriBuilder) throws ServiceException {
-		uriBuilder.path("domini").path(codDominio).path("entrate").path(tributo.getCodTributo());
-		this.abilitato = tributo.isAbilitato();
-		this.descrizione = tributo.getDescrizione();
-		this.idEntrata = tributo.getCodTributo();
-		this.href = uriBuilder.build().toString();
-		this.abilitato = tributo.isAbilitato();
-		this.descrizione = tributo.getDescrizione();
-		this.ibanAccredito = tributo.getIbanAccredito().getCodIban();
-		this.tipoContabilita = tributo.getTipoContabilita().name();
-		this.codContabilita = tributo.getCodContabilita();
+	public Entrata(it.govpay.bd.model.Tributo tributo) throws ServiceException {
+		this.codiceContabilita(tributo.getCodContabilita())
+		.codificaIUV(new BigDecimal(tributo.getCodTributoIuv()))
+		.descrizione(tributo.getDescrizione())
+		.entrata(tributo.getCodTributo())
+		.ibanAccredito(tributo.getIbanAccredito().getCodIban())
+		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
 	}
 	
 	@Override
 	public String getJsonIdFilter() {
 		return "entrate";
 	}
-
-	public String getHref() {
-		return href;
-	}
-
-	public void setHref(String href) {
-		this.href = href;
-	}
-
-	public String getIdEntrata() {
-		return idEntrata;
-	}
-
-	public void setIdEntrata(String idEntrata) {
-		this.idEntrata = idEntrata;
-	}
-
-	public String getDescrizione() {
-		return descrizione;
-	}
-
-	public void setDescrizione(String descrizione) {
-		this.descrizione = descrizione;
-	}
-
-	public String getIbanAccredito() {
-		return ibanAccredito;
-	}
-
-	public void setIbanAccredito(String ibanAccredito) {
-		this.ibanAccredito = ibanAccredito;
-	}
-
-	public String getTipoContabilita() {
-		return tipoContabilita;
-	}
-
-	public void setTipoContabilita(String tipoContabilita) {
-		this.tipoContabilita = tipoContabilita;
-	}
-
-	public String getCodContabilita() {
-		return codContabilita;
-	}
-
-	public void setCodContabilita(String codContabilita) {
-		this.codContabilita = codContabilita;
-	}
-
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-	
 }
 

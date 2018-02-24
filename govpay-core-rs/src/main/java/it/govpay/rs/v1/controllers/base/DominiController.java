@@ -34,7 +34,6 @@ import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
-import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Ruolo;
@@ -307,7 +306,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			List<it.govpay.rs.v1.beans.Entrata> results = new ArrayList<it.govpay.rs.v1.beans.Entrata>();
 			for(it.govpay.bd.model.Tributo tributo: listaDominiEntrateDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Entrata(tributo, idDominio, uriInfo.getBaseUriBuilder()));
+				results.add(new it.govpay.rs.v1.beans.Entrata(tributo));
 			}
 			
 			ListaEntrate response = new ListaEntrate(results, uriInfo.getRequestUri(),
@@ -422,7 +421,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Entrata response = new it.govpay.rs.v1.beans.Entrata(listaDominiEntrateDTOResponse.getTributo(), idDominio, uriInfo.getBaseUriBuilder());
+			Entrata response = new it.govpay.rs.v1.beans.Entrata(listaDominiEntrateDTOResponse.getTributo());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

@@ -21,14 +21,12 @@ package it.govpay.core.dao.anagrafica;
 
 import java.util.Set;
 
-import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
-import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
