@@ -5,10 +5,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import org.apache.http.HttpHeaders;
 
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.EventiController;
@@ -29,14 +28,14 @@ public class Eventi extends BaseRsServiceV1{
 
 
 
-    @GET
-    @Path("/")
-    
-    @Produces({ "application/json" })
-    public Response eventiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv){
-        this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.eventiGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv);
-    }
+	@GET
+	@Path("/")
+
+	@Produces({ "application/json" })
+	public Response eventiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv){
+		this.controller.setRequestResponse(this.request, this.response);
+		return this.controller.eventiGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv);
+	}
 
 
 }
