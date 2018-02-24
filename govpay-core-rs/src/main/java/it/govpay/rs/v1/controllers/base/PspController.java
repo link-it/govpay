@@ -24,6 +24,7 @@ import it.govpay.core.dao.anagrafica.dto.ListaPspDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Ruolo;
 import it.govpay.rs.v1.beans.ListaCanali;
 import it.govpay.rs.v1.beans.ListaPsp;
@@ -180,7 +181,7 @@ public class PspController extends it.govpay.rs.BaseController {
 */
 
 
-    public Response pspIdPspCanaliIdCanaleGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale) {
+    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliIdCanaleGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -195,7 +196,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			LeggiCanaleDTO leggiPspDTO = new LeggiCanaleDTO(null); //TODO IAutorizzato
 			leggiPspDTO.setIdPsp(idPsp);
 			leggiPspDTO.setIdCanale(idCanale);
-			leggiPspDTO.setTipoVersamento(null); //TODO RIGENERO
+			leggiPspDTO.setTipoVersamento(TipoVersamento.valueOf(tipoVersamento));
 			
 			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId())); 
 			
@@ -235,7 +236,7 @@ public class PspController extends it.govpay.rs.BaseController {
 
 
 /*  
-    public Response pspIdPspCanaliIdCanaleGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale) {
+    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, TipoVersamento tipoVersamento) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 */
