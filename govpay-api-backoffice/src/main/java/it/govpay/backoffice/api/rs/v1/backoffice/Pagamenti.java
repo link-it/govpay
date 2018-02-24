@@ -84,7 +84,7 @@ public class Pagamenti extends BaseRsServiceV1{
 	return this.controller.pagamentiIdGET_2(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  id);
     }
 */
-
+/*
 	@POST
 	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -93,7 +93,7 @@ public class Pagamenti extends BaseRsServiceV1{
 		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.pagamentiPOST(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, is, idSessionePortale);
 	}
-	
+	*/
 
 }
 
