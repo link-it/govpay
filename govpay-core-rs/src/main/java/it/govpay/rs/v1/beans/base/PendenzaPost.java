@@ -20,6 +20,7 @@ import java.util.List;
 "annoRiferimento",
 "datiAllegati",
 "tassonomia",
+"tassonomiaAvviso",
 "voci",
 })
 public class PendenzaPost extends it.govpay.rs.v1.beans.JSONSerializable {
@@ -56,6 +57,9 @@ public class PendenzaPost extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("tassonomia")
   private String tassonomia = null;
+  
+  @JsonProperty("tassonomiaAvviso")
+  private String tassonomiaAvviso = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<VocePendenza>();
@@ -236,6 +240,22 @@ public class PendenzaPost extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Macro categoria della pendenza Agid
+   **/
+  public PendenzaPost tassonomiaAvviso(String tassonomiaAvviso) {
+    this.tassonomiaAvviso = tassonomiaAvviso;
+    return this;
+  }
+
+  @JsonProperty("tassonomiaAvviso")
+  public String getTassonomiaAvviso() {
+    return tassonomiaAvviso;
+  }
+  public void setTassonomiaAvviso(String tassonomiaAvviso) {
+    this.tassonomiaAvviso = tassonomiaAvviso;
+  }
+
+  /**
    **/
   public PendenzaPost voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -270,12 +290,13 @@ public class PendenzaPost extends it.govpay.rs.v1.beans.JSONSerializable {
         Objects.equals(annoRiferimento, pendenzaPost.annoRiferimento) &&
         Objects.equals(datiAllegati, pendenzaPost.datiAllegati) &&
         Objects.equals(tassonomia, pendenzaPost.tassonomia) &&
+        Objects.equals(tassonomiaAvviso, pendenzaPost.tassonomiaAvviso) &&
         Objects.equals(voci, pendenzaPost.voci);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, cartellaPagamento, soggettoPagatore, importo, causale, dataValidita, dataScadenza, annoRiferimento, datiAllegati, tassonomia, voci);
+    return Objects.hash(idDominio, idUnitaOperativa, cartellaPagamento, soggettoPagatore, importo, causale, dataValidita, dataScadenza, annoRiferimento, datiAllegati, tassonomia, tassonomiaAvviso, voci);
   }
 
   public static PendenzaPost parse(String json) {
@@ -303,6 +324,7 @@ public class PendenzaPost extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
+    sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("}");
     return sb.toString();

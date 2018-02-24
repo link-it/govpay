@@ -36,7 +36,6 @@ import java.io.Serializable;
  * &lt;complexType name="ACL">
  * 		&lt;sequence>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idPortale" type="{http://www.govpay.it/orm}id-portale" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idRuolo" type="{http://www.govpay.it/orm}id-ruolo" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -60,7 +59,6 @@ import java.io.Serializable;
 @XmlType(name = "ACL", 
   propOrder = {
   	"idApplicazione",
-  	"idPortale",
   	"idOperatore",
   	"idRuolo",
   	"codTipo",
@@ -98,14 +96,6 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
   public void setIdApplicazione(IdApplicazione idApplicazione) {
     this.idApplicazione = idApplicazione;
-  }
-
-  public IdPortale getIdPortale() {
-    return this.idPortale;
-  }
-
-  public void setIdPortale(IdPortale idPortale) {
-    this.idPortale = idPortale;
   }
 
   public IdOperatore getIdOperatore() {
@@ -197,9 +187,6 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
   @XmlElement(name="idApplicazione",required=false,nillable=false)
   protected IdApplicazione idApplicazione;
-
-  @XmlElement(name="idPortale",required=false,nillable=false)
-  protected IdPortale idPortale;
 
   @XmlElement(name="idOperatore",required=false,nillable=false)
   protected IdOperatore idOperatore;

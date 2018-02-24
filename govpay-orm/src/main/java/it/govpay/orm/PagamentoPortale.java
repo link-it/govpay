@@ -35,7 +35,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="PagamentoPortale">
  * 		&lt;sequence>
- * 			&lt;element name="codPortale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
@@ -71,7 +71,7 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PagamentoPortale", 
   propOrder = {
-  	"codPortale",
+  	"codApplicazione",
   	"codCanale",
   	"nome",
   	"importo",
@@ -116,12 +116,12 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getCodPortale() {
-    return this.codPortale;
+  public java.lang.String getCodApplicazione() {
+    return this.codApplicazione;
   }
 
-  public void setCodPortale(java.lang.String codPortale) {
-    this.codPortale = codPortale;
+  public void setCodApplicazione(java.lang.String codApplicazione) {
+    this.codApplicazione = codApplicazione;
   }
 
   public java.lang.String getCodCanale() {
@@ -312,8 +312,8 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codPortale",required=true,nillable=false)
-  protected java.lang.String codPortale;
+  @XmlElement(name="codApplicazione",required=true,nillable=false)
+  protected java.lang.String codApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codCanale",required=false,nillable=false)

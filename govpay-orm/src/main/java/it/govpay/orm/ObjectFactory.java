@@ -354,13 +354,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Portale }
-     */
-    public Portale createPortale() {
-        return new Portale();
-    }
-
-    /**
      * Create an instance of {@link IdMail }
      */
     public IdMail createIdMail() {
@@ -428,13 +421,6 @@ public class ObjectFactory {
      */
     public Audit createAudit() {
         return new Audit();
-    }
-
-    /**
-     * Create an instance of {@link IdPortale }
-     */
-    public IdPortale createIdPortale() {
-        return new IdPortale();
     }
 
     /**

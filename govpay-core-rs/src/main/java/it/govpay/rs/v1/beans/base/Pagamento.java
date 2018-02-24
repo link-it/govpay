@@ -361,7 +361,7 @@ public class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Url oer le richieste di pagamento oggetto del Pagamento
+   * Url per le richieste di pagamento oggetto del Pagamento
    **/
   public Pagamento rpts(String rpts) {
     this.rpts = rpts;

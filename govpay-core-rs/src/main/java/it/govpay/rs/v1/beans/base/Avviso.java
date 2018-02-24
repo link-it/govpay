@@ -1,14 +1,15 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"pendenza",
 "stato",
 "importo",
+"idDominio",
 "numeroAvviso",
 "dataValidita",
 "dataScadenza",
@@ -18,9 +19,6 @@ import java.util.Date;
 "barcode",
 })
 public class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
-  
-  @JsonProperty("pendenza")
-  private String pendenza = null;
   
     
   /**
@@ -75,6 +73,9 @@ public class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("importo")
   private BigDecimal importo = null;
   
+  @JsonProperty("idDominio")
+  private String idDominio = null;
+  
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
   
@@ -96,22 +97,6 @@ public class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("barcode")
   private String barcode = null;
   
-  /**
-   * Url per il dominio creditore
-   **/
-  public Avviso pendenza(String pendenza) {
-    this.pendenza = pendenza;
-    return this;
-  }
-
-  @JsonProperty("pendenza")
-  public String getPendenza() {
-    return pendenza;
-  }
-  public void setPendenza(String pendenza) {
-    this.pendenza = pendenza;
-  }
-
   /**
    * Stato dell'avviso
    **/
@@ -142,6 +127,22 @@ public class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
+  }
+
+  /**
+   * Identificativo del creditore dell'avviso
+   **/
+  public Avviso idDominio(String idDominio) {
+    this.idDominio = idDominio;
+    return this;
+  }
+
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
+  }
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
   }
 
   /**
@@ -265,9 +266,9 @@ public class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
       return false;
     }
     Avviso avviso = (Avviso) o;
-    return Objects.equals(pendenza, avviso.pendenza) &&
-        Objects.equals(stato, avviso.stato) &&
+    return Objects.equals(stato, avviso.stato) &&
         Objects.equals(importo, avviso.importo) &&
+        Objects.equals(idDominio, avviso.idDominio) &&
         Objects.equals(numeroAvviso, avviso.numeroAvviso) &&
         Objects.equals(dataValidita, avviso.dataValidita) &&
         Objects.equals(dataScadenza, avviso.dataScadenza) &&
@@ -279,7 +280,7 @@ public class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(pendenza, stato, importo, numeroAvviso, dataValidita, dataScadenza, descrizione, tassonomiaAvviso, qrcode, barcode);
+    return Objects.hash(stato, importo, idDominio, numeroAvviso, dataValidita, dataScadenza, descrizione, tassonomiaAvviso, qrcode, barcode);
   }
 
   public static Avviso parse(String json) {
@@ -296,9 +297,9 @@ public class Avviso extends it.govpay.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Avviso {\n");
     
-    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
     sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");

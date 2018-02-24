@@ -66,8 +66,6 @@ import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoPortaleVersamentoServiceSearch;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPagamentoServiceSearch;
-import it.govpay.orm.dao.IPortaleService;
-import it.govpay.orm.dao.IPortaleServiceSearch;
 import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.IPspServiceSearch;
 import it.govpay.orm.dao.IRPTService;
@@ -259,38 +257,6 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public IUoService getUoService() throws ServiceException,NotImplementedException{
 		return new JDBCUoService(this.unlimitedJdbcServiceManager);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Portale type:Portale
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Portale}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Portale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPortaleServiceSearch getPortaleServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCPortaleServiceSearch(this.unlimitedJdbcServiceManager);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Portale}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Portale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPortaleService getPortaleService() throws ServiceException,NotImplementedException{
-		return new JDBCPortaleService(this.unlimitedJdbcServiceManager);
 	}
 	
 	

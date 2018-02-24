@@ -73,7 +73,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 
 		// Object pagamentoPortale
 		sqlQueryObjectInsert.addInsertTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PORTALE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_APPLICAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_CANALE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().NOME,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().IMPORTO,false),"?");
@@ -99,7 +99,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		// Insert pagamentoPortale
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getPagamentoPortaleFetch().getKeyGeneratorObject(PagamentoPortale.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getCodPortale(),PagamentoPortale.model().COD_PORTALE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getCodApplicazione(),PagamentoPortale.model().COD_APPLICAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getCodCanale(),PagamentoPortale.model().COD_CANALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getNome(),PagamentoPortale.model().NOME.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getImporto(),PagamentoPortale.model().IMPORTO.getFieldType()),
@@ -174,8 +174,8 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		sqlQueryObjectUpdate.addUpdateTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
 		boolean isUpdate_pagamentoPortale = true;
 		java.util.List<JDBCObject> lstObjects_pagamentoPortale = new java.util.ArrayList<JDBCObject>();
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PORTALE,false), "?");
-		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getCodPortale(), PagamentoPortale.model().COD_PORTALE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_APPLICAZIONE,false), "?");
+		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getCodApplicazione(), PagamentoPortale.model().COD_APPLICAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_CANALE,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getCodCanale(), PagamentoPortale.model().COD_CANALE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().NOME,false), "?");

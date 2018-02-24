@@ -137,33 +137,6 @@ public interface IServiceManager {
 	public IUoService getUoService() throws ServiceException,NotImplementedException;
 	
 	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Portale type:Portale
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Portale}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Portale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IPortaleServiceSearch getPortaleServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Portale}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Portale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IPortaleService getPortaleService() throws ServiceException,NotImplementedException;
-	
-	
-	
 	/*
 	 =====================================================================================================================
 	 Services relating to the object with name:Connettore type:Connettore

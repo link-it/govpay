@@ -24,11 +24,11 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.utils.ServiceManagerProperties;
+import org.slf4j.Logger;
 
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IACLServiceSearch;
@@ -70,8 +70,6 @@ import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoPortaleVersamentoServiceSearch;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPagamentoServiceSearch;
-import it.govpay.orm.dao.IPortaleService;
-import it.govpay.orm.dao.IPortaleServiceSearch;
 import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.IPspServiceSearch;
 import it.govpay.orm.dao.IRPTService;
@@ -334,38 +332,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IUoService getUoService() throws ServiceException,NotImplementedException{
 		return new JDBCUoService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Portale type:Portale
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Portale}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Portale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPortaleServiceSearch getPortaleServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCPortaleServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Portale}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Portale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPortaleService getPortaleService() throws ServiceException,NotImplementedException{
-		return new JDBCPortaleService(this);
 	}
 	
 	

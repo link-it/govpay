@@ -38,7 +38,7 @@ import java.io.Serializable;
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idCanale" type="{http://www.govpay.it/orm}id-canale" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idPortale" type="{http://www.govpay.it/orm}id-portale" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codCarrello" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -83,7 +83,7 @@ import java.io.Serializable;
   	"idVersamento",
   	"idPagamentoPortale",
   	"idCanale",
-  	"idPortale",
+  	"idApplicazione",
   	"codCarrello",
   	"iuv",
   	"ccp",
@@ -158,12 +158,12 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.idCanale = idCanale;
   }
 
-  public IdPortale getIdPortale() {
-    return this.idPortale;
+  public IdApplicazione getIdApplicazione() {
+    return this.idApplicazione;
   }
 
-  public void setIdPortale(IdPortale idPortale) {
-    this.idPortale = idPortale;
+  public void setIdApplicazione(IdApplicazione idApplicazione) {
+    this.idApplicazione = idApplicazione;
   }
 
   public java.lang.String getCodCarrello() {
@@ -416,8 +416,8 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @XmlElement(name="idCanale",required=true,nillable=false)
   protected IdCanale idCanale;
 
-  @XmlElement(name="idPortale",required=false,nillable=false)
-  protected IdPortale idPortale;
+  @XmlElement(name="idApplicazione",required=false,nillable=false)
+  protected IdApplicazione idApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codCarrello",required=false,nillable=false)

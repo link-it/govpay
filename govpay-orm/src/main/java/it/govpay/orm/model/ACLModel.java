@@ -42,7 +42,6 @@ public class ACLModel extends AbstractModel<ACL> {
 		super();
 	
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"ACL",ACL.class));
-		this.ID_PORTALE = new it.govpay.orm.model.IdPortaleModel(new Field("idPortale",it.govpay.orm.IdPortale.class,"ACL",ACL.class));
 		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new Field("idOperatore",it.govpay.orm.IdOperatore.class,"ACL",ACL.class));
 		this.ID_RUOLO = new it.govpay.orm.model.IdRuoloModel(new Field("idRuolo",it.govpay.orm.IdRuolo.class,"ACL",ACL.class));
 		this.COD_TIPO = new Field("codTipo",java.lang.String.class,"ACL",ACL.class);
@@ -59,7 +58,6 @@ public class ACLModel extends AbstractModel<ACL> {
 		super(father);
 	
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"ACL",ACL.class));
-		this.ID_PORTALE = new it.govpay.orm.model.IdPortaleModel(new ComplexField(father,"idPortale",it.govpay.orm.IdPortale.class,"ACL",ACL.class));
 		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new ComplexField(father,"idOperatore",it.govpay.orm.IdOperatore.class,"ACL",ACL.class));
 		this.ID_RUOLO = new it.govpay.orm.model.IdRuoloModel(new ComplexField(father,"idRuolo",it.govpay.orm.IdRuolo.class,"ACL",ACL.class));
 		this.COD_TIPO = new ComplexField(father,"codTipo",java.lang.String.class,"ACL",ACL.class);
@@ -74,8 +72,6 @@ public class ACLModel extends AbstractModel<ACL> {
 	
 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
-	 
-	public it.govpay.orm.model.IdPortaleModel ID_PORTALE = null;
 	 
 	public it.govpay.orm.model.IdOperatoreModel ID_OPERATORE = null;
 	 

@@ -112,7 +112,7 @@ public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Portale.model().COD_PORTALE);
+//			fsw.setField(it.govpay.orm.Portale.model().COD_PORTALE); //TODO pintori
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 			

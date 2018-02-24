@@ -6,10 +6,14 @@ import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
+"descrizione",
 "acls",
 "idRuolo",
 })
 public class Ruolo extends it.govpay.rs.v1.beans.JSONSerializable {
+  
+  @JsonProperty("descrizione")
+  private String descrizione = null;
   
   @JsonProperty("acls")
   private List<Object> acls = new ArrayList<Object>();
@@ -17,6 +21,22 @@ public class Ruolo extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("idRuolo")
   private String idRuolo = null;
   
+  /**
+   * descrizione del ruolo
+   **/
+  public Ruolo descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
   /**
    **/
   public Ruolo acls(List<Object> acls) {
@@ -57,13 +77,14 @@ public class Ruolo extends it.govpay.rs.v1.beans.JSONSerializable {
       return false;
     }
     Ruolo ruolo = (Ruolo) o;
-    return Objects.equals(acls, ruolo.acls) &&
+    return Objects.equals(descrizione, ruolo.descrizione) &&
+        Objects.equals(acls, ruolo.acls) &&
         Objects.equals(idRuolo, ruolo.idRuolo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(acls, idRuolo);
+    return Objects.hash(descrizione, acls, idRuolo);
   }
 
   public static Ruolo parse(String json) {
@@ -80,6 +101,7 @@ public class Ruolo extends it.govpay.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Ruolo {\n");
     
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    acls: ").append(toIndentedString(acls)).append("\n");
     sb.append("    idRuolo: ").append(toIndentedString(idRuolo)).append("\n");
     sb.append("}");

@@ -19,16 +19,6 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.converter.AclConverter;
-import it.govpay.model.Acl;
-import it.govpay.orm.ACL;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdOperatore;
-import it.govpay.orm.IdPortale;
-import it.govpay.orm.IdRuolo;
-import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +30,15 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.converter.AclConverter;
+import it.govpay.model.Acl;
+import it.govpay.orm.ACL;
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdOperatore;
+import it.govpay.orm.IdRuolo;
+import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
 
 public class AclBD extends BasicBD {
 
@@ -132,41 +131,6 @@ public class AclBD extends BasicBD {
 			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
 			exp.equals(new CustomField("id_portale", Long.class, "id_portale", aclFC.toAliasTable(ACL.model())), idPortale);
 			return findAll(exp);
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	public void insertAclPortale(Long id, List<Acl> acls) throws ServiceException {
-		for(Acl acl: acls) {
-			try{
-				ACL aclVo = AclConverter.toVO(acl, this);
-				IdPortale idPortale = new IdPortale();
-				idPortale.setId(id);
-				aclVo.setIdPortale(idPortale);
-				this.getAclService().create(aclVo);
-			} catch(NotImplementedException e) {
-				throw new ServiceException(e);
-			} catch (NotFoundException e) {
-				throw new ServiceException(e);
-			}
-		}
-	}
-	
-	/*
-	 * PORTALE
-	 */
-
-	public void deleteAclPortale(long idPortale) throws ServiceException {
-		try{
-			IExpression exp = this.getAclService().newExpression();
-			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_portale", Long.class, "id_portale", aclFC.toAliasTable(ACL.model())), idPortale);
-			this.getAclService().deleteAll(exp);
 		} catch(ExpressionException e) {
 			throw new ServiceException(e);
 		} catch(ExpressionNotImplementedException e) {

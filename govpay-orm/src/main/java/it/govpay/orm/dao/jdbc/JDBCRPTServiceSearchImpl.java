@@ -206,7 +206,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getRPTFieldConverter().toTable(RPT.model())));
 			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getRPTFieldConverter().toTable(RPT.model())));
-			fields.add(new CustomField("id_portale", Long.class, "id_portale", this.getRPTFieldConverter().toTable(RPT.model())));
+			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getRPTFieldConverter().toTable(RPT.model())));
 			fields.add(new CustomField("id_canale", Long.class, "id_canale", this.getRPTFieldConverter().toTable(RPT.model())));
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
@@ -216,7 +216,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 				Long idVersamento = (Long)map.remove("id_versamento");
 
 				Long idCanale = (Long)map.remove("id_canale");
-				Long idPortale = getNullableValueFromMap("id_portale", map);
+				Long idPortale = getNullableValueFromMap("id_applicazione", map);
 				Long idPagamentoPortale = getNullableValueFromMap("id_pagamento_portale", map);
 
 				RPT rpt = (RPT)this.getRPTFetch().fetch(jdbcProperties.getDatabase(), RPT.model(), map);
@@ -241,14 +241,14 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 				rpt.setIdCanale(id_rpt_canale);
 
 				if(idPortale != null && idPortale > 0){
-					it.govpay.orm.IdPortale id_rpt_portale = null;
+					it.govpay.orm.IdApplicazione id_rpt_applicazione = null;
 					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_rpt_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findId(idPortale, false);
+						id_rpt_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idPortale, false);
 					}else{
-						id_rpt_portale = new it.govpay.orm.IdPortale();
+						id_rpt_applicazione = new it.govpay.orm.IdApplicazione();
 					}
-					id_rpt_portale.setId(idPortale);
-					rpt.setIdPortale(id_rpt_portale);
+					id_rpt_applicazione.setId(idPortale);
+					rpt.setIdApplicazione(id_rpt_applicazione);
 				}
 
 				if(idPagamentoPortale != null && idPagamentoPortale > 0){
@@ -561,10 +561,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 				obj.getIdCanale().getIdPsp().setId(imgSaved.getIdCanale().getIdPsp().getId());
 			}
 		}
-		if(obj.getIdPortale()!=null && 
-				imgSaved.getIdPortale()!=null){
-			obj.getIdPortale().setId(imgSaved.getIdPortale().getId());
-		}
 
 	}
 	
@@ -635,10 +631,10 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			sqlQueryObject.addWhereCondition(tableName1+".id_canale="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(RPT.model().ID_PORTALE,false)){
+		if(expression.inUseModel(RPT.model().ID_APPLICAZIONE,false)){
 			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
-			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_PORTALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_portale="+tableName2+".id");
+			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
 		
 	}
@@ -692,9 +688,9 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			));
 
 		// RPT.model().ID_PORTALE
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_PORTALE),
+		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_APPLICAZIONE),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_PORTALE))
+				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_APPLICAZIONE))
 			));
 
 

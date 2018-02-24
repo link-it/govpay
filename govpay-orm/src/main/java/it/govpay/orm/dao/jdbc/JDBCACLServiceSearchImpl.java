@@ -163,7 +163,6 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", this.getFieldConverter().toTable(ACL.model())));
-			fields.add(new CustomField("id_portale", Long.class, "id_portale", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_operatore", Long.class, "id_operatore", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_ruolo", Long.class, "id_ruolo", this.getFieldConverter().toTable(ACL.model())));
 
@@ -173,7 +172,6 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 
 				Object idAppObj = map.remove("id_applicazione");
 				Object idDominioObj = map.remove("id_dominio");
-				Object idPortaleObj = map.remove("id_portale");
 				Object idOperatoreObj = map.remove("id_operatore");
 				Object idTipoTributoObj = map.remove("id_tipo_tributo");
 				Object idRuoloObj = map.remove("id_ruolo");
@@ -193,20 +191,6 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 					}
 					id_acl_applicazione.setId(idFK_acl_applicazione);
 					acl.setIdApplicazione(id_acl_applicazione);	
-				}
-
-				if(idPortaleObj instanceof Long) {
-					it.govpay.orm.IdPortale id_acl_portale = null;
-					
-					long idFK_acl_portale = (Long) idPortaleObj;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_acl_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findId(idFK_acl_portale, false);
-					}else{
-						id_acl_portale = new it.govpay.orm.IdPortale();
-					}
-					id_acl_portale.setId(idFK_acl_portale);
-					acl.setIdPortale(id_acl_portale);
-
 				}
 				
 				if(idOperatoreObj instanceof Long) {
@@ -544,13 +528,13 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				imgSaved.getIdApplicazione()!=null){
 			obj.getIdApplicazione().setId(imgSaved.getIdApplicazione().getId());
 		}
-		if(obj.getIdPortale()!=null && 
-				imgSaved.getIdPortale()!=null){
-			obj.getIdPortale().setId(imgSaved.getIdPortale().getId());
-		}
 		if(obj.getIdOperatore()!=null && 
 				imgSaved.getIdOperatore()!=null){
 			obj.getIdOperatore().setId(imgSaved.getIdOperatore().getId());
+		}
+		if(obj.getIdRuolo()!=null && 
+				imgSaved.getIdRuolo()!=null){
+			obj.getIdRuolo().setId(imgSaved.getIdRuolo().getId());
 		}
 		if(obj.getIdDominio()!=null && 
 				imgSaved.getIdDominio()!=null){
@@ -634,18 +618,20 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_OPERATORE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_operatore="+tableName2+".id");
 		}
-		
-		if(expression.inUseModel(ACL.model().ID_PORTALE,false)){
-			String tableName1 = this.getACLFieldConverter().toAliasTable(ACL.model());
-			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_PORTALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_portale="+tableName2+".id");
-		}
+
 		
 		if(expression.inUseModel(ACL.model().ID_TIPO_TRIBUTO,false)){
 			String tableName1 = this.getACLFieldConverter().toAliasTable(ACL.model());
 			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_TIPO_TRIBUTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_tributo="+tableName2+".id");
 		}
+		
+		if(expression.inUseModel(ACL.model().ID_RUOLO,false)){
+			String tableName1 = this.getACLFieldConverter().toAliasTable(ACL.model());
+			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_RUOLO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_ruolo="+tableName2+".id");
+		}
+
         
 	}
 	
@@ -678,16 +664,16 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_APPLICAZIONE))
 			));
 
-		// ACL.model().ID_PORTALE
-		mapTableToPKColumn.put(converter.toTable(ACL.model().ID_PORTALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_PORTALE))
-			));
-
 		// ACL.model().ID_OPERATORE
 		mapTableToPKColumn.put(converter.toTable(ACL.model().ID_OPERATORE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_OPERATORE))
+			));
+
+		// ACL.model().ID_RUOLO
+		mapTableToPKColumn.put(converter.toTable(ACL.model().ID_RUOLO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_RUOLO))
 			));
 
 		// ACL.model().ID_DOMINIO

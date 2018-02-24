@@ -67,11 +67,11 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(PagamentoPortale.model().COD_PORTALE)){
+		if(field.equals(PagamentoPortale.model().COD_APPLICAZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_portale";
+				return this.toAliasTable(field)+".cod_applicazione";
 			}else{
-				return "cod_portale";
+				return "cod_applicazione";
 			}
 		}
 		if(field.equals(PagamentoPortale.model().COD_CANALE)){
@@ -234,7 +234,7 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(PagamentoPortale.model().COD_PORTALE)){
+		if(field.equals(PagamentoPortale.model().COD_APPLICAZIONE)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().COD_CANALE)){
