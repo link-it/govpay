@@ -36,6 +36,7 @@ import it.govpay.orm.Canale;
 public class CanaleFilter extends AbstractFilter {
 	
 	private Long idPsp = null;
+	private String codPsp = null;
 	private Boolean abilitato = null;
 	private String modello = null;
 	private TipoVersamento tipoVersamento = null;
@@ -95,6 +96,14 @@ public class CanaleFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.codPsp != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Canale.model().ID_PSP.COD_PSP, this.codPsp);
+				addAnd = true;
+			}
+			
 			
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -142,6 +151,14 @@ public class CanaleFilter extends AbstractFilter {
 
 	public void setTipoVersamento(TipoVersamento tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
+	}
+
+	public String getCodPsp() {
+		return codPsp;
+	}
+
+	public void setCodPsp(String codPsp) {
+		this.codPsp = codPsp;
 	}
 
 	

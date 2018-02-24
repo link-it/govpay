@@ -8,6 +8,7 @@ public class ListaCanaliDTO extends BasicFindRequestDTO{
 	private Boolean abilitato;
 	private String modello;
 	private String tipoVersamento;
+	private String idPsp;
 	
 	public ListaCanaliDTO(IAutorizzato user) {
 		super(user);
@@ -36,6 +37,14 @@ public class ListaCanaliDTO extends BasicFindRequestDTO{
 
 	public void setModello(String modello) {
 		this.modello = modello;
+	}
+
+	public String getIdPsp() {
+		return idPsp;
+	}
+
+	public void setIdPsp(String idPsp) {
+		this.idPsp = idPsp;
 	}
 
 

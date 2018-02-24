@@ -163,17 +163,17 @@ public class InitListener implements ServletContextListener{
 		
 		log.info("Shutdown GovPay in corso...");
 		
-		log.info("De-registrazione delle cache ...");
-		AnagraficaManager.unregister();
-		log.info("De-registrazione delle cache completato");
-		
-		log.info("Shutdown del Connection Manager ...");
-		try {
-			ConnectionManager.shutdown();
-			log.info("Shutdown del Connection Manager completato.");
-		} catch (Exception e) {
-			log.warn("Errore nello shutdown del Connection Manager: " + e);
-		}
+//		log.info("De-registrazione delle cache ...");
+//		AnagraficaManager.unregister();
+//		log.info("De-registrazione delle cache completato");
+//		
+//		log.info("Shutdown del Connection Manager ...");
+//		try {
+//			ConnectionManager.shutdown();
+//			log.info("Shutdown del Connection Manager completato.");
+//		} catch (Exception e) {
+//			log.warn("Errore nello shutdown del Connection Manager: " + e);
+//		}
 		
 		log.info("Shutdown di GovPay completato.");
 	}

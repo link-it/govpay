@@ -76,8 +76,10 @@ public class PspDAO extends BasicBD{
 		filter.setLimit(listaPspDTO.getLimit());
 		filter.setAbilitato(listaPspDTO.getAbilitato());
 		filter.setModello(listaPspDTO.getModello());
-		filter.setTipoVersamento(TipoVersamento.valueOf(listaPspDTO.getTipoVersamento())); 
+		if(listaPspDTO.getTipoVersamento() != null)
+			filter.setTipoVersamento(TipoVersamento.valueOf(listaPspDTO.getTipoVersamento())); 
 		filter.setFilterSortList(listaPspDTO.getFieldSortList());
+		filter.setCodPsp(listaPspDTO.getIdPsp());
 
 		long count = pspBD.countCanali(filter);
 

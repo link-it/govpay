@@ -101,7 +101,7 @@ public class PspController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pspIdPspCanaliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
+    public Response pspIdPspCanaliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -122,6 +122,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			listaCanaliDTO.setAbilitato(abilitato);
 			listaCanaliDTO.setModello(modello);
 			listaCanaliDTO.setTipoVersamento(tipoVersamento);
+			listaCanaliDTO.setIdPsp(idPsp);
 			
 			// INIT DAO
 			
