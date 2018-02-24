@@ -44,6 +44,7 @@ public class ApplicazioneConverter {
 		dto.setAcls(acls);
 		dto.setVersione(Versione.toEnum(vo.getVersione()));
 		dto.setCodApplicazioneIuv(vo.getCodApplicazioneIuv());
+		dto.setRegExp(vo.getRegExp());
 		return dto;
 	}
 
@@ -68,6 +69,7 @@ public class ApplicazioneConverter {
 		vo.setTrusted(dto.isTrusted());
 		vo.setVersione(dto.getVersione().getLabel()); 
 		vo.setCodApplicazioneIuv(dto.getCodApplicazioneIuv());
+		vo.setRegExp(dto.getRegExp());
 		return vo;
 	}
 }

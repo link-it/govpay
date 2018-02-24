@@ -50,6 +50,7 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 		this.VERSIONE = new Field("versione",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.TRUSTED = new Field("trusted",boolean.class,"Applicazione",Applicazione.class);
 		this.COD_APPLICAZIONE_IUV = new Field("codApplicazioneIuv",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.REG_EXP = new Field("regExp",java.lang.String.class,"Applicazione",Applicazione.class);
 	
 	}
 	
@@ -66,6 +67,7 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 		this.VERSIONE = new ComplexField(father,"versione",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.TRUSTED = new ComplexField(father,"trusted",boolean.class,"Applicazione",Applicazione.class);
 		this.COD_APPLICAZIONE_IUV = new ComplexField(father,"codApplicazioneIuv",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.REG_EXP = new ComplexField(father,"regExp",java.lang.String.class,"Applicazione",Applicazione.class);
 	
 	}
 	
@@ -88,6 +90,8 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	public IField TRUSTED = null;
 	 
 	public IField COD_APPLICAZIONE_IUV = null;
+	 
+	public IField REG_EXP = null;
 	 
 
 	@Override

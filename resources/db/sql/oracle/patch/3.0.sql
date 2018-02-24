@@ -97,8 +97,10 @@ ALTER TABLE acl DROP COLUMN id_portale;
 ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
 ALTER TABLE rpt DROP COLUMN id_portale;
 
-ALTER TABLE rpt ADD COLUMN id_applicazione;
+ALTER TABLE rpt ADD id_applicazione BIGINT;
 ALTER TABLE rpt ADD fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
 
 DROP TABLE portali;
 DROP SEQUENCE portali_seq;
+
+ALTER TABLE applicazioni ADD reg_exp VARCHAR2(1024 CHAR);

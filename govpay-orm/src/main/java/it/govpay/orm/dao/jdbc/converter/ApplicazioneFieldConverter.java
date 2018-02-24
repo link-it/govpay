@@ -130,6 +130,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione_iuv";
 			}
 		}
+		if(field.equals(Applicazione.model().REG_EXP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".reg_exp";
+			}else{
+				return "reg_exp";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -168,6 +175,9 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().COD_APPLICAZIONE_IUV)){
+			return this.toTable(Applicazione.model(), returnAlias);
+		}
+		if(field.equals(Applicazione.model().REG_EXP)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 

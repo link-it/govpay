@@ -100,6 +100,7 @@ CREATE TABLE applicazioni
 	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
 	trusted BOOLEAN NOT NULL,
 	cod_applicazione_iuv VARCHAR(3),
+	reg_exp VARCHAR(1024),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- unique constraints

@@ -72,6 +72,8 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "trusted", Applicazione.model().TRUSTED.getFieldType()));
 				setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_applicazione_iuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()));
+				setParameter(object, "setRegExp", Applicazione.model().REG_EXP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "reg_exp", Applicazione.model().REG_EXP.getFieldType()));
 				return object;
 			}
 			
@@ -112,6 +114,8 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"trusted"));
 				setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
 					this.getObjectFromMap(map,"codApplicazioneIuv"));
+				setParameter(object, "setRegExp", Applicazione.model().REG_EXP.getFieldType(),
+					this.getObjectFromMap(map,"regExp"));
 				return object;
 			}
 			
