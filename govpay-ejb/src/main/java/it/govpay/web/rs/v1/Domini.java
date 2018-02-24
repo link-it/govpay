@@ -61,14 +61,14 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.legacy.beans.Entrata;
-import it.govpay.rs.legacy.beans.Iban;
-import it.govpay.rs.legacy.beans.ListaEntrate;
-import it.govpay.rs.legacy.beans.ListaIbanAccredito;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.Dominio;
+import it.govpay.rs.legacy.beans.Entrata;
 import it.govpay.rs.v1.beans.Errore;
+import it.govpay.rs.legacy.beans.Iban;
 import it.govpay.rs.v1.beans.ListaDomini;
+import it.govpay.rs.legacy.beans.ListaEntrate;
+import it.govpay.rs.legacy.beans.ListaIbanAccredito;
 import it.govpay.rs.v1.beans.ListaUnitaOperative;
 import it.govpay.rs.v1.beans.UnitaOperativa;
 import it.govpay.rs.v1.controllers.base.DominiController;
@@ -275,7 +275,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			List<Iban> ibans = new ArrayList<Iban>();
 			for(it.govpay.bd.model.IbanAccredito ibanAccredito : findIbanDTOResponse.getResults()) {
-				ibans.add(new Iban(ibanAccredito));
+				ibans.add(new Iban(ibanAccredito, codDominio, baseUriBuilder));
 			}
 			ListaIbanAccredito listaUnitaOperative = new ListaIbanAccredito(ibans, uriInfo.getRequestUri(), findIbanDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
@@ -314,7 +314,7 @@ public class Domini extends BaseRsServiceV1 {
 			GetIbanDTO getIbanDTO = new GetIbanDTO(user, codDominio, codIbanAccredito);
 			GetIbanDTOResponse getIbanDTOResponse = new DominiDAO().getIban(getIbanDTO);
 			
-			Iban unitaOperativa = new Iban(getIbanDTOResponse.getIbanAccredito());
+			Iban unitaOperativa = new Iban(getIbanDTOResponse.getIbanAccredito(), codDominio, baseUriBuilder);
 			
 			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
