@@ -87,7 +87,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Iban response = new it.govpay.rs.v1.beans.Iban(getDominiIbanDTOResponse.getIbanAccredito(), idDominio, uriInfo.getRequestUriBuilder());
+			Iban response = new it.govpay.rs.v1.beans.Iban(getDominiIbanDTOResponse.getIbanAccredito());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -558,7 +558,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			List<it.govpay.rs.v1.beans.Iban> results = new ArrayList<it.govpay.rs.v1.beans.Iban>();
 			for(it.govpay.bd.model.IbanAccredito ibanAccredito: listaDominiIbanDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Iban(ibanAccredito, idDominio, uriInfo.getRequestUriBuilder()));
+				results.add(new it.govpay.rs.v1.beans.Iban(ibanAccredito));
 			}
 			
 			ListaIbanAccredito response = new ListaIbanAccredito(results, uriInfo.getRequestUri(),
