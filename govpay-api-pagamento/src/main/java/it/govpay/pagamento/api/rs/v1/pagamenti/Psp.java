@@ -56,9 +56,13 @@ public class Psp extends BaseRsServiceV1{
     @Path("/{idPsp}/canali")
     
     @Produces({ "application/json" })
-    public Response pspIdPspCanaliGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("modello") String modello, @QueryParam("tipoVersamento") String tipoVersamento){
+    public Response pspIdPspCanaliGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, 
+    		@QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
+			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, 
+			@PathParam("idPsp") String idPsp,
+			@QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("modello") String modello, @QueryParam("tipoVersamento") String tipoVersamento){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.pspIdPspCanaliGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, modello, tipoVersamento);
+	return this.controller.pspIdPspCanaliGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idPsp, pagina, risultatiPerPagina, ordinamento, campi, abilitato, modello, tipoVersamento);
     }
 
     /*

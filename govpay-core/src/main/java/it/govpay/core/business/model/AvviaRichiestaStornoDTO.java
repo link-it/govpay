@@ -23,26 +23,18 @@ package it.govpay.core.business.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.govpay.model.Portale;
+import it.govpay.model.Applicazione;
 
 public class AvviaRichiestaStornoDTO {
 
-	private String codPortale;
+	private String codApplicazione;
 	private String codDominio;
 	private String iuv;
 	private String ccp;
 	private String causaleRevoca;
 	private String datiAggiuntivi;
 	private List<Pagamento> pagamento;
-	private Portale portale;
-
-	public String getCodPortale() {
-		return codPortale;
-	}
-
-	public void setCodPortale(String value) {
-		this.codPortale = value;
-	}
+	private Applicazione applicazione;
 
 	public String getCodDominio() {
 		return codDominio;
@@ -91,14 +83,22 @@ public class AvviaRichiestaStornoDTO {
 		return this.pagamento;
 	}
 
-
-	public Portale getPortale() {
-		return portale;
+	public String getCodApplicazione() {
+		return codApplicazione;
 	}
 
-	public void setPortale(Portale portale) {
-		this.portale = portale;
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
 	}
+
+	public Applicazione getApplicazione() {
+		return applicazione;
+	}
+
+	public void setApplicazione(Applicazione applicazione) {
+		this.applicazione = applicazione;
+	}
+
 
 
 	public class Pagamento {

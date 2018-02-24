@@ -79,7 +79,7 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.model.Portale;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -152,7 +152,7 @@ public class Pagamento extends BasicBD {
 		Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(dto.getVersante());
 		boolean aggiornaSeEsiste = dto.getAggiornaSeEsisteB() != null ? dto.getAggiornaSeEsisteB() : true;
 		it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(this);
-		List<Rpt> rpts = rptBD.avviaTransazione(versamenti, dto.getPortale(), dto.getCanale(), dto.getIbanAddebito(), versanteModel, dto.getAutenticazione(), dto.getUrlRitorno(), aggiornaSeEsiste);
+		List<Rpt> rpts = rptBD.avviaTransazione(versamenti, dto.getApplicazione(), dto.getCanale(), dto.getIbanAddebito(), versanteModel, dto.getAutenticazione(), dto.getUrlRitorno(), aggiornaSeEsiste);
 
 		AvviaTransazioneDTOResponse response = new AvviaTransazioneDTOResponse();
 
@@ -454,7 +454,7 @@ public class Pagamento extends BasicBD {
 				}
 			}
 		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.PAG_008, dto.getCodPortale());
+			throw new GovPayException(EsitoOperazione.PAG_008, dto.getCodApplicazione());
 		}
 
 		if(pagamentiDaStornare.isEmpty()) {
@@ -528,15 +528,15 @@ public class Pagamento extends BasicBD {
 		}
 	}
 
-	public Rr chiediStorno(Portale portaleAutenticato, String codRichiestaStorno) throws ServiceException, GovPayException {
-		if(!portaleAutenticato.isAbilitato())
-			throw new GovPayException(EsitoOperazione.PRT_001, portaleAutenticato.getCodPortale());
+	public Rr chiediStorno(Applicazione applicazioneAutenticata, String codRichiestaStorno) throws ServiceException, GovPayException {
+		if(!applicazioneAutenticata.isAbilitato())
+			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
 
 		RrBD rrBD = new RrBD(this);
 		try {
 			Rr rr = rrBD.getRr(codRichiestaStorno);
-			if(rr.getRpt(this).getIdPortale() != null && !portaleAutenticato.getId().equals(rr.getRpt(this).getIdPortale())) {
-				throw new GovPayException(EsitoOperazione.PRT_004);
+			if(rr.getRpt(this).getIdApplicazione() != null && !applicazioneAutenticata.getId().equals(rr.getRpt(this).getIdApplicazione())) {
+				throw new GovPayException(EsitoOperazione.PRT_004); // TODO sostituire con APP
 			}
 			return rr;
 		} catch (NotFoundException e) {

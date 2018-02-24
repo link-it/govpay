@@ -23,13 +23,11 @@ package it.govpay.core.dao.versamenti.dto;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Applicazione;
-import it.govpay.model.Portale;
 
 public class CaricaVersamentoDTO {
 	
 	private Operatore operatore;
 	private Applicazione applicazione;
-	private Portale portale;
 	private Versamento versamento;
 	private boolean generaIuv;
 	private boolean aggiornaSeEsiste;
@@ -44,11 +42,6 @@ public class CaricaVersamentoDTO {
 		this.versamento = versamento;
 	}
 	
-	public CaricaVersamentoDTO(Portale portaleAutenticato, Versamento versamento) {
-		this.portale = portaleAutenticato;
-		this.versamento = versamento;
-	}
-
 	public it.govpay.bd.model.Versamento getVersamento() {
 		return versamento;
 	}
@@ -76,9 +69,4 @@ public class CaricaVersamentoDTO {
 	public Applicazione getApplicazione() {
 		return applicazione;
 	}
-	
-	public Portale getPortale() {
-		return portale;
-	}
-
 }

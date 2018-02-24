@@ -3,14 +3,14 @@ package it.govpay.core.dao.anagrafica.dto;
 import it.govpay.model.IAutorizzato;
 import it.govpay.orm.Canale;
 
-public class ListaCanaliDTO extends BasicFindRequestDTO{
+public class ListaStazioniDTO extends BasicFindRequestDTO{
 
 	private Boolean abilitato;
 	private String modello;
 	private String tipoVersamento;
 	private String idPsp;
 	
-	public ListaCanaliDTO(IAutorizzato user) {
+	public ListaStazioniDTO(IAutorizzato user) {
 		super(user);
 		this.addSortField("idCanale", Canale.model().COD_CANALE);
 	}

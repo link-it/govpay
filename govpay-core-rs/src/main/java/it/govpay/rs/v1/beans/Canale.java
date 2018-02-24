@@ -21,8 +21,8 @@ public class Canale extends it.govpay.rs.v1.beans.base.Canale {
 	public Canale(it.govpay.bd.model.Canale canale, BasicBD bd) throws ServiceException {
 		this.setAbilitato(canale.isAbilitato());
 		this.setIdCanale(canale.getCodCanale());
-		this.setModelloPagamento(ModelloPagamento.fromValue(canale.getModelloPagamento().toString()));
+		this.setModelloPagamento(ModelloPagamento.fromValue(canale.getModelloPagamento().getCodifica()+""));
 		this.setPsp(UriBuilderUtils.getPsp(canale.getPsp(bd).getCodPsp()));
-		this.setTipoVersamento(TipoVersamento.fromValue(canale.getTipoVersamento().toString()));
+		this.setTipoVersamento(TipoVersamento.fromValue(canale.getTipoVersamento().getCodifica()));
 	}
 }

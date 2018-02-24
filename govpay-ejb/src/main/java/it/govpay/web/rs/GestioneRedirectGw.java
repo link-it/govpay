@@ -19,12 +19,6 @@
  */
 package it.govpay.web.rs;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.pagamento.RptBD;
-import it.govpay.core.utils.GpContext;
-import it.govpay.model.Rpt;
-
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -32,9 +26,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.pagamento.RptBD;
+import it.govpay.core.utils.GpContext;
+import it.govpay.model.Rpt;
 
 @Path("/pub")
 public class GestioneRedirectGw {
@@ -70,13 +69,14 @@ public class GestioneRedirectGw {
 				log.info("Gw custom [Dominio:"+codDominio+" Sessione:"+codSessione+"] > [Url:"+ub.build().toString()+"]");
 				return Response.seeOther(ub.build()).build();
 			} else {
-				UriBuilder ub = UriBuilder.fromUri(AnagraficaManager.getPortale(bd, rpt.getIdPortale()).getDefaultCallbackURL());
-				if(codDominio != null) ub.queryParam("idDominio", codDominio);
-				ub.queryParam("idSession", codSessione);
-				ub.queryParam("esito", esito);
-				gpContext.log("gw.redirectDefault", codDominio, codSessione, ub.build().toString());
-				log.info("Gw standard [Dominio:"+codDominio+" Sessione:"+codSessione+"] > [Url:"+ub.build().toString()+"]");
-				return Response.seeOther(ub.build()).build();
+				throw new NotFoundException("CallBack URL non definita nell'Rpt");
+//				UriBuilder ub = UriBuilder.fromUri(AnagraficaManager.getApplicazione(bd, rpt.getIdApplicazione()).getDefaultCallbackURL());
+//				if(codDominio != null) ub.queryParam("idDominio", codDominio);
+//				ub.queryParam("idSession", codSessione);
+//				ub.queryParam("esito", esito);
+//				gpContext.log("gw.redirectDefault", codDominio, codSessione, ub.build().toString());
+//				log.info("Gw standard [Dominio:"+codDominio+" Sessione:"+codSessione+"] > [Url:"+ub.build().toString()+"]");
+//				return Response.seeOther(ub.build()).build();
 			}
 		} catch (NotFoundException e) {
 			log.debug("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Not found");

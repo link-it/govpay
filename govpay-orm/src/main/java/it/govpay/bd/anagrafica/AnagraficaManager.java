@@ -39,8 +39,6 @@ import it.govpay.bd.anagrafica.cache.IntermediariBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.IntermediariBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.OperatoriBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.OperatoriBDCacheWrapper;
-import it.govpay.bd.anagrafica.cache.PortaliBDCacheJmx;
-import it.govpay.bd.anagrafica.cache.PortaliBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.PspBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.PspBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.RuoliBDCacheJmx;
@@ -63,7 +61,6 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Portale;
 import it.govpay.model.Ruolo;
 import it.govpay.model.TipoTributo;
 
@@ -79,7 +76,6 @@ public class AnagraficaManager {
 	private static IntermediariBDCacheWrapper intermediariBDCacheWrapper;
 	private static OperatoriBDCacheWrapper operatoriBDCacheWrapper;
 	private static RuoliBDCacheWrapper ruoliBDCacheWrapper;
-	private static PortaliBDCacheWrapper portaliBDCacheWrapper;
 	private static PspBDCacheWrapper pspBDCacheWrapper;
 	private static StazioniBDCacheWrapper stazioniBDCacheWrapper;
 	private static TributiBDCacheWrapper tributiBDCacheWrapper;
@@ -94,7 +90,6 @@ public class AnagraficaManager {
 		intermediariBDCacheWrapper = new IntermediariBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(IntermediariBDCacheWrapper.class));
 		operatoriBDCacheWrapper = new OperatoriBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(OperatoriBDCacheWrapper.class));
 		ruoliBDCacheWrapper = new RuoliBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(RuoliBDCacheWrapper.class));
-		portaliBDCacheWrapper = new PortaliBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(PortaliBDCacheWrapper.class));
 		pspBDCacheWrapper = new PspBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(PspBDCacheWrapper.class));
 		stazioniBDCacheWrapper = new StazioniBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(StazioniBDCacheWrapper.class));
 		tributiBDCacheWrapper = new TributiBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
@@ -109,7 +104,6 @@ public class AnagraficaManager {
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IntermediariBDCacheJmx(), jmxDomain, "intermediari");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new OperatoriBDCacheJmx(), jmxDomain, "operatori");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new RuoliBDCacheJmx(), jmxDomain, "ruoli");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new PortaliBDCacheJmx(), jmxDomain, "portali");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new PspBDCacheJmx(), jmxDomain, "psp");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), jmxDomain, "stazioni");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), jmxDomain, "tributi");
@@ -157,10 +151,6 @@ public class AnagraficaManager {
 		return ruoliBDCacheWrapper;
 	}
 
-	public static PortaliBDCacheWrapper getPortaliBDCacheWrapper() {
-		return portaliBDCacheWrapper;
-	}
-
 	public static PspBDCacheWrapper getPspBDCacheWrapper() {
 		return pspBDCacheWrapper;
 	}
@@ -181,12 +171,6 @@ public class AnagraficaManager {
 		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazione", String.valueOf(applicazione.getId())));} catch (Exception e) {	}
 		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazione", applicazione.getCodApplicazione()));} catch (Exception e) {	}
 		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazioneByPrincipal", applicazione.getPrincipal()));} catch (Exception e) {	}
-	}
-	
-	public static void removeFromCache(Portale portale) {
-		try {portaliBDCacheWrapper.removeObjectCache(portaliBDCacheWrapper.getKeyCache("getPortale", String.valueOf(portale.getId())));} catch (Exception e) {	}
-		try {portaliBDCacheWrapper.removeObjectCache(portaliBDCacheWrapper.getKeyCache("getPortale", portale.getCodPortale()));} catch (Exception e) {	}
-		try {portaliBDCacheWrapper.removeObjectCache(portaliBDCacheWrapper.getKeyCache("getPortaleByPrincipal", portale.getPrincipal()));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Dominio dominio) {
@@ -590,64 +574,6 @@ public class AnagraficaManager {
 		}
 	}
 
-
-	public static Portale getPortale(BasicBD basicBD, long id) throws ServiceException {
-		try {
-			String method = "getPortale";
-			Object portale = portaliBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
-			return (Portale) portale;
-		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
-			}
-			if(t instanceof MultipleResultException) {
-				throw new ServiceException(t);
-			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
-			}
-			throw new ServiceException(t);
-		}
-	}
-
-	public static Portale getPortale(BasicBD basicBD, String codPortale) throws ServiceException, NotFoundException {
-		try {
-			String method = "getPortale";
-			Object portale = portaliBDCacheWrapper.getObjectCache(basicBD, DEBUG, codPortale, method, codPortale);
-			return (Portale) portale;
-		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
-			}
-			if(t instanceof MultipleResultException) {
-				throw new ServiceException(t);
-			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
-			}
-			throw new ServiceException(t);
-		}
-	}
-	
-	public static Portale getPortaleByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
-		try {
-			String method = "getPortaleByPrincipal";
-			Object portale = portaliBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
-			return (Portale) portale;
-		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
-			}
-			if(t instanceof MultipleResultException) {
-				throw new ServiceException(t);
-			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
-			}
-			throw new ServiceException(t);
-		}
-	}
-
 	public static Psp getPsp(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = "getPsp";
@@ -833,7 +759,6 @@ public class AnagraficaManager {
 		ibanAccreditoBDCacheWrapper.resetCache();
 		intermediariBDCacheWrapper.resetCache();
 		operatoriBDCacheWrapper.resetCache();
-		portaliBDCacheWrapper.resetCache();
 		stazioniBDCacheWrapper.resetCache();
 		tributiBDCacheWrapper.resetCache();
 		tipiTributoBDCacheWrapper.resetCache();

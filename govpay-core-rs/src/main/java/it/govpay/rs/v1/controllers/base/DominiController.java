@@ -2,7 +2,9 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -28,9 +30,15 @@ import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
+import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Ruolo;
+import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.Entrata;
 import it.govpay.rs.v1.beans.Iban;
 import it.govpay.rs.v1.beans.ListaDomini;
@@ -38,8 +46,11 @@ import it.govpay.rs.v1.beans.ListaEntrate;
 import it.govpay.rs.v1.beans.ListaIbanAccredito;
 import it.govpay.rs.v1.beans.ListaUnitaOperative;
 import it.govpay.rs.v1.beans.UnitaOperativa;
+import it.govpay.rs.v1.beans.base.DominioPost;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.rs.v1.beans.converter.DominiConverter;
+import net.sf.json.JsonConfig;
 
 
 
@@ -455,7 +466,62 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
     public Response dominiIdDominioPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "dominiIdDominioPUT";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			String jsonRequest = baos.toString();
+			JsonConfig jsonConfig = new JsonConfig();
+			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			jsonConfig.setClassMap(classMap);
+			DominioPost dominioRequest= (DominioPost) DominioPost.parse(jsonRequest, DominioPost.class, jsonConfig);
+			
+			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, null); //TODO IAutorizzato 
+			
+			DominiDAO dominiDAO = new DominiDAO();
+			
+			PutDominioDTOResponse putDominioDTOResponse = dominiDAO.createOrUpdate(putDominioDTO);
+			
+			Status responseStatus = putDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, null, responseStatus.getStatusCode());
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(responseStatus).build();
+		} catch (DominioNonTrovatoException  | StazioneNonTrovataException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante l'esecuzione del metodo "+ methodName + ": " + e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice(CategoriaEnum.INTERNO.name());
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 

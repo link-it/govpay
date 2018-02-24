@@ -34,7 +34,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Portale;
+import it.govpay.model.Applicazione;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class WebControllerDAO extends BasicBD{
@@ -104,18 +104,18 @@ public class WebControllerDAO extends BasicBD{
 						pagamentoPortale.setWispKeyPA(aggiornaPagamentiPortaleDTO.getWispKeyPA());
 						pagamentoPortale.setWispKeyWisp(aggiornaPagamentiPortaleDTO.getWispKeyWisp());
 
-						it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(this);
-						Portale portaleAutenticato = null;
+						it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(this);
+						Applicazione applicazioneAutenticata = null;
 						try {
-							portaleAutenticato = AnagraficaManager.getPortale(this, pagamentoPortale.getCodPortale());
+							applicazioneAutenticata = AnagraficaManager.getApplicazione(this, pagamentoPortale.getCodApplicazione());
 						} catch (NotFoundException e1) {
-							throw new GovPayException("Portale ["+pagamentoPortale.getCodPortale()+"] non esistente", EsitoOperazione.PRT_000, pagamentoPortale.getCodPortale());
+							throw new GovPayException("Portale ["+pagamentoPortale.getCodApplicazione()+"] non esistente", EsitoOperazione.APP_000, pagamentoPortale.getCodApplicazione());
 						}
 
 						ctx.log("ws.ricevutaRichiesta");
-						String codPortale = portaleAutenticato.getCodPortale();
+						String codPortale = applicazioneAutenticata.getCodApplicazione();
 
-						portaleBusiness.autorizzaPortale(codPortale, portaleAutenticato, this);
+						applicazioneBusiness.autorizzaApplicazione(codPortale, applicazioneAutenticata, this);
 						ctx.log("ws.autorizzazione");
 
 						it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(this);
@@ -129,7 +129,7 @@ public class WebControllerDAO extends BasicBD{
 						SceltaWISP scelta = null;
 						Canale canale= null; 
 						try {
-							scelta = wisp.chiediScelta(portaleAutenticato, dominio, pagamentoPortale.getWispKeyPA(), pagamentoPortale.getWispKeyWisp(),false);
+							scelta = wisp.chiediScelta(applicazioneAutenticata, dominio, pagamentoPortale.getWispKeyPA(), pagamentoPortale.getWispKeyWisp(),false);
 						} catch (Exception e) {
 							ctx.log("pagamento.risoluzioneWispKo", e.getMessage());
 							throw new ServiceException(e); 
@@ -183,7 +183,7 @@ public class WebControllerDAO extends BasicBD{
 								if(autenticazioneFromJson == null)
 									autenticazioneFromJson = "N/A";
 								
-								List<Rpt> rpts = rptBD.avviaTransazione(versamenti, portaleAutenticato, canale, JsonUtils.getIbanAddebitoFromJson(pagamentoPortale.getJsonRequest()),
+								List<Rpt> rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, canale, JsonUtils.getIbanAddebitoFromJson(pagamentoPortale.getJsonRequest()),
 										versanteModel, autenticazioneFromJson, pagamentoPortale.getUrlRitorno(), false,pagamentoPortale);
 	
 								Rpt rpt = rpts.get(0);
