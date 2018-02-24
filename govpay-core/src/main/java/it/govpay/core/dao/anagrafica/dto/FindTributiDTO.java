@@ -26,6 +26,7 @@ public class FindTributiDTO extends BasicFindRequestDTO {
 	private String codDominio;
 	private String codTributo;
 	private String descrizione;
+	private Boolean abilitato;
 	
 	public FindTributiDTO(IAutorizzato user, String codDominio) {
 		super(user);
@@ -50,6 +51,14 @@ public class FindTributiDTO extends BasicFindRequestDTO {
 
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
+	}
+
+	public Boolean getAbilitato() {
+		return abilitato;
+	}
+
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 
 }
