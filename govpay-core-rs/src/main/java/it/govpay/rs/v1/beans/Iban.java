@@ -19,85 +19,26 @@
  */
 package it.govpay.rs.v1.beans;
 
-import javax.ws.rs.core.UriBuilder;
-
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-@JsonFilter(value="iban")
-public class Iban extends JSONSerializable {
+import it.govpay.rs.v1.beans.base.IbanAccredito;
 
-	private String href;
-	private String iban;
-	private String bic;
-	private String ibanAppoggio;
-	private String bicAppoggio;
-	private boolean abilitato;
-	
-	public Iban() {
+@JsonFilter(value="ibanAccredito")
+public class Iban extends IbanAccredito {
 
-	}
-
-	public Iban(it.govpay.bd.model.IbanAccredito iban, String codDominio, UriBuilder uriBuilder) throws ServiceException {
-		this.abilitato = iban.isAbilitato();
-		this.iban = iban.getCodIban();
-		this.bic = iban.getCodBicAccredito();
-		this.ibanAppoggio = iban.getCodIbanAppoggio();
-		this.bicAppoggio = iban.getCodBicAppoggio();	
-		this.href = uriBuilder.clone().path("domini").path(codDominio).path("iban").path(iban.getCodIban()).build().toString();
+	public Iban(it.govpay.bd.model.IbanAccredito iban) throws ServiceException {
+		this.abilitato(iban.isAbilitato())
+		.bicAccredito(iban.getCodBicAccredito())
+		.ibanAccredito(iban.getCodIban())
+		.ibanAppoggio(iban.getCodIbanAppoggio())
+		.mybank(iban.isAttivatoObep())
+		.postale(iban.isPostale());
 	}
 
 	@Override
 	public String getJsonIdFilter() {
-		return "iban";
-	}
-
-	public String getHref() {
-		return href;
-	}
-
-	public void setHref(String href) {
-		this.href = href;
-	}
-
-	public String getIban() {
-		return iban;
-	}
-
-	public void setIban(String iban) {
-		this.iban = iban;
-	}
-
-	public String getBic() {
-		return bic;
-	}
-
-	public void setBic(String bic) {
-		this.bic = bic;
-	}
-
-	public String getIbanAppoggio() {
-		return ibanAppoggio;
-	}
-
-	public void setIbanAppoggio(String ibanAppoggio) {
-		this.ibanAppoggio = ibanAppoggio;
-	}
-
-	public String getBicAppoggio() {
-		return bicAppoggio;
-	}
-
-	public void setBicAppoggio(String bicAppoggio) {
-		this.bicAppoggio = bicAppoggio;
-	}
-
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
+		return "ibanAccredito";
 	}
 	
 }
