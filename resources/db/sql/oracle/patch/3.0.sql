@@ -98,7 +98,7 @@ ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
 ALTER TABLE rpt DROP COLUMN id_portale;
 
 ALTER TABLE rpt ADD id_applicazione BIGINT;
-ALTER TABLE rpt ADD fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
 
 DROP TABLE portali;
 DROP SEQUENCE portali_seq;

@@ -19,7 +19,7 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
   private String principal = null;
   
   @JsonProperty("codificaAvvisi")
-  private Object codificaAvvisi = null;
+  private CodificaAvvisi codificaAvvisi = null;
   
     
   /**
@@ -105,16 +105,16 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * informazioni sulla codifica e decodifica degli iuv
    **/
-  public Applicazione codificaAvvisi(Object codificaAvvisi) {
+  public Applicazione codificaAvvisi(CodificaAvvisi codificaAvvisi) {
     this.codificaAvvisi = codificaAvvisi;
     return this;
   }
 
   @JsonProperty("codificaAvvisi")
-  public Object getCodificaAvvisi() {
+  public CodificaAvvisi getCodificaAvvisi() {
     return codificaAvvisi;
   }
-  public void setCodificaAvvisi(Object codificaAvvisi) {
+  public void setCodificaAvvisi(CodificaAvvisi codificaAvvisi) {
     this.codificaAvvisi = codificaAvvisi;
   }
 
