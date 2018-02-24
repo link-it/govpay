@@ -46,7 +46,8 @@ public class Entrata extends JSONSerializable {
 		this.href = uriBuilder.build().toString();
 		this.abilitato = tributo.isAbilitato();
 		this.descrizione = tributo.getDescrizione();
-		this.ibanAccredito = tributo.getIbanAccredito().getCodIban();
+		if(tributo.getIbanAccredito() != null)
+			this.ibanAccredito = tributo.getIbanAccredito().getCodIban();
 		this.tipoContabilita = tributo.getTipoContabilita().name();
 		this.codContabilita = tributo.getCodContabilita();
 	}
