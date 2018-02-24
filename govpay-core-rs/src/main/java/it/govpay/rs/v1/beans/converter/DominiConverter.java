@@ -26,19 +26,19 @@ public class DominiConverter {
 		// anagrafica.setUrlSitoWeb(dominioPost.);
 		
 		dominio.setAnagrafica(anagrafica );
-		dominio.setApplicazioneDefault(null);
 		if(dominioPost.getAuxDigit() != null)
 			dominio.setAuxDigit(Integer.parseInt(dominioPost.getAuxDigit()));
 		//dominio.setCbill(dominioPost.getcbill());
 		dominio.setCodDominio(idDominio);
-		//dominio.setContiAccredito(contiAccredito);
+		dominio.setContiAccredito("ContiAccredito".getBytes());
 		//dominio.setCustomIuv(dominioPost.getc);
 		dominio.setGln(dominioPost.getGln());
 		dominio.setIdApplicazioneDefault(null);
 		
 		dominio.setIuvPrefix(dominioPost.getIuvPrefix());
 		//dominio.setIuvPrefixStrict(iuvPrefixStrict);
-		dominio.setLogo(dominioPost.getLogo().getBytes());
+		if(dominioPost.getLogo() != null)
+			dominio.setLogo(dominioPost.getLogo().getBytes());
 //		dominio.setNdpData(null);
 //		dominio.setNdpDescrizione(null);
 //		dominio.setNdpOperazione(null);
@@ -48,7 +48,7 @@ public class DominiConverter {
 		if(dominioPost.getSegregationCode() != null)
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
 		
-		//dominio.setTabellaControparti(tabellaControparti);
+		dominio.setTabellaControparti("TabellaControparti".getBytes());
 		
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);

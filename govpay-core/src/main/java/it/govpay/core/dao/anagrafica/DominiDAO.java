@@ -35,6 +35,7 @@ import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
@@ -75,6 +76,7 @@ public class DominiDAO {
 				throw new StazioneNonTrovataException(e.getMessage());
 			} 
 			
+			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter(false);
 			filter.setCodDominio(putDominioDTO.getIdDominio());
@@ -83,7 +85,20 @@ public class DominiDAO {
 			boolean isCreate = dominiBD.count(filter) == 0;
 			dominioDTOResponse.setCreated(isCreate);
 			if(isCreate) {
+				
+				UnitaOperativa uo = new UnitaOperativa();
+				uo.setAbilitato(true);
+				uo.setAnagrafica(putDominioDTO.getDominio().getAnagrafica());
+				uo.setCodUo(it.govpay.model.Dominio.EC);
+				putDominioDTO.getDominio().getAnagrafica().setCodUnivoco(uo.getCodUo());
+				bd.setAutoCommit(false);
 				dominiBD.insertDominio(putDominioDTO.getDominio());
+				uo.setIdDominio(putDominioDTO.getDominio().getId());
+				uoBd.insertUnitaOperativa(uo);
+				bd.commit();
+
+				// ripristino l'autocommit.
+				bd.setAutoCommit(true); 
 			} else {
 				dominiBD.updateDominio(putDominioDTO.getDominio());
 			}

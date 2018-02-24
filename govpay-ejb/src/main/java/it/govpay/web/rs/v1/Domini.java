@@ -275,7 +275,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			List<Iban> ibans = new ArrayList<Iban>();
 			for(it.govpay.bd.model.IbanAccredito ibanAccredito : findIbanDTOResponse.getResults()) {
-				ibans.add(new Iban(ibanAccredito, codDominio, baseUriBuilder));
+				ibans.add(new Iban(ibanAccredito));
 			}
 			ListaIbanAccredito listaUnitaOperative = new ListaIbanAccredito(ibans, uriInfo.getRequestUri(), findIbanDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
@@ -314,7 +314,7 @@ public class Domini extends BaseRsServiceV1 {
 			GetIbanDTO getIbanDTO = new GetIbanDTO(user, codDominio, codIbanAccredito);
 			GetIbanDTOResponse getIbanDTOResponse = new DominiDAO().getIban(getIbanDTO);
 			
-			Iban unitaOperativa = new Iban(getIbanDTOResponse.getIbanAccredito(), codDominio, baseUriBuilder);
+			Iban unitaOperativa = new Iban(getIbanDTOResponse.getIbanAccredito());
 			
 			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {

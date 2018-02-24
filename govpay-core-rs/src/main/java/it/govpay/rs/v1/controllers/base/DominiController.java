@@ -492,7 +492,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			Status responseStatus = putDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, null, responseStatus.getStatusCode());
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(responseStatus).build();
 		} catch (DominioNonTrovatoException  | StazioneNonTrovataException e) {
