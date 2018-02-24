@@ -369,6 +369,7 @@
     <value name="versione" field="versione" default="2.1" usage="required"/>
     <value name="trusted" field="trusted" usage="required"/>
     <value name="codApplicazioneIuv" field="codApplicazioneIuv" usage="optional"/>
+    <value name="regExp" field="regExp" usage="optional"/>
   </mapping>
   <mapping name="IbanAccredito" class="it.govpay.orm.IbanAccredito">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

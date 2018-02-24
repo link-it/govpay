@@ -44,6 +44,7 @@ import java.io.Serializable;
  * 			&lt;element name="versione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1" default="2.1"/>
  * 			&lt;element name="trusted" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazioneIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="regExp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -66,7 +67,8 @@ import java.io.Serializable;
   	"codConnettoreVerifica",
   	"versione",
   	"trusted",
-  	"codApplicazioneIuv"
+  	"codApplicazioneIuv",
+  	"regExp"
   }
 )
 
@@ -170,6 +172,14 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.codApplicazioneIuv = codApplicazioneIuv;
   }
 
+  public java.lang.String getRegExp() {
+    return this.regExp;
+  }
+
+  public void setRegExp(java.lang.String regExp) {
+    this.regExp = regExp;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -224,5 +234,9 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codApplicazioneIuv",required=false,nillable=false)
   protected java.lang.String codApplicazioneIuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="regExp",required=false,nillable=false)
+  protected java.lang.String regExp;
 
 }

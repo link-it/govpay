@@ -146,6 +146,7 @@ CREATE TABLE applicazioni
 	versione VARCHAR2(10 CHAR) NOT NULL,
 	trusted NUMBER NOT NULL,
 	cod_applicazione_iuv VARCHAR2(3 CHAR),
+	reg_exp VARCHAR2(1024 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints

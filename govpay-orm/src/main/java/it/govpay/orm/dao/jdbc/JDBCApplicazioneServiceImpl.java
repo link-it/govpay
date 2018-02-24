@@ -77,6 +77,7 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().VERSIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().TRUSTED,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE_IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().REG_EXP,false),"?");
 
 		// Insert applicazione
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getApplicazioneFetch().getKeyGeneratorObject(Applicazione.model());
@@ -89,7 +90,8 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreVerifica(),Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getVersione(),Applicazione.model().VERSIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getTrusted(),Applicazione.model().TRUSTED.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodApplicazioneIuv(),Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodApplicazioneIuv(),Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getRegExp(),Applicazione.model().REG_EXP.getFieldType())
 		);
 		applicazione.setId(id);
 
@@ -161,6 +163,8 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getTrusted(), Applicazione.model().TRUSTED.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE_IUV,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodApplicazioneIuv(), Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().REG_EXP,false), "?");
+		lstObjects_applicazione.add(new JDBCObject(applicazione.getRegExp(), Applicazione.model().REG_EXP.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_applicazione.add(new JDBCObject(tableId, Long.class));
 

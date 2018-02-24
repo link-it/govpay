@@ -794,6 +794,7 @@
 			<xsd:element name="versione" type="String10" default="2.1"/>
 			<xsd:element name="trusted" type="xsd:boolean"/>
 			<xsd:element name="codApplicazioneIuv" type="String3" minOccurs="0"/>
+			<xsd:element name="regExp" type="String1024" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
