@@ -90,3 +90,15 @@ ALTER TABLE versamenti MODIFY (id_dominio NOT NULL);
 ALTER TABLE versamenti MODIFY (id_uo NULL);
 ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 ALTER TABLE versamenti ADD debitore_tipo VARCHAR2(1 CHAR);
+
+ALTER TABLE acl DROP CONSTRAINT fk_acl_id_portale;
+ALTER TABLE acl DROP COLUMN id_portale;
+
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
+ALTER TABLE rpt DROP COLUMN id_portale;
+
+ALTER TABLE rpt ADD COLUMN id_applicazione;
+ALTER TABLE rpt ADD fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+
+DROP TABLE portali;
+DROP SEQUENCE portali_seq;

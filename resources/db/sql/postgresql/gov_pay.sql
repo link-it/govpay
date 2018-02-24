@@ -219,28 +219,6 @@ CREATE TABLE connettori
 
 
 
-CREATE SEQUENCE seq_portali start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE portali
-(
-	cod_portale VARCHAR(35) NOT NULL,
-	default_callback_url VARCHAR(512) NOT NULL,
-	principal VARCHAR(255) NOT NULL,
-	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
-	trusted BOOLEAN NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_portali') NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_portali_1 UNIQUE (cod_portale),
-	CONSTRAINT unique_portali_2 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_portali PRIMARY KEY (id)
-);
-
-
-
-
 CREATE SEQUENCE seq_iban_accredito start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE iban_accredito
@@ -342,14 +320,12 @@ CREATE TABLE acl
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_acl') NOT NULL,
 	id_applicazione BIGINT,
-	id_portale BIGINT,
 	id_operatore BIGINT,
 	id_ruolo BIGINT,
 	id_dominio BIGINT,
 	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_acl_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
 	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
 	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
@@ -450,7 +426,7 @@ CREATE SEQUENCE seq_pagamenti_portale start 1 increment 1 maxvalue 9223372036854
 
 CREATE TABLE pagamenti_portale
 (
-	cod_portale VARCHAR(35) NOT NULL,
+	cod_applicazione VARCHAR(35) NOT NULL,
 	cod_canale VARCHAR(35),
 	nome VARCHAR(255) NOT NULL,
 	importo DOUBLE PRECISION NOT NULL,
@@ -542,7 +518,7 @@ CREATE TABLE rpt
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
 	id_canale BIGINT NOT NULL,
-	id_portale BIGINT,
+	id_applicazione BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
@@ -550,7 +526,7 @@ CREATE TABLE rpt
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
-	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 
@@ -822,7 +798,7 @@ CREATE TABLE tracciati
 (
 	data_caricamento TIMESTAMP NOT NULL,
 	data_ultimo_aggiornamento TIMESTAMP NOT NULL,
-	stato VARCHAR(255) NOT NULL,
+	stato VARCHAR(16) NOT NULL,
 	linea_elaborazione BIGINT NOT NULL,
 	descrizione_stato VARCHAR(1024),
 	num_linee_totali BIGINT NOT NULL,
@@ -831,7 +807,7 @@ CREATE TABLE tracciati
 	nome_file VARCHAR(255) NOT NULL,
 	raw_data_richiesta BYTEA NOT NULL,
 	raw_data_risposta BYTEA,
-	tipo_tracciato VARCHAR(255) NOT NULL,
+	tipo_tracciato VARCHAR(16) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
 	id_operatore BIGINT,
@@ -849,9 +825,9 @@ CREATE SEQUENCE seq_operazioni start 1 increment 1 maxvalue 9223372036854775807 
 
 CREATE TABLE operazioni
 (
-	tipo_operazione VARCHAR(255) NOT NULL,
+	tipo_operazione VARCHAR(16) NOT NULL,
 	linea_elaborazione BIGINT NOT NULL,
-	stato VARCHAR(255) NOT NULL,
+	stato VARCHAR(16) NOT NULL,
 	dati_richiesta BYTEA NOT NULL,
 	dati_risposta BYTEA,
 	dettaglio_esito VARCHAR(255),
@@ -898,7 +874,7 @@ CREATE TABLE avvisi
 	cod_dominio VARCHAR(35) NOT NULL,
 	iuv VARCHAR(35) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
-	stato VARCHAR(255) NOT NULL,
+	stato VARCHAR(16) NOT NULL,
 	pdf BYTEA,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_avvisi') NOT NULL,

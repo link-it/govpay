@@ -61,3 +61,14 @@ ALTER TABLE versamenti ADD COLUMN id_dominio BIGINT;
 update versamenti set id_dominio = (select id_dominio from uo where id = versamenti.id_uo);
 ALTER TABLE versamenti MODIFY COLUMN id_dominio BIGINT NOT NULL;
 ALTER TABLE versamenti ADD COLUMN debitore_tipo VARCHAR(1);
+
+
+ALTER TABLE acl DROP COLUMN id_portale;
+
+ALTER TABLE rpt DROP COLUMN id_portale;
+
+ALTER TABLE rpt ADD COLUMN id_applicazione;
+ALTER TABLE rpt ADD fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+
+DROP TABLE portali;
+DROP SEQUENCE portali_seq;
