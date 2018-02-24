@@ -193,6 +193,10 @@ public class StazioniBD extends BasicBD {
 	public StazioneFilter newFilter() throws ServiceException {
 		return new StazioneFilter(this.getStazioneService());
 	}
+	
+	public StazioneFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new StazioneFilter(this.getStazioneService(), simpleSearch);
+	}
 
 	public long count(StazioneFilter filter) throws ServiceException {
 		try {
