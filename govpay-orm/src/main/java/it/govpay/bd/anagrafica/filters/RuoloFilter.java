@@ -23,6 +23,8 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Ruolo;
 
+import java.util.List;
+
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -36,7 +38,7 @@ public class RuoloFilter extends AbstractFilter {
 
 	private String codRuolo = null;
 	private String descrizione = null;
-	
+	private List<String> listaRuoli;
 	public enum SortFields {
 	}
 
@@ -66,6 +68,10 @@ public class RuoloFilter extends AbstractFilter {
 			
 			if(this.descrizione != null){
 				newExpression.ilike(Ruolo.model().DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+			}
+			
+			if(this.listaRuoli != null) {
+				newExpression.in(Ruolo.model().COD_RUOLO, this.listaRuoli);
 			}
 			
 			return newExpression;
@@ -98,6 +104,13 @@ public class RuoloFilter extends AbstractFilter {
 
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
+	}
+
+	/**
+	 * @param listaRuoli
+	 */
+	public void setListaRuoli(List<String> listaRuoli) {
+		this.listaRuoli = listaRuoli;
 	}
 
 	

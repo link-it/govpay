@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "descrizione",
 "acls",
@@ -16,7 +17,7 @@ public class Ruolo extends it.govpay.rs.v1.beans.JSONSerializable {
   private String descrizione = null;
   
   @JsonProperty("acls")
-  private List<Object> acls = new ArrayList<Object>();
+  private List<ACL> acls = new ArrayList<ACL>();
   
   @JsonProperty("idRuolo")
   private String idRuolo = null;
@@ -39,16 +40,16 @@ public class Ruolo extends it.govpay.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Ruolo acls(List<Object> acls) {
+  public Ruolo acls(List<ACL> acls) {
     this.acls = acls;
     return this;
   }
 
   @JsonProperty("acls")
-  public List<Object> getAcls() {
+  public List<ACL> getAcls() {
     return acls;
   }
-  public void setAcls(List<Object> acls) {
+  public void setAcls(List<ACL> acls) {
     this.acls = acls;
   }
 
