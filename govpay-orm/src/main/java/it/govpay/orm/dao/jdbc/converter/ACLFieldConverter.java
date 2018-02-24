@@ -74,13 +74,6 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(ACL.model().ID_PORTALE.COD_PORTALE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_portale";
-			}else{
-				return "cod_portale";
-			}
-		}
 		if(field.equals(ACL.model().ID_OPERATORE.PRINCIPAL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".principal";
@@ -153,9 +146,6 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(ACL.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(ACL.model().ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(ACL.model().ID_PORTALE.COD_PORTALE)){
-			return this.toTable(ACL.model().ID_PORTALE, returnAlias);
-		}
 		if(field.equals(ACL.model().ID_OPERATORE.PRINCIPAL)){
 			return this.toTable(ACL.model().ID_OPERATORE, returnAlias);
 		}
@@ -198,9 +188,6 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(ACL.model().ID_APPLICAZIONE)){
 			return "applicazioni";
-		}
-		if(model.equals(ACL.model().ID_PORTALE)){
-			return "portali";
 		}
 		if(model.equals(ACL.model().ID_OPERATORE)){
 			return "operatori";

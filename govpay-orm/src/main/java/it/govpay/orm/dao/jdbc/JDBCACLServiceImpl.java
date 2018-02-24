@@ -87,23 +87,6 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			}
 		}
 
-		// Object _portale
-		Long id_portale = null;
-		it.govpay.orm.IdPortale idLogic_portale = null;
-		idLogic_portale = acl.getIdPortale();
-		if(idLogic_portale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_portale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_portale = idLogic_portale.getId();
-				if(id_portale==null || id_portale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 		// Object _operatore
 		Long id_operatore = null;
 		it.govpay.orm.IdOperatore idLogic_operatore = null;
@@ -180,7 +163,6 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().ADMIN,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
-		sqlQueryObjectInsert.addInsertField("id_portale","?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
 		sqlQueryObjectInsert.addInsertField("id_ruolo","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
@@ -194,7 +176,6 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodServizio(),ACL.model().COD_SERVIZIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getAdmin(),ACL.model().ADMIN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ruolo,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
@@ -258,23 +239,6 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
 				id_acl_applicazione = idLogic_acl_applicazione.getId();
 				if(id_acl_applicazione==null || id_acl_applicazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _acl_portale
-		Long id_acl_portale = null;
-		it.govpay.orm.IdPortale idLogic_acl_portale = null;
-		idLogic_acl_portale = acl.getIdPortale();
-		if(idLogic_acl_portale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_acl_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_acl_portale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_acl_portale = idLogic_acl_portale.getId();
-				if(id_acl_portale==null || id_acl_portale<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -366,9 +330,6 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_portale","?");
-		}
-		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
 		}
 		if(setIdMappingResolutionBehaviour){
@@ -382,9 +343,6 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_acl.add(new JDBCObject(id_acl_applicazione, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_acl.add(new JDBCObject(id_acl_portale, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_acl.add(new JDBCObject(id_acl_operatore, Long.class));

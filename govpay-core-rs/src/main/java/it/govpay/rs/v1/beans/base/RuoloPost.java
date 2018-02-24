@@ -5,13 +5,33 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
+"descrizione",
 "acls",
 })
 public class RuoloPost extends it.govpay.rs.v1.beans.JSONSerializable {
   
+  @JsonProperty("descrizione")
+  private String descrizione = null;
+  
   @JsonProperty("acls")
   private List<Object> acls = new ArrayList<Object>();
   
+  /**
+   * descrizione del ruolo
+   **/
+  public RuoloPost descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
   /**
    **/
   public RuoloPost acls(List<Object> acls) {
@@ -36,12 +56,13 @@ public class RuoloPost extends it.govpay.rs.v1.beans.JSONSerializable {
       return false;
     }
     RuoloPost ruoloPost = (RuoloPost) o;
-    return Objects.equals(acls, ruoloPost.acls);
+    return Objects.equals(descrizione, ruoloPost.descrizione) &&
+        Objects.equals(acls, ruoloPost.acls);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(acls);
+    return Objects.hash(descrizione, acls);
   }
 
   public static RuoloPost parse(String json) {
@@ -58,6 +79,7 @@ public class RuoloPost extends it.govpay.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class RuoloPost {\n");
     
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    acls: ").append(toIndentedString(acls)).append("\n");
     sb.append("}");
     return sb.toString();

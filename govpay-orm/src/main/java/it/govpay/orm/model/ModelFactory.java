@@ -37,8 +37,6 @@ public class ModelFactory {
 	
 	public static UoModel UO = new UoModel();
 	
-	public static PortaleModel PORTALE = new PortaleModel();
-	
 	public static ConnettoreModel CONNETTORE = new ConnettoreModel();
 	
 	public static IntermediarioModel INTERMEDIARIO = new IntermediarioModel();

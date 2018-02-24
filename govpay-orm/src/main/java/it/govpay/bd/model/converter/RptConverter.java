@@ -19,6 +19,12 @@
  */
 package it.govpay.bd.model.converter;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.model.Rpt;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
@@ -26,14 +32,7 @@ import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPagamentoPortale;
-import it.govpay.orm.IdPortale;
 import it.govpay.orm.IdVersamento;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class RptConverter {
 
@@ -67,8 +66,8 @@ public class RptConverter {
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
 		dto.setIdCanale(vo.getIdCanale().getId());
-		if(vo.getIdPortale() != null)
-			dto.setIdPortale(vo.getIdPortale().getId());
+//		if(vo.getIdPortale() != null)  //TODO pintori
+//			dto.setIdPortale(vo.getIdPortale().getId());
 		dto.setIdTransazioneRpt(vo.getCodTransazioneRPT());
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
@@ -119,9 +118,9 @@ public class RptConverter {
 		idCanale.setId(dto.getIdCanale());
 		vo.setIdCanale(idCanale);
 		if(dto.getIdPortale() != null) {
-			IdPortale idPortale = new IdPortale();
-			idPortale.setId(dto.getIdPortale());
-			vo.setIdPortale(idPortale);
+//			IdPortale idPortale = new IdPortale(); //TODO pintori
+//			idPortale.setId(dto.getIdPortale());
+//			vo.setIdPortale(idPortale);
 		}
 		IdVersamento idVersamento = new IdVersamento();
 		idVersamento.setId(dto.getIdVersamento());

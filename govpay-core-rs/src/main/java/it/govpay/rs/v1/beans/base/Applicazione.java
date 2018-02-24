@@ -1,31 +1,78 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "principal",
-"codificaIUV",
-"urlRitornoPortale",
+"codificaAvvisi",
+"versioneApi",
 "servizioVerifica",
 "servizioNotifica",
 "abilitato",
-"ruoli",
-"idDominio",
+"idA2A",
 })
 public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("principal")
   private String principal = null;
   
-  @JsonProperty("codificaIUV")
-  private BigDecimal codificaIUV = null;
+  @JsonProperty("codificaAvvisi")
+  private Object codificaAvvisi = null;
   
-  @JsonProperty("urlRitornoPortale")
-  private String urlRitornoPortale = null;
+    
+  /**
+   * Versione delle API di integrazione utilizzate
+   */
+  public enum VersioneApiEnum {
+    
+    
+        
+            
+    REST_1_0("REST_1.0"),
+    
+            
+    SOAP_2_0("SOAP_2.0"),
+    
+            
+    SOAP_2_1("SOAP_2.1"),
+    
+            
+    SOAP_2_3("SOAP_2.3"),
+    
+            
+    SOAP_2_5("SOAP_2.5");
+            
+        
+    
+
+    private String value;
+
+    VersioneApiEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static VersioneApiEnum fromValue(String text) {
+      for (VersioneApiEnum b : VersioneApiEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+    
+  @JsonProperty("versioneApi")
+  private VersioneApiEnum versioneApi = null;
   
   @JsonProperty("servizioVerifica")
   private Connector servizioVerifica = null;
@@ -36,11 +83,8 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
   
-  @JsonProperty("ruoli")
-  private List<String> ruoli = new ArrayList<String>();
-  
-  @JsonProperty("idDominio")
-  private String idDominio = null;
+  @JsonProperty("idA2A")
+  private String idA2A = null;
   
   /**
    * Identificativo di autenticazione
@@ -59,35 +103,35 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Cifra identificativa negli IUV
+   * informazioni sulla codifica e decodifica degli iuv
    **/
-  public Applicazione codificaIUV(BigDecimal codificaIUV) {
-    this.codificaIUV = codificaIUV;
+  public Applicazione codificaAvvisi(Object codificaAvvisi) {
+    this.codificaAvvisi = codificaAvvisi;
     return this;
   }
 
-  @JsonProperty("codificaIUV")
-  public BigDecimal getCodificaIUV() {
-    return codificaIUV;
+  @JsonProperty("codificaAvvisi")
+  public Object getCodificaAvvisi() {
+    return codificaAvvisi;
   }
-  public void setCodificaIUV(BigDecimal codificaIUV) {
-    this.codificaIUV = codificaIUV;
+  public void setCodificaAvvisi(Object codificaAvvisi) {
+    this.codificaAvvisi = codificaAvvisi;
   }
 
   /**
-   * Default url di ritorno dal pagamento
+   * Versione delle API di integrazione utilizzate
    **/
-  public Applicazione urlRitornoPortale(String urlRitornoPortale) {
-    this.urlRitornoPortale = urlRitornoPortale;
+  public Applicazione versioneApi(VersioneApiEnum versioneApi) {
+    this.versioneApi = versioneApi;
     return this;
   }
 
-  @JsonProperty("urlRitornoPortale")
-  public String getUrlRitornoPortale() {
-    return urlRitornoPortale;
+  @JsonProperty("versioneApi")
+  public VersioneApiEnum getVersioneApi() {
+    return versioneApi;
   }
-  public void setUrlRitornoPortale(String urlRitornoPortale) {
-    this.urlRitornoPortale = urlRitornoPortale;
+  public void setVersioneApi(VersioneApiEnum versioneApi) {
+    this.versioneApi = versioneApi;
   }
 
   /**
@@ -137,35 +181,19 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * ruoli associati all'utenza applicativa
-   **/
-  public Applicazione ruoli(List<String> ruoli) {
-    this.ruoli = ruoli;
-    return this;
-  }
-
-  @JsonProperty("ruoli")
-  public List<String> getRuoli() {
-    return ruoli;
-  }
-  public void setRuoli(List<String> ruoli) {
-    this.ruoli = ruoli;
-  }
-
-  /**
    * Identificativo dell'applicazione
    **/
-  public Applicazione idDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public Applicazione idA2A(String idA2A) {
+    this.idA2A = idA2A;
     return this;
   }
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return idDominio;
+  @JsonProperty("idA2A")
+  public String getIdA2A() {
+    return idA2A;
   }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public void setIdA2A(String idA2A) {
+    this.idA2A = idA2A;
   }
 
   @Override
@@ -178,18 +206,17 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
     }
     Applicazione applicazione = (Applicazione) o;
     return Objects.equals(principal, applicazione.principal) &&
-        Objects.equals(codificaIUV, applicazione.codificaIUV) &&
-        Objects.equals(urlRitornoPortale, applicazione.urlRitornoPortale) &&
+        Objects.equals(codificaAvvisi, applicazione.codificaAvvisi) &&
+        Objects.equals(versioneApi, applicazione.versioneApi) &&
         Objects.equals(servizioVerifica, applicazione.servizioVerifica) &&
         Objects.equals(servizioNotifica, applicazione.servizioNotifica) &&
         Objects.equals(abilitato, applicazione.abilitato) &&
-        Objects.equals(ruoli, applicazione.ruoli) &&
-        Objects.equals(idDominio, applicazione.idDominio);
+        Objects.equals(idA2A, applicazione.idA2A);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(principal, codificaIUV, urlRitornoPortale, servizioVerifica, servizioNotifica, abilitato, ruoli, idDominio);
+    return Objects.hash(principal, codificaAvvisi, versioneApi, servizioVerifica, servizioNotifica, abilitato, idA2A);
   }
 
   public static Applicazione parse(String json) {
@@ -207,13 +234,12 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("class Applicazione {\n");
     
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
-    sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
-    sb.append("    urlRitornoPortale: ").append(toIndentedString(urlRitornoPortale)).append("\n");
+    sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
+    sb.append("    versioneApi: ").append(toIndentedString(versioneApi)).append("\n");
     sb.append("    servizioVerifica: ").append(toIndentedString(servizioVerifica)).append("\n");
     sb.append("    servizioNotifica: ").append(toIndentedString(servizioNotifica)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    ruoli: ").append(toIndentedString(ruoli)).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("}");
     return sb.toString();
   }

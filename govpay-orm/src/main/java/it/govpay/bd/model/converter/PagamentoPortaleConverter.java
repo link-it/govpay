@@ -43,7 +43,7 @@ public class PagamentoPortaleConverter {
 		PagamentoPortale dto = new PagamentoPortale();
 
 		dto.setId(vo.getId());
-		dto.setCodPortale(vo.getCodPortale());
+//		dto.setCodPortale(vo.getCodPortale()); //TODO pintori
 		dto.setVersanteIdentificativo(vo.getVersanteIdentificativo());
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setIdSessione(vo.getIdSessione());
@@ -73,7 +73,7 @@ public class PagamentoPortaleConverter {
 		it.govpay.orm.PagamentoPortale vo = new it.govpay.orm.PagamentoPortale();
 
 		vo.setId(dto.getId());
-		vo.setCodPortale(dto.getCodPortale());
+//		vo.setCodPortale(dto.getCodPortale()); //TODO pintori
 		vo.setVersanteIdentificativo(dto.getVersanteIdentificativo());
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setIdSessione(dto.getIdSessione());

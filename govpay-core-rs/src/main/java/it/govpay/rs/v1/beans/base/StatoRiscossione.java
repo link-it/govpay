@@ -15,10 +15,10 @@ public enum StatoRiscossione {
   
   
   
-  RISCOSSA("Riscossa"),
+  RISCOSSA("RISCOSSA"),
   
   
-  INCASSATA("Incassata");
+  INCASSATA("INCASSATA");
   
   
   

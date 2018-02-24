@@ -31,7 +31,6 @@
 								<linkit:sql-table object-name="Uo" object-type="Uo"/>
 								<linkit:sql-table object-name="Operatore" object-type="Operatore"/>
 								<linkit:sql-table object-name="Connettore" object-type="Connettore"/>
-								<linkit:sql-table object-name="Portale" object-type="Portale"/>
 								<linkit:sql-table object-name="IbanAccredito"
 									object-type="IbanAccredito"/>
 								<linkit:sql-table object-name="TipoTributo"
@@ -229,12 +228,6 @@
 	<xsd:complexType name="id-rendicontazione">
 		<xsd:sequence>
 			<xsd:element name="idRendicontazione" type="xsd:long"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:complexType name="id-portale">
-		<xsd:sequence>
-			<xsd:element name="codPortale" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -684,35 +677,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:element name="Portale" type="Portale"/>
-	<xsd:complexType name="Portale">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true" id="id-portale"/>
-					<linkit:sql-table-mapping generate-sql="true" name="portali"
-						on-delete-cascade="false">
-						<linkit:sql-table-constraint foreign-key="fk_prt"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="codPortale"/>
-						</linkit:sql-table-unique>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="principal"/>
-						</linkit:sql-table-unique>
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="codPortale" type="String35"/>
-			<xsd:element name="defaultCallbackURL" type="String512"/>
-			<xsd:element name="principal" type="xsd:string"/>
-			<xsd:element name="versione" type="String10" default="2.1"/>
-			<xsd:element name="trusted" type="xsd:boolean"/>
-			<xsd:element name="abilitato" type="xsd:boolean"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
 	<xsd:element name="Connettore" type="Connettore"/>
 	<xsd:complexType name="Connettore">
 		<xsd:annotation>
@@ -1046,16 +1010,6 @@
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="Applicazione"
 								object-type="Applicazione" relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="idPortale" type="id-portale" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Portale" object-type="Portale"
-								relationship="reversed"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -1497,13 +1451,13 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="idPortale" type="id-portale" minOccurs="0">
+			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Portale" object-type="Portale"
+							<linkit:sql-id-mapping object-name="Applicazione" object-type="Applicazione"
 								relationship="reversed"/>
-							<linkit:sql-column-comment><![CDATA[Il portale che ha richiesto l'RPT (se null, e' stato attivato da PSP)]]></linkit:sql-column-comment>
+							<linkit:sql-column-comment><![CDATA[L'applicazione che ha richiesto l'RPT (se null, e' stato attivato da PSP)]]></linkit:sql-column-comment>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -1764,7 +1718,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="codPortale" type="String35"/>
+			<xsd:element name="codApplicazione" type="String35"/>
 			<xsd:element name="codCanale" type="String35" minOccurs="0"/>
 			<xsd:element name="nome" type="String255" />
 			<xsd:element name="importo" type="xsd:double" />

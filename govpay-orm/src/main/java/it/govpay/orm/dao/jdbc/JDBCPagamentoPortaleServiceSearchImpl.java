@@ -160,7 +160,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			List<IField> fields = new ArrayList<IField>();
 
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(PagamentoPortale.model())));
-			fields.add(PagamentoPortale.model().COD_PORTALE);
+			fields.add(PagamentoPortale.model().COD_APPLICAZIONE);
 			fields.add(PagamentoPortale.model().COD_CANALE);
 			fields.add(PagamentoPortale.model().NOME);
 			fields.add(PagamentoPortale.model().IMPORTO);
@@ -513,7 +513,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
-		sqlQueryObject.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PORTALE,true));
+		sqlQueryObject.addSelectField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_APPLICAZIONE,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 

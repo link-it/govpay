@@ -41,7 +41,7 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	
 		super();
 	
-		this.COD_PORTALE = new Field("codPortale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.COD_CANALE = new Field("codCanale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.NOME = new Field("nome",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.IMPORTO = new Field("importo",double.class,"PagamentoPortale",PagamentoPortale.class);
@@ -70,7 +70,7 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	
 		super(father);
 	
-		this.COD_PORTALE = new ComplexField(father,"codPortale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.COD_CANALE = new ComplexField(father,"codCanale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.IMPORTO = new ComplexField(father,"importo",double.class,"PagamentoPortale",PagamentoPortale.class);
@@ -97,7 +97,7 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	
 	
 
-	public IField COD_PORTALE = null;
+	public IField COD_APPLICAZIONE = null;
 	 
 	public IField COD_CANALE = null;
 	 

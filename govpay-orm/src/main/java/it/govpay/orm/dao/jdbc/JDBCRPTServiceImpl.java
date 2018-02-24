@@ -21,29 +21,24 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdRpt;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
-
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-
+import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
  * JDBCRPTServiceImpl
@@ -122,17 +117,17 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		}
 
 		// Object _portale
-		Long id_portale = null;
-		it.govpay.orm.IdPortale idLogic_portale = null;
-		idLogic_portale = rpt.getIdPortale();
+		Long id_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_portale = null;
+		idLogic_portale = rpt.getIdApplicazione();
 		if(idLogic_portale!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_portale, false);
+				id_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_portale, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_portale = idLogic_portale.getId();
-				if(id_portale==null || id_portale<=0){
+				id_applicazione = idLogic_portale.getId();
+				if(id_applicazione==null || id_applicazione<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -171,7 +166,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_pagamento_portale","?");
 		sqlQueryObjectInsert.addInsertField("id_canale","?");
-		sqlQueryObjectInsert.addInsertField("id_portale","?");
+		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 
 		// Insert rpt
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getRPTFetch().getKeyGeneratorObject(RPT.model());
@@ -206,7 +201,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_canale,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
 		rpt.setId(id);
 
@@ -306,17 +301,17 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		}
 
 		// Object _rpt_portale
-		Long id_rpt_portale = null;
-		it.govpay.orm.IdPortale idLogic_rpt_portale = null;
-		idLogic_rpt_portale = rpt.getIdPortale();
+		Long id_rpt_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_rpt_portale = null;
+		idLogic_rpt_portale = rpt.getIdApplicazione();
 		if(idLogic_rpt_portale!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_rpt_portale, false);
+				id_rpt_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_rpt_portale, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_portale = idLogic_rpt_portale.getId();
-				if(id_rpt_portale==null || id_rpt_portale<=0){
+				id_rpt_applicazione = idLogic_rpt_portale.getId();
+				if(id_rpt_applicazione==null || id_rpt_applicazione<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -392,7 +387,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_canale","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_portale","?");
+			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_versamento, Long.class));
@@ -404,7 +399,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			lstObjects_rpt.add(new JDBCObject(id_rpt_canale, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
-			lstObjects_rpt.add(new JDBCObject(id_rpt_portale, Long.class));
+			lstObjects_rpt.add(new JDBCObject(id_rpt_applicazione, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_rpt.add(new JDBCObject(tableId, Long.class));

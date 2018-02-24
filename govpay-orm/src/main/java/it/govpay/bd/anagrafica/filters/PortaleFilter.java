@@ -20,17 +20,13 @@
 package it.govpay.bd.anagrafica.filters;
 
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
-import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.Portale;
 
 public class PortaleFilter extends AbstractFilter {
 	
@@ -45,29 +41,14 @@ public class PortaleFilter extends AbstractFilter {
 	
 	public PortaleFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-		this.listaFieldSimpleSearch.add(Portale.model().COD_PORTALE);
-		this.fieldAbilitato = it.govpay.orm.Portale.model().ABILITATO;
 	}
 
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression exp = this.newExpression();
-			boolean addAnd = false;
-			if(this.codPortale != null) {
-				exp.ilike(Portale.model().COD_PORTALE, this.codPortale,LikeMode.ANYWHERE);
-				addAnd = true;
-			}
-
-			
-			addAnd = this.setFiltroAbilitato(exp, addAnd);
-			
 			return exp;
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
