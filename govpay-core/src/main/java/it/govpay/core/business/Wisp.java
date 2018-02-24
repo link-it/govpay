@@ -33,7 +33,7 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Portale;
+import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Stazione;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.core.utils.client.NodoClient;
@@ -49,11 +49,11 @@ public class Wisp extends BasicBD {
 		super(basicBD);
 	}
 	
-	public SceltaWISP chiediScelta(Portale portaleAutenticato, Dominio dominio, String codKeyPA, String codKeyWISP) throws ServiceException, GovPayException {
-		return chiediScelta(portaleAutenticato, dominio, codKeyPA, codKeyWISP, true);
+	public SceltaWISP chiediScelta(Applicazione applicazioneAutenticata, Dominio dominio, String codKeyPA, String codKeyWISP) throws ServiceException, GovPayException {
+		return chiediScelta(applicazioneAutenticata, dominio, codKeyPA, codKeyWISP, true);
 	}
 
-	public SceltaWISP chiediScelta(Portale portaleAutenticato, Dominio dominio, String codKeyPA, String codKeyWISP, boolean throwExceptionOnFault) throws ServiceException, GovPayException {
+	public SceltaWISP chiediScelta(Applicazione applicazioneAutenticata, Dominio dominio, String codKeyPA, String codKeyWISP, boolean throwExceptionOnFault) throws ServiceException, GovPayException {
 		String idTransaction = null;
 		GpContext ctx = GpThreadLocal.get();
 		NodoClient client = null;

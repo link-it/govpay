@@ -136,7 +136,7 @@ public class Rpt extends BasicModel{
 	private Long id;
 	private long idVersamento;
 	private long idCanale;
-	private Long idPortale;
+	private Long idApplicazione;
 	private String ccp;
 	private String codCarrello;
 	private String codStazione;
@@ -187,11 +187,11 @@ public class Rpt extends BasicModel{
 	public void setIdCanale(long idCanale) {
 		this.idCanale = idCanale;
 	}
-	public Long getIdPortale() {
-		return idPortale;
+	public Long getIdApplicazione() {
+		return idApplicazione;
 	}
-	public void setIdPortale(Long idPortale) {
-		this.idPortale = idPortale;
+	public void setIdApplicazione(Long idApplicazione) {
+		this.idApplicazione = idApplicazione;
 	}
 	public String getCcp() {
 		return ccp;

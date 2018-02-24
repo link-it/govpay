@@ -30,6 +30,7 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
@@ -66,8 +67,8 @@ public class RptConverter {
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
 		dto.setIdCanale(vo.getIdCanale().getId());
-//		if(vo.getIdPortale() != null)  //TODO pintori
-//			dto.setIdPortale(vo.getIdPortale().getId());
+		if(vo.getIdApplicazione() != null)  
+			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 		dto.setIdTransazioneRpt(vo.getCodTransazioneRPT());
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
@@ -117,10 +118,10 @@ public class RptConverter {
 		IdCanale idCanale = new IdCanale();
 		idCanale.setId(dto.getIdCanale());
 		vo.setIdCanale(idCanale);
-		if(dto.getIdPortale() != null) {
-//			IdPortale idPortale = new IdPortale(); //TODO pintori
-//			idPortale.setId(dto.getIdPortale());
-//			vo.setIdPortale(idPortale);
+		if(dto.getIdApplicazione() != null) {
+			IdApplicazione idApplicazione = new IdApplicazione(); 
+			idApplicazione.setId(dto.getIdApplicazione());
+			vo.setIdApplicazione(idApplicazione);
 		}
 		IdVersamento idVersamento = new IdVersamento();
 		idVersamento.setId(dto.getIdVersamento());

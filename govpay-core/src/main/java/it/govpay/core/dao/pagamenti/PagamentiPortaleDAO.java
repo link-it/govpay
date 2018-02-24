@@ -42,8 +42,8 @@ import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.WISPUtils;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Applicazione;
 import it.govpay.model.IbanAccredito;
-import it.govpay.model.Portale;
 import it.govpay.orm.IdVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
@@ -67,12 +67,12 @@ public class PagamentiPortaleDAO extends BasicBD{
 		ctx.getPagamentoCtx().setCodSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
 		ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 		
-		it.govpay.core.business.Portale portaleBusiness = new it.govpay.core.business.Portale(this);
-		Portale portaleAutenticato = portaleBusiness.getPortaleAutenticato(pagamentiPortaleDTO.getPrincipal());
+		it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(this);
+		Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(pagamentiPortaleDTO.getPrincipal());
 		ctx.log("ws.ricevutaRichiesta");
-		String codPortale = portaleAutenticato.getCodPortale();
+		String codApplicazione = applicazioneAutenticata.getCodApplicazione();
 		
-		portaleBusiness.autorizzaPortale(codPortale, portaleAutenticato, this);
+		applicazioneBusiness.autorizzaApplicazione(codApplicazione, applicazioneAutenticata, this);
 		ctx.log("ws.autorizzazione");
 		
 		String codDominio = null;
@@ -193,7 +193,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 			SceltaWISP scelta = null;
 			Canale canale= null; 
 			try {
-				scelta = wisp.chiediScelta(portaleAutenticato, dominio, pagamentiPortaleDTO.getKeyPA(), pagamentiPortaleDTO.getKeyWISP());
+				scelta = wisp.chiediScelta(applicazioneAutenticata, dominio, pagamentiPortaleDTO.getKeyPA(), pagamentiPortaleDTO.getKeyWISP());
 			} catch (Exception e) {
 				ctx.log("pagamento.risoluzioneWispKo", e.getMessage());
 				throw new ServiceException(e); 
@@ -216,7 +216,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 			tipoVersamento = canale.getTipoVersamento().getCodifica();
 			idPsp = canale.getPsp(this).getCodPsp();
 			it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(this);
-			List<Rpt> rpts = rptBD.avviaTransazione(versamenti, portaleAutenticato, canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
+			List<Rpt> rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
 			
 			Rpt rpt = rpts.get(0);
 			
@@ -250,7 +250,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		}
 		
 		pagamentoPortale = new PagamentoPortale();
-		pagamentoPortale.setCodPortale(codPortale);
+		pagamentoPortale.setCodApplicazione(codApplicazione);
 		pagamentoPortale.setDataRichiesta(new Date());
 		pagamentoPortale.setIdSessione(pagamentiPortaleDTO.getIdSessione());
 		pagamentoPortale.setIdSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());

@@ -30,7 +30,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Autorizzato;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Portale;
 
 
 public class UtentiDAO {
@@ -44,12 +43,7 @@ public class UtentiDAO {
 		try {
 			Autorizzato user = new Autorizzato();
 			boolean autenticated = false;
-			try {
-				Portale portale = AnagraficaManager.getPortaleByPrincipal(bd, principal);
-				user.addAllAcls(portale.getAcls());
-				autenticated = true;
-			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
-		
+
 			try {
 				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
 				user.addAllAcls(applicazione.getAcls());
@@ -88,18 +82,6 @@ public class UtentiDAO {
 			Operatore operatore = AnagraficaManager.getOperatore(bd, principal);
 			return operatore;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
-			throw new NotAuthenticatedException();
-		} finally {
-			bd.closeConnection();
-		}
-	}
-	
-	public Portale getPortale(String principal) throws NotAuthenticatedException, ServiceException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-		try {
-			Portale portale = AnagraficaManager.getPortaleByPrincipal(bd, principal);
-			return portale;
-		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new NotAuthenticatedException();
 		} finally {
 			bd.closeConnection();

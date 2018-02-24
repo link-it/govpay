@@ -42,12 +42,12 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.model.Portale;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -60,11 +60,11 @@ public class Rpt extends BasicBD{
 		super(basicBD);
 	}
 	
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Portale portale, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
-		return avviaTransazione(versamenti, portale, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Applicazione applicazione, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
+		return avviaTransazione(versamenti, applicazione, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
 	}
 
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Portale portale, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Applicazione applicazione, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		try {
 			Date adesso = new Date();
@@ -79,14 +79,14 @@ public class Rpt extends BasicBD{
 
 					String codTributo = sv.getTributo(this) != null ? sv.getTributo(this).getCodTributo() : null;
 
-					log.debug("Verifica autorizzazione portale [" + portale.getCodPortale() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
+					log.debug("Verifica autorizzazione applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
 
-					if(!AclEngine.isAuthorized(portale, Servizio.PAGAMENTI_ATTESA, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
-						log.warn("Non autorizzato portale [" + portale.getCodPortale() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
-						throw new GovPayException(EsitoOperazione.PRT_003, portale.getCodPortale(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+					if(!AclEngine.isAuthorized(applicazione, Servizio.PAGAMENTI_ATTESA, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
+						log.warn("Non autorizzato applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
+						throw new GovPayException(EsitoOperazione.PRT_003, applicazione.getCodApplicazione(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte()); // TODO sostituire PRT -> APP
 					}
 
-					log.debug("Autorizzato portale [" + portale.getCodPortale() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]");
+					log.debug("Autorizzato applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]");
 
 				}
 
@@ -231,7 +231,7 @@ public class Rpt extends BasicBD{
 				} else {
 					ctx.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv.getIuv() + ccp);
 				}
-				it.govpay.bd.model.Rpt rpt = RptUtils.buildRpt(intermediario, stazione, ctx.getPagamentoCtx().getCodCarrello(), versamento, iuv, ccp, portale, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
+				it.govpay.bd.model.Rpt rpt = RptUtils.buildRpt(intermediario, stazione, ctx.getPagamentoCtx().getCodCarrello(), versamento, iuv, ccp, applicazione, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
 				rpt.setCodSessionePortale(ctx.getPagamentoCtx().getCodSessionePortale());
 				
 				if(pagamentoPortale!= null)
@@ -406,15 +406,15 @@ public class Rpt extends BasicBD{
 		}
 	}
 	
-	public it.govpay.bd.model.Rpt chiediTransazione(Portale portaleAutenticato, String codDominio, String iuv, String ccp) throws GovPayException, ServiceException {
-		if(!portaleAutenticato.isAbilitato())
-			throw new GovPayException(EsitoOperazione.PRT_001, portaleAutenticato.getCodPortale());
+	public it.govpay.bd.model.Rpt chiediTransazione(Applicazione applicazioneAutenticata, String codDominio, String iuv, String ccp) throws GovPayException, ServiceException {
+		if(!applicazioneAutenticata.isAbilitato())
+			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
 
 		RptBD rptBD = new RptBD(this);
 		try {
 			it.govpay.bd.model.Rpt rpt = rptBD.getRpt(codDominio, iuv, ccp);
-			if(!portaleAutenticato.getId().equals(rpt.getIdPortale())) {
-				throw new GovPayException(EsitoOperazione.PRT_004);
+			if(!applicazioneAutenticata.getId().equals(rpt.getIdApplicazione())) {
+				throw new GovPayException(EsitoOperazione.PRT_004); // TODO sostituire con APP
 			}
 			return rpt;
 		} catch (NotFoundException e) {

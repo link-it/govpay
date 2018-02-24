@@ -81,13 +81,13 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Evento;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv;
-import it.govpay.model.Portale;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -103,7 +103,7 @@ public class RptUtils {
 
 	public static Rpt buildRpt(
 			Intermediario intermediario, Stazione stazione, String codCarrello, 
-			Versamento versamento, Iuv iuv, String ccp, Portale portale, Psp psp, 
+			Versamento versamento, Iuv iuv, String ccp, Applicazione applicazione, Psp psp, 
 			Canale canale, Anagrafica versante, String autenticazione, 
 			String ibanAddebito, String redirect, BasicBD bd) throws ServiceException {
 
@@ -121,8 +121,8 @@ public class RptUtils {
 		rpt.setFirmaRichiesta(versamento.getApplicazione(bd).getFirmaRichiesta());
 		rpt.setId(null);
 		rpt.setIdCanale(canale.getId());
-		if(portale != null)
-			rpt.setIdPortale(portale.getId());
+		if(applicazione != null)
+			rpt.setIdApplicazione(applicazione.getId());
 		rpt.setIdVersamento(versamento.getId());
 		rpt.setIuv(iuv.getIuv());
 		rpt.setModelloPagamento(canale.getModelloPagamento());
@@ -133,7 +133,7 @@ public class RptUtils {
 		rpt.setCanale(canale);
 		rpt.setPsp(psp);
 
-		CtRichiestaPagamentoTelematico richiestaRPT = buildRPT(rpt, versamento, portale, versante, canale, autenticazione, ibanAddebito, bd);
+		CtRichiestaPagamentoTelematico richiestaRPT = buildRPT(rpt, versamento, applicazione, versante, canale, autenticazione, ibanAddebito, bd);
 		byte[] rptXml;
 		try {
 			rptXml = JaxbUtils.toByte(richiestaRPT);
@@ -144,7 +144,7 @@ public class RptUtils {
 		return rpt;
 	}
 
-	private static CtRichiestaPagamentoTelematico buildRPT(Rpt rpt, Versamento versamento, Portale portale, Anagrafica versante, Canale canale, String autenticazione, String ibanAddebito, BasicBD bd) throws ServiceException {
+	private static CtRichiestaPagamentoTelematico buildRPT(Rpt rpt, Versamento versamento, Applicazione applicazione, Anagrafica versante, Canale canale, String autenticazione, String ibanAddebito, BasicBD bd) throws ServiceException {
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
 		ctRpt.setVersioneOggetto(Rpt.VERSIONE);
 		CtDominio ctDominio = new CtDominio();

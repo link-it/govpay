@@ -23,11 +23,11 @@ package it.govpay.core.business.model;
 import java.util.List;
 
 import it.govpay.bd.model.Canale;
-import it.govpay.model.Portale;
+import it.govpay.model.Applicazione;
 
 public class AvviaTransazioneDTO {
 
-	private Portale portale;
+	private Applicazione applicazione;
 	private List<Object> versamentoOrVersamentoRef;
 	private it.govpay.servizi.commons.Anagrafica versante;
 	private String ibanAddebito;
@@ -36,11 +36,11 @@ public class AvviaTransazioneDTO {
 	private Boolean aggiornaSeEsisteB;
 	private Canale canale;
 	
-	public Portale getPortale() {
-		return portale;
+	public Applicazione getApplicazione() {
+		return applicazione;
 	}
-	public void setPortale(Portale portale) {
-		this.portale = portale;
+	public void setApplicazione(Applicazione applicazione) {
+		this.applicazione = applicazione;
 	}
 	public List<Object> getVersamentoOrVersamentoRef() {
 		return versamentoOrVersamentoRef;

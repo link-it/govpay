@@ -42,7 +42,7 @@ public class PagamentoPortale extends BasicModel {
 		SELEZIONE_WISP_ANNULLATA
 	}
 
-	private String codPortale = null;
+	private String codApplicazione = null;
 	private String nome = null;
 	private String versanteIdentificativo = null;
 	private String idSessione = null;
@@ -72,11 +72,11 @@ public class PagamentoPortale extends BasicModel {
 	
 	private Double importo = null; 
 
-	public String getCodPortale() {
-		return codPortale;
+	public String getCodApplicazione() {
+		return codApplicazione;
 	}
-	public void setCodPortale(String codPortale) {
-		this.codPortale = codPortale;
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
 	}
 	public String getIdSessione() {
 		return idSessione;

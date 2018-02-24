@@ -42,7 +42,6 @@ import it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
 import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
-import it.govpay.web.rs.dars.anagrafica.portali.Portali;
 import it.govpay.web.rs.dars.anagrafica.psp.Psp;
 import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo;
@@ -147,10 +146,6 @@ public class Menu extends BaseRsService {
 				Applicazioni applicazioniDars = new Applicazioni();
 				URI applicazioniURI = new URI(applicazioniDars.getPathServizio());
 				vociMenuAnagrafica.add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(applicazioniDars.getNomeServizio() + ".titolo"),	applicazioniURI, VoceMenu.VOCE_ANAGRAFICA));
-
-				Portali portaliDars = new Portali();
-				URI portaliURI = new URI(portaliDars.getPathServizio());
-				vociMenuAnagrafica.add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".titolo"), portaliURI, VoceMenu.VOCE_ANAGRAFICA));
 			}
 
 			if(this.checkDirittiServizioOperatore(bd, Servizio.Anagrafica_Utenti)){
