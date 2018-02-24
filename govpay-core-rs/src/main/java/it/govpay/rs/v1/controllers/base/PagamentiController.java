@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -111,21 +109,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
-
-/*  
-    public Response pagamentiGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , StatoPagamento stato , String versante , String idSessionePortale ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
-*/
-
-
-/*  
-    public Response pagamentiIdGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String id ) {
-        return new Response().status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
-*/
-
 
     public Response pagamentiIdGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String id ) {
     	String methodName = "getPagamentoPortaleById";  
@@ -245,6 +228,9 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
+    public Response pagamentiIdDominioIuvPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
 
 }
 

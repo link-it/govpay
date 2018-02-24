@@ -1,5 +1,18 @@
 package it.govpay.rs.v1.controllers.base;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import java.io.File;
+import java.util.List;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+
+import it.govpay.model.Ruolo;
+
 import org.slf4j.Logger;
 
 
@@ -11,25 +24,22 @@ public class RuoliController extends it.govpay.rs.BaseController {
      }
 
 
-/*  
-    public Response ruoliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, Boolean abilitato) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
-*/
 
-
-/*  
-    public Response ruoliIdRuoloGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
-*/
-
-
-/*  
     public Response ruoliIdRuoloPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-*/
+
+
+
+    public Response ruoliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, Boolean abilitato) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
+
+    public Response ruoliIdRuoloGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
 
 
 }
