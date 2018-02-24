@@ -49,14 +49,4 @@ public class Pendenze extends BaseRsServiceV1{
 		return this.controller.pendenzeIdA2AIdPendenzaGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idA2A, idPendenza);
 	}
 
-
-    @GET
-    @Path("/{idDominio}/{iuv}")
-    
-    @Produces({ "application/json" })
-    public Response pendenzeIdDominioIuvGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv){
-        this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.pendenzeIdDominioIuvGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idDominio, iuv);
-    }
-
 }

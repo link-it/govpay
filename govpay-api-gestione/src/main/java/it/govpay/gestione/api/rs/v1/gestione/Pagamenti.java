@@ -32,6 +32,8 @@ public class Pagamenti extends BaseRsServiceV1{
 		super("pagamenti");
 		this.controller = new PagamentiController(this.nomeServizio,this.log);
 	}
+	
+/*	
 	@GET
 	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -42,7 +44,7 @@ public class Pagamenti extends BaseRsServiceV1{
 		this.controller.setRequestResponse(this.request, this.response);
 		return this.controller.pagamentiGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, stato, versante, idSessionePortale);
 	}
-
+*/
 /*
     @GET
     @Path("/")
@@ -64,7 +66,7 @@ public class Pagamenti extends BaseRsServiceV1{
 	return this.controller.pagamentiIdDominioIuvPOST(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idDominio, iuv, is);
     }
 */
-
+/*
 	@GET
 	@Path("/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -73,7 +75,7 @@ public class Pagamenti extends BaseRsServiceV1{
 		return this.controller.pagamentiIdGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, id);
 	}
 
-
+*/
 /*
     @GET
     @Path("/{id}")
