@@ -220,29 +220,6 @@ CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta);
 
 
 
-CREATE TABLE portali
-(
-	cod_portale VARCHAR(35) NOT NULL,
-	default_callback_url VARCHAR(512) NOT NULL,
-	principal VARCHAR(255) NOT NULL,
-	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
-	trusted BOOLEAN NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	-- unique constraints
-	CONSTRAINT unique_portali_1 UNIQUE (cod_portale),
-	CONSTRAINT unique_portali_2 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_portali PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_portali_1 ON portali (cod_portale);
-CREATE INDEX index_portali_2 ON portali (principal);
-
-
-
 CREATE TABLE iban_accredito
 (
 	cod_iban VARCHAR(255) NOT NULL,
@@ -315,6 +292,7 @@ CREATE TABLE tributi
 CREATE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
 
 
+
 CREATE TABLE ruoli
 (
 	cod_ruolo VARCHAR(35) NOT NULL,
@@ -341,14 +319,12 @@ CREATE TABLE acl
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT,
-	id_portale BIGINT,
 	id_operatore BIGINT,
 	id_ruolo BIGINT,
 	id_dominio BIGINT,
 	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_acl_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
 	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
 	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
@@ -448,9 +424,10 @@ CREATE TABLE singoli_versamenti
 CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente);
 
 
+
 CREATE TABLE pagamenti_portale
 (
-	cod_portale VARCHAR(35) NOT NULL,
+	cod_applicazione VARCHAR(35) NOT NULL,
 	cod_canale VARCHAR(35),
 	nome VARCHAR(255) NOT NULL,
 	importo DOUBLE NOT NULL,
@@ -546,7 +523,7 @@ CREATE TABLE rpt
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
 	id_canale BIGINT NOT NULL,
-	id_portale BIGINT,
+	id_applicazione BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
@@ -554,7 +531,7 @@ CREATE TABLE rpt
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
-	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -563,6 +540,7 @@ CREATE INDEX index_rpt_1 ON rpt (cod_msg_richiesta);
 CREATE INDEX index_rpt_2 ON rpt (iuv,ccp,cod_dominio);
 CREATE INDEX index_rpt_3 ON rpt (stato);
 CREATE INDEX index_rpt_4 ON rpt (id_versamento);
+
 
 
 CREATE TABLE rr
@@ -830,6 +808,7 @@ CREATE TABLE batch
 
 -- index
 CREATE INDEX index_batch_1 ON batch (cod_batch);
+
 
 
 CREATE TABLE tracciati

@@ -106,8 +106,8 @@ CREATE TABLE stazioni
 	abilitato NUMBER NOT NULL,
 	application_code NUMBER NOT NULL,
 	ndp_stato NUMBER,
-	ndp_operazione VARCHAR(256),
-	ndp_descrizione VARCHAR(1024),
+	ndp_operazione VARCHAR2(256 CHAR),
+	ndp_descrizione VARCHAR2(1024 CHAR),
 	ndp_data TIMESTAMP,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -189,8 +189,8 @@ CREATE TABLE domini
 	iuv_prefix_strict NUMBER NOT NULL,
 	segregation_code NUMBER,
 	ndp_stato NUMBER,
-	ndp_operazione VARCHAR(256),
-	ndp_descrizione VARCHAR(1024),
+	ndp_operazione VARCHAR2(256 CHAR),
+	ndp_descrizione VARCHAR2(1024 CHAR),
 	ndp_data TIMESTAMP,
 	logo BLOB,
 	cbill VARCHAR2(255 CHAR),
@@ -328,42 +328,6 @@ end;
 
 
 
-CREATE SEQUENCE seq_portali MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE portali
-(
-	cod_portale VARCHAR2(35 CHAR) NOT NULL,
-	default_callback_url VARCHAR2(512 CHAR) NOT NULL,
-	principal VARCHAR2(255 CHAR) NOT NULL,
-	versione VARCHAR2(10 CHAR) NOT NULL,
-	trusted NUMBER NOT NULL,
-	abilitato NUMBER NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_portali_1 UNIQUE (cod_portale),
-	CONSTRAINT unique_portali_2 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_portali PRIMARY KEY (id)
-);
-
-
-ALTER TABLE portali MODIFY versione DEFAULT '2.1';
-
-CREATE TRIGGER trg_portali
-BEFORE
-insert on portali
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_portali.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_iban_accredito MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE iban_accredito
@@ -474,8 +438,8 @@ CREATE SEQUENCE seq_ruoli MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 I
 
 CREATE TABLE ruoli
 (
-	cod_ruolo VARCHAR(35) NOT NULL,
-	descrizione VARCHAR(255) NOT NULL,
+	cod_ruolo VARCHAR2(35 CHAR) NOT NULL,
+	descrizione VARCHAR2(255 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -509,14 +473,12 @@ CREATE TABLE acl
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
-	id_portale NUMBER,
 	id_operatore NUMBER,
 	id_ruolo NUMBER,
 	id_dominio NUMBER,
 	id_tipo_tributo NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_acl_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
 	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
 	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
@@ -653,7 +615,7 @@ CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 ST
 
 CREATE TABLE pagamenti_portale
 (
-	cod_portale VARCHAR2(35 CHAR) NOT NULL,
+	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
 	cod_canale VARCHAR2(35 CHAR),
 	nome VARCHAR2(255 CHAR) NOT NULL,
 	importo BINARY_DOUBLE NOT NULL,
@@ -767,7 +729,7 @@ CREATE TABLE rpt
 	id_versamento NUMBER NOT NULL,
 	id_pagamento_portale NUMBER,
 	id_canale NUMBER NOT NULL,
-	id_portale NUMBER,
+	id_applicazione NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
@@ -775,7 +737,7 @@ CREATE TABLE rpt
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
-	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 
@@ -1086,22 +1048,22 @@ CREATE SEQUENCE seq_eventi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 
 CREATE TABLE eventi
 (
-	cod_dominio VARCHAR2(35),
-	iuv VARCHAR2(35),
-	ccp VARCHAR2(35),
-	cod_psp VARCHAR2(35),
-	tipo_versamento VARCHAR2(10),
-	componente VARCHAR2(4),
-	categoria_evento VARCHAR2(1),
-	tipo_evento VARCHAR2(35),
-	sottotipo_evento VARCHAR2(35),
-	erogatore VARCHAR2(35),
-	fruitore VARCHAR2(35),
-	cod_stazione VARCHAR2(35),
-	cod_canale VARCHAR2(35),
-	parametri_1 VARCHAR2(512),
-	parametri_2 VARCHAR2(512),
-	esito VARCHAR2(35),
+	cod_dominio VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	ccp VARCHAR2(35 CHAR),
+	cod_psp VARCHAR2(35 CHAR),
+	tipo_versamento VARCHAR2(10 CHAR),
+	componente VARCHAR2(4 CHAR),
+	categoria_evento VARCHAR2(1 CHAR),
+	tipo_evento VARCHAR2(35 CHAR),
+	sottotipo_evento VARCHAR2(35 CHAR),
+	erogatore VARCHAR2(35 CHAR),
+	fruitore VARCHAR2(35 CHAR),
+	cod_stazione VARCHAR2(35 CHAR),
+	cod_canale VARCHAR2(35 CHAR),
+	parametri_1 VARCHAR2(512 CHAR),
+	parametri_2 VARCHAR2(512 CHAR),
+	esito VARCHAR2(35 CHAR),
 	data_1 TIMESTAMP,
 	data_2 TIMESTAMP,
 	-- fk/pk columns
@@ -1160,16 +1122,16 @@ CREATE TABLE tracciati
 (
 	data_caricamento TIMESTAMP NOT NULL,
 	data_ultimo_aggiornamento TIMESTAMP NOT NULL,
-	stato VARCHAR2(255 CHAR) NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
 	linea_elaborazione NUMBER NOT NULL,
-	descrizione_stato VARCHAR2(1024) CHAR,
+	descrizione_stato VARCHAR2(1024 CHAR),
 	num_linee_totali NUMBER NOT NULL,
 	num_operazioni_ok NUMBER NOT NULL,
 	num_operazioni_ko NUMBER NOT NULL,
 	nome_file VARCHAR2(255 CHAR) NOT NULL,
 	raw_data_richiesta BLOB NOT NULL,
 	raw_data_risposta BLOB,
-	tipo_tracciato VARCHAR(255) NOT NULL,
+	tipo_tracciato VARCHAR2(16 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_operatore NUMBER,
@@ -1198,9 +1160,9 @@ CREATE SEQUENCE seq_operazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WIT
 
 CREATE TABLE operazioni
 (
-	tipo_operazione VARCHAR2(255 CHAR) NOT NULL,
+	tipo_operazione VARCHAR2(16 CHAR) NOT NULL,
 	linea_elaborazione NUMBER NOT NULL,
-	stato VARCHAR2(255 CHAR) NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
 	dati_richiesta BLOB NOT NULL,
 	dati_risposta BLOB,
 	dettaglio_esito VARCHAR2(255 CHAR),
@@ -1266,10 +1228,10 @@ CREATE SEQUENCE seq_avvisi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 
 CREATE TABLE avvisi
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	iuv VARCHAR2(35 CHAR) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
-	stato VARCHAR(255) NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
 	pdf BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,

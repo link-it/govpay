@@ -3,7 +3,7 @@ CREATE SEQUENCE seq_pagamenti_portale start 1 increment 1 maxvalue 9223372036854
 
 CREATE TABLE pagamenti_portale
 (
-       cod_portale VARCHAR(35) NOT NULL,
+       cod_applicazione VARCHAR(35) NOT NULL,
        cod_canale VARCHAR(35),
        nome VARCHAR(255) NOT NULL,
        importo DOUBLE PRECISION NOT NULL,
@@ -65,3 +65,16 @@ ALTER TABLE versamenti ALTER COLUMN id_dominio SET NOT NULL;
 ALTER TABLE versamenti ALTER COLUMN id_uo DROP NOT NULL;
 ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 ALTER TABLE versamenti ADD COLUMN debitore_tipo VARCHAR(1);
+
+
+ALTER TABLE acl DROP CONSTRAINT fk_acl_id_portale;
+ALTER TABLE acl DROP COLUMN id_portale;
+
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
+ALTER TABLE rpt DROP COLUMN id_portale;
+
+ALTER TABLE rpt ADD COLUMN id_applicazione;
+ALTER TABLE rpt ADD fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+
+DROP TABLE portali;
+DROP SEQUENCE portali_seq;
