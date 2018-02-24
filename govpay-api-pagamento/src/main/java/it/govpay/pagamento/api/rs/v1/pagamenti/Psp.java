@@ -72,24 +72,24 @@ public class Psp extends BaseRsServiceV1{
 	return this.controller.pspIdPspCanaliGET_2(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, modello, abilitato2);
     }
 
-
+ */
     @GET
-    @Path("/{idPsp}/canali/{idCanale}")
+    @Path("/{idPsp}/canali/{idCanale}/{tipoVersamento}")
     
     @Produces({ "application/json" })
-    public Response pspIdPspCanaliIdCanaleGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idPsp") String idPsp, @PathParam("idCanale") String idCanale){
+    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idPsp") String idPsp, @PathParam("idCanale") String idCanale, @PathParam("tipoVersamento") String tipoVersamento){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.pspIdPspCanaliIdCanaleGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idPsp,  idCanale);
+	return this.controller.pspIdPspCanaliIdCanaleTipoVersamentoGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idPsp,  idCanale,  tipoVersamento);
     }
 
-
+/*
     @GET
-    @Path("/{idPsp}/canali/{idCanale}")
+    @Path("/{idPsp}/canali/{idCanale}/{tipoVersamento}")
     
     @Produces({ "application/json" })
-    public Response pspIdPspCanaliIdCanaleGET_3(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idPsp") String idPsp, @PathParam("idCanale") String idCanale){
+    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET_3(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idPsp") String idPsp, @PathParam("idCanale") String idCanale, @PathParam("tipoVersamento") TipoVersamento tipoVersamento){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.pspIdPspCanaliIdCanaleGET_3(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idPsp,  idCanale);
+	return this.controller.pspIdPspCanaliIdCanaleTipoVersamentoGET_3(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idPsp,  idCanale,  tipoVersamento);
     }
 
 */
