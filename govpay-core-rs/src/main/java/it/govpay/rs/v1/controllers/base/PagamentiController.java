@@ -166,7 +166,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 
 
     public Response pagamentiPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is , String idSessionePortale ) {
-    	String methodName = "pagamenti";  
+    	String methodName = "pagamentiPOST";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -195,7 +195,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 						
 			PagamentiPortaleResponseOk responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 201);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.CREATED).entity(responseOk.toJSON(null)).build();
 		} catch(GovPayException e) {

@@ -109,7 +109,7 @@ public class Domini extends BaseRsServiceV1{
     @PUT
     @Path("/{idDominio}")
     @Consumes({ "application/json" })
-    
+    @Produces({ "application/json" })
     public Response dominiIdDominioPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
 	return this.controller.dominiIdDominioPUT(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio, is);
