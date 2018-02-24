@@ -16,7 +16,11 @@ public class UriBuilderUtils {
 	public static String getPsp(String codPsp) {
 		return getFromPsp(codPsp).build().toString();
 	}
-	
+
+	public static String getStazione(String codIntermediari, String codStazione) {
+		return getList(getFromIntermediari(codIntermediari), "stazioni").path(codStazione).build().toString();
+	}
+
 	public static String getDominio(String codCominio) {
 		return getFromDomini(codCominio).build().toString();
 	}
@@ -77,12 +81,20 @@ public class UriBuilderUtils {
 		return getListPsp().path(codPsp);
 	}
 	
+	public static UriBuilder getFromIntermediari(String codIntermediari) {
+		return getListIntermediari().path(codIntermediari);
+	}
+	
 	private static UriBuilder getFromDomini(String codDominio) {
 		return getListDomini().path(codDominio);
 	}
 
 	private static UriBuilder getListPsp() {
 		return getBaseList("psp");
+	}
+	
+	private static UriBuilder getListIntermediari() {
+		return getBaseList("intermediari");
 	}
 	
 	private static UriBuilder getListDomini() {
@@ -111,6 +123,14 @@ public class UriBuilderUtils {
 
 	private static UriBuilder getList(UriBuilder base, String type) {
 		return base.path(type);
+	}
+
+	/**
+	 * @param codStazione
+	 * @return
+	 */
+	public static String getListDomini(String codStazione) {
+		return getListDomini().queryParam("stazione", codStazione).build().toString();
 	}
 	
 

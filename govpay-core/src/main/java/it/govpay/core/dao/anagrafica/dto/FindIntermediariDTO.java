@@ -17,28 +17,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.rs.v1.beans;
+package it.govpay.core.dao.anagrafica.dto;
 
-import java.math.BigDecimal;
-
-import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-@JsonFilter(value="entrate")  
-public class Entrata extends it.govpay.rs.v1.beans.base.Entrata{
+import it.govpay.model.IAutorizzato;
 
-	public Entrata(it.govpay.bd.model.Tributo tributo) throws ServiceException {
-		this.codiceContabilita(tributo.getCodContabilita())
-		.codificaIUV(new BigDecimal(tributo.getCodTributoIuv()))
-		.descrizione(tributo.getDescrizione())
-		.entrata(tributo.getCodTributo())
-		.ibanAccredito(tributo.getIbanAccredito().getCodIban())
-		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
+public class FindIntermediariDTO extends BasicFindRequestDTO {
+	
+	private String codIntermediario = null;
+	private Boolean abilitato = null;
+	
+	public FindIntermediariDTO(IAutorizzato user) throws ServiceException {
+		super(user);
+		this.addSortField("denominazione", it.govpay.orm.Intermediario.model().DENOMINAZIONE);
+	}
+
+	public String getCodIntermediario() {
+		return codIntermediario;
+	}
+
+	public void setCodIntermediario(String codIntermediario) {
+		this.codIntermediario = codIntermediario;
+	}
+
+	public Boolean getAbilitato() {
+		return abilitato;
+	}
+
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 	
-	@Override
-	public String getJsonIdFilter() {
-		return "entrate";
-	}
 }
-

@@ -1,26 +1,21 @@
 package it.govpay.backoffice.api.rs.v1.backoffice;
 
-import it.govpay.rs.v1.beans.base.Intermediario;
-import it.govpay.rs.v1.beans.base.IntermediarioPost;
-import it.govpay.rs.v1.beans.base.Stazione;
-import it.govpay.rs.v1.beans.base.StazionePost;
-
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
-
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.rs.v1.controllers.base.IntermediariController;
-
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.controllers.base.IntermediariController;
+import it.govpay.rs.v1.costanti.Costanti;
 
 
 @Path("/intermediari")
@@ -37,7 +32,7 @@ public class Intermediari extends BaseRsServiceV1{
 
 
 
-/*
+
     @GET
     @Path("/")
     
@@ -47,9 +42,9 @@ public class Intermediari extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
 	return this.controller.intermediariGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
-*/
 
-/*
+
+    
     @GET
     @Path("/{idIntermediario}")
     
@@ -58,9 +53,9 @@ public class Intermediari extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
 	return this.controller.intermediariIdIntermediarioGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idIntermediario);
     }
-*/
 
-/*
+
+    
     @PUT
     @Path("/{idIntermediario}")
     @Consumes({ "application/json" })
@@ -69,9 +64,9 @@ public class Intermediari extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
 	return this.controller.intermediariIdIntermediarioPUT(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idIntermediario, is);
     }
-*/
 
-/*
+
+    
     @GET
     @Path("/{idIntermediario}/stazioni")
     
@@ -81,9 +76,9 @@ public class Intermediari extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
 	return this.controller.intermediariIdIntermediarioStazioniGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
-*/
 
-/*
+
+    
     @GET
     @Path("/{idIntermediario}/stazioni/{idStazione}")
     
@@ -92,9 +87,8 @@ public class Intermediari extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
 	return this.controller.intermediariIdIntermediarioStazioniIdStazioneGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idIntermediario,  idStazione);
     }
-*/
 
-/*
+    
     @PUT
     @Path("/{idIntermediario}/stazioni/{idStazione}")
     @Consumes({ "application/json" })
@@ -103,6 +97,5 @@ public class Intermediari extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
 	return this.controller.intermediariIdIntermediarioStazioniIdStazionePUT(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idIntermediario,  idStazione, is);
     }
-*/
 
 }

@@ -36,5 +36,4 @@ public class CodificaAvvisi extends JSONSerializable {
 	public void setRegExp(String regExp) {
 		this.regExp = regExp;
 	}
-
 }

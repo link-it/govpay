@@ -19,26 +19,30 @@
  */
 package it.govpay.rs.v1.beans;
 
-import java.math.BigDecimal;
-
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-@JsonFilter(value="entrate")  
-public class Entrata extends it.govpay.rs.v1.beans.base.Entrata{
+import it.govpay.core.utils.UriBuilderUtils;
 
-	public Entrata(it.govpay.bd.model.Tributo tributo) throws ServiceException {
-		this.codiceContabilita(tributo.getCodContabilita())
-		.codificaIUV(new BigDecimal(tributo.getCodTributoIuv()))
-		.descrizione(tributo.getDescrizione())
-		.entrata(tributo.getCodTributo())
-		.ibanAccredito(tributo.getIbanAccredito().getCodIban())
-		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
-	}
-	
+@JsonFilter(value="intermediari")  
+public class Intermediario extends it.govpay.rs.v1.beans.base.Intermediario {
 	@Override
 	public String getJsonIdFilter() {
-		return "entrate";
+		return "intermediari";
 	}
-}
+	
+	public static Intermediario parse(String json) {
+		return (Intermediario) parse(json, Intermediario.class);
+	}
+	
 
+	public Intermediario(it.govpay.model.Intermediario i) throws ServiceException {
+		this.abilitato(i.isAbilitato())
+		.denominazione(i.getDenominazione())
+		.idIntermediario(i.getCodIntermediario())
+		.principalPagoPa(i.getConnettorePdd().getPrincipal())
+		.servizioPagoPa(new Connector(i.getConnettorePdd()))
+		.stazioni(UriBuilderUtils.getFromIntermediari(i.getCodIntermediario()).toString());
+	}
+	
+}

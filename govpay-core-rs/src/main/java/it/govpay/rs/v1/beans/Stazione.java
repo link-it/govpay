@@ -19,26 +19,28 @@
  */
 package it.govpay.rs.v1.beans;
 
-import java.math.BigDecimal;
-
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-@JsonFilter(value="entrate")  
-public class Entrata extends it.govpay.rs.v1.beans.base.Entrata{
+import it.govpay.core.utils.UriBuilderUtils;
 
-	public Entrata(it.govpay.bd.model.Tributo tributo) throws ServiceException {
-		this.codiceContabilita(tributo.getCodContabilita())
-		.codificaIUV(new BigDecimal(tributo.getCodTributoIuv()))
-		.descrizione(tributo.getDescrizione())
-		.entrata(tributo.getCodTributo())
-		.ibanAccredito(tributo.getIbanAccredito().getCodIban())
-		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
-	}
-	
+@JsonFilter(value="stazioni")  
+public class Stazione extends it.govpay.rs.v1.beans.base.Stazione {
+
 	@Override
 	public String getJsonIdFilter() {
-		return "entrate";
+		return "stazioni";
 	}
-}
+	
+	public static Stazione parse(String json) {
+		return (Stazione) parse(json, Stazione.class);
+	}
+	
+	public Stazione(it.govpay.bd.model.Stazione stazione) throws ServiceException {
+		this.abilitato(stazione.isAbilitato())
+		.domini(UriBuilderUtils.getListDomini(stazione.getCodStazione()))
+		.idStazione(stazione.getCodStazione())
+		.password(stazione.getPassword());
+	}
 
+}
