@@ -50,7 +50,8 @@ public class Pagamenti extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response pagamentiGET_1(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("stato") StatoPagamento stato, @QueryParam("versante") String versante, @QueryParam("idSessionePortale") String idSessionePortale){
+    public Response pagamentiGET_1(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
+			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("stato") StatoPagamento stato, @QueryParam("versante") String versante, @QueryParam("idSessionePortale") String idSessionePortale){
         this.controller.setRequestResponse(this.request, this.response);
 	return this.controller.pagamentiGET_1(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, stato, versante, idSessionePortale);
     }
