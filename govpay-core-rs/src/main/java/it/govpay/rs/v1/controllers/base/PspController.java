@@ -101,15 +101,6 @@ public class PspController extends it.govpay.rs.BaseController {
 		}
     }
 
-
-/*  
-    public Response pspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean bollo, Boolean storno) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
-*/
-
-
-
     public Response pspIdPspCanaliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliGET";  
 		GpContext ctx = null;
@@ -174,12 +165,9 @@ public class PspController extends it.govpay.rs.BaseController {
 
 
 
-/*  
-    public Response pspIdPspCanaliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, ModelloPagamento modello, TipoVersamento abilitato2) {
+    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, TipoVersamento tipoVersamento) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-*/
-
 
     public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliIdCanaleGET";  
@@ -235,13 +223,6 @@ public class PspController extends it.govpay.rs.BaseController {
     }
 
 
-/*  
-    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, TipoVersamento tipoVersamento) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
-*/
-
-
     public Response pspIdPspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp ) {
     	String methodName = "pspIdPspGET";  
 		GpContext ctx = null;
@@ -292,13 +273,6 @@ public class PspController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
-
-/*  
-    public Response pspIdPspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
-*/
 
 
 }

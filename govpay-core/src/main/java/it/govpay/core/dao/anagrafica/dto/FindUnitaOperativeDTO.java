@@ -26,7 +26,8 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 	private String codDominio;
 	private String codIdentificativo;
 	private String ragioneSociale;
-	
+	private Boolean abilitato;
+
 	public FindUnitaOperativeDTO(IAutorizzato user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
@@ -50,6 +51,14 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 
 	public void setRagioneSociale(String ragioneSociale) {
 		this.ragioneSociale = ragioneSociale;
+	}
+
+	public Boolean getAbilitato() {
+		return abilitato;
+	}
+
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 	
 }

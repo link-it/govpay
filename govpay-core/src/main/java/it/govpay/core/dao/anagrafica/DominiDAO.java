@@ -127,6 +127,7 @@ public class DominiDAO {
 				filter = unitaOperativeBD.newFilter(false);
 				filter.setCodIdentificativo(findUnitaOperativeDTO.getCodIdentificativo());
 				filter.setRagioneSociale(findUnitaOperativeDTO.getRagioneSociale());
+				filter.setSearchAbilitato(findUnitaOperativeDTO.getAbilitato());
 			}
 			try {
 				filter.setDominioFilter(AnagraficaManager.getDominio(bd, findUnitaOperativeDTO.getCodDominio()).getId());
@@ -244,6 +245,7 @@ public class DominiDAO {
 				filter = ibanAccreditoBD.newFilter(false);
 				filter.setCodTributo(findTributiDTO.getCodTributo());
 				filter.setDescrizione(findTributiDTO.getDescrizione());
+				filter.setSearchAbilitato(findTributiDTO.getAbilitato());
 			}
 			try {
 				filter.setIdDominio(AnagraficaManager.getDominio(bd, findTributiDTO.getCodDominio()).getId());
