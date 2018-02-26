@@ -19,7 +19,6 @@
 		<module>govpay-wc</module>
 		<module>govpay-api-pagamento</module>
 		<module>govpay-api-pendenze</module>
-		<module>govpay-api-gestione</module>
 		<module>govpay-api-ragioneria</module>
 		<module>govpay-api-backoffice</module>
 		<module>govpay-ear</module>

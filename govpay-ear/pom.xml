@@ -44,12 +44,6 @@
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-backoffice</artifactId>
-			<type>war</type>
-		</dependency>
-		
-		<dependency>
-			<groupId>it.govpay</groupId>
 			<artifactId>govpay-api-gestione</artifactId>
 			<type>war</type>
 		</dependency>
@@ -103,11 +97,6 @@
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-api-pendenze</artifactId>
 							<contextRoot>/govpay-api-pendenze</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>govpay-api-gestione</artifactId>
-							<contextRoot>/govpay-api-gestione</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
