@@ -80,3 +80,6 @@ DROP TABLE portali;
 DROP SEQUENCE portali_seq;
 
 ALTER TABLE applicazioni ADD COLUMN reg_exp VARCHAR(1024);
+
+ALTER TABLE domini DROP COLUMN xml_conti_accredito;
+ALTER TABLE domini DROP COLUMN xml_tabella_controparti;

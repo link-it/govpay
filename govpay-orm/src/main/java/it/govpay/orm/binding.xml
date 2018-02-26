@@ -277,8 +277,6 @@
     <value name="gln" field="gln" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <value name="ragioneSociale" field="ragioneSociale" usage="required"/>
-    <value name="xmlContiAccredito" field="xmlContiAccredito" usage="required"/>
-    <value name="xmlTabellaControparti" field="xmlTabellaControparti" usage="required"/>
     <value name="riusoIUV" field="riusoIUV" usage="required"/>
     <value name="customIUV" field="customIUV" usage="required"/>
     <structure name="idApplicazioneDefault" field="idApplicazioneDefault" usage="optional" map-as="_IdApplicazione_Type"/>

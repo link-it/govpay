@@ -123,8 +123,6 @@ CREATE TABLE domini
 	gln VARCHAR(35) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	ragione_sociale VARCHAR(70) NOT NULL,
-	xml_conti_accredito BYTEA NOT NULL,
-	xml_tabella_controparti BYTEA NOT NULL,
 	riuso_iuv BOOLEAN NOT NULL,
 	custom_iuv BOOLEAN NOT NULL,
 	aux_digit INT NOT NULL DEFAULT 0,

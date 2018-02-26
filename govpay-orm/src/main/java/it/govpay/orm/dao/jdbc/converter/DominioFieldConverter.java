@@ -102,20 +102,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "ragione_sociale";
 			}
 		}
-		if(field.equals(Dominio.model().XML_CONTI_ACCREDITO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".xml_conti_accredito";
-			}else{
-				return "xml_conti_accredito";
-			}
-		}
-		if(field.equals(Dominio.model().XML_TABELLA_CONTROPARTI)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".xml_tabella_controparti";
-			}else{
-				return "xml_tabella_controparti";
-			}
-		}
 		if(field.equals(Dominio.model().RIUSO_IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".riuso_iuv";
@@ -233,12 +219,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().RAGIONE_SOCIALE)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().XML_CONTI_ACCREDITO)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().XML_TABELLA_CONTROPARTI)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().RIUSO_IUV)){

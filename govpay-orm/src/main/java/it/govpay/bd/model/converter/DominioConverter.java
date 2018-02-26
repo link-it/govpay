@@ -52,8 +52,6 @@ public class DominioConverter {
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setRiusoIuv(vo.getRiusoIUV());
 		dto.setCustomIuv(vo.getCustomIUV());
-		dto.setContiAccredito(vo.getXmlContiAccredito());
-		dto.setTabellaControparti(vo.getXmlTabellaControparti());
 		dto.setAuxDigit(vo.getAuxDigit());
 		dto.setIuvPrefix(vo.getIuvPrefix());
 		dto.setIuvPrefixStrict(vo.isIuvPrefixStrict());
@@ -81,8 +79,6 @@ public class DominioConverter {
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setRiusoIUV(dto.isRiusoIuv());
 		vo.setCustomIUV(dto.isCustomIuv());
-		vo.setXmlContiAccredito(dto.getContiAccredito());
-		vo.setXmlTabellaControparti(dto.getTabellaControparti());
 		vo.setAuxDigit(dto.getAuxDigit());
 		vo.setIuvPrefix(dto.getIuvPrefix());
 		vo.setIuvPrefixStrict(dto.isIuvPrefixStrict());

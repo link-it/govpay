@@ -62,10 +62,6 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Dominio.model().ABILITATO.getFieldType()));
 				setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ragione_sociale", Dominio.model().RAGIONE_SOCIALE.getFieldType()));
-				setParameter(object, "setXmlContiAccredito", Dominio.model().XML_CONTI_ACCREDITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "xml_conti_accredito", Dominio.model().XML_CONTI_ACCREDITO.getFieldType()));
-				setParameter(object, "setXmlTabellaControparti", Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "xml_tabella_controparti", Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType()));
 				setParameter(object, "setRiusoIUV", Dominio.model().RIUSO_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "riuso_iuv", Dominio.model().RIUSO_IUV.getFieldType()));
 				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
@@ -120,10 +116,6 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
 					this.getObjectFromMap(map,"ragioneSociale"));
-				setParameter(object, "setXmlContiAccredito", Dominio.model().XML_CONTI_ACCREDITO.getFieldType(),
-					this.getObjectFromMap(map,"xmlContiAccredito"));
-				setParameter(object, "setXmlTabellaControparti", Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType(),
-					this.getObjectFromMap(map,"xmlTabellaControparti"));
 				setParameter(object, "setRiusoIUV", Dominio.model().RIUSO_IUV.getFieldType(),
 					this.getObjectFromMap(map,"riusoIUV"));
 				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),

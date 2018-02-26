@@ -40,8 +40,6 @@ import java.io.Serializable;
  * 			&lt;element name="gln" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ragioneSociale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="xmlContiAccredito" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="xmlTabellaControparti" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="riusoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="customIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazioneDefault" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
@@ -74,8 +72,6 @@ import java.io.Serializable;
   	"gln",
   	"abilitato",
   	"ragioneSociale",
-  	"xmlContiAccredito",
-  	"xmlTabellaControparti",
   	"riusoIUV",
   	"customIUV",
   	"idApplicazioneDefault",
@@ -154,22 +150,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   public void setRagioneSociale(java.lang.String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
-  }
-
-  public byte[] getXmlContiAccredito() {
-    return this.xmlContiAccredito;
-  }
-
-  public void setXmlContiAccredito(byte[] xmlContiAccredito) {
-    this.xmlContiAccredito = xmlContiAccredito;
-  }
-
-  public byte[] getXmlTabellaControparti() {
-    return this.xmlTabellaControparti;
-  }
-
-  public void setXmlTabellaControparti(byte[] xmlTabellaControparti) {
-    this.xmlTabellaControparti = xmlTabellaControparti;
   }
 
   public boolean isRiusoIUV() {
@@ -331,14 +311,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ragioneSociale",required=true,nillable=false)
   protected java.lang.String ragioneSociale;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="xmlContiAccredito",required=true,nillable=false)
-  protected byte[] xmlContiAccredito;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="xmlTabellaControparti",required=true,nillable=false)
-  protected byte[] xmlTabellaControparti;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="riusoIUV",required=true,nillable=false)

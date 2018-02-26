@@ -104,3 +104,6 @@ DROP TABLE portali;
 DROP SEQUENCE portali_seq;
 
 ALTER TABLE applicazioni ADD reg_exp VARCHAR2(1024 CHAR);
+
+ALTER TABLE domini DROP COLUMN xml_conti_accredito;
+ALTER TABLE domini DROP COLUMN xml_tabella_controparti;

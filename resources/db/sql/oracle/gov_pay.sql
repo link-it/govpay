@@ -181,8 +181,6 @@ CREATE TABLE domini
 	gln VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	ragione_sociale VARCHAR2(70 CHAR) NOT NULL,
-	xml_conti_accredito BLOB NOT NULL,
-	xml_tabella_controparti BLOB NOT NULL,
 	riuso_iuv NUMBER NOT NULL,
 	custom_iuv NUMBER NOT NULL,
 	aux_digit NUMBER NOT NULL,

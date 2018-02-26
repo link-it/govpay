@@ -46,8 +46,6 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.GLN = new Field("gln",java.lang.String.class,"Dominio",Dominio.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Dominio",Dominio.class);
 		this.RAGIONE_SOCIALE = new Field("ragioneSociale",java.lang.String.class,"Dominio",Dominio.class);
-		this.XML_CONTI_ACCREDITO = new Field("xmlContiAccredito",byte[].class,"Dominio",Dominio.class);
-		this.XML_TABELLA_CONTROPARTI = new Field("xmlTabellaControparti",byte[].class,"Dominio",Dominio.class);
 		this.RIUSO_IUV = new Field("riusoIUV",boolean.class,"Dominio",Dominio.class);
 		this.CUSTOM_IUV = new Field("customIUV",boolean.class,"Dominio",Dominio.class);
 		this.ID_APPLICAZIONE_DEFAULT = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazioneDefault",it.govpay.orm.IdApplicazione.class,"Dominio",Dominio.class));
@@ -73,8 +71,6 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.GLN = new ComplexField(father,"gln",java.lang.String.class,"Dominio",Dominio.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Dominio",Dominio.class);
 		this.RAGIONE_SOCIALE = new ComplexField(father,"ragioneSociale",java.lang.String.class,"Dominio",Dominio.class);
-		this.XML_CONTI_ACCREDITO = new ComplexField(father,"xmlContiAccredito",byte[].class,"Dominio",Dominio.class);
-		this.XML_TABELLA_CONTROPARTI = new ComplexField(father,"xmlTabellaControparti",byte[].class,"Dominio",Dominio.class);
 		this.RIUSO_IUV = new ComplexField(father,"riusoIUV",boolean.class,"Dominio",Dominio.class);
 		this.CUSTOM_IUV = new ComplexField(father,"customIUV",boolean.class,"Dominio",Dominio.class);
 		this.ID_APPLICAZIONE_DEFAULT = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazioneDefault",it.govpay.orm.IdApplicazione.class,"Dominio",Dominio.class));
@@ -102,10 +98,6 @@ public class DominioModel extends AbstractModel<Dominio> {
 	public IField ABILITATO = null;
 	 
 	public IField RAGIONE_SOCIALE = null;
-	 
-	public IField XML_CONTI_ACCREDITO = null;
-	 
-	public IField XML_TABELLA_CONTROPARTI = null;
 	 
 	public IField RIUSO_IUV = null;
 	 
