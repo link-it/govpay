@@ -19,14 +19,14 @@
  */
 package it.govpay.core.dao.anagrafica;
 
-import java.util.Set;
-
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
+import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
@@ -54,17 +54,22 @@ import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
+import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
+import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotFoundException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Servizio;
+import it.govpay.model.TipoTributo;
+import it.govpay.model.Tributo;
 
 public class DominiDAO {
 	
-	public PutDominioDTOResponse createOrUpdate(PutDominioDTO putDominioDTO) throws ServiceException,DominioNonTrovatoException,StazioneNonTrovataException{
+	public PutDominioDTOResponse createOrUpdate(PutDominioDTO putDominioDTO) throws ServiceException,
+		DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException{
 		PutDominioDTOResponse dominioDTOResponse = new PutDominioDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
@@ -85,6 +90,26 @@ public class DominiDAO {
 			boolean isCreate = dominiBD.count(filter) == 0;
 			dominioDTOResponse.setCreated(isCreate);
 			if(isCreate) {
+				TipoTributo bolloT = null;
+				// bollo telematico
+				try {
+					TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
+					bolloT = tipiTributoBD.getTipoTributo(it.govpay.model.Tributo.BOLLOT);
+				} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+					throw new TipoTributoNonTrovatoException(e.getMessage());
+				} catch (MultipleResultException e) {
+					throw new TipoTributoNonTrovatoException(e.getMessage());
+				} 
+
+				TributiBD tributiBD = new TributiBD(bd);
+
+				Tributo tributo = new Tributo();
+				tributo.setCodTributo(it.govpay.model.Tributo.BOLLOT);
+				tributo.setAbilitato(false);
+				tributo.setDescrizione(bolloT.getDescrizione());
+
+				//TODO controllare il salvataggio
+				tributo.setIdTipoTributo(bolloT.getId());
 				
 				UnitaOperativa uo = new UnitaOperativa();
 				uo.setAbilitato(true);
@@ -95,6 +120,8 @@ public class DominiDAO {
 				dominiBD.insertDominio(putDominioDTO.getDominio());
 				uo.setIdDominio(putDominioDTO.getDominio().getId());
 				uoBd.insertUnitaOperativa(uo);
+				tributo.setIdDominio(putDominioDTO.getDominio().getId());
+				tributiBD.insertTributo(tributo);
 				bd.commit();
 
 				// ripristino l'autocommit.
@@ -220,6 +247,38 @@ public class DominiDAO {
 			bd.closeConnection();
 		}
 	}
+	
+	public PutUnitaOperativaDTOResponse createOrUpdateUnitaOperativa(PutUnitaOperativaDTO putUnitaOperativaDTO) throws ServiceException, DominioNonTrovatoException, UnitaOperativaNonTrovataException{
+		PutUnitaOperativaDTOResponse putUoDTOResponse = new PutUnitaOperativaDTOResponse();
+	BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+	try {
+		try {
+			// inserisco l'iddominio
+			putUnitaOperativaDTO.getUo().setIdDominio(AnagraficaManager.getDominio(bd, putUnitaOperativaDTO.getIdDominio()).getId());
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new DominioNonTrovatoException(e.getMessage());
+		}
+		
+		UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
+		UnitaOperativaFilter filter = uoBd.newFilter(); 
+		filter.setCodDominio(putUnitaOperativaDTO.getIdDominio());
+		filter.setCodUo(putUnitaOperativaDTO.getIdUo());
+		
+		// flag creazione o update
+		boolean isCreate = uoBd.count(filter) == 0;
+		putUoDTOResponse.setCreated(isCreate);
+		if(isCreate) {
+			uoBd.insertUnitaOperativa(putUnitaOperativaDTO.getUo());
+		} else {
+			uoBd.updateUnitaOperativa(putUnitaOperativaDTO.getUo());
+		}
+	} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+		throw new UnitaOperativaNonTrovataException(e.getMessage());
+	} finally {
+		bd.closeConnection();
+	}
+	return putUoDTOResponse;
+}
 	
 	public FindIbanDTOResponse findIban(FindIbanDTO findIbanDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

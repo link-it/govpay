@@ -1,12 +1,43 @@
 package it.govpay.rs.v1.beans.converter;
 
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.base.DominioPost;
+import it.govpay.rs.v1.beans.base.UnitaOperativaPost;
 
 public class DominiConverter {
+	
+	
+	public static PutUnitaOperativaDTO getPutUnitaOperativaDTO(UnitaOperativaPost uoPost, String idDominio, String idUo, IAutorizzato user) {
+		PutUnitaOperativaDTO uoDTO = new PutUnitaOperativaDTO(user);
+		
+		UnitaOperativa uo = new UnitaOperativa();
+		//uo.setAbilitato(uoPost.isAbilitato());
+		Anagrafica anagrafica = new Anagrafica();
+		anagrafica.setCap(uoPost.getCap());
+		//anagrafica.setCellulare(uoPost.getcell);
+		anagrafica.setCivico(uoPost.getCivico());
+		anagrafica.setCodUnivoco(idUo);
+		anagrafica.setIndirizzo(uoPost.getIndirizzo());
+		anagrafica.setLocalita(uoPost.getLocalita());
+		// anagrafica.setNazione(uoPost.getNazione());
+		// anagrafica.setProvincia(uoPost.getProvincia());
+		anagrafica.setRagioneSociale(uoPost.getRagioneSociale());
+		// anagrafica.setUrlSitoWeb(uoPost.);
+		
+		uo.setAnagrafica(anagrafica);
+		uo.setCodUo(idUo);
+		
+		uoDTO.setUo(uo );
+		uoDTO.setIdDominio(idDominio);
+		uoDTO.setIdUo(idUo);
+				
+		return uoDTO;		
+	}
 
 	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, IAutorizzato user) {
 		PutDominioDTO dominioDTO = new PutDominioDTO(user);
@@ -15,6 +46,7 @@ public class DominiConverter {
 		dominio.setAbilitato(dominioPost.isAbilitato());
 		Anagrafica anagrafica = new Anagrafica();
 		anagrafica.setCap(dominioPost.getCap());
+		//anagrafica.setCellulare(dominioPost.getcell);
 		anagrafica.setCivico(dominioPost.getCivico());
 		anagrafica.setCodUnivoco(idDominio);
 		anagrafica.setIndirizzo(dominioPost.getIndirizzo());
@@ -22,7 +54,6 @@ public class DominiConverter {
 		// anagrafica.setNazione(dominioPost.getNazione());
 		// anagrafica.setProvincia(dominioPost.getProvincia());
 		anagrafica.setRagioneSociale(dominioPost.getRagioneSociale());
-		// anagrafica.setTipo(dominioPost.);
 		// anagrafica.setUrlSitoWeb(dominioPost.);
 		
 		dominio.setAnagrafica(anagrafica );
