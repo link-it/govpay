@@ -1,7 +1,7 @@
 package it.govpay.rs.v1.beans;
 
 public class PagamentiPortaleResponseOk extends JSONSerializable {
-
+	
 	private long id;
 	private String location;
 	private String redirect;
@@ -29,5 +29,4 @@ public class PagamentiPortaleResponseOk extends JSONSerializable {
 	public String getJsonIdFilter() {
 		return "pagamentiPortaleResponse";
 	}
-	
 }

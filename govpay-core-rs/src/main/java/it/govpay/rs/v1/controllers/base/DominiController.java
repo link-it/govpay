@@ -32,9 +32,12 @@ import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
+import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.IbanAccreditoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
@@ -52,6 +55,7 @@ import it.govpay.rs.v1.beans.UnitaOperativa;
 import it.govpay.rs.v1.beans.base.DominioPost;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.rs.v1.beans.base.IbanAccreditoPost;
 import it.govpay.rs.v1.beans.base.UnitaOperativaPost;
 import it.govpay.rs.v1.beans.converter.DominiConverter;
 import net.sf.json.JsonConfig;
@@ -452,7 +456,62 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
     public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			String jsonRequest = baos.toString();
+			JsonConfig jsonConfig = new JsonConfig();
+			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			jsonConfig.setClassMap(classMap);
+			IbanAccreditoPost ibanAccreditoRequest= (IbanAccreditoPost) IbanAccreditoPost.parse(jsonRequest, IbanAccreditoPost.class, jsonConfig);
+			
+			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, null); //TODO IAutorizzato 
+			
+			DominiDAO dominiDAO = new DominiDAO();
+			
+			PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = dominiDAO.createOrUpdateIbanAccredito(putibanAccreditoDTO);
+			
+			Status responseStatus = putIbanAccreditoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(responseStatus).build();
+		} catch (DominioNonTrovatoException  | IbanAccreditoNonTrovatoException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante l'esecuzione del metodo "+ methodName + ": " + e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice(CategoriaEnum.INTERNO.name());
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 

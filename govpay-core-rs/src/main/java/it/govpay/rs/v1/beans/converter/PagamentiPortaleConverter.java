@@ -89,8 +89,6 @@ public class PagamentiPortaleConverter {
 			classMap.put("voci", VocePendenza.class);
 			jsonConfigPendenza.setClassMap(classMap);
 			
-			JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(BaseRsService.datePatterns.toArray(new String[1])) , true);
-
 			for (int i = 0; i < jsonArrayPendenze.size(); i++) {
 
 				JSONObject jsonObjectPendenza = jsonArrayPendenze.getJSONObject(i);

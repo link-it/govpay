@@ -54,9 +54,12 @@ import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
+import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.IbanAccreditoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
@@ -67,9 +70,9 @@ import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
 
 public class DominiDAO {
-	
+
 	public PutDominioDTOResponse createOrUpdate(PutDominioDTO putDominioDTO) throws ServiceException,
-		DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException{
+	DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException{
 		PutDominioDTOResponse dominioDTOResponse = new PutDominioDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
@@ -80,12 +83,12 @@ public class DominiDAO {
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new StazioneNonTrovataException(e.getMessage());
 			} 
-			
+
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter(false);
 			filter.setCodDominio(putDominioDTO.getIdDominio());
-			
+
 			// flag creazione o update
 			boolean isCreate = dominiBD.count(filter) == 0;
 			dominioDTOResponse.setCreated(isCreate);
@@ -110,7 +113,7 @@ public class DominiDAO {
 
 				//TODO controllare il salvataggio
 				tributo.setIdTipoTributo(bolloT.getId());
-				
+
 				UnitaOperativa uo = new UnitaOperativa();
 				uo.setAbilitato(true);
 				uo.setAnagrafica(putDominioDTO.getDominio().getAnagrafica());
@@ -140,12 +143,12 @@ public class DominiDAO {
 	public FindDominiDTOResponse findDomini(FindDominiDTO listaDominiDTO) throws NotAuthorizedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(listaDominiDTO.getUser(), Servizio.Anagrafica_PagoPa);
-//			
-//			if(domini != null && domini.size() == 0) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
-//			}
-			
+			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(listaDominiDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			
+			//			if(domini != null && domini.size() == 0) {
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
+			//			}
+
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = null;
 			if(listaDominiDTO.isSimpleSearch()) {
@@ -162,23 +165,23 @@ public class DominiDAO {
 			filter.setOffset(listaDominiDTO.getOffset());
 			filter.setLimit(listaDominiDTO.getLimit());
 			filter.getFilterSortList().addAll(listaDominiDTO.getFieldSortList());
-			
+
 			return new FindDominiDTOResponse(dominiBD.count(filter), dominiBD.findAll(filter));
-			
+
 		} finally {
 			bd.closeConnection();
 		}
 	}
-	
+
 	public GetDominioDTOResponse getDominio(GetDominioDTO getDominioDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<String> domini = AclEngine.getDominiAutorizzati(getDominioDTO.getUser(), Servizio.Anagrafica_PagoPa);
-//			
-//			if(domini != null && !domini.contains(getDominioDTO.getCodDominio())) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getDominioDTO.getCodDominio());
-//			}
-			
+			//			Set<String> domini = AclEngine.getDominiAutorizzati(getDominioDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			
+			//			if(domini != null && !domini.contains(getDominioDTO.getCodDominio())) {
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getDominioDTO.getCodDominio());
+			//			}
+
 			GetDominioDTOResponse response = new GetDominioDTOResponse(AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
@@ -187,16 +190,16 @@ public class DominiDAO {
 			bd.closeConnection();
 		}
 	}
-	
+
 	public FindUnitaOperativeDTOResponse findUnitaOperative(FindUnitaOperativeDTO findUnitaOperativeDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findUnitaOperativeDTO.getUser(), Servizio.Anagrafica_PagoPa);
-//			
-//			if(domini != null && domini.size() == 0) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
-//			}
-			
+			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findUnitaOperativeDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			
+			//			if(domini != null && domini.size() == 0) {
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
+			//			}
+
 			UnitaOperativeBD unitaOperativeBD = new UnitaOperativeBD(bd);
 			UnitaOperativaFilter filter = null;
 			if(findUnitaOperativeDTO.isSimpleSearch()) {
@@ -217,29 +220,29 @@ public class DominiDAO {
 			filter.setLimit(findUnitaOperativeDTO.getLimit());
 			filter.getFilterSortList().addAll(findUnitaOperativeDTO.getFieldSortList());
 			filter.setExcludeEC(true);
-			
+
 			return new FindUnitaOperativeDTOResponse(unitaOperativeBD.count(filter), unitaOperativeBD.findAll(filter));
 		} finally {
 			bd.closeConnection();
 		}
 	}
-	
+
 	public GetUnitaOperativaDTOResponse getUnitaOperativa(GetUnitaOperativaDTO getUnitaOperativaDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<String> domini = AclEngine.getDominiAutorizzati(getUnitaOperativaDTO.getUser(), Servizio.Anagrafica_PagoPa);
-//			
-//			if(domini != null && !domini.contains(getUnitaOperativaDTO.getCodDominio())) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getUnitaOperativaDTO.getCodDominio());
-//			}
-			
+			//			Set<String> domini = AclEngine.getDominiAutorizzati(getUnitaOperativaDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			
+			//			if(domini != null && !domini.contains(getUnitaOperativaDTO.getCodDominio())) {
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getUnitaOperativaDTO.getCodDominio());
+			//			}
+
 			Dominio dominio = null;
 			try {
 				dominio = AnagraficaManager.getDominio(bd, getUnitaOperativaDTO.getCodDominio());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new NotFoundException("Dominio " + getUnitaOperativaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
-			
+
 			return new GetUnitaOperativaDTOResponse(AnagraficaManager.getUnitaOperativaByCodUnivocoUo(bd, dominio.getId(), getUnitaOperativaDTO.getCodUnivocoUnitaOperativa()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new NotFoundException("Unita Operativa " + getUnitaOperativaDTO.getCodUnivocoUnitaOperativa() + " non censito in Anagrafica per il dominio " + getUnitaOperativaDTO.getCodDominio());
@@ -247,48 +250,48 @@ public class DominiDAO {
 			bd.closeConnection();
 		}
 	}
-	
+
 	public PutUnitaOperativaDTOResponse createOrUpdateUnitaOperativa(PutUnitaOperativaDTO putUnitaOperativaDTO) throws ServiceException, DominioNonTrovatoException, UnitaOperativaNonTrovataException{
 		PutUnitaOperativaDTOResponse putUoDTOResponse = new PutUnitaOperativaDTOResponse();
-	BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-	try {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			// inserisco l'iddominio
-			putUnitaOperativaDTO.getUo().setIdDominio(AnagraficaManager.getDominio(bd, putUnitaOperativaDTO.getIdDominio()).getId());
+			try {
+				// inserisco l'iddominio
+				putUnitaOperativaDTO.getUo().setIdDominio(AnagraficaManager.getDominio(bd, putUnitaOperativaDTO.getIdDominio()).getId());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new DominioNonTrovatoException(e.getMessage());
+			}
+
+			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
+			UnitaOperativaFilter filter = uoBd.newFilter(); 
+			filter.setCodDominio(putUnitaOperativaDTO.getIdDominio());
+			filter.setCodUo(putUnitaOperativaDTO.getIdUo());
+
+			// flag creazione o update
+			boolean isCreate = uoBd.count(filter) == 0;
+			putUoDTOResponse.setCreated(isCreate);
+			if(isCreate) {
+				uoBd.insertUnitaOperativa(putUnitaOperativaDTO.getUo());
+			} else {
+				uoBd.updateUnitaOperativa(putUnitaOperativaDTO.getUo());
+			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new DominioNonTrovatoException(e.getMessage());
+			throw new UnitaOperativaNonTrovataException(e.getMessage());
+		} finally {
+			bd.closeConnection();
 		}
-		
-		UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
-		UnitaOperativaFilter filter = uoBd.newFilter(); 
-		filter.setCodDominio(putUnitaOperativaDTO.getIdDominio());
-		filter.setCodUo(putUnitaOperativaDTO.getIdUo());
-		
-		// flag creazione o update
-		boolean isCreate = uoBd.count(filter) == 0;
-		putUoDTOResponse.setCreated(isCreate);
-		if(isCreate) {
-			uoBd.insertUnitaOperativa(putUnitaOperativaDTO.getUo());
-		} else {
-			uoBd.updateUnitaOperativa(putUnitaOperativaDTO.getUo());
-		}
-	} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-		throw new UnitaOperativaNonTrovataException(e.getMessage());
-	} finally {
-		bd.closeConnection();
+		return putUoDTOResponse;
 	}
-	return putUoDTOResponse;
-}
-	
+
 	public FindIbanDTOResponse findIban(FindIbanDTO findIbanDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findIbanDTO.getUser(), Servizio.Anagrafica_PagoPa);
-//			
-//			if(domini != null && domini.size() == 0) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
-//			}
-			
+			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findIbanDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			
+			//			if(domini != null && domini.size() == 0) {
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
+			//			}
+
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			IbanAccreditoFilter filter = null;
 			if(findIbanDTO.isSimpleSearch()) {
@@ -296,7 +299,7 @@ public class DominiDAO {
 				filter.setSimpleSearchString(findIbanDTO.getSimpleSearch());
 			} else {
 				filter = ibanAccreditoBD.newFilter(false);
-				filter.setAbilitato(findIbanDTO.getAbilitato());
+				filter.setSearchAbilitato(findIbanDTO.getAbilitato());
 				filter.setCodIbanAccredito(findIbanDTO.getIban());
 			}
 			try {
@@ -307,22 +310,22 @@ public class DominiDAO {
 			filter.setOffset(findIbanDTO.getOffset());
 			filter.setLimit(findIbanDTO.getLimit());
 			filter.getFilterSortList().addAll(findIbanDTO.getFieldSortList());
-			
+
 			return new FindIbanDTOResponse(ibanAccreditoBD.count(filter), ibanAccreditoBD.findAll(filter));
 		} finally {
 			bd.closeConnection();
 		}
 	}
-	
+
 	public GetIbanDTOResponse getIban(GetIbanDTO getIbanDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<String> domini = AclEngine.getDominiAutorizzati(getIbanDTO.getUser(), Servizio.Anagrafica_PagoPa);
-//			
-//			if(domini != null && !domini.contains(getIbanDTO.getCodDominio())) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getIbanDTO.getCodDominio());
-//			}
-			
+			//			Set<String> domini = AclEngine.getDominiAutorizzati(getIbanDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			
+			//			if(domini != null && !domini.contains(getIbanDTO.getCodDominio())) {
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getIbanDTO.getCodDominio());
+			//			}
+
 			Dominio dominio = null;
 			try {
 				dominio = AnagraficaManager.getDominio(bd, getIbanDTO.getCodDominio());
@@ -338,15 +341,47 @@ public class DominiDAO {
 		}
 	}
 	
+	public PutIbanAccreditoDTOResponse createOrUpdateIbanAccredito(PutIbanAccreditoDTO putIbanAccreditoDTO) throws ServiceException, DominioNonTrovatoException, IbanAccreditoNonTrovatoException{
+		PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = new PutIbanAccreditoDTOResponse();
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			try {
+				// inserisco l'iddominio
+				putIbanAccreditoDTO.getIban().setIdDominio(AnagraficaManager.getDominio(bd, putIbanAccreditoDTO.getIdDominio()).getId());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new DominioNonTrovatoException(e.getMessage());
+			}
+
+			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter(); 
+			filter.setCodDominio(putIbanAccreditoDTO.getIdDominio());
+			filter.setCodIbanAccredito(putIbanAccreditoDTO.getIbanAccredito());
+
+			// flag creazione o update
+			boolean isCreate = ibanAccreditoBD.count(filter) == 0;
+			putIbanAccreditoDTOResponse.setCreated(isCreate);
+			if(isCreate) {
+				ibanAccreditoBD.insertIbanAccredito(putIbanAccreditoDTO.getIban());
+			} else {
+				ibanAccreditoBD.updateIbanAccredito(putIbanAccreditoDTO.getIban());
+			}
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new IbanAccreditoNonTrovatoException(e.getMessage());
+		} finally {
+			bd.closeConnection();
+		}
+		return putIbanAccreditoDTOResponse;
+	}
+
 	public FindTributiDTOResponse findTributi(FindTributiDTO findTributiDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findTributiDTO.getUser(), Servizio.Anagrafica_PagoPa);
-//			
-//			if(domini != null && domini.size() == 0) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
-//			}
-			
+			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findTributiDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			
+			//			if(domini != null && domini.size() == 0) {
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
+			//			}
+
 			TributiBD ibanAccreditoBD = new TributiBD(bd);
 			TributoFilter filter = null;
 			if(findTributiDTO.isSimpleSearch()) {
@@ -372,16 +407,16 @@ public class DominiDAO {
 			bd.closeConnection();
 		}
 	}
-	
+
 	public GetTributoDTOResponse getTributo(GetTributoDTO getTributoDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<String> domini = AclEngine.getDominiAutorizzati(getTributoDTO.getUser(), Servizio.Anagrafica_PagoPa);
-//			
-//			if(domini != null && !domini.contains(getTributoDTO.getCodDominio())) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getTributoDTO.getCodDominio());
-//			}
-			
+			//			Set<String> domini = AclEngine.getDominiAutorizzati(getTributoDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			
+			//			if(domini != null && !domini.contains(getTributoDTO.getCodDominio())) {
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getTributoDTO.getCodDominio());
+			//			}
+
 			Dominio dominio = null;
 			try {
 				dominio = AnagraficaManager.getDominio(bd, getTributoDTO.getCodDominio());
@@ -396,5 +431,5 @@ public class DominiDAO {
 			bd.closeConnection();
 		}
 	}
-	
+
 }
