@@ -8,8 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.RendicontazionePagamento;
@@ -22,7 +23,7 @@ public class EstrattiContoBD extends BasicBD{
 
 	public static final String TIPO_RECORD_STORNO = "STORNO";
 	private static final int LIMIT = 50;
-	Logger log = Logger.getLogger(EstrattiContoBD.class);
+	Logger log = LoggerWrapperFactory.getLogger(EstrattiContoBD.class);
 
 	public EstrattiContoBD(BasicBD basicBD) {
 		super(basicBD);

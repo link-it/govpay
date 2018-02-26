@@ -113,7 +113,7 @@ public class DominiDAO {
 	public FindDominiDTOResponse findDomini(FindDominiDTO listaDominiDTO) throws NotAuthorizedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(listaDominiDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			Set<Long> domini = AclEngine.getIdDominiAutorizzati(listaDominiDTO.getUser(), Servizio.Anagrafica_PagoPa);
 //			
 //			if(domini != null && domini.size() == 0) {
 //				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
