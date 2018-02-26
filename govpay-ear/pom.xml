@@ -44,7 +44,7 @@
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-gestione</artifactId>
+			<artifactId>govpay-api-backoffice</artifactId>
 			<type>war</type>
 		</dependency>
 		
