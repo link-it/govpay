@@ -30,7 +30,6 @@ public class DominiConverter {
 			dominio.setAuxDigit(Integer.parseInt(dominioPost.getAuxDigit()));
 		//dominio.setCbill(dominioPost.getcbill());
 		dominio.setCodDominio(idDominio);
-		dominio.setContiAccredito("ContiAccredito".getBytes());
 		//dominio.setCustomIuv(dominioPost.getc);
 		dominio.setGln(dominioPost.getGln());
 		dominio.setIdApplicazioneDefault(null);
@@ -48,7 +47,6 @@ public class DominiConverter {
 		if(dominioPost.getSegregationCode() != null)
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
 		
-		dominio.setTabellaControparti("TabellaControparti".getBytes());
 		
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
