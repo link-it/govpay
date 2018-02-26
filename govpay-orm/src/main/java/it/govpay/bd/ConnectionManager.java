@@ -22,11 +22,12 @@ package it.govpay.bd;
 import java.sql.Connection;
 import java.util.Properties;
 
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsAlreadyExistsException;
 import org.openspcoop2.utils.datasource.DataSource;
 import org.openspcoop2.utils.datasource.DataSourceFactory;
 import org.openspcoop2.utils.datasource.DataSourceParams;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -42,7 +43,7 @@ public class ConnectionManager {
 	public static void initialize() throws Exception {
 		if(initialized) return;
 		
-		ConnectionManager.log = Logger.getLogger(ConnectionManager.class);
+		ConnectionManager.log = LoggerWrapperFactory.getLogger(ConnectionManager.class);
 		ConnectionManager.log.info("Init ConnectionManager");
 		ConnectionManager.jdbcProperties = new JDBCServiceManagerProperties();
 		ConnectionManager.jdbcProperties.setDatabaseType(GovpayConfig.getInstance().getDatabaseType());

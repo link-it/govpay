@@ -141,7 +141,7 @@ public class BasicBD {
 	
 	private Connection connection;
 	private boolean isClosed;
-	private static Logger log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
+	private static Logger log;
 	private Long idOperatore;
 	
 	BasicBD father;
@@ -158,6 +158,8 @@ public class BasicBD {
 		this.isClosed = true;
 		this.idTransaction = idTransaction;
 		this.idModulo = getCaller();
+		if(log == null)
+			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 		this.setupConnection(idTransaction, idModulo);
 	}
 	

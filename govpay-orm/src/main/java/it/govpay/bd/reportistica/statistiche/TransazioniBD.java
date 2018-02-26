@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.nativequeries.NativeQueries;
@@ -37,12 +37,12 @@ public class TransazioniBD extends BasicBD {
 			lstReturnType.add(Long.class);
 
 			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoQuery(filtro.getTipoIntervallo(), filtro.getData(), filtro.getLimit(), filtro);
-			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
+			LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
 
 			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoValues(filtro.getTipoIntervallo(), filtro.getData(), filtro.getLimit(), filtro);
-			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
+			LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug("Params: ");
 			for(Object obj: array) {
-				Logger.getLogger(JDBCServiceManager.class).debug(obj);
+				LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug(obj.toString());
 			}
 
 			List<List<Object>> lstRecords = this.getRptService().nativeQuery(nativeQueryString, lstReturnType, array);
@@ -68,12 +68,12 @@ public class TransazioniBD extends BasicBD {
 			lstReturnType.add(Long.class);
 
 			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerPspQuery(filtro.getTipoIntervallo(), filtro.getData(), filtro);
-			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
+			LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
 
 			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerPspValues(filtro.getTipoIntervallo(), filtro.getData(), filtro);
-			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
+			LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug("Params: ");
 			for(Object obj: array) {
-				Logger.getLogger(JDBCServiceManager.class).debug(obj);
+				LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug(obj.toString());
 			}
 
 			List<List<Object>> lstRecords = this.getRptService().nativeQuery(nativeQueryString, lstReturnType, array);

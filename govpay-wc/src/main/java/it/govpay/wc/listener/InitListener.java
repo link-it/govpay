@@ -29,7 +29,6 @@ import it.govpay.core.utils.GpThreadLocal;
 public class InitListener implements ServletContextListener{
 
 	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
-	private static org.apache.log4j.Logger logv1 = org.apache.log4j.LogManager.getLogger(InitListener.class);	
 	private static boolean initialized = false;
 
 	public static boolean isInitialized() {
