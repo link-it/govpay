@@ -44,6 +44,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 
 	private String dbType;
 	private Long idDominio;
+	private String codDominio;
 	private List<Long> listaIdUo = null;
 	private String codUo= null;
 	private String codIdentificativo= null;
@@ -70,6 +71,12 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			if(this.idDominio != null){
 				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
 				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), idDominio);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd) newExpression.and();
+				newExpression.equals(Uo.model().ID_DOMINIO.COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
 			
@@ -190,4 +197,13 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	public void setRagioneSociale(String ragioneSociale) {
 		this.ragioneSociale = ragioneSociale;
 	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+	
 }

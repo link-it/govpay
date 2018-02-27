@@ -4,6 +4,7 @@ package it.govpay.rs.v1.beans;
 import java.math.BigDecimal;
 import java.text.ParseException;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -75,5 +76,10 @@ public class PagamentoPortale extends it.govpay.rs.v1.beans.base.Pagamento {
 
 	}
 
-
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
+	}
 }

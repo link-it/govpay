@@ -60,8 +60,8 @@ import org.openspcoop2.utils.logger.config.Log4jConfig;
 @Singleton
 public class StartupEjb {
 
-	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
-	private static Logger logv1 = LoggerWrapperFactory.getLogger(StartupEjb.class);	
+	private static Logger log = null;//LoggerWrapperFactory.getLogger("boot");	
+//	private static Logger logv1 = LoggerWrapperFactory.getLogger(StartupEjb.class);	
 
 	@PostConstruct
 	public void init() {
@@ -87,13 +87,13 @@ public class StartupEjb {
 				LoggerWrapperFactory.setLogConfiguration(log4j2Config);
 				log = LoggerWrapperFactory.getLogger("boot");	
 				
-				log.info("Inizializzazione GovPay 3.0.0 (build " + commit + ") in corso");
+				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
 				log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
 			} else {
-				LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
+//				LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
 				log = LoggerWrapperFactory.getLogger("boot");	
 
-				log.info("Inizializzazione GovPay 3.0.0 (build " + commit + ") in corso.");
+				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso.");
 				log.info("Configurazione logger da classpath.");
 			}
 			gpConfig.readProperties();

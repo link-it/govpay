@@ -3,8 +3,12 @@ package it.govpay.rs.v1.beans.base;
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import it.govpay.rs.v1.beans.base.Soggetto;
 import it.govpay.rs.v1.beans.base.StatoPagamento;
+import it.govpay.rs.v1.serializer.CustomBigDecimalSerializer;
+
 import java.math.BigDecimal;
 import java.util.Date;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -195,6 +199,7 @@ public class Pagamento extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("importo")
+  @JsonSerialize(using = CustomBigDecimalSerializer.class)
   public BigDecimal getImporto() {
     return importo;
   }

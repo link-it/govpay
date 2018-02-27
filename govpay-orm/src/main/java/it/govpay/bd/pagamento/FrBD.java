@@ -37,11 +37,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 public class FrBD extends BasicBD {
 
@@ -155,7 +156,7 @@ public class FrBD extends BasicBD {
 		return new FrFilter(this.getFrService(),simpleSearch);
 	}
 	
-	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 
 	public long countExt(FrFilter filter) throws ServiceException {
 		try {

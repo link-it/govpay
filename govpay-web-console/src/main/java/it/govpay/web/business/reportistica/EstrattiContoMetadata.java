@@ -15,10 +15,11 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -37,7 +38,7 @@ import net.sf.json.JsonConfig;
 public class EstrattiContoMetadata extends BasicBD{
 
 	private CloseableHttpClient httpClient;
-	private Logger log = Logger.getLogger(EstrattiContoMetadata.class);
+	private Logger log = LoggerWrapperFactory.getLogger(EstrattiContoMetadata.class);
 	private static TreeMap<String, LinkedHashMap<Long, EstrattoContoMetadata>> mapEC = null;  
 
 	public EstrattiContoMetadata(BasicBD basicBD) {
