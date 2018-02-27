@@ -58,7 +58,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Applicazione.model()));
 			this.listaFieldSimpleSearch.add(Applicazione.model().COD_APPLICAZIONE);
-			this.fieldAbilitato = Applicazione.model().ABILITATO;
+			this.fieldAbilitato = Applicazione.model().ID_UTENZA.ABILITATO;
 		} catch(Exception e){
 			
 		}

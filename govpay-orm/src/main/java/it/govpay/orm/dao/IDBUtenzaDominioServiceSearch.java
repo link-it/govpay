@@ -19,13 +19,12 @@
  */
 package it.govpay.orm.dao;
 
-import it.govpay.orm.Ruolo;
-import org.openspcoop2.generic_project.dao.IDBServiceSearchWithId;
-import it.govpay.orm.IdRuolo;
+import it.govpay.orm.UtenzaDominio;
+import org.openspcoop2.generic_project.dao.IDBServiceSearchWithoutId;
 
 
 /** 
-* Service can be used for research objects on the backend of type it.govpay.orm.Ruolo  
+* Service can be used for research objects on the backend of type it.govpay.orm.UtenzaDominio  
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -33,5 +32,5 @@ import it.govpay.orm.IdRuolo;
  * @version $Rev$, $Date$
  */
 
-public interface IDBRuoloServiceSearch extends IRuoloServiceSearch,IDBServiceSearchWithId<Ruolo, IdRuolo> {
+public interface IDBUtenzaDominioServiceSearch extends IUtenzaDominioServiceSearch,IDBServiceSearchWithoutId<UtenzaDominio> {
 }

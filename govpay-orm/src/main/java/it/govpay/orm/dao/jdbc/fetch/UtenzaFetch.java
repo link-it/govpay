@@ -30,18 +30,18 @@ import java.util.Map;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
-import it.govpay.orm.Ruolo;
+import it.govpay.orm.Utenza;
 
 
 /**     
- * RuoloFetch
+ * UtenzaFetch
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class RuoloFetch extends AbstractJDBCFetch {
+public class UtenzaFetch extends AbstractJDBCFetch {
 
 	@Override
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
@@ -50,14 +50,14 @@ public class RuoloFetch extends AbstractJDBCFetch {
 			JDBCParameterUtilities jdbcParameterUtilities =  
 					new JDBCParameterUtilities(tipoDatabase);
 
-			if(model.equals(Ruolo.model())){
-				Ruolo object = new Ruolo();
+			if(model.equals(Utenza.model())){
+				Utenza object = new Utenza();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodRuolo", Ruolo.model().COD_RUOLO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_ruolo", Ruolo.model().COD_RUOLO.getFieldType()));
-				setParameter(object, "setDescrizione", Ruolo.model().DESCRIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione", Ruolo.model().DESCRIZIONE.getFieldType()));
+				setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "principal", Utenza.model().PRINCIPAL.getFieldType()));
+				setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "abilitato", Utenza.model().ABILITATO.getFieldType()));
 				return object;
 			}
 			
@@ -76,14 +76,14 @@ public class RuoloFetch extends AbstractJDBCFetch {
 		
 		try{
 
-			if(model.equals(Ruolo.model())){
-				Ruolo object = new Ruolo();
+			if(model.equals(Utenza.model())){
+				Utenza object = new Utenza();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodRuolo", Ruolo.model().COD_RUOLO.getFieldType(),
-					this.getObjectFromMap(map,"codRuolo"));
-				setParameter(object, "setDescrizione", Ruolo.model().DESCRIZIONE.getFieldType(),
-					this.getObjectFromMap(map,"descrizione"));
+				setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
+					this.getObjectFromMap(map,"principal"));
+				setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"abilitato"));
 				return object;
 			}
 			
@@ -103,8 +103,8 @@ public class RuoloFetch extends AbstractJDBCFetch {
 		
 		try{
 
-			if(model.equals(Ruolo.model())){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("ruoli","id","seq_ruoli","ruoli_init_seq");
+			if(model.equals(Utenza.model())){
+				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("utenze","id","seq_utenze","utenze_init_seq");
 			}
 			
 			else{

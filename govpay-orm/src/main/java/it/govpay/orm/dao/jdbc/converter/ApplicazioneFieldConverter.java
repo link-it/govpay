@@ -67,6 +67,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
+		if(field.equals(Applicazione.model().ID_UTENZA.PRINCIPAL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal";
+			}else{
+				return "principal";
+			}
+		}
 		if(field.equals(Applicazione.model().COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
@@ -74,18 +81,11 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(Applicazione.model().ABILITATO)){
+		if(field.equals(Applicazione.model().AUTO_IUV)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".abilitato";
+				return this.toAliasTable(field)+".auto_iuv";
 			}else{
-				return "abilitato";
-			}
-		}
-		if(field.equals(Applicazione.model().PRINCIPAL)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".principal";
-			}else{
-				return "principal";
+				return "auto_iuv";
 			}
 		}
 		if(field.equals(Applicazione.model().FIRMA_RICEVUTA)){
@@ -150,13 +150,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
+		if(field.equals(Applicazione.model().ID_UTENZA.PRINCIPAL)){
+			return this.toTable(Applicazione.model().ID_UTENZA, returnAlias);
+		}
 		if(field.equals(Applicazione.model().COD_APPLICAZIONE)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
-		if(field.equals(Applicazione.model().ABILITATO)){
-			return this.toTable(Applicazione.model(), returnAlias);
-		}
-		if(field.equals(Applicazione.model().PRINCIPAL)){
+		if(field.equals(Applicazione.model().AUTO_IUV)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().FIRMA_RICEVUTA)){
@@ -195,6 +195,9 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Applicazione.model())){
 			return "applicazioni";
+		}
+		if(model.equals(Applicazione.model().ID_UTENZA)){
+			return "utenze";
 		}
 
 

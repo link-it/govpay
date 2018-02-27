@@ -7,10 +7,8 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
@@ -43,10 +41,6 @@ public class Ruoli extends MultiSelectList<String, List<String>>{
 			BasicBD bd = (BasicBD) objects[0];
 			RuoliBD ruoliBD = new RuoliBD(bd);
 			RuoloFilter ruoliFilter = ruoliBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			ruoliFilter.getFilterSortList().add(fsw);
 
 			List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
 

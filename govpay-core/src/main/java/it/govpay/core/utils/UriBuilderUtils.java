@@ -33,8 +33,8 @@ public class UriBuilderUtils {
 		return getList(getFromPsp(codPsp), "canali").build().toString();
 	}
 	
-	public static String getCanale(String codPsp, String codCanale) {
-		return getList(getFromPsp(codPsp), "canali").path(codCanale).build().toString();
+	public static String getCanale(String codPsp, String codCanale, String tipoVersamento) {
+		return getList(getFromPsp(codPsp), "canali").path(codCanale).path(tipoVersamento).build().toString();
 	}
 	
 	public static String getPendenzaByIdA2AIdPendenza(String idA2A, String idPendenza) {

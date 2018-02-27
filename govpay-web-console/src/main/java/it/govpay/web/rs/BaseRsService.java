@@ -43,12 +43,10 @@ import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
@@ -263,10 +261,6 @@ public abstract class BaseRsService {
 		try {
 			RuoliBD ruoliBD = new RuoliBD(bd);
 			RuoloFilter ruoliFilter = ruoliBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Ruolo.model().COD_RUOLO);
-			fsw.setSortOrder(SortOrder.ASC);
-			ruoliFilter.getFilterSortList().add(fsw);
 
 			lst = ruoliBD.findAll(ruoliFilter);
 			return lst;

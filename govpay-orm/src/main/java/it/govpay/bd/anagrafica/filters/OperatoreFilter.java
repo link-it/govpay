@@ -46,9 +46,9 @@ public class OperatoreFilter extends AbstractFilter {
 	
 	public OperatoreFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-		this.listaFieldSimpleSearch.add(Operatore.model().PRINCIPAL);
+		this.listaFieldSimpleSearch.add(Operatore.model().ID_UTENZA.PRINCIPAL);
 		this.listaFieldSimpleSearch.add(Operatore.model().NOME);
-		this.fieldAbilitato = it.govpay.orm.Operatore.model().ABILITATO;
+		this.fieldAbilitato = it.govpay.orm.Operatore.model().ID_UTENZA.ABILITATO;
 	}
 
 	@Override
@@ -58,14 +58,14 @@ public class OperatoreFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.principal != null){
-				newExpression.ilike(Operatore.model().PRINCIPAL, this.principal,LikeMode.ANYWHERE);
+				newExpression.ilike(Operatore.model().ID_UTENZA.PRINCIPAL, this.principal,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
-			if(this.ruolo != null){
-				if(addAnd) newExpression.and();
-				newExpression.ilike(Operatore.model().PROFILO, this.ruolo,LikeMode.ANYWHERE);
-				addAnd = true;
-			}
+//			if(this.ruolo != null){ //TODO pintori
+//				if(addAnd) newExpression.and();
+//				newExpression.ilike(Operatore.model().PROFILO, this.ruolo,LikeMode.ANYWHERE);
+//				addAnd = true;
+//			}
 			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			

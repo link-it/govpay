@@ -111,11 +111,8 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().GLN,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().RAGIONE_SOCIALE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().RIUSO_IUV,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().CUSTOM_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().AUX_DIGIT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX_STRICT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().SEGREGATION_CODE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().NDP_STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().NDP_OPERAZIONE,false),"?");
@@ -133,11 +130,8 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getGln(),Dominio.model().GLN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getAbilitato(),Dominio.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getRagioneSociale(),Dominio.model().RAGIONE_SOCIALE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getRiusoIUV(),Dominio.model().RIUSO_IUV.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCustomIUV(),Dominio.model().CUSTOM_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getAuxDigit(),Dominio.model().AUX_DIGIT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIuvPrefix(),Dominio.model().IUV_PREFIX.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIuvPrefixStrict(),Dominio.model().IUV_PREFIX_STRICT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getSegregationCode(),Dominio.model().SEGREGATION_CODE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getNdpStato(),Dominio.model().NDP_STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getNdpOperazione(),Dominio.model().NDP_OPERAZIONE.getFieldType()),
@@ -242,16 +236,10 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		lstObjects_dominio.add(new JDBCObject(dominio.getAbilitato(), Dominio.model().ABILITATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().RAGIONE_SOCIALE,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getRagioneSociale(), Dominio.model().RAGIONE_SOCIALE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().RIUSO_IUV,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getRiusoIUV(), Dominio.model().RIUSO_IUV.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().CUSTOM_IUV,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getCustomIUV(), Dominio.model().CUSTOM_IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().AUX_DIGIT,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getAuxDigit(), Dominio.model().AUX_DIGIT.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getIuvPrefix(), Dominio.model().IUV_PREFIX.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX_STRICT,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getIuvPrefixStrict(), Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().SEGREGATION_CODE,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getSegregationCode(), Dominio.model().SEGREGATION_CODE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().NDP_STATO,false), "?");

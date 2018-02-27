@@ -19,26 +19,15 @@
  */
 package it.govpay.bd.anagrafica;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.model.Acl;
-import it.govpay.orm.ACL;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdOperatore;
-import it.govpay.orm.IdRuolo;
-import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
 
 public class AclBD extends BasicBD {
 
@@ -46,64 +35,18 @@ public class AclBD extends BasicBD {
 		super(basicBD);
 	}
 	
-	private List<Acl> findAll(IPaginatedExpression exp) throws ServiceException, NotImplementedException, NotFoundException {
-		List<ACL> findAll = this.getAclService().findAll(exp);
-		List<Acl> findAllDTO = new ArrayList<Acl>(); 
-		for(ACL acl : findAll) {
-			findAllDTO.add(AclConverter.toDTO(acl, this));
-		}
-		return findAllDTO;
-	}
-	
-	
 	/*
 	 * OPERATORE
 	 */
 
 	public void insertAclOperatore(Long id, List<Acl> acls) throws ServiceException {
-		for(Acl acl: acls) {
-			try{
-				ACL aclVo = AclConverter.toVO(acl, this);
-				IdOperatore idOperatore = new IdOperatore();
-				idOperatore.setId(id);
-				aclVo.setIdOperatore(idOperatore);
-				this.getAclService().create(aclVo);
-			} catch(NotImplementedException e) {
-				throw new ServiceException(e);
-			} catch (NotFoundException e) {
-				throw new ServiceException(e);
-			}
-		}
 	}
 	
 	public List<Acl> getAclOperatore(long idOperatore) throws ServiceException, NotFoundException {
-		try{
-			IPaginatedExpression exp = this.getAclService().newPaginatedExpression();
-			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_operatore", Long.class, "id_operatore", aclFC.toAliasTable(ACL.model())), idOperatore);
-			return findAll(exp);
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return null;
 	}
 
 	public void deleteAclOperatore(long idOperatore) throws ServiceException {
-		try {
-			IExpression exp = this.getAclService().newExpression();
-			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_operatore", Long.class, "id_operatore", aclFC.toAliasTable(ACL.model())), idOperatore);
-			this.getAclService().deleteAll(exp);
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		}
 	}
 	
 	/*
@@ -111,64 +54,17 @@ public class AclBD extends BasicBD {
 	 */
 	
 	public List<Acl> getAclApplicazione(long idApplicazione) throws ServiceException, NotFoundException {
-		try {
-			IPaginatedExpression exp = this.getAclService().newPaginatedExpression();
-			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", aclFC.toAliasTable(ACL.model())), idApplicazione);
-			return findAll(exp);
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return null;
 	}
 	
 	public List<Acl> getAclPortale(long idPortale) throws ServiceException, NotFoundException {
-		try {
-			IPaginatedExpression exp = this.getAclService().newPaginatedExpression();
-			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_portale", Long.class, "id_portale", aclFC.toAliasTable(ACL.model())), idPortale);
-			return findAll(exp);
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return null;
 	}
 	
 	public void insertAclApplicazione(Long id, List<Acl> acls) throws ServiceException {
-		for(Acl acl: acls) {
-			try{
-				ACL aclVo = AclConverter.toVO(acl, this);
-				IdApplicazione idApplicazione = new IdApplicazione();
-				idApplicazione.setId(id);
-				aclVo.setIdApplicazione(idApplicazione);
-				this.getAclService().create(aclVo);
-			} catch(NotImplementedException e) {
-				throw new ServiceException(e);
-			} catch (NotFoundException e) {
-				throw new ServiceException(e);
-			}
-		}
 	}
 	
 	public void deleteAclApplicazione(long idApplicazione) throws ServiceException {
-		try {
-			IExpression exp = this.getAclService().newExpression();
-			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", aclFC.toAliasTable(ACL.model())), idApplicazione);
-			this.getAclService().deleteAll(exp);
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		}
 	}
 
 	
@@ -177,48 +73,12 @@ public class AclBD extends BasicBD {
 	 */
 
 	public void insertAclRuolo(Long id, List<Acl> acls) throws ServiceException {
-		for(Acl acl: acls) {
-			try{
-				ACL aclVo = AclConverter.toVO(acl, this);
-				IdRuolo idRuolo = new IdRuolo();
-				idRuolo.setId(id);
-				aclVo.setIdRuolo(idRuolo);
-				this.getAclService().create(aclVo);
-			} catch(NotImplementedException e) {
-				throw new ServiceException(e);
-			} catch (NotFoundException e) {
-				throw new ServiceException(e);
-			}
-		}
 	}
 	
 	public List<Acl> getAclRuolo(long idRuolo) throws ServiceException, NotFoundException {
-		try{
-			IPaginatedExpression exp = this.getAclService().newPaginatedExpression();
-			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_ruolo", Long.class, "id_ruolo", aclFC.toAliasTable(ACL.model())), idRuolo);
-			return findAll(exp);
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return null;
 	}
 
 	public void deleteAclRuolo(long idRuolo) throws ServiceException {
-		try {
-			IExpression exp = this.getAclService().newExpression();
-			ACLFieldConverter aclFC = new ACLFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_ruolo", Long.class, "id_ruolo", aclFC.toAliasTable(ACL.model())), idRuolo);
-			this.getAclService().deleteAll(exp);
-		} catch(ExpressionException e) {
-			throw new ServiceException(e);
-		} catch(ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		}
 	}
 }

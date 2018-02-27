@@ -35,9 +35,9 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Applicazione">
  * 		&lt;sequence>
+ * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="autoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="firmaRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreVerifica" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
@@ -59,9 +59,9 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Applicazione", 
   propOrder = {
+  	"idUtenza",
   	"codApplicazione",
-  	"abilitato",
-  	"principal",
+  	"autoIUV",
   	"firmaRicevuta",
   	"codConnettoreEsito",
   	"codConnettoreVerifica",
@@ -92,6 +92,14 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
 		this.id=new Long(-1);
   }
 
+  public IdUtenza getIdUtenza() {
+    return this.idUtenza;
+  }
+
+  public void setIdUtenza(IdUtenza idUtenza) {
+    this.idUtenza = idUtenza;
+  }
+
   public java.lang.String getCodApplicazione() {
     return this.codApplicazione;
   }
@@ -100,24 +108,16 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.codApplicazione = codApplicazione;
   }
 
-  public boolean isAbilitato() {
-    return this.abilitato;
+  public boolean isAutoIUV() {
+    return this.autoIUV;
   }
 
-  public boolean getAbilitato() {
-    return this.abilitato;
+  public boolean getAutoIUV() {
+    return this.autoIUV;
   }
 
-  public void setAbilitato(boolean abilitato) {
-    this.abilitato = abilitato;
-  }
-
-  public java.lang.String getPrincipal() {
-    return this.principal;
-  }
-
-  public void setPrincipal(java.lang.String principal) {
-    this.principal = principal;
+  public void setAutoIUV(boolean autoIUV) {
+    this.autoIUV = autoIUV;
   }
 
   public java.lang.String getFirmaRicevuta() {
@@ -199,17 +199,16 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   }
 
 
+  @XmlElement(name="idUtenza",required=true,nillable=false)
+  protected IdUtenza idUtenza;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codApplicazione",required=true,nillable=false)
   protected java.lang.String codApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="abilitato",required=true,nillable=false)
-  protected boolean abilitato;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="principal",required=true,nillable=false)
-  protected java.lang.String principal;
+  @XmlElement(name="autoIUV",required=true,nillable=false)
+  protected boolean autoIUV;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="firmaRicevuta",required=true,nillable=false)

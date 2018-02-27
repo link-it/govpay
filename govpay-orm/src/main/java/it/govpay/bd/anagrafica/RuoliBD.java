@@ -19,24 +19,15 @@
  */
 package it.govpay.bd.anagrafica;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.RuoloFilter;
-import it.govpay.bd.model.converter.AclConverter;
-import it.govpay.bd.model.converter.RuoloConverter;
-import it.govpay.model.Acl;
 import it.govpay.model.Ruolo;
-import it.govpay.orm.ACL;
-import it.govpay.orm.IdRuolo;
-import it.govpay.orm.dao.jdbc.JDBCRuoloServiceSearch;
 
 public class RuoliBD extends BasicBD {
 
@@ -54,19 +45,7 @@ public class RuoliBD extends BasicBD {
 	 * @throws ServiceException in caso di errore DB.
 	 */
 	public Ruolo getRuolo(Long idRuolo) throws NotFoundException, ServiceException, MultipleResultException {
-
-		if(idRuolo == null) {
-			throw new ServiceException("Parameter 'id' cannot be NULL");
-		}
-
-		long id = idRuolo.longValue();
-
-		try {
-			it.govpay.orm.Ruolo ruoloVO = ((JDBCRuoloServiceSearch)this.getRuoloService()).get(id);
-			return getRuolo(ruoloVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return null;
 	}
 
 	/**
@@ -79,36 +58,7 @@ public class RuoliBD extends BasicBD {
 	 * @throws ServiceException in caso di errore DB.
 	 */
 	public Ruolo getRuolo(String codRuolo) throws NotFoundException, MultipleResultException, ServiceException {
-		try {
-			IdRuolo id = new IdRuolo();
-			id.setCodRuolo(codRuolo);
-			it.govpay.orm.Ruolo ruoloVO = this.getRuoloService().get(id);
-			return getRuolo(ruoloVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	/**
-	 * Recupera l'ruolo tramite l'id logico
-	 * 
-	 * @param codEnte
-	 * @return
-	 * @throws NotFoundException se l'ente non esiste.
-	 * @throws MultipleResultException in caso di duplicati.
-	 * @throws ServiceException in caso di errore DB.
-	 */
-	public Ruolo getRuolo(it.govpay.orm.Ruolo ruoloVO) throws NotFoundException, MultipleResultException, ServiceException {
-		AclBD aclBD = new AclBD(this);
-		try{
-			List<Acl> acls = aclBD.getAclRuolo(ruoloVO.getId());
-
-			Ruolo ruolo = RuoloConverter.toDTO(ruoloVO, acls);
-			return ruolo;
-
-		} catch(NotFoundException e) {
-			throw new ServiceException(e);
-		}
+		return null;
 	}
 	
 
@@ -119,58 +69,6 @@ public class RuoliBD extends BasicBD {
 	 * @throws ServiceException in caso di errore DB.
 	 */
 	public void updateRuolo(Ruolo ruolo) throws NotFoundException, ServiceException {
-		
-		boolean wasAutocommit = this.isAutoCommit();
-		
-		try {
-
-			if(this.isAutoCommit()) {
-				setAutoCommit(false);
-			}
-			
-			it.govpay.orm.Ruolo vo = RuoloConverter.toVO(ruolo);
-			IdRuolo idRuolo = this.getRuoloService().convertToId(vo);
-
-			if(!this.getRuoloService().exists(idRuolo)) {
-				throw new NotFoundException("Ruolo con id ["+idRuolo.toJson()+"] non trovato");
-			}
-			this.getRuoloService().update(idRuolo, vo);
-
-			AclBD aclBD = new AclBD(this);
-			aclBD.deleteAclRuolo(ruolo.getId());
-			
-			if(ruolo.getAcls() != null && !ruolo.getAcls().isEmpty()) {
-				 
-				for(Acl acl: ruolo.getAcls()) {
-					try{
-						ACL aclVo = AclConverter.toVO(acl, this);
-						IdRuolo idRuoloACL = new IdRuolo();
-						idRuoloACL.setId(ruolo.getId());
-						aclVo.setIdRuolo(idRuoloACL);
-						this.getAclService().create(aclVo);
-					} catch(NotFoundException e) {
-						throw new ServiceException(e);
-					}
-				}
-			}
-
-			
-			
-			ruolo.setId(vo.getId());
-			emitAudit(ruolo);
-			commit();
-		} catch (NotImplementedException e) {
-			rollback();
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			rollback();
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
-			rollback();
-			throw new ServiceException(e);
-		} finally {
-			setAutoCommit(wasAutocommit);
-		}
 	}
 
 	/**
@@ -179,70 +77,23 @@ public class RuoliBD extends BasicBD {
 	 * @throws ServiceException in caso di errore DB.
 	 */
 	public void insertRuolo(Ruolo ruolo) throws ServiceException{
-		try {
-
-			it.govpay.orm.Ruolo vo = RuoloConverter.toVO(ruolo);
-
-			this.getRuoloService().create(vo);
-			ruolo.setId(vo.getId());
-			
-			if(ruolo.getAcls() != null && !ruolo.getAcls().isEmpty()) {
-				 
-				for(Acl acl: ruolo.getAcls()) {
-					try{
-						ACL aclVo = AclConverter.toVO(acl, this);
-						IdRuolo idRuoloACL = new IdRuolo();
-						idRuoloACL.setId(ruolo.getId());
-						aclVo.setIdRuolo(idRuoloACL);
-						this.getAclService().create(aclVo);
-					} catch(NotFoundException e) {
-						throw new ServiceException(e);
-					}
-				}
-			}
-			
-			emitAudit(ruolo);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
 	}
 
 
 
 	public RuoloFilter newFilter() throws ServiceException {
-		return new RuoloFilter(this.getRuoloService());
+		return null;
 	}
 	
 	public RuoloFilter newFilter(boolean simpleSearch) throws ServiceException {
-		return new RuoloFilter(this.getRuoloService(),simpleSearch);
+		return null;
 	}
 
 	public long count(RuoloFilter filter) throws ServiceException {
-		try {
-			return this.getRuoloService().count(filter.toExpression()).longValue();
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return -1;
 	}
 
 	public List<Ruolo> findAll(RuoloFilter filter) throws ServiceException {
-		try {
-
-			List<Ruolo> dtoList = new ArrayList<Ruolo>();
-			for(it.govpay.orm.Ruolo vo: this.getRuoloService().findAll(filter.toPaginatedExpression())) {
-				dtoList.add(getRuolo(vo));
-			}
-			return dtoList;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		}
+		return null;
 	}
-
-//	private Ruolo getRuolo(it.govpay.orm.Ruolo ruoloVO) throws ServiceException {
-//		return RuoloConverter.toDTO(ruoloVO);
-//	}
 }

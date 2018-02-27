@@ -28,8 +28,6 @@ public class IbanAccredito extends BasicModel {
 	private String codBicAccredito;
 	private String codIbanAppoggio;
 	private String codBicAppoggio;
-	private String idSellerBank;
-	private String idNegozio;
 	private boolean postale;
 	private boolean attivatoObep;
 	private boolean abilitato;
@@ -43,18 +41,6 @@ public class IbanAccredito extends BasicModel {
 	}
 	public void setCodIban(String codIban) {
 		this.codIban = codIban;
-	}
-	public String getIdSellerBank() {
-		return idSellerBank;
-	}
-	public void setIdSellerBank(String idSellerBank) {
-		this.idSellerBank = idSellerBank;
-	}
-	public String getIdNegozio() {
-		return idNegozio;
-	}
-	public void setIdNegozio(String idNegozio) {
-		this.idNegozio = idNegozio;
 	}
 	public boolean isPostale() {
 		return postale;

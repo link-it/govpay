@@ -109,13 +109,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdRuolo }
-     */
-    public IdRuolo createIdRuolo() {
-        return new IdRuolo();
-    }
-
-    /**
      * Create an instance of {@link Applicazione }
      */
     public Applicazione createApplicazione() {
@@ -162,6 +155,20 @@ public class ObjectFactory {
      */
     public RR createRR() {
         return new RR();
+    }
+
+    /**
+     * Create an instance of {@link IdUtenza }
+     */
+    public IdUtenza createIdUtenza() {
+        return new IdUtenza();
+    }
+
+    /**
+     * Create an instance of {@link UtenzaTributo }
+     */
+    public UtenzaTributo createUtenzaTributo() {
+        return new UtenzaTributo();
     }
 
     /**
@@ -277,6 +284,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link UtenzaDominio }
+     */
+    public UtenzaDominio createUtenzaDominio() {
+        return new UtenzaDominio();
+    }
+
+    /**
      * Create an instance of {@link Operatore }
      */
     public Operatore createOperatore() {
@@ -316,13 +330,6 @@ public class ObjectFactory {
      */
     public IuvSearch createIuvSearch() {
         return new IuvSearch();
-    }
-
-    /**
-     * Create an instance of {@link Ruolo }
-     */
-    public Ruolo createRuolo() {
-        return new Ruolo();
     }
 
     /**
@@ -470,6 +477,13 @@ public class ObjectFactory {
      */
     public IdSingolaRendicontazione createIdSingolaRendicontazione() {
         return new IdSingolaRendicontazione();
+    }
+
+    /**
+     * Create an instance of {@link Utenza }
+     */
+    public Utenza createUtenza() {
+        return new Utenza();
     }
 
     /**

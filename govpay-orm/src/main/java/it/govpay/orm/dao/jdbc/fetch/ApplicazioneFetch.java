@@ -56,10 +56,8 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodApplicazione", Applicazione.model().COD_APPLICAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", Applicazione.model().COD_APPLICAZIONE.getFieldType()));
-				setParameter(object, "setAbilitato", Applicazione.model().ABILITATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "abilitato", Applicazione.model().ABILITATO.getFieldType()));
-				setParameter(object, "setPrincipal", Applicazione.model().PRINCIPAL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "principal", Applicazione.model().PRINCIPAL.getFieldType()));
+				setParameter(object, "setAutoIUV", Applicazione.model().AUTO_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "auto_iuv", Applicazione.model().AUTO_IUV.getFieldType()));
 				setParameter(object, "setFirmaRicevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "firma_ricevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType()));
 				setParameter(object, "setCodConnettoreEsito", Applicazione.model().COD_CONNETTORE_ESITO.getFieldType(),
@@ -98,10 +96,8 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setCodApplicazione", Applicazione.model().COD_APPLICAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"codApplicazione"));
-				setParameter(object, "setAbilitato", Applicazione.model().ABILITATO.getFieldType(),
-					this.getObjectFromMap(map,"abilitato"));
-				setParameter(object, "setPrincipal", Applicazione.model().PRINCIPAL.getFieldType(),
-					this.getObjectFromMap(map,"principal"));
+				setParameter(object, "setAutoIUV", Applicazione.model().AUTO_IUV.getFieldType(),
+					this.getObjectFromMap(map,"autoIUV"));
 				setParameter(object, "setFirmaRicevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType(),
 					this.getObjectFromMap(map,"firmaRicevuta"));
 				setParameter(object, "setCodConnettoreEsito", Applicazione.model().COD_CONNETTORE_ESITO.getFieldType(),

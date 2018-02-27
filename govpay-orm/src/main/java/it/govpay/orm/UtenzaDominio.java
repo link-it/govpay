@@ -28,14 +28,15 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for id-ruolo complex type.
+/** <p>Java class for UtenzaDominio complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="id-ruolo">
+ * &lt;complexType name="UtenzaDominio">
  * 		&lt;sequence>
- * 			&lt;element name="codRuolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -48,16 +49,17 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "id-ruolo", 
+@XmlType(name = "UtenzaDominio", 
   propOrder = {
-  	"codRuolo"
+  	"idUtenza",
+  	"idDominio"
   }
 )
 
-@XmlRootElement(name = "id-ruolo")
+@XmlRootElement(name = "UtenzaDominio")
 
-public class IdRuolo extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public IdRuolo() {
+public class UtenzaDominio extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public UtenzaDominio() {
   }
 
   public Long getId() {
@@ -74,12 +76,20 @@ public class IdRuolo extends org.openspcoop2.utils.beans.BaseBean implements Ser
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getCodRuolo() {
-    return this.codRuolo;
+  public IdUtenza getIdUtenza() {
+    return this.idUtenza;
   }
 
-  public void setCodRuolo(java.lang.String codRuolo) {
-    this.codRuolo = codRuolo;
+  public void setIdUtenza(IdUtenza idUtenza) {
+    this.idUtenza = idUtenza;
+  }
+
+  public IdDominio getIdDominio() {
+    return this.idDominio;
+  }
+
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
   }
 
   private static final long serialVersionUID = 1L;
@@ -87,10 +97,24 @@ public class IdRuolo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlTransient
   private Long id;
 
+  private static it.govpay.orm.model.UtenzaDominioModel modelStaticInstance = null;
+  private static synchronized void initModelStaticInstance(){
+	  if(it.govpay.orm.UtenzaDominio.modelStaticInstance==null){
+  			it.govpay.orm.UtenzaDominio.modelStaticInstance = new it.govpay.orm.model.UtenzaDominioModel();
+	  }
+  }
+  public static it.govpay.orm.model.UtenzaDominioModel model(){
+	  if(it.govpay.orm.UtenzaDominio.modelStaticInstance==null){
+	  		initModelStaticInstance();
+	  }
+	  return it.govpay.orm.UtenzaDominio.modelStaticInstance;
+  }
 
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codRuolo",required=true,nillable=false)
-  protected java.lang.String codRuolo;
+  @XmlElement(name="idUtenza",required=true,nillable=false)
+  protected IdUtenza idUtenza;
+
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
 }

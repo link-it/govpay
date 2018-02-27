@@ -97,9 +97,9 @@ public class OperatoriBD extends BasicBD {
 		try {
 			IExpression expr = this.getOperatoreService().newExpression();
 			if(checkIgnoreCase)
-				expr.ilike(it.govpay.orm.Operatore.model().PRINCIPAL, principal, LikeMode.EXACT);
+				expr.ilike(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, principal, LikeMode.EXACT);
 			else 
-				expr.equals(it.govpay.orm.Operatore.model().PRINCIPAL, principal);
+				expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, principal);
 			
 			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
 			return getOperatore(operatoreVO);

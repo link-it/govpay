@@ -50,11 +50,8 @@ public class DominioConverter {
 		dto.setRagioneSociale(vo.getRagioneSociale());
 		dto.setGln(vo.getGln());
 		dto.setAbilitato(vo.isAbilitato());
-		dto.setRiusoIuv(vo.getRiusoIUV());
-		dto.setCustomIuv(vo.getCustomIUV());
 		dto.setAuxDigit(vo.getAuxDigit());
 		dto.setIuvPrefix(vo.getIuvPrefix());
-		dto.setIuvPrefixStrict(vo.isIuvPrefixStrict());
 		dto.setSegregationCode(vo.getSegregationCode());
 		dto.setNdpStato(vo.getNdpStato());
 		dto.setNdpOperazione(vo.getNdpOperazione());
@@ -77,11 +74,8 @@ public class DominioConverter {
 		vo.setRagioneSociale(dto.getRagioneSociale());
 		vo.setGln(dto.getGln());
 		vo.setAbilitato(dto.isAbilitato());
-		vo.setRiusoIUV(dto.isRiusoIuv());
-		vo.setCustomIUV(dto.isCustomIuv());
 		vo.setAuxDigit(dto.getAuxDigit());
 		vo.setIuvPrefix(dto.getIuvPrefix());
-		vo.setIuvPrefixStrict(dto.isIuvPrefixStrict());
 		IdStazione idStazione = new IdStazione();
 		idStazione.setId(dto.getIdStazione());
 		vo.setIdStazione(idStazione);

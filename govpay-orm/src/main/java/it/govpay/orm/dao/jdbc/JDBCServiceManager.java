@@ -79,8 +79,6 @@ import it.govpay.orm.dao.IRRServiceSearch;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.IRendicontazioneServiceSearch;
-import it.govpay.orm.dao.IRuoloService;
-import it.govpay.orm.dao.IRuoloServiceSearch;
 import it.govpay.orm.dao.IServiceManager;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
@@ -94,6 +92,12 @@ import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.ITributoServiceSearch;
 import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUoServiceSearch;
+import it.govpay.orm.dao.IUtenzaDominioService;
+import it.govpay.orm.dao.IUtenzaDominioServiceSearch;
+import it.govpay.orm.dao.IUtenzaService;
+import it.govpay.orm.dao.IUtenzaServiceSearch;
+import it.govpay.orm.dao.IUtenzaTributoService;
+import it.govpay.orm.dao.IUtenzaTributoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
 
@@ -530,7 +534,7 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:tipoTributo type:TipoTributo
+	 Services relating to the object with name:TipoTributo type:TipoTributo
 	 =====================================================================================================================
 	*/
 	
@@ -557,6 +561,8 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	public ITipoTributoService getTipoTributoService() throws ServiceException,NotImplementedException{
 		return new JDBCTipoTributoService(this);
 	}
+	
+	
 	
 	/*
 	 =====================================================================================================================
@@ -592,38 +598,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:Ruolo type:Ruolo
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Ruolo}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Ruolo}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRuoloServiceSearch getRuoloServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCRuoloServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ruolo}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ruolo}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRuoloService getRuoloService() throws ServiceException,NotImplementedException{
-		return new JDBCRuoloService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:ACL type:ACL
 	 =====================================================================================================================
 	*/
@@ -650,6 +624,102 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IACLService getACLService() throws ServiceException,NotImplementedException{
 		return new JDBCACLService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:UtenzaDominio type:UtenzaDominio
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaDominio}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaDominio}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IUtenzaDominioServiceSearch getUtenzaDominioServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaDominioServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaDominio}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaDominio}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IUtenzaDominioService getUtenzaDominioService() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaDominioService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:UtenzaTributo type:UtenzaTributo
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IUtenzaTributoServiceSearch getUtenzaTributoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTributoServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IUtenzaTributoService getUtenzaTributoService() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTributoService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Utenza type:Utenza
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Utenza}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Utenza}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IUtenzaServiceSearch getUtenzaServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Utenza}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Utenza}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IUtenzaService getUtenzaService() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaService(this);
 	}
 	
 	

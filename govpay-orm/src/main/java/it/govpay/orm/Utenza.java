@@ -28,15 +28,15 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for Ruolo complex type.
+/** <p>Java class for Utenza complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Ruolo">
+ * &lt;complexType name="Utenza">
  * 		&lt;sequence>
- * 			&lt;element name="codRuolo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="descrizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -49,17 +49,17 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Ruolo", 
+@XmlType(name = "Utenza", 
   propOrder = {
-  	"codRuolo",
-  	"descrizione"
+  	"principal",
+  	"abilitato"
   }
 )
 
-@XmlRootElement(name = "Ruolo")
+@XmlRootElement(name = "Utenza")
 
-public class Ruolo extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public Ruolo() {
+public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public Utenza() {
   }
 
   public Long getId() {
@@ -76,20 +76,24 @@ public class Ruolo extends org.openspcoop2.utils.beans.BaseBean implements Seria
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getCodRuolo() {
-    return this.codRuolo;
+  public java.lang.String getPrincipal() {
+    return this.principal;
   }
 
-  public void setCodRuolo(java.lang.String codRuolo) {
-    this.codRuolo = codRuolo;
+  public void setPrincipal(java.lang.String principal) {
+    this.principal = principal;
   }
 
-  public java.lang.String getDescrizione() {
-    return this.descrizione;
+  public boolean isAbilitato() {
+    return this.abilitato;
   }
 
-  public void setDescrizione(java.lang.String descrizione) {
-    this.descrizione = descrizione;
+  public boolean getAbilitato() {
+    return this.abilitato;
+  }
+
+  public void setAbilitato(boolean abilitato) {
+    this.abilitato = abilitato;
   }
 
   private static final long serialVersionUID = 1L;
@@ -97,26 +101,26 @@ public class Ruolo extends org.openspcoop2.utils.beans.BaseBean implements Seria
   @XmlTransient
   private Long id;
 
-  private static it.govpay.orm.model.RuoloModel modelStaticInstance = null;
+  private static it.govpay.orm.model.UtenzaModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
-	  if(it.govpay.orm.Ruolo.modelStaticInstance==null){
-  			it.govpay.orm.Ruolo.modelStaticInstance = new it.govpay.orm.model.RuoloModel();
+	  if(it.govpay.orm.Utenza.modelStaticInstance==null){
+  			it.govpay.orm.Utenza.modelStaticInstance = new it.govpay.orm.model.UtenzaModel();
 	  }
   }
-  public static it.govpay.orm.model.RuoloModel model(){
-	  if(it.govpay.orm.Ruolo.modelStaticInstance==null){
+  public static it.govpay.orm.model.UtenzaModel model(){
+	  if(it.govpay.orm.Utenza.modelStaticInstance==null){
 	  		initModelStaticInstance();
 	  }
-	  return it.govpay.orm.Ruolo.modelStaticInstance;
+	  return it.govpay.orm.Utenza.modelStaticInstance;
   }
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codRuolo",required=true,nillable=false)
-  protected java.lang.String codRuolo;
+  @XmlElement(name="principal",required=true,nillable=false)
+  protected java.lang.String principal;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="descrizione",required=true,nillable=false)
-  protected java.lang.String descrizione;
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="abilitato",required=true,nillable=false,defaultValue="true")
+  protected boolean abilitato = true;
 
 }

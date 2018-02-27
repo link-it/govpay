@@ -107,3 +107,135 @@ ALTER TABLE applicazioni ADD reg_exp VARCHAR2(1024 CHAR);
 
 ALTER TABLE domini DROP COLUMN xml_conti_accredito;
 ALTER TABLE domini DROP COLUMN xml_tabella_controparti;
+
+
+DROP TABLE acl;
+CREATE TABLE acl
+(
+	ruolo VARCHAR2(255 CHAR) NOT NULL,
+	principal VARCHAR2(255 CHAR) NOT NULL,
+	servizio VARCHAR2(255 CHAR) NOT NULL,
+	diritti NUMBER NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_acl PRIMARY KEY (id)
+);
+
+DROP TABLE ruoli;
+DROP SEQUENCE seq_ruoli;
+DROP TRIGGER trg_ruoli;
+
+CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE utenze
+(
+	principal VARCHAR2(255 CHAR) NOT NULL,
+	abilitato NUMBER NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_utenze_1 UNIQUE (principal),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_utenze PRIMARY KEY (id)
+);
+
+ALTER TABLE utenze MODIFY abilitato DEFAULT 1;
+
+CREATE TRIGGER trg_utenze
+BEFORE
+insert on utenze
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_utenze.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_utenze_domini MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE utenze_domini
+(
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_utenze_domini
+BEFORE
+insert on utenze_domini
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_utenze_domini.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_utenze_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE utenze_tributi
+(
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
+	id_tributo NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_utenze_tributi
+BEFORE
+insert on utenze_tributi
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_utenze_tributi.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+insert into utenze (principal) select distinct principal from ((select principal from operatori) union (select principal from applicazioni) )as s;
+
+
+ALTER TABLE applicazioni ADD id_utenza NUMBER;
+UPDATE applicazioni set id_utenza = (select id from utenze where principal = applicazioni.principal);
+ALTER TABLE applicazioni MODIFY (id_utenza NOT NULL);
+ALTER TABLE applicazioni DROP COLUMN principal;
+ALTER TABLE applicazioni DROP COLUMN abilitato;
+
+ALTER TABLE operatori ADD id_utenza NUMBER;
+UPDATE operatori set id_utenza = (select id from utenze where principal = operatori.principal);
+ALTER TABLE operatori MODIFY (id_utenza NOT NULL);
+ALTER TABLE operatori DROP COLUMN principal;
+ALTER TABLE operatori DROP COLUMN profilo;
+ALTER TABLE operatori DROP COLUMN abilitato;
+
+ALTER TABLE applicazioni ADD auto_iuv BOOLEAN;
+UPDATE applicazioni SET auto_iuv = true;
+ALTER TABLE applicazioni MODIFY (auto_iuv NOT NULL);
+
+ALTER TABLE domini DROP COLUMN custom_iuv;
+ALTER TABLE domini DROP COLUMN iuv_prefix_strict;
+ALTER TABLE domini DROP COLUMN riuso_iuv;
+
+ALTER TABLE iban_accredito DROP COLUMN id_seller_bank;
+ALTER TABLE iban_accredito DROP COLUMN id_negozio;
+

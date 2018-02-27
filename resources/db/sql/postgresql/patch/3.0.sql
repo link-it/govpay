@@ -83,3 +83,94 @@ ALTER TABLE applicazioni ADD COLUMN reg_exp VARCHAR(1024);
 
 ALTER TABLE domini DROP COLUMN xml_conti_accredito;
 ALTER TABLE domini DROP COLUMN xml_tabella_controparti;
+
+DROP TABLE acl;
+CREATE TABLE acl
+(
+	ruolo VARCHAR(255) NOT NULL,
+	principal VARCHAR(255) NOT NULL,
+	servizio VARCHAR(255) NOT NULL,
+	diritti INT NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_acl') NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_acl PRIMARY KEY (id)
+);
+
+DROP TABLE ruoli;
+DROP SEQUENCE seq_ruoli;
+
+CREATE SEQUENCE seq_utenze start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE utenze
+(
+	principal VARCHAR(255) NOT NULL,
+	abilitato BOOLEAN NOT NULL DEFAULT true,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_utenze_1 UNIQUE (principal),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_utenze PRIMARY KEY (id)
+);
+
+
+CREATE SEQUENCE seq_utenze_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE utenze_domini
+(
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_utenze_domini') NOT NULL,
+	id_utenza BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_utenze_tributi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE utenze_tributi
+(
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_utenze_tributi') NOT NULL,
+	id_utenza BIGINT NOT NULL,
+	id_tributo BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
+);
+
+
+insert into utenze (principal) select distinct principal from ((select principal from operatori) union (select principal from applicazioni) )as s;
+
+
+ALTER TABLE applicazioni ADD COLUMN id_utenza BIGINT;
+UPDATE applicazioni set id_utenza = (select id from utenze where principal = applicazioni.principal);
+ALTER TABLE applicazioni ALTER COLUMN id_utenza SET NOT NULL;
+ALTER TABLE applicazioni DROP COLUMN principal;
+ALTER TABLE applicazioni DROP COLUMN abilitato;
+
+
+ALTER TABLE operatori ADD id_utenza BIGINT;
+UPDATE operatori set id_utenza = (select id from utenze where principal = operatori.principal);
+ALTER TABLE operatori ALTER COLUMN id_utenza SET NOT NULL;
+ALTER TABLE operatori DROP COLUMN principal;
+ALTER TABLE operatori DROP COLUMN profilo;
+ALTER TABLE operatori DROP COLUMN abilitato;
+
+ALTER TABLE applicazioni ADD COLUMN auto_iuv BOOLEAN;
+UPDATE applicazioni SET auto_iuv = true;
+ALTER TABLE applicazioni ALTER COLUMN auto_iuv SET NOT NULL;
+
+ALTER TABLE domini DROP COLUMN custom_iuv;
+ALTER TABLE domini DROP COLUMN iuv_prefix_strict;
+ALTER TABLE domini DROP COLUMN riuso_iuv;
+
+ALTER TABLE iban_accredito DROP COLUMN id_seller_bank;
+ALTER TABLE iban_accredito DROP COLUMN id_negozio;

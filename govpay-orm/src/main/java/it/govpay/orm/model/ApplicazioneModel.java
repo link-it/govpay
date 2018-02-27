@@ -41,9 +41,9 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	
 		super();
 	
+		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new Field("idUtenza",it.govpay.orm.IdUtenza.class,"Applicazione",Applicazione.class));
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.ABILITATO = new Field("abilitato",boolean.class,"Applicazione",Applicazione.class);
-		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.AUTO_IUV = new Field("autoIUV",boolean.class,"Applicazione",Applicazione.class);
 		this.FIRMA_RICEVUTA = new Field("firmaRicevuta",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_ESITO = new Field("codConnettoreEsito",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_VERIFICA = new Field("codConnettoreVerifica",java.lang.String.class,"Applicazione",Applicazione.class);
@@ -58,9 +58,9 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	
 		super(father);
 	
+		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new ComplexField(father,"idUtenza",it.govpay.orm.IdUtenza.class,"Applicazione",Applicazione.class));
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Applicazione",Applicazione.class);
-		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.AUTO_IUV = new ComplexField(father,"autoIUV",boolean.class,"Applicazione",Applicazione.class);
 		this.FIRMA_RICEVUTA = new ComplexField(father,"firmaRicevuta",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_ESITO = new ComplexField(father,"codConnettoreEsito",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_VERIFICA = new ComplexField(father,"codConnettoreVerifica",java.lang.String.class,"Applicazione",Applicazione.class);
@@ -73,11 +73,11 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	
 	
 
+	public it.govpay.orm.model.IdUtenzaModel ID_UTENZA = null;
+	 
 	public IField COD_APPLICAZIONE = null;
 	 
-	public IField ABILITATO = null;
-	 
-	public IField PRINCIPAL = null;
+	public IField AUTO_IUV = null;
 	 
 	public IField FIRMA_RICEVUTA = null;
 	 

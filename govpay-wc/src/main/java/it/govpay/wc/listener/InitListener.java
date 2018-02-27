@@ -28,7 +28,8 @@ import it.govpay.core.utils.GpThreadLocal;
 
 public class InitListener implements ServletContextListener{
 
-	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
+	//TODO pintori template
+	private static Logger log = null;//LoggerWrapperFactory.getLogger("boot");	
 	private static boolean initialized = false;
 
 	public static boolean isInitialized() {

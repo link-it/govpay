@@ -19,7 +19,7 @@
  */
 package it.govpay.orm.model;
 
-import it.govpay.orm.Ruolo;
+import it.govpay.orm.IdUtenza;
 
 import org.openspcoop2.generic_project.beans.AbstractModel;
 import org.openspcoop2.generic_project.beans.IField;
@@ -28,43 +28,43 @@ import org.openspcoop2.generic_project.beans.ComplexField;
 
 
 /**     
- * Model Ruolo 
+ * Model IdUtenza 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class RuoloModel extends AbstractModel<Ruolo> {
+public class IdUtenzaModel extends AbstractModel<IdUtenza> {
 
-	public RuoloModel(){
+	public IdUtenzaModel(){
 	
 		super();
 	
-		this.COD_RUOLO = new Field("codRuolo",java.lang.String.class,"Ruolo",Ruolo.class);
-		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"Ruolo",Ruolo.class);
+		this.PRINCIPAL = new Field("principal",java.lang.String.class,"id-utenza",IdUtenza.class);
+		this.ABILITATO = new Field("abilitato",boolean.class,"id-utenza",IdUtenza.class);
 	
 	}
 	
-	public RuoloModel(IField father){
+	public IdUtenzaModel(IField father){
 	
 		super(father);
 	
-		this.COD_RUOLO = new ComplexField(father,"codRuolo",java.lang.String.class,"Ruolo",Ruolo.class);
-		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"Ruolo",Ruolo.class);
+		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"id-utenza",IdUtenza.class);
+		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"id-utenza",IdUtenza.class);
 	
 	}
 	
 	
 
-	public IField COD_RUOLO = null;
+	public IField PRINCIPAL = null;
 	 
-	public IField DESCRIZIONE = null;
+	public IField ABILITATO = null;
 	 
 
 	@Override
-	public Class<Ruolo> getModeledClass(){
-		return Ruolo.class;
+	public Class<IdUtenza> getModeledClass(){
+		return IdUtenza.class;
 	}
 	
 	@Override

@@ -37,56 +37,15 @@ public class AclConverter {
 
 	public static Acl toDTO(ACL vo, BasicBD bd) throws ServiceException, NotFoundException {
 		Acl dto = new Acl();
-		dto.setServizio(Servizio.toEnum(vo.getCodServizio()));
-		dto.setTipo(Tipo.toEnum(vo.getCodTipo()));
 		dto.setDiritti(vo.getDiritti());
-		dto.setAdmin(vo.isAdmin());
-
-		if(vo.getIdDominio() != null){
-			try{
-				dto.setCodDominio(new DominiBD(bd).getDominio(vo.getIdDominio().getId()).getCodDominio());
-			} catch(MultipleResultException e) {}
-			
-			dto.setIdDominio(vo.getIdDominio().getId());
-		}
-		if(vo.getIdTipoTributo() != null){
-			try {
-				dto.setCodTributo(new TipiTributoBD(bd).getTipoTributo(vo.getIdTipoTributo().getId()).getCodTributo());
-			} catch(MultipleResultException e) {}
-			dto.setIdTributo(vo.getIdTipoTributo().getId());
-		}
+		 //TODO pintori
 		return dto;
 	}
 
 	public static it.govpay.orm.ACL toVO(Acl dto, BasicBD bd) throws ServiceException, NotFoundException {
 		ACL vo = new ACL();
-		vo.setCodServizio(dto.getServizio().getCodifica());
-		vo.setCodTipo(dto.getTipo().getCodifica());
 		vo.setDiritti(dto.getDiritti());
-		vo.setAdmin(dto.isAdmin());
-		if(dto.getIdDominio() != null || dto.getCodDominio() != null){
-			IdDominio idDominio = new IdDominio();
-			if(dto.getIdDominio() == null) {
-				idDominio.setId(new DominiBD(bd).getDominio(dto.getCodDominio()).getId());
-			} else {
-				idDominio.setId(dto.getIdDominio());
-			}
-
-			vo.setIdDominio(idDominio);
-		}
-
-		if(dto.getIdTributo() != null || dto.getCodTributo() != null){
-			IdTipoTributo idTributo = new IdTipoTributo();
-			if(dto.getIdTributo() == null){
-				try {
-					idTributo.setId(new TipiTributoBD(bd).getTipoTributo(dto.getCodTributo()).getId());	
-				} catch(MultipleResultException e) {}
-			} else { 
-				idTributo.setId(dto.getIdTributo());
-			}
-			vo.setIdTipoTributo(idTributo);
-		}
-
+		 //TODO pintori
 		return vo;
 	}
 }

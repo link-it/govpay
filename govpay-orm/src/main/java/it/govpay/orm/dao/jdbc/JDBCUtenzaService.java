@@ -20,7 +20,7 @@
 package it.govpay.orm.dao.jdbc;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdRuolo;
+import it.govpay.orm.IdUtenza;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -34,8 +34,8 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-import it.govpay.orm.Ruolo;
-import it.govpay.orm.dao.IDBRuoloService;
+import it.govpay.orm.Utenza;
+import it.govpay.orm.dao.IDBUtenzaService;
 import it.govpay.orm.utils.ProjectInfo;
 
 import java.sql.Connection;
@@ -43,7 +43,7 @@ import java.sql.Connection;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
- * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.Ruolo} 
+ * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.Utenza} 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -51,22 +51,22 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
  * @version $Rev$, $Date$
  */
 
-public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuoloService {
+public class JDBCUtenzaService extends JDBCUtenzaServiceSearch  implements IDBUtenzaService {
 
 
-	private IJDBCServiceCRUDWithId<Ruolo, IdRuolo, JDBCServiceManager> serviceCRUD = null;
-	public JDBCRuoloService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
+	private IJDBCServiceCRUDWithId<Utenza, IdUtenza, JDBCServiceManager> serviceCRUD = null;
+	public JDBCUtenzaService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCRuoloService.class.getName()+ " initialized");
-		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("ruolo");
+		this.log.debug(JDBCUtenzaService.class.getName()+ " initialized");
+		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("utenza");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
 
 	
 	@Override
-	public void create(Ruolo ruolo) throws ServiceException, NotImplementedException {
+	public void create(Utenza utenza) throws ServiceException, NotImplementedException {
 		try{
-			this.create(ruolo, false, null);
+			this.create(utenza, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -74,9 +74,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void create(Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void create(Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.create(ruolo, false, idMappingResolutionBehaviour);
+			this.create(utenza, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -84,12 +84,12 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void create(Ruolo ruolo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.create(ruolo, validate, null);
+	public void create(Utenza utenza, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.create(utenza, validate, null);
 	}
 	
 	@Override
-	public void create(Ruolo ruolo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void create(Utenza utenza, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -97,13 +97,13 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 		try{
 			
 			// check parameters
-			if(ruolo==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'ruolo' is null");
+			if(utenza==null){
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'utenza' is null");
 			}
 			
 			// validate
 			if(validate){
-				this.validate(ruolo);
+				this.validate(utenza);
 			}
 
 			// ISQLQueryObject
@@ -118,7 +118,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 				connection.setAutoCommit(false);
 			}
 		
-			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,ruolo,idMappingResolutionBehaviour);			
+			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,utenza,idMappingResolutionBehaviour);			
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -158,9 +158,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 
 	@Override
-	public void update(IdRuolo oldId, Ruolo ruolo) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(IdUtenza oldId, Utenza utenza) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(oldId, ruolo, false, null);
+			this.update(oldId, utenza, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -168,9 +168,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void update(IdRuolo oldId, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(IdUtenza oldId, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(oldId, ruolo, false, idMappingResolutionBehaviour);
+			this.update(oldId, utenza, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -178,12 +178,12 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void update(IdRuolo oldId, Ruolo ruolo, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(oldId, ruolo, validate, null);
+	public void update(IdUtenza oldId, Utenza utenza, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(oldId, utenza, validate, null);
 	}
 		
 	@Override
-	public void update(IdRuolo oldId, Ruolo ruolo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(IdUtenza oldId, Utenza utenza, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -191,16 +191,16 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 		try{
 			
 			// check parameters
-			if(ruolo==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'ruolo' is null");
+			if(utenza==null){
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'utenza' is null");
 			}
 			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'oldId' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
 			if(validate){
-				this.validate(ruolo);
+				this.validate(utenza);
 			}
 
 			// ISQLQueryObject
@@ -215,7 +215,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,ruolo,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,utenza,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -258,9 +258,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void update(long tableId, Ruolo ruolo) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(long tableId, Utenza utenza) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(tableId, ruolo, false, null);
+			this.update(tableId, utenza, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -268,9 +268,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void update(long tableId, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(long tableId, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(tableId, ruolo, false, idMappingResolutionBehaviour);
+			this.update(tableId, utenza, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -278,12 +278,12 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void update(long tableId, Ruolo ruolo, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(tableId, ruolo, validate, null);
+	public void update(long tableId, Utenza utenza, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(tableId, utenza, validate, null);
 	}
 		
 	@Override
-	public void update(long tableId, Ruolo ruolo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(long tableId, Utenza utenza, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -291,8 +291,8 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 		try{
 			
 			// check parameters
-			if(ruolo==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'ruolo' is null");
+			if(utenza==null){
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'utenza' is null");
 			}
 			if(tableId<=0){
 				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
@@ -300,7 +300,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 
 			// validate
 			if(validate){
-				this.validate(ruolo);
+				this.validate(utenza);
 			}
 
 			// ISQLQueryObject
@@ -315,7 +315,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,ruolo,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,utenza,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -358,7 +358,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void updateFields(IdRuolo id, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdUtenza id, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -367,7 +367,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 			if(updateFields==null){
 				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
@@ -425,7 +425,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void updateFields(IdRuolo id, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdUtenza id, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -434,7 +434,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 			if(condition==null){
 				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
@@ -495,7 +495,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 
 	@Override
-	public void updateFields(IdRuolo id, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdUtenza id, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -504,7 +504,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 			if(updateModels==null){
 				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
@@ -766,9 +766,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 
 	@Override
-	public void updateOrCreate(IdRuolo oldId, Ruolo ruolo) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(IdUtenza oldId, Utenza utenza) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(oldId, ruolo, false, null);
+			this.updateOrCreate(oldId, utenza, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -776,9 +776,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void updateOrCreate(IdRuolo oldId, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(IdUtenza oldId, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(oldId, ruolo, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(oldId, utenza, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -786,12 +786,12 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 
 	@Override
-	public void updateOrCreate(IdRuolo oldId, Ruolo ruolo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(oldId, ruolo, validate, null);
+	public void updateOrCreate(IdUtenza oldId, Utenza utenza, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(oldId, utenza, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(IdRuolo oldId, Ruolo ruolo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(IdUtenza oldId, Utenza utenza, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -799,16 +799,16 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 		try{
 			
 			// check parameters
-			if(ruolo==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'ruolo' is null");
+			if(utenza==null){
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'utenza' is null");
 			}
 			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'oldId' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
 			if(validate){
-				this.validate(ruolo);
+				this.validate(utenza);
 			}
 
 			// ISQLQueryObject
@@ -823,7 +823,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,ruolo,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,utenza,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -863,9 +863,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void updateOrCreate(long tableId, Ruolo ruolo) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(long tableId, Utenza utenza) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(tableId, ruolo, false, null);
+			this.updateOrCreate(tableId, utenza, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -873,9 +873,9 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void updateOrCreate(long tableId, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(long tableId, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(tableId, ruolo, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(tableId, utenza, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -883,12 +883,12 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 
 	@Override
-	public void updateOrCreate(long tableId, Ruolo ruolo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(tableId, ruolo, validate, null);
+	public void updateOrCreate(long tableId, Utenza utenza, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(tableId, utenza, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(long tableId, Ruolo ruolo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(long tableId, Utenza utenza, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -896,8 +896,8 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 		try{
 			
 			// check parameters
-			if(ruolo==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'ruolo' is null");
+			if(utenza==null){
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'utenza' is null");
 			}
 			if(tableId<=0){
 				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
@@ -905,7 +905,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 
 			// validate
 			if(validate){
-				this.validate(ruolo);
+				this.validate(utenza);
 			}
 
 			// ISQLQueryObject
@@ -920,7 +920,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,ruolo,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,utenza,idMappingResolutionBehaviour);
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -960,7 +960,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	}
 	
 	@Override
-	public void delete(Ruolo ruolo) throws ServiceException,NotImplementedException {
+	public void delete(Utenza utenza) throws ServiceException,NotImplementedException {
 		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -968,8 +968,8 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 		try{
 			
 			// check parameters
-			if(ruolo==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'ruolo' is null");
+			if(utenza==null){
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'utenza' is null");
 			}
 
 			// ISQLQueryObject
@@ -984,7 +984,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,ruolo);	
+			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,utenza);	
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -1022,7 +1022,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 	
 
 	@Override
-	public void deleteById(IdRuolo id) throws ServiceException, NotImplementedException {
+	public void deleteById(IdUtenza id) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -1031,7 +1031,7 @@ public class JDBCRuoloService extends JDBCRuoloServiceSearch  implements IDBRuol
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 
 			// ISQLQueryObject

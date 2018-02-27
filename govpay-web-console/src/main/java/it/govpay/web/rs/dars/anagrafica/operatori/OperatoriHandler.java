@@ -179,10 +179,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			try{
 				RuoliBD ruoliBD = new RuoliBD(bd);
 				RuoloFilter ruoliFilter = ruoliBD.newFilter();
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
-				fsw.setSortOrder(SortOrder.ASC);
-				ruoliFilter.getFilterSortList().add(fsw);
 
 				List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
 

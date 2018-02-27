@@ -53,9 +53,13 @@ public class ModelFactory {
 	
 	public static AuditModel AUDIT = new AuditModel();
 	
-	public static RuoloModel RUOLO = new RuoloModel();
-	
 	public static ACLModel ACL = new ACLModel();
+	
+	public static UtenzaDominioModel UTENZA_DOMINIO = new UtenzaDominioModel();
+	
+	public static UtenzaTributoModel UTENZA_TRIBUTO = new UtenzaTributoModel();
+	
+	public static UtenzaModel UTENZA = new UtenzaModel();
 	
 	public static OperatoreModel OPERATORE = new OperatoreModel();
 	

@@ -44,8 +44,6 @@ public class IbanAccreditoConverter {
 		dto.setCodBicAccredito(toNull(vo.getBicAccredito()));
 		dto.setCodIbanAppoggio(toNull(vo.getIbanAppoggio()));
 		dto.setCodBicAppoggio(toNull(vo.getBicAppoggio()));
-		dto.setIdSellerBank(toNull(vo.getIdSellerBank()));
-		dto.setIdNegozio(toNull(vo.getIdNegozio()));
 		dto.setPostale(vo.getPostale());
 		dto.setAttivatoObep(vo.getAttivato());
 		dto.setAbilitato(vo.getAbilitato());
@@ -61,8 +59,6 @@ public class IbanAccreditoConverter {
 		vo.setBicAccredito(toNull(dto.getCodBicAccredito()));
 		vo.setIbanAppoggio(toNull(dto.getCodIbanAppoggio()));
 		vo.setBicAppoggio(toNull(dto.getCodBicAppoggio()));
-		vo.setIdSellerBank(toNull(dto.getIdSellerBank()));
-		vo.setIdNegozio(toNull(dto.getIdNegozio()));
 		vo.setPostale(dto.isPostale());
 		vo.setAttivato(dto.isAttivatoObep());
 		vo.setAbilitato(dto.isAbilitato());
