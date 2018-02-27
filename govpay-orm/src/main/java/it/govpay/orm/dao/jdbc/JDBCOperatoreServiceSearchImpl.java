@@ -159,19 +159,29 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(new CustomField("id", Long.class, "id", this.getOperatoreFieldConverter().toTable(Operatore.model())));
-
-			fields.add(Operatore.model().ID_UTENZA.PRINCIPAL);
+			fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getOperatoreFieldConverter().toTable(Operatore.model())));
 			fields.add(Operatore.model().NOME);
-			fields.add(Operatore.model().ABILITATO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {
 				
 				Operatore operatore = (Operatore)this.getOperatoreFetch().fetch(jdbcProperties.getDatabase(), Operatore.model(), map);
-				IdUtenza idUtenza = new IdUtenza();
-				idUtenza.setPrincipal((String) map.get(Operatore.model().ID_UTENZA.PRINCIPAL.getFieldName()));
-				operatore.setIdUtenza(idUtenza);
+				if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+					){
+						// Object _operatore_utenza (recupero id)
+						Long idFK_operatore_utenza = (Long) map.get("id_utenza");
+						
+						it.govpay.orm.IdUtenza id_operatore_utenza = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_operatore_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idFK_operatore_utenza, false);
+						}else{
+							id_operatore_utenza = new it.govpay.orm.IdUtenza();
+						}
+						id_operatore_utenza.setId(idFK_operatore_utenza);
+						operatore.setIdUtenza(id_operatore_utenza);
+					}
 				
 				list.add(operatore);
 	        }

@@ -36,6 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-utenza">
  * 		&lt;sequence>
  * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -50,7 +51,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-utenza", 
   propOrder = {
-  	"principal"
+  	"principal",
+  	"abilitato"
   }
 )
 
@@ -82,6 +84,18 @@ public class IdUtenza extends org.openspcoop2.utils.beans.BaseBean implements Se
     this.principal = principal;
   }
 
+  public boolean isAbilitato() {
+    return this.abilitato;
+  }
+
+  public boolean getAbilitato() {
+    return this.abilitato;
+  }
+
+  public void setAbilitato(boolean abilitato) {
+    this.abilitato = abilitato;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -92,5 +106,9 @@ public class IdUtenza extends org.openspcoop2.utils.beans.BaseBean implements Se
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="principal",required=true,nillable=false)
   protected java.lang.String principal;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="abilitato",required=false,nillable=false)
+  protected boolean abilitato;
 
 }

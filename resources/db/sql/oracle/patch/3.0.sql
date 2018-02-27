@@ -131,6 +131,7 @@ CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 CREATE TABLE utenze
 (
 	principal VARCHAR2(255 CHAR) NOT NULL,
+	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -138,6 +139,8 @@ CREATE TABLE utenze
 	-- fk/pk keys constraints
 	CONSTRAINT pk_utenze PRIMARY KEY (id)
 );
+
+ALTER TABLE utenze MODIFY abilitato DEFAULT 1;
 
 CREATE TRIGGER trg_utenze
 BEFORE
@@ -216,13 +219,14 @@ ALTER TABLE applicazioni ADD id_utenza NUMBER;
 UPDATE applicazioni set id_utenza = (select id from utenze where principal = applicazioni.principal);
 ALTER TABLE applicazioni MODIFY (id_utenza NOT NULL);
 ALTER TABLE applicazioni DROP COLUMN principal;
-
+ALTER TABLE applicazioni DROP COLUMN abilitato;
 
 ALTER TABLE operatori ADD id_utenza NUMBER;
 UPDATE operatori set id_utenza = (select id from utenze where principal = operatori.principal);
 ALTER TABLE operatori MODIFY (id_utenza NOT NULL);
 ALTER TABLE operatori DROP COLUMN principal;
 ALTER TABLE operatori DROP COLUMN profilo;
+ALTER TABLE operatori DROP COLUMN abilitato;
 
 ALTER TABLE applicazioni ADD auto_iuv BOOLEAN;
 UPDATE applicazioni SET auto_iuv = true;

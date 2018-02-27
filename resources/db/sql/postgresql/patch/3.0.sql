@@ -105,6 +105,7 @@ CREATE SEQUENCE seq_utenze start 1 increment 1 maxvalue 9223372036854775807 minv
 CREATE TABLE utenze
 (
 	principal VARCHAR(255) NOT NULL,
+	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
 	-- unique constraints
@@ -153,6 +154,7 @@ ALTER TABLE applicazioni ADD COLUMN id_utenza BIGINT;
 UPDATE applicazioni set id_utenza = (select id from utenze where principal = applicazioni.principal);
 ALTER TABLE applicazioni ALTER COLUMN id_utenza SET NOT NULL;
 ALTER TABLE applicazioni DROP COLUMN principal;
+ALTER TABLE applicazioni DROP COLUMN abilitato;
 
 
 ALTER TABLE operatori ADD id_utenza BIGINT;
@@ -160,6 +162,7 @@ UPDATE operatori set id_utenza = (select id from utenze where principal = operat
 ALTER TABLE operatori ALTER COLUMN id_utenza SET NOT NULL;
 ALTER TABLE operatori DROP COLUMN principal;
 ALTER TABLE operatori DROP COLUMN profilo;
+ALTER TABLE operatori DROP COLUMN abilitato;
 
 ALTER TABLE applicazioni ADD COLUMN auto_iuv BOOLEAN;
 UPDATE applicazioni SET auto_iuv = true;

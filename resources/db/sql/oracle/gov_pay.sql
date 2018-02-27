@@ -138,6 +138,7 @@ CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 CREATE TABLE utenze
 (
 	principal VARCHAR2(255 CHAR) NOT NULL,
+	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -145,6 +146,9 @@ CREATE TABLE utenze
 	-- fk/pk keys constraints
 	CONSTRAINT pk_utenze PRIMARY KEY (id)
 );
+
+
+ALTER TABLE utenze MODIFY abilitato DEFAULT 1;
 
 CREATE TRIGGER trg_utenze
 BEFORE
@@ -166,7 +170,6 @@ CREATE TABLE applicazioni
 (
 	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
 	auto_iuv NUMBER NOT NULL,
-	abilitato NUMBER NOT NULL,
 	firma_ricevuta VARCHAR2(1 CHAR) NOT NULL,
 	cod_connettore_esito VARCHAR2(255 CHAR),
 	cod_connettore_verifica VARCHAR2(255 CHAR),
@@ -455,7 +458,6 @@ CREATE SEQUENCE seq_operatori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 CREATE TABLE operatori
 (
 	nome VARCHAR2(35 CHAR) NOT NULL,
-	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_utenza NUMBER NOT NULL,
@@ -465,9 +467,6 @@ CREATE TABLE operatori
 	CONSTRAINT fk_opr_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_operatori PRIMARY KEY (id)
 );
-
-
-ALTER TABLE operatori MODIFY abilitato DEFAULT 1;
 
 CREATE TRIGGER trg_operatori
 BEFORE

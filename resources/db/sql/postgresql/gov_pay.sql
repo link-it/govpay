@@ -94,6 +94,7 @@ CREATE SEQUENCE seq_utenze start 1 increment 1 maxvalue 9223372036854775807 minv
 CREATE TABLE utenze
 (
 	principal VARCHAR(255) NOT NULL,
+	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
 	-- unique constraints
@@ -111,7 +112,6 @@ CREATE TABLE applicazioni
 (
 	cod_applicazione VARCHAR(35) NOT NULL,
 	auto_iuv BOOLEAN NOT NULL,
-	abilitato BOOLEAN NOT NULL,
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
@@ -306,7 +306,6 @@ CREATE SEQUENCE seq_operatori start 1 increment 1 maxvalue 9223372036854775807 m
 CREATE TABLE operatori
 (
 	nome VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_operatori') NOT NULL,
 	id_utenza BIGINT NOT NULL,

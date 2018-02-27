@@ -42,8 +42,9 @@ public class Operatore extends it.govpay.model.Operatore{
 	private transient Utenza utenza;
 	
 	
-	public Operatore(BasicBD bd) throws ServiceException {
+	public Operatore(BasicBD bd, long idUtenza) throws ServiceException {
 		super();
+		this.setIdUtenza(idUtenza); 
 		this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza())); 
 	}
 

@@ -8,11 +8,13 @@
   <mapping name="idUtenza" class="it.govpay.orm.IdUtenza" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
+    <value name="abilitato" field="abilitato" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdUtenza_Type" class="it.govpay.orm.IdUtenza" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
+    <value name="abilitato" field="abilitato" usage="optional"/>
   </mapping>
   <mapping name="idPagamento" class="it.govpay.orm.IdPagamento" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -358,7 +360,6 @@
     <structure name="idUtenza" field="idUtenza" usage="required" map-as="_IdUtenza_Type"/>
     <value name="codApplicazione" field="codApplicazione" usage="required"/>
     <value name="autoIUV" field="autoIUV" usage="required"/>
-    <value name="abilitato" field="abilitato" usage="required"/>
     <value name="firmaRicevuta" field="firmaRicevuta" usage="required"/>
     <value name="codConnettoreEsito" field="codConnettoreEsito" usage="optional"/>
     <value name="codConnettoreVerifica" field="codConnettoreVerifica" usage="optional"/>
@@ -425,12 +426,12 @@
   <mapping name="Utenza" class="it.govpay.orm.Utenza">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
+    <value name="abilitato" field="abilitato" default="true" usage="required"/>
   </mapping>
   <mapping name="Operatore" class="it.govpay.orm.Operatore">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idUtenza" field="idUtenza" usage="required" map-as="_IdUtenza_Type"/>
     <value name="nome" field="nome" usage="required"/>
-    <value name="abilitato" field="abilitato" default="true" usage="required"/>
   </mapping>
   <mapping name="IUV" class="it.govpay.orm.IUV">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

@@ -90,7 +90,7 @@ public class StartupEjb {
 				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
 				log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
 			} else {
-//				LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
+				LoggerWrapperFactory.setLogConfiguration("/web.log4j2.xml");
 				log = LoggerWrapperFactory.getLogger("boot");	
 
 				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso.");
@@ -114,7 +114,7 @@ public class StartupEjb {
 			if(log4j2Config != null) {
 				log4jConfig.setLog4jConfigFile(new File(log4j2Config));
 			} else {
-				log4jConfig.setLog4jConfigURL(StartupEjb.class.getResource("/log4j2.xml"));
+				log4jConfig.setLog4jConfigURL(StartupEjb.class.getResource("/web.log4j2.xml"));
 			}
 
 			MultiLoggerConfig mConfig = new MultiLoggerConfig();

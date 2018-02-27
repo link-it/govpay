@@ -56,6 +56,8 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal", Utenza.model().PRINCIPAL.getFieldType()));
+				setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "abilitato", Utenza.model().ABILITATO.getFieldType()));
 				return object;
 			}
 			
@@ -80,6 +82,8 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
 					this.getObjectFromMap(map,"principal"));
+				setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"abilitato"));
 				return object;
 			}
 			
