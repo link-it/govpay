@@ -33,7 +33,7 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Stazione;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.core.utils.client.NodoClient;

@@ -24,11 +24,10 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Applicazione;
-import it.govpay.model.Autorizzato;
 import it.govpay.model.IAutorizzato;
 
 
@@ -41,18 +40,18 @@ public class UtentiDAO {
 	public IAutorizzato getUser(String principal) throws NotAuthenticatedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			Autorizzato user = new Autorizzato();
+			IAutorizzato user = null;
 			boolean autenticated = false;
 
 			try {
 				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
-				user.addAllAcls(applicazione.getAcls());
+				user = applicazione.getUtenza();
 				autenticated = true;
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
 
 			try {
 				Operatore operatore = AnagraficaManager.getOperatore(bd, principal);
-				user.addAllAcls(operatore.getAcls());
+				user = operatore.getUtenza();
 				autenticated = true;
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
 			

@@ -35,7 +35,7 @@ import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.model.Acl;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
@@ -132,7 +132,7 @@ public class TipiTributoVersamenti extends MultiSelectList<Long, List<Long>>{
 			BasicBD bd = (BasicBD) objects[0];
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			Applicazione applicazione = applicazioniBD.getApplicazione(Long.parseLong(idApplicazione));
-			List<Acl> acls = applicazione.getAcls();
+			List<Acl> acls = applicazione.getUtenza().getAcls();
 			
 			for (Acl acl : acls) {
 				Tipo tipo = acl.getTipo();

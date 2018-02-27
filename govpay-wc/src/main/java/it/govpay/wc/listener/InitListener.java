@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.cache.RuoliCache;
+import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -141,7 +141,7 @@ public class InitListener implements ServletContextListener{
 			//		per ora vengono inizializzate nel govpay web
 			
 			AnagraficaManager.newInstance(false);
-			RuoliCache.newInstance(log);
+			AclCache.newInstance(log);
 			//			ConnectionManager.initialize();
 			//			OperazioneFactory.init();
 		} catch(Exception e){

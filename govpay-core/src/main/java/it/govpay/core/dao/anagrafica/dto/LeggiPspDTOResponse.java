@@ -7,7 +7,7 @@ import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

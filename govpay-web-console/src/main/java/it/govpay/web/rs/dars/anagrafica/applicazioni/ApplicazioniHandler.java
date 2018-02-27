@@ -51,7 +51,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.Rpt.FirmaRichiesta;
@@ -582,14 +582,14 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 				sezioneRoot.addField(versione);
 
 				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-				abilitato.setDefaultValue(entry.isAbilitato()); 
+				abilitato.setDefaultValue(entry.getUtenza().isAbilitato()); 
 				sezioneRoot.addField(abilitato);
 
 				String etichettaVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
 				Sezione sezioneVersamenti = infoModifica.addSezione(etichettaVersamenti);
 
-				List<Long> idsAclDominiVersamenti = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.VERSAMENTI);
-				List<Long> idsAclTributiVersamenti = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.VERSAMENTI);
+				List<Long> idsAclDominiVersamenti = Utils.getIdsFromAcls(entry.getUtenza().getAcls(), Tipo.DOMINIO, Servizio.VERSAMENTI);
+				List<Long> idsAclTributiVersamenti = Utils.getIdsFromAcls(entry.getUtenza().getAcls(), Tipo.TRIBUTO, Servizio.VERSAMENTI);
 				boolean visualizzaVersamenti = idsAclDominiVersamenti.size() > 0 || idsAclTributiVersamenti.size() > 0 || entry.isTrusted(); 
 
 				CheckButton versamenti = (CheckButton) this.infoCreazioneMap.get(versamentiId);
@@ -619,7 +619,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 				String etichettaRendicontazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
 				Sezione sezioneRendicontazione = infoModifica.addSezione(etichettaRendicontazione);
 
-				List<Long> idsAclDominiRendicontazione = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.RENDICONTAZIONE);
+				List<Long> idsAclDominiRendicontazione = Utils.getIdsFromAcls(entry.getUtenza().getAcls(), Tipo.DOMINIO, Servizio.RENDICONTAZIONE);
 				boolean visualizzaRendicontazione = idsAclDominiRendicontazione.size() > 0 ;
 
 				CheckButton rendicontazione = (CheckButton) this.infoCreazioneMap.get(rendicontazioneId);
@@ -635,7 +635,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 				sezioneRendicontazione.addField(dominiRendicontazione);
 
 				// sezione incassi
-				List<Long> idsAclDominiIncassi = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.INCASSI);
+				List<Long> idsAclDominiIncassi = Utils.getIdsFromAcls(entry.getUtenza().getAcls(), Tipo.DOMINIO, Servizio.INCASSI);
 				boolean visualizzaIncassi = idsAclDominiIncassi.size() > 0 ;
 
 				String etichettaIncassi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.incassi.titolo");
@@ -774,9 +774,9 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label"), applicazione.getCodApplicazioneIuv(),true);
 			}
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), applicazione.getVersione().getLabel(), true);
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(applicazione.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(applicazione.getUtenza().isAbilitato()));
 
-			List<Acl> acls = applicazione.getAcls();
+			List<Acl> acls = applicazione.getUtenza().getAcls();
 
 			String etichettaTipiTributo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tipiTributo.titolo");
 			String etichettaDomini = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
@@ -1151,10 +1151,10 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 
 			entry.setVersione(versione); 
 
-			entry.setAcls(lstAclDominiRendicontazione);
-			entry.getAcls().addAll(lstAclTributiVersamenti);
-			entry.getAcls().addAll(lstAclDominiVersamenti);
-			entry.getAcls().addAll(lstAclDominiIncassi);
+			entry.getUtenza().setAcls(lstAclDominiRendicontazione);
+			entry.getUtenza().getAcls().addAll(lstAclTributiVersamenti);
+			entry.getUtenza().getAcls().addAll(lstAclDominiVersamenti);
+			entry.getUtenza().getAcls().addAll(lstAclDominiIncassi);
 
 			String firmaRichiestaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 			String codFirma = jsonObjectApplicazione.getString(firmaRichiestaId);
@@ -1285,7 +1285,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 	public String getSottotitolo(Applicazione entry, BasicBD bd)  throws ConsoleException{
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
+		sb.append(Utils.getAbilitatoAsLabel(entry.getUtenza().isAbilitato()));
 
 		return sb.toString();
 	}

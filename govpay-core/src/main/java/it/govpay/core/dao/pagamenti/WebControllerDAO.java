@@ -34,7 +34,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class WebControllerDAO extends BasicBD{

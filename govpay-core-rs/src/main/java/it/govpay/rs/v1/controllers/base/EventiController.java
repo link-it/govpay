@@ -17,7 +17,6 @@ import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.v1.beans.ListaEventi;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
@@ -32,7 +31,7 @@ public class EventiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response eventiGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv) {
+    public Response eventiGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv) {
     	String methodName = "pspGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;

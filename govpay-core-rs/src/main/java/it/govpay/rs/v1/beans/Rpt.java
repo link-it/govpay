@@ -8,7 +8,7 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.rs.v1.beans.base.EsitoRpt;
 import it.govpay.rs.v1.beans.base.ModelloPagamento;
 

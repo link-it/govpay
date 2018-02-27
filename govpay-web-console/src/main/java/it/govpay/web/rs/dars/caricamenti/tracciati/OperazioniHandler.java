@@ -36,7 +36,7 @@ import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.model.LeggiOperazioneDTO;
 import it.govpay.core.business.model.LeggiOperazioneDTOResponse;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.TipoTracciatoType;

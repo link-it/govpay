@@ -56,7 +56,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;
@@ -488,7 +488,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		if(!applicazioneAutenticata.getCodApplicazione().equals(codApplicazione))
 			throw new GovPayException(EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
 		
-		if(!applicazioneAutenticata.isAbilitato())
+		if(!applicazioneAutenticata.getUtenza().isAbilitato())
 			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
 	}
 

@@ -22,7 +22,7 @@ package it.govpay.core.dao.versamenti.dto;
 
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Versamento;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class CaricaVersamentoDTO {
 	

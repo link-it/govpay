@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class CaricaIuvDTO {
 	

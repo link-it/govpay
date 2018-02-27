@@ -25,7 +25,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Connettore.EnumAuthType;

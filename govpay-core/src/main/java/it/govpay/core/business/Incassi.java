@@ -60,7 +60,7 @@ import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -132,12 +132,12 @@ public class Incassi extends BasicBD {
 			// Verifica autorizzazione all'incasso e acquisizione applicazione chiamante
 			if(richiestaIncasso.getApplicazione() != null) {
 				idApplicazione = richiestaIncasso.getApplicazione().getId();
-				if(!AclEngine.isAuthorized(richiestaIncasso.getApplicazione(), Servizio.INCASSI, richiestaIncasso.getCodDominio(), null))
+				if(!AclEngine.isAuthorized(richiestaIncasso.getApplicazione().getUtenza(), Servizio.INCASSI, richiestaIncasso.getCodDominio(), null))
 					throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
 			} else if(richiestaIncasso.getOperatore() != null) {
 				idOperatore = richiestaIncasso.getOperatore().getId();
-				if(!(AclEngine.getTopDirittiOperatore(richiestaIncasso.getOperatore(), Servizio.Gestione_Pagamenti, richiestaIncasso.getCodDominio()) == 2 ||
-					AclEngine.isAdminDirittiOperatore(richiestaIncasso.getOperatore(), Servizio.Gestione_Pagamenti, richiestaIncasso.getCodDominio()))) 
+				if(!(AclEngine.getTopDirittiOperatore(richiestaIncasso.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti, richiestaIncasso.getCodDominio()) == 2 ||
+					AclEngine.isAdminDirittiOperatore(richiestaIncasso.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti, richiestaIncasso.getCodDominio()))) 
 					throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
 			} else {
 				throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
@@ -367,7 +367,7 @@ public class Incassi extends BasicBD {
 		Set<String> domini = null;
 		try {
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, listaIncassoDTO.getPrincipal());
-			domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
+			domini = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.INCASSI);
 			if(domini != null && domini.size() == 0) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.INCASSI + " per alcun dominio");
 			}
@@ -407,7 +407,7 @@ public class Incassi extends BasicBD {
 			}
 			
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, leggiIncassoDTO.getPrincipal());
-			Set<String> domini = AclEngine.getDominiAutorizzati(applicazione, Servizio.INCASSI);
+			Set<String> domini = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.INCASSI);
 			if(domini != null && !domini.contains(incasso.getCodDominio())) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.INCASSI + " per il dominio " + incasso.getCodDominio());
 			}

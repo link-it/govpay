@@ -23,7 +23,7 @@ package it.govpay.core.business.model;
 import java.util.List;
 
 import it.govpay.bd.model.Canale;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class AvviaTransazioneDTO {
 

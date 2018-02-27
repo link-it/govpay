@@ -56,7 +56,7 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.beans.Errore;

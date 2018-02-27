@@ -49,7 +49,7 @@ import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Intermediario;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;

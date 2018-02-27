@@ -40,7 +40,7 @@ import it.govpay.core.business.model.GeneraIuvDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.servizi.commons.EsitoOperazione;
 
@@ -111,7 +111,7 @@ public class Iuv extends BasicBD {
 		
 		if(dominio.isCustomIuv()) {
 			try {
-				if(GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getClass().getMethod("buildPrefix", it.govpay.model.Applicazione.class, it.govpay.model.Dominio.class, java.util.Map.class).getDeclaringClass().getName().equals(CustomIuv.class.getName()))
+				if(GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getClass().getMethod("buildPrefix", it.govpay.bd.model.Applicazione.class, it.govpay.model.Dominio.class, java.util.Map.class).getDeclaringClass().getName().equals(CustomIuv.class.getName()))
 					throw new GovPayException("Il dominio [Dominio:" + dominio.getCodDominio() + "] risulta configurato per una generazione decentralizzata degli IUV e non e' stato fornito un plugin per la generazione custom. Non e' quindi possibile avviare una transazione di pagamento se non viene fornito lo IUV da utilizzare.", EsitoOperazione.DOM_002, dominio.getCodDominio());
 			} catch (NoSuchMethodException e) {
 				throw new GovPayException("Il dominio [Dominio:" + dominio.getCodDominio() + "] risulta configurato per una generazione decentralizzata degli IUV e non e' stato fornito un plugin per la generazione custom. Non e' quindi possibile avviare una transazione di pagamento se non viene fornito lo IUV da utilizzare.", EsitoOperazione.DOM_002, dominio.getCodDominio());

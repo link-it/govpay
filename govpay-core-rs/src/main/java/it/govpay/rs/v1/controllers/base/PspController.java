@@ -25,7 +25,6 @@ import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Canale.TipoVersamento;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.v1.beans.ListaCanali;
 import it.govpay.rs.v1.beans.ListaPsp;
 import it.govpay.rs.v1.beans.base.FaultBean;
@@ -40,7 +39,7 @@ public class PspController extends it.govpay.rs.BaseController {
 	}
 
 
-    public Response pspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , Boolean bollo , Boolean storno ) {
+    public Response pspGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , Boolean abilitato , Boolean bollo , Boolean storno ) {
     	String methodName = "pspGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -101,7 +100,7 @@ public class PspController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pspIdPspCanaliGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
+    public Response pspIdPspCanaliGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -166,11 +165,11 @@ public class PspController extends it.govpay.rs.BaseController {
 
 
 
-    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, TipoVersamento tipoVersamento) {
+    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, TipoVersamento tipoVersamento) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
-    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, String tipoVersamento) {
+    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliIdCanaleGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -224,7 +223,7 @@ public class PspController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response pspIdPspGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp ) {
+    public Response pspIdPspGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp ) {
     	String methodName = "pspIdPspGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;

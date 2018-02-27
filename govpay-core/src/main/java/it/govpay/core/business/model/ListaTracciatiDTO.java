@@ -1,7 +1,7 @@
 package it.govpay.core.business.model;
 
-import it.govpay.model.Applicazione;
-import it.govpay.model.Operatore;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Operatore;
 import it.govpay.model.Tracciato.StatoTracciatoType;
 
 import java.util.Date;

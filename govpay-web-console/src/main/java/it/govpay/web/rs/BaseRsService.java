@@ -48,12 +48,10 @@ import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
-import it.govpay.bd.anagrafica.RuoliBD;
-import it.govpay.bd.anagrafica.filters.RuoloFilter;
 import it.govpay.bd.model.Operatore;
+import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl;
-import it.govpay.model.Ruolo;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
@@ -72,6 +70,11 @@ public abstract class BaseRsService {
 
 	public static final String ERRORE_INTERNO = "Errore Interno";
 	public static final String PARAMETER_LINGUA = "lang";
+	private AclCache aclCache = null;
+	
+	public BaseRsService() {
+		this.aclCache = AclCache.getInstance();
+	}
 
 	@Context protected HttpServletRequest request;
 	@Context protected HttpServletResponse response;
@@ -109,12 +112,12 @@ public abstract class BaseRsService {
 	}
 
 	public boolean isOperatoreAdminServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		return AclEngine.isAdminDirittiOperatore(getOperatoreByPrincipal(bd), servizio);
+		return AclEngine.isAdminDirittiOperatore(getOperatoreByPrincipal(bd).getUtenza(), servizio);
 	}
 
 	public boolean checkDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
-		return topDirittiOperatore > Ruolo.NO_DIRITTI;
+		return topDirittiOperatore > Acl.NO_DIRITTI;
 	}
 
 	public void checkDirittiServizioLettura(BasicBD bd, Acl.Servizio servizio) throws ServiceException,WebApplicationException{
@@ -124,7 +127,7 @@ public abstract class BaseRsService {
 
 	public boolean isServizioAbilitatoLettura(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
-		return topDirittiOperatore >= Ruolo.DIRITTI_LETTURA;
+		return topDirittiOperatore >= Acl.DIRITTI_LETTURA;
 	}
 
 	public void checkDirittiServizioScrittura(BasicBD bd, Acl.Servizio servizio) throws ServiceException,WebApplicationException{
@@ -134,15 +137,15 @@ public abstract class BaseRsService {
 
 	public boolean isServizioAbilitatoScrittura(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
-		return topDirittiOperatore == Ruolo.DIRITTI_SCRITTURA;
+		return topDirittiOperatore == Acl.DIRITTI_SCRITTURA;
 	}
 
 	public Set<String> getDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		return AclEngine.getDominiAutorizzati(this.getOperatoreByPrincipal(bd), servizio, Ruolo.DIRITTI_LETTURA);
+		return AclEngine.getDominiAutorizzati(this.getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_LETTURA);
 	}
 
 	public Set<Long> getIdDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd), servizio, Ruolo.DIRITTI_LETTURA);
+		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_LETTURA);
 		if(idDominiAutorizzati == null) {
 			idDominiAutorizzati = new HashSet<Long>();
 			idDominiAutorizzati.add(-1L);
@@ -151,11 +154,11 @@ public abstract class BaseRsService {
 	}
 
 	public Set<String> getDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		return AclEngine.getDominiAutorizzati(getOperatoreByPrincipal(bd), servizio, Ruolo.DIRITTI_SCRITTURA);
+		return AclEngine.getDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_SCRITTURA);
 	}
 
 	public Set<Long> getIdDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd), servizio, Ruolo.DIRITTI_SCRITTURA);
+		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_SCRITTURA);
 		if(idDominiAutorizzati == null) {
 			idDominiAutorizzati = new HashSet<Long>();
 			idDominiAutorizzati.add(-1L);
@@ -164,41 +167,51 @@ public abstract class BaseRsService {
 	}
 
 	private int getTopDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException {
-		int topDirittiOperatore = AclEngine.getTopDirittiOperatore(getOperatoreByPrincipal(bd), servizio);
+		int topDirittiOperatore = AclEngine.getTopDirittiOperatore(getOperatoreByPrincipal(bd).getUtenza(), servizio);
 		return topDirittiOperatore;
 	}
 
 
-	public List<Ruolo> getRuoliOperatore(BasicBD bd) throws ServiceException {
+	public List<String> getRuoliOperatore(BasicBD bd) throws ServiceException {
 		Operatore operatore = this.getOperatoreByPrincipal(bd);
 		return this.getRuoliOperatore(bd, operatore);
 	}
 	
-	public List<Ruolo> getRuoliOperatore(BasicBD bd, it.govpay.model.Operatore operatore) throws ServiceException {
-		List<Ruolo> ruoliUtente = new ArrayList<Ruolo>();
-		List<String> ruoliOp = operatore.getRuoli();
-		List<Ruolo> listaRuoliRegistrati = getListaRuoliRegistrati(bd);
-
-		for (String codRuolo : ruoliOp) {
-			if(codRuolo.equals(Operatore.RUOLO_SYSTEM)){
-				for (Ruolo ruolo : listaRuoliRegistrati) {
-					if(this.request.isUserInRole(ruolo.getCodRuolo())){
-						ruoliUtente.add(ruolo);
-					}
-				}
-			} else {
-				for (Ruolo ruolo : listaRuoliRegistrati) {
-					if(codRuolo.equals(ruolo.getCodRuolo())){
-						ruoliUtente.add(ruolo);
-					}
-				}
+//	public List<String> getRuoliOperatore(BasicBD bd, it.govpay.model.Operatore operatore) throws ServiceException {
+//		List<Ruolo> ruoliUtente = new ArrayList<Ruolo>();
+//		List<String> ruoliOp = operatore.getRuoli();
+//		List<Ruolo> listaRuoliRegistrati = getListaRuoliRegistrati(bd);
+//
+//		for (String codRuolo : ruoliOp) {
+//			if(codRuolo.equals(Operatore.RUOLO_SYSTEM)){
+//				for (Ruolo ruolo : listaRuoliRegistrati) {
+//					if(this.request.isUserInRole(ruolo.getCodRuolo())){
+//						ruoliUtente.add(ruolo);
+//					}
+//				}
+//			} else {
+//				for (Ruolo ruolo : listaRuoliRegistrati) {
+//					if(codRuolo.equals(ruolo.getCodRuolo())){
+//						ruoliUtente.add(ruolo);
+//					}
+//				}
+//			}
+//		}
+//		return ruoliUtente;
+//	}
+	
+	protected List<String> getRuoliOperatore(BasicBD bd, it.govpay.model.Operatore operatore){
+		List<String> listaRuoliPosseduti = new ArrayList<String>();
+		// caricamento dei ruoli ricevuti nella richiesta http
+		for (String chiaveRuolo : this.aclCache.getChiavi()) {
+			if(this.request.isUserInRole(chiaveRuolo)){
+				listaRuoliPosseduti.add(this.aclCache.getRuolo(chiaveRuolo));
 			}
 		}
-		return ruoliUtente;
+		return listaRuoliPosseduti;
 	}
 
 	protected String getPrincipal(){
-//				return "amministratore";
 		if(this.request.getUserPrincipal()!=null){
 			return this.request.getUserPrincipal().getName();
 		}
@@ -223,21 +236,22 @@ public abstract class BaseRsService {
 			operatore = operatoriBD.getOperatore(principal,controlloPrincipalCaseInsensitive);
 
 			// Se l'utente non dispone di almeno un ruolo allora non e' autorizzato
-			if(operatore.getRuoli() == null || operatore.getRuoli().size() == 0){
-				this.invalidateSession(null);
-				throw new WebApplicationException(this.getUnauthorizedResponse());
-			}
+//			if(operatore.getRuoli() == null || operatore.getRuoli().size() == 0){
+//				this.invalidateSession(null);
+//				throw new WebApplicationException(this.getUnauthorizedResponse());
+//			}
 
 			// controllo che tra tutti i ruoli associati all'utente ci sia almeno un acl 
-			List<Ruolo> ruoliOperatore = getRuoliOperatore(bd,operatore);
+			List<String> ruoliOperatore = getRuoliOperatore(bd,operatore);
 
-			boolean find = false;
-			for(Ruolo ruolo : ruoliOperatore) {
-				if(ruolo.getAcls() != null && ruolo.getAcls().size() > 0){
+			boolean find = true; // TODO sbloccare dopo insert ruoli  
+//			for(Ruolo ruolo : ruoliOperatore) {
+//				if(ruolo.getAcls() != null && ruolo.getAcls().size() > 0){
+				if(ruoliOperatore != null && ruoliOperatore.size() > 0){
 					find = true;
-					break;
+//					break;
 				}
-			}
+//			}
 			
 			if(!find){
 				this.invalidateSession(null);
@@ -254,19 +268,6 @@ public abstract class BaseRsService {
 			this.invalidateSession(null);
 			throw new WebApplicationException(this.getUnauthorizedResponse());
 		}	
-	}
-
-	protected List<it.govpay.model.Ruolo> getListaRuoliRegistrati(BasicBD bd) throws ServiceException{
-		List<it.govpay.model.Ruolo> lst = new ArrayList<it.govpay.model.Ruolo>();
-		try {
-			RuoliBD ruoliBD = new RuoliBD(bd);
-			RuoloFilter ruoliFilter = ruoliBD.newFilter();
-
-			lst = ruoliBD.findAll(ruoliFilter);
-			return lst;
-		} catch (ServiceException e) {
-			throw e;
-		}
 	}
 
 	protected Response getUnauthorizedResponse(){

@@ -18,7 +18,6 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.v1.beans.Applicazione;
 import it.govpay.rs.v1.beans.ListaApplicazioni;
 import it.govpay.rs.v1.beans.base.FaultBean;
@@ -34,7 +33,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 
 
 
-    public Response applicazioniIdA2AGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
+    public Response applicazioniIdA2AGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
     	String methodName = "applicazioniIdA2AGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -84,13 +83,13 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 
 
 
-    public Response applicazioniIdA2APUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
+    public Response applicazioniIdA2APUT(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response applicazioniGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response applicazioniGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "applicazioniGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -121,7 +120,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.rs.v1.beans.Applicazione> results = new ArrayList<it.govpay.rs.v1.beans.Applicazione>();
-			for(it.govpay.model.Applicazione applicazione: listaApplicazioniDTOResponse.getResults()) {
+			for(it.govpay.bd.model.Applicazione applicazione: listaApplicazioniDTOResponse.getResults()) {
 				results.add(new it.govpay.rs.v1.beans.Applicazione(applicazione));
 			}
 			

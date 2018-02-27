@@ -54,7 +54,7 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Iuv;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.PagamentiTelematiciGPPrt;
 import it.govpay.servizi.commons.Canale;

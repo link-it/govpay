@@ -63,7 +63,7 @@ import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Iuv;

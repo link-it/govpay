@@ -13,7 +13,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.IntermediariDAO;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTO;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTOResponse;
@@ -21,26 +20,18 @@ import it.govpay.core.dao.anagrafica.dto.FindStazioniDTO;
 import it.govpay.core.dao.anagrafica.dto.FindStazioniDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.GetIntermediarioDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
-import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.IntermediarioNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
-import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.Intermediario;
 import it.govpay.rs.v1.beans.ListaIntermediari;
 import it.govpay.rs.v1.beans.ListaStazioni;
-import it.govpay.rs.v1.beans.base.DominioPost;
 import it.govpay.rs.v1.beans.base.FaultBean;
-import it.govpay.rs.v1.beans.base.IntermediarioPost;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.rs.v1.beans.converter.DominiConverter;
+import it.govpay.rs.v1.beans.base.IntermediarioPost;
 import it.govpay.rs.v1.beans.converter.IntermediariConverter;
 import net.sf.json.JsonConfig;
 
@@ -54,7 +45,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
 
-    public Response intermediariIdIntermediarioGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
+    public Response intermediariIdIntermediarioGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
     	String methodName = "intermediariIdIntermediarioGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -103,13 +94,13 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniIdStazionePUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
+    public Response intermediariIdIntermediarioStazioniIdStazionePUT(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response intermediariGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response intermediariGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "intermediariGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -169,7 +160,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response intermediariIdIntermediarioPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
+    public Response intermediariIdIntermediarioPUT(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
     	String methodName = "intermediariIdIntermediarioPUT";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -230,7 +221,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response intermediariIdIntermediarioStazioniGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "intermediariGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -292,7 +283,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniIdStazioneGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
+    public Response intermediariIdIntermediarioStazioniIdStazioneGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 

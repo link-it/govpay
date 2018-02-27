@@ -24,7 +24,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class Operazione extends it.govpay.model.Operazione{
 

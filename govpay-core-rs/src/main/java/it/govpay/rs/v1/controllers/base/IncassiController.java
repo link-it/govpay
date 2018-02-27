@@ -26,8 +26,7 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Applicazione;
-import it.govpay.model.Ruolo;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.Errore;
 import it.govpay.rs.v1.beans.Incasso;
@@ -44,7 +43,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 	}
 
 
-    public Response incassiGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina ) {
+    public Response incassiGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina ) {
     	String methodName = "cercaIncassi"; 
 		
 		BasicBD bd = null;
@@ -83,7 +82,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response incassiIdGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Long id ) {
+    public Response incassiIdGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Long id ) {
     	String methodName = "leggiIncasso"; 
 		BasicBD bd = null;
 		GpContext ctx = null; 
@@ -115,7 +114,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response incassiPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is) {
+    public Response incassiPOST(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is) {
     	String methodName = "inserisciIncasso"; 
 		
 		BasicBD bd = null;

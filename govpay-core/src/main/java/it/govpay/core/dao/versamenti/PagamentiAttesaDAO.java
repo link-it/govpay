@@ -62,8 +62,8 @@ public class PagamentiAttesaDAO extends BasicBD {
 		}
 		
 		if(caricaVersamentoDTO.getOperatore() != null && 
-				!(AclEngine.getTopDirittiOperatore(caricaVersamentoDTO.getOperatore(), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()) == 2 ||
-				AclEngine.isAdminDirittiOperatore(caricaVersamentoDTO.getOperatore(), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()))) {
+				!(AclEngine.getTopDirittiOperatore(caricaVersamentoDTO.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()) == 2 ||
+				AclEngine.isAdminDirittiOperatore(caricaVersamentoDTO.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()))) {
 			throw new NotAuthorizedException("TODO"); //TODO
 		}
 		
@@ -170,8 +170,8 @@ public class PagamentiAttesaDAO extends BasicBD {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
 			
 				if(annullaVersamentoDTO.getOperatore() != null && 
-						!(AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore(), Servizio.Gestione_Pagamenti,versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2 ||
-						AclEngine.isAdminDirittiOperatore(annullaVersamentoDTO.getOperatore(), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()))) {
+						!(AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti,versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2 ||
+						AclEngine.isAdminDirittiOperatore(annullaVersamentoDTO.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()))) {
 					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
 				}
 				// Se è già annullato non devo far nulla.

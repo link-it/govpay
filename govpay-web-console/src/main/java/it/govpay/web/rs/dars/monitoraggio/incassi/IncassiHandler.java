@@ -50,7 +50,7 @@ import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.stampe.pdf.incasso.IncassoPdf;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;

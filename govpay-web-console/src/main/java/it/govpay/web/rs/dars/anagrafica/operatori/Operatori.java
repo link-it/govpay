@@ -34,10 +34,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Operatore;
-import it.govpay.model.Ruolo;
 import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
-import it.govpay.web.rs.dars.anagrafica.ruoli.RuoliHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
@@ -93,19 +90,15 @@ public class Operatori extends DarsService {
 			operatore.setId(null);
 			
 			// ruoli in formato descrizione (codice)
-			List<Ruolo> ruoliOperatore = this.getRuoliOperatore(bd, operatore);
+			List<String> ruoliOperatore = this.getRuoliOperatore(bd, operatore);
 			List<String> ruoliOperatoreString = new ArrayList<String>();
-			Ruoli ruoliDars = new Ruoli();
-			RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
-			for (Ruolo ruolo : ruoliOperatore) {
-				if(!ruolo.getCodRuolo().equals(Operatore.RUOLO_SYSTEM)){
-					ruoliOperatoreString.add(ruoliDarsHandler.getTitolo(ruolo, bd));
+			for (String ruolo : ruoliOperatore) {
+				if(!ruolo.equals("SYSTEM")){
+					ruoliOperatoreString.add(ruolo);
 				}else {
-					ruoliOperatoreString.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio() + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"));
+					ruoliOperatoreString.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio() + ".ruoli."+"SYSTEM"+".label"));
 				}
 			}
-			
-			operatore.setRuoli(ruoliOperatoreString);
 			
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(operatore);

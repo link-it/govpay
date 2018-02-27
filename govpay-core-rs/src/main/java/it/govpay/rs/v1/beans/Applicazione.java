@@ -15,8 +15,8 @@ public class Applicazione extends it.govpay.rs.v1.beans.base.Applicazione {
 		return (Applicazione) parse(json, Applicazione.class);
 	}
 	
-	public Applicazione(it.govpay.model.Applicazione applicazione) throws ServiceException {
-		this.setAbilitato(applicazione.isAbilitato());
+	public Applicazione(it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+		this.setAbilitato(applicazione.getUtenza().isAbilitato());
 		
 		CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
 		codificaAvvisi.setCodificaIUV(applicazione.getCodApplicazioneIuv());
@@ -24,7 +24,7 @@ public class Applicazione extends it.govpay.rs.v1.beans.base.Applicazione {
 		this.setCodificaAvvisi(codificaAvvisi);
 		
 		this.setIdA2A(applicazione.getCodApplicazione());
-		this.setPrincipal(applicazione.getPrincipal());
+		this.setPrincipal(applicazione.getUtenza().getPrincipal());
 		this.setServizioNotifica(new Connector(applicazione.getConnettoreNotifica()));
 		this.setServizioVerifica(new Connector(applicazione.getConnettoreVerifica()));
 		this.setVersioneApi(VersioneApiEnum.fromValue(applicazione.getVersione().toString()));

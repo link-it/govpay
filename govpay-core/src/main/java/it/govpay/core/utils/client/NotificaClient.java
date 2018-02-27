@@ -30,7 +30,7 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.Gp21Utils;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.Rr;
 import it.govpay.model.Versionabile.Versione;

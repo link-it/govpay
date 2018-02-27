@@ -23,7 +23,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.business.Psp;
-import it.govpay.core.cache.RuoliCache;
+import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -168,7 +168,7 @@ public class StartupEjb {
 			ThreadExecutorManager.setup();
 			JmxOperazioni.register();
 			AvvisoPagamentoProperties.newInstance(GovpayConfig.getInstance().getResourceDir());
-			RuoliCache.newInstance(log);
+			AclCache.newInstance(log);
 		} catch (Exception e) {
 			log.error("Inizializzazione fallita", e);
 			shutdown();

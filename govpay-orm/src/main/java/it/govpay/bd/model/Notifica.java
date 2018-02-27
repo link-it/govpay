@@ -27,7 +27,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class Notifica extends it.govpay.model.Notifica {
 	

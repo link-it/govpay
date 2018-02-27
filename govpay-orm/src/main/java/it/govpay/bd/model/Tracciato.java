@@ -5,7 +5,7 @@ import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 import java.util.List;
 

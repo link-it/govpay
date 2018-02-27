@@ -28,7 +28,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.v1.beans.ListaRpt;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
@@ -43,7 +42,7 @@ public class RptController extends it.govpay.rs.BaseController {
 	}
 
 
-    public Response rptGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina ,
+    public Response rptGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina ,
     			String ordinamento , String campi , String idDominio , String iuv , String ccp , String idA2A , String idPendenza , String idPagamento , String esito ) {
     	String methodName = "rptGET";  
 		GpContext ctx = null;
@@ -119,7 +118,7 @@ public class RptController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response rptIdDominioIuvCcpGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String ccp ) {
+    public Response rptIdDominioIuvCcpGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String ccp ) {
     	String methodName = "getRptByIdDominioIuvCcp";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -174,7 +173,7 @@ public class RptController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response rptIdDominioIuvCcpRtGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String ccp ) {
+    public Response rptIdDominioIuvCcpRtGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String ccp ) {
     	String methodName = "getRtByIdDominioIuvCcp";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;

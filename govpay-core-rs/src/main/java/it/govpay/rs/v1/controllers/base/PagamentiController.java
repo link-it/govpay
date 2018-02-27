@@ -27,7 +27,6 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.FaultBean;
 import it.govpay.rs.v1.beans.ListaPagamentiPortale;
@@ -45,7 +44,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		super(nomeServizio,log);
 	}
 	
-    public Response pagamentiGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String stato , String versante , String idSessionePortale ) {
+    public Response pagamentiGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String stato , String versante , String idSessionePortale ) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -110,7 +109,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pagamentiIdGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String id ) {
+    public Response pagamentiIdGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String id ) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -165,7 +164,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response pagamentiPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is , String idSessionePortale ) {
+    public Response pagamentiPOST(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is , String idSessionePortale ) {
     	String methodName = "pagamentiPOST";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -228,7 +227,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pagamentiIdDominioIuvPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
+    public Response pagamentiIdDominioIuvPOST(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 

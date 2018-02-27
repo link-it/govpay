@@ -46,7 +46,6 @@ import it.govpay.core.dao.anagrafica.exception.TributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.Entrata;
 import it.govpay.rs.v1.beans.Iban;
@@ -74,7 +73,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioIbanAccreditoIbanAccreditoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
+    public Response dominiIdDominioIbanAccreditoIbanAccreditoGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
     	String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -124,7 +123,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
+    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -174,7 +173,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idStazione) {
+    public Response dominiGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idStazione) {
     	String methodName = "dominiGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -237,7 +236,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
+    public Response dominiIdDominioGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
     	String methodName = "dominiIdDominioGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -287,7 +286,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioEntrateGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response dominiIdDominioEntrateGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioEntrateGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -348,7 +347,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioUnitaOperativeGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response dominiIdDominioUnitaOperativeGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioUnitaOperativeGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -409,7 +408,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioEntrateIdEntrataGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
+    public Response dominiIdDominioEntrateIdEntrataGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
     	String methodName = "dominiIdDominioEntrateIdEntrataGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -459,7 +458,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
+    public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -520,7 +519,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
+    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -581,7 +580,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioEntrateIdEntrataPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
+    public Response dominiIdDominioEntrateIdEntrataPUT(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
     	String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -642,7 +641,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+    public Response dominiIdDominioPUT(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
     	String methodName = "dominiIdDominioPUT";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -703,7 +702,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioIbanAccreditoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response dominiIdDominioIbanAccreditoGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioIbanAccreditoGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;

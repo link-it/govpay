@@ -23,7 +23,7 @@ public class Pendenza extends it.govpay.rs.v1.beans.base.Pendenza {
 		return "pendenze";
 	}
 	
-	public Pendenza(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.model.Applicazione applicazione, it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
+	public Pendenza(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
 		
 		if(versamento.getCodAnnoTributario()!= null)
 			this.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));

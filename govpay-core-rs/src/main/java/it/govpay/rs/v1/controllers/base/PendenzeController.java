@@ -20,7 +20,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.rs.v1.beans.ListaPendenze;
 import it.govpay.rs.v1.beans.Pendenza;
@@ -36,7 +35,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	}
 	
 
-    public Response pendenzeGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders, Integer pagina , Integer risultatiPerPagina , String ordinamento ,
+    public Response pendenzeGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders, Integer pagina , Integer risultatiPerPagina , String ordinamento ,
     		String campi , String idDominio , String idA2A , String idDebitore , String idPagamento , String stato ) {
     	GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -110,7 +109,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     }
 
   
-    public Response pendenzeIdA2AIdPendenzaGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders, String idA2A , String idPendenza ) {
+    public Response pendenzeIdA2AIdPendenzaGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders, String idA2A , String idPendenza ) {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -163,19 +162,19 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     }
   
 
-    public Response pendenzeIdA2AIdPendenzaPATCH(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+    public Response pendenzeIdA2AIdPendenzaPATCH(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response pendenzeIdA2AIdPendenzaPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+    public Response pendenzeIdA2AIdPendenzaPUT(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response pendenzeIdDominioIuvGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
+    public Response pendenzeIdDominioIuvGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 

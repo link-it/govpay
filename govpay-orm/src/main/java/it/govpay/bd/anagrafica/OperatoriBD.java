@@ -35,6 +35,8 @@ import org.openspcoop2.utils.UtilsException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.converter.OperatoreConverter;
+import it.govpay.bd.model.converter.UtenzaConverter;
+import it.govpay.model.Utenza;
 import it.govpay.bd.model.Operatore;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
@@ -167,9 +169,19 @@ public class OperatoriBD extends BasicBD {
 	 */
 	public void insertOperatore(Operatore operatore) throws  ServiceException{
 		try {
+			Utenza utenza = operatore.getUtenza();
+			it.govpay.orm.Utenza utenzaVo = UtenzaConverter.toVO(utenza);
+
+			// autocommit false		
+			this.setAutoCommit(false); 
+			this.getUtenzaService().create(utenzaVo);
+			operatore.setIdUtenza(utenzaVo.getId());
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
 			this.getOperatoreService().create(vo);
 			operatore.setId(vo.getId());
+			this.commit();
+			// ripristino l'autocommit.
+			this.setAutoCommit(true); 
 			emitAudit(operatore);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
