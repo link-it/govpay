@@ -40,19 +40,19 @@ public class GovpayConfig {
 		return instance;
 	}
 
-	public static GovpayConfig newInstance4GovPay() throws Exception {
-		instance = new GovpayConfig("/govpay.properties", "it.govpay.resource.path", false);
+	public static GovpayConfig newInstance4GovPay(InputStream propertyFile) throws Exception {
+		instance = new GovpayConfig(propertyFile, "/govpay.properties", "it.govpay.resource.path", false);
 		return instance;
 	}
 	
-	public static GovpayConfig newInstance4GovPayConsole() throws Exception {
-		instance = new GovpayConfig("/govpayConsole.properties", "it.govpay.console.resource.path", true);
+	public static GovpayConfig newInstance4GovPayConsole(InputStream propertyFile) throws Exception {
+		instance = new GovpayConfig(propertyFile, "/govpayConsole.properties", "it.govpay.console.resource.path", true);
 		
 		return instance;
 	}
 	
-	public static GovpayConfig newInstance(String propertiesFileName, String propertyResourcePathName, boolean dataonly) throws Exception {
-		instance = new GovpayConfig(propertiesFileName, propertyResourcePathName, dataonly);
+	public static GovpayConfig newInstance(InputStream propertyFile, String propertiesFileName, String propertyResourcePathName, boolean dataonly) throws Exception {
+		instance = new GovpayConfig(propertyFile, propertiesFileName, propertyResourcePathName, dataonly);
 		return instance;
 	}
 
@@ -67,16 +67,13 @@ public class GovpayConfig {
 	
 	
 
-	public GovpayConfig(String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
+	public GovpayConfig(InputStream propertyFile, String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
 
 		Logger log = LoggerWrapperFactory.getLogger("boot");
 
-		// Recupero il property all'interno dell'EAR
-		InputStream is = GovpayConfig.class.getResourceAsStream(propertyFileName);
-
 		props = new Properties[2];
 		Properties props1 = new Properties();
-		props1.load(is);
+		props1.load(propertyFile);
 		props[1] = props1;
 
 		// Recupero la configurazione della working dir

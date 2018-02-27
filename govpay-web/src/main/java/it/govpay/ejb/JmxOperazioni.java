@@ -222,7 +222,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 	}
 	
 	protected static void register() throws RisorseJMXException{
-		gestoreJMX = new GestoreRisorseJMX(LoggerWrapperFactory.getLogger(StartupEjb.class));
+		gestoreJMX = new GestoreRisorseJMX(LoggerWrapperFactory.getLogger(JmxOperazioni.class));
 		gestoreJMX.registerMBean(JmxOperazioni.class, "it.govpay.core", CostantiJMX.JMX_TYPE, "operazioni");
 	}
 	

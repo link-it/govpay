@@ -32,16 +32,14 @@ import it.govpay.bd.pagamento.util.CustomIuv;
 
 public class GovpayCustomConfig {
 	
-	private static final String PROPERTIES_FILE = "/govpay.properties";
-
 	private static GovpayCustomConfig instance;
 	
 	public static GovpayCustomConfig getInstance() {
 		return instance;
 	}
 
-	public static GovpayCustomConfig newInstance() throws Exception {
-		instance = new GovpayCustomConfig();
+	public static GovpayCustomConfig newInstance(InputStream is) throws Exception {
+		instance = new GovpayCustomConfig(is);
 		return instance;
 	}
 
@@ -50,12 +48,11 @@ public class GovpayCustomConfig {
 	private CustomIuv defaultCustomIuvGenerator = null;
 	
 	
-	public GovpayCustomConfig() throws Exception {
+	public GovpayCustomConfig(InputStream is) throws Exception {
 		
 		Logger log = LoggerWrapperFactory.getLogger("boot");
 		
 		// Recupero il property all'interno dell'EAR
-		InputStream is = GovpayCustomConfig.class.getResourceAsStream(PROPERTIES_FILE);
 
 		props = new Properties[2];
 		Properties props1 = new Properties();
