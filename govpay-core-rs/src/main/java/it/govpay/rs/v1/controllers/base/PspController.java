@@ -24,6 +24,7 @@ import it.govpay.core.dao.anagrafica.dto.ListaPspDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.ListaCanali;
 import it.govpay.rs.v1.beans.ListaPsp;
@@ -40,62 +41,7 @@ public class PspController extends it.govpay.rs.BaseController {
 
 
 
-    public Response pspIdPspCanaliIdCanaleGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale) {
-    	String methodName = "pspIdPspCanaliIdCanaleGET";  
-		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-			
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			
-			LeggiCanaleDTO leggiPspDTO = new LeggiCanaleDTO(user);
-			leggiPspDTO.setIdPsp(idPsp);
-			leggiPspDTO.setIdCanale(idCanale);
-//			leggiPspDTO.setTipoVersamento(TipoVersamento.toEnum(tipoVersamento));
-			
-			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId())); 
-			
-			LeggiCanaleDTOResponse leggiPspDTOResponse = pspDAO.leggiCanale(leggiPspDTO);
-			
-			it.govpay.rs.v1.beans.Canale response = new it.govpay.rs.v1.beans.Canale(leggiPspDTOResponse.getCanale(), pspDAO);
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
-			
-		}catch (PspNonTrovatoException e) {
-			log.error(e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.NOT_FOUND).entity(respKo).build();
-		}catch (Exception e) {
-			log.error("Errore interno durante la " + methodName, e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-
-
-    public Response pspIdPspCanaliGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
+    public Response pspIdPspCanaliGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -116,7 +62,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			listaCanaliDTO.setAbilitato(abilitato);
 			listaCanaliDTO.setModello(modello);
 			listaCanaliDTO.setTipoVersamento(tipoVersamento);
-//			listaCanaliDTO.setIdPsp(idPsp);
+			listaCanaliDTO.setIdPsp(idPsp);
 			
 			// INIT DAO
 			
@@ -156,6 +102,59 @@ public class PspController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
 
+    }
+
+    public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, String tipoVersamento) {
+    	String methodName = "pspIdPspCanaliIdCanaleGET";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+			
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			LeggiCanaleDTO leggiPspDTO = new LeggiCanaleDTO(user);
+			leggiPspDTO.setIdPsp(idPsp);
+			leggiPspDTO.setIdCanale(idCanale);
+			leggiPspDTO.setTipoVersamento(TipoVersamento.toEnum(tipoVersamento));
+			
+			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			
+			LeggiCanaleDTOResponse leggiPspDTOResponse = pspDAO.leggiCanale(leggiPspDTO);
+			
+			it.govpay.rs.v1.beans.Canale response = new it.govpay.rs.v1.beans.Canale(leggiPspDTOResponse.getCanale(), pspDAO);
+			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			
+		}catch (PspNonTrovatoException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante la " + methodName, e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 

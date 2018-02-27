@@ -18,7 +18,7 @@ import it.govpay.core.dao.anagrafica.dto.FindRuoliDTOResponse;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.beans.ListaRuoli;
+import it.govpay.rs.v1.beans.JSONSerializable;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 
@@ -65,14 +65,15 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Ruolo> results = new ArrayList<it.govpay.rs.v1.beans.Ruolo>();
-			for(it.govpay.model.Ruolo dominio: listaRuoliDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Ruolo(dominio));
-			}
-			
-			ListaRuoli response = new ListaRuoli(results, uriInfo.getRequestUri(),
-					listaRuoliDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
+//			List<it.govpay.rs.v1.beans.Ruolo> results = new ArrayList<it.govpay.rs.v1.beans.Ruolo>();
+//			for(it.govpay.model.Ruolo dominio: listaRuoliDTOResponse.getResults()) {
+//				results.add(new it.govpay.rs.v1.beans.Ruolo(dominio));
+//			}
+//			
+//			ListaRuoli response = new ListaRuoli(results, uriInfo.getRequestUri(),
+//					listaRuoliDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+
+			JSONSerializable response = null;
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();

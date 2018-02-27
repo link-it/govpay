@@ -27,7 +27,7 @@ public class DominiConverter {
 		tributo.setCodContabilitaCustom(entrataRequest.getCodiceContabilita());
 		tributo.setCodTributo(idEntrata);
 		tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
-		tributo.setDescrizione(entrataRequest.getDescrizione());
+//		tributo.setDescrizione(entrataRequest.getDescrizione()); //TODO
 		if(entrataRequest.getTipoContabilita() != null) {
 			switch (entrataRequest.getTipoContabilita()) {
 			case ALTRO:
@@ -45,7 +45,7 @@ public class DominiConverter {
 			}
 		}
 		
-		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccredito());
+//		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccredito()); // TODO
 		// entrataDTO.setIbanAccreditoPostale(entrataRequest.getIbanAccreditoPostale()); // TODO
 		entrataDTO.setTributo(tributo);
 		entrataDTO.setIdDominio(idDominio);

@@ -1,27 +1,21 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.math.BigDecimal;
 import java.util.Objects;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
+import it.govpay.rs.v1.beans.base.TipoentrataPost;
+import java.math.BigDecimal;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"ibanAccreditoBancario",
-"ibanAccreditoPostale",
+"descrizione",
 "tipoContabilita",
 "codiceContabilita",
 "codificaIUV",
-"abilitato",
 "idEntrata",
-"tipoEntrata",
 })
-public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Tipoentrata extends it.govpay.rs.v1.beans.JSONSerializable {
   
-  @JsonProperty("ibanAccreditoBancario")
-  private String ibanAccreditoBancario = null;
-  
-  @JsonProperty("ibanAccreditoPostale")
-  private String ibanAccreditoPostale = null;
+  @JsonProperty("descrizione")
+  private String descrizione = null;
   
     
   /**
@@ -79,49 +73,28 @@ public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("codificaIUV")
   private BigDecimal codificaIUV = null;
   
-  @JsonProperty("abilitato")
-  private Boolean abilitato = true;
-  
   @JsonProperty("idEntrata")
   private String idEntrata = null;
   
-  @JsonProperty("tipoEntrata")
-  private Tipoentrata tipoEntrata = null;
-  
   /**
    **/
-  public Entrata ibanAccreditoBancario(String ibanAccreditoBancario) {
-    this.ibanAccreditoBancario = ibanAccreditoBancario;
+  public Tipoentrata descrizione(String descrizione) {
+    this.descrizione = descrizione;
     return this;
   }
 
-  @JsonProperty("ibanAccreditoBancario")
-  public String getIbanAccreditoBancario() {
-    return ibanAccreditoBancario;
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
   }
-  public void setIbanAccreditoBancario(String ibanAccreditoBancario) {
-    this.ibanAccreditoBancario = ibanAccreditoBancario;
-  }
-
-  /**
-   **/
-  public Entrata ibanAccreditoPostale(String ibanAccreditoPostale) {
-    this.ibanAccreditoPostale = ibanAccreditoPostale;
-    return this;
-  }
-
-  @JsonProperty("ibanAccreditoPostale")
-  public String getIbanAccreditoPostale() {
-    return ibanAccreditoPostale;
-  }
-  public void setIbanAccreditoPostale(String ibanAccreditoPostale) {
-    this.ibanAccreditoPostale = ibanAccreditoPostale;
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
   }
 
   /**
    * Tipologia di codifica del capitolo di bilancio
    **/
-  public Entrata tipoContabilita(TipoContabilitaEnum tipoContabilita) {
+  public Tipoentrata tipoContabilita(TipoContabilitaEnum tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
     return this;
   }
@@ -137,7 +110,7 @@ public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * Codifica del capitolo di bilancio
    **/
-  public Entrata codiceContabilita(String codiceContabilita) {
+  public Tipoentrata codiceContabilita(String codiceContabilita) {
     this.codiceContabilita = codiceContabilita;
     return this;
   }
@@ -153,7 +126,7 @@ public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * Cifra identificativa negli IUV
    **/
-  public Entrata codificaIUV(BigDecimal codificaIUV) {
+  public Tipoentrata codificaIUV(BigDecimal codificaIUV) {
     this.codificaIUV = codificaIUV;
     return this;
   }
@@ -167,24 +140,8 @@ public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Indicazione l'entrata e' abilitata
    **/
-  public Entrata abilitato(Boolean abilitato) {
-    this.abilitato = abilitato;
-    return this;
-  }
-
-  @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
-    return abilitato;
-  }
-  public void setAbilitato(Boolean abilitato) {
-    this.abilitato = abilitato;
-  }
-
-  /**
-   **/
-  public Entrata idEntrata(String idEntrata) {
+  public Tipoentrata idEntrata(String idEntrata) {
     this.idEntrata = idEntrata;
     return this;
   }
@@ -197,21 +154,6 @@ public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
     this.idEntrata = idEntrata;
   }
 
-  /**
-   **/
-  public Entrata tipoEntrata(Tipoentrata tipoEntrata) {
-    this.tipoEntrata = tipoEntrata;
-    return this;
-  }
-
-  @JsonProperty("tipoEntrata")
-  public Tipoentrata getTipoEntrata() {
-    return tipoEntrata;
-  }
-  public void setTipoEntrata(Tipoentrata tipoEntrata) {
-    this.tipoEntrata = tipoEntrata;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -220,44 +162,38 @@ public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Entrata entrata = (Entrata) o;
-    return Objects.equals(ibanAccreditoBancario, entrata.ibanAccreditoBancario) &&
-        Objects.equals(ibanAccreditoPostale, entrata.ibanAccreditoPostale) &&
-        Objects.equals(tipoContabilita, entrata.tipoContabilita) &&
-        Objects.equals(codiceContabilita, entrata.codiceContabilita) &&
-        Objects.equals(codificaIUV, entrata.codificaIUV) &&
-        Objects.equals(abilitato, entrata.abilitato) &&
-        Objects.equals(idEntrata, entrata.idEntrata) &&
-        Objects.equals(tipoEntrata, entrata.tipoEntrata);
+    Tipoentrata tipoentrata = (Tipoentrata) o;
+    return Objects.equals(descrizione, tipoentrata.descrizione) &&
+        Objects.equals(tipoContabilita, tipoentrata.tipoContabilita) &&
+        Objects.equals(codiceContabilita, tipoentrata.codiceContabilita) &&
+        Objects.equals(codificaIUV, tipoentrata.codificaIUV) &&
+        Objects.equals(idEntrata, tipoentrata.idEntrata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ibanAccreditoBancario, ibanAccreditoPostale, tipoContabilita, codiceContabilita, codificaIUV, abilitato, idEntrata, tipoEntrata);
+    return Objects.hash(descrizione, tipoContabilita, codiceContabilita, codificaIUV, idEntrata);
   }
 
-  public static Entrata parse(String json) {
-    return (Entrata) parse(json, Entrata.class);
+  public static Tipoentrata parse(String json) {
+    return (Tipoentrata) parse(json, Tipoentrata.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "entrata";
+    return "tipoentrata";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Entrata {\n");
+    sb.append("class Tipoentrata {\n");
     
-    sb.append("    ibanAccreditoBancario: ").append(toIndentedString(ibanAccreditoBancario)).append("\n");
-    sb.append("    ibanAccreditoPostale: ").append(toIndentedString(ibanAccreditoPostale)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    idEntrata: ").append(toIndentedString(idEntrata)).append("\n");
-    sb.append("    tipoEntrata: ").append(toIndentedString(tipoEntrata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

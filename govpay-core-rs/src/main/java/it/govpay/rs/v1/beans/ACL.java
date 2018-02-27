@@ -28,7 +28,7 @@ import it.govpay.rs.v1.beans.base.DominioACL;
 import it.govpay.rs.v1.beans.base.EntrataACL;
 
 @JsonFilter(value="ACL")  
-public class ACL extends it.govpay.rs.v1.beans.base.ACL {
+public class ACL extends it.govpay.rs.v1.beans.base.Acl {
 
 	@Override
 	public String getJsonIdFilter() {
@@ -44,11 +44,11 @@ public class ACL extends it.govpay.rs.v1.beans.base.ACL {
 		List<DominioACL> domini = new ArrayList<>(); //TODO domini
 		List<EntrataACL> entrate = new ArrayList<>(); //TODO entrate
 		this.servizio(ServizioEnum.fromValue(acl.getServizio().toString()))
-		.idEntrata(acl.getCodTributo())
+//		.idEntrata(acl.getCodTributo())
 //		.soloPropri(acl.) //TODO solopropri
-		.autorizzazioni(autorizzazioni)
-		.domini(domini)
-		.entrate(entrate);
+		.autorizzazioni(autorizzazioni);
+//		.domini(domini)
+//		.entrate(entrate);
 		
 		
 		

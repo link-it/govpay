@@ -1,9 +1,9 @@
 package it.govpay.rs.v1.beans.base;
 
 import java.util.Objects;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
+import java.util.Date;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idDominio",
 "iuv",
@@ -13,11 +13,14 @@ import org.codehaus.jackson.annotate.JsonValue;
 "componente",
 "categoriaEvento",
 "tipoEvento",
-"sottoTipoEvento",
 "identificativoFruitore",
 "identificativoErogatore",
 "idCanale",
 "idStazione",
+"parametri",
+"dataOraRichiesta",
+"dataOraRisposta",
+"esito",
 })
 public class Evento extends it.govpay.rs.v1.beans.JSONSerializable {
   
@@ -86,9 +89,6 @@ public class Evento extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("tipoEvento")
   private String tipoEvento = null;
   
-  @JsonProperty("sottoTipoEvento")
-  private String sottoTipoEvento = null;
-  
   @JsonProperty("identificativoFruitore")
   private String identificativoFruitore = null;
   
@@ -100,6 +100,18 @@ public class Evento extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("idStazione")
   private String idStazione = null;
+  
+  @JsonProperty("parametri")
+  private String parametri = null;
+  
+  @JsonProperty("dataOraRichiesta")
+  private Date dataOraRichiesta = null;
+  
+  @JsonProperty("dataOraRisposta")
+  private Date dataOraRisposta = null;
+  
+  @JsonProperty("esito")
+  private String esito = null;
   
   /**
    * Identificativo ente creditore
@@ -229,21 +241,6 @@ public class Evento extends it.govpay.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Evento sottoTipoEvento(String sottoTipoEvento) {
-    this.sottoTipoEvento = sottoTipoEvento;
-    return this;
-  }
-
-  @JsonProperty("sottoTipoEvento")
-  public String getSottoTipoEvento() {
-    return sottoTipoEvento;
-  }
-  public void setSottoTipoEvento(String sottoTipoEvento) {
-    this.sottoTipoEvento = sottoTipoEvento;
-  }
-
-  /**
-   **/
   public Evento identificativoFruitore(String identificativoFruitore) {
     this.identificativoFruitore = identificativoFruitore;
     return this;
@@ -302,6 +299,68 @@ public class Evento extends it.govpay.rs.v1.beans.JSONSerializable {
     this.idStazione = idStazione;
   }
 
+  /**
+   **/
+  public Evento parametri(String parametri) {
+    this.parametri = parametri;
+    return this;
+  }
+
+  @JsonProperty("parametri")
+  public String getParametri() {
+    return parametri;
+  }
+  public void setParametri(String parametri) {
+    this.parametri = parametri;
+  }
+
+  /**
+   * Data emissione del messaggio di richiesta
+   **/
+  public Evento dataOraRichiesta(Date dataOraRichiesta) {
+    this.dataOraRichiesta = dataOraRichiesta;
+    return this;
+  }
+
+  @JsonProperty("dataOraRichiesta")
+  public Date getDataOraRichiesta() {
+    return dataOraRichiesta;
+  }
+  public void setDataOraRichiesta(Date dataOraRichiesta) {
+    this.dataOraRichiesta = dataOraRichiesta;
+  }
+
+  /**
+   * Data emissione del messaggio di risposta
+   **/
+  public Evento dataOraRisposta(Date dataOraRisposta) {
+    this.dataOraRisposta = dataOraRisposta;
+    return this;
+  }
+
+  @JsonProperty("dataOraRisposta")
+  public Date getDataOraRisposta() {
+    return dataOraRisposta;
+  }
+  public void setDataOraRisposta(Date dataOraRisposta) {
+    this.dataOraRisposta = dataOraRisposta;
+  }
+
+  /**
+   **/
+  public Evento esito(String esito) {
+    this.esito = esito;
+    return this;
+  }
+
+  @JsonProperty("esito")
+  public String getEsito() {
+    return esito;
+  }
+  public void setEsito(String esito) {
+    this.esito = esito;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -319,16 +378,19 @@ public class Evento extends it.govpay.rs.v1.beans.JSONSerializable {
         Objects.equals(componente, evento.componente) &&
         Objects.equals(categoriaEvento, evento.categoriaEvento) &&
         Objects.equals(tipoEvento, evento.tipoEvento) &&
-        Objects.equals(sottoTipoEvento, evento.sottoTipoEvento) &&
         Objects.equals(identificativoFruitore, evento.identificativoFruitore) &&
         Objects.equals(identificativoErogatore, evento.identificativoErogatore) &&
         Objects.equals(idCanale, evento.idCanale) &&
-        Objects.equals(idStazione, evento.idStazione);
+        Objects.equals(idStazione, evento.idStazione) &&
+        Objects.equals(parametri, evento.parametri) &&
+        Objects.equals(dataOraRichiesta, evento.dataOraRichiesta) &&
+        Objects.equals(dataOraRisposta, evento.dataOraRisposta) &&
+        Objects.equals(esito, evento.esito);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, ccp, idPsp, tipoVersamento, componente, categoriaEvento, tipoEvento, sottoTipoEvento, identificativoFruitore, identificativoErogatore, idCanale, idStazione);
+    return Objects.hash(idDominio, iuv, ccp, idPsp, tipoVersamento, componente, categoriaEvento, tipoEvento, identificativoFruitore, identificativoErogatore, idCanale, idStazione, parametri, dataOraRichiesta, dataOraRisposta, esito);
   }
 
   public static Evento parse(String json) {
@@ -353,11 +415,14 @@ public class Evento extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("    componente: ").append(toIndentedString(componente)).append("\n");
     sb.append("    categoriaEvento: ").append(toIndentedString(categoriaEvento)).append("\n");
     sb.append("    tipoEvento: ").append(toIndentedString(tipoEvento)).append("\n");
-    sb.append("    sottoTipoEvento: ").append(toIndentedString(sottoTipoEvento)).append("\n");
     sb.append("    identificativoFruitore: ").append(toIndentedString(identificativoFruitore)).append("\n");
     sb.append("    identificativoErogatore: ").append(toIndentedString(identificativoErogatore)).append("\n");
     sb.append("    idCanale: ").append(toIndentedString(idCanale)).append("\n");
     sb.append("    idStazione: ").append(toIndentedString(idStazione)).append("\n");
+    sb.append("    parametri: ").append(toIndentedString(parametri)).append("\n");
+    sb.append("    dataOraRichiesta: ").append(toIndentedString(dataOraRichiesta)).append("\n");
+    sb.append("    dataOraRisposta: ").append(toIndentedString(dataOraRisposta)).append("\n");
+    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
     sb.append("}");
     return sb.toString();
   }

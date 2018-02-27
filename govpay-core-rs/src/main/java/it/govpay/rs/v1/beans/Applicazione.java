@@ -27,7 +27,6 @@ public class Applicazione extends it.govpay.rs.v1.beans.base.Applicazione {
 		this.setPrincipal(applicazione.getPrincipal());
 		this.setServizioNotifica(new Connector(applicazione.getConnettoreNotifica()));
 		this.setServizioVerifica(new Connector(applicazione.getConnettoreVerifica()));
-		this.setVersioneApi(VersioneApiEnum.fromValue(applicazione.getVersione().toString()));
 		
 	}
 }

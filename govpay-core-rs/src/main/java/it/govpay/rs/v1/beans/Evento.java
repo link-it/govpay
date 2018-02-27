@@ -23,7 +23,7 @@ public class Evento extends it.govpay.rs.v1.beans.base.Evento {
 		this.setIdPsp(evento.getCodPsp());
 		this.setIdStazione(evento.getCodStazione());
 		this.setIuv(evento.getIuv());
-		this.setSottoTipoEvento(evento.getSottotipoEvento());
+//		this.setSottoTipoEvento(evento.getSottotipoEvento());
 		if(evento.getTipoEvento() != null) {
 			this.setTipoEvento(evento.getTipoEvento().name());
 		}

@@ -63,8 +63,7 @@ public class Psp extends BaseRsServiceV1{
 			@PathParam("idPsp") String idPsp,
 			@QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("modello") String modello, @QueryParam("tipoVersamento") String tipoVersamento){
         this.controller.setRequestResponse(this.request, this.response);
-//	return this.controller.pspIdPspCanaliGET(this.getUser(), uriInfo, httpHeaders, idPsp, pagina, risultatiPerPagina, ordinamento, campi, abilitato, modello, tipoVersamento);
-        return null;
+	return this.controller.pspIdPspCanaliGET(this.getUser(), uriInfo, httpHeaders, idPsp, pagina, risultatiPerPagina, ordinamento, campi, abilitato, modello, tipoVersamento);
     }
 
     /*
@@ -86,8 +85,7 @@ public class Psp extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idPsp") String idPsp, @PathParam("idCanale") String idCanale, @PathParam("tipoVersamento") String tipoVersamento){
         this.controller.setRequestResponse(this.request, this.response);
-//	return this.controller.pspIdPspCanaliIdCanaleTipoVersamentoGET(this.getUser(), uriInfo, httpHeaders,  idPsp,  idCanale,  tipoVersamento);
-        return null;
+	return this.controller.pspIdPspCanaliIdCanaleTipoVersamentoGET(this.getUser(), uriInfo, httpHeaders,  idPsp,  idCanale,  tipoVersamento);
     }
 
 /*

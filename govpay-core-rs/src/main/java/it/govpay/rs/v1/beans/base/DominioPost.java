@@ -8,7 +8,15 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "civico",
 "cap",
 "localita",
+"provincia",
+"nazione",
+"email",
+"pec",
+"tel",
+"fax",
+"web",
 "gln",
+"cbill",
 "iuvPrefix",
 "stazione",
 "auxDigit",
@@ -33,8 +41,32 @@ public class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("localita")
   private String localita = null;
   
+  @JsonProperty("provincia")
+  private String provincia = null;
+  
+  @JsonProperty("nazione")
+  private String nazione = null;
+  
+  @JsonProperty("email")
+  private String email = null;
+  
+  @JsonProperty("pec")
+  private String pec = null;
+  
+  @JsonProperty("tel")
+  private String tel = null;
+  
+  @JsonProperty("fax")
+  private String fax = null;
+  
+  @JsonProperty("web")
+  private String web = null;
+  
   @JsonProperty("gln")
   private String gln = null;
+  
+  @JsonProperty("cbill")
+  private String cbill = null;
   
   @JsonProperty("iuvPrefix")
   private String iuvPrefix = null;
@@ -135,6 +167,118 @@ public class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Provincia del beneficiario
+   **/
+  public DominioPost provincia(String provincia) {
+    this.provincia = provincia;
+    return this;
+  }
+
+  @JsonProperty("provincia")
+  public String getProvincia() {
+    return provincia;
+  }
+  public void setProvincia(String provincia) {
+    this.provincia = provincia;
+  }
+
+  /**
+   * Nazione del beneficiario
+   **/
+  public DominioPost nazione(String nazione) {
+    this.nazione = nazione;
+    return this;
+  }
+
+  @JsonProperty("nazione")
+  public String getNazione() {
+    return nazione;
+  }
+  public void setNazione(String nazione) {
+    this.nazione = nazione;
+  }
+
+  /**
+   * Posta elettronica ordinaria del beneficiario
+   **/
+  public DominioPost email(String email) {
+    this.email = email;
+    return this;
+  }
+
+  @JsonProperty("email")
+  public String getEmail() {
+    return email;
+  }
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  /**
+   * Posta elettronica certificata del beneficiario
+   **/
+  public DominioPost pec(String pec) {
+    this.pec = pec;
+    return this;
+  }
+
+  @JsonProperty("pec")
+  public String getPec() {
+    return pec;
+  }
+  public void setPec(String pec) {
+    this.pec = pec;
+  }
+
+  /**
+   * Numero di telefono dell'help desk del beneficiario
+   **/
+  public DominioPost tel(String tel) {
+    this.tel = tel;
+    return this;
+  }
+
+  @JsonProperty("tel")
+  public String getTel() {
+    return tel;
+  }
+  public void setTel(String tel) {
+    this.tel = tel;
+  }
+
+  /**
+   * Numero di fax dell'help desk del beneficiario
+   **/
+  public DominioPost fax(String fax) {
+    this.fax = fax;
+    return this;
+  }
+
+  @JsonProperty("fax")
+  public String getFax() {
+    return fax;
+  }
+  public void setFax(String fax) {
+    this.fax = fax;
+  }
+
+  /**
+   * Url del sito web
+   **/
+  public DominioPost web(String web) {
+    this.web = web;
+    return this;
+  }
+
+  @JsonProperty("web")
+  public String getWeb() {
+    return web;
+  }
+  public void setWeb(String web) {
+    this.web = web;
+  }
+
+  /**
    * Global location number del beneficiario
    **/
   public DominioPost gln(String gln) {
@@ -148,6 +292,22 @@ public class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable {
   }
   public void setGln(String gln) {
     this.gln = gln;
+  }
+
+  /**
+   * codice cbill del beneficiario
+   **/
+  public DominioPost cbill(String cbill) {
+    this.cbill = cbill;
+    return this;
+  }
+
+  @JsonProperty("cbill")
+  public String getCbill() {
+    return cbill;
+  }
+  public void setCbill(String cbill) {
+    this.cbill = cbill;
   }
 
   /**
@@ -260,7 +420,15 @@ public class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable {
         Objects.equals(civico, dominioPost.civico) &&
         Objects.equals(cap, dominioPost.cap) &&
         Objects.equals(localita, dominioPost.localita) &&
+        Objects.equals(provincia, dominioPost.provincia) &&
+        Objects.equals(nazione, dominioPost.nazione) &&
+        Objects.equals(email, dominioPost.email) &&
+        Objects.equals(pec, dominioPost.pec) &&
+        Objects.equals(tel, dominioPost.tel) &&
+        Objects.equals(fax, dominioPost.fax) &&
+        Objects.equals(web, dominioPost.web) &&
         Objects.equals(gln, dominioPost.gln) &&
+        Objects.equals(cbill, dominioPost.cbill) &&
         Objects.equals(iuvPrefix, dominioPost.iuvPrefix) &&
         Objects.equals(stazione, dominioPost.stazione) &&
         Objects.equals(auxDigit, dominioPost.auxDigit) &&
@@ -271,7 +439,7 @@ public class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, gln, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato);
   }
 
   public static DominioPost parse(String json) {
@@ -293,7 +461,15 @@ public class DominioPost extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("    civico: ").append(toIndentedString(civico)).append("\n");
     sb.append("    cap: ").append(toIndentedString(cap)).append("\n");
     sb.append("    localita: ").append(toIndentedString(localita)).append("\n");
+    sb.append("    provincia: ").append(toIndentedString(provincia)).append("\n");
+    sb.append("    nazione: ").append(toIndentedString(nazione)).append("\n");
+    sb.append("    email: ").append(toIndentedString(email)).append("\n");
+    sb.append("    pec: ").append(toIndentedString(pec)).append("\n");
+    sb.append("    tel: ").append(toIndentedString(tel)).append("\n");
+    sb.append("    fax: ").append(toIndentedString(fax)).append("\n");
+    sb.append("    web: ").append(toIndentedString(web)).append("\n");
     sb.append("    gln: ").append(toIndentedString(gln)).append("\n");
+    sb.append("    cbill: ").append(toIndentedString(cbill)).append("\n");
     sb.append("    iuvPrefix: ").append(toIndentedString(iuvPrefix)).append("\n");
     sb.append("    stazione: ").append(toIndentedString(stazione)).append("\n");
     sb.append("    auxDigit: ").append(toIndentedString(auxDigit)).append("\n");
