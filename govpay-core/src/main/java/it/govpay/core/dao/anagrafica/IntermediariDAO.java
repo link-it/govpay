@@ -19,8 +19,6 @@
  */
 package it.govpay.core.dao.anagrafica;
 
-import java.util.Set;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -43,36 +41,33 @@ import it.govpay.core.dao.anagrafica.exception.IntermediarioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotFoundException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Intermediario;
 
 public class IntermediariDAO {
 	
-//	public PutIntermediarioDTOResponse createOrUpdate(PutIntermediarioDTO putIntermediarioDTO) throws ServiceException,IntermediarioNonTrovatoException,StazioneNonTrovataException{
-//		PutIntermediarioDTOResponse intermediarioDTOResponse = new PutIntermediarioDTOResponse();
-//		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-//		try {
-//			IntermediariBD intermediariBD = new IntermediariBD(bd);
-//			IntermediarioFilter filter = intermediariBD.newFilter(false);
-//			filter.setCodIntermediario(putIntermediarioDTO.getIdIntermediario());
-//			
-//			// flag creazione o update
-//			boolean isCreate = intermediariBD.count(filter) == 0;
-//			intermediarioDTOResponse.setCreated(isCreate);
-//			if(isCreate) {
-//				intermediariBD.insertIntermediario(putIntermediarioDTO.getIntermediario());
-//			} else {
-//				intermediariBD.updateIntermediario(putIntermediarioDTO.getIntermediario());
-//			}
-//		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-//			throw new IntermediarioNonTrovatoException(e.getMessage());
-//		} finally {
-//			bd.closeConnection();
-//		}
-//		return intermediarioDTOResponse;
-//	}
+	public PutIntermediarioDTOResponse createOrUpdateIntermediario(PutIntermediarioDTO putIntermediarioDTO) throws ServiceException,IntermediarioNonTrovatoException{
+		PutIntermediarioDTOResponse intermediarioDTOResponse = new PutIntermediarioDTOResponse();
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			IntermediariBD intermediariBD = new IntermediariBD(bd);
+			IntermediarioFilter filter = intermediariBD.newFilter(false);
+			filter.setCodIntermediario(putIntermediarioDTO.getIdIntermediario());
+			
+			// flag creazione o update
+			boolean isCreate = intermediariBD.count(filter) == 0;
+			intermediarioDTOResponse.setCreated(isCreate);
+			if(isCreate) {
+				intermediariBD.insertIntermediario(putIntermediarioDTO.getIntermediario());
+			} else {
+				intermediariBD.updateIntermediario(putIntermediarioDTO.getIntermediario());
+			}
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new IntermediarioNonTrovatoException(e.getMessage());
+		} finally {
+			bd.closeConnection();
+		}
+		return intermediarioDTOResponse;
+	}
 
 	public FindIntermediariDTOResponse findIntermediari(FindIntermediariDTO listaIntermediariDTO) throws NotAuthorizedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -136,19 +131,18 @@ public class IntermediariDAO {
 		}
 	}
 	
-	public GetStazioneDTOResponse getStazione(GetStazioneDTO getStazioneDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public GetStazioneDTOResponse getStazione(GetStazioneDTO getStazioneDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, StazioneNonTrovataException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			Intermediario intermediario = null;
 			try {
-				intermediario = AnagraficaManager.getIntermediario(bd, getStazioneDTO.getCodIntermediario());
+				 AnagraficaManager.getIntermediario(bd, getStazioneDTO.getCodIntermediario());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new NotFoundException("Intermediario " + getStazioneDTO.getCodIntermediario() + " non censito in Anagrafica");
+				throw new IntermediarioNonTrovatoException("Intermediario " + getStazioneDTO.getCodIntermediario() + " non censito in Anagrafica");
 			}
-			GetStazioneDTOResponse response = new GetStazioneDTOResponse(AnagraficaManager.getStazione(bd, getStazioneDTO.getCodStazione())); //TODO INTERMEDIARIO?
+			GetStazioneDTOResponse response = new GetStazioneDTOResponse(AnagraficaManager.getStazione(bd, getStazioneDTO.getCodStazione())); 
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new NotFoundException("Stazione " + getStazioneDTO.getCodStazione() + " non censita in Anagrafica per l'intermediario " + getStazioneDTO.getCodIntermediario());
+			throw new StazioneNonTrovataException("Stazione " + getStazioneDTO.getCodStazione() + " non censita in Anagrafica per l'intermediario " + getStazioneDTO.getCodIntermediario());
 		} finally {
 			bd.closeConnection();
 		}

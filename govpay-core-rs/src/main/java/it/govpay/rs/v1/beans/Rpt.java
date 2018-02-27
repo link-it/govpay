@@ -33,9 +33,9 @@ public Rpt() {}
 		this.setDataRicevuta(rpt.getDataMsgRicevuta());
 		this.setDataRichiesta(rpt.getDataMsgRichiesta());
 		this.setDettaglioStato(rpt.getDescrizioneStato());
+		
+		EsitoRpt eRpt  = EsitoRpt.IN_CORSO;
 		if(rpt.getEsitoPagamento() != null) {
-			EsitoRpt eRpt =null;
-			
 			switch (rpt.getEsitoPagamento()) {
 			case DECORRENZA_TERMINI:
 				eRpt = EsitoRpt.DECORRENZA;
@@ -53,8 +53,9 @@ public Rpt() {}
 				eRpt = EsitoRpt.ESEGUITO_PARZIALE;
 				break;
 			}
-			this.setEsito(eRpt);
 		}
+		this.setEsito(eRpt);
+		
 		this.setIdDominio(rpt.getCodDominio());
 		this.setImporto(rpt.getImportoTotalePagato());
 		this.setIuv(rpt.getIuv());
