@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -49,7 +48,6 @@ public class Gateway extends BaseRsServiceV1{
 	@POST
 	@Path("/v1/gw/{id}")
 	@Produces({MediaType.TEXT_HTML})
-	@Consumes({MediaType.APPLICATION_FORM_URLENCODED})
 	public Response post_GW(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, 
 			@QueryParam("action") String action
 			) {

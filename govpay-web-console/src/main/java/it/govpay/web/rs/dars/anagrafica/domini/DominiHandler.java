@@ -1198,8 +1198,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				entry.setLogo(Base64.decodeBase64(data64));
 			}
 
-			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
-			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<it.govpay.bd.model.IbanAccredito>()));
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
@@ -1255,8 +1253,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			jsonConfig.setRootClass(Dominio.class);
 
 			Dominio  entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
-			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
-			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<it.govpay.bd.model.IbanAccredito>()));
 
 			// azzero l'id applicazione default se ho selezionato nessuna.
 			if(entry.getIdApplicazioneDefault() != null && entry.getIdApplicazioneDefault().longValue() == -1l) {

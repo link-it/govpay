@@ -42,7 +42,7 @@ public class Intermediario extends it.govpay.rs.v1.beans.base.Intermediario {
 		.idIntermediario(i.getCodIntermediario())
 		.principalPagoPa(i.getConnettorePdd().getPrincipal())
 		.servizioPagoPa(new Connector(i.getConnettorePdd()))
-		.stazioni(UriBuilderUtils.getFromIntermediari(i.getCodIntermediario()).toString());
+		.stazioni(UriBuilderUtils.getFromIntermediari(i.getCodIntermediario()).build().toString());	
 	}
 	
 }

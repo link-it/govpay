@@ -12,8 +12,11 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 
+import it.govpay.rs.BaseRsService;
+import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import net.sf.json.util.JSONUtils;
 
 @JsonFilter(value="risultati")  
 public abstract class JSONSerializable {
@@ -22,8 +25,11 @@ public abstract class JSONSerializable {
 	public abstract String getJsonIdFilter();
 	
 	public String toJSON(String fields) {
+		return toJSON(fields, new ObjectMapper());
+	}
+	
+	public String toJSON(String fields,ObjectMapper mapper) {
 		try {
-		ObjectMapper mapper = new ObjectMapper();
 		SimpleFilterProvider filters = new SimpleFilterProvider();
 		
 		if(fields != null && !fields.isEmpty()) {
@@ -68,6 +74,7 @@ public abstract class JSONSerializable {
 		JSONObject jsonObject = JSONObject.fromObject( json );  
 		JsonConfig jsonConfig = new JsonConfig();
 		jsonConfig.setRootClass(clazz);
+		JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(BaseRsService.datePatterns.toArray(new String[1])) , true);
 
 		return JSONObject.toBean( jsonObject, jsonConfig );
 	}
@@ -75,6 +82,7 @@ public abstract class JSONSerializable {
 	public static Object parse(String json, Class<?> clazz, JsonConfig jsonConfig) {
 		JSONObject jsonObject = JSONObject.fromObject( json );  
 		jsonConfig.setRootClass(clazz);
+		JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(BaseRsService.datePatterns.toArray(new String[1])) , true);
 
 		return JSONObject.toBean( jsonObject, jsonConfig );
 	}

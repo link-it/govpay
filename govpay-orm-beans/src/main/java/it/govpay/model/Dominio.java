@@ -36,8 +36,6 @@ public class Dominio extends BasicModel {
 	private boolean riusoIuv;
 	private boolean customIuv;
 	private boolean abilitato;
-	private transient byte[] contiAccredito;
-	private transient byte[] tabellaControparti;
 	private int auxDigit;
 	private Integer segregationCode;
 	
@@ -99,22 +97,6 @@ public class Dominio extends BasicModel {
 		this.idStazione = idStazione;
 	}
 
-	public byte[] getContiAccredito() {
-		return contiAccredito;
-	}
-
-	public void setContiAccredito(byte[] contiAccredito) {
-		this.contiAccredito = contiAccredito;
-	}
-
-	public byte[] getTabellaControparti() {
-		return tabellaControparti;
-	}
-
-	public void setTabellaControparti(byte[] tabellaControparti) {
-		this.tabellaControparti = tabellaControparti;
-	}
-	
 	public Long getIdApplicazioneDefault() {
 		return idApplicazioneDefault;
 	}

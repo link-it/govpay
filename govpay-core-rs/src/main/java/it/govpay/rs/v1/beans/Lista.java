@@ -62,6 +62,10 @@ public abstract class Lista<T> extends JSONSerializable {
 		return "lista";
 	}
 	
+	public Lista() {
+		
+	}
+	
 	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long limit) {
 
 		this.risultati = risultati;

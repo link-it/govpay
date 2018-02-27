@@ -637,6 +637,12 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
 		
+		if(expression.inUseModel(RPT.model().ID_PAGAMENTO_PORTALE,false)){
+			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
+			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_PAGAMENTO_PORTALE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_pagamento_portale="+tableName2+".id");
+		}
+		
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id) throws NotFoundException, ServiceException, NotImplementedException, Exception{

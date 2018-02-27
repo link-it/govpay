@@ -185,7 +185,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			LeggiCanaleDTO leggiPspDTO = new LeggiCanaleDTO(null); //TODO IAutorizzato
 			leggiPspDTO.setIdPsp(idPsp);
 			leggiPspDTO.setIdCanale(idCanale);
-			leggiPspDTO.setTipoVersamento(TipoVersamento.valueOf(tipoVersamento));
+			leggiPspDTO.setTipoVersamento(TipoVersamento.toEnum(tipoVersamento));
 			
 			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId())); 
 			

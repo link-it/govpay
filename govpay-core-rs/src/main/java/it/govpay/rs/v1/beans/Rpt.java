@@ -1,10 +1,12 @@
 package it.govpay.rs.v1.beans;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Applicazione;
 import it.govpay.rs.v1.beans.base.EsitoRpt;
@@ -26,7 +28,7 @@ public Rpt() {}
 	
 	public Rpt(it.govpay.bd.model.Rpt rpt, Versamento versamento, Applicazione applicazione, Canale canale, Psp psp) throws ServiceException {
 		
-		this.setCanale(UriBuilderUtils.getCanale(psp.getCodPsp(), canale.getCodCanale()));
+		this.setCanale(UriBuilderUtils.getCanale(psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().getCodifica()));
 		this.setCcp(rpt.getCcp());
 		this.setDataRicevuta(rpt.getDataMsgRicevuta());
 		this.setDataRichiesta(rpt.getDataMsgRichiesta());
@@ -80,5 +82,12 @@ public Rpt() {}
 		}
 		this.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
 		this.setStato(rpt.getStato().toString());
+	}
+	
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
 	}
 }
