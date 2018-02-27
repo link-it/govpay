@@ -19,14 +19,12 @@
  */
 package it.govpay.core.dao.anagrafica;
 
-import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
-import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
@@ -54,6 +52,8 @@ import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
@@ -62,6 +62,7 @@ import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.IbanAccreditoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotFoundException;
@@ -96,13 +97,10 @@ public class DominiDAO {
 				TipoTributo bolloT = null;
 				// bollo telematico
 				try {
-					TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
-					bolloT = tipiTributoBD.getTipoTributo(it.govpay.model.Tributo.BOLLOT);
+					bolloT = AnagraficaManager.getTipoTributo(bd, it.govpay.model.Tributo.BOLLOT);
 				} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 					throw new TipoTributoNonTrovatoException(e.getMessage());
-				} catch (MultipleResultException e) {
-					throw new TipoTributoNonTrovatoException(e.getMessage());
-				} 
+				}
 
 				TributiBD tributiBD = new TributiBD(bd);
 
@@ -430,6 +428,49 @@ public class DominiDAO {
 		} finally {
 			bd.closeConnection();
 		}
+	}
+	
+	public PutEntrataDominioDTOResponse createOrUpdateEntrataDominio(PutEntrataDominioDTO putEntrataDominioDTO) throws ServiceException, 
+		DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException{
+		PutEntrataDominioDTOResponse putIbanAccreditoDTOResponse = new PutEntrataDominioDTOResponse();
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			try {
+				// inserisco l'iddominio
+				putEntrataDominioDTO.getTributo().setIdDominio(AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new DominioNonTrovatoException(e.getMessage());
+			}
+			
+			TipoTributo tipoTributo = null;
+			// bollo telematico
+			try {
+				tipoTributo = AnagraficaManager.getTipoTributo(bd, putEntrataDominioDTO.getIdTipoTributo());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new TipoTributoNonTrovatoException(e.getMessage());
+			}
+			
+			putEntrataDominioDTO.getTributo().setIdTipoTributo(tipoTributo.getId());
+			
+			TributiBD tributiBD = new TributiBD(bd);
+			TributoFilter filter = tributiBD.newFilter(); 
+			filter.setCodDominio(putEntrataDominioDTO.getIdDominio());
+			filter.setCodTributo(putEntrataDominioDTO.getIdTributo());
+
+			// flag creazione o update
+			boolean isCreate = tributiBD.count(filter) == 0;
+			putIbanAccreditoDTOResponse.setCreated(isCreate);
+			if(isCreate) {
+				tributiBD.insertTributo(putEntrataDominioDTO.getTributo());
+			} else {
+				tributiBD.updateTributo(putEntrataDominioDTO.getTributo());
+			}
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new TributoNonTrovatoException(e.getMessage());
+		} finally {
+			bd.closeConnection();
+		}
+		return putIbanAccreditoDTOResponse;
 	}
 
 }

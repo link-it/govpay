@@ -4,6 +4,8 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 import it.govpay.rs.v1.beans.base.EsitoRpt;
 import it.govpay.rs.v1.beans.base.ModelloPagamento;
+import it.govpay.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
+
 import java.math.BigDecimal;
 import java.util.Date;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -138,21 +140,33 @@ public class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
     this.canale = canale;
   }
 
-  /**
-   **/
-  public Rpt modelloPagamento(ModelloPagamento modelloPagamento) {
-    this.modelloPagamento = modelloPagamento;
+  public Rpt modelloPagamento(String modelloPagamento) throws Exception{
+    this.setModelloPagamento(modelloPagamento);
     return this;
   }
 
-  @JsonProperty("modelloPagamento")
-  public ModelloPagamento getModelloPagamento() {
+  public ModelloPagamento getModelloPagamentoEnum() {
     return modelloPagamento;
   }
-  public void setModelloPagamento(ModelloPagamento modelloPagamento) {
+  public void setModelloPagamento(ModelloPagamento modelloPagamento)  {
     this.modelloPagamento = modelloPagamento;
   }
-
+  public void setModelloPagamento(String modelloPagamento) throws Exception{
+	  if(modelloPagamento != null) {
+		  this.modelloPagamento = ModelloPagamento.fromValue(modelloPagamento);
+		  if(this.modelloPagamento == null)
+			  throw new Exception("valore ["+modelloPagamento+"] non ammesso per la property modelloPagamento");
+	  }
+  }
+  
+  @JsonProperty("modelloPagamento")
+  public String getModelloPagamento() {
+	  if(modelloPagamento != null) {
+		  return modelloPagamento.toString();
+	  } else {
+		  return null;
+	  }
+  }
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
    **/

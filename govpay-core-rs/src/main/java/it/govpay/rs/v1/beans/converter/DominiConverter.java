@@ -2,17 +2,58 @@ package it.govpay.rs.v1.beans.converter;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
+import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.rs.v1.beans.base.DominioPost;
+import it.govpay.rs.v1.beans.base.EntrataPost;
 import it.govpay.rs.v1.beans.base.IbanAccreditoPost;
 import it.govpay.rs.v1.beans.base.UnitaOperativaPost;
 
 public class DominiConverter {
+	
+	public static PutEntrataDominioDTO getPutEntrataDominioDTO(EntrataPost entrataRequest, String idDominio, String idEntrata, IAutorizzato user) {
+		PutEntrataDominioDTO entrataDTO = new PutEntrataDominioDTO(user);
+		
+		Tributo tributo = new Tributo();
+		
+		// tributo.setAbilitato(entrataRequest.isAbilitato());
+		tributo.setCodContabilitaCustom(entrataRequest.getCodiceContabilita());
+		tributo.setCodTributo(idEntrata);
+		tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
+		tributo.setDescrizione(entrataRequest.getDescrizione());
+		if(entrataRequest.getTipoContabilita() != null) {
+			switch (entrataRequest.getTipoContabilita()) {
+			case ALTRO:
+				tributo.setTipoContabilitaCustom(TipoContabilta.ALTRO);
+				break;
+			case ENTRATA:
+				tributo.setTipoContabilitaCustom(TipoContabilta.CAPITOLO);
+				break;
+			case SIOPE:
+				tributo.setTipoContabilitaCustom(TipoContabilta.SIOPE);
+				break;
+			case SPECIALE:
+				tributo.setTipoContabilitaCustom(TipoContabilta.SPECIALE);
+				break;
+			}
+		}
+		
+		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccredito());
+		// entrataDTO.setIbanAccreditoPostale(entrataRequest.getIbanAccreditoPostale()); // TODO
+		entrataDTO.setTributo(tributo);
+		entrataDTO.setIdDominio(idDominio);
+		entrataDTO.setIdTributo(idEntrata);
+		// entrataDTO.setIdTipoTributo(entrataRequest.getIdTipoTributo()); // TODO
+				
+		return entrataDTO;		
+	}
 	
 	public static PutIbanAccreditoDTO getPutIbanAccreditoDTO(IbanAccreditoPost ibanAccreditoPost, String idDominio, String idIbanAccredito, IAutorizzato user) {
 		PutIbanAccreditoDTO ibanAccreditoDTO = new PutIbanAccreditoDTO(user);
@@ -85,20 +126,17 @@ public class DominiConverter {
 			dominio.setAuxDigit(Integer.parseInt(dominioPost.getAuxDigit()));
 		//dominio.setCbill(dominioPost.getcbill());
 		dominio.setCodDominio(idDominio);
-		//dominio.setCustomIuv(dominioPost.getc);
 		dominio.setGln(dominioPost.getGln());
 		dominio.setIdApplicazioneDefault(null);
 		
 		dominio.setIuvPrefix(dominioPost.getIuvPrefix());
-		//dominio.setIuvPrefixStrict(iuvPrefixStrict);
 		if(dominioPost.getLogo() != null)
 			dominio.setLogo(dominioPost.getLogo().getBytes());
-//		dominio.setNdpData(null);
-//		dominio.setNdpDescrizione(null);
-//		dominio.setNdpOperazione(null);
-//		dominio.setNdpStato(null);
+		dominio.setNdpData(null);
+		dominio.setNdpDescrizione(null);
+		dominio.setNdpOperazione(null);
+		dominio.setNdpStato(null);
 		dominio.setRagioneSociale(dominioPost.getRagioneSociale());
-		// dominio.setRiusoIuv(dominioPost.riuso);
 		if(dominioPost.getSegregationCode() != null)
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
 		
