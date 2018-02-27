@@ -27,8 +27,8 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
+import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.v1.beans.ListaRpt;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
@@ -37,89 +37,14 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
 
 public class RptController extends it.govpay.rs.BaseController {
-	
-	public RptController(String nomeServizio,Logger log) {
+
+     public RptController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-	}
+     }
 
 
-    public Response rptGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina ,
-    			String ordinamento , String campi , String idDominio , String iuv , String ccp , String idA2A , String idPendenza , String idPagamento , String esito ) {
-    	String methodName = "rptGET";  
-		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			
-			// Parametri - > DTO Input
-			
-			ListaRptDTO listaRptDTO = new ListaRptDTO(null); //TODO IAutorizzato
-			listaRptDTO.setPagina(pagina);
-			listaRptDTO.setLimit(risultatiPerPagina);
-			
-			if(esito != null)
-				listaRptDTO.setStato(StatoRpt.valueOf(esito));
-			
-			if(idDominio != null)
-				listaRptDTO.setIdDominio(idDominio);
-			if(iuv != null)
-				listaRptDTO.setIuv(iuv);
-			if(ccp != null)
-				listaRptDTO.setCcp(ccp);
-			if(idA2A != null)
-				listaRptDTO.setIdA2A(idA2A);
-			if(idPendenza != null)
-				listaRptDTO.setIdPendenza(idPendenza);
-			
-			if(idPagamento != null)
-				listaRptDTO.setIdPagamento(idPagamento);
-			
-			if(ordinamento != null)
-				listaRptDTO.setOrderBy(ordinamento);
-			// INIT DAO
-			
-			RptDAO rptDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId()));
-			
-			// CHIAMATA AL DAO
-			
-			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			List<it.govpay.rs.v1.beans.Rpt> results = new ArrayList<it.govpay.rs.v1.beans.Rpt>();
-			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Rpt(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),leggiRptDtoResponse.getCanale(),leggiRptDtoResponse.getPsp()));
-			}
-			
-			ListaRpt response = new ListaRpt(results, uriInfo.getRequestUri(),
-					listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
-			
-		}catch (Exception e) {
-			log.error("Errore interno durante la ricerca delle RPT: " + e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
 
-    public Response rptIdDominioIuvCcpGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String ccp ) {
+    public Response rptIdDominioIuvCcpGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
     	String methodName = "getRptByIdDominioIuvCcp";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -131,7 +56,7 @@ public class RptController extends it.govpay.rs.BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			
-			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(null); //TODO IAutorizzato
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);
 			leggiRptDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
@@ -174,7 +99,8 @@ public class RptController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response rptIdDominioIuvCcpRtGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String ccp ) {
+
+    public Response rptIdDominioIuvCcpRtGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
     	String methodName = "getRtByIdDominioIuvCcp";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -192,7 +118,7 @@ public class RptController extends it.govpay.rs.BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			
-			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(null); //TODO IAutorizzato
+			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
 			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
 			leggiPagamentoPortaleDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
@@ -241,6 +167,83 @@ public class RptController extends it.govpay.rs.BaseController {
 			return Response.status(Status.NOT_FOUND).entity(respKo).build();
 		}catch (Exception e) {
 			log.error("Errore interno durante la " + methodName, e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
+
+
+
+    public Response rptGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
+    	String methodName = "rptGET";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			// Parametri - > DTO Input
+			
+			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
+			listaRptDTO.setPagina(pagina);
+			listaRptDTO.setLimit(risultatiPerPagina);
+			
+			if(esito != null)
+				listaRptDTO.setStato(StatoRpt.valueOf(esito));
+			
+			if(idDominio != null)
+				listaRptDTO.setIdDominio(idDominio);
+			if(iuv != null)
+				listaRptDTO.setIuv(iuv);
+			if(ccp != null)
+				listaRptDTO.setCcp(ccp);
+			if(idA2A != null)
+				listaRptDTO.setIdA2A(idA2A);
+			if(idPendenza != null)
+				listaRptDTO.setIdPendenza(idPendenza);
+			
+			if(idPagamento != null)
+				listaRptDTO.setIdPagamento(idPagamento);
+			
+			if(ordinamento != null)
+				listaRptDTO.setOrderBy(ordinamento);
+			// INIT DAO
+			
+			RptDAO rptDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			
+			// CHIAMATA AL DAO
+			
+			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			List<it.govpay.rs.v1.beans.Rpt> results = new ArrayList<it.govpay.rs.v1.beans.Rpt>();
+			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
+				results.add(new it.govpay.rs.v1.beans.Rpt(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),leggiRptDtoResponse.getCanale(),leggiRptDtoResponse.getPsp()));
+			}
+			
+			ListaRpt response = new ListaRpt(results, uriInfo.getRequestUri(),
+					listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			
+		}catch (Exception e) {
+			log.error("Errore interno durante la ricerca delle RPT: " + e.getMessage(), e);
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.INTERNO);
 			respKo.setCodice("");

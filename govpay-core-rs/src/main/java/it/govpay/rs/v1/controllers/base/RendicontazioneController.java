@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.model.Ruolo;
+import it.govpay.model.IAutorizzato;
 
 import org.slf4j.Logger;
 
@@ -28,13 +28,13 @@ public class RendicontazioneController extends it.govpay.rs.BaseController {
 
 
 
-    public Response rendicontazioneIdFlussoGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
+    public Response rendicontazioneIdFlussoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response rendicontazioneGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio) {
+    public Response rendicontazioneGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 

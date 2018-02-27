@@ -17,7 +17,7 @@ import it.govpay.core.dao.anagrafica.dto.FindRuoliDTO;
 import it.govpay.core.dao.anagrafica.dto.FindRuoliDTOResponse;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
+import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.ListaRuoli;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
@@ -32,7 +32,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 
 
 
-    public Response profiloGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
     	String methodName = "profiloGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -48,12 +48,12 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			String ordinamento = null; //TODO ordinamento
 			String campi = null;//TODO aggiungere
 
-			FindRuoliDTO listaRuoliDTO = new FindRuoliDTO(null); //TODO IAutorizzato
+			FindRuoliDTO listaRuoliDTO = new FindRuoliDTO(user);
 			
 			listaRuoliDTO.setPagina(pagina);
 			listaRuoliDTO.setLimit(risultatiPerPagina);
 			listaRuoliDTO.setOrderBy(ordinamento);
-			listaRuoliDTO.setListaRuoli(listaRuoli);
+//			listaRuoliDTO.setListaRuoli(listaRuoli); //TODO pintori
 			
 			// INIT DAO
 			

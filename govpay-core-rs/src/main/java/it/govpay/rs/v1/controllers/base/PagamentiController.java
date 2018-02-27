@@ -1,7 +1,6 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +26,7 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
+import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.FaultBean;
 import it.govpay.rs.v1.beans.ListaPagamentiPortale;
@@ -40,12 +39,140 @@ import net.sf.json.JsonConfig;
 
 
 public class PagamentiController extends it.govpay.rs.BaseController {
-	
-	public PagamentiController(String nomeServizio,Logger log) {
+
+     public PagamentiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-	}
-	
-    public Response pagamentiGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina , String ordinamento , String campi , String stato , String versante , String idSessionePortale ) {
+     }
+
+
+
+    public Response pagamentiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale) {
+    	String methodName = "pagamentiPOST";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			String jsonRequest = baos.toString();
+			JsonConfig jsonConfig = new JsonConfig();
+			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			classMap.put("autenticazioneSoggetto", String.class);
+			jsonConfig.setClassMap(classMap);
+			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class, jsonConfig);
+			
+			String transactionId = ctx.getTransactionId();
+			String idSession = transactionId.replace("-", "");
+			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale);
+			
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(BasicBD.newInstance(transactionId)); 
+			
+			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
+						
+			PagamentiPortaleResponseOk responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 201);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(Status.CREATED).entity(responseOk.toJSON(null)).build();
+		} catch(GovPayException e) {
+			log.error("Errore durante il processo di pagamento", e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice(e.getCodEsito().name());
+			respKo.setDescrizione(e.getDescrizioneEsito());
+			respKo.setDettaglio(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante il processo di pagamento", e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
+
+
+
+    public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    	String methodName = "getPagamentoPortaleById";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
+			leggiPagamentoPortaleDTO.setIdSessione(id);
+			
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			
+			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
+			
+			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
+			it.govpay.rs.v1.beans.PagamentoPortale response = new it.govpay.rs.v1.beans.PagamentoPortale(pagamentoPortaleModel);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+		}catch (PagamentoPortaleNonTrovatoException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante il processo di pagamento", e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
+
+
+
+    public Response pagamentiIdDominioIuvPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
+
+    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -59,7 +186,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(null); //TODO IAutorizzato
+			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
 			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			
@@ -110,127 +237,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pagamentiIdGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String id ) {
-    	String methodName = "getPagamentoPortaleById";  
-		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			
-			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(null); //TODO IAutorizzato
-			leggiPagamentoPortaleDTO.setIdSessione(id);
-			leggiPagamentoPortaleDTO.setPrincipal(principal);
-			
-			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(BasicBD.newInstance(ctx.getTransactionId())); 
-			
-			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
-			
-			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.rs.v1.beans.PagamentoPortale response = new it.govpay.rs.v1.beans.PagamentoPortale(pagamentoPortaleModel);
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
-		}catch (PagamentoPortaleNonTrovatoException e) {
-			log.error(e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.NOT_FOUND).entity(respKo).build();
-		}catch (Exception e) {
-			log.error("Errore interno durante il processo di pagamento", e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-
-    public Response pagamentiPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is , String idSessionePortale ) {
-    	String methodName = "pagamentiPOST";  
-		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			
-			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			classMap.put("autenticazioneSoggetto", String.class);
-			jsonConfig.setClassMap(classMap);
-			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class, jsonConfig);
-			
-			String transactionId = ctx.getTransactionId();
-			String idSession = transactionId.replace("-", "");
-			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, principal,idSession, idSessionePortale);
-			
-			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(BasicBD.newInstance(transactionId)); 
-			
-			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
-						
-			PagamentiPortaleResponseOk responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 201);
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.CREATED).entity(responseOk.toJSON(null)).build();
-		} catch(GovPayException e) {
-			log.error("Errore durante il processo di pagamento", e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice(e.getCodEsito().name());
-			respKo.setDescrizione(e.getDescrizioneEsito());
-			respKo.setDettaglio(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
-		} catch (Exception e) {
-			log.error("Errore interno durante il processo di pagamento", e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-    public Response pagamentiIdDominioIuvPOST(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
 
 }
 

@@ -36,7 +36,7 @@ public class Profilo extends BaseRsServiceV1{
     public Response profiloGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.profiloGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
+	return this.controller.profiloGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
     }
 
 }

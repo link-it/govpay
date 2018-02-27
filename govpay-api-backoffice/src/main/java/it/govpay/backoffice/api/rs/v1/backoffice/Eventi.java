@@ -37,7 +37,7 @@ public class Eventi extends BaseRsServiceV1{
 	public Response eventiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv){
 		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.eventiGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv);
+		return this.controller.eventiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv);
 	}
 
 

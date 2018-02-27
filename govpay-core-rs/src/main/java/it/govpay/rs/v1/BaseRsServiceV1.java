@@ -19,17 +19,7 @@
  */
 package it.govpay.rs.v1;
 
-import java.io.IOException;
-
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.UriInfo;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.slf4j.MDC;
-
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 
 public class BaseRsServiceV1 extends BaseRsService {
@@ -44,4 +34,10 @@ public class BaseRsServiceV1 extends BaseRsService {
 	public int getVersione() {
 		return 1;
 	}
+
+	protected IAutorizzato getUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

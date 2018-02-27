@@ -68,7 +68,7 @@ public class PagamentiPortaleDAO extends BasicBD{
 		ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 		
 		it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(this);
-		Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(pagamentiPortaleDTO.getPrincipal());
+		Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(null); //TODO pintori
 		ctx.log("ws.ricevutaRichiesta");
 		String codApplicazione = applicazioneAutenticata.getCodApplicazione();
 		

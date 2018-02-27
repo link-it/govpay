@@ -20,7 +20,7 @@ import it.govpay.core.dao.anagrafica.dto.GetIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.GetIntermediarioDTOResponse;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
+import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.Intermediario;
 import it.govpay.rs.v1.beans.ListaIntermediari;
 import it.govpay.rs.v1.beans.ListaStazioni;
@@ -37,7 +37,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
 
-    public Response intermediariIdIntermediarioGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
+    public Response intermediariIdIntermediarioGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
     	String methodName = "intermediariIdIntermediarioGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -86,13 +86,13 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniIdStazionePUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
+    public Response intermediariIdIntermediarioStazioniIdStazionePUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response intermediariGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response intermediariGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "intermediariGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -105,7 +105,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			FindIntermediariDTO listaIntermediariDTO = new FindIntermediariDTO(null); //TODO IAutorizzato
+			FindIntermediariDTO listaIntermediariDTO = new FindIntermediariDTO(user);
 			
 			listaIntermediariDTO.setPagina(pagina);
 			listaIntermediariDTO.setLimit(risultatiPerPagina);
@@ -152,13 +152,14 @@ public class IntermediariController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response intermediariIdIntermediarioPUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
+
+    public Response intermediariIdIntermediarioPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response intermediariIdIntermediarioStazioniGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response intermediariIdIntermediarioStazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "intermediariGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -171,7 +172,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			FindStazioniDTO listaStazioniDTO = new FindStazioniDTO(null); //TODO IAutorizzato
+			FindStazioniDTO listaStazioniDTO = new FindStazioniDTO(user);
 			
 			listaStazioniDTO.setPagina(pagina);
 			listaStazioniDTO.setLimit(risultatiPerPagina);
@@ -220,7 +221,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniIdStazioneGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
+    public Response intermediariIdIntermediarioStazioniIdStazioneGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 

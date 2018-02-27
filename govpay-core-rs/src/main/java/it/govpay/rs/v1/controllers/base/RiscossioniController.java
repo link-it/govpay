@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.model.Ruolo;
+import it.govpay.model.IAutorizzato;
 
 import org.slf4j.Logger;
 
@@ -30,13 +30,13 @@ public class RiscossioniController extends it.govpay.rs.BaseController {
 
 
 
-    public Response riscossioniIdDominioIuvIurIndiceGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String iur, String indice) {
+    public Response riscossioniIdDominioIuvIurIndiceGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String iur, String indice) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response riscossioniGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, StatoRiscossione stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
+    public Response riscossioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, StatoRiscossione stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 

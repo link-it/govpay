@@ -3,13 +3,18 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.Date;
 import java.util.List;
 
+import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Anagrafica;
+import it.govpay.model.IAutorizzato;
 
-public class PagamentiPortaleDTO {
+public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
+
+	public PagamentiPortaleDTO(IAutorizzato user) {
+		super(user);
+	}
 
 	private String idSessione = null;
 	private String idSessionePortale =null;
-	private String principal = null; 
 	private String jsonRichiesta = null;
 	private String urlRitorno = null;
 	private String ibanAddebito =null;
@@ -24,12 +29,6 @@ public class PagamentiPortaleDTO {
 	private String keyWISP = null;
 	private String autenticazioneSoggetto = null;
 
-	public String getPrincipal() {
-		return principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
 	public String getJsonRichiesta() {
 		return jsonRichiesta;
 	}

@@ -40,7 +40,7 @@ public class Intermediari extends BaseRsServiceV1{
     public Response intermediariGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+	return this.controller.intermediariGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
 
@@ -51,7 +51,7 @@ public class Intermediari extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response intermediariIdIntermediarioGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idIntermediario);
+	return this.controller.intermediariIdIntermediarioGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario);
     }
 
 
@@ -62,7 +62,7 @@ public class Intermediari extends BaseRsServiceV1{
     
     public Response intermediariIdIntermediarioPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioPUT(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idIntermediario, is);
+	return this.controller.intermediariIdIntermediarioPUT(this.getUser(), uriInfo, httpHeaders,  idIntermediario, is);
     }
 
 
@@ -74,7 +74,7 @@ public class Intermediari extends BaseRsServiceV1{
     public Response intermediariIdIntermediarioStazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioStazioniGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+	return this.controller.intermediariIdIntermediarioStazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
 
@@ -85,7 +85,7 @@ public class Intermediari extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response intermediariIdIntermediarioStazioniIdStazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioStazioniIdStazioneGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idIntermediario,  idStazione);
+	return this.controller.intermediariIdIntermediarioStazioniIdStazioneGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione);
     }
 
     
@@ -95,7 +95,7 @@ public class Intermediari extends BaseRsServiceV1{
     
     public Response intermediariIdIntermediarioStazioniIdStazionePUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioStazioniIdStazionePUT(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idIntermediario,  idStazione, is);
+	return this.controller.intermediariIdIntermediarioStazioniIdStazionePUT(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione, is);
     }
 
 }

@@ -9,6 +9,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import it.govpay.model.IAutorizzato;
+
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.ApplicazioniDAO;
@@ -18,7 +20,6 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Ruolo;
 import it.govpay.rs.v1.beans.Applicazione;
 import it.govpay.rs.v1.beans.ListaApplicazioni;
 import it.govpay.rs.v1.beans.base.FaultBean;
@@ -34,7 +35,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 
 
 
-    public Response applicazioniIdA2AGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
+    public Response applicazioniIdA2AGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
     	String methodName = "applicazioniIdA2AGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -84,13 +85,13 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 
 
 
-    public Response applicazioniIdA2APUT(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
+    public Response applicazioniIdA2APUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
 
 
-    public Response applicazioniGET(String principal, List<Ruolo> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response applicazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "applicazioniGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -103,7 +104,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			FindApplicazioniDTO listaDominiDTO = new FindApplicazioniDTO(null); //TODO IAutorizzato
+			FindApplicazioniDTO listaDominiDTO = new FindApplicazioniDTO(user);
 			
 			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setLimit(risultatiPerPagina);

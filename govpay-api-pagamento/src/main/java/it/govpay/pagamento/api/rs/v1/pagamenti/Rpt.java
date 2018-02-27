@@ -41,7 +41,7 @@ public class Rpt extends BaseRsServiceV1{
 			@QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("idPagamento") String idPagamento,   
 			@QueryParam("dataDa") String dataDa,  @QueryParam("dataA") String dataA,  @QueryParam("esito") String esito, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi) {
 		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.rptGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, esito);
+		return this.controller.rptGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, esito);
 	}
 
 /*
@@ -52,7 +52,7 @@ public class Rpt extends BaseRsServiceV1{
     public Response rptGET_1(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("esito") EsitoRpt esito){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rptGET_1(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, esito);
+	return this.controller.rptGET_1(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, esito);
     }
 */
 
@@ -64,7 +64,7 @@ public class Rpt extends BaseRsServiceV1{
     public Response rptGET_2(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("esito") EsitoRpt esito){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rptGET_2(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, esito);
+	return this.controller.rptGET_2(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, esito);
     }
 */
 
@@ -74,7 +74,7 @@ public class Rpt extends BaseRsServiceV1{
 	public Response getRptByIdDominioIuvCcp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp) {
 		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.rptIdDominioIuvCcpGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idDominio, iuv, ccp);
+		return this.controller.rptIdDominioIuvCcpGET(this.getUser(), uriInfo, httpHeaders, idDominio, iuv, ccp);
 	}
 	
 
@@ -87,7 +87,7 @@ public class Rpt extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response rptIdDominioIuvCcpGET_3(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rptIdDominioIuvCcpGET_3(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+	return this.controller.rptIdDominioIuvCcpGET_3(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
 */
 
@@ -98,7 +98,7 @@ public class Rpt extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response rptIdDominioIuvCcpGET_4(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rptIdDominioIuvCcpGET_4(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+	return this.controller.rptIdDominioIuvCcpGET_4(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
 */
 
@@ -108,7 +108,7 @@ public class Rpt extends BaseRsServiceV1{
 	public Response getRtByIdDominioIuvCcp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp) {
 		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.rptIdDominioIuvCcpRtGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, idDominio, iuv, ccp);
+		return this.controller.rptIdDominioIuvCcpRtGET(this.getUser(), uriInfo, httpHeaders, idDominio, iuv, ccp);
 	}
 
 
@@ -120,7 +120,7 @@ public class Rpt extends BaseRsServiceV1{
     @Produces({ "application/pdf", "application/xml", "application/json" })
     public Response rptIdDominioIuvCcpRtGET_5(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rptIdDominioIuvCcpRtGET_5(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+	return this.controller.rptIdDominioIuvCcpRtGET_5(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
 */
 
@@ -131,7 +131,7 @@ public class Rpt extends BaseRsServiceV1{
     @Produces({ "application/pdf", "application/xml", "application/json" })
     public Response rptIdDominioIuvCcpRtGET_6(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rptIdDominioIuvCcpRtGET_6(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+	return this.controller.rptIdDominioIuvCcpRtGET_6(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
 */
 
