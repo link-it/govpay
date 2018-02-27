@@ -35,9 +35,8 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Operatore">
  * 		&lt;sequence>
- * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="profilo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -53,9 +52,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Operatore", 
   propOrder = {
-  	"principal",
+  	"idUtenza",
   	"nome",
-  	"profilo",
   	"abilitato"
   }
 )
@@ -80,12 +78,12 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getPrincipal() {
-    return this.principal;
+  public IdUtenza getIdUtenza() {
+    return this.idUtenza;
   }
 
-  public void setPrincipal(java.lang.String principal) {
-    this.principal = principal;
+  public void setIdUtenza(IdUtenza idUtenza) {
+    this.idUtenza = idUtenza;
   }
 
   public java.lang.String getNome() {
@@ -94,14 +92,6 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setNome(java.lang.String nome) {
     this.nome = nome;
-  }
-
-  public java.lang.String getProfilo() {
-    return this.profilo;
-  }
-
-  public void setProfilo(java.lang.String profilo) {
-    this.profilo = profilo;
   }
 
   public boolean isAbilitato() {
@@ -135,17 +125,12 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
   }
 
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="principal",required=true,nillable=false)
-  protected java.lang.String principal;
+  @XmlElement(name="idUtenza",required=true,nillable=false)
+  protected IdUtenza idUtenza;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nome",required=true,nillable=false)
   protected java.lang.String nome;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="profilo",required=true,nillable=false)
-  protected java.lang.String profilo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false,defaultValue="true")

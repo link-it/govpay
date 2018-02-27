@@ -158,8 +158,8 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 		try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(new CustomField("id", Long.class, "id", this.getApplicazioneFieldConverter().toTable(Applicazione.model())));
+			fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getApplicazioneFieldConverter().toTable(Applicazione.model())));
 			fields.add(Applicazione.model().COD_APPLICAZIONE);
-			fields.add(Applicazione.model().PRINCIPAL);
 			fields.add(Applicazione.model().ABILITATO);
 			fields.add(Applicazione.model().FIRMA_RICEVUTA);
 			fields.add(Applicazione.model().COD_CONNETTORE_ESITO);
@@ -175,6 +175,21 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 
 				Applicazione applicazione = (Applicazione)this.getApplicazioneFetch().fetch(jdbcProperties.getDatabase(), Applicazione.model(), map);
 
+				if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+					){
+						// Object _applicazione_utenza (recupero id)
+						Long idFK_applicazione_utenza = (Long) map.get("id_utenza");
+						
+						it.govpay.orm.IdUtenza id_applicazione_utenza = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_applicazione_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idFK_applicazione_utenza, false);
+						}else{
+							id_applicazione_utenza = new it.govpay.orm.IdUtenza();
+						}
+						id_applicazione_utenza.setId(idFK_applicazione_utenza);
+						applicazione.setIdUtenza(id_applicazione_utenza);
+					}
 				list.add(applicazione);
 			}
 		} catch(NotFoundException e) {}

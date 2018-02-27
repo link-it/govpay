@@ -19,7 +19,7 @@
  */
 package it.govpay.orm.model;
 
-import it.govpay.orm.IdRuolo;
+import it.govpay.orm.Utenza;
 
 import org.openspcoop2.generic_project.beans.AbstractModel;
 import org.openspcoop2.generic_project.beans.IField;
@@ -28,39 +28,39 @@ import org.openspcoop2.generic_project.beans.ComplexField;
 
 
 /**     
- * Model IdRuolo 
+ * Model Utenza 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class IdRuoloModel extends AbstractModel<IdRuolo> {
+public class UtenzaModel extends AbstractModel<Utenza> {
 
-	public IdRuoloModel(){
+	public UtenzaModel(){
 	
 		super();
 	
-		this.COD_RUOLO = new Field("codRuolo",java.lang.String.class,"id-ruolo",IdRuolo.class);
+		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Utenza",Utenza.class);
 	
 	}
 	
-	public IdRuoloModel(IField father){
+	public UtenzaModel(IField father){
 	
 		super(father);
 	
-		this.COD_RUOLO = new ComplexField(father,"codRuolo",java.lang.String.class,"id-ruolo",IdRuolo.class);
+		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Utenza",Utenza.class);
 	
 	}
 	
 	
 
-	public IField COD_RUOLO = null;
+	public IField PRINCIPAL = null;
 	 
 
 	@Override
-	public Class<IdRuolo> getModeledClass(){
-		return IdRuolo.class;
+	public Class<Utenza> getModeledClass(){
+		return Utenza.class;
 	}
 	
 	@Override

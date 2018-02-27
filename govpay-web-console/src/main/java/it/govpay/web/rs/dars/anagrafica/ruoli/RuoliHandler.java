@@ -114,10 +114,6 @@ public class RuoliHandler extends DarsHandler<Ruolo> implements IDarsHandler<Ruo
 			RuoloFilter filter = ruoliBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Ruolo.model().DESCRIZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
 
 			if(simpleSearch){
 				// simplesearch

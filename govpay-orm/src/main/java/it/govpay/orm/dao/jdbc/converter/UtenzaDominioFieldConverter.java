@@ -25,32 +25,32 @@ import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.expression.impl.sql.AbstractSQLFieldConverter;
 import org.openspcoop2.utils.TipiDatabase;
 
-import it.govpay.orm.Ruolo;
+import it.govpay.orm.UtenzaDominio;
 
 
 /**     
- * RuoloFieldConverter
+ * UtenzaDominioFieldConverter
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class RuoloFieldConverter extends AbstractSQLFieldConverter {
+public class UtenzaDominioFieldConverter extends AbstractSQLFieldConverter {
 
 	private TipiDatabase databaseType;
 	
-	public RuoloFieldConverter(String databaseType){
+	public UtenzaDominioFieldConverter(String databaseType){
 		this.databaseType = TipiDatabase.toEnumConstant(databaseType);
 	}
-	public RuoloFieldConverter(TipiDatabase databaseType){
+	public UtenzaDominioFieldConverter(TipiDatabase databaseType){
 		this.databaseType = databaseType;
 	}
 
 
 	@Override
 	public IModel<?> getRootModel() throws ExpressionException {
-		return Ruolo.model();
+		return UtenzaDominio.model();
 	}
 	
 	@Override
@@ -67,18 +67,18 @@ public class RuoloFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(Ruolo.model().COD_RUOLO)){
+		if(field.equals(UtenzaDominio.model().ID_UTENZA.PRINCIPAL)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_ruolo";
+				return this.toAliasTable(field)+".principal";
 			}else{
-				return "cod_ruolo";
+				return "principal";
 			}
 		}
-		if(field.equals(Ruolo.model().DESCRIZIONE)){
+		if(field.equals(UtenzaDominio.model().ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".descrizione";
+				return this.toAliasTable(field)+".cod_dominio";
 			}else{
-				return "descrizione";
+				return "cod_dominio";
 			}
 		}
 
@@ -94,11 +94,11 @@ public class RuoloFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(Ruolo.model().COD_RUOLO)){
-			return this.toTable(Ruolo.model(), returnAlias);
+		if(field.equals(UtenzaDominio.model().ID_UTENZA.PRINCIPAL)){
+			return this.toTable(UtenzaDominio.model().ID_UTENZA, returnAlias);
 		}
-		if(field.equals(Ruolo.model().DESCRIZIONE)){
-			return this.toTable(Ruolo.model(), returnAlias);
+		if(field.equals(UtenzaDominio.model().ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(UtenzaDominio.model().ID_DOMINIO, returnAlias);
 		}
 
 
@@ -113,8 +113,14 @@ public class RuoloFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(model.equals(Ruolo.model())){
-			return "ruoli";
+		if(model.equals(UtenzaDominio.model())){
+			return "utenze_domini";
+		}
+		if(model.equals(UtenzaDominio.model().ID_UTENZA)){
+			return "utenze";
+		}
+		if(model.equals(UtenzaDominio.model().ID_DOMINIO)){
+			return "domini";
 		}
 
 

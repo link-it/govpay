@@ -169,11 +169,8 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			fields.add(Dominio.model().RAGIONE_SOCIALE);
 			fields.add(Dominio.model().GLN);
 			fields.add(Dominio.model().ABILITATO);
-			fields.add(Dominio.model().RIUSO_IUV);
-			fields.add(Dominio.model().CUSTOM_IUV);
 			fields.add(Dominio.model().AUX_DIGIT);
 			fields.add(Dominio.model().IUV_PREFIX);
-			fields.add(Dominio.model().IUV_PREFIX_STRICT);
 			fields.add(Dominio.model().SEGREGATION_CODE);
 			fields.add(Dominio.model().NDP_STATO);
 			fields.add(Dominio.model().NDP_OPERAZIONE);

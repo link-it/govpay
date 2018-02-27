@@ -28,15 +28,14 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for Ruolo complex type.
+/** <p>Java class for id-utenza complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Ruolo">
+ * &lt;complexType name="id-utenza">
  * 		&lt;sequence>
- * 			&lt;element name="codRuolo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="descrizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -49,17 +48,16 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Ruolo", 
+@XmlType(name = "id-utenza", 
   propOrder = {
-  	"codRuolo",
-  	"descrizione"
+  	"principal"
   }
 )
 
-@XmlRootElement(name = "Ruolo")
+@XmlRootElement(name = "id-utenza")
 
-public class Ruolo extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public Ruolo() {
+public class IdUtenza extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public IdUtenza() {
   }
 
   public Long getId() {
@@ -76,20 +74,12 @@ public class Ruolo extends org.openspcoop2.utils.beans.BaseBean implements Seria
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getCodRuolo() {
-    return this.codRuolo;
+  public java.lang.String getPrincipal() {
+    return this.principal;
   }
 
-  public void setCodRuolo(java.lang.String codRuolo) {
-    this.codRuolo = codRuolo;
-  }
-
-  public java.lang.String getDescrizione() {
-    return this.descrizione;
-  }
-
-  public void setDescrizione(java.lang.String descrizione) {
-    this.descrizione = descrizione;
+  public void setPrincipal(java.lang.String principal) {
+    this.principal = principal;
   }
 
   private static final long serialVersionUID = 1L;
@@ -97,26 +87,10 @@ public class Ruolo extends org.openspcoop2.utils.beans.BaseBean implements Seria
   @XmlTransient
   private Long id;
 
-  private static it.govpay.orm.model.RuoloModel modelStaticInstance = null;
-  private static synchronized void initModelStaticInstance(){
-	  if(it.govpay.orm.Ruolo.modelStaticInstance==null){
-  			it.govpay.orm.Ruolo.modelStaticInstance = new it.govpay.orm.model.RuoloModel();
-	  }
-  }
-  public static it.govpay.orm.model.RuoloModel model(){
-	  if(it.govpay.orm.Ruolo.modelStaticInstance==null){
-	  		initModelStaticInstance();
-	  }
-	  return it.govpay.orm.Ruolo.modelStaticInstance;
-  }
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codRuolo",required=true,nillable=false)
-  protected java.lang.String codRuolo;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="descrizione",required=true,nillable=false)
-  protected java.lang.String descrizione;
+  @XmlElement(name="principal",required=true,nillable=false)
+  protected java.lang.String principal;
 
 }

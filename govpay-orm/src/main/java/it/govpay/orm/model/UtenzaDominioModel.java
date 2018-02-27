@@ -19,7 +19,7 @@
  */
 package it.govpay.orm.model;
 
-import it.govpay.orm.Ruolo;
+import it.govpay.orm.UtenzaDominio;
 
 import org.openspcoop2.generic_project.beans.AbstractModel;
 import org.openspcoop2.generic_project.beans.IField;
@@ -28,43 +28,43 @@ import org.openspcoop2.generic_project.beans.ComplexField;
 
 
 /**     
- * Model Ruolo 
+ * Model UtenzaDominio 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class RuoloModel extends AbstractModel<Ruolo> {
+public class UtenzaDominioModel extends AbstractModel<UtenzaDominio> {
 
-	public RuoloModel(){
+	public UtenzaDominioModel(){
 	
 		super();
 	
-		this.COD_RUOLO = new Field("codRuolo",java.lang.String.class,"Ruolo",Ruolo.class);
-		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"Ruolo",Ruolo.class);
+		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new Field("idUtenza",it.govpay.orm.IdUtenza.class,"UtenzaDominio",UtenzaDominio.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"UtenzaDominio",UtenzaDominio.class));
 	
 	}
 	
-	public RuoloModel(IField father){
+	public UtenzaDominioModel(IField father){
 	
 		super(father);
 	
-		this.COD_RUOLO = new ComplexField(father,"codRuolo",java.lang.String.class,"Ruolo",Ruolo.class);
-		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"Ruolo",Ruolo.class);
+		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new ComplexField(father,"idUtenza",it.govpay.orm.IdUtenza.class,"UtenzaDominio",UtenzaDominio.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"UtenzaDominio",UtenzaDominio.class));
 	
 	}
 	
 	
 
-	public IField COD_RUOLO = null;
+	public it.govpay.orm.model.IdUtenzaModel ID_UTENZA = null;
 	 
-	public IField DESCRIZIONE = null;
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 
 	@Override
-	public Class<Ruolo> getModeledClass(){
-		return Ruolo.class;
+	public Class<UtenzaDominio> getModeledClass(){
+		return UtenzaDominio.class;
 	}
 	
 	@Override

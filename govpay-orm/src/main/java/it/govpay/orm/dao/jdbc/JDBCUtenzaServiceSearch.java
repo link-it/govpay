@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc;
 
 import org.openspcoop2.generic_project.dao.IDBServiceUtilities;
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdRuolo;
+import it.govpay.orm.IdUtenza;
 import org.openspcoop2.generic_project.beans.InUse;
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
@@ -45,8 +45,8 @@ import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 import it.govpay.orm.dao.jdbc.JDBCLimitedServiceManager;
-import it.govpay.orm.Ruolo;
-import it.govpay.orm.dao.IDBRuoloServiceSearch;
+import it.govpay.orm.Utenza;
+import it.govpay.orm.dao.IDBUtenzaServiceSearch;
 import it.govpay.orm.utils.ProjectInfo;
 
 import java.sql.Connection;
@@ -57,35 +57,35 @@ import org.slf4j.Logger;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
- * Service can be used to search for the backend objects of type {@link it.govpay.orm.Ruolo} 
+ * Service can be used to search for the backend objects of type {@link it.govpay.orm.Utenza} 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
 */
-public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBServiceUtilities<Ruolo> {
+public class JDBCUtenzaServiceSearch implements IDBUtenzaServiceSearch, IDBServiceUtilities<Utenza> {
 
 
 	protected JDBCServiceManagerProperties jdbcProperties = null;
 	protected JDBCServiceManager jdbcServiceManager = null;
 	protected Logger log = null;
-	protected IJDBCServiceSearchWithId<Ruolo, IdRuolo, JDBCServiceManager> serviceSearch = null;
+	protected IJDBCServiceSearchWithId<Utenza, IdUtenza, JDBCServiceManager> serviceSearch = null;
 	protected JDBC_SQLObjectFactory jdbcSqlObjectFactory = null;
-	public JDBCRuoloServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
+	public JDBCUtenzaServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		this.log.debug(JDBCRuoloServiceSearch.class.getName()+ " initialized");
-		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("ruolo");
+		this.log.debug(JDBCUtenzaServiceSearch.class.getName()+ " initialized");
+		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("utenza");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 	}
 	
 	@Override
-	public void validate(Ruolo ruolo) throws ServiceException,
+	public void validate(Utenza utenza) throws ServiceException,
 			ValidationException, NotImplementedException {
-		org.openspcoop2.generic_project.utils.XSDValidator.validate(ruolo, this.log, 
+		org.openspcoop2.generic_project.utils.XSDValidator.validate(utenza, this.log, 
 				it.govpay.orm.utils.XSDValidator.getXSDValidator(this.log));
 	}
 	
@@ -100,7 +100,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 	
 	@Override
-	public IdRuolo convertToId(Ruolo obj)
+	public IdUtenza convertToId(Utenza obj)
 			throws ServiceException, NotImplementedException {
 		
 		Connection connection = null;
@@ -108,7 +108,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 			
 			// check parameters
 			if(obj==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -134,14 +134,14 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 		
 	@Override
-	public Ruolo get(IdRuolo id) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public Utenza get(IdUtenza id) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 			
 			// ISQLQueryObject
@@ -171,13 +171,13 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 
 	@Override
-	public Ruolo get(IdRuolo id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public Utenza get(IdUtenza id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 			if(idMappingResolutionBehaviour==null){
 				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
@@ -210,14 +210,14 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 
 	@Override
-	public boolean exists(IdRuolo id) throws MultipleResultException,ServiceException,NotImplementedException {
+	public boolean exists(IdUtenza id) throws MultipleResultException,ServiceException,NotImplementedException {
 
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 
 			// ISQLQueryObject
@@ -245,7 +245,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 	
 	@Override
-	public List<IdRuolo> findAllIds(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+	public List<IdUtenza> findAllIds(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -283,7 +283,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 	
 	@Override
-	public List<IdRuolo> findAllIds(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public List<IdUtenza> findAllIds(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -324,7 +324,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 
 	@Override
-	public List<Ruolo> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+	public List<Utenza> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -362,7 +362,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 	
 	@Override
-	public List<Ruolo> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public List<Utenza> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -403,7 +403,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 
 	@Override
-	public Ruolo find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	public Utenza find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -445,7 +445,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 	
 	@Override
-	public Ruolo find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	public Utenza find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -528,14 +528,14 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 
 	@Override
-	public InUse inUse(IdRuolo id) throws ServiceException, NotFoundException,NotImplementedException {
+	public InUse inUse(IdUtenza id) throws ServiceException, NotFoundException,NotImplementedException {
 
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 			
 			// ISQLQueryObject
@@ -983,16 +983,16 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	// -- DB
 	
 	@Override
-	public void mappingTableIds(IdRuolo id, Ruolo obj) throws ServiceException,NotFoundException,NotImplementedException{
+	public void mappingTableIds(IdUtenza id, Utenza obj) throws ServiceException,NotFoundException,NotImplementedException{
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'id' is null");
 			}
 			if(obj==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -1019,16 +1019,16 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 	
 	@Override
-	public void mappingTableIds(long tableId, Ruolo obj) throws ServiceException,NotFoundException,NotImplementedException{
+	public void mappingTableIds(long tableId, Utenza obj) throws ServiceException,NotFoundException,NotImplementedException{
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+IdRuolo.class.getName()+") 'tableId' is lessEquals 0");
+				throw new Exception("Parameter (type:"+IdUtenza.class.getName()+") 'tableId' is lessEquals 0");
 			}
 			if(obj==null){
-				throw new Exception("Parameter (type:"+Ruolo.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+Utenza.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -1055,7 +1055,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 		
 	@Override
-	public Ruolo get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public Utenza get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
@@ -1092,7 +1092,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 	
 	@Override
-	public Ruolo get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public Utenza get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
@@ -1282,7 +1282,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 	
 	@Override
-	public IdRuolo findId(long tableId, boolean throwNotFound)
+	public IdUtenza findId(long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException {
 		
 		Connection connection = null;
@@ -1318,7 +1318,7 @@ public class JDBCRuoloServiceSearch implements IDBRuoloServiceSearch, IDBService
 	}
 
 	@Override
-	public Long findTableId(IdRuolo id, boolean throwNotFound)
+	public Long findTableId(IdUtenza id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException {
 		
 		Connection connection = null;

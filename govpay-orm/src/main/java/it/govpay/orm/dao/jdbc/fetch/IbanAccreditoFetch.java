@@ -56,10 +56,6 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodIban", IbanAccredito.model().COD_IBAN.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_iban", IbanAccredito.model().COD_IBAN.getFieldType()));
-				setParameter(object, "setIdSellerBank", IbanAccredito.model().ID_SELLER_BANK.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "id_seller_bank", IbanAccredito.model().ID_SELLER_BANK.getFieldType()));
-				setParameter(object, "setIdNegozio", IbanAccredito.model().ID_NEGOZIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "id_negozio", IbanAccredito.model().ID_NEGOZIO.getFieldType()));
 				setParameter(object, "setBicAccredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "bic_accredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType()));
 				setParameter(object, "setIbanAppoggio", IbanAccredito.model().IBAN_APPOGGIO.getFieldType(),
@@ -96,10 +92,6 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setCodIban", IbanAccredito.model().COD_IBAN.getFieldType(),
 					this.getObjectFromMap(map,"codIban"));
-				setParameter(object, "setIdSellerBank", IbanAccredito.model().ID_SELLER_BANK.getFieldType(),
-					this.getObjectFromMap(map,"idSellerBank"));
-				setParameter(object, "setIdNegozio", IbanAccredito.model().ID_NEGOZIO.getFieldType(),
-					this.getObjectFromMap(map,"idNegozio"));
 				setParameter(object, "setBicAccredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType(),
 					this.getObjectFromMap(map,"bicAccredito"));
 				setParameter(object, "setIbanAppoggio", IbanAccredito.model().IBAN_APPOGGIO.getFieldType(),

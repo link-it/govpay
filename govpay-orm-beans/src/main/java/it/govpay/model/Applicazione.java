@@ -39,6 +39,8 @@ public class Applicazione extends Versionabile implements IAutorizzato {
     private List<Acl> acls;
     private String codApplicazioneIuv;
     private String regExp;
+	private boolean autoIuv;
+
     
     public Long getId() {
 		return id;
@@ -108,5 +110,11 @@ public class Applicazione extends Versionabile implements IAutorizzato {
 	}
 	public void setRegExp(String regExp) {
 		this.regExp = regExp;
+	}
+	public boolean isAutoIuv() {
+		return autoIuv;
+	}
+	public void setAutoIuv(boolean autoIuv) {
+		this.autoIuv = autoIuv;
 	}
 }

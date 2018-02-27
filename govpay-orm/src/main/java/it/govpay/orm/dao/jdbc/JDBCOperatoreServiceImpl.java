@@ -65,21 +65,36 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
+		// Object _utenza
+		Long id_utenza = null;
+		it.govpay.orm.IdUtenza idLogic_utenza = null;
+		idLogic_utenza = operatore.getIdUtenza();
+		if(idLogic_utenza!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findTableId(idLogic_utenza, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_utenza = idLogic_utenza.getId();
+				if(id_utenza==null || id_utenza<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object operatore
 		sqlQueryObjectInsert.addInsertTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
-		sqlQueryObjectInsert.addInsertField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperatoreFieldConverter().toColumn(Operatore.model().NOME,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PROFILO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ABILITATO,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_utenza","?");
 
 		// Insert operatore
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getOperatoreFetch().getKeyGeneratorObject(Operatore.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getPrincipal(),Operatore.model().PRINCIPAL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getNome(),Operatore.model().NOME.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getProfilo(),Operatore.model().PROFILO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getAbilitato(),Operatore.model().ABILITATO.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getAbilitato(),Operatore.model().ABILITATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_utenza,Long.class)
 		);
 		operatore.setId(id);
 
@@ -120,11 +135,28 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-//		boolean setIdMappingResolutionBehaviour = 
-//			(idMappingResolutionBehaviour==null) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+		boolean setIdMappingResolutionBehaviour = 
+			(idMappingResolutionBehaviour==null) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
+
+		// Object _operatore_utenza
+		Long id_operatore_utenza = null;
+		it.govpay.orm.IdUtenza idLogic_operatore_utenza = null;
+		idLogic_operatore_utenza = operatore.getIdUtenza();
+		if(idLogic_operatore_utenza!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_operatore_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findTableId(idLogic_operatore_utenza, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_operatore_utenza = idLogic_operatore_utenza.getId();
+				if(id_operatore_utenza==null || id_operatore_utenza<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 
 		// Object operatore
@@ -132,14 +164,16 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		sqlQueryObjectUpdate.addUpdateTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
 		boolean isUpdate_operatore = true;
 		java.util.List<JDBCObject> lstObjects_operatore = new java.util.ArrayList<JDBCObject>();
-		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,false), "?");
-		lstObjects_operatore.add(new JDBCObject(operatore.getPrincipal(), Operatore.model().PRINCIPAL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().NOME,false), "?");
 		lstObjects_operatore.add(new JDBCObject(operatore.getNome(), Operatore.model().NOME.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PROFILO,false), "?");
-		lstObjects_operatore.add(new JDBCObject(operatore.getProfilo(), Operatore.model().PROFILO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ABILITATO,false), "?");
 		lstObjects_operatore.add(new JDBCObject(operatore.getAbilitato(), Operatore.model().ABILITATO.getFieldType()));
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_utenza","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_operatore.add(new JDBCObject(id_operatore_utenza, Long.class));
+		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_operatore.add(new JDBCObject(tableId, Long.class));
 

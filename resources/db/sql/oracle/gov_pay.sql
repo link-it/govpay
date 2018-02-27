@@ -133,13 +133,40 @@ end;
 
 
 
+CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE utenze
+(
+	principal VARCHAR2(255 CHAR) NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_utenze_1 UNIQUE (principal),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_utenze PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_utenze
+BEFORE
+insert on utenze
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_utenze.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_applicazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE applicazioni
 (
 	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
+	auto_iuv NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
-	principal VARCHAR2(255 CHAR) NOT NULL,
 	firma_ricevuta VARCHAR2(1 CHAR) NOT NULL,
 	cod_connettore_esito VARCHAR2(255 CHAR),
 	cod_connettore_verifica VARCHAR2(255 CHAR),
@@ -149,10 +176,12 @@ CREATE TABLE applicazioni
 	reg_exp VARCHAR2(1024 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_applicazioni_1 UNIQUE (cod_applicazione),
-	CONSTRAINT unique_applicazioni_2 UNIQUE (principal),
+	CONSTRAINT unique_applicazioni_2 UNIQUE (id_utenza),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_app_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
 );
 
@@ -181,11 +210,8 @@ CREATE TABLE domini
 	gln VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	ragione_sociale VARCHAR2(70 CHAR) NOT NULL,
-	riuso_iuv NUMBER NOT NULL,
-	custom_iuv NUMBER NOT NULL,
 	aux_digit NUMBER NOT NULL,
 	iuv_prefix VARCHAR2(255 CHAR),
-	iuv_prefix_strict NUMBER NOT NULL,
 	segregation_code NUMBER,
 	ndp_stato NUMBER,
 	ndp_operazione VARCHAR2(256 CHAR),
@@ -207,7 +233,6 @@ CREATE TABLE domini
 
 
 ALTER TABLE domini MODIFY aux_digit DEFAULT 0;
-ALTER TABLE domini MODIFY iuv_prefix_strict DEFAULT 0;
 
 CREATE TRIGGER trg_domini
 BEFORE
@@ -223,117 +248,11 @@ end;
 
 
 
-CREATE SEQUENCE seq_uo MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE uo
-(
-	cod_uo VARCHAR2(35 CHAR) NOT NULL,
-	abilitato NUMBER NOT NULL,
-	uo_codice_identificativo VARCHAR2(35 CHAR),
-	uo_denominazione VARCHAR2(70 CHAR),
-	uo_indirizzo VARCHAR2(70 CHAR),
-	uo_civico VARCHAR2(16 CHAR),
-	uo_cap VARCHAR2(16 CHAR),
-	uo_localita VARCHAR2(35 CHAR),
-	uo_provincia VARCHAR2(35 CHAR),
-	uo_nazione VARCHAR2(2 CHAR),
-	uo_area VARCHAR2(255 CHAR),
-	uo_url_sito_web VARCHAR2(255 CHAR),
-	uo_email VARCHAR2(255 CHAR),
-	uo_pec VARCHAR2(255 CHAR),
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_dominio NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_uo PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_uo
-BEFORE
-insert on uo
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_uo.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_operatori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE operatori
-(
-	principal VARCHAR2(255 CHAR) NOT NULL,
-	nome VARCHAR2(35 CHAR) NOT NULL,
-	profilo VARCHAR2(1024 CHAR) NOT NULL,
-	abilitato NUMBER NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_operatori_1 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_operatori PRIMARY KEY (id)
-);
-
-
-ALTER TABLE operatori MODIFY abilitato DEFAULT 1;
-
-CREATE TRIGGER trg_operatori
-BEFORE
-insert on operatori
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_operatori.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_connettori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE connettori
-(
-	cod_connettore VARCHAR2(255 CHAR) NOT NULL,
-	cod_proprieta VARCHAR2(255 CHAR) NOT NULL,
-	valore VARCHAR2(255 CHAR) NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_connettori PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_connettori
-BEFORE
-insert on connettori
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_connettori.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_iban_accredito MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE iban_accredito
 (
 	cod_iban VARCHAR2(255 CHAR) NOT NULL,
-	id_seller_bank VARCHAR2(255 CHAR),
-	id_negozio VARCHAR2(255 CHAR),
 	bic_accredito VARCHAR2(255 CHAR),
 	iban_appoggio VARCHAR2(255 CHAR),
 	bic_appoggio VARCHAR2(255 CHAR),
@@ -433,27 +352,159 @@ end;
 
 
 
-CREATE SEQUENCE seq_ruoli MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_utenze_domini MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE ruoli
+CREATE TABLE utenze_domini
 (
-	cod_ruolo VARCHAR2(35 CHAR) NOT NULL,
-	descrizione VARCHAR2(255 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+	id_utenza NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT pk_ruoli PRIMARY KEY (id)
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
 );
 
-CREATE TRIGGER trg_ruoli
+CREATE TRIGGER trg_utenze_domini
 BEFORE
-insert on ruoli
+insert on utenze_domini
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_ruoli.nextval INTO :new.id
+      SELECT seq_utenze_domini.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_utenze_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE utenze_tributi
+(
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
+	id_tributo NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_utenze_tributi
+BEFORE
+insert on utenze_tributi
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_utenze_tributi.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_uo MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE uo
+(
+	cod_uo VARCHAR2(35 CHAR) NOT NULL,
+	abilitato NUMBER NOT NULL,
+	uo_codice_identificativo VARCHAR2(35 CHAR),
+	uo_denominazione VARCHAR2(70 CHAR),
+	uo_indirizzo VARCHAR2(70 CHAR),
+	uo_civico VARCHAR2(16 CHAR),
+	uo_cap VARCHAR2(16 CHAR),
+	uo_localita VARCHAR2(35 CHAR),
+	uo_provincia VARCHAR2(35 CHAR),
+	uo_nazione VARCHAR2(2 CHAR),
+	uo_area VARCHAR2(255 CHAR),
+	uo_url_sito_web VARCHAR2(255 CHAR),
+	uo_email VARCHAR2(255 CHAR),
+	uo_pec VARCHAR2(255 CHAR),
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_uo PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_uo
+BEFORE
+insert on uo
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_uo.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_operatori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE operatori
+(
+	nome VARCHAR2(35 CHAR) NOT NULL,
+	abilitato NUMBER NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_operatori_1 UNIQUE (id_utenza),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_opr_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT pk_operatori PRIMARY KEY (id)
+);
+
+
+ALTER TABLE operatori MODIFY abilitato DEFAULT 1;
+
+CREATE TRIGGER trg_operatori
+BEFORE
+insert on operatori
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_operatori.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_connettori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE connettori
+(
+	cod_connettore VARCHAR2(255 CHAR) NOT NULL,
+	cod_proprieta VARCHAR2(255 CHAR) NOT NULL,
+	valore VARCHAR2(255 CHAR) NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_connettori PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_connettori
+BEFORE
+insert on connettori
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_connettori.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -465,28 +516,15 @@ CREATE SEQUENCE seq_acl MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INC
 
 CREATE TABLE acl
 (
-	cod_tipo VARCHAR2(1 CHAR) NOT NULL,
-	diritti NUMBER,
-	cod_servizio VARCHAR2(35 CHAR) NOT NULL,
-	amministratore NUMBER NOT NULL,
+	ruolo VARCHAR2(255 CHAR) NOT NULL,
+	principal VARCHAR2(255 CHAR) NOT NULL,
+	servizio VARCHAR2(255 CHAR) NOT NULL,
+	diritti NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_applicazione NUMBER,
-	id_operatore NUMBER,
-	id_ruolo NUMBER,
-	id_dominio NUMBER,
-	id_tipo_tributo NUMBER,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
-	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_acl_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
-
-
-ALTER TABLE acl MODIFY amministratore DEFAULT 0;
 
 CREATE TRIGGER trg_acl
 BEFORE

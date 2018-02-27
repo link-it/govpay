@@ -19,13 +19,12 @@
  */
 package it.govpay.orm.dao;
 
-import it.govpay.orm.Ruolo;
-import org.openspcoop2.generic_project.dao.IServiceSearchWithId;
-import it.govpay.orm.IdRuolo;
+import it.govpay.orm.UtenzaTributo;
+import org.openspcoop2.generic_project.dao.IServiceSearchWithoutId;
 
 
 /** 
-* Service can be used for research objects on the backend of type it.govpay.orm.Ruolo  
+* Service can be used for research objects on the backend of type it.govpay.orm.UtenzaTributo  
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -33,5 +32,5 @@ import it.govpay.orm.IdRuolo;
  * @version $Rev$, $Date$
  */
 
-public interface IRuoloServiceSearch extends IServiceSearchWithId<Ruolo, IdRuolo> {
+public interface IUtenzaTributoServiceSearch extends IServiceSearchWithoutId<UtenzaTributo> {
 }

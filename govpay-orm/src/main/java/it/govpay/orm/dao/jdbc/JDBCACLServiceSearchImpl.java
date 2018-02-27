@@ -156,91 +156,16 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
         try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(ACL.model())));
-			fields.add(ACL.model().COD_SERVIZIO);
-			fields.add(ACL.model().COD_TIPO);
+			fields.add(ACL.model().RUOLO);
+			fields.add(ACL.model().PRINCIPAL);
+			fields.add(ACL.model().SERVIZIO);
 			fields.add(ACL.model().DIRITTI);
-			fields.add(ACL.model().ADMIN);
-			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(ACL.model())));
-			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(ACL.model())));
-			fields.add(new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", this.getFieldConverter().toTable(ACL.model())));
-			fields.add(new CustomField("id_operatore", Long.class, "id_operatore", this.getFieldConverter().toTable(ACL.model())));
-			fields.add(new CustomField("id_ruolo", Long.class, "id_ruolo", this.getFieldConverter().toTable(ACL.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 
-				Object idAppObj = map.remove("id_applicazione");
-				Object idDominioObj = map.remove("id_dominio");
-				Object idOperatoreObj = map.remove("id_operatore");
-				Object idTipoTributoObj = map.remove("id_tipo_tributo");
-				Object idRuoloObj = map.remove("id_ruolo");
-				
-				
 				ACL acl = (ACL)this.getFetch().fetch(jdbcProperties.getDatabase(), ACL.model(), map);
-				
-				
-				if(idAppObj instanceof Long) {
-					it.govpay.orm.IdApplicazione id_acl_applicazione = null;
-					
-					long idFK_acl_applicazione = (Long) idAppObj;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_acl_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_acl_applicazione, false);
-					}else{
-						id_acl_applicazione = new it.govpay.orm.IdApplicazione();
-					}
-					id_acl_applicazione.setId(idFK_acl_applicazione);
-					acl.setIdApplicazione(id_acl_applicazione);	
-				}
-				
-				if(idOperatoreObj instanceof Long) {
-					it.govpay.orm.IdOperatore id_acl_operatore = null;
-					Long idFK_acl_operatore = (Long) idOperatoreObj;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_acl_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idFK_acl_operatore, false);
-					}else{
-						id_acl_operatore = new it.govpay.orm.IdOperatore();
-					}
-					id_acl_operatore.setId(idFK_acl_operatore);
-					acl.setIdOperatore(id_acl_operatore);
-				}
-				
-				if(idDominioObj instanceof Long) {
-					it.govpay.orm.IdDominio id_acl_dominio = null;
-					Long idFK_acl_dominio = (Long) idDominioObj;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_acl_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idFK_acl_dominio, false);
-					}else{
-						id_acl_dominio = new it.govpay.orm.IdDominio();
-					}
-					id_acl_dominio.setId(idFK_acl_dominio);
-					acl.setIdDominio(id_acl_dominio);
-				}
-				
-				if(idTipoTributoObj instanceof Long) {
-					it.govpay.orm.IdTipoTributo id_acl_tipoTributo = null;
-					Long idFK_acl_tipoTributo = (Long) idTipoTributoObj;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_acl_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findId(idFK_acl_tipoTributo, false);
-					}else{
-						id_acl_tipoTributo = new it.govpay.orm.IdTipoTributo();
-					}
-					id_acl_tipoTributo.setId(idFK_acl_tipoTributo);
-					acl.setIdTipoTributo(id_acl_tipoTributo);
-				}
-				
-				if(idRuoloObj instanceof Long) {
-					it.govpay.orm.IdRuolo id_acl_ruolo = null;
-					Long idFK_acl_ruolo = (Long) idRuoloObj;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_acl_ruolo = ((JDBCRuoloServiceSearch)(this.getServiceManager().getRuoloServiceSearch())).findId(idFK_acl_ruolo, false);
-					}else{
-						id_acl_ruolo = new it.govpay.orm.IdRuolo();
-					}
-					id_acl_ruolo.setId(idFK_acl_ruolo);
-					acl.setIdRuolo(id_acl_ruolo);
-				}
-				
 				list.add(acl);
 			}
 		} catch(NotFoundException e) {}
@@ -524,26 +449,6 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdApplicazione()!=null && 
-				imgSaved.getIdApplicazione()!=null){
-			obj.getIdApplicazione().setId(imgSaved.getIdApplicazione().getId());
-		}
-		if(obj.getIdOperatore()!=null && 
-				imgSaved.getIdOperatore()!=null){
-			obj.getIdOperatore().setId(imgSaved.getIdOperatore().getId());
-		}
-		if(obj.getIdRuolo()!=null && 
-				imgSaved.getIdRuolo()!=null){
-			obj.getIdRuolo().setId(imgSaved.getIdRuolo().getId());
-		}
-		if(obj.getIdDominio()!=null && 
-				imgSaved.getIdDominio()!=null){
-			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
-		}
-		if(obj.getIdTipoTributo()!=null && 
-				imgSaved.getIdTipoTributo()!=null){
-			obj.getIdTipoTributo().setId(imgSaved.getIdTipoTributo().getId());
-		}
 
 	}
 	
@@ -587,7 +492,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getACLFieldConverter().toTable(ACL.model()));
-		sqlQueryObject.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().COD_TIPO,true));
+		sqlQueryObject.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -601,36 +506,6 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-		if(expression.inUseModel(ACL.model().ID_APPLICAZIONE,false)){
-			String tableName1 = this.getACLFieldConverter().toAliasTable(ACL.model());
-			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(ACL.model().ID_DOMINIO,false)){
-			String tableName1 = this.getACLFieldConverter().toAliasTable(ACL.model());
-			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_DOMINIO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(ACL.model().ID_OPERATORE,false)){
-			String tableName1 = this.getACLFieldConverter().toAliasTable(ACL.model());
-			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_OPERATORE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_operatore="+tableName2+".id");
-		}
-
-		
-		if(expression.inUseModel(ACL.model().ID_TIPO_TRIBUTO,false)){
-			String tableName1 = this.getACLFieldConverter().toAliasTable(ACL.model());
-			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_TIPO_TRIBUTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_tributo="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(ACL.model().ID_RUOLO,false)){
-			String tableName1 = this.getACLFieldConverter().toAliasTable(ACL.model());
-			String tableName2 = this.getACLFieldConverter().toAliasTable(ACL.model().ID_RUOLO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_ruolo="+tableName2+".id");
-		}
 
         
 	}
@@ -656,36 +531,6 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		mapTableToPKColumn.put(converter.toTable(ACL.model()),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(ACL.model()))
-			));
-
-		// ACL.model().ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(ACL.model().ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_APPLICAZIONE))
-			));
-
-		// ACL.model().ID_OPERATORE
-		mapTableToPKColumn.put(converter.toTable(ACL.model().ID_OPERATORE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_OPERATORE))
-			));
-
-		// ACL.model().ID_RUOLO
-		mapTableToPKColumn.put(converter.toTable(ACL.model().ID_RUOLO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_RUOLO))
-			));
-
-		// ACL.model().ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(ACL.model().ID_DOMINIO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_DOMINIO))
-			));
-
-		// ACL.model().ID_TIPO_TRIBUTO
-		mapTableToPKColumn.put(converter.toTable(ACL.model().ID_TIPO_TRIBUTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(ACL.model().ID_TIPO_TRIBUTO))
 			));
 
         return mapTableToPKColumn;		
