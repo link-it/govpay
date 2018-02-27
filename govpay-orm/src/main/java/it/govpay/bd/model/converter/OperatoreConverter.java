@@ -29,14 +29,10 @@ public class OperatoreConverter {
 
 
 	public static Operatore toDTO(it.govpay.orm.Operatore vo, BasicBD bd) throws ServiceException {
-//		String profilo = vo.getProfilo();   //TODO pintori
-//		String[] split = profilo.split(Operatore.SEPARATORE_RUOLO);
-		
-		Operatore dto = new Operatore();//bd, Arrays.asList(split));  //TODO pintori
+		Operatore dto = new Operatore();
 		dto.setId(vo.getId());
-		dto.setPrincipal(vo.getIdUtenza().getPrincipal());
+		dto.setUtenza(UtenzaConverter.toDTO(vo.getIdUtenza().getUtenza()));
 		dto.setNome(vo.getNome());
-		dto.setAbilitato(vo.isAbilitato());
 		return dto;
 	}
 
@@ -44,19 +40,9 @@ public class OperatoreConverter {
 		it.govpay.orm.Operatore vo = new it.govpay.orm.Operatore();
 		vo.setId(dto.getId());
 		IdUtenza idUtenza = new IdUtenza();
-		idUtenza.setPrincipal(dto.getPrincipal());
+		idUtenza.setId(dto.getUtenza().getId());
 		vo.setIdUtenza(idUtenza);
 		vo.setNome(dto.getNome());
-		StringBuffer sb = new StringBuffer();
-		for(String ruolo : dto.getRuoli()) {
-			if(sb.length() > 0)
-				sb.append(Operatore.SEPARATORE_RUOLO);
-			sb.append(ruolo);
-		}
-		
-//		vo.setProfilo(sb.toString());  //TODO pintori
-		vo.setAbilitato(dto.isAbilitato());
 		return vo;
 	}
-
 }

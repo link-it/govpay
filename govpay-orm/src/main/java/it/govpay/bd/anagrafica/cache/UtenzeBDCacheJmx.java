@@ -17,33 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+package it.govpay.bd.anagrafica.cache;
 
-package it.govpay.model;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 
-public class Operatore extends BasicModel {
+import org.openspcoop2.utils.cache.AbstractCacheJmx;
+import org.openspcoop2.utils.cache.AbstractCacheWrapper;
+
+public class UtenzeBDCacheJmx extends AbstractCacheJmx {
 	
-	private static final long serialVersionUID = 1L;
-	
-	private long idUtenza;
-	private Long id;
-	private String nome;
-	
-	public Long getId() {
-		return id;
+	@Override
+	public AbstractCacheWrapper getCacheWrapper() {
+		return AnagraficaManager.getUtenzeBDCacheWrapper();
 	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getNome() {
-		return nome;
-	}
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	public long getIdUtenza() {
-		return idUtenza;
-	}
-	public void setIdUtenza(long idUtenza) {
-		this.idUtenza = idUtenza;
+
+	@Override
+	public String getJmxDescription() {
+		return "Anagrafica Utenze";
 	}
 }

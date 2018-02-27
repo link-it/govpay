@@ -23,6 +23,11 @@ import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Acl extends BasicModel {
+	
+	public static final int DIRITTI_LETTURA = 1;
+	public static final int DIRITTI_SCRITTURA = 2;
+	public static final int DIRITTI_ESECUZIONE = 2;
+	public static final int NO_DIRITTI = 0;
 
 	private static final long serialVersionUID = 1L;
 	public enum Servizio {
