@@ -35,7 +35,6 @@ import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -60,8 +59,7 @@ import org.openspcoop2.utils.logger.config.Log4jConfig;
 @Singleton
 public class StartupEjb {
 
-	private static Logger log = null;//LoggerWrapperFactory.getLogger("boot");	
-//	private static Logger logv1 = LoggerWrapperFactory.getLogger(StartupEjb.class);	
+	private static Logger log = null;
 
 	@PostConstruct
 	public void init() {
@@ -70,30 +68,32 @@ public class StartupEjb {
 		String commit = "${git.commit.id}";
 		if(commit.length() > 7) commit = commit.substring(0, 7);
 		
+		
 		GovpayConfig gpConfig = null;
 		try {
-			gpConfig = GovpayConfig.newInstance();
-			it.govpay.bd.GovpayConfig.newInstance4GovPay();
-			it.govpay.bd.GovpayCustomConfig.newInstance();
+			gpConfig = GovpayConfig.newInstance(StartupEjb.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
+			it.govpay.bd.GovpayConfig.newInstance4GovPay(StartupEjb.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
+			it.govpay.bd.GovpayCustomConfig.newInstance(StartupEjb.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
 		} catch (Exception e) {
 			throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
 		}
 
 		// Gestione della configurazione di Log4J
 		URI log4j2Config = gpConfig.getLog4j2Config();
+		Log4jConfig log4jConfig = new Log4jConfig();
+		if(log4j2Config != null) {
+			log4jConfig.setLog4jConfigFile(new File(log4j2Config));
+		} else {
+			log4jConfig.setLog4jConfigURL(StartupEjb.class.getResource("/log4j2.xml"));
+		}
 		
 		try {
+			log = LoggerWrapperFactory.getLogger("boot");	
+			log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
+			
 			if(log4j2Config != null) {
-				LoggerWrapperFactory.setLogConfiguration(log4j2Config);
-				log = LoggerWrapperFactory.getLogger("boot");	
-				
-				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
 				log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
 			} else {
-//				LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
-				log = LoggerWrapperFactory.getLogger("boot");	
-
-				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso.");
 				log.info("Configurazione logger da classpath.");
 			}
 			gpConfig.readProperties();
@@ -109,13 +109,6 @@ public class StartupEjb {
 			props.load(is);
 			diagnosticConfig.setDiagnosticConfigProperties(props);
 			diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
-
-			Log4jConfig log4jConfig = new Log4jConfig();
-			if(log4j2Config != null) {
-				log4jConfig.setLog4jConfigFile(new File(log4j2Config));
-			} else {
-				log4jConfig.setLog4jConfigURL(StartupEjb.class.getResource("/log4j2.xml"));
-			}
 
 			MultiLoggerConfig mConfig = new MultiLoggerConfig();
 			mConfig.setDiagnosticConfig(diagnosticConfig);
@@ -161,7 +154,7 @@ public class StartupEjb {
 		}
 
 		try {
-			AnagraficaManager.newInstance();
+			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.core");
 			JaxbUtils.init();
 			OperazioneFactory.init();
 			ConnectionManager.initialize();

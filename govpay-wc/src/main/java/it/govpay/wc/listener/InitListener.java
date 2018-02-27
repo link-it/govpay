@@ -44,35 +44,32 @@ public class InitListener implements ServletContextListener{
 		try{
 			GovpayConfig gpConfig = null;
 			try {
-				gpConfig = GovpayConfig.newInstance();
-				it.govpay.bd.GovpayConfig.newInstance4GovPay();
-				it.govpay.bd.GovpayCustomConfig.newInstance();
+				gpConfig = GovpayConfig.newInstance(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
+				it.govpay.bd.GovpayConfig.newInstance4GovPay(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
+				it.govpay.bd.GovpayCustomConfig.newInstance(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
 			} catch (Exception e) {
 				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
 			}
 			
 			
-			URI log4j2Config = null;
-			try {
-				log4j2Config = gpConfig.getLog4j2Config();
-				if(log4j2Config != null) {
-					LoggerWrapperFactory.setLogConfiguration(log4j2Config);
-					log = LoggerWrapperFactory.getLogger("boot");	
-
-					log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") in corso");
-					log.info("Caricata configurazione logger: " + log4j2Config.getPath());
-				} else {
-					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
-					log = LoggerWrapperFactory.getLogger("boot");	
-
-					log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") in corso.");
-					log.info("Configurazione logger da classpath.");
-				}
-			} catch (Exception e) {
-				LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore durante la configurazione del Logger: " + e);
+			// Gestione della configurazione di Log4J
+			URI log4j2Config = gpConfig.getLog4j2Config();
+			Log4jConfig log4jConfig = new Log4jConfig();
+			if(log4j2Config != null) {
+				log4jConfig.setLog4jConfigFile(new File(log4j2Config));
+			} else {
+				log4jConfig.setLog4jConfigURL(InitListener.class.getResource("/log4j2.xml"));
 			}
 			
 			try {
+				log = LoggerWrapperFactory.getLogger("boot");	
+				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
+				
+				if(log4j2Config != null) {
+					log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
+				} else {
+					log.info("Configurazione logger da classpath.");
+				}
 				gpConfig.readProperties();
 			} catch (Exception e) {
 				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
@@ -86,13 +83,6 @@ public class InitListener implements ServletContextListener{
 				props.load(is);
 				diagnosticConfig.setDiagnosticConfigProperties(props);
 				diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
-
-				Log4jConfig log4jConfig = new Log4jConfig();
-				if(log4j2Config != null) {
-					log4jConfig.setLog4jConfigFile(new File(log4j2Config));
-				} else {
-					log4jConfig.setLog4jConfigURL(InitListener.class.getResource("/log4j2.xml"));
-				}
 
 				MultiLoggerConfig mConfig = new MultiLoggerConfig();
 				mConfig.setDiagnosticConfig(diagnosticConfig);
@@ -139,7 +129,7 @@ public class InitListener implements ServletContextListener{
 			
 			//		per ora vengono inizializzate nel govpay web
 			
-			AnagraficaManager.newInstance(false);
+			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.wc");
 			RuoliCache.newInstance(log);
 			//			ConnectionManager.initialize();
 			//			OperazioneFactory.init();

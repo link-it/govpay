@@ -14,7 +14,6 @@
 		<module>govpay-stampe</module>
 		<module>govpay-core-rs</module>
 		<module>govpay-core</module>
-		<module>govpay-ejb</module>
 		<module>govpay-web</module>
 		<module>govpay-wc</module>
 		<module>govpay-api-pagamento</module>

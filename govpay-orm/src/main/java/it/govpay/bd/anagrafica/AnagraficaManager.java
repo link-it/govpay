@@ -65,7 +65,6 @@ import it.govpay.model.Ruolo;
 import it.govpay.model.TipoTributo;
 
 public class AnagraficaManager {
-	private static final String jmxDomain = "it.govpay.cache.anagrafica";
 	private static boolean DEBUG = false;
 	
 	private static DominiBDCacheWrapper dominiBDCacheWrapper;
@@ -81,7 +80,9 @@ public class AnagraficaManager {
 	private static TributiBDCacheWrapper tributiBDCacheWrapper;
 	private static TipiTributoBDCacheWrapper tipiTributoBDCacheWrapper;
 
-	private AnagraficaManager(boolean enableCaching) throws UtilsException {
+	private AnagraficaManager(String domain) throws UtilsException {
+		
+		boolean enableCaching = (domain != null);
 		dominiBDCacheWrapper = new DominiBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(DominiBDCacheWrapper.class));
 		applicazioniBDCacheWrapper = new ApplicazioniBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(ApplicazioniBDCacheWrapper.class));
 		canaliBDCacheWrapper = new CanaliBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(CanaliBDCacheWrapper.class));
@@ -96,27 +97,27 @@ public class AnagraficaManager {
 		tipiTributoBDCacheWrapper = new TipiTributoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
 
 		if(enableCaching) {
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), jmxDomain, "domini");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), jmxDomain, "applicazioni");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new CanaliBDCacheJmx(), jmxDomain, "canali");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UoBDCacheJmx(), jmxDomain, "uo");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IbanAccreditoBDCacheJmx(), jmxDomain, "ibanAccredito");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IntermediariBDCacheJmx(), jmxDomain, "intermediari");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new OperatoriBDCacheJmx(), jmxDomain, "operatori");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new RuoliBDCacheJmx(), jmxDomain, "ruoli");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new PspBDCacheJmx(), jmxDomain, "psp");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), jmxDomain, "stazioni");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), jmxDomain, "tributi");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), jmxDomain, "tipiTributo");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), domain, "domini");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), domain, "applicazioni");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new CanaliBDCacheJmx(), domain, "canali");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UoBDCacheJmx(), domain, "uo");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IbanAccreditoBDCacheJmx(), domain, "ibanAccredito");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IntermediariBDCacheJmx(), domain, "intermediari");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new OperatoriBDCacheJmx(), domain, "operatori");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new RuoliBDCacheJmx(), domain, "ruoli");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new PspBDCacheJmx(), domain, "psp");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), domain, "stazioni");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), domain, "tributi");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), domain, "tipiTributo");
 		}
 	}
 
-	public static AnagraficaManager newInstance() throws UtilsException {
-		return new AnagraficaManager(true);
+	public static AnagraficaManager newInstance(String dominio) throws UtilsException {
+		return new AnagraficaManager(dominio);
 	}
 	
-	public static AnagraficaManager newInstance(boolean enableCaching) throws UtilsException {
-		return new AnagraficaManager(enableCaching);
+	public static AnagraficaManager newInstance() throws UtilsException {
+		return new AnagraficaManager(null);
 	}
 
 	public static DominiBDCacheWrapper getDominiBDCacheWrapper() {

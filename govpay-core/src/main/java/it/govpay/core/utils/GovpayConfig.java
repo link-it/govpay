@@ -44,7 +44,7 @@ public class GovpayConfig {
 		v001, v002;
 	}
 
-	private static final String PROPERTIES_FILE = "/govpay.properties";
+	public static final String PROPERTIES_FILE = "/govpay.properties";
 
 	private static GovpayConfig instance;
 
@@ -52,8 +52,8 @@ public class GovpayConfig {
 		return instance;
 	}
 
-	public static GovpayConfig newInstance() throws Exception {
-		instance = new GovpayConfig();
+	public static GovpayConfig newInstance(InputStream is) throws Exception {
+		instance = new GovpayConfig(is);
 		return instance;
 	}
 
@@ -86,7 +86,7 @@ public class GovpayConfig {
 	private String urlGovpayWC = null;
 	private String urlWISP = null;
 
-	public GovpayConfig() throws Exception {
+	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.logoDir = null;
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -111,8 +111,6 @@ public class GovpayConfig {
 		try {
 
 			// Recupero il property all'interno dell'EAR
-			InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
-
 			props = new Properties[2];
 			Properties props1 = new Properties();
 			props1.load(is);
