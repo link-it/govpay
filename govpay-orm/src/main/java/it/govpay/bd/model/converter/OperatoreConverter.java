@@ -36,7 +36,7 @@ public class OperatoreConverter {
 		dto.setId(vo.getId());
 		dto.setPrincipal(vo.getIdUtenza().getPrincipal());
 		dto.setNome(vo.getNome());
-		dto.setAbilitato(vo.isAbilitato());
+//		dto.setAbilitato(vo.isAbilitato()); //TODO pintori
 		return dto;
 	}
 
@@ -55,7 +55,7 @@ public class OperatoreConverter {
 		}
 		
 //		vo.setProfilo(sb.toString());  //TODO pintori
-		vo.setAbilitato(dto.isAbilitato());
+//		vo.setAbilitato(dto.isAbilitato()); //TODO pintori
 		return vo;
 	}
 

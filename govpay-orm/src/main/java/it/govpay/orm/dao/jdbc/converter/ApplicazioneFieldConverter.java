@@ -88,13 +88,6 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "auto_iuv";
 			}
 		}
-		if(field.equals(Applicazione.model().ABILITATO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".abilitato";
-			}else{
-				return "abilitato";
-			}
-		}
 		if(field.equals(Applicazione.model().FIRMA_RICEVUTA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".firma_ricevuta";
@@ -164,9 +157,6 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().AUTO_IUV)){
-			return this.toTable(Applicazione.model(), returnAlias);
-		}
-		if(field.equals(Applicazione.model().ABILITATO)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().FIRMA_RICEVUTA)){

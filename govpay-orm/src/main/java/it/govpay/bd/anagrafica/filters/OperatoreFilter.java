@@ -48,7 +48,7 @@ public class OperatoreFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Operatore.model().ID_UTENZA.PRINCIPAL);
 		this.listaFieldSimpleSearch.add(Operatore.model().NOME);
-		this.fieldAbilitato = it.govpay.orm.Operatore.model().ABILITATO;
+		this.fieldAbilitato = it.govpay.orm.Operatore.model().ID_UTENZA.ABILITATO;
 	}
 
 	@Override

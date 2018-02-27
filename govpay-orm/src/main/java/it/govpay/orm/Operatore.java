@@ -37,7 +37,6 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -53,8 +52,7 @@ import java.io.Serializable;
 @XmlType(name = "Operatore", 
   propOrder = {
   	"idUtenza",
-  	"nome",
-  	"abilitato"
+  	"nome"
   }
 )
 
@@ -94,18 +92,6 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
     this.nome = nome;
   }
 
-  public boolean isAbilitato() {
-    return this.abilitato;
-  }
-
-  public boolean getAbilitato() {
-    return this.abilitato;
-  }
-
-  public void setAbilitato(boolean abilitato) {
-    this.abilitato = abilitato;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -131,9 +117,5 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nome",required=true,nillable=false)
   protected java.lang.String nome;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="abilitato",required=true,nillable=false,defaultValue="true")
-  protected boolean abilitato = true;
 
 }

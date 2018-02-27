@@ -43,7 +43,6 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 	
 		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new Field("idUtenza",it.govpay.orm.IdUtenza.class,"Operatore",Operatore.class));
 		this.NOME = new Field("nome",java.lang.String.class,"Operatore",Operatore.class);
-		this.ABILITATO = new Field("abilitato",boolean.class,"Operatore",Operatore.class);
 	
 	}
 	
@@ -53,7 +52,6 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 	
 		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new ComplexField(father,"idUtenza",it.govpay.orm.IdUtenza.class,"Operatore",Operatore.class));
 		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"Operatore",Operatore.class);
-		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Operatore",Operatore.class);
 	
 	}
 	
@@ -62,8 +60,6 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 	public it.govpay.orm.model.IdUtenzaModel ID_UTENZA = null;
 	 
 	public IField NOME = null;
-	 
-	public IField ABILITATO = null;
 	 
 
 	@Override

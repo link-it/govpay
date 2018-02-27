@@ -42,6 +42,7 @@ public class IdUtenzaModel extends AbstractModel<IdUtenza> {
 		super();
 	
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"id-utenza",IdUtenza.class);
+		this.ABILITATO = new Field("abilitato",boolean.class,"id-utenza",IdUtenza.class);
 	
 	}
 	
@@ -50,12 +51,15 @@ public class IdUtenzaModel extends AbstractModel<IdUtenza> {
 		super(father);
 	
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"id-utenza",IdUtenza.class);
+		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"id-utenza",IdUtenza.class);
 	
 	}
 	
 	
 
 	public IField PRINCIPAL = null;
+	 
+	public IField ABILITATO = null;
 	 
 
 	@Override

@@ -92,6 +92,7 @@ CREATE INDEX index_stazioni_1 ON stazioni (cod_stazione);
 CREATE TABLE utenze
 (
 	principal VARCHAR(255) NOT NULL,
+	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- unique constraints
@@ -109,7 +110,6 @@ CREATE TABLE applicazioni
 (
 	cod_applicazione VARCHAR(35) NOT NULL,
 	auto_iuv BOOLEAN NOT NULL,
-	abilitato BOOLEAN NOT NULL,
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
@@ -301,7 +301,6 @@ CREATE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
 CREATE TABLE operatori
 (
 	nome VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_utenza BIGINT NOT NULL,

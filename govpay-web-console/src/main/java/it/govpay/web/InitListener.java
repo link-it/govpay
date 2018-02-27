@@ -52,7 +52,7 @@ public class InitListener implements ServletContextListener {
 				if(log4j2Config != null) {
 					LoggerWrapperFactory.setLogConfiguration(log4j2Config);
 				} else {
-					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
+//					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
 				}
 			} catch (Exception e) {
 				LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore durante la configurazione del Logger: " + e);

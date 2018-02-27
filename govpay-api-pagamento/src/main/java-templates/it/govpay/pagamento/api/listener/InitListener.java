@@ -31,7 +31,7 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 
 public class InitListener implements ServletContextListener{
 
-	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
+	private static Logger log = null;//LoggerWrapperFactory.getLogger("boot");	
 	private static Logger logv1 = LoggerWrapperFactory.getLogger(InitListener.class);	
 	private static boolean initialized = false;
 
@@ -66,7 +66,7 @@ public class InitListener implements ServletContextListener{
 					log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
 					log.info("Caricata configurazione logger: " + log4j2Config.getPath());
 				} else {
-					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
+//					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
 
 					log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso.");
 					log.info("Configurazione logger da classpath.");

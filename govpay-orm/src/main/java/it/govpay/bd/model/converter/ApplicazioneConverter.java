@@ -35,7 +35,7 @@ public class ApplicazioneConverter {
 	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica, List<Acl> acls) throws ServiceException {
 		Applicazione dto = new Applicazione();
 		dto.setAutoIuv(vo.getAutoIUV());
-		dto.setAbilitato(vo.isAbilitato());
+//		dto.setAbilitato(vo.isAbilitato()); //TODO pintori
 		dto.setCodApplicazione(vo.getCodApplicazione());
 		dto.setConnettoreNotifica(connettoreNotifica);
 		dto.setConnettoreVerifica(connettoreVerifica);
@@ -55,7 +55,7 @@ public class ApplicazioneConverter {
 		vo.setId(dto.getId());
 		vo.setAutoIUV(dto.isAutoIuv());
 		vo.setCodApplicazione(dto.getCodApplicazione());
-		vo.setAbilitato(dto.isAbilitato());
+//		vo.setAbilitato(dto.isAbilitato());  //TODO pintori
 		
 		if(dto.getConnettoreNotifica()!= null) {
 			dto.getConnettoreNotifica().setIdConnettore(dto.getCodApplicazione() + "_ESITO");

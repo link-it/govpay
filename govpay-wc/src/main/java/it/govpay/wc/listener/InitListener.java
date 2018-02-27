@@ -28,7 +28,8 @@ import it.govpay.core.utils.GpThreadLocal;
 
 public class InitListener implements ServletContextListener{
 
-	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
+	//TODO pintori template
+	private static Logger log = null;//LoggerWrapperFactory.getLogger("boot");	
 	private static boolean initialized = false;
 
 	public static boolean isInitialized() {
@@ -62,7 +63,7 @@ public class InitListener implements ServletContextListener{
 					log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") in corso");
 					log.info("Caricata configurazione logger: " + log4j2Config.getPath());
 				} else {
-					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
+//					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
 					log = LoggerWrapperFactory.getLogger("boot");	
 
 					log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") in corso.");

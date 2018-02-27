@@ -38,7 +38,6 @@ import java.io.Serializable;
  * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="autoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="firmaRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreVerifica" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
@@ -63,7 +62,6 @@ import java.io.Serializable;
   	"idUtenza",
   	"codApplicazione",
   	"autoIUV",
-  	"abilitato",
   	"firmaRicevuta",
   	"codConnettoreEsito",
   	"codConnettoreVerifica",
@@ -120,18 +118,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
 
   public void setAutoIUV(boolean autoIUV) {
     this.autoIUV = autoIUV;
-  }
-
-  public boolean isAbilitato() {
-    return this.abilitato;
-  }
-
-  public boolean getAbilitato() {
-    return this.abilitato;
-  }
-
-  public void setAbilitato(boolean abilitato) {
-    this.abilitato = abilitato;
   }
 
   public java.lang.String getFirmaRicevuta() {
@@ -223,10 +209,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="autoIUV",required=true,nillable=false)
   protected boolean autoIUV;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="abilitato",required=true,nillable=false)
-  protected boolean abilitato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="firmaRicevuta",required=true,nillable=false)

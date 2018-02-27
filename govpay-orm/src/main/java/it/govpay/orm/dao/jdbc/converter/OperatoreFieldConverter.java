@@ -81,13 +81,6 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 				return "nome";
 			}
 		}
-		if(field.equals(Operatore.model().ABILITATO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".abilitato";
-			}else{
-				return "abilitato";
-			}
-		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -105,9 +98,6 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Operatore.model().ID_UTENZA, returnAlias);
 		}
 		if(field.equals(Operatore.model().NOME)){
-			return this.toTable(Operatore.model(), returnAlias);
-		}
-		if(field.equals(Operatore.model().ABILITATO)){
 			return this.toTable(Operatore.model(), returnAlias);
 		}
 

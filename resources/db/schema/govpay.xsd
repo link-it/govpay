@@ -212,6 +212,7 @@
 	<xsd:complexType name="id-utenza">
 		<xsd:sequence>
 			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="abilitato" type="xsd:boolean" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -791,7 +792,6 @@
 			</xsd:element>
 			<xsd:element name="codApplicazione" type="String35"/>
 			<xsd:element name="autoIUV" type="xsd:boolean"/>
-			<xsd:element name="abilitato" type="xsd:boolean"/>
 			<xsd:element name="firmaRicevuta" type="String1"/>
 			<xsd:element name="codConnettoreEsito" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreVerifica" type="xsd:string" minOccurs="0"/>
@@ -1087,6 +1087,7 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="abilitato" type="xsd:boolean" default="true"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1120,8 +1121,6 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="nome" type="String35"/>
-			<xsd:element name="abilitato" type="xsd:boolean" default="true"/>
-			
 		</xsd:sequence>
 	</xsd:complexType>
 
