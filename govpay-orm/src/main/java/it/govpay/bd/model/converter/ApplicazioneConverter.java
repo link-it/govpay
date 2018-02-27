@@ -28,18 +28,20 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.orm.IdUtenza;
 
 public class ApplicazioneConverter {
 
 	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica, List<Acl> acls) throws ServiceException {
 		Applicazione dto = new Applicazione();
+		dto.setAutoIuv(vo.getAutoIUV());
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setCodApplicazione(vo.getCodApplicazione());
 		dto.setConnettoreNotifica(connettoreNotifica);
 		dto.setConnettoreVerifica(connettoreVerifica);
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
-		dto.setPrincipal(vo.getPrincipal());
+		dto.setPrincipal(vo.getIdUtenza().getPrincipal());
 		dto.setTrusted(vo.getTrusted());
 		dto.setAcls(acls);
 		dto.setVersione(Versione.toEnum(vo.getVersione()));
@@ -51,6 +53,7 @@ public class ApplicazioneConverter {
 	public static it.govpay.orm.Applicazione toVO(Applicazione dto) {
 		it.govpay.orm.Applicazione vo = new it.govpay.orm.Applicazione();
 		vo.setId(dto.getId());
+		vo.setAutoIUV(dto.isAutoIuv());
 		vo.setCodApplicazione(dto.getCodApplicazione());
 		vo.setAbilitato(dto.isAbilitato());
 		
@@ -65,7 +68,9 @@ public class ApplicazioneConverter {
 		}
 		
 		vo.setFirmaRicevuta(dto.getFirmaRichiesta().getCodifica());
-		vo.setPrincipal(dto.getPrincipal());
+		IdUtenza idUtenza = new IdUtenza();
+		idUtenza.setPrincipal(dto.getPrincipal());
+		vo.setIdUtenza(idUtenza);
 		vo.setTrusted(dto.isTrusted());
 		vo.setVersione(dto.getVersione().getLabel()); 
 		vo.setCodApplicazioneIuv(dto.getCodApplicazioneIuv());

@@ -109,6 +109,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_sessione";
+			}else{
+				return "id_sessione";
+			}
+		}
 		if(field.equals(Versamento.model().IUV.IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".iuv";
@@ -343,6 +350,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Versamento.model().ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
+			return this.toTable(Versamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		}
 		if(field.equals(Versamento.model().IUV.IUV)){
 			return this.toTable(Versamento.model().IUV, returnAlias);
 		}
@@ -457,6 +467,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Versamento.model().ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Versamento.model().ID_PAGAMENTO_PORTALE)){
+			return "pagamenti_portale";
 		}
 		if(model.equals(Versamento.model().IUV)){
 			return "iuv";

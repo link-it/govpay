@@ -19,8 +19,8 @@
  */
 package it.govpay.orm.dao;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 
 /**	
@@ -135,6 +135,7 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IUoService getUoService() throws ServiceException,NotImplementedException;
+	
 	
 	
 	/*
@@ -318,7 +319,7 @@ public interface IServiceManager {
 	public ITipoTributoService getTipoTributoService() throws ServiceException,NotImplementedException;
 	
 	
-		/*
+	/*
 	 =====================================================================================================================
 	 Services relating to the object with name:Audit type:Audit
 	 =====================================================================================================================
@@ -346,32 +347,6 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:Ruolo type:Ruolo
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Ruolo}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Ruolo}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRuoloServiceSearch getRuoloServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ruolo}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ruolo}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRuoloService getRuoloService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:ACL type:ACL
 	 =====================================================================================================================
 	*/
@@ -393,6 +368,84 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IACLService getACLService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:UtenzaDominio type:UtenzaDominio
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaDominio}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaDominio}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IUtenzaDominioServiceSearch getUtenzaDominioServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaDominio}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaDominio}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IUtenzaDominioService getUtenzaDominioService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:UtenzaTributo type:UtenzaTributo
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IUtenzaTributoServiceSearch getUtenzaTributoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IUtenzaTributoService getUtenzaTributoService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Utenza type:Utenza
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Utenza}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Utenza}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IUtenzaServiceSearch getUtenzaServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Utenza}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Utenza}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IUtenzaService getUtenzaService() throws ServiceException,NotImplementedException;
 	
 	
 	

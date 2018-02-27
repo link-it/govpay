@@ -74,20 +74,6 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_iban";
 			}
 		}
-		if(field.equals(IbanAccredito.model().ID_SELLER_BANK)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_seller_bank";
-			}else{
-				return "id_seller_bank";
-			}
-		}
-		if(field.equals(IbanAccredito.model().ID_NEGOZIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_negozio";
-			}else{
-				return "id_negozio";
-			}
-		}
 		if(field.equals(IbanAccredito.model().BIC_ACCREDITO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".bic_accredito";
@@ -151,12 +137,6 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 		// the full definition of the table containing the alias
 		
 		if(field.equals(IbanAccredito.model().COD_IBAN)){
-			return this.toTable(IbanAccredito.model(), returnAlias);
-		}
-		if(field.equals(IbanAccredito.model().ID_SELLER_BANK)){
-			return this.toTable(IbanAccredito.model(), returnAlias);
-		}
-		if(field.equals(IbanAccredito.model().ID_NEGOZIO)){
 			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
 		if(field.equals(IbanAccredito.model().BIC_ACCREDITO)){

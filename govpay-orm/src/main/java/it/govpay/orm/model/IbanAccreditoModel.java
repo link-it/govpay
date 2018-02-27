@@ -42,8 +42,6 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 		super();
 	
 		this.COD_IBAN = new Field("codIban",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
-		this.ID_SELLER_BANK = new Field("idSellerBank",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
-		this.ID_NEGOZIO = new Field("idNegozio",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.BIC_ACCREDITO = new Field("bicAccredito",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.IBAN_APPOGGIO = new Field("ibanAppoggio",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.BIC_APPOGGIO = new Field("bicAppoggio",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
@@ -59,8 +57,6 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 		super(father);
 	
 		this.COD_IBAN = new ComplexField(father,"codIban",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
-		this.ID_SELLER_BANK = new ComplexField(father,"idSellerBank",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
-		this.ID_NEGOZIO = new ComplexField(father,"idNegozio",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.BIC_ACCREDITO = new ComplexField(father,"bicAccredito",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.IBAN_APPOGGIO = new ComplexField(father,"ibanAppoggio",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.BIC_APPOGGIO = new ComplexField(father,"bicAppoggio",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
@@ -74,10 +70,6 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 	
 
 	public IField COD_IBAN = null;
-	 
-	public IField ID_SELLER_BANK = null;
-	 
-	public IField ID_NEGOZIO = null;
 	 
 	public IField BIC_ACCREDITO = null;
 	 

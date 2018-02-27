@@ -19,20 +19,15 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.Ruolo;
-
 import java.util.List;
 
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
-import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
+
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.FilterSortWrapper;
 
 public class RuoloFilter extends AbstractFilter {
 
@@ -48,40 +43,11 @@ public class RuoloFilter extends AbstractFilter {
 	
 	public RuoloFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-		
-		try{
-			this.listaFieldSimpleSearch.add(Ruolo.model().COD_RUOLO);
-			this.listaFieldSimpleSearch.add(Ruolo.model().DESCRIZIONE);
-		} catch(Exception e){
-			
-		}
 	}
 
 	@Override
 	public IExpression _toExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression(); 
-			
-			if(this.codRuolo != null){
-				newExpression.ilike(Ruolo.model().COD_RUOLO, this.codRuolo,LikeMode.ANYWHERE);
-			}
-			
-			if(this.descrizione != null){
-				newExpression.ilike(Ruolo.model().DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
-			}
-			
-			if(this.listaRuoli != null) {
-				newExpression.in(Ruolo.model().COD_RUOLO, this.listaRuoli);
-			}
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
+		return null;
 	}
 
 	public void addSortField(SortFields field, boolean asc) {

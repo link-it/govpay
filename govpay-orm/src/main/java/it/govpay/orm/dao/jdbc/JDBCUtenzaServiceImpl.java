@@ -26,7 +26,7 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdRuolo;
+import it.govpay.orm.IdUtenza;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
@@ -42,22 +42,22 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 
-import it.govpay.orm.Ruolo;
+import it.govpay.orm.Utenza;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
- * JDBCRuoloServiceImpl
+ * JDBCUtenzaServiceImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
-	implements IJDBCServiceCRUDWithId<Ruolo, IdRuolo, JDBCServiceManager> {
+public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
+	implements IJDBCServiceCRUDWithId<Utenza, IdUtenza, JDBCServiceManager> {
 
 	@Override
-	public void create(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
+	public void create(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
@@ -71,43 +71,41 @@ public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
 				
 
 
-		// Object ruolo
-		sqlQueryObjectInsert.addInsertTable(this.getRuoloFieldConverter().toTable(Ruolo.model()));
-		sqlQueryObjectInsert.addInsertField(this.getRuoloFieldConverter().toColumn(Ruolo.model().COD_RUOLO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRuoloFieldConverter().toColumn(Ruolo.model().DESCRIZIONE,false),"?");
+		// Object utenza
+		sqlQueryObjectInsert.addInsertTable(this.getUtenzaFieldConverter().toTable(Utenza.model()));
+		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL,false),"?");
 
-		// Insert ruolo
-		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getRuoloFetch().getKeyGeneratorObject(Ruolo.model());
+		// Insert utenza
+		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getUtenzaFetch().getKeyGeneratorObject(Utenza.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ruolo.getCodRuolo(),Ruolo.model().COD_RUOLO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ruolo.getDescrizione(),Ruolo.model().DESCRIZIONE.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getPrincipal(),Utenza.model().PRINCIPAL.getFieldType())
 		);
-		ruolo.setId(id);
+		utenza.setId(id);
 
 		
 	}
 
 	@Override
-	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRuolo oldId, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUtenza oldId, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObject.newSQLQueryObject();
-		Long longIdByLogicId = this.findIdRuolo(jdbcProperties, log, connection, sqlQueryObjectUpdate.newSQLQueryObject(), oldId, true);
-		Long tableId = ruolo.getId();
+		Long longIdByLogicId = this.findIdUtenza(jdbcProperties, log, connection, sqlQueryObjectUpdate.newSQLQueryObject(), oldId, true);
+		Long tableId = utenza.getId();
 		if(tableId != null && tableId.longValue() > 0) {
 			if(tableId.longValue() != longIdByLogicId.longValue()) {
-				throw new Exception("Ambiguous parameter: ruolo.id ["+tableId+"] does not match logic id ["+longIdByLogicId+"]");
+				throw new Exception("Ambiguous parameter: utenza.id ["+tableId+"] does not match logic id ["+longIdByLogicId+"]");
 			}
 		} else {
 			tableId = longIdByLogicId;
-			ruolo.setId(tableId);
+			utenza.setId(tableId);
 		}
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
 
-		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, ruolo, idMappingResolutionBehaviour);
+		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, utenza, idMappingResolutionBehaviour);
 	}
 	@Override
-	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
@@ -122,62 +120,60 @@ public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-//		boolean setIdMappingResolutionBehaviour = 
-//			(idMappingResolutionBehaviour==null) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
-//			
+		boolean setIdMappingResolutionBehaviour = 
+			(idMappingResolutionBehaviour==null) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+			
 
 
-		// Object ruolo
+		// Object utenza
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
-		sqlQueryObjectUpdate.addUpdateTable(this.getRuoloFieldConverter().toTable(Ruolo.model()));
-		boolean isUpdate_ruolo = true;
-		java.util.List<JDBCObject> lstObjects_ruolo = new java.util.ArrayList<JDBCObject>();
-		sqlQueryObjectUpdate.addUpdateField(this.getRuoloFieldConverter().toColumn(Ruolo.model().COD_RUOLO,false), "?");
-		lstObjects_ruolo.add(new JDBCObject(ruolo.getCodRuolo(), Ruolo.model().COD_RUOLO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRuoloFieldConverter().toColumn(Ruolo.model().DESCRIZIONE,false), "?");
-		lstObjects_ruolo.add(new JDBCObject(ruolo.getDescrizione(), Ruolo.model().DESCRIZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateTable(this.getUtenzaFieldConverter().toTable(Utenza.model()));
+		boolean isUpdate_utenza = true;
+		java.util.List<JDBCObject> lstObjects_utenza = new java.util.ArrayList<JDBCObject>();
+		sqlQueryObjectUpdate.addUpdateField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL,false), "?");
+		lstObjects_utenza.add(new JDBCObject(utenza.getPrincipal(), Utenza.model().PRINCIPAL.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
-		lstObjects_ruolo.add(new JDBCObject(tableId, Long.class));
+		lstObjects_utenza.add(new JDBCObject(tableId, Long.class));
 
-		if(isUpdate_ruolo) {
-			// Update ruolo
+		if(isUpdate_utenza) {
+			// Update utenza
 			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
-				lstObjects_ruolo.toArray(new JDBCObject[]{}));
+				lstObjects_utenza.toArray(new JDBCObject[]{}));
 		}
 
 
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRuolo id, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUtenza id, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRuoloFieldConverter().toTable(Ruolo.model()), 
+				this.getUtenzaFieldConverter().toTable(Utenza.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
-				this.getRuoloFieldConverter(), this, null, updateFields);
+				this.getUtenzaFieldConverter(), this, null, updateFields);
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRuolo id, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUtenza id, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRuoloFieldConverter().toTable(Ruolo.model()), 
+				this.getUtenzaFieldConverter().toTable(Utenza.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
-				this.getRuoloFieldConverter(), this, condition, updateFields);
+				this.getUtenzaFieldConverter(), this, condition, updateFields);
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRuolo id, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUtenza id, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRuoloFieldConverter().toTable(Ruolo.model()), 
+				this.getUtenzaFieldConverter().toTable(Utenza.model()), 
 				this._getMapTableToPKColumn(), 
 				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
-				this.getRuoloFieldConverter(), this, updateModels);
+				this.getUtenzaFieldConverter(), this, updateModels);
 	}	
 	
 	@Override
@@ -185,10 +181,10 @@ public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
 		java.util.List<Object> ids = new java.util.ArrayList<Object>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRuoloFieldConverter().toTable(Ruolo.model()), 
+				this.getUtenzaFieldConverter().toTable(Utenza.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
-				this.getRuoloFieldConverter(), this, null, updateFields);
+				this.getUtenzaFieldConverter(), this, null, updateFields);
 	}
 	
 	@Override
@@ -196,10 +192,10 @@ public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
 		java.util.List<Object> ids = new java.util.ArrayList<Object>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRuoloFieldConverter().toTable(Ruolo.model()), 
+				this.getUtenzaFieldConverter().toTable(Utenza.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
-				this.getRuoloFieldConverter(), this, condition, updateFields);
+				this.getUtenzaFieldConverter(), this, condition, updateFields);
 	}
 	
 	@Override
@@ -207,14 +203,14 @@ public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
 		java.util.List<Object> ids = new java.util.ArrayList<Object>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getRuoloFieldConverter().toTable(Ruolo.model()), 
+				this.getUtenzaFieldConverter().toTable(Utenza.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
-				this.getRuoloFieldConverter(), this, updateModels);
+				this.getUtenzaFieldConverter(), this, updateModels);
 	}
 	
 	@Override
-	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRuolo oldId, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
+	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUtenza oldId, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 	
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
@@ -222,38 +218,38 @@ public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
 		}
 		
 		if(this.exists(jdbcProperties, log, connection, sqlQueryObject, oldId)) {
-			this.update(jdbcProperties, log, connection, sqlQueryObject, oldId, ruolo,idMappingResolutionBehaviour);
+			this.update(jdbcProperties, log, connection, sqlQueryObject, oldId, utenza,idMappingResolutionBehaviour);
 		} else {
-			this.create(jdbcProperties, log, connection, sqlQueryObject, ruolo,idMappingResolutionBehaviour);
+			this.create(jdbcProperties, log, connection, sqlQueryObject, utenza,idMappingResolutionBehaviour);
 		}
 		
 	}
 	
 	@Override
-	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Ruolo ruolo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
+	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Utenza utenza, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
 		
 		if(this.exists(jdbcProperties, log, connection, sqlQueryObject, tableId)) {
-			this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, ruolo,idMappingResolutionBehaviour);
+			this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, utenza,idMappingResolutionBehaviour);
 		} else {
-			this.create(jdbcProperties, log, connection, sqlQueryObject, ruolo,idMappingResolutionBehaviour);
+			this.create(jdbcProperties, log, connection, sqlQueryObject, utenza,idMappingResolutionBehaviour);
 		}
 	}
 	
 	@Override
-	public void delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Ruolo ruolo) throws NotImplementedException,ServiceException,Exception {
+	public void delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Utenza utenza) throws NotImplementedException,ServiceException,Exception {
 		
 		
 		Long longId = null;
-		if( (ruolo.getId()!=null) && (ruolo.getId()>0) ){
-			longId = ruolo.getId();
+		if( (utenza.getId()!=null) && (utenza.getId()>0) ){
+			longId = utenza.getId();
 		}
 		else{
-			IdRuolo idRuolo = this.convertToId(jdbcProperties,log,connection,sqlQueryObject,ruolo);
-			longId = this.findIdRuolo(jdbcProperties,log,connection,sqlQueryObject,idRuolo,false);
+			IdUtenza idUtenza = this.convertToId(jdbcProperties,log,connection,sqlQueryObject,utenza);
+			longId = this.findIdUtenza(jdbcProperties,log,connection,sqlQueryObject,idUtenza,false);
 			if(longId == null){
 				return; // entry not exists
 			}
@@ -275,24 +271,24 @@ public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectDelete = sqlQueryObject.newSQLQueryObject();
 		
 
-		// Object ruolo
+		// Object utenza
 		sqlQueryObjectDelete.setANDLogicOperator(true);
-		sqlQueryObjectDelete.addDeleteTable(this.getRuoloFieldConverter().toTable(Ruolo.model()));
+		sqlQueryObjectDelete.addDeleteTable(this.getUtenzaFieldConverter().toTable(Utenza.model()));
 		if(id != null)
 			sqlQueryObjectDelete.addWhereCondition("id=?");
 
-		// Delete ruolo
+		// Delete utenza
 		jdbcUtilities.execute(sqlQueryObjectDelete.createSQLDelete(), jdbcProperties.isShowSql(), 
 			new JDBCObject(id,Long.class));
 
 	}
 
 	@Override
-	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRuolo idRuolo) throws NotImplementedException,ServiceException,Exception {
+	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUtenza idUtenza) throws NotImplementedException,ServiceException,Exception {
 
 		Long id = null;
 		try{
-			id = this.findIdRuolo(jdbcProperties, log, connection, sqlQueryObject, idRuolo, true);
+			id = this.findIdUtenza(jdbcProperties, log, connection, sqlQueryObject, idUtenza, true);
 		}catch(NotFoundException notFound){
 			return;
 		}
@@ -303,7 +299,7 @@ public class JDBCRuoloServiceImpl extends JDBCRuoloServiceSearchImpl
 	@Override
 	public NonNegativeNumber deleteAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws NotImplementedException,ServiceException,Exception {
 		
-		return this.deleteAll(jdbcProperties, log, connection, sqlQueryObject, new JDBCExpression(this.getRuoloFieldConverter()));
+		return this.deleteAll(jdbcProperties, log, connection, sqlQueryObject, new JDBCExpression(this.getUtenzaFieldConverter()));
 
 	}
 

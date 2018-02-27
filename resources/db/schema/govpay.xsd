@@ -25,18 +25,17 @@
 								<linkit:sql-table object-name="Intermediario"
 									object-type="Intermediario"/>
 								<linkit:sql-table object-name="Stazione" object-type="Stazione"/>
-								<linkit:sql-table object-name="Applicazione"
-									object-type="Applicazione"/>
+								<linkit:sql-table object-name="Utenza" object-type="Utenza"/>
+								<linkit:sql-table object-name="Applicazione" object-type="Applicazione"/>
 								<linkit:sql-table object-name="Dominio" object-type="Dominio"/>
+								<linkit:sql-table object-name="IbanAccredito" object-type="IbanAccredito"/>
+								<linkit:sql-table object-name="TipoTributo" object-type="TipoTributo"/>
+								<linkit:sql-table object-name="Tributo" object-type="Tributo"/>
+								<linkit:sql-table object-name="UtenzaDominio" object-type="UtenzaDominio"/>
+								<linkit:sql-table object-name="UtenzaTributo" object-type="UtenzaTributo"/>
 								<linkit:sql-table object-name="Uo" object-type="Uo"/>
 								<linkit:sql-table object-name="Operatore" object-type="Operatore"/>
 								<linkit:sql-table object-name="Connettore" object-type="Connettore"/>
-								<linkit:sql-table object-name="IbanAccredito"
-									object-type="IbanAccredito"/>
-								<linkit:sql-table object-name="TipoTributo"
-									object-type="TipoTributo"/>
-								<linkit:sql-table object-name="Tributo" object-type="Tributo"/>
-								<linkit:sql-table object-name="Ruolo" object-type="Ruolo"/>
 								<linkit:sql-table object-name="ACL" object-type="ACL"/>
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
@@ -48,7 +47,7 @@
 								<linkit:sql-table object-name="Notifica" object-type="Notifica"/>
 								<linkit:sql-table object-name="IUV" object-type="IUV"/>
 								<linkit:sql-table object-name="FR" object-type="FR"/>
-								<linkit:sql-table object-name="Incassi" object-type="Incassi"/>
+								<linkit:sql-table object-name="Incasso" object-type="Incasso"/>
 								<linkit:sql-table object-name="Pagamento" object-type="Pagamento"/>
 								<linkit:sql-table object-name="Rendicontazione"
 									object-type="Rendicontazione"/>
@@ -209,6 +208,12 @@
 			<xsd:element name="idDominio" type="id-dominio"/>
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:complexType name="id-utenza">
+		<xsd:sequence>
+			<xsd:element name="principal" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<xsd:complexType name="id-pagamento">
 		<xsd:sequence>
@@ -342,12 +347,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="id-ruolo">
-		<xsd:sequence>
-			<xsd:element name="codRuolo" type="xsd:string"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
 	<xsd:complexType name="id-versamento">
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="xsd:string"/>
@@ -515,8 +514,6 @@
 			<xsd:element name="gln" type="String35"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 			<xsd:element name="ragioneSociale" type="String70"/>
-			<xsd:element name="riusoIUV" type="xsd:boolean"/>
-			<xsd:element name="customIUV" type="xsd:boolean"/>
 			<xsd:element name="idApplicazioneDefault" type="id-applicazione" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -530,7 +527,6 @@
 			</xsd:element>
 			<xsd:element name="auxDigit" type="Int1" default="0"/>
 			<xsd:element name="iuvPrefix" type="String255" minOccurs="0"/>
-			<xsd:element name="iuvPrefixStrict" type="xsd:boolean" default="false"/>
 			<xsd:element name="segregationCode" type="Int2" minOccurs="0"/>
 
 			<xsd:element name="ndpStato" type="xsd:positiveInteger" minOccurs="0"/>
@@ -776,16 +772,26 @@
 							<linkit:sql-table-unique-field name="codApplicazione"/>
 						</linkit:sql-table-unique>
 						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="principal"/>
+							<linkit:sql-table-unique-column name="id_utenza"/>
 						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
+			<xsd:element name="idUtenza" type="id-utenza">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Utenza"
+								object-type="Utenza" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="codApplicazione" type="String35"/>
+			<xsd:element name="autoIUV" type="xsd:boolean"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
-			<xsd:element name="principal" type="xsd:string"/>
 			<xsd:element name="firmaRicevuta" type="String1"/>
 			<xsd:element name="codConnettoreEsito" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreVerifica" type="xsd:string" minOccurs="0"/>
@@ -815,8 +821,6 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="codIban" type="IBANType"/>
-			<xsd:element name="idSellerBank" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="idNegozio" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="bicAccredito" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="ibanAppoggio" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="bicAppoggio" type="xsd:string" minOccurs="0"/>
@@ -967,28 +971,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:element name="Ruolo" type="Ruolo"/>
-	<xsd:complexType name="Ruolo">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true" id="id-ruolo"/>
-					<linkit:sql-table-mapping generate-sql="true" name="ruoli"
-						on-delete-cascade="false">
-						<linkit:sql-table-constraint foreign-key="fk_ruo"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="codRuolo"/>
-						</linkit:sql-table-unique>
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="codRuolo" type="String35"/>
-			<xsd:element name="descrizione" type="xsd:string"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
 	<xsd:element name="ACL" type="ACL"/>
 	<xsd:complexType name="ACL">
 		<xsd:annotation>
@@ -1003,71 +985,113 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
+			<xsd:element name="ruolo" type="xsd:string"/>
+			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="servizio" type="xsd:string"/>
+			<xsd:element name="diritti" type="xsd:int"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	
+	<xsd:element name="UtenzaDominio" type="UtenzaDominio"/>
+	<xsd:complexType name="UtenzaDominio">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true"/>
+					<linkit:sql-table-mapping generate-sql="true" name="utenze_domini"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_nzd"/>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idUtenza" type="id-utenza">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Applicazione"
-								object-type="Applicazione" relationship="reversed"/>
+							<linkit:sql-id-mapping object-name="Utenza"
+								object-type="Utenza" relationship="reversed"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="idOperatore" type="id-operatore" minOccurs="0">
+			<xsd:element name="idDominio" type="id-dominio">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Operatore" object-type="Operatore"
-								relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="idRuolo" type="id-ruolo" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Ruolo" object-type="Ruolo"
-								relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="codTipo" type="String1"/>
-			<xsd:element name="diritti" type="xsd:int" minOccurs="0"/>
-			<xsd:element name="codServizio" type="String35"/>
-			<xsd:element name="admin" type="xsd:boolean" default="false">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping name="amministratore"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="idDominio" type="id-dominio" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
-								relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="idTipoTributo" type="id-tipo-tributo" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="TipoTributo"
-								object-type="TipoTributo" relationship="reversed"/>
+							<linkit:sql-id-mapping object-name="Dominio"
+								object-type="Dominio" relationship="reversed"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
+	
+	<xsd:element name="UtenzaTributo" type="UtenzaTributo"/>
+	<xsd:complexType name="UtenzaTributo">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true"/>
+					<linkit:sql-table-mapping generate-sql="true" name="utenze_tributi"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_nzt"/>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idUtenza" type="id-utenza">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Utenza"
+								object-type="Utenza" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idTributo" type="id-tributo">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Tributo"
+								object-type="Tributo" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	
+	<xsd:element name="Utenza" type="Utenza"/>
+	<xsd:complexType name="Utenza">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-utenza"/>
+					<linkit:sql-table-mapping generate-sql="true" name="utenze"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_tnz"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="principal"/>
+						</linkit:sql-table-unique>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="principal" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	
+	
 	<xsd:element name="Operatore" type="Operatore"/>
 	<xsd:complexType name="Operatore">
 		<xsd:annotation>
@@ -1078,17 +1102,26 @@
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_opr"/>
 						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="principal"/>
+							<linkit:sql-table-unique-column name="id_utenza"/>
 						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="idUtenza" type="id-utenza">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Utenza"
+								object-type="Utenza" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="nome" type="String35"/>
-			<xsd:element name="profilo" type="String1024"/>
 			<xsd:element name="abilitato" type="xsd:boolean" default="true"/>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 

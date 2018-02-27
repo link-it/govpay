@@ -35,15 +35,10 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="ACL">
  * 		&lt;sequence>
- * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idRuolo" type="{http://www.govpay.it/orm}id-ruolo" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="diritti" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codServizio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="admin" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
- * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idTipoTributo" type="{http://www.govpay.it/orm}id-tipo-tributo" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ruolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="servizio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="diritti" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -58,15 +53,10 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ACL", 
   propOrder = {
-  	"idApplicazione",
-  	"idOperatore",
-  	"idRuolo",
-  	"codTipo",
-  	"diritti",
-  	"codServizio",
-  	"admin",
-  	"idDominio",
-  	"idTipoTributo"
+  	"ruolo",
+  	"principal",
+  	"servizio",
+  	"diritti"
   }
 )
 
@@ -90,36 +80,28 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 		this.id=new Long(-1);
   }
 
-  public IdApplicazione getIdApplicazione() {
-    return this.idApplicazione;
+  public java.lang.String getRuolo() {
+    return this.ruolo;
   }
 
-  public void setIdApplicazione(IdApplicazione idApplicazione) {
-    this.idApplicazione = idApplicazione;
+  public void setRuolo(java.lang.String ruolo) {
+    this.ruolo = ruolo;
   }
 
-  public IdOperatore getIdOperatore() {
-    return this.idOperatore;
+  public java.lang.String getPrincipal() {
+    return this.principal;
   }
 
-  public void setIdOperatore(IdOperatore idOperatore) {
-    this.idOperatore = idOperatore;
+  public void setPrincipal(java.lang.String principal) {
+    this.principal = principal;
   }
 
-  public IdRuolo getIdRuolo() {
-    return this.idRuolo;
+  public java.lang.String getServizio() {
+    return this.servizio;
   }
 
-  public void setIdRuolo(IdRuolo idRuolo) {
-    this.idRuolo = idRuolo;
-  }
-
-  public java.lang.String getCodTipo() {
-    return this.codTipo;
-  }
-
-  public void setCodTipo(java.lang.String codTipo) {
-    this.codTipo = codTipo;
+  public void setServizio(java.lang.String servizio) {
+    this.servizio = servizio;
   }
 
   public int getDiritti() {
@@ -128,42 +110,6 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
   public void setDiritti(int diritti) {
     this.diritti = diritti;
-  }
-
-  public java.lang.String getCodServizio() {
-    return this.codServizio;
-  }
-
-  public void setCodServizio(java.lang.String codServizio) {
-    this.codServizio = codServizio;
-  }
-
-  public boolean isAdmin() {
-    return this.admin;
-  }
-
-  public boolean getAdmin() {
-    return this.admin;
-  }
-
-  public void setAdmin(boolean admin) {
-    this.admin = admin;
-  }
-
-  public IdDominio getIdDominio() {
-    return this.idDominio;
-  }
-
-  public void setIdDominio(IdDominio idDominio) {
-    this.idDominio = idDominio;
-  }
-
-  public IdTipoTributo getIdTipoTributo() {
-    return this.idTipoTributo;
-  }
-
-  public void setIdTipoTributo(IdTipoTributo idTipoTributo) {
-    this.idTipoTributo = idTipoTributo;
   }
 
   private static final long serialVersionUID = 1L;
@@ -185,35 +131,20 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   }
 
 
-  @XmlElement(name="idApplicazione",required=false,nillable=false)
-  protected IdApplicazione idApplicazione;
-
-  @XmlElement(name="idOperatore",required=false,nillable=false)
-  protected IdOperatore idOperatore;
-
-  @XmlElement(name="idRuolo",required=false,nillable=false)
-  protected IdRuolo idRuolo;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ruolo",required=true,nillable=false)
+  protected java.lang.String ruolo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codTipo",required=true,nillable=false)
-  protected java.lang.String codTipo;
+  @XmlElement(name="principal",required=true,nillable=false)
+  protected java.lang.String principal;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="servizio",required=true,nillable=false)
+  protected java.lang.String servizio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="int")
-  @XmlElement(name="diritti",required=false,nillable=false)
+  @XmlElement(name="diritti",required=true,nillable=false)
   protected int diritti;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codServizio",required=true,nillable=false)
-  protected java.lang.String codServizio;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="admin",required=true,nillable=false,defaultValue="false")
-  protected boolean admin = false;
-
-  @XmlElement(name="idDominio",required=false,nillable=false)
-  protected IdDominio idDominio;
-
-  @XmlElement(name="idTipoTributo",required=false,nillable=false)
-  protected IdTipoTributo idTipoTributo;
 
 }

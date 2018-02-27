@@ -40,12 +40,9 @@ import java.io.Serializable;
  * 			&lt;element name="gln" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ragioneSociale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="riusoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="customIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazioneDefault" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="auxDigit" type="{http://www.govpay.it/orm}int" minOccurs="1" maxOccurs="1" default="0"/>
  * 			&lt;element name="iuvPrefix" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="iuvPrefixStrict" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpStato" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -72,12 +69,9 @@ import java.io.Serializable;
   	"gln",
   	"abilitato",
   	"ragioneSociale",
-  	"riusoIUV",
-  	"customIUV",
   	"idApplicazioneDefault",
   	"_decimalWrapper_auxDigit",
   	"iuvPrefix",
-  	"iuvPrefixStrict",
   	"_decimalWrapper_segregationCode",
   	"ndpStato",
   	"ndpOperazione",
@@ -152,30 +146,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.ragioneSociale = ragioneSociale;
   }
 
-  public boolean isRiusoIUV() {
-    return this.riusoIUV;
-  }
-
-  public boolean getRiusoIUV() {
-    return this.riusoIUV;
-  }
-
-  public void setRiusoIUV(boolean riusoIUV) {
-    this.riusoIUV = riusoIUV;
-  }
-
-  public boolean isCustomIUV() {
-    return this.customIUV;
-  }
-
-  public boolean getCustomIUV() {
-    return this.customIUV;
-  }
-
-  public void setCustomIUV(boolean customIUV) {
-    this.customIUV = customIUV;
-  }
-
   public IdApplicazione getIdApplicazioneDefault() {
     return this.idApplicazioneDefault;
   }
@@ -198,18 +168,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   public void setIuvPrefix(java.lang.String iuvPrefix) {
     this.iuvPrefix = iuvPrefix;
-  }
-
-  public boolean isIuvPrefixStrict() {
-    return this.iuvPrefixStrict;
-  }
-
-  public boolean getIuvPrefixStrict() {
-    return this.iuvPrefixStrict;
-  }
-
-  public void setIuvPrefixStrict(boolean iuvPrefixStrict) {
-    this.iuvPrefixStrict = iuvPrefixStrict;
   }
 
   public java.lang.Integer getSegregationCode() {
@@ -312,14 +270,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="ragioneSociale",required=true,nillable=false)
   protected java.lang.String ragioneSociale;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="riusoIUV",required=true,nillable=false)
-  protected boolean riusoIUV;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="customIUV",required=true,nillable=false)
-  protected boolean customIUV;
-
   @XmlElement(name="idApplicazioneDefault",required=false,nillable=false)
   protected IdApplicazione idApplicazioneDefault;
 
@@ -334,10 +284,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuvPrefix",required=false,nillable=false)
   protected java.lang.String iuvPrefix;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="iuvPrefixStrict",required=true,nillable=false,defaultValue="false")
-  protected boolean iuvPrefixStrict = false;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="integer")

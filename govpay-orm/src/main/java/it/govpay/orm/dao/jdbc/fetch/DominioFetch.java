@@ -62,16 +62,10 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Dominio.model().ABILITATO.getFieldType()));
 				setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ragione_sociale", Dominio.model().RAGIONE_SOCIALE.getFieldType()));
-				setParameter(object, "setRiusoIUV", Dominio.model().RIUSO_IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "riuso_iuv", Dominio.model().RIUSO_IUV.getFieldType()));
-				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "custom_iuv", Dominio.model().CUSTOM_IUV.getFieldType()));
 				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "aux_digit", Dominio.model().AUX_DIGIT.getFieldType()));
 				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv_prefix", Dominio.model().IUV_PREFIX.getFieldType()));
-				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv_prefix_strict", Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
 				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "segregation_code", Dominio.model().SEGREGATION_CODE.getFieldType()));
 				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
@@ -116,16 +110,10 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
 					this.getObjectFromMap(map,"ragioneSociale"));
-				setParameter(object, "setRiusoIUV", Dominio.model().RIUSO_IUV.getFieldType(),
-					this.getObjectFromMap(map,"riusoIUV"));
-				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
-					this.getObjectFromMap(map,"customIUV"));
 				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
 					this.getObjectFromMap(map,"auxDigit"));
 				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
 					this.getObjectFromMap(map,"iuvPrefix"));
-				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
-					this.getObjectFromMap(map,"iuvPrefixStrict"));
 				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"segregationCode"));
 				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),

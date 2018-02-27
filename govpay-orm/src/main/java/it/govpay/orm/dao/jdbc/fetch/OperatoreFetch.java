@@ -54,12 +54,8 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 				Operatore object = new Operatore();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setPrincipal", Operatore.model().PRINCIPAL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "principal", Operatore.model().PRINCIPAL.getFieldType()));
 				setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "nome", Operatore.model().NOME.getFieldType()));
-				setParameter(object, "setProfilo", Operatore.model().PROFILO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "profilo", Operatore.model().PROFILO.getFieldType()));
 				setParameter(object, "setAbilitato", Operatore.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Operatore.model().ABILITATO.getFieldType()));
 				return object;
@@ -84,12 +80,8 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 				Operatore object = new Operatore();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setPrincipal", Operatore.model().PRINCIPAL.getFieldType(),
-					this.getObjectFromMap(map,"principal"));
 				setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
 					this.getObjectFromMap(map,"nome"));
-				setParameter(object, "setProfilo", Operatore.model().PROFILO.getFieldType(),
-					this.getObjectFromMap(map,"profilo"));
 				setParameter(object, "setAbilitato", Operatore.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
 				return object;

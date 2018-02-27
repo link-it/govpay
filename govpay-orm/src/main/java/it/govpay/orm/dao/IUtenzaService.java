@@ -19,12 +19,12 @@
  */
 package it.govpay.orm.dao;
 
-import it.govpay.orm.Ruolo;
-import org.openspcoop2.generic_project.dao.IDBServiceWithId;
-import it.govpay.orm.IdRuolo;
+import it.govpay.orm.Utenza;
+import org.openspcoop2.generic_project.dao.IServiceWithId;
+import it.govpay.orm.IdUtenza;
 
 /**     
- * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.Ruolo 
+ * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.Utenza 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -32,6 +32,6 @@ import it.govpay.orm.IdRuolo;
  * @version $Rev$, $Date$
  */
 
-public interface IDBRuoloService extends IRuoloService,IDBServiceWithId<Ruolo, IdRuolo> {
+public interface IUtenzaService extends IServiceWithId<Utenza, IdUtenza> {
 
 }

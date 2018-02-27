@@ -108,7 +108,7 @@ public class ApplicazioniBD extends BasicBD {
 	public Applicazione getApplicazioneByPrincipal(String principal) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			IExpression exp = this.getApplicazioneService().newExpression();
-			exp.equals(it.govpay.orm.Applicazione.model().PRINCIPAL, principal);
+			exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(exp);
 			Applicazione applicazione = getApplicazione(applicazioneVO);
 
@@ -173,17 +173,17 @@ public class ApplicazioniBD extends BasicBD {
 			
 			if(applicazione.getAcls() != null && !applicazione.getAcls().isEmpty()) {
 				 
-				for(Acl acl: applicazione.getAcls()) {
-					try{
-						ACL aclVo = AclConverter.toVO(acl, this);
-						IdApplicazione idApplicazione = new IdApplicazione();
-						idApplicazione.setId(applicazione.getId());
-						aclVo.setIdApplicazione(idApplicazione);
-						this.getAclService().create(aclVo);
-					} catch(NotFoundException e) {
-						throw new ServiceException(e);
-					}
-				}
+//				for(Acl acl: applicazione.getAcls()) { //TODO pintori
+//					try{
+//						ACL aclVo = AclConverter.toVO(acl, this);
+//						IdApplicazione idApplicazione = new IdApplicazione();
+//						idApplicazione.setId(applicazione.getId());
+//						aclVo.setIdApplicazione(idApplicazione);
+//						this.getAclService().create(aclVo);
+//					} catch(NotFoundException e) {
+//						throw new ServiceException(e);
+//					}
+//				}
 			}
 
 			emitAudit(applicazione);
@@ -234,19 +234,19 @@ public class ApplicazioniBD extends BasicBD {
 				}
 			}
 			
-			if(applicazione.getAcls() != null && !applicazione.getAcls().isEmpty()) {
-				for(Acl acl: applicazione.getAcls()) {
-					try{
-						ACL aclVo = AclConverter.toVO(acl, this);
-						IdApplicazione idApplicazione = new IdApplicazione();
-						idApplicazione.setId(applicazione.getId());
-						aclVo.setIdApplicazione(idApplicazione);
-						this.getAclService().create(aclVo);
-					} catch(NotFoundException e) {
-						throw new ServiceException(e);
-					}
-				}
-			}
+//			if(applicazione.getAcls() != null && !applicazione.getAcls().isEmpty()) { //TODO pintori
+//				for(Acl acl: applicazione.getAcls()) {
+//					try{
+//						ACL aclVo = AclConverter.toVO(acl, this);
+//						IdApplicazione idApplicazione = new IdApplicazione();
+//						idApplicazione.setId(applicazione.getId());
+//						aclVo.setIdApplicazione(idApplicazione);
+//						this.getAclService().create(aclVo);
+//					} catch(NotFoundException e) {
+//						throw new ServiceException(e);
+//					}
+//				}
+//			}
 			emitAudit(applicazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

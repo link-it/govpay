@@ -89,13 +89,29 @@ CREATE TABLE stazioni
 
 
 
+CREATE SEQUENCE seq_utenze start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE utenze
+(
+	principal VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_utenze_1 UNIQUE (principal),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_utenze PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_applicazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE applicazioni
 (
 	cod_applicazione VARCHAR(35) NOT NULL,
+	auto_iuv BOOLEAN NOT NULL,
 	abilitato BOOLEAN NOT NULL,
-	principal VARCHAR(255) NOT NULL,
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
@@ -105,10 +121,12 @@ CREATE TABLE applicazioni
 	reg_exp VARCHAR(1024),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_applicazioni') NOT NULL,
+	id_utenza BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_applicazioni_1 UNIQUE (cod_applicazione),
-	CONSTRAINT unique_applicazioni_2 UNIQUE (principal),
+	CONSTRAINT unique_applicazioni_2 UNIQUE (id_utenza),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_app_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
 );
 
@@ -123,11 +141,8 @@ CREATE TABLE domini
 	gln VARCHAR(35) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	ragione_sociale VARCHAR(70) NOT NULL,
-	riuso_iuv BOOLEAN NOT NULL,
-	custom_iuv BOOLEAN NOT NULL,
 	aux_digit INT NOT NULL DEFAULT 0,
 	iuv_prefix VARCHAR(255),
-	iuv_prefix_strict BOOLEAN NOT NULL DEFAULT false,
 	segregation_code INT,
 	ndp_stato INT,
 	ndp_operazione VARCHAR(256),
@@ -150,81 +165,11 @@ CREATE TABLE domini
 
 
 
-CREATE SEQUENCE seq_uo start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE uo
-(
-	cod_uo VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	uo_codice_identificativo VARCHAR(35),
-	uo_denominazione VARCHAR(70),
-	uo_indirizzo VARCHAR(70),
-	uo_civico VARCHAR(16),
-	uo_cap VARCHAR(16),
-	uo_localita VARCHAR(35),
-	uo_provincia VARCHAR(35),
-	uo_nazione VARCHAR(2),
-	uo_area VARCHAR(255),
-	uo_url_sito_web VARCHAR(255),
-	uo_email VARCHAR(255),
-	uo_pec VARCHAR(255),
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_uo') NOT NULL,
-	id_dominio BIGINT NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_uo PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_operatori start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE operatori
-(
-	principal VARCHAR(255) NOT NULL,
-	nome VARCHAR(35) NOT NULL,
-	profilo VARCHAR(1024) NOT NULL,
-	abilitato BOOLEAN NOT NULL DEFAULT true,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_operatori') NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_operatori_1 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_operatori PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_connettori start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE connettori
-(
-	cod_connettore VARCHAR(255) NOT NULL,
-	cod_proprieta VARCHAR(255) NOT NULL,
-	valore VARCHAR(255) NOT NULL,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_connettori') NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_connettori PRIMARY KEY (id)
-);
-
-
-
-
 CREATE SEQUENCE seq_iban_accredito start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE iban_accredito
 (
 	cod_iban VARCHAR(255) NOT NULL,
-	id_seller_bank VARCHAR(255),
-	id_negozio VARCHAR(255),
 	bic_accredito VARCHAR(255),
 	iban_appoggio VARCHAR(255),
 	bic_appoggio VARCHAR(255),
@@ -291,18 +236,103 @@ CREATE TABLE tributi
 
 
 
-CREATE SEQUENCE seq_ruoli start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+CREATE SEQUENCE seq_utenze_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
-CREATE TABLE ruoli
+CREATE TABLE utenze_domini
 (
-	cod_ruolo VARCHAR(35) NOT NULL,
-	descrizione VARCHAR(255) NOT NULL,
 	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_ruoli') NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+	id BIGINT DEFAULT nextval('seq_utenze_domini') NOT NULL,
+	id_utenza BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT pk_ruoli PRIMARY KEY (id)
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_utenze_tributi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE utenze_tributi
+(
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_utenze_tributi') NOT NULL,
+	id_utenza BIGINT NOT NULL,
+	id_tributo BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_uo start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE uo
+(
+	cod_uo VARCHAR(35) NOT NULL,
+	abilitato BOOLEAN NOT NULL,
+	uo_codice_identificativo VARCHAR(35),
+	uo_denominazione VARCHAR(70),
+	uo_indirizzo VARCHAR(70),
+	uo_civico VARCHAR(16),
+	uo_cap VARCHAR(16),
+	uo_localita VARCHAR(35),
+	uo_provincia VARCHAR(35),
+	uo_nazione VARCHAR(2),
+	uo_area VARCHAR(255),
+	uo_url_sito_web VARCHAR(255),
+	uo_email VARCHAR(255),
+	uo_pec VARCHAR(255),
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_uo') NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_uo PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_operatori start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE operatori
+(
+	nome VARCHAR(35) NOT NULL,
+	abilitato BOOLEAN NOT NULL DEFAULT true,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_operatori') NOT NULL,
+	id_utenza BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_operatori_1 UNIQUE (id_utenza),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_opr_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT pk_operatori PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_connettori start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE connettori
+(
+	cod_connettore VARCHAR(255) NOT NULL,
+	cod_proprieta VARCHAR(255) NOT NULL,
+	valore VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_connettori') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_connettori PRIMARY KEY (id)
 );
 
 
@@ -312,23 +342,13 @@ CREATE SEQUENCE seq_acl start 1 increment 1 maxvalue 9223372036854775807 minvalu
 
 CREATE TABLE acl
 (
-	cod_tipo VARCHAR(1) NOT NULL,
-	diritti INT,
-	cod_servizio VARCHAR(35) NOT NULL,
-	amministratore BOOLEAN NOT NULL DEFAULT false,
+	ruolo VARCHAR(255) NOT NULL,
+	principal VARCHAR(255) NOT NULL,
+	servizio VARCHAR(255) NOT NULL,
+	diritti INT NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_acl') NOT NULL,
-	id_applicazione BIGINT,
-	id_operatore BIGINT,
-	id_ruolo BIGINT,
-	id_dominio BIGINT,
-	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
-	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_acl_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
 
