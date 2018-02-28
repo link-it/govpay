@@ -74,8 +74,12 @@ public abstract class Versionabile extends BasicModel {
 			throw new ServiceException("Codifica inesistente per Versione. Valore fornito [" + api + "-" + label + "] valori possibili " + ArrayUtils.toString(labels));
 		}
 		
-		public int compareVersione(Versione other) throws ServiceException {
-			return compareVersione(other, true);
+		public int compareVersione(Versione other) {
+			try {
+				return compareVersione(other, true);
+			} catch (ServiceException e) {
+				return 0;
+			}
 		}
 		
 		public int compareVersione(Versione other, boolean ignoreApi) throws ServiceException {

@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -36,21 +35,21 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.stampe.pdf.incasso.IncassoPdf;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
@@ -146,7 +145,7 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 	}
 
 	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd,   boolean simpleSearch, IncassoFilter filter) throws ConsoleException, Exception {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<String> idDomini = new ArrayList<String>();
 
@@ -213,7 +212,7 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 	}
 
 	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd,   boolean simpleSearch, IncassoFilter filter) throws ConsoleException, Exception {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<String> idDomini = new ArrayList<String>();
 
@@ -299,7 +298,7 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
 			try{
-				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+				List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 
 				// idDominio
 				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -443,7 +442,7 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 			// Operazione consentita solo ai ruoli con diritto di lettura
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			IncassiBD incassiBD = new IncassiBD(bd);
 
 			boolean eseguiRicerca = !setDomini.isEmpty();
@@ -745,7 +744,7 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 		try{
 			int numeroZipEntries = 0;
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 			List<String> idDomini = new ArrayList<String>();
 			IncassiBD incassiBD = new IncassiBD(bd);

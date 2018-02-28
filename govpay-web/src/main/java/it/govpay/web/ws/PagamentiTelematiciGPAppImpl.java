@@ -110,7 +110,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			dto.setCodDominio(bodyrichiesta.getCodDominio());
 			dto.getIuvRichiesto().addAll(Gp21Utils.toIuvRichiesto(bodyrichiesta.getIuvRichiesto()));
 			GeneraIuvDTOResponse dtoResponse = iuvBusiness.generaIUV(dto);
-			response.getIuvGenerato().addAll(Gp21Utils.toIuvGenerato(dtoResponse.getIuvGenerato(), applicazioneAutenticata.getVersione()));
+			// TODO Nardi controllare versione 
+			response.getIuvGenerato().addAll(Gp21Utils.toIuvGenerato(dtoResponse.getIuvGenerato(), applicazioneAutenticata.getConnettoreVerifica().getVersione()));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
@@ -152,7 +153,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			dto.setCodDominio(bodyrichiesta.getCodDominio());
 			dto.getIuvDaCaricare().addAll(Gp21Utils.toIuvDaCaricare(bodyrichiesta.getIuvGenerato()));
 			CaricaIuvDTOResponse dtoResponse = iuvBusiness.caricaIUV(dto);
-			response.getIuvCaricato().addAll(Gp21Utils.toIuvCaricato(dtoResponse.getIuvCaricato(), applicazioneAutenticata.getVersione()));
+			// TODO Nardi controllare versione 
+			response.getIuvCaricato().addAll(Gp21Utils.toIuvCaricato(dtoResponse.getIuvCaricato(), applicazioneAutenticata.getConnettoreVerifica().getVersione()));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
@@ -205,7 +207,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 
 			if(iuv != null) {
 				Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel.getApplicazione(bd), versamentoModel.getUo(bd).getDominio(bd), iuv, versamento.getImportoTotale());
-				response.setIuvGenerato(Gp21Utils.toIuvGenerato(iuvGenerato, applicazioneAutenticata.getVersione()));
+				// TODO Nardi controllare versione 
+				response.setIuvGenerato(Gp21Utils.toIuvGenerato(iuvGenerato, applicazioneAutenticata.getConnettoreVerifica().getVersione()));
 				ctx.getContext().getResponse().addGenericProperty(new Property("codDominio", iuvGenerato.getCodDominio()));
 				ctx.getContext().getResponse().addGenericProperty(new Property("iuv", iuvGenerato.getIuv()));
 				ctx.log("versamento.caricaOkIuv");
@@ -334,7 +337,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
 			List<Rpt> rpts = versamento.getRpt(bd);
 			for(Rpt rpt : rpts) {
-				response.getTransazione().add(Gp21Utils.toTransazione(applicazioneAutenticata.getVersione(), rpt, bd));
+				// TODO Nardi controllare versione 
+				response.getTransazione().add(Gp21Utils.toTransazione(applicazioneAutenticata.getConnettoreVerifica().getVersione(), rpt, bd));
 			}
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
@@ -458,8 +462,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				
 				rends = rendsFiltrato;
 			}
-			
-			response.setFlussoRendicontazione(Gp21Utils.toFr(fr, rends, applicazioneAutenticata.getVersione(), bd));
+			// TODO Nardi controllare versione 
+			response.setFlussoRendicontazione(Gp21Utils.toFr(fr, rends, applicazioneAutenticata.getConnettoreVerifica().getVersione(), bd));
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());

@@ -46,6 +46,7 @@ import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.Gp21Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.servizi.PagamentiTelematiciGPRnd;
@@ -151,7 +152,9 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			//Autorizzazione alla richiesta: controllo che il dominio sia tra quelli abilitati per l'applicazione
 			Fr frModel = new FrBD(bd).getFr(bodyrichiesta.getCodFlusso());
 			
-			if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONE, frModel.getDominio(bd).getCodDominio(), null)) {
+			List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+			diritti.add(Diritti.LETTURA);
+			if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONE, frModel.getDominio(bd).getCodDominio(), null,diritti)) {
 				throw new GovPayException(EsitoOperazione.RND_001);
 			}
 			

@@ -25,20 +25,20 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
-import it.govpay.model.Acl;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.model.TipoTributo;
+import it.govpay.core.utils.AclEngine;
+import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Acl.Tipo;
+import it.govpay.model.TipoTributo;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.dinamic.MultiSelectList;
@@ -51,7 +51,6 @@ public class TipiTributoVersamenti extends MultiSelectList<Long, List<Long>>{
 	private String nomeServizio = null;
 	private String trustedId = null;
 	private Servizio servizio = Servizio.VERSAMENTI;
-	private Tipo tipo = Tipo.TRIBUTO;
 
 	public TipiTributoVersamenti(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			 Object... objects) {
@@ -132,20 +131,9 @@ public class TipiTributoVersamenti extends MultiSelectList<Long, List<Long>>{
 			BasicBD bd = (BasicBD) objects[0];
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			Applicazione applicazione = applicazioniBD.getApplicazione(Long.parseLong(idApplicazione));
-			List<Acl> acls = applicazione.getUtenza().getAcls();
-			
-			for (Acl acl : acls) {
-				Tipo tipo = acl.getTipo();
-				if(acl.getServizio().equals(this.servizio) && tipo.equals(this.tipo)){
-					if(acl.getIdTributo() == null){
-						lst.clear();
-						lst.add(-1L);
-						break;
-					}else{
-						lst.add(acl.getIdTributo());
-					}
-				}
-			}
+			List<Diritti> diritti = new ArrayList<Diritti>();
+			diritti.add(Diritti.SCRITTURA);
+			lst = AclEngine.getIdTributiAutorizzati(applicazione.getUtenza(), this.servizio, diritti );
 		} catch (Exception e) {
 		}
 

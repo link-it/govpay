@@ -9,7 +9,18 @@ public class UtenzaConverter {
         Utenza dto = new Utenza();
         dto.setPrincipal(vo.getPrincipal());
         dto.setId(vo.getId());
-        //dto.setAbilitato(vo.isAbilitato()); TODO pintori
+        dto.setAbilitato(vo.isAbilitato());
+        
+//		List<String> listaCodDomini = new ArrayList<String>();
+//		if(vo.i != null && ids.size() > 0) {
+//				
+//			}
+//			
+//			return listaCodDomini;
+//		}
+        
+        
+        
         return dto;
 }
 
@@ -17,7 +28,7 @@ public static it.govpay.orm.Utenza toVO(Utenza dto) {
 		it.govpay.orm.Utenza vo = new it.govpay.orm.Utenza();
         vo.setId(dto.getId());
         vo.setPrincipal(dto.getPrincipal());
-        // vo.setAbilitato(dto.isAbilitato()); TODO pintori
+        vo.setAbilitato(dto.isAbilitato());
         return vo;
 }
 	

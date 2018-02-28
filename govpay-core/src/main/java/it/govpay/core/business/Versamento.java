@@ -21,7 +21,6 @@ package it.govpay.core.business;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -31,6 +30,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -46,8 +46,8 @@ import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -336,13 +336,16 @@ public class Versamento extends BasicBD {
 	
 	
 	public it.govpay.bd.model.Versamento chiediVersamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {
-		if(codDominio != null && !AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_ATTESA, codDominio, null)) {
+		List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+		diritti.add(Diritti.LETTURA);
+		
+		if(codDominio != null && !AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_ATTESA, codDominio, null,diritti)) {
 			throw new GovPayException(EsitoOperazione.PRT_005);
 		}
 		
 		it.govpay.bd.model.Versamento v = chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
 		
-		if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_ATTESA, v.getUo(this).getDominio(this).getCodDominio(), null)) {
+		if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_ATTESA, v.getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
 			return v;
 		} else {
 			throw new GovPayException(EsitoOperazione.PRT_005);
@@ -357,7 +360,11 @@ public class Versamento extends BasicBD {
 		filter.addSortField(filterSortList);
 		
 		List<Long> domini = new ArrayList<Long>();
-		Set<Long> dominiSet = AclEngine.getIdDominiAutorizzati(applicazioneAutenticata.getUtenza(), Servizio.PAGAMENTI_ONLINE);
+		List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+		diritti.add(Diritti.SCRITTURA);
+		diritti.add(Diritti.ESECUZIONE);
+		 List<Long> dominiSet = AclEngine.getIdDominiAutorizzati(applicazioneAutenticata.getUtenza(), Servizio.PAGAMENTI_ONLINE, diritti);
+				
 		if(dominiSet != null) {
 			domini.addAll(dominiSet);
 			filter.setIdDomini(domini);

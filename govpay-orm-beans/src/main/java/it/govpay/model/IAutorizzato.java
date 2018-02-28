@@ -10,10 +10,10 @@ public interface IAutorizzato {
 	public void setRuoli(List<String> ruoli);
 	public List<String> getRuoli();
 	
-	public List<Long> getIdDominio();
-	public void setIdDominio(List<Long> idDominio) ;
-	public List<Long> getIdTributo();
-	public void setIdTributo(List<Long> idTributo);
+	public List<String> getIdDominio();
+	public void setIdDominio(List<String> idDominio) ;
+	public List<String> getIdTributo();
+	public void setIdTributo(List<String> idTributo);
 	
 	public List<Acl> getAcls(); 
 	public void setAcls(List<Acl> acls);

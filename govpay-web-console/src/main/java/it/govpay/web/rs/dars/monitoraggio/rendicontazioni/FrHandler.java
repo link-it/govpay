@@ -150,7 +150,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd,  
 			boolean simpleSearch, FrFilter filter) throws ServiceException, NotFoundException, ConsoleException {
 		List<String> listaCodDomini =  new ArrayList<String>();
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<Long> idDomini = new ArrayList<Long>();
 
@@ -223,7 +223,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd,  
 			boolean simpleSearch, FrFilter filter) throws ServiceException, NotFoundException, ConsoleException {
 		List<String> listaCodDomini =  new ArrayList<String>();
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<Long> idDomini = new ArrayList<Long>();
 
@@ -332,7 +332,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			// idDominio
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			try{
-				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+				List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 				boolean eseguiRicerca = !setDomini.isEmpty();
 				List<Long> idDomini = new ArrayList<Long>();
 	
@@ -470,7 +470,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			// Operazione consentita solo ai ruoli con diritto di lettura
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 
 			if(eseguiRicerca && !setDomini.contains(-1L)){
@@ -807,7 +807,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			this.darsService.getOperatoreByPrincipal(bd); 
 
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 			FrBD frBD = new FrBD(bd);
 			FrFilter filter = frBD.newFilter();

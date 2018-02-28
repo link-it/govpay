@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -18,11 +17,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -164,7 +163,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 	}
 
 	private boolean popoloFiltroRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> params, boolean simpleSearch, RptFilter filter) throws ServiceException, NotFoundException, ConsoleException {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		boolean elementoCorrelato = false;
 		List<Long> idDomini = new ArrayList<Long>();
@@ -239,7 +238,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 	
 	private boolean popoloFiltroRicerca(List<RawParamValue> rawValues, UriInfo uriInfo, 
 			BasicBD bd, Map<String, String> params, boolean simpleSearch, RptFilter filter) throws ServiceException, NotFoundException, ConsoleException {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		boolean elementoCorrelato = false;
 		List<Long> idDomini = new ArrayList<Long>();
@@ -322,7 +321,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			// Operazione consentita solo ai ruoli con diritto di lettura
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 
 
 			RptBD rptBD = new RptBD(bd);
@@ -927,7 +926,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
 			try{
-				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+				List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 				boolean eseguiRicerca = !setDomini.isEmpty();
 				List<Long> idDomini = new ArrayList<Long>();
 

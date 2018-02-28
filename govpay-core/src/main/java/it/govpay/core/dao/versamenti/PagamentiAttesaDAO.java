@@ -19,6 +19,9 @@
  */
 package it.govpay.core.dao.versamenti;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -41,6 +44,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -56,14 +60,17 @@ public class PagamentiAttesaDAO extends BasicBD {
 	
 	public CaricaVersamentoDTOResponse caricaVersamento(CaricaVersamentoDTO caricaVersamentoDTO) throws GovPayException, NotAuthorizedException, ServiceException {
 		
+		List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+		diritti.add(Diritti.SCRITTURA);
+		diritti.add(Diritti.ESECUZIONE);
+		
 		// AUTORIZZAZIONE
 		if(caricaVersamentoDTO.getApplicazione() != null && !caricaVersamentoDTO.getApplicazione().getCodApplicazione().equals(caricaVersamentoDTO.getVersamento().getApplicazione(this).getCodApplicazione())) {
 			throw new NotAuthorizedException("TODO"); //TODO
 		}
 		
 		if(caricaVersamentoDTO.getOperatore() != null && 
-				!(AclEngine.getTopDirittiOperatore(caricaVersamentoDTO.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()) == 2 ||
-				AclEngine.isAdminDirittiOperatore(caricaVersamentoDTO.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio()))) {
+				!AclEngine.isAuthorized(caricaVersamentoDTO.getOperatore().getUtenza(),Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
 			throw new NotAuthorizedException("TODO"); //TODO
 		}
 		
@@ -169,9 +176,11 @@ public class PagamentiAttesaDAO extends BasicBD {
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
 			
+				List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+				diritti.add(Diritti.SCRITTURA);
+				diritti.add(Diritti.ESECUZIONE);
 				if(annullaVersamentoDTO.getOperatore() != null && 
-						!(AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti,versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2 ||
-						AclEngine.isAdminDirittiOperatore(annullaVersamentoDTO.getOperatore().getUtenza(), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()))) {
+						!AclEngine.isAuthorized(annullaVersamentoDTO.getOperatore().getUtenza(),Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
 					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
 				}
 				// Se è già annullato non devo far nulla.

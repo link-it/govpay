@@ -14,8 +14,8 @@ public class Utenza extends BasicModel implements IAutorizzato {
 	private boolean abilitato;
 	
 	private List<String> ruoli;
-	private transient List<Long> idDominio;
-	private transient List<Long> idTributo;
+	private transient List<String> idDominio;
+	private transient List<String> idTributo;
 	private transient List<Acl> acls;
 	
 	@Override
@@ -43,22 +43,22 @@ public class Utenza extends BasicModel implements IAutorizzato {
 	}
 
 	@Override
-	public List<Long> getIdDominio() {
+	public List<String> getIdDominio() {
 		return this.idDominio;
 	}
 
 	@Override
-	public void setIdDominio(List<Long> idDominio) {
+	public void setIdDominio(List<String> idDominio) {
 		this.idDominio = idDominio;
 	}
 
 	@Override
-	public List<Long> getIdTributo() {
+	public List<String> getIdTributo() {
 		return this.idTributo;
 	}
 
 	@Override
-	public void setIdTributo(List<Long> idTributo) {
+	public void setIdTributo(List<String> idTributo) {
 		this.idTributo = idTributo;
 	}
 

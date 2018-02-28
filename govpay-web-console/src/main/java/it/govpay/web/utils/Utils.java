@@ -46,9 +46,6 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
-import it.govpay.model.Acl;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Acl.Tipo;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Intermediario;
@@ -466,40 +463,6 @@ public class Utils {
 	public static <T> Voce<T> getVoce(String label, T valore) {
 		Voce<T> v = new Voce<T>(label, valore);
 		return v;
-	}
-
-	public static List<Long> getIdsFromAcls(List<Acl> listaAcl, Tipo tipo, Servizio servizio){
-		List<Long> lst = new ArrayList<Long>();
-		for (Acl acl : listaAcl) {
-			if(acl.getServizio().equals(servizio) && acl.getTipo().equals(tipo)){
-				if(tipo.equals(Tipo.DOMINIO)){
-					if(acl.getIdDominio() == null){
-						lst.clear();
-						lst.add(-1L);
-						break;
-					} else 
-						lst.add(acl.getIdDominio());
-				} else {
-					if(acl.getIdTributo() == null){
-						lst.clear();
-						lst.add(-1L);
-						break;
-					} else 
-						lst.add(acl.getIdTributo());
-				}
-			}
-		}
-		return lst;
-	}
-	
-	public static List<Acl> getAcls(List<Acl> listaAcl, Tipo tipo, Servizio servizio){
-		List<Acl> lst = new ArrayList<Acl>();
-		for (Acl acl : listaAcl) {
-			if(acl.getServizio().equals(servizio) && acl.getTipo().equals(tipo)){
-				lst.add(acl);
-			}
-		}
-		return lst;
 	}
 
 	public static String getFileName(MultivaluedMap<String, String> header) {

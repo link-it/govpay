@@ -21,10 +21,8 @@ package it.govpay.web.rs;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +50,7 @@ import it.govpay.bd.model.Operatore;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl;
+import it.govpay.model.Acl.Diritti;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
@@ -112,12 +111,18 @@ public abstract class BaseRsService {
 	}
 
 	public boolean isOperatoreAdminServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		return AclEngine.isAdminDirittiOperatore(getOperatoreByPrincipal(bd).getUtenza(), servizio);
+		return true;
+//		return AclEngine.isAdminDirittiOperatore(getOperatoreByPrincipal(bd).getUtenza(), servizio);
 	}
 
 	public boolean checkDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
-		return topDirittiOperatore > Acl.NO_DIRITTI;
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(Diritti.LETTURA);
+		listaDiritti.add(Diritti.SCRITTURA);
+		listaDiritti.add(Diritti.ESECUZIONE);
+		return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+//		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
+//		return topDirittiOperatore > Acl.NO_DIRITTI;
 	}
 
 	public void checkDirittiServizioLettura(BasicBD bd, Acl.Servizio servizio) throws ServiceException,WebApplicationException{
@@ -126,8 +131,11 @@ public abstract class BaseRsService {
 	}
 
 	public boolean isServizioAbilitatoLettura(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
-		return topDirittiOperatore >= Acl.DIRITTI_LETTURA;
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(Diritti.LETTURA);
+		return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+//		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
+//		return topDirittiOperatore >= Acl.DIRITTI_LETTURA;
 	}
 
 	public void checkDirittiServizioScrittura(BasicBD bd, Acl.Servizio servizio) throws ServiceException,WebApplicationException{
@@ -136,40 +144,56 @@ public abstract class BaseRsService {
 	}
 
 	public boolean isServizioAbilitatoScrittura(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
-		return topDirittiOperatore == Acl.DIRITTI_SCRITTURA;
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(Diritti.SCRITTURA);
+		listaDiritti.add(Diritti.ESECUZIONE);
+		return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+//		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
+//		return topDirittiOperatore == Acl.DIRITTI_SCRITTURA;
 	}
 
-	public Set<String> getDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		return AclEngine.getDominiAutorizzati(this.getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_LETTURA);
+	public List<String> getDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(Diritti.LETTURA);
+		return AclEngine.getDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+//		return AclEngine.getDominiAutorizzati(this.getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_LETTURA);
 	}
 
-	public Set<Long> getIdDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_LETTURA);
-		if(idDominiAutorizzati == null) {
-			idDominiAutorizzati = new HashSet<Long>();
-			idDominiAutorizzati.add(-1L);
-		}
-		return idDominiAutorizzati;
+	public List<Long> getIdDominiAbilitatiLetturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(Diritti.LETTURA);
+		return AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+//		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_LETTURA);
+//		if(idDominiAutorizzati == null) {
+//			idDominiAutorizzati = new HashSet<Long>();
+//			idDominiAutorizzati.add(-1L);
+//		}
+//		return idDominiAutorizzati;
 	}
 
-	public Set<String> getDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		return AclEngine.getDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_SCRITTURA);
+	public List<String> getDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(Diritti.SCRITTURA);
+		return AclEngine.getDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+//		return AclEngine.getDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_SCRITTURA);
 	}
 
-	public Set<Long> getIdDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
-		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_SCRITTURA);
-		if(idDominiAutorizzati == null) {
-			idDominiAutorizzati = new HashSet<Long>();
-			idDominiAutorizzati.add(-1L);
-		}
-		return idDominiAutorizzati;
+	public List<Long> getIdDominiAbilitatiScritturaServizio(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(Diritti.SCRITTURA);
+		return AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+//		Set<Long> idDominiAutorizzati = AclEngine.getIdDominiAutorizzati(getOperatoreByPrincipal(bd).getUtenza(), servizio, Acl.DIRITTI_SCRITTURA);
+//		if(idDominiAutorizzati == null) {
+//			idDominiAutorizzati = new HashSet<Long>();
+//			idDominiAutorizzati.add(-1L);
+//		}
+//		return idDominiAutorizzati;
 	}
 
-	private int getTopDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException {
-		int topDirittiOperatore = AclEngine.getTopDirittiOperatore(getOperatoreByPrincipal(bd).getUtenza(), servizio);
-		return topDirittiOperatore;
-	}
+//	private int getTopDirittiServizioOperatore(BasicBD bd, Acl.Servizio servizio) throws ServiceException {
+//		int topDirittiOperatore = AclEngine.getTopDirittiOperatore(getOperatoreByPrincipal(bd).getUtenza(), servizio);
+//		return topDirittiOperatore;
+//	}
 
 
 	public List<String> getRuoliOperatore(BasicBD bd) throws ServiceException {

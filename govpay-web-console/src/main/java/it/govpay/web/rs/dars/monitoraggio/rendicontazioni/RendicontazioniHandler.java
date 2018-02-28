@@ -28,18 +28,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -110,7 +109,7 @@ public class RendicontazioniHandler extends DarsHandler<Rendicontazione> impleme
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 			List<Long> idDomini = new ArrayList<Long>();
 			
@@ -311,7 +310,7 @@ public class RendicontazioniHandler extends DarsHandler<Rendicontazione> impleme
 			// Operazione consentita solo ai ruoli con diritto di lettura
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 			RendicontazioniBD frBD = new RendicontazioniBD(bd);
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 			
 			if(eseguiRicerca && !setDomini.contains(-1L)){

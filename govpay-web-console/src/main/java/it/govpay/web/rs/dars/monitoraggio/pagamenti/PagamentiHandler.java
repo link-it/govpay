@@ -31,7 +31,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -39,12 +38,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.csv.Printer;
+import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
@@ -194,7 +193,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 	private boolean popolaFiltroPagamenti(UriInfo uriInfo, BasicBD bd,  
 			Map<String, String> params,   boolean simpleSearch,
 			PagamentoFilter filter) throws ConsoleException, ServiceException, NotFoundException, Exception {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<Long> idDomini = new ArrayList<Long>();
 		boolean elementoCorrelato = false;
@@ -350,7 +349,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 	private boolean popolaFiltroPagamenti(List<RawParamValue> rawValues,UriInfo uriInfo, BasicBD bd,  
 			Map<String, String> params,   boolean simpleSearch,
 			PagamentoFilter filter) throws ConsoleException, ServiceException, NotFoundException, Exception {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<Long> idDomini = new ArrayList<Long>();
 		boolean elementoCorrelato = false;
@@ -509,7 +508,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			// Operazione consentita solo ai ruoli con diritto di lettura
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
@@ -1219,7 +1218,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			}
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 
 			it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
@@ -1403,7 +1402,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			try{
 
-				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+				List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 				List<Long> idDomini = new ArrayList<Long>();
 				boolean eseguiRicerca = !setDomini.isEmpty();
 

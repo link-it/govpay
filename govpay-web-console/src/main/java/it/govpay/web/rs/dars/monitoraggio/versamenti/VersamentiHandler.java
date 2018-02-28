@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,11 +37,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.csv.Printer;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -50,6 +49,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.exception.VersamentoException;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Tributo;
@@ -63,7 +63,6 @@ import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Iuv;
@@ -164,7 +163,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 	}
 
 	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, boolean simpleSearch, VersamentoFilter filter) throws ConsoleException, Exception {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<Long> idDomini = new ArrayList<Long>();
 		// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
@@ -242,7 +241,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 	}
 
 	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd , boolean simpleSearch, VersamentoFilter filter) throws ConsoleException, Exception {
-		Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+		List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 		boolean eseguiRicerca = !setDomini.isEmpty();
 		List<Long> idDomini = new ArrayList<Long>();
 		// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
@@ -345,7 +344,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 			try{
 
-				Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+				List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 				boolean eseguiRicerca = !setDomini.isEmpty();
 				List<Long> idDomini = new ArrayList<Long>();
 
@@ -480,7 +479,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			// Operazione consentita solo ai ruoli con diritto di lettura
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 			List<Long> idDomini = new ArrayList<Long>();
 
@@ -989,7 +988,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			// Operazione consentita solo ai ruoli con diritto di lettura
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
 
-			Set<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
+			List<Long> setDomini = this.darsService.getIdDominiAbilitatiLetturaServizio(bd, this.funzionalita);
 			boolean eseguiRicerca = !setDomini.isEmpty();
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);

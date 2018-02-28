@@ -7,23 +7,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.OperazioneAnnullamento;
@@ -36,7 +35,6 @@ import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.model.LeggiOperazioneDTO;
 import it.govpay.core.business.model.LeggiOperazioneDTOResponse;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.TipoTracciatoType;
@@ -275,7 +273,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			if(tipoTracciato != null) {
 				try{
 
-					Set<Long> setDomini = this.darsService.getIdDominiAbilitatiScritturaServizio(bd, this.funzionalita);
+					List<Long> setDomini = this.darsService.getIdDominiAbilitatiScritturaServizio(bd, this.funzionalita);
 					List<Long> idDomini = new ArrayList<Long>();
 
 					// idDominio

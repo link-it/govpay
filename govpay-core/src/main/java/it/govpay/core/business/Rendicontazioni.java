@@ -54,6 +54,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PspBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Psp;
@@ -77,8 +78,8 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -629,14 +630,17 @@ public class Rendicontazioni extends BasicBD {
 	 */
 	public List<Fr> chiediListaRendicontazioni(Applicazione applicazione, String codDominio, String codApplicazione, Date da, Date a) throws GovPayException, ServiceException, NotFoundException {
 		
+		List<Diritti> diritti = new ArrayList<Diritti>(); 
+		diritti.add(Diritti.LETTURA);
+		
 		List<String> domini = new ArrayList<String>();
 		if(codDominio != null) {
-			if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONE, codDominio, null))
+			if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONE, codDominio, null,diritti))
 				domini.add(codDominio);
 			else
 				throw new GovPayException(EsitoOperazione.RND_001);
 		} else {
-			Set<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONE);
+			List<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONE,diritti);
 			if(authorizedRnd != null)
 				domini.addAll(authorizedRnd);
 			else 

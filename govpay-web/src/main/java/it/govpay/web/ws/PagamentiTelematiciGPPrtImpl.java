@@ -388,7 +388,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			it.govpay.core.business.Rpt rptBusiness = new it.govpay.core.business.Rpt(bd);
 			Rpt rpt = rptBusiness.chiediTransazione(applicazioneAutenticata, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv(), bodyrichiesta.getCcp());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			response.setTransazione(Gp21Utils.toTransazione(applicazioneAutenticata.getVersione(), rpt, bd));
+			// TODO Nardi controllare versione 
+			response.setTransazione(Gp21Utils.toTransazione(applicazioneAutenticata.getConnettoreVerifica().getVersione(), rpt, bd));
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -497,7 +498,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			List<Versamento> versamenti = versamentoBusiness.chiediVersamenti(applicazioneAutenticata, bodyrichiesta.getCodPortale(), bodyrichiesta.getCodUnivocoDebitore(), Gp21Utils.toStatiVersamento(bodyrichiesta.getStato()), Gp21Utils.toFilterSort(bodyrichiesta.getOrdinamento()));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			for(Versamento versamento : versamenti) {
-				response.getVersamento().add(Gp21Utils.toVersamento(applicazioneAutenticata.getVersione(), versamento, bd));
+				// TODO Nardi controllare versione 
+				response.getVersamento().add(Gp21Utils.toVersamento(applicazioneAutenticata.getConnettoreVerifica().getVersione(), versamento, bd));
 			}
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
@@ -596,7 +598,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			Rr rr = pagamentoBusiness.chiediStorno(applicazioneAutenticata, bodyrichiesta.getCodRichiestaStorno());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			response.setStorno(Gp21Utils.toStorno(rr, applicazioneAutenticata.getVersione(), bd));
+			// TODO Nardi controllare versione 
+			response.setStorno(Gp21Utils.toStorno(rr, applicazioneAutenticata.getConnettoreVerifica().getVersione(), bd));
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -671,7 +674,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			if(iuv != null) {
 				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento.getApplicazione(bd), versamento.getUo(bd).getDominio(bd), iuv, versamento.getImportoTotale());
 				response.setIuv(iuv.getIuv());
-				if(applicazioneAutenticata.getVersione().compareTo(Versione.GP_SOAP_02_03) >= 0)
+				// TODO Nardi controllare versione 
+				if(applicazioneAutenticata.getConnettoreVerifica().getVersione().compareTo(Versione.GP_SOAP_02_03) >= 0)
 					response.setNumeroAvviso(iuvGenerato.getNumeroAvviso());
 				response.setBarCode(iuvGenerato.getBarCode());
 				response.setQrCode(iuvGenerato.getQrCode());
@@ -679,7 +683,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			
 			List<Rpt> rpts = versamento.getRpt(bd);
 			for(Rpt rpt : rpts) {
-				response.getTransazione().add(Gp21Utils.toTransazione(applicazioneAutenticata.getVersione(), rpt, bd));
+				// TODO Nardi controllare versione 
+				response.getTransazione().add(Gp21Utils.toTransazione(applicazioneAutenticata.getConnettoreVerifica().getVersione(), rpt, bd));
 			}
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
