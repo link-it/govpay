@@ -125,7 +125,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
     public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {    
-		String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
+    	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -318,8 +318,8 @@ public class DominiController extends it.govpay.rs.BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.rs.v1.beans.Entrata> results = new ArrayList<it.govpay.rs.v1.beans.Entrata>();
-			for(it.govpay.bd.model.Tributo tributo: listaDominiEntrateDTOResponse.getResults()) {
-//				results.add(new it.govpay.rs.v1.beans.Entrata(tributo)); //TODO bussu
+			for(GetTributoDTOResponse tributo: listaDominiEntrateDTOResponse.getResults()) {
+				results.add(new it.govpay.rs.v1.beans.Entrata(tributo.getTributo(), tributo.getIbanAccreditoPostale()));
 			}
 			
 			ListaEntrate response = new ListaEntrate(results, uriInfo.getRequestUri(),
@@ -433,7 +433,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Entrata response = null; //TODO bussu new it.govpay.rs.v1.beans.Entrata(listaDominiEntrateDTOResponse.getTributo());
+			Entrata response = new it.govpay.rs.v1.beans.Entrata(listaDominiEntrateDTOResponse.getTributo(), listaDominiEntrateDTOResponse.getIbanAccreditoPostale());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

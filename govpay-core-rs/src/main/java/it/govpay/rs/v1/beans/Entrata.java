@@ -24,19 +24,19 @@ import java.math.BigDecimal;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.model.IbanAccredito;
 
 @JsonFilter(value="entrate")  
 public class Entrata extends it.govpay.rs.v1.beans.base.Entrata{
 
-	public Entrata(it.govpay.bd.model.Tributo tributo, BasicBD bd) throws ServiceException {
+	public Entrata(it.govpay.bd.model.Tributo tributo, IbanAccredito ibanAccredito) throws ServiceException {
 		this.codiceContabilita(tributo.getCodContabilita())
 		.codificaIUV(new BigDecimal(tributo.getCodTributoIuv()))
 		.abilitato(tributo.isAbilitato())
 		.idEntrata(tributo.getCodTributo())
 		.tipoEntrata(new Tipoentrata(tributo))
 		.ibanAccreditoBancario(tributo.getIbanAccredito().getCodIban())
-		.ibanAccreditoPostale(tributo.getIbanAccreditoPostale(bd).getCodIban())
+		.ibanAccreditoPostale(ibanAccredito.getCodIban())
 		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
 	}
 	

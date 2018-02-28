@@ -19,6 +19,9 @@
  */
 package it.govpay.core.dao.anagrafica;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -67,6 +70,7 @@ import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
 
@@ -400,7 +404,14 @@ public class DominiDAO {
 			filter.setLimit(findTributiDTO.getLimit());
 			filter.getFilterSortList().addAll(findTributiDTO.getFieldSortList());
 
-			return new FindTributiDTOResponse(ibanAccreditoBD.count(filter), ibanAccreditoBD.findAll(filter));
+			List<it.govpay.bd.model.Tributo> findAll = ibanAccreditoBD.findAll(filter);
+
+			List<GetTributoDTOResponse> lst = new ArrayList<>();
+			for(it.govpay.bd.model.Tributo t: findAll) {
+				lst.add(new GetTributoDTOResponse(t, t.getIbanAccreditoPostale(bd)));
+			}
+
+			return new FindTributiDTOResponse(ibanAccreditoBD.count(filter), lst);
 		} finally {
 			bd.closeConnection();
 		}
@@ -421,7 +432,9 @@ public class DominiDAO {
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new NotFoundException("Dominio " + getTributoDTO.getCodDominio() + " non censito in Anagrafica");
 			}
-			GetTributoDTOResponse response = new GetTributoDTOResponse(AnagraficaManager.getTributo(bd, dominio.getId(), getTributoDTO.getCodTributo()));
+			it.govpay.bd.model.Tributo tributo = AnagraficaManager.getTributo(bd, dominio.getId(), getTributoDTO.getCodTributo());
+			IbanAccredito ibanAccredito = tributo.getIbanAccreditoPostale(bd);
+			GetTributoDTOResponse response = new GetTributoDTOResponse(tributo, ibanAccredito);
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new NotFoundException("Tributo " + getTributoDTO.getCodTributo() + " non censito in Anagrafica per il dominio " + getTributoDTO.getCodDominio());
