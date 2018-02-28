@@ -71,11 +71,16 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>2.3</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<archive>
-						<manifestEntries>
+					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+	                <archive>
+	                    <manifest>
+	                        <addClasspath>true</addClasspath>
+	                        <classpathPrefix>lib/</classpathPrefix>
+	                    </manifest>
+	                    <manifestEntries>
 							<Class-Path>properties/</Class-Path>
 						</manifestEntries>
 					</archive>

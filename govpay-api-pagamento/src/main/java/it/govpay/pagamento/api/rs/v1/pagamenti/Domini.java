@@ -38,7 +38,7 @@ public class Domini extends BaseRsServiceV1{
     public Response dominiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("idStazione") String idStazione){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.dominiGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, idStazione);
+	return this.controller.dominiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, idStazione);
     }
 
     @GET
@@ -47,7 +47,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response dominiIdDominioGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.dominiIdDominioGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio);
+	return this.controller.dominiIdDominioGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
     }
 
 
@@ -58,7 +58,7 @@ public class Domini extends BaseRsServiceV1{
     public Response dominiIdDominioUnitaOperativeGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.dominiIdDominioUnitaOperativeGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+	return this.controller.dominiIdDominioUnitaOperativeGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
     @GET
@@ -67,7 +67,7 @@ public class Domini extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idUnitaOperativa") String idUnitaOperativa){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.dominiIdDominioUnitaOperativeIdUnitaOperativaGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa);
+	return this.controller.dominiIdDominioUnitaOperativeIdUnitaOperativaGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa);
     }
 
 }

@@ -671,7 +671,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			if(iuv != null) {
 				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento.getApplicazione(bd), versamento.getUo(bd).getDominio(bd), iuv, versamento.getImportoTotale());
 				response.setIuv(iuv.getIuv());
-				if(applicazioneAutenticata.getVersione().compareTo(Versione.GP_02_03_00) >= 0)
+				if(applicazioneAutenticata.getVersione().compareTo(Versione.GP_SOAP_02_03) >= 0)
 					response.setNumeroAvviso(iuvGenerato.getNumeroAvviso());
 				response.setBarCode(iuvGenerato.getBarCode());
 				response.setQrCode(iuvGenerato.getQrCode());

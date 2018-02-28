@@ -68,7 +68,7 @@ public class ApplicazioneConverter {
 		idUtenza.setPrincipal(dto.getPrincipal());
 		vo.setIdUtenza(idUtenza);
 		vo.setTrusted(dto.isTrusted());
-		vo.setVersione(dto.getVersione().getLabel()); 
+		vo.setVersione(dto.getVersione().getApiLabel()); 
 		vo.setCodApplicazioneIuv(dto.getCodApplicazioneIuv());
 		vo.setRegExp(dto.getRegExp());
 		return vo;

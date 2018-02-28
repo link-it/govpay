@@ -27,7 +27,7 @@ public class Avvisi extends BaseRsServiceV1{
     @Produces({ "application/json", "application/pdf" })
     public Response avvisiIdDominioIuvGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.avvisiIdDominioIuvGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio,  iuv);
+	return this.controller.avvisiIdDominioIuvGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv);
     }
 */
 
@@ -38,7 +38,7 @@ public class Avvisi extends BaseRsServiceV1{
     @Produces({ "application/json", "application/pdf" })
     public Response avvisiIdDominioIuvGET_1(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.avvisiIdDominioIuvGET_1(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio,  iuv);
+	return this.controller.avvisiIdDominioIuvGET_1(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv);
     }
 */
 
@@ -49,7 +49,7 @@ public class Avvisi extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response avvisiIdDominioPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.avvisiIdDominioPOST(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio, is);
+	return this.controller.avvisiIdDominioPOST(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
     }
 */
 
@@ -60,7 +60,7 @@ public class Avvisi extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response avvisiIdDominioPOST_2(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.avvisiIdDominioPOST_2(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idDominio, is);
+	return this.controller.avvisiIdDominioPOST_2(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
     }
 */
 

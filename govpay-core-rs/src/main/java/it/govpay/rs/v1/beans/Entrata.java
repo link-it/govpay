@@ -30,9 +30,9 @@ public class Entrata extends it.govpay.rs.v1.beans.base.Entrata{
 	public Entrata(it.govpay.bd.model.Tributo tributo) throws ServiceException {
 		this.codiceContabilita(tributo.getCodContabilita())
 		.codificaIUV(new BigDecimal(tributo.getCodTributoIuv()))
-		.descrizione(tributo.getDescrizione())
-		.entrata(tributo.getCodTributo())
-		.ibanAccredito(tributo.getIbanAccredito().getCodIban())
+//		.descrizione(tributo.getDescrizione())
+//		.entrata(tributo.getCodTributo())
+//		.ibanAccredito(tributo.getIbanAccredito().getCodIban())
 		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
 	}
 	

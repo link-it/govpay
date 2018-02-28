@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.core.business.model.LeggiIncassoDTO;
 import it.govpay.core.business.model.LeggiIncassoDTOResponse;
 import it.govpay.core.business.model.ListaIncassiDTO;
@@ -26,7 +27,7 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.bd.model.Applicazione;
+import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.Errore;
 import it.govpay.rs.v1.beans.Incasso;
@@ -43,7 +44,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 	}
 
 
-    public Response incassiGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina ) {
+    public Response incassiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
     	String methodName = "cercaIncassi"; 
 		
 		BasicBD bd = null;
@@ -82,7 +83,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response incassiIdGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Long id ) {
+    public Response incassiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
     	String methodName = "leggiIncasso"; 
 		BasicBD bd = null;
 		GpContext ctx = null; 
@@ -94,7 +95,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO();
 			leggiIncassoDTO.setId(id);
-			leggiIncassoDTO.setPrincipal(principal);
+//			leggiIncassoDTO.setPrincipal(principal); //TODO pintori
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			LeggiIncassoDTOResponse leggiIncassoDTOResponse = incassi.leggiIncasso(leggiIncassoDTO);
@@ -114,7 +115,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response incassiPOST(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is) {
+    public Response incassiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is) {
     	String methodName = "inserisciIncasso"; 
 		
 		BasicBD bd = null;
@@ -133,7 +134,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			
 			it.govpay.rs.v1.beans.IncassoPost incasso = (IncassoPost) it.govpay.rs.v1.beans.IncassoPost.parse(baos.toString(), it.govpay.rs.v1.beans.IncassoPost.class, new JsonConfig());
 			RichiestaIncassoDTO richiestaIncassoDTO = incasso.toRichiestaIncassoDTO();
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
+			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, null); //TODO pintori
 			richiestaIncassoDTO.setApplicazione(applicazione);
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);

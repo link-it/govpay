@@ -41,7 +41,7 @@ public class Rendicontazione extends BaseRsServiceV1{
     public Response rendicontazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("idDominio") String idDominio){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rendicontazioneGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio);
+	return this.controller.rendicontazioneGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio);
     }
 */
 
@@ -52,7 +52,7 @@ public class Rendicontazione extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response rendicontazioneIdFlussoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rendicontazioneIdFlussoGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders,  idFlusso);
+	return this.controller.rendicontazioneIdFlussoGET(this.getUser(), uriInfo, httpHeaders,  idFlusso);
     }
 */
 

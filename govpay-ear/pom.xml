@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -12,7 +11,7 @@
 	<artifactId>govpay-ear</artifactId>
 	<packaging>ear</packaging>
 	<name>GovPay EAR module</name>
-	
+
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
@@ -23,37 +22,85 @@
 			<artifactId>govpay-web</artifactId>
 			<type>war</type>
 		</dependency>
-		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-web</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-api-pagamento</artifactId>
 			<type>war</type>
 		</dependency>
-		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-pagamento</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-wc</artifactId>
 			<type>war</type>
 		</dependency>
-		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-wc</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-api-pendenze</artifactId>
 			<type>war</type>
 		</dependency>
-		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-pendenze</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-api-backoffice</artifactId>
 			<type>war</type>
 		</dependency>
-		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-backoffice</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-api-ragioneria</artifactId>
 			<type>war</type>
 		</dependency>
-		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-api-ragioneria</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-core-rs</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-core-rs</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -72,6 +119,8 @@
 				<artifactId>maven-ear-plugin</artifactId>
 				<version>2.9.1</version>
 				<configuration>
+					<defaultLibBundleDir>lib/</defaultLibBundleDir>
+					<skinnyWars>true</skinnyWars>
 					<initializeInOrder>true</initializeInOrder>
 					<filtering>true</filtering>
 					<filters>
@@ -109,7 +158,7 @@
 							<contextRoot>/govpay-api-backoffice</contextRoot>
 						</webModule>
 					</modules>
-           			<version>6</version>
+					<version>6</version>
 				</configuration>
 			</plugin>
 		</plugins>

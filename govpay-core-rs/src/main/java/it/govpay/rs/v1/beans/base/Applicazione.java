@@ -1,13 +1,14 @@
 package it.govpay.rs.v1.beans.base;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "principal",
 "codificaAvvisi",
-"versioneApi",
+"domini",
+"entrate",
 "servizioVerifica",
 "servizioNotifica",
 "abilitato",
@@ -21,58 +22,11 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("codificaAvvisi")
   private CodificaAvvisi codificaAvvisi = null;
   
-    
-  /**
-   * Versione delle API di integrazione utilizzate
-   */
-  public enum VersioneApiEnum {
-    
-    
-        
-            
-    REST_1_0("REST_1.0"),
-    
-            
-    SOAP_2_0("SOAP_2.0"),
-    
-            
-    SOAP_2_1("SOAP_2.1"),
-    
-            
-    SOAP_2_3("SOAP_2.3"),
-    
-            
-    SOAP_2_5("SOAP_2.5");
-            
-        
-    
-
-    private String value;
-
-    VersioneApiEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static VersioneApiEnum fromValue(String text) {
-      for (VersioneApiEnum b : VersioneApiEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  @JsonProperty("versioneApi")
-  private VersioneApiEnum versioneApi = null;
+  @JsonProperty("domini")
+  private List<Object> domini = null;
+  
+  @JsonProperty("entrate")
+  private List<Object> entrate = null;
   
   @JsonProperty("servizioVerifica")
   private Connector servizioVerifica = null;
@@ -119,19 +73,35 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Versione delle API di integrazione utilizzate
+   * domini su cui e' abilitato ad operare
    **/
-  public Applicazione versioneApi(VersioneApiEnum versioneApi) {
-    this.versioneApi = versioneApi;
+  public Applicazione domini(List<Object> domini) {
+    this.domini = domini;
     return this;
   }
 
-  @JsonProperty("versioneApi")
-  public VersioneApiEnum getVersioneApi() {
-    return versioneApi;
+  @JsonProperty("domini")
+  public List<Object> getDomini() {
+    return domini;
   }
-  public void setVersioneApi(VersioneApiEnum versioneApi) {
-    this.versioneApi = versioneApi;
+  public void setDomini(List<Object> domini) {
+    this.domini = domini;
+  }
+
+  /**
+   * entrate su cui e' abilitato ad operare
+   **/
+  public Applicazione entrate(List<Object> entrate) {
+    this.entrate = entrate;
+    return this;
+  }
+
+  @JsonProperty("entrate")
+  public List<Object> getEntrate() {
+    return entrate;
+  }
+  public void setEntrate(List<Object> entrate) {
+    this.entrate = entrate;
   }
 
   /**
@@ -207,7 +177,8 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
     Applicazione applicazione = (Applicazione) o;
     return Objects.equals(principal, applicazione.principal) &&
         Objects.equals(codificaAvvisi, applicazione.codificaAvvisi) &&
-        Objects.equals(versioneApi, applicazione.versioneApi) &&
+        Objects.equals(domini, applicazione.domini) &&
+        Objects.equals(entrate, applicazione.entrate) &&
         Objects.equals(servizioVerifica, applicazione.servizioVerifica) &&
         Objects.equals(servizioNotifica, applicazione.servizioNotifica) &&
         Objects.equals(abilitato, applicazione.abilitato) &&
@@ -216,7 +187,7 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(principal, codificaAvvisi, versioneApi, servizioVerifica, servizioNotifica, abilitato, idA2A);
+    return Objects.hash(principal, codificaAvvisi, domini, entrate, servizioVerifica, servizioNotifica, abilitato, idA2A);
   }
 
   public static Applicazione parse(String json) {
@@ -235,7 +206,8 @@ public class Applicazione extends it.govpay.rs.v1.beans.JSONSerializable {
     
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
-    sb.append("    versioneApi: ").append(toIndentedString(versioneApi)).append("\n");
+    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
     sb.append("    servizioVerifica: ").append(toIndentedString(servizioVerifica)).append("\n");
     sb.append("    servizioNotifica: ").append(toIndentedString(servizioNotifica)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");

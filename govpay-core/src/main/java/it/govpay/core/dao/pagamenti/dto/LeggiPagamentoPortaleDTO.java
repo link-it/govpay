@@ -13,7 +13,6 @@ public class LeggiPagamentoPortaleDTO extends BasicCreateRequestDTO {
 	}
 	
 	private Long id;
-	private String principal;
 	private String idSessione;
 	
 	public Long getId() {
@@ -21,12 +20,6 @@ public class LeggiPagamentoPortaleDTO extends BasicCreateRequestDTO {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public String getPrincipal() {
-		return principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
 	}
 	public String getIdSessione() {
 		return idSessione;

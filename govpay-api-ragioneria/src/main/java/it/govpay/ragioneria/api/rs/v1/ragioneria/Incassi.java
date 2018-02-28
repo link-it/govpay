@@ -58,7 +58,7 @@ public class Incassi extends BaseRsServiceV1{
 			@QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
 			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina) {		
 		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.incassiGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
+		return this.controller.incassiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
 	}
 	
 	@GET
@@ -68,7 +68,7 @@ public class Incassi extends BaseRsServiceV1{
 	public Response leggiIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
 			@PathParam(value="id") Long id) {
 		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.incassiIdGET(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, id);
+		return this.controller.incassiIdGET(this.getUser(), uriInfo, httpHeaders, id);
 	}
 	
 	@POST
@@ -77,7 +77,7 @@ public class Incassi extends BaseRsServiceV1{
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response inserisciIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
 		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.incassiPOST(this.getPrincipal(), this.getListaRuoli(), uriInfo, httpHeaders, is);
+		return this.controller.incassiPOST(this.getUser(), uriInfo, httpHeaders, is);
 	}
 
 }

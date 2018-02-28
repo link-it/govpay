@@ -58,10 +58,10 @@ public class InitListener implements ServletContextListener {
 				LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore durante la configurazione del Logger: " + e);
 			}
 			
-			GovpayConfig.newInstance4GovPayConsole();
+			GovpayConfig.newInstance4GovPayConsole(InitListener.class.getResourceAsStream("/govpayConsole.properties"));
 			RicevutaPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
 			AvvisoPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
-			AnagraficaManager.newInstance(false);
+			AnagraficaManager.newInstance();
 			ConnectionManager.initialize();
 			OperazioneFactory.init();
 		} catch(Exception e){

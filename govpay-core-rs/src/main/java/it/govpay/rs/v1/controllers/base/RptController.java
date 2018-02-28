@@ -27,6 +27,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
+import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.rs.v1.beans.ListaRpt;
 import it.govpay.rs.v1.beans.base.FaultBean;
@@ -36,15 +37,151 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
 
 public class RptController extends it.govpay.rs.BaseController {
-	
-	public RptController(String nomeServizio,Logger log) {
+
+     public RptController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-	}
+     }
+
+    public Response rptIdDominioIuvCcpGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
+    	String methodName = "getRptByIdDominioIuvCcp";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			leggiRptDTO.setCcp(ccp);
+			
+			RptDAO ricevuteDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+			
+			it.govpay.rs.v1.beans.Rpt response = new it.govpay.rs.v1.beans.Rpt(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
+			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			
+		}catch (RicevutaNonTrovataException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante la " + methodName, e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
 
 
-    public Response rptGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina , Integer risultatiPerPagina ,
-    			String ordinamento , String campi , String idDominio , String iuv , String ccp , String idA2A , String idPendenza , String idPagamento , String esito ) {
-    	String methodName = "rptGET";  
+    public Response rptIdDominioIuvCcpRtGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
+    	String methodName = "getRtByIdDominioIuvCcp";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		
+		String accept = null;
+		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
+			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+		}
+		
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
+			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
+			leggiPagamentoPortaleDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			leggiPagamentoPortaleDTO.setCcp(ccp);
+			
+			RptDAO ricevuteDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			
+			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRpt(leggiPagamentoPortaleDTO);
+			
+			if(accept.equalsIgnoreCase(MediaType.APPLICATION_OCTET_STREAM)) {
+				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
+				this.log.info("Esecuzione " + methodName + " completata."); 
+				return Response.status(Status.OK).type(accept).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())).build();
+			} else {
+				String tipoFirma = ricevutaDTOResponse.getRpt().getFirmaRichiesta().getCodifica();
+				byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, ricevutaDTOResponse.getRpt().getXmlRt(), ricevutaDTOResponse.getRpt().getCodDominio());
+				CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+				
+				if(accept.equalsIgnoreCase("application/pdf")) {
+					ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
+					String auxDigit = ricevutaDTOResponse.getDominio().getAuxDigit() + "";
+					String applicationCode = String.format("%02d", ricevutaDTOResponse.getDominio().getStazione().getApplicationCode());
+					RicevutaPagamentoUtils.getPdfRicevutaPagamento(ricevutaDTOResponse.getDominio().getLogo(), ricevutaDTOResponse.getVersamento().getCausaleVersamento(), rt, null, auxDigit, applicationCode, baos1, this.log);
+					String rtPdfEntryName = "rt.pdf";
+				
+					byte[] b = baos1.toByteArray();
+					
+					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
+					this.log.info("Esecuzione " + methodName + " completata."); 
+					return Response.status(Status.OK).type(accept).entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"").build();
+				} else {
+					return Response.status(Status.OK).type(accept).entity(rt).build();
+				}
+			}
+		}catch (RicevutaNonTrovataException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante la " + methodName, e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
+
+
+    public Response rptGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
+		String methodName = "rptGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -103,143 +240,6 @@ public class RptController extends it.govpay.rs.BaseController {
 			
 		}catch (Exception e) {
 			log.error("Errore interno durante la ricerca delle RPT: " + e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-    public Response rptIdDominioIuvCcpGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String ccp ) {
-    	String methodName = "getRptByIdDominioIuvCcp";  
-		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			
-			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(null); //TODO IAutorizzato
-			leggiRptDTO.setIdDominio(idDominio);
-			leggiRptDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
-			leggiRptDTO.setCcp(ccp);
-			
-			RptDAO ricevuteDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId())); 
-			
-			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
-			
-			it.govpay.rs.v1.beans.Rpt response = new it.govpay.rs.v1.beans.Rpt(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
-			
-		}catch (RicevutaNonTrovataException e) {
-			log.error(e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.NOT_FOUND).entity(respKo).build();
-		}catch (Exception e) {
-			log.error("Errore interno durante la " + methodName, e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-
-    public Response rptIdDominioIuvCcpRtGET(String principal, List<String> listaRuoli, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio , String iuv , String ccp ) {
-    	String methodName = "getRtByIdDominioIuvCcp";  
-		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		
-		
-		String accept = null;
-		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
-			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
-		}
-		
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			
-			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(null); //TODO IAutorizzato
-			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
-			leggiPagamentoPortaleDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
-			leggiPagamentoPortaleDTO.setCcp(ccp);
-			
-			RptDAO ricevuteDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId())); 
-			
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRpt(leggiPagamentoPortaleDTO);
-			
-			if(accept.equalsIgnoreCase(MediaType.APPLICATION_OCTET_STREAM)) {
-				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
-				this.log.info("Esecuzione " + methodName + " completata."); 
-				return Response.status(Status.OK).type(accept).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())).build();
-			} else {
-				String tipoFirma = ricevutaDTOResponse.getRpt().getFirmaRichiesta().getCodifica();
-				byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, ricevutaDTOResponse.getRpt().getXmlRt(), ricevutaDTOResponse.getRpt().getCodDominio());
-				CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
-				
-				if(accept.equalsIgnoreCase("application/pdf")) {
-					ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
-					String auxDigit = ricevutaDTOResponse.getDominio().getAuxDigit() + "";
-					String applicationCode = String.format("%02d", ricevutaDTOResponse.getDominio().getStazione().getApplicationCode());
-					RicevutaPagamentoUtils.getPdfRicevutaPagamento(ricevutaDTOResponse.getDominio().getLogo(), ricevutaDTOResponse.getVersamento().getCausaleVersamento(), rt, null, auxDigit, applicationCode, baos1, this.log);
-					String rtPdfEntryName = "rt.pdf";
-				
-					byte[] b = baos1.toByteArray();
-					
-					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
-					this.log.info("Esecuzione " + methodName + " completata."); 
-					return Response.status(Status.OK).type(accept).entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"").build();
-				} else {
-					return Response.status(Status.OK).type(accept).entity(rt).build();
-				}
-			}
-		}catch (RicevutaNonTrovataException e) {
-			log.error(e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.NOT_FOUND).entity(respKo).build();
-		}catch (Exception e) {
-			log.error("Errore interno durante la " + methodName, e);
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.INTERNO);
 			respKo.setCodice("");

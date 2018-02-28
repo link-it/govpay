@@ -84,7 +84,7 @@ public class NotificaClient extends BasicClient {
 				paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(null).getCodVersamentoEnte());
 				paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, null));
 				
-				if(notifica.getApplicazione(null).getVersione().compareTo(Versione.GP_02_02_01) >= 0)
+				if(notifica.getApplicazione(null).getVersione().compareTo(Versione.GP_SOAP_02_02) >= 0)
 					paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
 				
 				QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaTransazione");

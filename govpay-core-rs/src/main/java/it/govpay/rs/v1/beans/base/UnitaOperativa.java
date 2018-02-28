@@ -9,6 +9,16 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "civico",
 "cap",
 "localita",
+"provincia",
+"nazione",
+"email",
+"pec",
+"tel",
+"fax",
+"gln",
+"web",
+"area",
+"abilitato",
 "idUnita",
 })
 public class UnitaOperativa extends it.govpay.rs.v1.beans.JSONSerializable {
@@ -27,6 +37,36 @@ public class UnitaOperativa extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("localita")
   private String localita = null;
+  
+  @JsonProperty("provincia")
+  private String provincia = null;
+  
+  @JsonProperty("nazione")
+  private String nazione = null;
+  
+  @JsonProperty("email")
+  private String email = null;
+  
+  @JsonProperty("pec")
+  private String pec = null;
+  
+  @JsonProperty("tel")
+  private String tel = null;
+  
+  @JsonProperty("fax")
+  private String fax = null;
+  
+  @JsonProperty("gln")
+  private String gln = null;
+  
+  @JsonProperty("web")
+  private String web = null;
+  
+  @JsonProperty("area")
+  private String area = null;
+  
+  @JsonProperty("abilitato")
+  private Boolean abilitato = null;
   
   @JsonProperty("idUnita")
   private String idUnita = null;
@@ -112,6 +152,166 @@ public class UnitaOperativa extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Provincia del beneficiario
+   **/
+  public UnitaOperativa provincia(String provincia) {
+    this.provincia = provincia;
+    return this;
+  }
+
+  @JsonProperty("provincia")
+  public String getProvincia() {
+    return provincia;
+  }
+  public void setProvincia(String provincia) {
+    this.provincia = provincia;
+  }
+
+  /**
+   * Nazione del beneficiario
+   **/
+  public UnitaOperativa nazione(String nazione) {
+    this.nazione = nazione;
+    return this;
+  }
+
+  @JsonProperty("nazione")
+  public String getNazione() {
+    return nazione;
+  }
+  public void setNazione(String nazione) {
+    this.nazione = nazione;
+  }
+
+  /**
+   * Posta elettronica ordinaria del beneficiario
+   **/
+  public UnitaOperativa email(String email) {
+    this.email = email;
+    return this;
+  }
+
+  @JsonProperty("email")
+  public String getEmail() {
+    return email;
+  }
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  /**
+   * Posta elettronica certificata del beneficiario
+   **/
+  public UnitaOperativa pec(String pec) {
+    this.pec = pec;
+    return this;
+  }
+
+  @JsonProperty("pec")
+  public String getPec() {
+    return pec;
+  }
+  public void setPec(String pec) {
+    this.pec = pec;
+  }
+
+  /**
+   * Numero di telefono dell'help desk del beneficiario
+   **/
+  public UnitaOperativa tel(String tel) {
+    this.tel = tel;
+    return this;
+  }
+
+  @JsonProperty("tel")
+  public String getTel() {
+    return tel;
+  }
+  public void setTel(String tel) {
+    this.tel = tel;
+  }
+
+  /**
+   * Numero di fax dell'help desk del beneficiario
+   **/
+  public UnitaOperativa fax(String fax) {
+    this.fax = fax;
+    return this;
+  }
+
+  @JsonProperty("fax")
+  public String getFax() {
+    return fax;
+  }
+  public void setFax(String fax) {
+    this.fax = fax;
+  }
+
+  /**
+   * Global location number del beneficiario
+   **/
+  public UnitaOperativa gln(String gln) {
+    this.gln = gln;
+    return this;
+  }
+
+  @JsonProperty("gln")
+  public String getGln() {
+    return gln;
+  }
+  public void setGln(String gln) {
+    this.gln = gln;
+  }
+
+  /**
+   * Url del sito web
+   **/
+  public UnitaOperativa web(String web) {
+    this.web = web;
+    return this;
+  }
+
+  @JsonProperty("web")
+  public String getWeb() {
+    return web;
+  }
+  public void setWeb(String web) {
+    this.web = web;
+  }
+
+  /**
+   * Nome dell'area di competenza dell'unita' operativa
+   **/
+  public UnitaOperativa area(String area) {
+    this.area = area;
+    return this;
+  }
+
+  @JsonProperty("area")
+  public String getArea() {
+    return area;
+  }
+  public void setArea(String area) {
+    this.area = area;
+  }
+
+  /**
+   * Indica lo stato di abilitazione
+   **/
+  public UnitaOperativa abilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+    return this;
+  }
+
+  @JsonProperty("abilitato")
+  public Boolean isAbilitato() {
+    return abilitato;
+  }
+  public void setAbilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+  }
+
+  /**
    * Codice fiscale dell'unita
    **/
   public UnitaOperativa idUnita(String idUnita) {
@@ -141,12 +341,22 @@ public class UnitaOperativa extends it.govpay.rs.v1.beans.JSONSerializable {
         Objects.equals(civico, unitaOperativa.civico) &&
         Objects.equals(cap, unitaOperativa.cap) &&
         Objects.equals(localita, unitaOperativa.localita) &&
+        Objects.equals(provincia, unitaOperativa.provincia) &&
+        Objects.equals(nazione, unitaOperativa.nazione) &&
+        Objects.equals(email, unitaOperativa.email) &&
+        Objects.equals(pec, unitaOperativa.pec) &&
+        Objects.equals(tel, unitaOperativa.tel) &&
+        Objects.equals(fax, unitaOperativa.fax) &&
+        Objects.equals(gln, unitaOperativa.gln) &&
+        Objects.equals(web, unitaOperativa.web) &&
+        Objects.equals(area, unitaOperativa.area) &&
+        Objects.equals(abilitato, unitaOperativa.abilitato) &&
         Objects.equals(idUnita, unitaOperativa.idUnita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, idUnita);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, gln, web, area, abilitato, idUnita);
   }
 
   public static UnitaOperativa parse(String json) {
@@ -168,6 +378,16 @@ public class UnitaOperativa extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("    civico: ").append(toIndentedString(civico)).append("\n");
     sb.append("    cap: ").append(toIndentedString(cap)).append("\n");
     sb.append("    localita: ").append(toIndentedString(localita)).append("\n");
+    sb.append("    provincia: ").append(toIndentedString(provincia)).append("\n");
+    sb.append("    nazione: ").append(toIndentedString(nazione)).append("\n");
+    sb.append("    email: ").append(toIndentedString(email)).append("\n");
+    sb.append("    pec: ").append(toIndentedString(pec)).append("\n");
+    sb.append("    tel: ").append(toIndentedString(tel)).append("\n");
+    sb.append("    fax: ").append(toIndentedString(fax)).append("\n");
+    sb.append("    gln: ").append(toIndentedString(gln)).append("\n");
+    sb.append("    web: ").append(toIndentedString(web)).append("\n");
+    sb.append("    area: ").append(toIndentedString(area)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    idUnita: ").append(toIndentedString(idUnita)).append("\n");
     sb.append("}");
     return sb.toString();

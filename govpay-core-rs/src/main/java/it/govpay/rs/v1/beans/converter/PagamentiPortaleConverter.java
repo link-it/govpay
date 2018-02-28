@@ -9,18 +9,16 @@ import it.govpay.core.dao.commons.Anagrafica;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
-import it.govpay.rs.BaseRsService;
+import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.base.PagamentoPost;
 import it.govpay.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.rs.v1.beans.base.Pendenza;
 import it.govpay.rs.v1.beans.base.Soggetto;
 import it.govpay.rs.v1.beans.base.VocePendenza;
-import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import net.sf.json.util.JSONUtils;
 
 public class PagamentiPortaleConverter {
 
@@ -41,13 +39,12 @@ public class PagamentiPortaleConverter {
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, String principal, String idSessione, String idSessionePortale) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, IAutorizzato user, String idSessione, String idSessionePortale) throws Exception {
 
-		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO();
+		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
 
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
-		pagamentiPortaleDTO.setPrincipal(principal);
 		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
 		if(pagamentiPortaleRequest.getAutenticazioneSoggetto() != null)
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
@@ -97,14 +94,14 @@ public class PagamentiPortaleConverter {
 
 				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
-					PagamentiPortaleDTO.RefVersamentoAvviso ref = new PagamentiPortaleDTO(). new RefVersamentoAvviso();
+					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
 					ref.setIdDominio(pendenza.getIdDominio());
 					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
 					listRefs.add(ref);
 
 				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
 					
-					PagamentiPortaleDTO.RefVersamentoPendenza ref = new PagamentiPortaleDTO(). new RefVersamentoPendenza();
+					PagamentiPortaleDTO.RefVersamentoPendenza ref = pagamentiPortaleDTO. new RefVersamentoPendenza();
 					ref.setIdA2A(pendenza.getIdA2A());
 					ref.setIdPendenza(pendenza.getIdPendenza());
 					listRefs.add(ref);

@@ -1,10 +1,12 @@
 package it.govpay.rs.v1.beans.base;
 
 import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "url",
-"versione",
+"versioneApi",
 "auth",
 })
 public class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
@@ -12,8 +14,58 @@ public class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("url")
   private String url = null;
   
-  @JsonProperty("versione")
-  private String versione = "1.0";
+    
+  /**
+   * Versione delle API di integrazione utilizzate
+   */
+  public enum VersioneApiEnum {
+    
+    
+        
+            
+    REST_1_0("REST_1.0"),
+    
+            
+    SOAP_2_0("SOAP_2.0"),
+    
+            
+    SOAP_2_1("SOAP_2.1"),
+    
+            
+    SOAP_2_3("SOAP_2.3"),
+    
+            
+    SOAP_2_5("SOAP_2.5");
+            
+        
+    
+
+    private String value;
+
+    VersioneApiEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static VersioneApiEnum fromValue(String text) {
+      for (VersioneApiEnum b : VersioneApiEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+    
+  @JsonProperty("versioneApi")
+  private VersioneApiEnum versioneApi = null;
   
   @JsonProperty("auth")
   private Object auth = null;
@@ -35,19 +87,19 @@ public class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Versione del servizio da utilizzare
+   * Versione delle API di integrazione utilizzate
    **/
-  public Connector versione(String versione) {
-    this.versione = versione;
+  public Connector versioneApi(VersioneApiEnum versioneApi) {
+    this.versioneApi = versioneApi;
     return this;
   }
 
-  @JsonProperty("versione")
-  public String getVersione() {
-    return versione;
+  @JsonProperty("versioneApi")
+  public VersioneApiEnum getVersioneApi() {
+    return versioneApi;
   }
-  public void setVersione(String versione) {
-    this.versione = versione;
+  public void setVersioneApi(VersioneApiEnum versioneApi) {
+    this.versioneApi = versioneApi;
   }
 
   /**
@@ -75,13 +127,13 @@ public class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
     }
     Connector connector = (Connector) o;
     return Objects.equals(url, connector.url) &&
-        Objects.equals(versione, connector.versione) &&
+        Objects.equals(versioneApi, connector.versioneApi) &&
         Objects.equals(auth, connector.auth);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(url, versione, auth);
+    return Objects.hash(url, versioneApi, auth);
   }
 
   public static Connector parse(String json) {
@@ -99,7 +151,7 @@ public class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("class Connector {\n");
     
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
-    sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
+    sb.append("    versioneApi: ").append(toIndentedString(versioneApi)).append("\n");
     sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("}");
     return sb.toString();
