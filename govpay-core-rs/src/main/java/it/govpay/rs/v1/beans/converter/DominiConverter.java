@@ -66,8 +66,6 @@ public class DominiConverter {
 		iban.setCodBicAppoggio(ibanAccreditoPost.getBicAppoggio());
 		iban.setCodIban(idIbanAccredito);
 		iban.setCodIbanAppoggio(ibanAccreditoPost.getIbanAppoggio());
-//		iban.setIdNegozio(idNegozio);
-//		iban.setIdSellerBank(idSellerBank);
 		iban.setPostale(ibanAccreditoPost.isPostale());
 		
 		ibanAccreditoDTO.setIban(iban);
@@ -81,18 +79,20 @@ public class DominiConverter {
 		PutUnitaOperativaDTO uoDTO = new PutUnitaOperativaDTO(user);
 		
 		UnitaOperativa uo = new UnitaOperativa();
-		//uo.setAbilitato(uoPost.isAbilitato());
+		uo.setAbilitato(uoPost.isAbilitato());
 		Anagrafica anagrafica = new Anagrafica();
 		anagrafica.setCap(uoPost.getCap());
-		//anagrafica.setCellulare(uoPost.getcell);
 		anagrafica.setCivico(uoPost.getCivico());
 		anagrafica.setCodUnivoco(idUo);
+		anagrafica.setEmail(uoPost.getEmail());
+		anagrafica.setFax(uoPost.getFax());
 		anagrafica.setIndirizzo(uoPost.getIndirizzo());
 		anagrafica.setLocalita(uoPost.getLocalita());
-		// anagrafica.setNazione(uoPost.getNazione());
-		// anagrafica.setProvincia(uoPost.getProvincia());
+		anagrafica.setNazione(uoPost.getNazione());
+		anagrafica.setProvincia(uoPost.getProvincia());
 		anagrafica.setRagioneSociale(uoPost.getRagioneSociale());
-		// anagrafica.setUrlSitoWeb(uoPost.);
+		anagrafica.setTelefono(uoPost.getTel());
+		anagrafica.setUrlSitoWeb(uoPost.getWeb());
 		
 		uo.setAnagrafica(anagrafica);
 		uo.setCodUo(idUo);
@@ -111,20 +111,22 @@ public class DominiConverter {
 		dominio.setAbilitato(dominioPost.isAbilitato());
 		Anagrafica anagrafica = new Anagrafica();
 		anagrafica.setCap(dominioPost.getCap());
-		//anagrafica.setCellulare(dominioPost.getcell);
 		anagrafica.setCivico(dominioPost.getCivico());
 		anagrafica.setCodUnivoco(idDominio);
+		anagrafica.setEmail(dominioPost.getEmail());
+		anagrafica.setFax(dominioPost.getFax());
 		anagrafica.setIndirizzo(dominioPost.getIndirizzo());
 		anagrafica.setLocalita(dominioPost.getLocalita());
-		// anagrafica.setNazione(dominioPost.getNazione());
-		// anagrafica.setProvincia(dominioPost.getProvincia());
+		anagrafica.setNazione(dominioPost.getNazione());
+		anagrafica.setProvincia(dominioPost.getProvincia());
 		anagrafica.setRagioneSociale(dominioPost.getRagioneSociale());
-		// anagrafica.setUrlSitoWeb(dominioPost.);
+		anagrafica.setTelefono(dominioPost.getTel());
+		anagrafica.setUrlSitoWeb(dominioPost.getWeb());
 		
 		dominio.setAnagrafica(anagrafica );
 		if(dominioPost.getAuxDigit() != null)
 			dominio.setAuxDigit(Integer.parseInt(dominioPost.getAuxDigit()));
-		//dominio.setCbill(dominioPost.getcbill());
+		dominio.setCbill(dominioPost.getCbill());
 		dominio.setCodDominio(idDominio);
 		dominio.setGln(dominioPost.getGln());
 		dominio.setIdApplicazioneDefault(null);

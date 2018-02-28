@@ -33,8 +33,6 @@ public class Dominio extends BasicModel {
 	private String codDominio;
 	private String ragioneSociale;
 	private String gln;
-	private boolean riusoIuv;
-	private boolean customIuv;
 	private boolean abilitato;
 	private int auxDigit;
 	private Integer segregationCode;
@@ -45,7 +43,6 @@ public class Dominio extends BasicModel {
 	private transient Date ndpData;
 	
 	private String iuvPrefix;
-	private boolean iuvPrefixStrict;
 	private byte[] logo;
 	private String cbill;
 	
@@ -105,22 +102,6 @@ public class Dominio extends BasicModel {
 		this.idApplicazioneDefault = idApplicazioneDefault;
 	}
 
-	public boolean isRiusoIuv() {
-		return riusoIuv;
-	}
-
-	public void setRiusoIuv(boolean riusoIuv) {
-		this.riusoIuv = riusoIuv;
-	}
-
-	public boolean isCustomIuv() {
-		return customIuv;
-	}
-
-	public void setCustomIuv(boolean customIuv) {
-		this.customIuv = customIuv;
-	}
-
 	public int getAuxDigit() {
 		return auxDigit;
 	}
@@ -135,14 +116,6 @@ public class Dominio extends BasicModel {
 
 	public void setIuvPrefix(String iuvPrefix) {
 		this.iuvPrefix = iuvPrefix;
-	}
-
-	public boolean isIuvPrefixStrict() {
-		return iuvPrefixStrict;
-	}
-
-	public void setIuvPrefixStrict(boolean iuvPrefixStrict) {
-		this.iuvPrefixStrict = iuvPrefixStrict;
 	}
 
 	public Integer getSegregationCode() {

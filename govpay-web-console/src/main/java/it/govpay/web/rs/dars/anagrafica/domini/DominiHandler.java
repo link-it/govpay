@@ -320,11 +320,8 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				String glnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
 				String uoIdId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
 				String idApplicazioneDefaultId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
-				String riusoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
-				String customIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
 				String modalitaIntermediazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
 				String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
-				String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 				String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 				String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 				String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
@@ -441,15 +438,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 				Sezione sezioneGestioneIuv = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
 
-				CheckButton riusoIuv = (CheckButton) this.infoCreazioneMap.get(riusoIuvId);
-				riusoIuv.setDefaultValue(true); 
-				sezioneGestioneIuv.addField(riusoIuv);
-
-				CheckButton customIuv = (CheckButton) this.infoCreazioneMap.get(customIuvId);
-				customIuv.setDefaultValue(false);
-				customIuv.setEditable(true);
-				sezioneGestioneIuv.addField(customIuv);
-
 				List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
 				modalitaIntermediazioneValues.add(new RawParamValue(dominioId, null));
 				modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, null));
@@ -462,11 +450,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				InputText prefissoIuv = (InputText) this.infoCreazioneMap.get(prefissoIuvId);
 				prefissoIuv.setDefaultValue(null);
 				sezioneGestioneIuv.addField(prefissoIuv);
-
-				// prefissoIuvRigoroso
-				CheckButton prefissoIuvRigoroso = (CheckButton) this.infoCreazioneMap.get(prefissoIuvRigorosoId);
-				prefissoIuvRigoroso.setDefaultValue(false);
-				sezioneGestioneIuv.addField(prefissoIuvRigoroso);
 
 				// segregationCode
 				InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
@@ -508,11 +491,8 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 			String glnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
 			String idApplicazioneDefaultId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
-			String riusoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
-			String customIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
 			String modalitaIntermediazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
 			String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
-			String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 			String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 			String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 			String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
@@ -561,18 +541,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			this.infoCreazioneMap.put(idApplicazioneDefaultId, idApplicazioneDefault);
 
 
-			// riusoIuv
-			String riusoIuvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.label");
-			CheckButton riusoIuv = new CheckButton(riusoIuvId, riusoIuvLabel, true, false, false, true);
-			riusoIuv.setAvanzata(true); 
-			this.infoCreazioneMap.put(riusoIuvId, riusoIuv);
-
-			// customIuv
-			String customIuvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.label");
-			CheckButton customIuv = new CheckButton(customIuvId, customIuvLabel, true, false, false, true);
-			customIuv.setAvanzata(true); 
-			this.infoCreazioneMap.put(customIuvId,customIuv);
-
 			// modalitaIntermediazione
 			String modalitaIntermediazionelabel =Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.label");
 			List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
@@ -590,12 +558,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			InputText prefissoIuv = new InputText(prefissoIuvId, prefissoIuvLabel, null, false, false, true, 1, 255);
 			prefissoIuv.setAvanzata(true); 
 			this.infoCreazioneMap.put(prefissoIuvId, prefissoIuv);
-
-			// prefissoIuvRigoroso
-			String prefissoIuvRigorosoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.label");
-			CheckButton prefissoIuvRigoroso = new CheckButton(prefissoIuvRigorosoId, prefissoIuvRigorosoLabel, false, false, false, true);
-			prefissoIuvRigoroso.setAvanzata(true); 
-			this.infoCreazioneMap.put(prefissoIuvRigorosoId,prefissoIuvRigoroso);
 
 			// segregationCode
 			String segregationCodeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.label");
@@ -656,11 +618,8 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				String glnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
 				String uoIdId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
 				String idApplicazioneDefaultId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
-				String riusoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
-				String customIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
 				String modalitaIntermediazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
 				String prefissoIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
-				String prefissoIuvRigorosoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 				String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 				String logoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logo.id");
 				String abilitaModificaLogoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitaModificaLogo.id");
@@ -788,18 +747,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 				Sezione sezioneGestioneIuv = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
 
-				CheckButton riusoIuv = (CheckButton) this.infoCreazioneMap.get(riusoIuvId);
-				riusoIuv.setDefaultValue(entry.isRiusoIuv()); 
-				sezioneGestioneIuv.addField(riusoIuv);
-
-				CheckButton customIuv = (CheckButton) this.infoCreazioneMap.get(customIuvId);
-				customIuv.setDefaultValue(entry.isCustomIuv());
-				// Se in modifica e' settato il customIuv allora non si puo' modificare
-				if(entry.isCustomIuv()) {
-					customIuv.setEditable(false);
-				}
-				sezioneGestioneIuv.addField(customIuv);
-
 				List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
 				modalitaIntermediazioneValues.add(new RawParamValue(dominioId, ""+entry.getId()));
 				modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, ""+entry.getIdStazione()));
@@ -812,11 +759,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 				InputText prefissoIuv = (InputText) this.infoCreazioneMap.get(prefissoIuvId);
 				prefissoIuv.setDefaultValue(entry.getIuvPrefix());
 				sezioneGestioneIuv.addField(prefissoIuv);
-
-				// prefissoIuvRigoroso
-				CheckButton prefissoIuvRigoroso = (CheckButton) this.infoCreazioneMap.get(prefissoIuvRigorosoId);
-				prefissoIuvRigoroso.setDefaultValue(entry.isIuvPrefixStrict());
-				sezioneGestioneIuv.addField(prefissoIuvRigoroso);
 
 				// segregationCode
 				InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
@@ -956,8 +898,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			// Sezione iuv
 			it.govpay.web.rs.dars.model.Sezione sezioneIuv = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
-			sezioneIuv.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.label"), Utils.getSiNoAsLabel(dominio.isRiusoIuv()),true);
-			sezioneIuv.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".customIuv.label"), Utils.getSiNoAsLabel(dominio.isCustomIuv()),true);
 			int auxDigit = dominio.getAuxDigit();
 			String auxDigitS= null;
 			switch (auxDigit) {
@@ -973,7 +913,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			if(StringUtils.isNotEmpty(dominio.getIuvPrefix())) {
 				sezioneIuv.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.label"), dominio.getIuvPrefix(),true);
 			}
-			sezioneIuv.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.label"), Utils.getSiNoAsLabel(dominio.isIuvPrefixStrict()),true);
 
 			if(dominio.getSegregationCode() != null){
 				String segCode = dominio.getSegregationCode() < 10 ? "0"+dominio.getSegregationCode() : dominio.getSegregationCode()+"";
