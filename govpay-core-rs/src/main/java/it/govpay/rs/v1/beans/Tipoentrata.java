@@ -24,25 +24,20 @@ import java.math.BigDecimal;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+@JsonFilter(value="tipoentrate")  
+public class Tipoentrata extends it.govpay.rs.v1.beans.base.Tipoentrata {
 
-@JsonFilter(value="entrate")  
-public class Entrata extends it.govpay.rs.v1.beans.base.Entrata{
-
-	public Entrata(it.govpay.bd.model.Tributo tributo, BasicBD bd) throws ServiceException {
-		this.codiceContabilita(tributo.getCodContabilita())
-		.codificaIUV(new BigDecimal(tributo.getCodTributoIuv()))
-		.abilitato(tributo.isAbilitato())
-		.idEntrata(tributo.getCodTributo())
-		.tipoEntrata(new Tipoentrata(tributo))
-		.ibanAccreditoBancario(tributo.getIbanAccredito().getCodIban())
-		.ibanAccreditoPostale(tributo.getIbanAccreditoPostale(bd).getCodIban())
-		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
+	public Tipoentrata(it.govpay.model.TipoTributo tributo) throws ServiceException {
+		this.codiceContabilita(tributo.getCodContabilitaDefault())
+		.codificaIUV(new BigDecimal(tributo.getCodTributoIuvDefault()))
+		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilitaDefault().toString()))
+		.descrizione(tributo.getDescrizione())
+		.idEntrata(tributo.getCodTributo());
 	}
 	
 	@Override
 	public String getJsonIdFilter() {
-		return "entrate";
+		return "tipoentrate";
 	}
 }
 

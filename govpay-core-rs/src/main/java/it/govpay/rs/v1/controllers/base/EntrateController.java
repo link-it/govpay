@@ -26,13 +26,103 @@ public class EntrateController extends it.govpay.rs.BaseController {
 
 
     public Response entrateIdEntrataGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+//    	String methodName = "entrateIdEntrataGET";  
+//		GpContext ctx = null;
+//		ByteArrayOutputStream baos= null;
+//		this.log.info("Esecuzione " + methodName + " in corso..."); 
+//		try{
+//			baos = new ByteArrayOutputStream();
+//			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+//			
+//			ctx =  GpThreadLocal.get();
+//			
+//			// Parametri - > DTO Input
+//			
+//			GetEntrataDTO getDominioEntrataDTO = new GetEntrataDTO(user, idEntrata);
+//			
+//			// INIT DAO
+//			
+//			EntrateDAO dominiDAO = new EntrateDAO();
+//			
+//			// CHIAMATA AL DAO
+//			
+//			GetEntrataDTOResponse listaDominiEntrateDTOResponse = dominiDAO.getTributo(getDominioEntrataDTO);
+//			
+//			// CONVERT TO JSON DELLA RISPOSTA
+//			
+//			Tipoentrata response = new it.govpay.rs.v1.beans.Tipoentrata(listaDominiEntrateDTOResponse.getTipoTributo());
+//			
+//			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+//			this.log.info("Esecuzione " + methodName + " completata."); 
+//			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+//			
+//		}catch (Exception e) {
+//			log.error("Errore interno durante la ricerca delle entrate: " + e.getMessage(), e);
+//			FaultBean respKo = new FaultBean();
+//			respKo.setCategoria(CategoriaEnum.INTERNO);
+//			respKo.setCodice("");
+//			respKo.setDescrizione(e.getMessage());
+//			try {
+//				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+//			}catch(Exception e1) {
+//				log.error("Errore durante il log della risposta", e1);
+//			}
+//			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+//		} finally {
+//			if(ctx != null) ctx.log();
+//		}
+    	return null;
     }
 
 
 
     public Response entrateGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	return null;
+//    	String methodName = "entrateGET";  
+//		GpContext ctx = null;
+//		ByteArrayOutputStream baos= null;
+//		this.log.info("Esecuzione " + methodName + " in corso..."); 
+//		try{
+//			baos = new ByteArrayOutputStream();
+//			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+//			
+//			ctx =  GpThreadLocal.get();
+//			
+//			// Parametri - > DTO Input
+//			
+//			GetTributoDTO getDominioEntrataDTO = new GetTributoDTO(user, idDominio, idEntrata);
+//			
+//			// INIT DAO
+//			
+//			DominiDAO dominiDAO = new DominiDAO();
+//			
+//			// CHIAMATA AL DAO
+//			
+//			GetTributoDTOResponse listaDominiEntrateDTOResponse = dominiDAO.getTributo(getDominioEntrataDTO);
+//			
+//			// CONVERT TO JSON DELLA RISPOSTA
+//			
+////			Entrata response = new it.govpay.rs.v1.beans.Entrata(listaDominiEntrateDTOResponse.getTributo());
+//			
+//			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
+//			this.log.info("Esecuzione " + methodName + " completata."); 
+//			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+//			
+//		}catch (Exception e) {
+//			log.error("Errore interno durante la ricerca delle entrate: " + e.getMessage(), e);
+//			FaultBean respKo = new FaultBean();
+//			respKo.setCategoria(CategoriaEnum.INTERNO);
+//			respKo.setCodice("");
+//			respKo.setDescrizione(e.getMessage());
+//			try {
+//				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+//			}catch(Exception e1) {
+//				log.error("Errore durante il log della risposta", e1);
+//			}
+//			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+//		} finally {
+//			if(ctx != null) ctx.log();
+//		}
     }
 
 
