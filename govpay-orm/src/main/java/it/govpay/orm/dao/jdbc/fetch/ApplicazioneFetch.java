@@ -64,8 +64,6 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_esito", Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()));
 				setParameter(object, "setCodConnettoreVerifica", Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_verifica", Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()));
-				setParameter(object, "setVersione", Applicazione.model().VERSIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "versione", Applicazione.model().VERSIONE.getFieldType()));
 				setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trusted", Applicazione.model().TRUSTED.getFieldType()));
 				setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
@@ -104,8 +102,6 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codConnettoreEsito"));
 				setParameter(object, "setCodConnettoreVerifica", Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreVerifica"));
-				setParameter(object, "setVersione", Applicazione.model().VERSIONE.getFieldType(),
-					this.getObjectFromMap(map,"versione"));
 				setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
 					this.getObjectFromMap(map,"trusted"));
 				setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),

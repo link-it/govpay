@@ -163,7 +163,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 			fields.add(Applicazione.model().FIRMA_RICEVUTA);
 			fields.add(Applicazione.model().COD_CONNETTORE_ESITO);
 			fields.add(Applicazione.model().COD_CONNETTORE_VERIFICA);
-			fields.add(Applicazione.model().VERSIONE);
 			fields.add(Applicazione.model().TRUSTED);
 			fields.add(Applicazione.model().COD_APPLICAZIONE_IUV);
 			fields.add(Applicazione.model().REG_EXP);

@@ -173,7 +173,6 @@ CREATE TABLE applicazioni
 	firma_ricevuta VARCHAR2(1 CHAR) NOT NULL,
 	cod_connettore_esito VARCHAR2(255 CHAR),
 	cod_connettore_verifica VARCHAR2(255 CHAR),
-	versione VARCHAR2(10 CHAR) NOT NULL,
 	trusted NUMBER NOT NULL,
 	cod_applicazione_iuv VARCHAR2(3 CHAR),
 	reg_exp VARCHAR2(1024 CHAR),
@@ -187,9 +186,6 @@ CREATE TABLE applicazioni
 	CONSTRAINT fk_app_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
 );
-
-
-ALTER TABLE applicazioni MODIFY versione DEFAULT '2.1';
 
 CREATE TRIGGER trg_applicazioni
 BEFORE

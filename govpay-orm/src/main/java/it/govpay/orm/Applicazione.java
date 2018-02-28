@@ -41,7 +41,6 @@ import java.io.Serializable;
  * 			&lt;element name="firmaRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreVerifica" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="versione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1" default="2.1"/>
  * 			&lt;element name="trusted" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazioneIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="regExp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -65,7 +64,6 @@ import java.io.Serializable;
   	"firmaRicevuta",
   	"codConnettoreEsito",
   	"codConnettoreVerifica",
-  	"versione",
   	"trusted",
   	"codApplicazioneIuv",
   	"regExp"
@@ -144,14 +142,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.codConnettoreVerifica = codConnettoreVerifica;
   }
 
-  public java.lang.String getVersione() {
-    return this.versione;
-  }
-
-  public void setVersione(java.lang.String versione) {
-    this.versione = versione;
-  }
-
   public boolean isTrusted() {
     return this.trusted;
   }
@@ -221,10 +211,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreVerifica",required=false,nillable=false)
   protected java.lang.String codConnettoreVerifica;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="versione",required=true,nillable=false,defaultValue="2.1")
-  protected java.lang.String versione = "2.1";
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="trusted",required=true,nillable=false)
