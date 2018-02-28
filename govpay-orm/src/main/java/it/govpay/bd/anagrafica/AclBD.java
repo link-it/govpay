@@ -19,15 +19,20 @@
  */
 package it.govpay.bd.anagrafica;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.AclFilter;
+import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.model.Acl;
+import it.govpay.orm.IdAcl;
+import it.govpay.orm.dao.jdbc.JDBCACLServiceSearch;
 
 public class AclBD extends BasicBD {
 
@@ -35,50 +40,102 @@ public class AclBD extends BasicBD {
 		super(basicBD);
 	}
 	
-	/*
-	 * OPERATORE
+	public AclFilter newFilter() throws ServiceException {
+		return new AclFilter(this.getAclService());
+	}
+
+	public AclFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new AclFilter(this.getAclService(),simpleSearch);
+	}
+	
+	/**
+	 * Recupera l'applicazione tramite l'id fisico
+	 * 
+	 * @param idAcl
+	 * @return
+	 * @throws NotFoundException se non esiste.
+	 * @throws MultipleResultException in caso di duplicati.
+	 * @throws ServiceException in caso di errore DB.
 	 */
+	public Acl getAcl(Long idAcl) throws NotFoundException, ServiceException, MultipleResultException {
 
-	public void insertAclOperatore(Long id, List<Acl> acls) throws ServiceException {
+		if(idAcl == null) {
+			throw new ServiceException("Parameter 'id' cannot be NULL");
+		}
+
+		long id = idAcl.longValue();
+
+		try {
+			it.govpay.orm.ACL applicazioneVO = ((JDBCACLServiceSearch)this.getAclService()).get(id);
+			Acl applicazione = AclConverter.toDTO(applicazioneVO);
+
+			return applicazione;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 	
-	public List<Acl> getAclOperatore(long idOperatore) throws ServiceException, NotFoundException {
-		return null;
+	public long count(AclFilter filter) throws ServiceException {
+		try {
+			return this.getAclService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 
-	public void deleteAclOperatore(long idOperatore) throws ServiceException {
+	public List<Acl> findAll(AclFilter filter) throws ServiceException {
+		try {
+
+			List<Acl> dtoList = new ArrayList<Acl>();
+			for(it.govpay.orm.ACL vo: this.getAclService().findAll(filter.toPaginatedExpression())) {
+				dtoList.add(AclConverter.toDTO(vo));
+			}
+			return dtoList;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 	
-	/*
-	 * APPLICAZIONE
+	
+	/**
+	 * Aggiorna l'applicazione con i dati forniti
+	 * @param ente
+	 * @throws NotFoundException se non esiste
+	 * @throws ServiceException in caso di errore DB.
 	 */
-	
-	public List<Acl> getAclApplicazione(long idApplicazione) throws ServiceException, NotFoundException {
-		return null;
-	}
-	
-	public List<Acl> getAclPortale(long idPortale) throws ServiceException, NotFoundException {
-		return null;
-	}
-	
-	public void insertAclApplicazione(Long id, List<Acl> acls) throws ServiceException {
-	}
-	
-	public void deleteAclApplicazione(long idApplicazione) throws ServiceException {
+	public void updateAcl(Acl applicazione) throws NotFoundException, ServiceException {
+		try {
+			it.govpay.orm.ACL vo = AclConverter.toVO(applicazione);
+			IdAcl id = this.getAclService().convertToId(vo);
+
+			if(!this.getAclService().exists(id)) {
+				throw new NotFoundException("Acl con id ["+id+"] non esiste.");
+			}
+
+			this.getAclService().update(id, vo);
+			applicazione.setId(vo.getId());
+			emitAudit(applicazione);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		}
 	}
 
-	
-	/*
-	 * RUOLO
+	/**
+	 * Crea una nuova applicazione con i dati forniti
+	 * @param applicazione
+	 * @throws ServiceException in caso di errore DB.
 	 */
-
-	public void insertAclRuolo(Long id, List<Acl> acls) throws ServiceException {
+	public void insertAcl(Acl applicazione) throws ServiceException{
+		try {
+			it.govpay.orm.ACL vo = AclConverter.toVO(applicazione);
+			this.getAclService().create(vo);
+			applicazione.setId(vo.getId());
+			emitAudit(applicazione);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
 	}
 	
-	public List<Acl> getAclRuolo(long idRuolo) throws ServiceException, NotFoundException {
-		return null;
-	}
-
-	public void deleteAclRuolo(long idRuolo) throws ServiceException {
-	}
 }

@@ -23,7 +23,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Rpt.FirmaRichiesta;
 
-public class Applicazione extends Versionabile {
+public class Applicazione extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;

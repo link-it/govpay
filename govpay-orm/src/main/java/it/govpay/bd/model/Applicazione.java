@@ -6,6 +6,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.Acl;
 import it.govpay.model.Tributo;
 import it.govpay.model.Utenza;
 
@@ -20,6 +21,7 @@ private static final long serialVersionUID = 1L;
 	private transient List<Dominio> domini;
 	private transient List<Tributo> tributi;
 	private transient Utenza utenza;
+	private transient List<Acl> aclApplicazione;
 	
 	public Applicazione(BasicBD bd, long idUtenza) throws ServiceException {
 		super();
@@ -40,4 +42,16 @@ private static final long serialVersionUID = 1L;
 	public String getPrincipal() {
 		return this.utenza != null ? this.utenza.getPrincipal() : null;
 	}
+
+
+	public List<Acl> getAclApplicazione() {
+		return aclApplicazione;
+	}
+
+
+	public void setAclApplicazione(List<Acl> aclApplicazione) {
+		this.aclApplicazione = aclApplicazione;
+	}
+	
+	
 }

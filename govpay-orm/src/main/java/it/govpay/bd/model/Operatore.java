@@ -26,6 +26,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.Acl;
 import it.govpay.model.Tributo;
 import it.govpay.model.Utenza;
 
@@ -40,6 +41,8 @@ public class Operatore extends it.govpay.model.Operatore{
 	private transient List<Dominio> domini;
 	private transient List<Tributo> tributi;
 	private transient Utenza utenza;
+	private transient List<Acl> aclOperatore;
+	
 	
 	
 	public Operatore(BasicBD bd, long idUtenza) throws ServiceException {
@@ -61,5 +64,17 @@ public class Operatore extends it.govpay.model.Operatore{
 	public String getPrincipal() {
 		return this.utenza != null ? this.utenza.getPrincipal() : null;
 	}
+
+
+	public List<Acl> getAclOperatore() {
+		return aclOperatore;
+	}
+
+
+	public void setAclOperatore(List<Acl> aclOperatore) {
+		this.aclOperatore = aclOperatore;
+	}
+	
+	
 }
 

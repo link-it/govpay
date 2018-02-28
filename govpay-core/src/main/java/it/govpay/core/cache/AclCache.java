@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
+import it.govpay.core.dao.anagrafica.AclDAO;
+import it.govpay.core.dao.anagrafica.dto.ListaAclDTO;
+import it.govpay.core.dao.anagrafica.dto.ListaAclDTOResponse;
 import it.govpay.model.Acl;
 
 public class AclCache {
@@ -15,11 +19,81 @@ public class AclCache {
 	private Logger log = null;
 	private static AclCache instance = null;
 	
-	private Map<String, List<Acl>> mapAcls = null;
+	private Map<String, List<Acl>> mapAclsRuoli = null;
+	
+	private Map<String, List<Acl>> mapAclsPrincipal = null;
 	
 	public AclCache(Logger log) {
 		this.log = log;
-		this.mapAcls = new HashMap<String,List<Acl>>();
+		this.mapAclsRuoli = new HashMap<String,List<Acl>>();
+		this.mapAclsPrincipal = new HashMap<String,List<Acl>>();
+
+		
+		inizializzaCacheAclsRuoli(); 
+		
+		inizializzaCacheAclsPrincipal(); 
+	}
+
+	public void inizializzaCacheAclsRuoli() {
+		AclDAO aclDAO = new AclDAO();
+		
+		try {
+			this.log.info("Caricamento dei Ruoli registrati nel sistema in corso... "); 
+			ListaAclDTOResponse leggiAclRuoloRegistrateSistema = aclDAO.leggiAclRuoloRegistrateSistema(new ListaAclDTO(null));
+			
+			this.log.info("Caricamento dei Ruoli registrati nel sistema trovate ["+leggiAclRuoloRegistrateSistema.getTotalResults()+"] Acl.");
+			List<Acl> results = leggiAclRuoloRegistrateSistema.getResults();
+			if (results != null && results.size() >0) {
+				for (Acl acl : results) {
+					List<Acl> listaAclI = null;
+					
+					String ruolo = acl.getRuolo();
+					if(this.mapAclsRuoli.containsKey(ruolo)) {
+						listaAclI = this.mapAclsRuoli.remove(ruolo);
+					} else {
+						listaAclI = new ArrayList<Acl>();
+					}
+				
+					listaAclI.add(acl);
+					this.mapAclsRuoli.put(ruolo,listaAclI);
+				}
+			}
+			
+			this.log.info("Caricamento dei Ruoli registrati nel sistema completato"); 
+		} catch (ServiceException e) {
+			this.log.error("Caricamento dei Ruoli registrati nel sistema completato con errori: " + e.getMessage(),e); 
+		}
+	}
+	
+	public void inizializzaCacheAclsPrincipal() {
+		AclDAO aclDAO = new AclDAO();
+		
+		try {
+			this.log.info("Caricamento dei Principal registrati nel sistema in corso... "); 
+			ListaAclDTOResponse leggiAclRuoloRegistrateSistema = aclDAO.leggiAclPrincipalRegistrateSistema(new ListaAclDTO(null));
+			
+			this.log.info("Caricamento dei Principal registrati nel sistema trovate ["+leggiAclRuoloRegistrateSistema.getTotalResults()+"] Acl.");
+			List<Acl> results = leggiAclRuoloRegistrateSistema.getResults();
+			if (results != null && results.size() >0) {
+				for (Acl acl : results) {
+					List<Acl> listaAclI = null;
+					
+					String ruolo = acl.getRuolo();
+					if(this.mapAclsPrincipal.containsKey(ruolo)) {
+						listaAclI = this.mapAclsPrincipal.remove(ruolo);
+					} else {
+						listaAclI = new ArrayList<Acl>();
+					}
+				
+					listaAclI.add(acl);
+					this.mapAclsPrincipal.put(ruolo,listaAclI);
+				}
+			}
+			
+			this.log.info("Caricamento dei Principal registrati nel sistema completato"); 
+		} catch (ServiceException e) {
+			this.log.error("Caricamento dei Principal registrati nel sistema completato con errori: " + e.getMessage(),e); 
+		}
 	}
 	
 	public static synchronized void newInstance(Logger log) {
@@ -35,12 +109,12 @@ public class AclCache {
 		return new ArrayList<String>();
 	}
 	
-	public Set<String> getChiavi(){
-		return this.mapAcls.keySet();
+	public Set<String> getChiaviRuoli(){
+		return this.mapAclsRuoli.keySet();
 	}
 	
-	public String  getRuolo(String key){
-		if(this.mapAcls.containsKey(key)) {
+	public String getRuolo(String key){
+		if(this.mapAclsRuoli.containsKey(key)) {
 			return key;
 		}
 		

@@ -50,7 +50,7 @@ public class NotificaClient extends BasicClient {
 	public NotificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.NOTIFICA);
 		tipo = applicazione.getConnettoreNotifica().getTipo();
-		versione = applicazione.getVersione();
+		versione = applicazione.getConnettoreNotifica().getVersione();
 		
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
@@ -84,7 +84,7 @@ public class NotificaClient extends BasicClient {
 				paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(null).getCodVersamentoEnte());
 				paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, null));
 				
-				if(notifica.getApplicazione(null).getVersione().compareVersione(Versione.GP_SOAP_02_02) >= 0)
+				if(notifica.getApplicazione(null).getConnettoreNotifica().getVersione().compareVersione(Versione.GP_SOAP_02_02) >= 0)
 					paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
 				
 				QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaTransazione");

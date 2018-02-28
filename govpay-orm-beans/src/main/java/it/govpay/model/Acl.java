@@ -56,6 +56,7 @@ public class Acl extends BasicModel {
 	private String diritti;
 	private Servizio servizio;
 	private List<Diritti> listaDiritti= null;
+	private long id;
 
 	private static final long serialVersionUID = 1L;
 	public enum Servizio {
@@ -144,6 +145,14 @@ public class Acl extends BasicModel {
 					this.listaDiritti.add(p);
 			}
 		}
+	}
+	
+	@Override
+	public Long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
 	}
 	
 }

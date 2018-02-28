@@ -21,27 +21,22 @@ package it.govpay.bd.model.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Rpt.FirmaRichiesta;
-import it.govpay.model.Versionabile.Versione;
 import it.govpay.orm.IdUtenza;
 
 public class ApplicazioneConverter {
 
-	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica, BasicBD bd) throws ServiceException {
+	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica) throws ServiceException {
 		Applicazione dto = new Applicazione();
 		dto.setAutoIuv(vo.getAutoIUV());
-		dto.setUtenza(AnagraficaManager.getUtenza(bd, vo.getIdUtenza().getId()));
 		dto.setCodApplicazione(vo.getCodApplicazione());
 		dto.setConnettoreNotifica(connettoreNotifica);
 		dto.setConnettoreVerifica(connettoreVerifica);
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
 		dto.setTrusted(vo.getTrusted());
-		dto.setVersione(Versione.toEnum(vo.getVersione()));
 		dto.setCodApplicazioneIuv(vo.getCodApplicazioneIuv());
 		dto.setRegExp(vo.getRegExp());
 		return dto;
@@ -68,7 +63,6 @@ public class ApplicazioneConverter {
 		idUtenza.setPrincipal(dto.getPrincipal());
 		vo.setIdUtenza(idUtenza);
 		vo.setTrusted(dto.isTrusted());
-		vo.setVersione(dto.getVersione().getApiLabel()); 
 		vo.setCodApplicazioneIuv(dto.getCodApplicazioneIuv());
 		vo.setRegExp(dto.getRegExp());
 		return vo;

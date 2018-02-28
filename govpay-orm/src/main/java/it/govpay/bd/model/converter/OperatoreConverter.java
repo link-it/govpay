@@ -21,18 +21,17 @@ package it.govpay.bd.model.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Operatore;
 import it.govpay.orm.IdUtenza;
 
 public class OperatoreConverter {
 
 
-	public static Operatore toDTO(it.govpay.orm.Operatore vo, BasicBD bd) throws ServiceException {
+	public static Operatore toDTO(it.govpay.orm.Operatore vo) throws ServiceException {
 		Operatore dto = new Operatore();
 		dto.setId(vo.getId());
-		dto.setUtenza(AnagraficaManager.getUtenza(bd, vo.getIdUtenza().getId()));
+		if(vo.getIdUtenza() != null)
+		dto.setIdUtenza(vo.getIdUtenza().getId());
 		dto.setNome(vo.getNome());
 		return dto;
 	}

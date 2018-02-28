@@ -32,6 +32,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
@@ -270,7 +271,12 @@ public class ApplicazioniBD extends BasicBD {
 				connettoreVerifica = ConnettoreConverter.toDTO(this.getConnettoreService().findAll(expVerifica));
 			}
 
-			Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreNotifica, connettoreVerifica, this);
+			Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreNotifica, connettoreVerifica);
+			applicazione.setUtenza(AnagraficaManager.getUtenza(this, applicazioneVO.getIdUtenza().getId()));
+			AclBD aclBD = new AclBD(this);
+			AclFilter filter = aclBD.newFilter();
+			filter.setPrincipal(applicazione.getUtenza().getPrincipal());
+			applicazione.setAclApplicazione(aclBD.findAll(filter));
 			return applicazione;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);

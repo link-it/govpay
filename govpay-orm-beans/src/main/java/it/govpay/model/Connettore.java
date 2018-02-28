@@ -19,9 +19,7 @@
  */
 package it.govpay.model;
 
-import it.govpay.model.Versionabile.Versione;
-
-public class Connettore extends BasicModel {
+public class Connettore extends Versionabile {
 	
 	private static final long serialVersionUID = 1L;
 	public static final String P_TIPOAUTENTICAZIONE_NAME = "TIPOAUTENTICAZIONE";
@@ -71,7 +69,6 @@ public class Connettore extends BasicModel {
 	private boolean azioneInUrl;
 	
 	private String principal;
-	private Versione versione;
 	
 	public Connettore() {
 	}
@@ -181,14 +178,4 @@ public class Connettore extends BasicModel {
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
-
-	public Versione getVersione() {
-		return versione;
-	}
-
-	public void setVersione(Versione versione) {
-		this.versione = versione;
-	}
-	
-	
 }

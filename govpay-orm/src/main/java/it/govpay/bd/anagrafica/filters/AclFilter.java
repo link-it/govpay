@@ -19,24 +19,17 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
-import java.util.List;
-
-import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.ACL;
-import it.govpay.orm.Applicazione;
-import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
 
 public class AclFilter extends AbstractFilter {
 
@@ -68,14 +61,35 @@ public class AclFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression(); 
 			boolean addAnd = false;
 			
-			if(this.codApplicazione != null){
+			if(this.ruolo != null){
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
+				newExpression.equals(ACL.model().RUOLO, this.ruolo);
+				newExpression.isNotNull(ACL.model().RUOLO);
 			}
 			
-			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
+			if(this.forceRuolo != null && this.forceRuolo.booleanValue() == true){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.isNotNull(ACL.model().RUOLO);
+			}
+			
+			if(this.principal != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(ACL.model().PRINCIPAL, this.principal);
+				newExpression.isNotNull(ACL.model().PRINCIPAL);
+			}
+			
+			if(this.forcePrincipal != null && this.forcePrincipal.booleanValue() == true){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.isNotNull(ACL.model().PRINCIPAL);
+			}
 			
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -91,6 +105,38 @@ public class AclFilter extends AbstractFilter {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
+	}
+
+	public String getRuolo() {
+		return ruolo;
+	}
+
+	public void setRuolo(String ruolo) {
+		this.ruolo = ruolo;
+	}
+
+	public String getPrincipal() {
+		return principal;
+	}
+
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
+
+	public Boolean getForceRuolo() {
+		return forceRuolo;
+	}
+
+	public void setForceRuolo(Boolean forceRuolo) {
+		this.forceRuolo = forceRuolo;
+	}
+
+	public Boolean getForcePrincipal() {
+		return forcePrincipal;
+	}
+
+	public void setForcePrincipal(Boolean forcePrincipal) {
+		this.forcePrincipal = forcePrincipal;
 	}
 	
 }

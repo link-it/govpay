@@ -19,7 +19,6 @@
  */
 package it.govpay.bd.model.converter;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Acl;
@@ -28,22 +27,24 @@ import it.govpay.orm.ACL;
 
 public class AclConverter {
 
-	public static Acl toDTO(ACL vo) throws ServiceException, NotFoundException {
+	public static Acl toDTO(ACL vo) throws ServiceException {
 		Acl dto = new Acl();
 		dto.setDiritti(vo.getDiritti());
 		dto.setListaDiritti(vo.getDiritti());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setRuolo(vo.getRuolo());
 		dto.setServizio(Servizio.toEnum(vo.getServizio()));
+		dto.setId(vo.getId());
 		return dto;
 	}
 
-	public static it.govpay.orm.ACL toVO(Acl dto) throws ServiceException, NotFoundException {
+	public static it.govpay.orm.ACL toVO(Acl dto) throws ServiceException {
 		ACL vo = new ACL();
 		vo.setDiritti(dto.getListaDirittiString()); 
 		vo.setServizio(dto.getServizio().getCodifica());
 		vo.setPrincipal(dto.getPrincipal());
 		vo.setRuolo(dto.getRuolo());
+		vo.setId(dto.getId());
 		return vo;
 	}
 }

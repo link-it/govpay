@@ -33,6 +33,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.converter.OperatoreConverter;
 import it.govpay.bd.model.converter.UtenzaConverter;
@@ -116,7 +117,12 @@ public class OperatoriBD extends BasicBD {
 
 
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
-		Operatore operatore = OperatoreConverter.toDTO(operatoreVO, this);
+		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
+		operatore.setUtenza(AnagraficaManager.getUtenza(this, operatoreVO.getIdUtenza().getId()));
+		AclBD aclBD = new AclBD(this);
+		AclFilter filter = aclBD.newFilter();
+		filter.setPrincipal(operatore.getUtenza().getPrincipal());
+		operatore.setAclOperatore(aclBD.findAll(filter));
 		return operatore;
 	}
 

@@ -113,7 +113,7 @@ public abstract class BaseRsService {
 	protected List<String> getListaRuoli(){
 		List<String> listaRuoliPosseduti = new ArrayList<String>();
 		// caricamento dei ruoli ricevuti nella richiesta http
-		for (String chiaveRuolo : this.aclCache.getChiavi()) {
+		for (String chiaveRuolo : this.aclCache.getChiaviRuoli()) {
 			if(this.request.isUserInRole(chiaveRuolo)){
 				listaRuoliPosseduti.add(this.aclCache.getRuolo(chiaveRuolo));
 			}

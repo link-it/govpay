@@ -57,7 +57,7 @@ public class VerificaClient extends BasicClient {
 	
 	public VerificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.VERIFICA);
-		versione = applicazione.getVersione();
+		versione = applicazione.getConnettoreVerifica().getVersione();
 		tipo = applicazione.getConnettoreVerifica().getTipo();
 		codApplicazione = applicazione.getCodApplicazione();
 		if(objectFactory == null || log == null ){
