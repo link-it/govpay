@@ -109,14 +109,14 @@ public class Iuv extends BasicBD {
 	
 	public it.govpay.model.Iuv generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type) throws GovPayException, ServiceException {
 		
-		if(dominio.isCustomIuv()) {
+//		if(dominio.isCustomIuv()) {
 			try {
 				if(GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getClass().getMethod("buildPrefix", it.govpay.bd.model.Applicazione.class, it.govpay.model.Dominio.class, java.util.Map.class).getDeclaringClass().getName().equals(CustomIuv.class.getName()))
 					throw new GovPayException("Il dominio [Dominio:" + dominio.getCodDominio() + "] risulta configurato per una generazione decentralizzata degli IUV e non e' stato fornito un plugin per la generazione custom. Non e' quindi possibile avviare una transazione di pagamento se non viene fornito lo IUV da utilizzare.", EsitoOperazione.DOM_002, dominio.getCodDominio());
 			} catch (NoSuchMethodException e) {
 				throw new GovPayException("Il dominio [Dominio:" + dominio.getCodDominio() + "] risulta configurato per una generazione decentralizzata degli IUV e non e' stato fornito un plugin per la generazione custom. Non e' quindi possibile avviare una transazione di pagamento se non viene fornito lo IUV da utilizzare.", EsitoOperazione.DOM_002, dominio.getCodDominio());
 			}
-		}
+//		}
 		
 		// Build prefix
 		String prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, GpThreadLocal.get().getPagamentoCtx().getAllIuvProps(applicazione));
@@ -129,13 +129,13 @@ public class Iuv extends BasicBD {
 			try {
 				Long.parseLong(prefix);
 			} catch (NumberFormatException e) {
-				if(dominio.isIuvPrefixStrict()) {
+//				if(dominio.isIuvPrefixStrict()) {
 					GpThreadLocal.get().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
 					throw new ServiceException("Il prefisso generato [" + prefix + "] non e' numerico.");
-				} else {
-					GpThreadLocal.get().log("iuv.generazioneIUVPrefixWarn", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico. Prefisso non utilizzato.", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
-					prefix = "";
-				}
+//				} else {
+//					GpThreadLocal.get().log("iuv.generazioneIUVPrefixWarn", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico. Prefisso non utilizzato.", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
+//					prefix = "";
+//				}
 			}
 			iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.NUMERICO, prefix);
 		} else {
@@ -143,13 +143,13 @@ public class Iuv extends BasicBD {
 			if(prefix.matches("[a-zA-Z0-9]*"))
 				iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.ISO11694, prefix);
 			else {
-				if(dominio.isIuvPrefixStrict()) {
+//				if(dominio.isIuvPrefixStrict()) {
 					GpThreadLocal.get().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
 					throw new ServiceException("Il prefisso generato [" + prefix + "] non e' alfanumerico.");
-				} else {
-					GpThreadLocal.get().log("iuv.generazioneIUVPrefixWarn", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico. Prefisso non utilizzato.", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
-					iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.ISO11694, "");
-				}
+//				} else {
+//					GpThreadLocal.get().log("iuv.generazioneIUVPrefixWarn", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico. Prefisso non utilizzato.", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
+//					iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.ISO11694, "");
+//				}
 			}
 		}
 		
@@ -168,9 +168,9 @@ public class Iuv extends BasicBD {
 				throw new GovPayException(EsitoOperazione.DOM_000, dto.getCodDominio());
 			}
 			
-			if(!dominio.isCustomIuv()) {
-				throw new GovPayException("Il dominio [Dominio:" + dto.getCodDominio() + "] risulta configurato per la gestione centralizzata degli IUV. Non e' quindi possibile caricare IUV generati esternamente.", EsitoOperazione.DOM_003, dto.getCodDominio());
-			}
+//			if(!dominio.isCustomIuv()) {
+//				throw new GovPayException("Il dominio [Dominio:" + dto.getCodDominio() + "] risulta configurato per la gestione centralizzata degli IUV. Non e' quindi possibile caricare IUV generati esternamente.", EsitoOperazione.DOM_003, dto.getCodDominio());
+//			}
 			
 			CaricaIuvDTOResponse response = new CaricaIuvDTOResponse();
 			Exception e = null;
