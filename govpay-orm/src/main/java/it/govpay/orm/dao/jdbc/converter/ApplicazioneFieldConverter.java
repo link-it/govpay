@@ -74,6 +74,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(Applicazione.model().ID_UTENZA.ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".abilitato";
+			}else{
+				return "abilitato";
+			}
+		}
 		if(field.equals(Applicazione.model().COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
@@ -107,13 +114,6 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_connettore_verifica";
 			}else{
 				return "cod_connettore_verifica";
-			}
-		}
-		if(field.equals(Applicazione.model().VERSIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".versione";
-			}else{
-				return "versione";
 			}
 		}
 		if(field.equals(Applicazione.model().TRUSTED)){
@@ -153,6 +153,9 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Applicazione.model().ID_UTENZA.PRINCIPAL)){
 			return this.toTable(Applicazione.model().ID_UTENZA, returnAlias);
 		}
+		if(field.equals(Applicazione.model().ID_UTENZA.ABILITATO)){
+			return this.toTable(Applicazione.model().ID_UTENZA, returnAlias);
+		}
 		if(field.equals(Applicazione.model().COD_APPLICAZIONE)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
@@ -166,9 +169,6 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().COD_CONNETTORE_VERIFICA)){
-			return this.toTable(Applicazione.model(), returnAlias);
-		}
-		if(field.equals(Applicazione.model().VERSIONE)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().TRUSTED)){

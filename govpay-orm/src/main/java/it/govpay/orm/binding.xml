@@ -363,7 +363,6 @@
     <value name="firmaRicevuta" field="firmaRicevuta" usage="required"/>
     <value name="codConnettoreEsito" field="codConnettoreEsito" usage="optional"/>
     <value name="codConnettoreVerifica" field="codConnettoreVerifica" usage="optional"/>
-    <value name="versione" field="versione" default="2.1" usage="required"/>
     <value name="trusted" field="trusted" usage="required"/>
     <value name="codApplicazioneIuv" field="codApplicazioneIuv" usage="optional"/>
     <value name="regExp" field="regExp" usage="optional"/>
@@ -408,8 +407,8 @@
   </mapping>
   <mapping name="ACL" class="it.govpay.orm.ACL">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="ruolo" field="ruolo" usage="required"/>
-    <value name="principal" field="principal" usage="required"/>
+    <value name="ruolo" field="ruolo" usage="optional"/>
+    <value name="principal" field="principal" usage="optional"/>
     <value name="servizio" field="servizio" usage="required"/>
     <value name="diritti" field="diritti" usage="required"/>
   </mapping>

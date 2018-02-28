@@ -41,7 +41,6 @@ public class ApplicazioneConverter {
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
 		dto.setTrusted(vo.getTrusted());
-		dto.setVersione(Versione.toEnum(vo.getVersione()));
 		dto.setCodApplicazioneIuv(vo.getCodApplicazioneIuv());
 		dto.setRegExp(vo.getRegExp());
 		return dto;
@@ -68,7 +67,6 @@ public class ApplicazioneConverter {
 		idUtenza.setPrincipal(dto.getPrincipal());
 		vo.setIdUtenza(idUtenza);
 		vo.setTrusted(dto.isTrusted());
-		vo.setVersione(dto.getVersione().getApiLabel()); 
 		vo.setCodApplicazioneIuv(dto.getCodApplicazioneIuv());
 		vo.setRegExp(dto.getRegExp());
 		return vo;

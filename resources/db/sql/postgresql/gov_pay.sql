@@ -115,7 +115,6 @@ CREATE TABLE applicazioni
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
-	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
 	trusted BOOLEAN NOT NULL,
 	cod_applicazione_iuv VARCHAR(3),
 	reg_exp VARCHAR(1024),
