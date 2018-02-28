@@ -44,7 +44,7 @@ public class ACLModel extends AbstractModel<ACL> {
 		this.RUOLO = new Field("ruolo",java.lang.String.class,"ACL",ACL.class);
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"ACL",ACL.class);
 		this.SERVIZIO = new Field("servizio",java.lang.String.class,"ACL",ACL.class);
-		this.DIRITTI = new Field("diritti",int.class,"ACL",ACL.class);
+		this.DIRITTI = new Field("diritti",java.lang.String.class,"ACL",ACL.class);
 	
 	}
 	
@@ -55,7 +55,7 @@ public class ACLModel extends AbstractModel<ACL> {
 		this.RUOLO = new ComplexField(father,"ruolo",java.lang.String.class,"ACL",ACL.class);
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"ACL",ACL.class);
 		this.SERVIZIO = new ComplexField(father,"servizio",java.lang.String.class,"ACL",ACL.class);
-		this.DIRITTI = new ComplexField(father,"diritti",int.class,"ACL",ACL.class);
+		this.DIRITTI = new ComplexField(father,"diritti",java.lang.String.class,"ACL",ACL.class);
 	
 	}
 	

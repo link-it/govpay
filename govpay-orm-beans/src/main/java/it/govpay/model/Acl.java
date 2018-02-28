@@ -53,7 +53,7 @@ public class Acl extends BasicModel {
 	
 	private String ruolo;
 	private String principal;
-	private int diritti;
+	private String diritti;
 	private Servizio servizio;
 	private List<Diritti> listaDiritti= null;
 
@@ -106,10 +106,10 @@ public class Acl extends BasicModel {
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
-	public int getDiritti() {
+	public String getDiritti() {
 		return diritti;
 	}
-	public void setDiritti(int diritti) {
+	public void setDiritti(String diritti) {
 		this.diritti = diritti;
 	}
 	public Servizio getServizio() {

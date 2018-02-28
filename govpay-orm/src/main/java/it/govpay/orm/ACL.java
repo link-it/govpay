@@ -35,10 +35,10 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="ACL">
  * 		&lt;sequence>
- * 			&lt;element name="ruolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ruolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="servizio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="diritti" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="diritti" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -104,11 +104,11 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.servizio = servizio;
   }
 
-  public int getDiritti() {
+  public java.lang.String getDiritti() {
     return this.diritti;
   }
 
-  public void setDiritti(int diritti) {
+  public void setDiritti(java.lang.String diritti) {
     this.diritti = diritti;
   }
 
@@ -132,19 +132,19 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ruolo",required=true,nillable=false)
+  @XmlElement(name="ruolo",required=false,nillable=false)
   protected java.lang.String ruolo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="principal",required=true,nillable=false)
+  @XmlElement(name="principal",required=false,nillable=false)
   protected java.lang.String principal;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="servizio",required=true,nillable=false)
   protected java.lang.String servizio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="diritti",required=true,nillable=false)
-  protected int diritti;
+  protected java.lang.String diritti;
 
 }

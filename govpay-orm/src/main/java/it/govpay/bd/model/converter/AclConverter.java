@@ -40,7 +40,7 @@ public class AclConverter {
 
 	public static it.govpay.orm.ACL toVO(Acl dto) throws ServiceException, NotFoundException {
 		ACL vo = new ACL();
-		vo.setDiritti(dto.getListaDirittiInt()); 
+		vo.setDiritti(dto.getListaDirittiString()); 
 		vo.setServizio(dto.getServizio().getCodifica());
 		vo.setPrincipal(dto.getPrincipal());
 		vo.setRuolo(dto.getRuolo());

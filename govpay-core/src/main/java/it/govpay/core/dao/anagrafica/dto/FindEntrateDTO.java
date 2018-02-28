@@ -19,12 +19,25 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
-import java.util.List;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class FindTributiDTOResponse extends BasicFindResponseDTO<GetTributoDTOResponse> {
+import it.govpay.model.IAutorizzato;
+
+public class FindEntrateDTO extends BasicFindRequestDTO {
 	
-	public FindTributiDTOResponse(long totalResults, List<GetTributoDTOResponse> tributi) {
-		super(totalResults, tributi);
+	private Boolean abilitato = null;
+	
+	public FindEntrateDTO(IAutorizzato user) throws ServiceException {
+		super(user);
+		this.addSortField("idEntrata", it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
 	}
 
+	public Boolean getAbilitato() {
+		return abilitato;
+	}
+
+	public void setAbilitato(Boolean abilitato) {
+		this.abilitato = abilitato;
+	}
+	
 }

@@ -21,10 +21,12 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
-public class FindTributiDTOResponse extends BasicFindResponseDTO<GetTributoDTOResponse> {
-	
-	public FindTributiDTOResponse(long totalResults, List<GetTributoDTOResponse> tributi) {
-		super(totalResults, tributi);
+import it.govpay.model.TipoTributo;
+
+public class FindEntrateDTOResponse extends BasicFindResponseDTO<TipoTributo> {
+
+	public FindEntrateDTOResponse(long totalResults, List<TipoTributo> domini) {
+		super(totalResults, domini);
 	}
 
 }

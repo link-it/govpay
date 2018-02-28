@@ -83,10 +83,10 @@ ALTER TABLE domini DROP COLUMN xml_tabella_controparti;
 DROP TABLE acl;
 CREATE TABLE acl
 (
-	ruolo VARCHAR(255) NOT NULL,
-	principal VARCHAR(255) NOT NULL,
+	ruolo VARCHAR(255),
+	principal VARCHAR(255),
 	servizio VARCHAR(255) NOT NULL,
-	diritti INT NOT NULL,
+	VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- fk/pk keys constraints
