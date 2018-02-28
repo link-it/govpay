@@ -19,17 +19,43 @@
  */
 package it.govpay.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Acl extends BasicModel {
 	
-	public static final int DIRITTI_LETTURA = 1;
-	public static final int DIRITTI_SCRITTURA = 2;
-	public static final int DIRITTI_ESECUZIONE = 2;
-	public static final int NO_DIRITTI = 0;
+	public enum Diritti {
+		LETTURA ("R"), SCRITTURA ("W") , ESECUZIONE ("X");
+		
+		
+		private String codifica;
+
+		Diritti(String codifica) {
+			this.codifica = codifica;
+		}
+		
+		public String getCodifica() {
+			return codifica;
+		}
+		
+		public static Diritti toEnum(String codifica) throws ServiceException {
+			for(Diritti p : Diritti.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			throw new ServiceException("Codifica inesistente per Diritto. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Diritti.values()));
+		}
+	}
 	
 	private String ruolo;
+	private String principal;
+	private int diritti;
+	private Servizio servizio;
+	private List<Diritti> listaDiritti= null;
 
 	private static final long serialVersionUID = 1L;
 	public enum Servizio {
@@ -68,73 +94,17 @@ public class Acl extends BasicModel {
 			throw new ServiceException("Codifica inesistente per Servizio. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Servizio.values()));
 		}
 	}
-	
-	public enum Tipo {
-		DOMINIO("D"), TRIBUTO("T");
-		
-		private String codifica;
-
-		Tipo(String codifica) {
-			this.codifica = codifica;
-		}
-		
-		public String getCodifica() {
-			return codifica;
-		}
-		
-		public static Tipo toEnum(String codifica) throws ServiceException {
-			for(Tipo p : Tipo.values()){
-				if(p.getCodifica().equals(codifica))
-					return p;
-			}
-			throw new ServiceException("Codifica inesistente per Tipo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Tipo.values()));
-		}
+	public String getRuolo() {
+		return ruolo;
 	}
-	
-	private Tipo tipo;
-	private Servizio servizio;
-	private String codDominio;
-	private String codTributo;
-	private Long idDominio;
-	private Long idTributo;
-	private int diritti;
-	private boolean admin;
-	
-	public Tipo getTipo() {
-		return tipo;
+	public void setRuolo(String ruolo) {
+		this.ruolo = ruolo;
 	}
-	public void setTipo(Tipo tipo) {
-		this.tipo = tipo;
+	public String getPrincipal() {
+		return principal;
 	}
-	public Servizio getServizio() {
-		return servizio;
-	}
-	public void setServizio(Servizio servizio) {
-		this.servizio = servizio;
-	}
-	public String getCodDominio() {
-		return codDominio;
-	}
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
-	}
-	public String getCodTributo() {
-		return codTributo;
-	}
-	public void setCodTributo(String codTributo) {
-		this.codTributo = codTributo;
-	}
-	public Long getIdDominio() {
-		return idDominio;
-	}
-	public void setIdDominio(Long idDominio) {
-		this.idDominio = idDominio;
-	}
-	public Long getIdTributo() {
-		return idTributo;
-	}
-	public void setIdTributo(Long idTributo) {
-		this.idTributo = idTributo;
+	public void setPrincipal(String principal) {
+		this.principal = principal;
 	}
 	public int getDiritti() {
 		return diritti;
@@ -142,16 +112,38 @@ public class Acl extends BasicModel {
 	public void setDiritti(int diritti) {
 		this.diritti = diritti;
 	}
-	public boolean isAdmin() {
-		return admin;
+	public Servizio getServizio() {
+		return servizio;
 	}
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
+	public void setServizio(Servizio servizio) {
+		this.servizio = servizio;
 	}
-	public String getRuolo() {
-		return ruolo;
+	public List<Diritti> getListaDiritti() {
+		return listaDiritti;
 	}
-	public void setRuolo(String ruolo) {
-		this.ruolo = ruolo;
+	public String getListaDirittiString() {
+		StringBuffer sb = new StringBuffer();
+		
+		if(this.listaDiritti != null && this.listaDiritti.size() >0 ) {
+			for (Diritti diritti : this.listaDiritti) {
+				sb.append(diritti.getCodifica());
+			}
+		}
+		
+		return sb.toString();
 	}
+	public void setListaDiritti(List<Diritti> listaDiritti) {
+		this.listaDiritti = listaDiritti;
+	}
+	public void setListaDiritti(String diritti) {
+		this.listaDiritti = new ArrayList<Acl.Diritti>();
+		
+		if(StringUtils.isNotEmpty(diritti)) {
+			for(Diritti p : Diritti.values()){
+				if(diritti.toUpperCase().contains(p.getCodifica()))
+					this.listaDiritti.add(p);
+			}
+		}
+	}
+	
 }

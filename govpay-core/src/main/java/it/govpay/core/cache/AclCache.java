@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.govpay.model.Acl;
 import org.slf4j.Logger;
+
+import it.govpay.model.Acl;
 
 public class AclCache {
 
 	private Logger log = null;
 	private static AclCache instance = null;
 	
-	private Map<String, Acl> mapAcls = null;
+	private Map<String, List<Acl>> mapAcls = null;
 	
 	public AclCache(Logger log) {
 		this.log = log;
-		this.mapAcls = new HashMap<String,Acl>();
+		this.mapAcls = new HashMap<String,List<Acl>>();
 	}
 	
 	public static synchronized void newInstance(Logger log) {
@@ -40,7 +41,7 @@ public class AclCache {
 	
 	public String  getRuolo(String key){
 		if(this.mapAcls.containsKey(key)) {
-			return this.mapAcls.get(key).getRuolo();
+			return key;
 		}
 		
 		return null;

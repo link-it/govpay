@@ -22,12 +22,15 @@ package it.govpay.bd.model.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.Tipo;
+import it.govpay.model.Versionabile.Versione;
 
 public class ConnettoreConverter {
 
-	public static Connettore toDTO(List<it.govpay.orm.Connettore> connettoreLst) {
+	public static Connettore toDTO(List<it.govpay.orm.Connettore> connettoreLst) throws ServiceException {
 		Connettore dto = new Connettore();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){
@@ -91,6 +94,10 @@ public class ConnettoreConverter {
 				
 				if(Connettore.P_PRINCIPAL_NAME.equals(connettore.getCodProprieta())) {
 					dto.setPrincipal(connettore.getValore());
+				}
+				
+				if(Connettore.P_VERSIONE.equals(connettore.getCodProprieta())) {
+					dto.setVersione(Versione.toEnum(connettore.getValore()));
 				}
 				
 				dto.setTipo(Tipo.SOAP);
@@ -207,13 +214,13 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 		
-//		if(connettore.getTipo() != null) {
-//			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-//			vo.setCodConnettore(connettore.getIdConnettore());
-//			vo.setCodProprieta(Connettore.P_VERSIONE);
-//			vo.setValore(connettore.getTipo().toString());
-//			voList.add(vo);
-//		}
+		if(connettore.getVersione() != null) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_VERSIONE);
+			vo.setValore(connettore.getVersione().getApiLabel());
+			voList.add(vo);
+		}
 		
 		if(connettore.getPrincipal() != null && !connettore.getPrincipal().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();

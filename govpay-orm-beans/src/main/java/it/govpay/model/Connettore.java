@@ -19,6 +19,8 @@
  */
 package it.govpay.model;
 
+import it.govpay.model.Versionabile.Versione;
+
 public class Connettore extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
@@ -37,7 +39,7 @@ public class Connettore extends BasicModel {
 	public static final String P_URL_NAME = "URL";
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
 	public static final String P_PRINCIPAL_NAME = "PRINCIPAL";
-//	public static final String P_VERSIONE = "VERSIONE";
+    public static final String P_VERSIONE = "VERSIONE";
 	
 	public enum EnumAuthType {
 		SSL, HTTPBasic, NONE
@@ -48,7 +50,7 @@ public class Connettore extends BasicModel {
 	}
 	
 	public enum Tipo {
-		SOAP;
+		SOAP, REST;
 	}
 
 	private String idConnettore;
@@ -69,6 +71,7 @@ public class Connettore extends BasicModel {
 	private boolean azioneInUrl;
 	
 	private String principal;
+	private Versione versione;
 	
 	public Connettore() {
 	}
@@ -178,4 +181,14 @@ public class Connettore extends BasicModel {
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
+
+	public Versione getVersione() {
+		return versione;
+	}
+
+	public void setVersione(Versione versione) {
+		this.versione = versione;
+	}
+	
+	
 }

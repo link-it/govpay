@@ -19,33 +19,31 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.TipiTributoBD;
-import it.govpay.model.Acl;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Acl.Tipo;
-import it.govpay.orm.ACL;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdTipoTributo;
-
-import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.model.Acl;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.orm.ACL;
+
 public class AclConverter {
 
-	public static Acl toDTO(ACL vo, BasicBD bd) throws ServiceException, NotFoundException {
+	public static Acl toDTO(ACL vo) throws ServiceException, NotFoundException {
 		Acl dto = new Acl();
 		dto.setDiritti(vo.getDiritti());
-		 //TODO pintori
+		dto.setListaDiritti(vo.getDiritti());
+		dto.setPrincipal(vo.getPrincipal());
+		dto.setRuolo(vo.getRuolo());
+		dto.setServizio(Servizio.toEnum(vo.getServizio()));
 		return dto;
 	}
 
-	public static it.govpay.orm.ACL toVO(Acl dto, BasicBD bd) throws ServiceException, NotFoundException {
+	public static it.govpay.orm.ACL toVO(Acl dto) throws ServiceException, NotFoundException {
 		ACL vo = new ACL();
-		vo.setDiritti(dto.getDiritti());
-		 //TODO pintori
+		vo.setDiritti(dto.getListaDirittiInt()); 
+		vo.setServizio(dto.getServizio().getCodifica());
+		vo.setPrincipal(dto.getPrincipal());
+		vo.setRuolo(dto.getRuolo());
 		return vo;
 	}
 }

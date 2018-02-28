@@ -21,7 +21,7 @@ public abstract class Versionabile extends BasicModel {
 		
 		private String api;
 		private String label;
-		private static String[] labels = {"SOAP-2.1","SOAP-2.2","SOAP-2.3","SOAP-2.5","REST-3.0"};
+		private static String[] labels = {"SOAP_2.1","SOAP_2.2","SOAP_2.3","SOAP_2.5","REST_3.0"};
 		
 		Versione(String api, String label){
 			this.label = label;
@@ -62,7 +62,7 @@ public abstract class Versionabile extends BasicModel {
 		}
 
 		public static Versione toEnum(String versione) throws ServiceException {
-			return toEnum(versione.split("-")[0],versione.split("-")[1]);
+			return toEnum(versione.split("_")[0],versione.split("_")[1]);
 		}
 		
 		public static Versione toEnum(String api, String label) throws ServiceException {
@@ -72,6 +72,22 @@ public abstract class Versionabile extends BasicModel {
 			}
 				
 			throw new ServiceException("Codifica inesistente per Versione. Valore fornito [" + api + "-" + label + "] valori possibili " + ArrayUtils.toString(labels));
+		}
+		
+		public int compareVersione(Versione other) throws ServiceException {
+			return compareVersione(other, true);
+		}
+		
+		public int compareVersione(Versione other, boolean ignoreApi) throws ServiceException {
+			// controllo tra API
+			if(!ignoreApi && !this.getApi().equals(other.getApi())) 
+				throw new ServiceException("Impossibile confrontare due Versioni con API diverse. Versione corrente [" + this.getApi() + "-" + this.getLabel() + "], Versione confrontata ["+ other.getApi() + "-" + other.getLabel() + "].");
+			// a questo punto sono sicuro di confrontare solo versioni delle stesse API.
+			
+			Double mineLabel = Double.parseDouble(this.getLabel());
+			Double otherLabel = Double.parseDouble(other.getLabel());
+			
+			return mineLabel.compareTo(otherLabel);
 		}
 	}
 	

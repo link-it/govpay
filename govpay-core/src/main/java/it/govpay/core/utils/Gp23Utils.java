@@ -237,7 +237,7 @@ public class Gp23Utils {
 		p.setImportoRevocato(pagamento.getImportoRevocato());
 		p.setDataAcquisizione(pagamento.getDataAcquisizione());
 		p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
-		if(versione.compareTo(Versione.GP_SOAP_02_05) >= 0) {
+		if(versione.compareVersione(Versione.GP_SOAP_02_05) >= 0) {
 			p.setIbanAccredito(pagamento.getIbanAccredito());
 		}
 		return p;
