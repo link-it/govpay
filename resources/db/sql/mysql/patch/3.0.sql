@@ -86,7 +86,7 @@ CREATE TABLE acl
 	ruolo VARCHAR(255),
 	principal VARCHAR(255),
 	servizio VARCHAR(255) NOT NULL,
-	diritti INT NOT NULL,
+	VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- fk/pk keys constraints

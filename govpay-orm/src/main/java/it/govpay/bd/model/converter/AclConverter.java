@@ -37,14 +37,14 @@ public class AclConverter {
 
 	public static Acl toDTO(ACL vo, BasicBD bd) throws ServiceException, NotFoundException {
 		Acl dto = new Acl();
-		dto.setDiritti(vo.getDiritti());
+//		dto.setDiritti(vo.getDiritti());
 		 //TODO pintori
 		return dto;
 	}
 
 	public static it.govpay.orm.ACL toVO(Acl dto, BasicBD bd) throws ServiceException, NotFoundException {
 		ACL vo = new ACL();
-		vo.setDiritti(dto.getDiritti());
+//		vo.setDiritti(dto.getDiritti());
 		 //TODO pintori
 		return vo;
 	}

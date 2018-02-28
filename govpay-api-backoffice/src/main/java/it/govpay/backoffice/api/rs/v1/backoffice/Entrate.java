@@ -1,20 +1,19 @@
-package it.govpay.pagamento.api.rs.v1.pagamenti;
+package it.govpay.backoffice.api.rs.v1.backoffice;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
-
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.rs.v1.controllers.base.EntrateController;
-
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.controllers.base.EntrateController;
 
 
 @Path("/entrate")
@@ -31,7 +30,6 @@ public class Entrate extends BaseRsServiceV1{
 
 
 
-/*
     @GET
     @Path("/")
     
@@ -40,9 +38,8 @@ public class Entrate extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.entrateGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi);
     }
-*/
 
-/*
+    
     @GET
     @Path("/{idEntrata}")
     
@@ -51,9 +48,8 @@ public class Entrate extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.entrateIdEntrataGET(this.getUser(), uriInfo, httpHeaders,  idEntrata);
     }
-*/
 
-/*
+
     @PUT
     @Path("/{idEntrata}")
     @Consumes({ "application/json" })
@@ -62,8 +58,8 @@ public class Entrate extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.entrateIdEntrataPUT(this.getUser(), uriInfo, httpHeaders,  idEntrata, is);
     }
-*/
 
+    
 }
 
 

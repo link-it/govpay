@@ -988,7 +988,7 @@
 			<xsd:element name="ruolo" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="principal" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="servizio" type="xsd:string"/>
-			<xsd:element name="diritti" type="xsd:int"/>
+			<xsd:element name="diritti" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
