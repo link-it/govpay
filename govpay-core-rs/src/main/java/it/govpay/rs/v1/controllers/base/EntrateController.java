@@ -1,6 +1,7 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -9,15 +10,16 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.core.dao.anagrafica.DominiDAO;
+import it.govpay.core.dao.anagrafica.EntrateDAO;
+import it.govpay.core.dao.anagrafica.dto.FindEntrateDTO;
+import it.govpay.core.dao.anagrafica.dto.FindEntrateDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.GetEntrataDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
-import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.FaultBean;
+import it.govpay.rs.v1.beans.ListaTipiEntrata;
 import it.govpay.rs.v1.beans.Tipoentrata;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 
@@ -50,15 +52,15 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			GetEntrataDTO getDominioEntrataDTO = new GetEntrataDTO(user, idEntrata);
+			GetEntrataDTO getEntrataDTO = new GetEntrataDTO(user, idEntrata);
 			
 			// INIT DAO
 			
-			EntrateDAO dominiDAO = new EntrateDAO();
+			EntrateDAO entrateDAO = new EntrateDAO();
 			
 			// CHIAMATA AL DAO
 			
-			GetEntrataDTOResponse listaDominiEntrateDTOResponse = dominiDAO.getTributo(getDominioEntrataDTO);
+			GetEntrataDTOResponse listaDominiEntrateDTOResponse = entrateDAO.getEntrata(getEntrataDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
@@ -100,19 +102,22 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			GetTributoDTO getDominioEntrataDTO = new GetTributoDTO(user, idDominio, idEntrata);
+			FindEntrateDTO findEntrateDTO = new FindEntrateDTO(user);
+			findEntrateDTO.setOrderBy(ordinamento);
+			
 			
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			EntrateDAO entrateDAO = new EntrateDAO();
 			
 			// CHIAMATA AL DAO
 			
-			GetTributoDTOResponse listaDominiEntrateDTOResponse = dominiDAO.getTributo(getDominioEntrataDTO);
+			FindEntrateDTOResponse findEntrateDTOResponse = entrateDAO.findEntrate(findEntrateDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Tipoentrata response = new Tipoentrata(listaDominiEntrateDTOResponse.getTributo());
+			ListaTipiEntrata response = new ListaTipiEntrata(findEntrateDTOResponse.getResults().stream().map(t -> new Tipoentrata(t)).collect(Collectors.toList()), 
+					uriInfo.getRequestUri(), findEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

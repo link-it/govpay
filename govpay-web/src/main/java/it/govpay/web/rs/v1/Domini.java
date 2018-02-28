@@ -361,8 +361,8 @@ public class Domini extends BaseRsServiceV1 {
 			FindTributiDTOResponse findTributiDTOResponse = new DominiDAO().findTributi(findTributiDTO);
 			
 			List<Entrata> entrate = new ArrayList<Entrata>();
-			for(it.govpay.bd.model.Tributo tributo : findTributiDTOResponse.getResults()) {
-				entrate.add(new Entrata(tributo, codDominio, baseUriBuilder));
+			for(GetTributoDTOResponse tributo : findTributiDTOResponse.getResults()) {
+				entrate.add(new Entrata(tributo.getTributo(), codDominio, baseUriBuilder));
 			}
 			ListaEntrate listaUnitaOperative = new ListaEntrate(entrate, uriInfo.getRequestUri(), findTributiDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();

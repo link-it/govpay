@@ -4,15 +4,15 @@ import it.govpay.model.IAutorizzato;
 
 public class GetEntrataDTO extends BasicRequestDTO {
 	
-	private String codTributo;
+	private String codTipoTributo;
 	
-	public GetEntrataDTO(IAutorizzato user, String codTributo) {
+	public GetEntrataDTO(IAutorizzato user, String codTipoTributo) {
 		super(user);
-		this.codTributo = codTributo;
+		this.codTipoTributo = codTipoTributo;
 	}
 
-	public String getCodTributo() {
-		return codTributo;
+	public String getCodTipoTributo() {
+		return codTipoTributo;
 	}
 
 }

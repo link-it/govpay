@@ -112,8 +112,8 @@ ALTER TABLE domini DROP COLUMN xml_tabella_controparti;
 DROP TABLE acl;
 CREATE TABLE acl
 (
-	ruolo VARCHAR2(255 CHAR) NOT NULL,
-	principal VARCHAR2(255 CHAR) NOT NULL,
+	ruolo VARCHAR2(255 CHAR),
+	principal VARCHAR2(255 CHAR),
 	servizio VARCHAR2(255 CHAR) NOT NULL,
 	diritti NUMBER NOT NULL,
 	-- fk/pk columns

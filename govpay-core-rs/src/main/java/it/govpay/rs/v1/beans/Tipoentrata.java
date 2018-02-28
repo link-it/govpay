@@ -22,12 +22,11 @@ package it.govpay.rs.v1.beans;
 import java.math.BigDecimal;
 
 import org.codehaus.jackson.map.annotate.JsonFilter;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 @JsonFilter(value="tipoentrate")  
 public class Tipoentrata extends it.govpay.rs.v1.beans.base.Tipoentrata {
 
-	public Tipoentrata(it.govpay.model.TipoTributo tributo) throws ServiceException {
+	public Tipoentrata(it.govpay.model.TipoTributo tributo) {
 		this.codiceContabilita(tributo.getCodContabilitaDefault())
 		.codificaIUV(new BigDecimal(tributo.getCodTributoIuvDefault()))
 		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilitaDefault().toString()))

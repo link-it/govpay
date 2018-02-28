@@ -341,8 +341,8 @@ CREATE SEQUENCE seq_acl start 1 increment 1 maxvalue 9223372036854775807 minvalu
 
 CREATE TABLE acl
 (
-	ruolo VARCHAR(255) NOT NULL,
-	principal VARCHAR(255) NOT NULL,
+	ruolo VARCHAR(255),
+	principal VARCHAR(255),
 	servizio VARCHAR(255) NOT NULL,
 	diritti INT NOT NULL,
 	-- fk/pk columns
