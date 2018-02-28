@@ -8,7 +8,6 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.beans.base.StatoRiscossione;
 
 
 
@@ -26,7 +25,7 @@ public class RiscossioniController extends it.govpay.rs.BaseController {
 
 
 
-    public Response riscossioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, StatoRiscossione stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
+    public Response riscossioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 

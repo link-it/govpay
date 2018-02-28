@@ -32,70 +32,60 @@ public class Intermediari extends BaseRsServiceV1{
 
 
 
-
-    @GET
-    @Path("/")
-    
-    @Produces({ "application/json" })
-    public Response intermediariGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
-			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
-    }
-
-
-    
     @GET
     @Path("/{idIntermediario}")
     
     @Produces({ "application/json" })
     public Response intermediariIdIntermediarioGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario);
+        return this.controller.intermediariIdIntermediarioGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario);
     }
 
-
-    
-    @PUT
-    @Path("/{idIntermediario}")
-    @Consumes({ "application/json" })
-    
-    public Response intermediariIdIntermediarioPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioPUT(this.getUser(), uriInfo, httpHeaders,  idIntermediario, is);
-    }
-
-
-    
-    @GET
-    @Path("/{idIntermediario}/stazioni")
-    
-    @Produces({ "application/json" })
-    public Response intermediariIdIntermediarioStazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
-			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioStazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
-    }
-
-
-    
-    @GET
-    @Path("/{idIntermediario}/stazioni/{idStazione}")
-    
-    @Produces({ "application/json" })
-    public Response intermediariIdIntermediarioStazioniIdStazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione){
-        this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioStazioniIdStazioneGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione);
-    }
-
-    
     @PUT
     @Path("/{idIntermediario}/stazioni/{idStazione}")
     @Consumes({ "application/json" })
     
     public Response intermediariIdIntermediarioStazioniIdStazionePUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.intermediariIdIntermediarioStazioniIdStazionePUT(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione, is);
+        return this.controller.intermediariIdIntermediarioStazioniIdStazionePUT(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione, is);
+    }
+
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response intermediariGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.intermediariGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
+
+    @PUT
+    @Path("/{idIntermediario}")
+    @Consumes({ "application/json" })
+    
+    public Response intermediariIdIntermediarioPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.intermediariIdIntermediarioPUT(this.getUser(), uriInfo, httpHeaders,  idIntermediario, is);
+    }
+
+    @GET
+    @Path("/{idIntermediario}/stazioni")
+    
+    @Produces({ "application/json" })
+    public Response intermediariIdIntermediarioStazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.intermediariIdIntermediarioStazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
+
+    @GET
+    @Path("/{idIntermediario}/stazioni/{idStazione}")
+    
+    @Produces({ "application/json" })
+    public Response intermediariIdIntermediarioStazioniIdStazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.intermediariIdIntermediarioStazioniIdStazioneGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione);
     }
 
 }
+
+

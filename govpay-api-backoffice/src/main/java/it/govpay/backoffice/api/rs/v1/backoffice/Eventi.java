@@ -29,16 +29,15 @@ public class Eventi extends BaseRsServiceV1{
 
 
 
-
-	@GET
-	@Path("/")
-
-	@Produces({ "application/json" })
-	public Response eventiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
-			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.eventiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv);
-	}
-
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response eventiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.eventiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv);
+    }
 
 }
+
+

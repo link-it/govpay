@@ -1,20 +1,22 @@
-package it.govpay.pagamento.api.rs.v1.pagamenti;
+package it.govpay.backoffice.api.rs.v1.backoffice;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
-
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.rs.v1.controllers.base.OperatoriController;
-
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.controllers.base.OperatoriController;
+import it.govpay.rs.v1.costanti.Costanti;
 
 
 @Path("/operatori")
@@ -31,40 +33,6 @@ public class Operatori extends BaseRsServiceV1{
 
 
 
-/*
-    @GET
-    @Path("/")
-    
-    @Produces({ "application/json" })
-    public Response operatoriGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.operatoriGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
-    }
-*/
-
-/*
-    @DELETE
-    @Path("/{principal}")
-    
-    
-    public Response operatoriPrincipalDELETE(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.operatoriPrincipalDELETE(this.getUser(), uriInfo, httpHeaders,  principal);
-    }
-*/
-
-/*
-    @GET
-    @Path("/{principal}")
-    
-    @Produces({ "application/json" })
-    public Response operatoriPrincipalGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.operatoriPrincipalGET(this.getUser(), uriInfo, httpHeaders,  principal);
-    }
-*/
-
-/*
     @PUT
     @Path("/{principal}")
     @Consumes({ "application/json" })
@@ -73,7 +41,33 @@ public class Operatori extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.operatoriPrincipalPUT(this.getUser(), uriInfo, httpHeaders,  principal, is);
     }
-*/
+
+    @DELETE
+    @Path("/{principal}")
+    
+    
+    public Response operatoriPrincipalDELETE(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.operatoriPrincipalDELETE(this.getUser(), uriInfo, httpHeaders,  principal);
+    }
+
+    @GET
+    @Path("/{principal}")
+    
+    @Produces({ "application/json" })
+    public Response operatoriPrincipalGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.operatoriPrincipalGET(this.getUser(), uriInfo, httpHeaders,  principal);
+    }
+
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response operatoriGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.operatoriGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
 
 }
 
