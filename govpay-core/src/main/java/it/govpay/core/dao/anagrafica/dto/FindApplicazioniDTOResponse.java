@@ -21,7 +21,7 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class FindApplicazioniDTOResponse extends BasicFindResponseDTO<Applicazione> {
 

@@ -42,7 +42,7 @@ import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.WISPUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.IbanAccredito;
 import it.govpay.orm.IdVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;

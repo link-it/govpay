@@ -18,12 +18,12 @@ public class Applicazione extends BasicBD{
 	}
 
 	
-	public it.govpay.model.Applicazione getApplicazioneAutenticata(String principal) throws GovPayException, ServiceException {
+	public it.govpay.bd.model.Applicazione getApplicazioneAutenticata(String principal) throws GovPayException, ServiceException {
 		if(principal == null) {
 			throw new GovPayException(EsitoOperazione.AUT_000);
 		}
 		
-		it.govpay.model.Applicazione applicazione = null;
+		it.govpay.bd.model.Applicazione applicazione = null;
 		try {
 			applicazione =  AnagraficaManager.getApplicazioneByPrincipal(this, principal);
 		} catch (NotFoundException e) {
@@ -41,15 +41,15 @@ public class Applicazione extends BasicBD{
 		return applicazione;
 	}
 	
-	public void autorizzaApplicazione(String codApplicazione, it.govpay.model.Applicazione applicazioneAutenticata, BasicBD bd) throws GovPayException, ServiceException {
-		it.govpay.model.Applicazione applicazione = null;
+	public void autorizzaApplicazione(String codApplicazione, it.govpay.bd.model.Applicazione applicazioneAutenticata, BasicBD bd) throws GovPayException, ServiceException {
+		it.govpay.bd.model.Applicazione applicazione = null;
 		try {
 			applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
 		}
 
-		if(!applicazione.isAbilitato())
+		if(!applicazione.getUtenza().isAbilitato())
 			throw new GovPayException(EsitoOperazione.APP_001, codApplicazione);
 
 		if(!applicazione.getCodApplicazione().equals(applicazioneAutenticata.getCodApplicazione()))

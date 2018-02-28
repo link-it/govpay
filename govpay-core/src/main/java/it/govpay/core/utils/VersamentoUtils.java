@@ -32,27 +32,27 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
-import it.govpay.model.Applicazione;
-import it.govpay.model.Dominio;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.model.Tributo;
-import it.govpay.bd.model.Versamento;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Dominio;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.Versamento.SpezzoneCausaleStrutturata;
@@ -236,7 +236,7 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 			
-			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo())) {
+			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd).getUtenza(), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo())) {
 				throw new GovPayException(EsitoOperazione.VER_022, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 		}
@@ -246,7 +246,7 @@ public class VersamentoUtils {
 			if(!versamento.getApplicazione(bd).isTrusted())
 				throw new GovPayException(EsitoOperazione.VER_019);
 			
-			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null))
+			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd).getUtenza(), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null))
 				throw new GovPayException(EsitoOperazione.VER_021);
 			
 			try {

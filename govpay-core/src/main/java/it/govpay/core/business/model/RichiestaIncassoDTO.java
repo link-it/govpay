@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import it.govpay.bd.model.Operatore;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class RichiestaIncassoDTO {
 	

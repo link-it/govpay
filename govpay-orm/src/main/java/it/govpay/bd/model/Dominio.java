@@ -34,15 +34,15 @@ import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
-	
+
 	public Dominio() {
 		super();
 	}
-	
+
 	// Business
 	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
 

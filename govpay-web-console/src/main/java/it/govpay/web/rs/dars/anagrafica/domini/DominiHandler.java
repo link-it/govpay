@@ -39,12 +39,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.apache.tika.Tika;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -59,15 +59,14 @@ import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Stazione;
-import it.govpay.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.core.utils.DominioUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
+import it.govpay.model.Tributo;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.input.Logo;
 import it.govpay.web.rs.dars.anagrafica.domini.input.ModalitaIntermediazione;
@@ -848,28 +847,12 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 	@Override
 	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
 		InfoForm infoEsportazione = null;
-		try{
-			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-				URI esportazione = this.getUriEsportazione(uriInfo, bd);
-				infoEsportazione = new InfoForm(esportazione);
-			}
-		}catch(ServiceException e){
-			throw new ConsoleException(e);
-		}
 		return infoEsportazione;
 	}
 
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Dominio entry)	throws ConsoleException {
 		InfoForm infoEsportazione = null;
-		try{
-			if(this.darsService.isServizioAbilitatoLettura(bd, this.funzionalita)){
-				URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
-				infoEsportazione = new InfoForm(esportazione);
-			}
-		}catch(ServiceException e){
-			throw new ConsoleException(e);
-		}
 		return infoEsportazione;
 	}
 
@@ -1526,118 +1509,12 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 	@Override
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
-		StringBuffer sb = new StringBuffer();
-		if(idsToExport != null && idsToExport.size() > 0) {
-			for (Long long1 : idsToExport) {
-
-				if(sb.length() > 0) {
-					sb.append(", ");
-				}
-
-				sb.append(long1);
-			}
-		}
-
-		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
-
-		if(idsToExport == null || idsToExport.size() == 0) {
-			List<String> msg = new ArrayList<String>();
-			msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.erroreSelezioneVuota"));
-			throw new ExportException(msg, EsitoOperazione.ERRORE);
-		}
-
-		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout);
-		} 
-
-		String fileName = "DominiDAO.zip";
-		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo ai ruoli con diritto di lettura
-			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
-
-			DominiBD dominiBD = new DominiBD(bd);
-
-			for (Long idDominio : idsToExport) {
-				Dominio dominio = dominiBD.getDominio(idDominio);
-				String folderName = dominio.getCodDominio();
-
-				IbanAccreditoBD ibanAccreditoDB = new IbanAccreditoBD(bd);
-				IbanAccreditoFilter filter = ibanAccreditoDB.newFilter();
-				filter.setIdDominio(idDominio);
-				List<it.govpay.bd.model.IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
-				final byte[] contiAccredito = DominioUtils.buildInformativaContoAccredito(dominio, ibans);
-
-				ZipEntry contiAccreditoXml = new ZipEntry(folderName + "/contiAccredito.xml");
-				zout.putNextEntry(contiAccreditoXml);
-				zout.write(contiAccredito);
-				zout.closeEntry();
-
-				final byte[] informativa = DominioUtils.buildInformativaControparte(dominio, true);
-
-				ZipEntry informativaXml = new ZipEntry(folderName + "/informativa.xml");
-				zout.putNextEntry(informativaXml);
-				zout.write(informativa);
-				zout.closeEntry();
-
-			}
-			zout.flush();
-			zout.close();
-
-			this.log.info("Esecuzione " + methodName + " completata.");
-
-			return fileName;
-		}catch(WebApplicationException e){
-			throw e;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
+		return null;
 	}
 
 	@Override
 	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
-		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
-
-
-		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
-			// Operazione consentita solo ai ruoli con diritto di lettura
-			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
-
-			DominiBD dominiBD = new DominiBD(bd);
-
-			Dominio dominio = dominiBD.getDominio(idToExport);
-			String fileName = "Dominio_"+dominio.getCodDominio()+".zip";
-
-			IbanAccreditoBD ibanAccreditoDB = new IbanAccreditoBD(bd);
-			IbanAccreditoFilter filter = ibanAccreditoDB.newFilter();
-			filter.setIdDominio(idToExport);
-			List<it.govpay.bd.model.IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
-			final byte[] contiAccredito = DominioUtils.buildInformativaContoAccredito(dominio, ibans);
-
-			ZipEntry contiAccreditoXml = new ZipEntry("contiAccredito.xml");
-			zout.putNextEntry(contiAccreditoXml);
-			zout.write(contiAccredito);
-			zout.closeEntry();
-
-			final byte[] informativa = DominioUtils.buildInformativaControparte(dominio, true);
-
-			ZipEntry informativaXml = new ZipEntry("informativa.xml");
-			zout.putNextEntry(informativaXml);
-			zout.write(informativa);
-			zout.closeEntry();
-
-			zout.flush();
-			zout.close();
-
-			this.log.info("Esecuzione " + methodName + " completata.");
-
-			return fileName;
-		}catch(WebApplicationException e){
-			throw e;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
+		return null;
 	}
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}

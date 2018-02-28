@@ -39,6 +39,7 @@ public class IntermediarioFilter extends AbstractFilter {
 
 	// Viene utilizzato in or sui campi IDIntermediario e NomeSpc
 	private String idIntermediario;
+	private String codIntermediario;
 	private String denominazione;
 	private CustomField cf;
 
@@ -98,6 +99,14 @@ public class IntermediarioFilter extends AbstractFilter {
 				exp.ilike(Intermediario.model().DENOMINAZIONE, this.denominazione,LikeMode.ANYWHERE);
 			}
 			
+			if(this.codIntermediario != null){
+				if(addAnd)
+					exp.and();
+				
+				exp.equals(Intermediario.model().COD_INTERMEDIARIO, this.codIntermediario);
+			}
+			
+			
 			addAnd = this.setFiltroAbilitato(exp, addAnd);
 
 			return exp;
@@ -141,6 +150,14 @@ public class IntermediarioFilter extends AbstractFilter {
 
 	public void setDenominazione(String denominazione) {
 		this.denominazione = denominazione;
+	}
+
+	public String getCodIntermediario() {
+		return codIntermediario;
+	}
+
+	public void setCodIntermediario(String codIntermediario) {
+		this.codIntermediario = codIntermediario;
 	}
 
 

@@ -45,7 +45,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.converter.IuvConverter;
 import it.govpay.bd.pagamento.filters.IuvFilter;
 import it.govpay.bd.pagamento.util.IuvUtils;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.orm.IUV;

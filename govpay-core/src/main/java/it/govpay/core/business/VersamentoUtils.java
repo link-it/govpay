@@ -43,7 +43,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Dominio;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -154,7 +154,7 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 			
-			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo())) {
+			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd).getUtenza(), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo())) {
 				throw new GovPayException(EsitoOperazione.VER_022, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 		}
@@ -164,7 +164,7 @@ public class VersamentoUtils {
 			if(!versamento.getApplicazione(bd).isTrusted())
 				throw new GovPayException(EsitoOperazione.VER_019);
 			
-			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null))
+			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd).getUtenza(), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null))
 				throw new GovPayException(EsitoOperazione.VER_021);
 			
 			try {

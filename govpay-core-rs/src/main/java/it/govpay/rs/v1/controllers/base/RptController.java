@@ -42,8 +42,6 @@ public class RptController extends it.govpay.rs.BaseController {
 		super(nomeServizio,log);
      }
 
-
-
     public Response rptIdDominioIuvCcpGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
     	String methodName = "getRptByIdDominioIuvCcp";  
 		GpContext ctx = null;
@@ -97,7 +95,6 @@ public class RptController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
 
 
     public Response rptIdDominioIuvCcpRtGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
@@ -183,9 +180,8 @@ public class RptController extends it.govpay.rs.BaseController {
     }
 
 
-
     public Response rptGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
-    	String methodName = "rptGET";  
+		String methodName = "rptGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -197,7 +193,7 @@ public class RptController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
+			ListaRptDTO listaRptDTO = new ListaRptDTO(null); //TODO IAutorizzato
 			listaRptDTO.setPagina(pagina);
 			listaRptDTO.setLimit(risultatiPerPagina);
 			

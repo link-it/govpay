@@ -19,24 +19,24 @@
  */
 package it.govpay.bd.anagrafica.cache;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.RuoliBD;
-
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
+import org.slf4j.Logger;
 
-public class RuoliBDCacheWrapper extends AbstractCacheWrapper {
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.UtenzeBD;
 
-	public RuoliBDCacheWrapper(boolean initializeCache, Logger log) throws UtilsException {
-		super("ruoli", initializeCache, log);
+public class UtenzeBDCacheWrapper extends AbstractCacheWrapper {
+
+	public UtenzeBDCacheWrapper(boolean initializeCache, Logger log) throws UtilsException {
+		super("utenze", initializeCache, log);
 	}
 
 	@Override
 	public Object getDriver(Object basicBD) throws UtilsException {
-		return new RuoliBD((BasicBD) basicBD);
+		return new UtenzeBD((BasicBD) basicBD);
 	}
 
 	@Override

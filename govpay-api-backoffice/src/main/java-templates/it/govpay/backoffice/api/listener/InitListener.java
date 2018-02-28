@@ -23,7 +23,7 @@ import org.slf4j.MDC;
 
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.cache.RuoliCache;
+import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -132,7 +132,7 @@ public class InitListener implements ServletContextListener{
 			RicevutaPagamentoProperties.newInstance(gpConfig.getResourceDir());
 			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.backoffice");
 			ConnectionManager.initialize();
-			RuoliCache.newInstance(log);
+			AclCache.newInstance(log);
 			//			OperazioneFactory.init();
 		} catch(Exception e){
 			throw new RuntimeException("Inizializzazione di GovPay-API-Backoffice fallita: " + e, e);

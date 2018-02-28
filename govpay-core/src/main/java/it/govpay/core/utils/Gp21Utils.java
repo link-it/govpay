@@ -78,7 +78,7 @@ public class Gp21Utils {
 		t.setRpt(rpt.getXmlRpt());
 		t.setRt(rpt.getXmlRt());
 
-		if(versione.compareTo(Versione.GP_02_02_00) >=0) {
+		if(versione.compareTo(Versione.GP_SOAP_02_02) >=0) {
 			t.setData(rpt.getDataMsgRichiesta());
 		}
 
@@ -113,7 +113,7 @@ public class Gp21Utils {
 				v.getSpezzoneCausaleStrutturata().add(s);
 			}
 		}
-		if(versione.compareTo(Versione.GP_02_02_00) >=0) {
+		if(versione.compareTo(Versione.GP_SOAP_02_02) >=0) {
 			v.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
 			Iuv iuv = versamento.getIuv(bd);
 			if(iuv != null) {
@@ -121,7 +121,7 @@ public class Gp21Utils {
 				v.setIuv(iuv.getIuv());
 				v.setBarCode(iuvGenerato.getBarCode());
 				v.setQrCode(iuvGenerato.getQrCode());
-				if(versione.compareTo(Versione.GP_02_03_00) >=0) {
+				if(versione.compareTo(Versione.GP_SOAP_02_03) >=0) {
 					v.setNumeroAvviso(iuvGenerato.getNumeroAvviso());
 				}
 			}
@@ -148,11 +148,11 @@ public class Gp21Utils {
 		p.setDatiRevoca(pagamento.getDatiRevoca());
 		p.setEsitoRevoca(pagamento.getEsitoRevoca());
 		p.setImportoRevocato(pagamento.getImportoRevocato());
-		if(versione.compareTo(Versione.GP_02_02_00) >= 0) {
+		if(versione.compareTo(Versione.GP_SOAP_02_02) >= 0) {
 			p.setDataAcquisizione(pagamento.getDataAcquisizione());
 			p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
 		}
-		if(versione.compareTo(Versione.GP_02_05_00) >= 0) {
+		if(versione.compareTo(Versione.GP_SOAP_02_05) >= 0) {
 			p.setIbanAccredito(pagamento.getIbanAccredito());
 		}
 		return p;
@@ -212,7 +212,7 @@ public class Gp21Utils {
 		p.setIur(rend.getIur());
 		p.setEsitoRendicontazione(TipoRendicontazione.valueOf(rend.getEsito().toString()));
 		p.setDataRendicontazione(rend.getData());
-		if(versione.compareTo(Versione.GP_02_02_00) >= 0) {
+		if(versione.compareTo(Versione.GP_SOAP_02_02) >= 0) {
 			p.setCodApplicazione(rend.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
 			p.setIuv(rend.getIuv());
 			p.setCodDominio(rend.getFr(bd).getCodDominio());
@@ -356,7 +356,7 @@ public class Gp21Utils {
 		iuvGenerato.setCodVersamentoEnte(iuvGeneratoModel.getCodVersamentoEnte());
 		iuvGenerato.setIuv(iuvGeneratoModel.getIuv());
 		iuvGenerato.setQrCode(iuvGeneratoModel.getQrCode());
-		if(versione.compareTo(Versione.GP_02_03_00) >= 0) {
+		if(versione.compareTo(Versione.GP_SOAP_02_03) >= 0) {
 			iuvGenerato.setNumeroAvviso(iuvGeneratoModel.getNumeroAvviso());
 		}
 		return iuvGenerato;
@@ -372,7 +372,7 @@ public class Gp21Utils {
 			iuvCaricato.setCodVersamentoEnte(iuvCaricatoModel.getCodVersamentoEnte());
 			iuvCaricato.setIuv(iuvCaricatoModel.getIuv());
 			iuvCaricato.setQrCode(iuvCaricatoModel.getQrCode());
-			if(versione.compareTo(Versione.GP_02_03_00) >= 0) {
+			if(versione.compareTo(Versione.GP_SOAP_02_03) >= 0) {
 				iuvCaricato.setNumeroAvviso(iuvCaricatoModel.getNumeroAvviso());
 			}
 			iuvCaricati.add(iuvCaricato);

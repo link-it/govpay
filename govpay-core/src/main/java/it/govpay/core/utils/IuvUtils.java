@@ -34,8 +34,8 @@ import org.xml.sax.SAXException;
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.CtNumeroAvviso;
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
 import it.govpay.core.business.model.Iuv;
-import it.govpay.model.Applicazione;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
 
 public class IuvUtils {
 

@@ -47,7 +47,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -336,13 +336,13 @@ public class Versamento extends BasicBD {
 	
 	
 	public it.govpay.bd.model.Versamento chiediVersamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {
-		if(codDominio != null && !AclEngine.isAuthorized(applicazione, Servizio.PAGAMENTI_ATTESA, codDominio, null)) {
+		if(codDominio != null && !AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_ATTESA, codDominio, null)) {
 			throw new GovPayException(EsitoOperazione.PRT_005);
 		}
 		
 		it.govpay.bd.model.Versamento v = chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
 		
-		if(AclEngine.isAuthorized(applicazione, Servizio.PAGAMENTI_ATTESA, v.getUo(this).getDominio(this).getCodDominio(), null)) {
+		if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_ATTESA, v.getUo(this).getDominio(this).getCodDominio(), null)) {
 			return v;
 		} else {
 			throw new GovPayException(EsitoOperazione.PRT_005);
@@ -357,7 +357,7 @@ public class Versamento extends BasicBD {
 		filter.addSortField(filterSortList);
 		
 		List<Long> domini = new ArrayList<Long>();
-		Set<Long> dominiSet = AclEngine.getIdDominiAutorizzati(applicazioneAutenticata, Servizio.PAGAMENTI_ONLINE);
+		Set<Long> dominiSet = AclEngine.getIdDominiAutorizzati(applicazioneAutenticata.getUtenza(), Servizio.PAGAMENTI_ONLINE);
 		if(dominiSet != null) {
 			domini.addAll(dominiSet);
 			filter.setIdDomini(domini);

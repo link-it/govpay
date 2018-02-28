@@ -35,9 +35,7 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -49,12 +47,11 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.cache.RuoliCache;
+import it.govpay.core.cache.AclCache;
 import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
-import it.govpay.model.Applicazione;
-import it.govpay.model.Ruolo;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.model.IAutorizzato;
+import it.govpay.model.Utenza;
 import net.sf.json.JSONObject;
 
 public abstract class BaseRsService {
@@ -78,11 +75,11 @@ public abstract class BaseRsService {
 	protected Logger log;
 
 	protected String codOperazione;
-	protected RuoliCache ruoliCache = null; 
+	protected AclCache aclCache = null; 
 
 	public BaseRsService(){
 		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
-		this.ruoliCache = RuoliCache.getInstance();
+		this.aclCache = AclCache.getInstance();
 	}
 
 	public BaseRsService(String nomeServizio){
@@ -113,15 +110,22 @@ public abstract class BaseRsService {
 		return null;
 	}
 	
-	protected List<Ruolo> getListaRuoli(){
-		List<Ruolo> listaRuoliPosseduti = new ArrayList<Ruolo>();
+	protected List<String> getListaRuoli(){
+		List<String> listaRuoliPosseduti = new ArrayList<String>();
 		// caricamento dei ruoli ricevuti nella richiesta http
-		for (String chiaveRuolo : this.ruoliCache.getChiavi()) {
+		for (String chiaveRuolo : this.aclCache.getChiavi()) {
 			if(this.request.isUserInRole(chiaveRuolo)){
-				listaRuoliPosseduti.add(this.ruoliCache.getRuolo(chiaveRuolo));
+				listaRuoliPosseduti.add(this.aclCache.getRuolo(chiaveRuolo));
 			}
 		}
 		return listaRuoliPosseduti;
+	}
+	
+	protected IAutorizzato getUser() {
+		IAutorizzato user = new Utenza();
+		user.setPrincipal(this.getPrincipal());
+		user.setRuoli(this.getListaRuoli()); 
+		return user;
 	}
 
 	protected Response getUnauthorizedResponse(){

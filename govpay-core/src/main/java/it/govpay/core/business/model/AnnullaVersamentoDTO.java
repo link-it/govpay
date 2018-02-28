@@ -20,7 +20,7 @@
 
 package it.govpay.core.business.model;
 
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 
 public class AnnullaVersamentoDTO {

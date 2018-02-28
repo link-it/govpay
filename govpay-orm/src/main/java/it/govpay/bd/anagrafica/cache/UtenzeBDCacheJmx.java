@@ -17,43 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.anagrafica.ruoli;
+package it.govpay.bd.anagrafica.cache;
 
-import javax.ws.rs.Path;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.slf4j.Logger;
+import org.openspcoop2.utils.cache.AbstractCacheJmx;
+import org.openspcoop2.utils.cache.AbstractCacheWrapper;
 
-import it.govpay.model.Acl.Servizio;
-import it.govpay.web.rs.dars.base.DarsService;
-import it.govpay.web.rs.dars.handler.IDarsHandler;
-
-@Path("/dars/ruoli")
-public class Ruoli extends DarsService {
-
-	public Ruoli() {
-		super();
-	}
-	
-	Logger log = LoggerWrapperFactory.getLogger(Ruoli.class);
+public class UtenzeBDCacheJmx extends AbstractCacheJmx {
 	
 	@Override
-	public String getNomeServizio() {
-		return "ruoli";
+	public AbstractCacheWrapper getCacheWrapper() {
+		return AnagraficaManager.getUtenzeBDCacheWrapper();
 	}
 
 	@Override
-	public IDarsHandler<?> getDarsHandler() {
-		return new RuoliHandler(this.log, this);
-	}
-	
-	@Override
-	public String getPathServizio() {
-		return "/dars/" + this.getNomeServizio();
-	}
-	
-	@Override
-	public Servizio getFunzionalita() {
-		return Servizio.Anagrafica_Utenti;
+	public String getJmxDescription() {
+		return "Anagrafica Utenze";
 	}
 }

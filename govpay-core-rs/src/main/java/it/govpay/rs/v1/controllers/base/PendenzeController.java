@@ -26,7 +26,6 @@ import it.govpay.rs.v1.beans.ListaPendenze;
 import it.govpay.rs.v1.beans.Pendenza;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.rs.v1.beans.base.StatoPendenza;
 
 
 
@@ -87,8 +86,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
-
 
     public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
     	GpContext ctx = null;
@@ -161,8 +158,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
-
 
     public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();

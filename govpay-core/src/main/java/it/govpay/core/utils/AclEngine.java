@@ -7,7 +7,6 @@ import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Ruolo;
 
 public class AclEngine {
 
@@ -48,7 +47,7 @@ public class AclEngine {
 		for(Acl acl : user.getAcls()) {
 			if(acl.getServizio().equals(servizio)) {
 				if(diritti < acl.getDiritti()) diritti = acl.getDiritti();
-				if(diritti == Ruolo.DIRITTI_SCRITTURA) return diritti;
+				if(diritti == Acl.DIRITTI_SCRITTURA) return diritti;
 			}
 		}
 		return diritti;
@@ -59,7 +58,7 @@ public class AclEngine {
 		for(Acl acl : user.getAcls()) {
 			if(acl.getServizio().equals(servizio) && acl.getTipo().equals(Tipo.DOMINIO) && (acl.getCodDominio() == null || acl.getCodDominio().equals(codDominio))) {
 				if(diritti < acl.getDiritti()) diritti = acl.getDiritti();
-				if(diritti == Ruolo.DIRITTI_SCRITTURA) return diritti;
+				if(diritti == Acl.DIRITTI_SCRITTURA) return diritti;
 			}
 		}
 		return 0;
@@ -152,7 +151,7 @@ public class AclEngine {
 				}
 
 			if(acl.getTipo().equals(Tipo.DOMINIO) && acl.getServizio().equals(servizio)) {
-				if(acl.getIdDominio() != null && acl.getDiritti() > Ruolo.NO_DIRITTI)
+				if(acl.getIdDominio() != null && acl.getDiritti() > Acl.NO_DIRITTI)
 					domini.add(acl.getIdDominio());
 				else 
 					return null;

@@ -32,23 +32,20 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.OperatoriBD;
-import it.govpay.bd.anagrafica.RuoliBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
-import it.govpay.bd.anagrafica.filters.RuoloFilter;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Operatore;
-import it.govpay.model.Ruolo;
-import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
-import it.govpay.web.rs.dars.anagrafica.ruoli.RuoliHandler;
+import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.model.Utenza;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -163,7 +160,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 
 		if(visualizzaRicerca){
 			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			
 			if(this.infoRicercaMap == null){
@@ -174,29 +170,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			InputText principal  = (InputText) this.infoRicercaMap.get(principalId);
 			sezioneRoot.addField(principal);
 
-			SelectList<String> ruolo = (SelectList<String>) this.infoRicercaMap.get(ruoloId);
-			List<Voce<String>> listaRuoli = new ArrayList<Voce<String>>();
-			try{
-				RuoliBD ruoliBD = new RuoliBD(bd);
-				RuoloFilter ruoliFilter = ruoliBD.newFilter();
-
-				List<it.govpay.model.Ruolo> findAll = ruoliBD.findAll(ruoliFilter);
-
-				if(findAll != null && findAll.size() > 0){
-					for (it.govpay.model.Ruolo r : findAll) {
-						listaRuoli.add(new Voce<String>(r.getDescrizione(), r.getCodRuolo()));  
-					}
-					listaRuoli.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"),
-							Operatore.RUOLO_SYSTEM));
-				}
-
-			}catch(Exception e){
-				throw new ConsoleException(e);
-			}
-			ruolo.setValues(listaRuoli);
-			ruolo.setDefaultValue("");
-			sezioneRoot.addField(ruolo); 
-			
 			CheckButton abilitato = (CheckButton) this.infoRicercaMap.get(abilitatoId);
 			abilitato.setDefaultValue(false);
 			sezioneRoot.addField(abilitato);
@@ -242,7 +215,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 				String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
 				String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-				String ruoliId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 
 				if(this.infoCreazioneMap == null){
 					this.initInfoCreazione(uriInfo, bd);
@@ -263,14 +235,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 				nome.setDefaultValue(null);
 				sezioneRoot.addField(nome);
 
-				List<RawParamValue> ruoliParamValues = new ArrayList<RawParamValue>();
-				ruoliParamValues.add(new RawParamValue(operatoreId, null)); 
-				it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli ruoli = (it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli) this.infoCreazioneMap.get(ruoliId);
-				ruoli.init(ruoliParamValues, bd,this.getLanguage());
-				ruoli.aggiornaParametro(ruoliParamValues, bd,this.getLanguage());
-
-				sezioneRoot.addField(ruoli);
-
 				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 				abilitato.setDefaultValue(true); 
 				sezioneRoot.addField(abilitato);
@@ -289,7 +253,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 			String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
-			String ruoliId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 			String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
 			// id 
@@ -307,16 +270,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			InputText nome = new InputText(nomeId, nomeLabel, null, true, false, true, 1, 255);
 			nome.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.errorMessage"));
 			this.infoCreazioneMap.put(nomeId, nome);
-
-			// ruoli
-			String ruoliLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.label");
-			List<RawParamValue> ruoliParamValues = new ArrayList<RawParamValue>();
-			URI ruoliRefreshUri = this.getUriField(uriInfo, bd, ruoliId); 
-			it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli ruoli = 
-					new it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli(this.nomeServizio, ruoliId, ruoliLabel, ruoliRefreshUri , ruoliParamValues, bd,this.getLanguage());
-			ruoli.init(ruoliParamValues, bd,this.getLanguage());
-			ruoli.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.errorMessage"));
-			this.infoCreazioneMap.put(ruoliId, ruoli);
 
 			// abilitato
 			String abilitatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
@@ -337,7 +290,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 				String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
 				String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-				String ruoliId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.id");
 
 				if(this.infoCreazioneMap == null){
 					this.initInfoCreazione(uriInfo, bd);
@@ -357,16 +309,8 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 				nome.setDefaultValue(entry.getNome());
 				sezioneRoot.addField(nome);
 
-				List<RawParamValue> ruoliParamValues = new ArrayList<RawParamValue>();
-				ruoliParamValues.add(new RawParamValue(operatoreId, entry.getId() + "")); 
-				it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli ruoli = (it.govpay.web.rs.dars.anagrafica.operatori.input.Ruoli) this.infoCreazioneMap.get(ruoliId);
-				ruoli.init(ruoliParamValues, bd,this.getLanguage());
-				ruoli.aggiornaParametro(ruoliParamValues, bd,this.getLanguage());
-
-				sezioneRoot.addField(ruoli);
-
 				CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
-				abilitato.setDefaultValue(entry.isAbilitato()); 
+				abilitato.setDefaultValue(entry.getUtenza().isAbilitato()); 
 				sezioneRoot.addField(abilitato);
 
 			}
@@ -454,29 +398,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			// dati operatore
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), operatore.getPrincipal());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.label"), operatore.getNome());
-			List<String> ruoli = operatore.getRuoli();
-			if(ruoli != null && ruoli.size() > 0){
-				StringBuffer sb = new StringBuffer();
-				
-				Ruoli ruoliDars = new Ruoli();
-				RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
-				for (String codRuolo : ruoli) {
-					if(sb.length() > 0 )
-						sb.append(", ");
-
-					if(!codRuolo.equals(Operatore.RUOLO_SYSTEM)) {
-						try{
-							Ruolo r = AnagraficaManager.getRuolo(bd, codRuolo);
-							sb.append(ruoliDarsHandler.getTitolo(r, bd)); 
-						}catch(Exception e) {}
-					} else {
-						sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"));
-					}
-				}
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli.label"), sb.toString());
-			}
-			
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(operatore.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(operatore.getUtenza().isAbilitato()));
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -497,7 +419,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo ai ruoli con diritto di scrittura
 			this.darsService.checkDirittiServizioScrittura(bd, this.funzionalita); 
-
+			
 			Operatore entry = this.creaEntry(is, uriInfo, bd);
 
 			this.checkEntry(entry, null);
@@ -625,30 +547,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 	@Override
 	public String getSottotitolo(Operatore entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
-
-		try{
-			List<String> ruoli = entry.getRuoli();
-
-			if(ruoli != null && ruoli.size() > 0){
-				Ruoli ruoliDars = new Ruoli();
-				RuoliHandler ruoliDarsHandler = (RuoliHandler) ruoliDars.getDarsHandler();
-				for (String codRuolo : ruoli) {
-					if(sb.length() > 0 )
-						sb.append(", ");
-
-					if(!codRuolo.equals(Operatore.RUOLO_SYSTEM)) {
-						try{
-							Ruolo r = AnagraficaManager.getRuolo(bd, codRuolo);
-							sb.append(ruoliDarsHandler.getTitolo(r, bd)); 
-						}catch(Exception e) {}
-					} else {
-						sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruoli."+Operatore.RUOLO_SYSTEM+".label"));
-					}
-				}
-			}
-		}catch(Exception e){
-		}
-		return Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.label",Utils.getAbilitatoAsLabel(entry.isAbilitato()), entry.getPrincipal(), sb.toString());
+		return Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.label",Utils.getAbilitatoAsLabel(entry.getUtenza().isAbilitato()), entry.getPrincipal(), sb.toString());
 	}
 
 	@Override

@@ -42,7 +42,7 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Intermediario;
@@ -81,7 +81,7 @@ public class Rpt extends BasicBD{
 
 					log.debug("Verifica autorizzazione applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
 
-					if(!AclEngine.isAuthorized(applicazione, Servizio.PAGAMENTI_ATTESA, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
+					if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_ATTESA, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
 						log.warn("Non autorizzato applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
 						throw new GovPayException(EsitoOperazione.PRT_003, applicazione.getCodApplicazione(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte()); // TODO sostituire PRT -> APP
 					}
@@ -407,7 +407,7 @@ public class Rpt extends BasicBD{
 	}
 	
 	public it.govpay.bd.model.Rpt chiediTransazione(Applicazione applicazioneAutenticata, String codDominio, String iuv, String ccp) throws GovPayException, ServiceException {
-		if(!applicazioneAutenticata.isAbilitato())
+		if(!applicazioneAutenticata.getUtenza().isAbilitato())
 			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
 
 		RptBD rptBD = new RptBD(this);

@@ -19,33 +19,13 @@
  */
 package it.govpay.web.rs.dars.anagrafica.domini;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.IbanAccreditoBD;
-import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
-import it.govpay.core.utils.DominioUtils;
-import it.govpay.model.Dominio;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.web.rs.dars.base.DarsService;
-import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
 
 @Path("/dars/domini")
@@ -76,106 +56,5 @@ public class Domini extends DarsService {
 	public Servizio getFunzionalita() {
 		return Servizio.Anagrafica_PagoPa;
 	}
-
-	@GET
-	@Path("/{id}/contiAccredito")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getContiAccredito(@Context UriInfo uriInfo, @PathParam("id") long id) throws ConsoleException,WebApplicationException {
-
-		String methodName = "getContiAccredito " + this.getNomeServizio(); 
-		this.initLogger(methodName);
-
-		BasicBD bd = null;
-
-		try{
-			bd = BasicBD.newInstance(this.codOperazione);
-			// Operazione consentita solo ai ruoli con diritto di lettura
-			this.checkDirittiServizioLettura(bd, this.getFunzionalita());
-			
-			DominiBD dominiBD = new DominiBD(bd);
-			Dominio dominio = dominiBD.getDominio(id);
-
-			IbanAccreditoBD ibanAccreditoDB = new IbanAccreditoBD(bd);
-			IbanAccreditoFilter filter = ibanAccreditoDB.newFilter();
-			filter.setIdDominio(id);
-			List<it.govpay.bd.model.IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
-			final byte[] contiAccredito = DominioUtils.buildInformativaContoAccredito(dominio, ibans);
-			StreamingOutput stream = new StreamingOutput() {
-
-				public void write(OutputStream output) throws IOException, WebApplicationException {
-					try {
-						output.write(contiAccredito);
-					}
-					catch (Exception e) {
-						throw new WebApplicationException(e);
-					}
-				}
-			};
-			this.log.info("Richiesta "+methodName +" evasa con successo");
-			return Response.ok(stream, MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\"ContiAccredito.xml\"").build();
-
-		} catch (WebApplicationException e){
-			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			return Response.serverError().build();
-		} catch (Exception e) {
-			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			if(bd != null) 
-				bd.rollback();
-			return Response.serverError().build();
-		}finally {
-			this.response.setHeader("Access-Control-Allow-Origin", "*");
-			if(bd != null) bd.closeConnection();
-		}
-
-	}
-	
-	@GET
-	@Path("/{id}/informativa")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getInformativa(@Context UriInfo uriInfo, @PathParam("id") long id) throws ConsoleException,WebApplicationException {
-
-		String methodName = "getInformativa " + this.getNomeServizio(); 
-		this.initLogger(methodName);
-
-		BasicBD bd = null;
-
-		try{
-			bd = BasicBD.newInstance(this.codOperazione);
-			// Operazione consentita solo ai ruoli con diritto di lettura
-			this.checkDirittiServizioLettura(bd, this.getFunzionalita());
-			DominiBD dominiBD = new DominiBD(bd);
-			Dominio dominio = dominiBD.getDominio(id);
-
-			final byte[] informativa = DominioUtils.buildInformativaControparte(dominio, true);
-			StreamingOutput stream = new StreamingOutput() {
-
-				public void write(OutputStream output) throws IOException, WebApplicationException {
-					try {
-						output.write(informativa);
-					}
-					catch (Exception e) {
-						throw new WebApplicationException(e);
-					}
-				}
-			};
-			this.log.info("Richiesta "+methodName +" evasa con successo");
-			return Response.ok(stream, MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\"Informativa.xml\"").build();
-
-		} catch (WebApplicationException e){
-			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			return Response.serverError().build();
-		} catch (Exception e) {
-			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			if(bd != null) 
-				bd.rollback();
-			return Response.serverError().build();
-		}finally {
-			this.response.setHeader("Access-Control-Allow-Origin", "*");
-			if(bd != null) bd.closeConnection();
-		}
-
-	}
-
-
 }
 

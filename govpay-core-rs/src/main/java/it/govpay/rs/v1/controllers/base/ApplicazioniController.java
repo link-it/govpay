@@ -122,7 +122,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.rs.v1.beans.Applicazione> results = new ArrayList<it.govpay.rs.v1.beans.Applicazione>();
-			for(it.govpay.model.Applicazione applicazione: listaApplicazioniDTOResponse.getResults()) {
+			for(it.govpay.bd.model.Applicazione applicazione: listaApplicazioniDTOResponse.getResults()) {
 				results.add(new it.govpay.rs.v1.beans.Applicazione(applicazione));
 			}
 			

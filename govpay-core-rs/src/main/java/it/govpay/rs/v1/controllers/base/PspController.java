@@ -39,8 +39,6 @@ public class PspController extends it.govpay.rs.BaseController {
 		super(nomeServizio,log);
      }
 
-
-
     public Response pspIdPspCanaliGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliGET";  
 		GpContext ctx = null;
@@ -158,7 +156,6 @@ public class PspController extends it.govpay.rs.BaseController {
     }
 
 
-
     public Response pspIdPspGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp) {
     	String methodName = "pspIdPspGET";  
 		GpContext ctx = null;
@@ -225,7 +222,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			ListaPspDTO listaPspDTO = new ListaPspDTO(user);
+			ListaPspDTO listaPspDTO = new ListaPspDTO(null); //TODO IAutorizzato
 			
 			listaPspDTO.setPagina(pagina);
 			listaPspDTO.setLimit(risultatiPerPagina);

@@ -13,34 +13,44 @@ public abstract class Versionabile extends BasicModel {
 		// Se aggiunta una nuova versione, ricordarsi di aggiornare
 		// il metodo getUltimaVersione.
 		
-		GP_02_01_00("2.1"),
-		GP_02_02_00("2.2"),
-		GP_02_02_01("2.2.1"),
-		GP_02_03_00("2.3"),
-		GP_02_05_00("2.5");
-		private String label;
-		private static String[] labels = {"2.1","2.2","2.2.1","2.3","2.5"};
+		GP_SOAP_02_01("SOAP","2.1"),
+		GP_SOAP_02_02("SOAP","2.2"),
+		GP_SOAP_02_03("SOAP","2.3"),
+		GP_SOAP_02_05("SOAP","2.5"),
+		GP_REST_03_00("REST","3.0");
 		
-		Versione(String label){
+		private String api;
+		private String label;
+		private static String[] labels = {"SOAP-2.1","SOAP-2.2","SOAP-2.3","SOAP-2.5","REST-3.0"};
+		
+		Versione(String api, String label){
 			this.label = label;
+			this.api = api;
 		}
 		
 		public String getLabel(){
 			return label;
 		}
+		public String getApi(){
+			return api;
+		}
+		
+		public String getApiLabel(){
+			return this.getApi() + "-" + this.getLabel();
+		}
 		
 		public int getVersione() {
 			switch (this) {
-			case GP_02_01_00:
-				return 020100;
-			case GP_02_02_00:
-				return 020200;
-			case GP_02_02_01:
-				return 020201;
-			case GP_02_03_00:
+			case GP_REST_03_00:
 				return 020300;
-			case GP_02_05_00:
-				return 020500;
+			case GP_SOAP_02_01:
+				return 010201;
+			case GP_SOAP_02_02:
+				return 010202;
+			case GP_SOAP_02_03:
+				return 010203;
+			case GP_SOAP_02_05:
+				return 010205;
 			default:
 				break;
 			}
@@ -48,16 +58,20 @@ public abstract class Versionabile extends BasicModel {
 		} 
 		
 		public static Versione getUltimaVersione(){
-			return GP_02_05_00;
+			return GP_REST_03_00;
+		}
+
+		public static Versione toEnum(String versione) throws ServiceException {
+			return toEnum(versione.split("-")[0],versione.split("-")[1]);
 		}
 		
-		public static Versione toEnum(String label) throws ServiceException {
+		public static Versione toEnum(String api, String label) throws ServiceException {
 			for(Versione p : Versione.values()){
-				if(p.getLabel().equals(label))
+				if(p.getLabel().equals(label) && p.getApi().equals(api)) 
 					return p;
 			}
 				
-			throw new ServiceException("Codifica inesistente per Versione. Valore fornito [" + label + "] valori possibili " + ArrayUtils.toString(labels));
+			throw new ServiceException("Codifica inesistente per Versione. Valore fornito [" + api + "-" + label + "] valori possibili " + ArrayUtils.toString(labels));
 		}
 	}
 	

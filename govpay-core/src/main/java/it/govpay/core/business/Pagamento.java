@@ -79,7 +79,7 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -529,7 +529,7 @@ public class Pagamento extends BasicBD {
 	}
 
 	public Rr chiediStorno(Applicazione applicazioneAutenticata, String codRichiestaStorno) throws ServiceException, GovPayException {
-		if(!applicazioneAutenticata.isAbilitato())
+		if(!applicazioneAutenticata.getUtenza().isAbilitato())
 			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
 
 		RrBD rrBD = new RrBD(this);

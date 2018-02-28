@@ -1,9 +1,5 @@
 package it.govpay.rs.v1.controllers.base;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import java.io.File;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -12,13 +8,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.model.IAutorizzato;
-
 import org.slf4j.Logger;
-
-import it.govpay.rs.v1.beans.base.*;
-
-import it.govpay.rs.v1.beans.base.Avviso;
-import it.govpay.rs.v1.beans.base.AvvisoPost;
 
 
 

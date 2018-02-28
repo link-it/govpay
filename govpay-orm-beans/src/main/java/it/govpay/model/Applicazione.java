@@ -19,27 +19,23 @@
  */
 package it.govpay.model;
 
-import java.util.List;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Rpt.FirmaRichiesta;
 
-public class Applicazione extends Versionabile implements IAutorizzato {
+public class Applicazione extends Versionabile {
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String codApplicazione;
-	private String principal;
-	private boolean abilitato;
     private Connettore connettoreNotifica;
     private Connettore connettoreVerifica;
     private FirmaRichiesta firmaRichiesta;
     private boolean trusted;
-    private List<Acl> acls;
     private String codApplicazioneIuv;
     private String regExp;
 	private boolean autoIuv;
+	private long idUtenza;
 
     
     public Long getId() {
@@ -66,18 +62,6 @@ public class Applicazione extends Versionabile implements IAutorizzato {
 	public void setConnettoreVerifica(Connettore connettoreVerifica) {
 		this.connettoreVerifica = connettoreVerifica;
 	}
-	public String getPrincipal() {
-		return principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
 	public FirmaRichiesta getFirmaRichiesta() {
 		return firmaRichiesta;
 	}
@@ -92,12 +76,6 @@ public class Applicazione extends Versionabile implements IAutorizzato {
 	}
 	public void setTrusted(boolean trusted) {
 		this.trusted = trusted;
-	}
-	public List<Acl> getAcls() {
-		return acls;
-	}
-	public void setAcls(List<Acl> acls) {
-		this.acls = acls;
 	}
 	public String getCodApplicazioneIuv() {
 		return codApplicazioneIuv;
@@ -116,5 +94,11 @@ public class Applicazione extends Versionabile implements IAutorizzato {
 	}
 	public void setAutoIuv(boolean autoIuv) {
 		this.autoIuv = autoIuv;
+	}
+	public long getIdUtenza() {
+		return idUtenza;
+	}
+	public void setIdUtenza(long idUtenza) {
+		this.idUtenza = idUtenza;
 	}
 }

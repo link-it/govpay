@@ -41,8 +41,6 @@ import it.govpay.bd.anagrafica.cache.OperatoriBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.OperatoriBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.PspBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.PspBDCacheWrapper;
-import it.govpay.bd.anagrafica.cache.RuoliBDCacheJmx;
-import it.govpay.bd.anagrafica.cache.RuoliBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.StazioniBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.StazioniBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.TipiTributoBDCacheJmx;
@@ -51,6 +49,8 @@ import it.govpay.bd.anagrafica.cache.TributiBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.TributiBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.UoBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.UoBDCacheWrapper;
+import it.govpay.bd.anagrafica.cache.UtenzeBDCacheJmx;
+import it.govpay.bd.anagrafica.cache.UtenzeBDCacheWrapper;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
@@ -59,10 +59,10 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Ruolo;
 import it.govpay.model.TipoTributo;
+import it.govpay.model.Utenza;
 
 public class AnagraficaManager {
 	private static boolean DEBUG = false;
@@ -74,11 +74,11 @@ public class AnagraficaManager {
 	private static IbanAccreditoBDCacheWrapper ibanAccreditoBDCacheWrapper;
 	private static IntermediariBDCacheWrapper intermediariBDCacheWrapper;
 	private static OperatoriBDCacheWrapper operatoriBDCacheWrapper;
-	private static RuoliBDCacheWrapper ruoliBDCacheWrapper;
 	private static PspBDCacheWrapper pspBDCacheWrapper;
 	private static StazioniBDCacheWrapper stazioniBDCacheWrapper;
 	private static TributiBDCacheWrapper tributiBDCacheWrapper;
 	private static TipiTributoBDCacheWrapper tipiTributoBDCacheWrapper;
+	private static UtenzeBDCacheWrapper utenzeBDCacheWrapper;
 
 	private AnagraficaManager(String domain) throws UtilsException {
 		
@@ -90,11 +90,11 @@ public class AnagraficaManager {
 		ibanAccreditoBDCacheWrapper = new IbanAccreditoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(IbanAccreditoBDCacheWrapper.class));
 		intermediariBDCacheWrapper = new IntermediariBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(IntermediariBDCacheWrapper.class));
 		operatoriBDCacheWrapper = new OperatoriBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(OperatoriBDCacheWrapper.class));
-		ruoliBDCacheWrapper = new RuoliBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(RuoliBDCacheWrapper.class));
 		pspBDCacheWrapper = new PspBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(PspBDCacheWrapper.class));
 		stazioniBDCacheWrapper = new StazioniBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(StazioniBDCacheWrapper.class));
 		tributiBDCacheWrapper = new TributiBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
 		tipiTributoBDCacheWrapper = new TipiTributoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
+		utenzeBDCacheWrapper = new UtenzeBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
 
 		if(enableCaching) {
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), domain, "domini");
@@ -104,11 +104,11 @@ public class AnagraficaManager {
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IbanAccreditoBDCacheJmx(), domain, "ibanAccredito");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IntermediariBDCacheJmx(), domain, "intermediari");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new OperatoriBDCacheJmx(), domain, "operatori");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new RuoliBDCacheJmx(), domain, "ruoli");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new PspBDCacheJmx(), domain, "psp");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), domain, "stazioni");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), domain, "tributi");
 			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), domain, "tipiTributo");
+			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UtenzeBDCacheJmx(), domain, "utenze");
 		}
 	}
 
@@ -148,8 +148,8 @@ public class AnagraficaManager {
 		return operatoriBDCacheWrapper;
 	}
 	
-	public static RuoliBDCacheWrapper getRuoliBDCacheWrapper() {
-		return ruoliBDCacheWrapper;
+	public static UtenzeBDCacheWrapper getUtenzeBDCacheWrapper() {
+		return utenzeBDCacheWrapper;
 	}
 
 	public static PspBDCacheWrapper getPspBDCacheWrapper() {
@@ -197,12 +197,12 @@ public class AnagraficaManager {
 	
 	public static void removeFromCache(Operatore operatore) {
 		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatore", String.valueOf(operatore.getId())));} catch (Exception e) {	}
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatore", String.valueOf(operatore.getPrincipal())));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatore", String.valueOf(operatore.getUtenza().getPrincipal())));} catch (Exception e) {	}
 	}
 	
-	public static void removeFromCache(Ruolo ruolo) {
-		try {ruoliBDCacheWrapper.removeObjectCache(ruoliBDCacheWrapper.getKeyCache("getOperatore", String.valueOf(ruolo.getId())));} catch (Exception e) {	}
-		try {ruoliBDCacheWrapper.removeObjectCache(ruoliBDCacheWrapper.getKeyCache("getOperatore", String.valueOf(ruolo.getCodRuolo())));} catch (Exception e) {	}
+	public static void removeFromCache(Utenza utenza) {
+		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache("getUtenza", String.valueOf(utenza.getId())));} catch (Exception e) {	}
+		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache("getUtenza", String.valueOf(utenza.getPrincipal())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Stazione stazione) {
@@ -537,11 +537,11 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static Ruolo getRuolo(BasicBD basicBD, long id) throws ServiceException {
+	public static Utenza getUtenza(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getRuolo";
-			Object ruolo = ruoliBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
-			return (Ruolo) ruolo;
+			String method = "getUtenza";
+			Object utenza = utenzeBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
 				throw new ServiceException(t);
@@ -556,11 +556,11 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static Ruolo getRuolo(BasicBD basicBD, String codRuolo) throws ServiceException, NotFoundException {
+	public static Utenza getUtenza(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
-			String method = "getRuolo";
-			Object ruolo = ruoliBDCacheWrapper.getObjectCache(basicBD, DEBUG, codRuolo, method, codRuolo);
-			return (Ruolo) ruolo;
+			String method = "getUtenza";
+			Object utenza = utenzeBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
+			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
 				throw (NotFoundException) t;

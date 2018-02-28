@@ -20,56 +20,46 @@
 
 package it.govpay.bd.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Acl;
-import it.govpay.model.IAutorizzato;
-import it.govpay.model.Ruolo;
+import it.govpay.model.Tributo;
+import it.govpay.model.Utenza;
 
-public class Operatore extends it.govpay.model.Operatore implements IAutorizzato {
+public class Operatore extends it.govpay.model.Operatore{
 	
 	private static final long serialVersionUID = 1L;
-	private transient List<Ruolo> ruoli;
-	private transient List<Acl> acls;
 	
 	public Operatore() {
 		super();
 	}
 	
-	public Operatore(BasicBD bd, List<String> ruoli) throws ServiceException {
+	private transient List<Dominio> domini;
+	private transient List<Tributo> tributi;
+	private transient Utenza utenza;
+	
+	
+	public Operatore(BasicBD bd, long idUtenza) throws ServiceException {
 		super();
-		
-		super.setRuoli(ruoli);
-		this.ruoli = new ArrayList<Ruolo>();
-		if(super.getRuoli() != null) {
-			for(String codRuolo : super.getRuoli()) {
-				try {
-					if(StringUtils.isNotEmpty(codRuolo) && !codRuolo.equals(it.govpay.model.Operatore.RUOLO_SYSTEM))
-						this.ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
-				} catch (NotFoundException e) {
-					throw new ServiceException(e);
-				}
-			}
-		}
-		
-		acls = new ArrayList<Acl>();
-		for(Ruolo ruolo : this.ruoli) {
-			acls.addAll(ruolo.getAcls());
-		}
-		
+		this.setIdUtenza(idUtenza); 
+		this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza())); 
 	}
-	
-	
-	@Override
-	public List<Acl> getAcls() {
-		return acls;
+
+
+	public Utenza getUtenza() {
+		return utenza;
+	}
+
+
+	public void setUtenza(Utenza utenza) {
+		this.utenza = utenza;
+	}
+
+	public String getPrincipal() {
+		return this.utenza != null ? this.utenza.getPrincipal() : null;
 	}
 }
 

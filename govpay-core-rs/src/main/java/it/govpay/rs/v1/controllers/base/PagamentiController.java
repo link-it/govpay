@@ -45,7 +45,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
      }
 
 
-
     public Response pagamentiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale) {
     	String methodName = "pagamentiPOST";  
 		GpContext ctx = null;
@@ -109,8 +108,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-
-
     public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
@@ -163,7 +160,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
 
 
     public Response pagamentiIdDominioIuvPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
@@ -236,7 +232,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
 
 }
 

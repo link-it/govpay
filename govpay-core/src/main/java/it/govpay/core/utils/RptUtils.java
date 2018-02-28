@@ -81,7 +81,7 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Evento;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.TipoEvento;
