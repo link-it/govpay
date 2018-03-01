@@ -54,6 +54,6 @@ public class Versamenti extends DarsService {
 	
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Gestione_Pagamenti;
+		return Servizio.PAGAMENTI_E_PENDENZE;
 	}
 }

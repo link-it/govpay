@@ -19,43 +19,38 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import java.sql.Connection;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdUtenza;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import it.govpay.orm.IdUtenza;
+import it.govpay.orm.Utenza;
 import it.govpay.orm.dao.jdbc.converter.UtenzaFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.UtenzaFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import it.govpay.orm.Utenza;
 
 /**     
  * JDBCUtenzaServiceSearchImpl
@@ -106,21 +101,7 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 	public IdUtenza convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Utenza utenza) throws NotImplementedException, ServiceException, Exception{
 	
 		IdUtenza idUtenza = new IdUtenza();
-		// idUtenza.setXXX(utenza.getYYY());
-		// ...
-		// idUtenza.setXXX(utenza.getYYY());
-		// TODO: popola IdUtenza
-	
-		/* 
-	     * TODO: implement code that returns the object id
-	    */
-	
-	    // Delete this line when you have implemented the method
-	    int throwNotImplemented = 1;
-	    if(throwNotImplemented==1){
-	            throw new NotImplementedException("NotImplemented");
-	    }
-	    // Delete this line when you have implemented the method 
+		idUtenza.setPrincipal(utenza.getPrincipal());
 	
 		return idUtenza;
 	}
@@ -145,21 +126,21 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 	public List<IdUtenza> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
 		List<IdUtenza> list = new ArrayList<IdUtenza>();
+		try{
+			List<IField> fields = new ArrayList<IField>();
+            fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(this.getFieldConverter().getRootModel())));
+			fields.add(Utenza.model().PRINCIPAL);
 
-		// TODO: implementazione non efficente. 
-		// Per ottenere una implementazione efficente:
-		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari a create l'ID logico
-		// 2. Usare metodo getUtenzaFetch() sul risultato della select per ottenere un oggetto Utenza
-		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
-		// 3. Usare metodo convertToId per ottenere l'id
 
-        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
-        
-        for(Long id: ids) {
-        	Utenza utenza = this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour);
-			IdUtenza idUtenza = this.convertToId(jdbcProperties,log,connection,sqlQueryObject,utenza);
-        	list.add(idUtenza);
-        }
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+
+			for(Map<String, Object> map: returnMap) {
+				Utenza utenza = (Utenza)this.getFetch().fetch(jdbcProperties.getDatabase(), this.getFieldConverter().getRootModel(), map);
+                list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, utenza));
+
+			}
+		} catch(NotFoundException e) {}
+
 
         return list;
 		
@@ -170,17 +151,21 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 
         List<Utenza> list = new ArrayList<Utenza>();
         
-        // TODO: implementazione non efficente. 
-		// Per ottenere una implementazione efficente:
-		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari
-		// 2. Usare metodo getUtenzaFetch() sul risultato della select per ottenere un oggetto Utenza
-		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
+		try{
+			List<IField> fields = new ArrayList<IField>();
+            fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(this.getFieldConverter().getRootModel())));
+    		fields.add(Utenza.model().ABILITATO);
+			fields.add(Utenza.model().PRINCIPAL);
 
-        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
-        
-        for(Long id: ids) {
-        	list.add(this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour));
-        }
+
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+
+			for(Map<String, Object> map: returnMap) {
+				Utenza utenza = (Utenza)this.getFetch().fetch(jdbcProperties.getDatabase(), this.getFieldConverter().getRootModel(), map);
+                list.add(utenza);
+
+			}
+		} catch(NotFoundException e) {}
 
         return list;      
 		
@@ -470,36 +455,20 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 	}
 	
 	private Utenza _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(this.getFieldConverter().getRootModel()));
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
+		expression.equals(idField, tableId);
+		List<Utenza> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-				
-		Utenza utenza = new Utenza();
-		
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
 
-		// Object utenza
-		ISQLQueryObject sqlQueryObjectGet_utenza = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_utenza.setANDLogicOperator(true);
-		sqlQueryObjectGet_utenza.addFromTable(this.getUtenzaFieldConverter().toTable(Utenza.model()));
-		sqlQueryObjectGet_utenza.addSelectField("id");
-		sqlQueryObjectGet_utenza.addSelectField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL,true));
-		sqlQueryObjectGet_utenza.addWhereCondition("id=?");
-
-		// Get utenza
-		utenza = (Utenza) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_utenza.createSQLQuery(), jdbcProperties.isShowSql(), Utenza.model(), this.getUtenzaFetch(),
-			new JDBCObject(tableId,Long.class));
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 
 
-
-		
-        return utenza;  
+		return lst.get(0);
 	
 	} 
 	
@@ -534,58 +503,13 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 	
-		/* 
-		 * TODO: implement code that implement the join condition
-		*/
-		/*
-		if(expression.inUseModel(Utenza.model().XXXX,false)){
-			String tableName1 = this.getUtenzaFieldConverter().toAliasTable(Utenza.model());
-			String tableName2 = this.getUtenzaFieldConverter().toAliasTable(Utenza.model().XXX);
-			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_table1");
-		}
-		*/
-		
-		/* 
-         * TODO: implementa il codice che aggiunge la condizione FROM Table per le condizioni di join di oggetti annidati dal secondo livello in poi 
-         *       La addFromTable deve essere aggiunta solo se l'oggetto del livello precedente non viene utilizzato nella espressione 
-         *		 altrimenti il metodo sopra 'toSqlForPreparedStatementWithFromCondition' si occupa gia' di aggiungerla
-        */
-        /*
-        if(expression.inUseModel(Utenza.model().LEVEL1.LEVEL2,false)){
-			if(expression.inUseModel(Utenza.model().LEVEL1,false)==false){
-				sqlQueryObject.addFromTable(this.getUtenzaFieldConverter().toTable(Utenza.model().LEVEL1));
-			}
-		}
-		...
-		if(expression.inUseModel(Utenza.model()....LEVELN.LEVELN+1,false)){
-			if(expression.inUseModel(Utenza.model().LEVELN,false)==false){
-				sqlQueryObject.addFromTable(this.getUtenzaFieldConverter().toTable(Utenza.model().LEVELN));
-			}
-		}
-		*/
-		
-		// Delete this line when you have implemented the join condition
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the join condition
-        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUtenza id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-        // TODO: Define the column values used to identify the primary key
 		Long longId = this.findIdUtenza(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
-        
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
         
         return rootTableIdValues;
 	}
@@ -596,9 +520,6 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
-		// TODO: Define the columns used to identify the primary key
-		//		  If a table doesn't have a primary key, don't add it to this map
-
 		// Utenza.model()
 		mapTableToPKColumn.put(converter.toTable(Utenza.model()),
 			utilities.newList(
@@ -606,13 +527,6 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 			));
 
 
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
-        
         return mapTableToPKColumn;		
 	}
 	
@@ -675,17 +589,6 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the method
-
         return inUse;
 
 	}
@@ -699,24 +602,9 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-		/* 
-		 * TODO: implement code that returns the object identified by the id
-		*/
-
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
- 		// Delete this line when you have implemented the method                
-
 		// Object _utenza
-		//TODO Implementare la ricerca dell'id
 		sqlQueryObjectGet.addFromTable(this.getUtenzaFieldConverter().toTable(Utenza.model()));
-		// TODO select field for identify ObjectId
-		//sqlQueryObjectGet.addSelectField(this.getUtenzaFieldConverter().toColumn(Utenza.model().NOME_COLONNA_1,true));
-		//...
-		//sqlQueryObjectGet.addSelectField(this.getUtenzaFieldConverter().toColumn(Utenza.model().NOME_COLONNA_N,true));
+		sqlQueryObjectGet.addSelectField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -725,9 +613,8 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_utenza = new ArrayList<Class<?>>();
-		//listaFieldIdReturnType_utenza.add(Id1.class);
-		//...
-		//listaFieldIdReturnType_utenza.add(IdN.class);
+		listaFieldIdReturnType_utenza.add(Utenza.model().PRINCIPAL.getFieldType());
+
 		it.govpay.orm.IdUtenza id_utenza = null;
 		List<Object> listaFieldId_utenza = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_utenza, searchParams_utenza);
@@ -739,9 +626,7 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 		else{
 			// set _utenza
 			id_utenza = new it.govpay.orm.IdUtenza();
-			// id_utenza.setId1(listaFieldId_utenza.get(0));
-			// ...
-			// id_utenza.setIdN(listaFieldId_utenza.get(N-1));
+			id_utenza.setPrincipal((String)listaFieldId_utenza.get(0));
 		}
 		
 		return id_utenza;
@@ -772,34 +657,17 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-		/* 
-		 * TODO: implement code that returns the object identified by the id
-		*/
-
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
- 		// Delete this line when you have implemented the method                
-
 		// Object _utenza
-		//TODO Implementare la ricerca dell'id
 		sqlQueryObjectGet.addFromTable(this.getUtenzaFieldConverter().toTable(Utenza.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		// Devono essere mappati nella where condition i metodi dell'oggetto id.getXXX
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.setSelectDistinct(true);
-		//sqlQueryObjectGet.addWhereCondition(this.getUtenzaFieldConverter().toColumn(Utenza.model().NOME_COLONNA_1,true)+"=?");
-		// ...
-		//sqlQueryObjectGet.addWhereCondition(this.getUtenzaFieldConverter().toColumn(Utenza.model().NOME_COLONNA_N,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL,true)+"=?");
 
 		// Recupero _utenza
-		// TODO Aggiungere i valori dei parametri di ricerca sopra definiti recuperandoli con i metodi dell'oggetto id.getXXX
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_utenza = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			//new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(object,object.class),
-			//...
-			//new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(object,object.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getPrincipal(),Utenza.model().PRINCIPAL.getFieldType()),
 		};
 		Long id_utenza = null;
 		try{

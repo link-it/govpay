@@ -35,6 +35,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.converter.UtenzaConverter;
 import it.govpay.orm.IdDominio;
@@ -125,6 +126,11 @@ public class UtenzeBD extends BasicBD {
 		List<Long> utenzaDominioLst = this.getUtenzeDominio(utenzaVO.getId());
 		List<Long> utenzaTributoLst = this.getUtenzeTributo(utenzaVO.getId());
 		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTributoLst, this);
+		AclBD aclDB = new AclBD(this);
+		AclFilter filter = aclDB.newFilter();
+		filter.setPrincipal(utenza.getPrincipal());
+		
+		utenza.setAclPrincipal(aclDB.findAll(filter));
 		return utenza;
 	}
 

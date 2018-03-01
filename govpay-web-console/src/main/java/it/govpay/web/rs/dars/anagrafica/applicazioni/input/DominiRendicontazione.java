@@ -49,7 +49,7 @@ public class DominiRendicontazione extends MultiSelectList<Long, List<Long>>{
 	private String rendicontazioneId= null;
 	private String applicazioneId = null;
 	private String nomeServizio = null;
-	private Servizio servizio = Servizio.RENDICONTAZIONE;
+	private Servizio servizio = Servizio.RENDICONTAZIONI_E_INCASSI;
 
 	public DominiRendicontazione(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			Object... objects) {

@@ -154,7 +154,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			
 			List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
 			diritti.add(Diritti.LETTURA);
-			if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONE, frModel.getDominio(bd).getCodDominio(), null,diritti)) {
+			if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, frModel.getDominio(bd).getCodDominio(), null,diritti)) {
 				throw new GovPayException(EsitoOperazione.RND_001);
 			}
 			

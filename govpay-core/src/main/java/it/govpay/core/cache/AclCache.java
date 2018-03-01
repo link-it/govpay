@@ -120,4 +120,8 @@ public class AclCache {
 		
 		return null;
 	}
+	
+	public List<Acl> getAclsRuolo(String key){
+		return this.mapAclsRuoli.get(key);
+	}
 }

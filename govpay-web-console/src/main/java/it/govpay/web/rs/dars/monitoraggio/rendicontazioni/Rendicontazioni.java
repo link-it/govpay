@@ -54,6 +54,6 @@ public class Rendicontazioni extends DarsService {
 	
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Gestione_Rendicontazioni;
+		return Servizio.RENDICONTAZIONI_E_INCASSI;
 	}
 }

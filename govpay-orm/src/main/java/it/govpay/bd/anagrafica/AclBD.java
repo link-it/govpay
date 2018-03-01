@@ -137,5 +137,23 @@ public class AclBD extends BasicBD {
 			throw new ServiceException(e);
 		} 
 	}
+
+	public void deleteAcl(Long id) throws ServiceException, NotFoundException{
+		try {
+			IdAcl idAcl = new IdAcl();
+			idAcl.setIdAcl(id);
+			idAcl.setId(id);
+			
+			if(!this.getAclService().exists(idAcl)) {
+				throw new NotFoundException();
+			}
+			
+			this.getAclService().deleteById(idAcl);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} 
+	}
 	
 }

@@ -49,6 +49,6 @@ public class Strumenti extends DarsService {
 	
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Manutenzione;
+		return Servizio.CONFIGURAZIONE_E_MANUTENZIONE;
 	}
 }

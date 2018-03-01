@@ -19,7 +19,6 @@
  */
 package it.govpay.rs.v1;
 
-import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 
 public class BaseRsServiceV1 extends BaseRsService {
@@ -33,11 +32,6 @@ public class BaseRsServiceV1 extends BaseRsService {
 	@Override
 	public int getVersione() {
 		return 1;
-	}
-
-	protected IAutorizzato getUser() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

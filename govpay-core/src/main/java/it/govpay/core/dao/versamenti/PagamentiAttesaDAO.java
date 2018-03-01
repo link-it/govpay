@@ -70,7 +70,7 @@ public class PagamentiAttesaDAO extends BasicBD {
 		}
 		
 		if(caricaVersamentoDTO.getOperatore() != null && 
-				!AclEngine.isAuthorized(caricaVersamentoDTO.getOperatore().getUtenza(),Servizio.Gestione_Pagamenti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
+				!AclEngine.isAuthorized(caricaVersamentoDTO.getOperatore().getUtenza(),Servizio.PAGAMENTI_E_PENDENZE, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
 			throw new NotAuthorizedException("TODO"); //TODO
 		}
 		
@@ -180,7 +180,7 @@ public class PagamentiAttesaDAO extends BasicBD {
 				diritti.add(Diritti.SCRITTURA);
 				diritti.add(Diritti.ESECUZIONE);
 				if(annullaVersamentoDTO.getOperatore() != null && 
-						!AclEngine.isAuthorized(annullaVersamentoDTO.getOperatore().getUtenza(),Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
+						!AclEngine.isAuthorized(annullaVersamentoDTO.getOperatore().getUtenza(),Servizio.PAGAMENTI_E_PENDENZE, versamentoLetto.getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
 					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
 				}
 				// Se è già annullato non devo far nulla.

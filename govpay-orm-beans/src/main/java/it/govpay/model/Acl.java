@@ -60,23 +60,32 @@ public class Acl extends BasicModel {
 
 	private static final long serialVersionUID = 1L;
 	public enum Servizio {
-		PAGAMENTI_ATTESA("A"),
-		PAGAMENTI_ONLINE("O"),
-		VERSAMENTI("V"),
-		NOTIFICHE("N"),
-		RENDICONTAZIONE("R"),
-		INCASSI("I"),
-		CRUSCOTTO("C"),
-		Anagrafica_PagoPa("A_PPA"),
-		Anagrafica_Contabile("A_CON"),
-		Anagrafica_Applicazioni("A_APP"),
-		Anagrafica_Utenti("A_USR"),
-		Gestione_Pagamenti("G_PAG"),
-		Gestione_Rendicontazioni("G_RND"),
-		Giornale_Eventi("GDE"),
-		Manutenzione("MAN"),
-		Statistiche("STAT");
-		
+//		PAGAMENTI_ATTESA("A"),
+//		PAGAMENTI_ONLINE("O"),
+//		VERSAMENTI("V"),
+//		RENDICONTAZIONE("R"),
+//		INCASSI("I"),
+//		CRUSCOTTO("C"),
+//		Anagrafica_PagoPa("A_PPA"),
+//		Anagrafica_Contabile("A_CON"),
+//		Anagrafica_Applicazioni("A_APP"),
+//		Anagrafica_Utenti("A_USR"),
+//		Gestione_Pagamenti("G_PAG"),
+//		Gestione_Rendicontazioni("G_RND"),
+//		Giornale_Eventi("GDE"),
+//		Manutenzione("MAN"),
+//		Statistiche("STAT"),
+
+	    ANAGRAFICA_PAGOPA("Anagrafica PagoPA"),
+	    ANAGRAFICA_CREDITORE("Anagrafica Creditore"),
+	    ANAGRAFICA_APPLICAZIONI("Anagrafica Applicazioni"),
+	    ANAGRAFICA_RUOLI("Anagrafica Ruoli"),
+	    PAGAMENTI_E_PENDENZE("Pagamenti e Pendenze"),
+	    RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
+	    GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
+	    STATISTICHE("Statistiche"),
+	    CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
+
 		private String codifica;
 
 		Servizio(String codifica) {

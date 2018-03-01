@@ -54,6 +54,6 @@ public class Eventi extends DarsService {
 	
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Giornale_Eventi;
+		return Servizio.GIORNALE_DEGLI_EVENTI;
 	}
 }

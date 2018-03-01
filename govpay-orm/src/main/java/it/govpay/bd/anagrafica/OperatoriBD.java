@@ -117,9 +117,6 @@ public class OperatoriBD extends BasicBD {
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
 		operatore.setUtenza(AnagraficaManager.getUtenza(this, operatoreVO.getIdUtenza().getId()));
-		AclBD aclBD = new AclBD(this);
-		AclFilter filter = aclBD.newFilter();
-		filter.setPrincipal(operatore.getUtenza().getPrincipal());
 		return operatore;
 	}
 

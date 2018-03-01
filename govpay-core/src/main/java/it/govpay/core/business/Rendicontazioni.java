@@ -635,12 +635,12 @@ public class Rendicontazioni extends BasicBD {
 		
 		List<String> domini = new ArrayList<String>();
 		if(codDominio != null) {
-			if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONE, codDominio, null,diritti))
+			if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, codDominio, null,diritti))
 				domini.add(codDominio);
 			else
 				throw new GovPayException(EsitoOperazione.RND_001);
 		} else {
-			List<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONE,diritti);
+			List<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI,diritti);
 			if(authorizedRnd != null)
 				domini.addAll(authorizedRnd);
 			else 

@@ -29,6 +29,9 @@ import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
+import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.core.utils.GpThreadLocal;
@@ -38,10 +41,10 @@ public class ApplicazioniDAO {
 	public FindApplicazioniDTOResponse findApplicazioni(FindApplicazioniDTO listaApplicazioniDTO) throws NotAuthorizedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<Long> applicazioni = AclEngine.getIdApplicazioniAutorizzati(listaApplicazioniDTO.getUser(), Servizio.Anagrafica_PagoPa);
+//			Set<Long> applicazioni = AclEngine.getIdApplicazioniAutorizzati(listaApplicazioniDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 //			
 //			if(applicazioni != null && applicazioni.size() == 0) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun applicazione");
+//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per alcun applicazione");
 //			}
 			
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
@@ -68,10 +71,10 @@ public class ApplicazioniDAO {
 	public GetApplicazioneDTOResponse getApplicazione(GetApplicazioneDTO getApplicazioneDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<String> applicazioni = AclEngine.getApplicazioniAutorizzati(getApplicazioneDTO.getUser(), Servizio.Anagrafica_PagoPa);
+//			Set<String> applicazioni = AclEngine.getApplicazioniAutorizzati(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 //			
 //			if(applicazioni != null && !applicazioni.contains(getApplicazioneDTO.getCodApplicazione())) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per l'applicazione " + getApplicazioneDTO.getCodApplicazione());
+//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per l'applicazione " + getApplicazioneDTO.getCodApplicazione());
 //			}
 			
 			GetApplicazioneDTOResponse response = new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()));
@@ -82,5 +85,32 @@ public class ApplicazioniDAO {
 			bd.closeConnection();
 		}
 	}
+	
+
+	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
+	ApplicazioneNonTrovataException {
+		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
+			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
+
+			// flag creazione o update
+			boolean isCreate = applicazioniBD.count(filter) == 0;
+			applicazioneDTOResponse.setCreated(isCreate);
+			if(isCreate) {
+				applicazioniBD.insertApplicazione(putApplicazioneDTO.getApplicazione());
+			} else {
+				applicazioniBD.updateApplicazione(putApplicazioneDTO.getApplicazione());
+			}
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new ApplicazioneNonTrovataException(e.getMessage());
+		} finally {
+			bd.closeConnection();
+		}
+		return applicazioneDTOResponse;
+	}
+
 	
 }

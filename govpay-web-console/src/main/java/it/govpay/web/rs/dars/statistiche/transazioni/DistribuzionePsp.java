@@ -54,6 +54,6 @@ public class DistribuzionePsp extends StatisticaDarsService {
 	
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Statistiche;
+		return Servizio.STATISTICHE;
 	}
 }

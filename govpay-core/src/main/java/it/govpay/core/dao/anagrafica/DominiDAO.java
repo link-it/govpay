@@ -145,10 +145,10 @@ public class DominiDAO {
 	public FindDominiDTOResponse findDomini(FindDominiDTO listaDominiDTO) throws NotAuthorizedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(listaDominiDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(listaDominiDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 			//			
 			//			if(domini != null && domini.size() == 0) {
-			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per alcun dominio");
 			//			}
 
 			DominiBD dominiBD = new DominiBD(bd);
@@ -178,10 +178,10 @@ public class DominiDAO {
 	public GetDominioDTOResponse getDominio(GetDominioDTO getDominioDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			//			Set<String> domini = AclEngine.getDominiAutorizzati(getDominioDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			Set<String> domini = AclEngine.getDominiAutorizzati(getDominioDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 			//			
 			//			if(domini != null && !domini.contains(getDominioDTO.getCodDominio())) {
-			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getDominioDTO.getCodDominio());
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per il dominio " + getDominioDTO.getCodDominio());
 			//			}
 
 			GetDominioDTOResponse response = new GetDominioDTOResponse(AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio()));
@@ -196,10 +196,10 @@ public class DominiDAO {
 	public FindUnitaOperativeDTOResponse findUnitaOperative(FindUnitaOperativeDTO findUnitaOperativeDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findUnitaOperativeDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findUnitaOperativeDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 			//			
 			//			if(domini != null && domini.size() == 0) {
-			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per alcun dominio");
 			//			}
 
 			UnitaOperativeBD unitaOperativeBD = new UnitaOperativeBD(bd);
@@ -232,10 +232,10 @@ public class DominiDAO {
 	public GetUnitaOperativaDTOResponse getUnitaOperativa(GetUnitaOperativaDTO getUnitaOperativaDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			//			Set<String> domini = AclEngine.getDominiAutorizzati(getUnitaOperativaDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			Set<String> domini = AclEngine.getDominiAutorizzati(getUnitaOperativaDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 			//			
 			//			if(domini != null && !domini.contains(getUnitaOperativaDTO.getCodDominio())) {
-			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getUnitaOperativaDTO.getCodDominio());
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per il dominio " + getUnitaOperativaDTO.getCodDominio());
 			//			}
 
 			Dominio dominio = null;
@@ -288,10 +288,10 @@ public class DominiDAO {
 	public FindIbanDTOResponse findIban(FindIbanDTO findIbanDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findIbanDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findIbanDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 			//			
 			//			if(domini != null && domini.size() == 0) {
-			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per alcun dominio");
 			//			}
 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
@@ -322,10 +322,10 @@ public class DominiDAO {
 	public GetIbanDTOResponse getIban(GetIbanDTO getIbanDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			//			Set<String> domini = AclEngine.getDominiAutorizzati(getIbanDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			Set<String> domini = AclEngine.getDominiAutorizzati(getIbanDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 			//			
 			//			if(domini != null && !domini.contains(getIbanDTO.getCodDominio())) {
-			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getIbanDTO.getCodDominio());
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per il dominio " + getIbanDTO.getCodDominio());
 			//			}
 
 			Dominio dominio = null;
@@ -378,10 +378,10 @@ public class DominiDAO {
 	public FindTributiDTOResponse findTributi(FindTributiDTO findTributiDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findTributiDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findTributiDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 			//			
 			//			if(domini != null && domini.size() == 0) {
-			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per alcun dominio");
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per alcun dominio");
 			//			}
 
 			TributiBD ibanAccreditoBD = new TributiBD(bd);
@@ -420,10 +420,10 @@ public class DominiDAO {
 	public GetTributoDTOResponse getTributo(GetTributoDTO getTributoDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			//			Set<String> domini = AclEngine.getDominiAutorizzati(getTributoDTO.getUser(), Servizio.Anagrafica_PagoPa);
+			//			Set<String> domini = AclEngine.getDominiAutorizzati(getTributoDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 			//			
 			//			if(domini != null && !domini.contains(getTributoDTO.getCodDominio())) {
-			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.Anagrafica_PagoPa + " per il dominio " + getTributoDTO.getCodDominio());
+			//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per il dominio " + getTributoDTO.getCodDominio());
 			//			}
 
 			Dominio dominio = null;

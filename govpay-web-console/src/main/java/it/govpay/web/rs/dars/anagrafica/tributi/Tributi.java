@@ -54,7 +54,7 @@ public class Tributi extends DarsService {
 	
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Anagrafica_Contabile;
+		return Servizio.ANAGRAFICA_CREDITORE;
 	}
 }
 

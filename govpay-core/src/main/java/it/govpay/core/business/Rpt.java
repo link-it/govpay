@@ -85,7 +85,7 @@ public class Rpt extends BasicBD{
 					List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
 					diritti.add(Diritti.ESECUZIONE);
 					
-					if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_ATTESA, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti)) {
+					if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti)) {
 						log.warn("Non autorizzato applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
 						throw new GovPayException(EsitoOperazione.PRT_003, applicazione.getCodApplicazione(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte()); // TODO sostituire PRT -> APP
 					}

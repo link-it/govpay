@@ -50,7 +50,7 @@ public class TipiTributoVersamenti extends MultiSelectList<Long, List<Long>>{
 	private String applicazioneId = null;
 	private String nomeServizio = null;
 	private String trustedId = null;
-	private Servizio servizio = Servizio.VERSAMENTI;
+	private Servizio servizio = Servizio.PAGAMENTI_E_PENDENZE;
 
 	public TipiTributoVersamenti(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			 Object... objects) {

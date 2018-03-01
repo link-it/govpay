@@ -62,6 +62,28 @@ public class UtentiDAO {
 			bd.closeConnection();
 		}
 	}
+
+	public void populateUser(IAutorizzato user) throws NotAuthenticatedException, ServiceException {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			try {
+				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
+				user = applicazione.getUtenza();
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
+				try {
+					Operatore operatore = AnagraficaManager.getOperatore(bd, user.getPrincipal());
+					user = operatore.getUtenza();
+				} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
+					throw new NotAuthenticatedException();					
+				}
+				
+			}
+
+			
+		} finally {
+			bd.closeConnection();
+		}
+	}
 	
 	public Applicazione getApplicazione(String principal) throws NotAuthenticatedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

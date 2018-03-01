@@ -54,6 +54,6 @@ public class Canali extends DarsService {
 
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Anagrafica_PagoPa;
+		return Servizio.ANAGRAFICA_PAGOPA;
 	}
 }

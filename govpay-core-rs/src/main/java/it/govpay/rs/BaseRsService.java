@@ -50,6 +50,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
 import it.govpay.bd.model.Utenza;
 import net.sf.json.JSONObject;
@@ -122,9 +123,14 @@ public abstract class BaseRsService {
 	}
 	
 	protected IAutorizzato getUser() {
-		IAutorizzato user = new Utenza();
+		Utenza user = new Utenza();
 		user.setPrincipal(this.getPrincipal());
-		user.setRuoli(this.getListaRuoli()); 
+		user.setRuoli(this.getListaRuoli());
+		List<Acl> aclDaRuoliContainer = new ArrayList<Acl>();
+		for (String ruolo : this.getListaRuoli()) {
+			aclDaRuoliContainer.addAll(this.aclCache.getAclsRuolo(ruolo));
+		}
+		user.setAclRuoli(aclDaRuoliContainer);
 		return user;
 	}
 

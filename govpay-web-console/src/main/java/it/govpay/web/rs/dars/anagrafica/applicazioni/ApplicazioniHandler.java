@@ -583,8 +583,8 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 				String etichettaVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
 				Sezione sezioneVersamenti = infoModifica.addSezione(etichettaVersamenti);
 
-				List<Long> idsAclDominiVersamenti = AclEngine.getIdDominiAutorizzati(entry.getUtenza(), Servizio.VERSAMENTI, null);
-				List<Long> idsAclTributiVersamenti = AclEngine.getIdTributiAutorizzati(entry.getUtenza(), Servizio.VERSAMENTI, null); 
+				List<Long> idsAclDominiVersamenti = AclEngine.getIdDominiAutorizzati(entry.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, null);
+				List<Long> idsAclTributiVersamenti = AclEngine.getIdTributiAutorizzati(entry.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, null); 
 				
 				boolean visualizzaVersamenti = idsAclDominiVersamenti.size() > 0 || idsAclTributiVersamenti.size() > 0 || entry.isTrusted(); 
 
@@ -615,7 +615,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 				String etichettaRendicontazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
 				Sezione sezioneRendicontazione = infoModifica.addSezione(etichettaRendicontazione);
 
-				List<Long> idsAclDominiRendicontazione = AclEngine.getIdDominiAutorizzati(entry.getUtenza(), Servizio.RENDICONTAZIONE, null);
+				List<Long> idsAclDominiRendicontazione = AclEngine.getIdDominiAutorizzati(entry.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, null);
 				boolean visualizzaRendicontazione = idsAclDominiRendicontazione.size() > 0 ;
 
 				CheckButton rendicontazione = (CheckButton) this.infoCreazioneMap.get(rendicontazioneId);
@@ -631,7 +631,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 				sezioneRendicontazione.addField(dominiRendicontazione);
 
 				// sezione incassi
-				List<Long> idsAclDominiIncassi = AclEngine.getIdDominiAutorizzati(entry.getUtenza(), Servizio.RENDICONTAZIONE, null);
+				List<Long> idsAclDominiIncassi = AclEngine.getIdDominiAutorizzati(entry.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, null);
 				boolean visualizzaIncassi = idsAclDominiIncassi.size() > 0 ;
 
 				String etichettaIncassi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.incassi.titolo");
@@ -777,7 +777,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 			String etichettaVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneVersamenti = dettaglio.addSezione(etichettaVersamenti);
 
-			List<Long> idTributi = AclEngine.getIdTributiAutorizzati(applicazione.getUtenza(), Servizio.VERSAMENTI, null);
+			List<Long> idTributi = AclEngine.getIdTributiAutorizzati(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, null);
 			List<Voce<String>> listaVociTributi = new ArrayList<Voce<String>>();
 			String valore = null;
 			if(!Utils.isEmpty(idTributi)){
@@ -819,7 +819,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 				}
 			}
 
-			List<Long> idDomini = AclEngine.getIdDominiAutorizzati(applicazione.getUtenza(), Servizio.VERSAMENTI, null);  
+			List<Long> idDomini = AclEngine.getIdDominiAutorizzati(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, null);  
 			List<Voce<String>> listaVociDomini = new ArrayList<Voce<String>>();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
@@ -860,7 +860,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 			String etichettaRendicontazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneRendicontazione = dettaglio.addSezione(etichettaRendicontazione);
 
-			idDomini = AclEngine.getIdDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONE, null);  
+			idDomini = AclEngine.getIdDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, null);  
 			listaVociDomini = new ArrayList<Voce<String>>();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
@@ -901,7 +901,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 			String etichettaIncassi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.incassi.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneIncassi = dettaglio.addSezione(etichettaIncassi);
 
-			idDomini = AclEngine.getIdDominiAutorizzati(applicazione.getUtenza(), Servizio.INCASSI, null); 
+			idDomini = AclEngine.getIdDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, null); 
 			listaVociDomini = new ArrayList<Voce<String>>();
 			valore = null;
 			if(!Utils.isEmpty(idDomini)){
@@ -1049,7 +1049,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 //
 //					Acl acl = new Acl();
 //					acl.setTipo(Tipo.DOMINIO);
-//					acl.setServizio(Servizio.RENDICONTAZIONE);
+//					acl.setServizio(Servizio.RENDICONTAZIONI_E_INCASSI);
 //					if(idDominio > 0){
 //						acl.setIdDominio(idDominio);
 //						lstAclDominiRendicontazione.add(acl);
@@ -1077,7 +1077,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 //
 //					Acl acl = new Acl();
 //					acl.setTipo(Tipo.TRIBUTO);
-//					acl.setServizio(Servizio.VERSAMENTI);
+//					acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE);
 //					if(idTributo > 0){
 //						acl.setIdTributo(idTributo);
 //						lstAclTributiVersamenti.add(acl);
@@ -1094,7 +1094,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 //
 //					Acl acl = new Acl();
 //					acl.setTipo(Tipo.DOMINIO);
-//					acl.setServizio(Servizio.VERSAMENTI);
+//					acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE);
 //					if(idDominio > 0){
 //						acl.setIdDominio(idDominio);
 //						lstAclDominiVersamenti.add(acl);
@@ -1121,7 +1121,7 @@ public class ApplicazioniHandler extends DarsHandler<Applicazione> implements ID
 //
 //					Acl acl = new Acl();
 //					acl.setTipo(Tipo.DOMINIO);
-//					acl.setServizio(Servizio.INCASSI);
+//					acl.setServizio(Servizio.RENDICONTAZIONI_E_INCASSI);
 //					if(idDominio > 0){
 //						acl.setIdDominio(idDominio);
 //						lstAclDominiIncassi.add(acl);

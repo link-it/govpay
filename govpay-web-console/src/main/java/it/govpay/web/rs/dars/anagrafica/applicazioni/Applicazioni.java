@@ -54,6 +54,6 @@ public class Applicazioni extends DarsService {
 	
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Anagrafica_Applicazioni;
+		return Servizio.ANAGRAFICA_APPLICAZIONI;
 	}
 }

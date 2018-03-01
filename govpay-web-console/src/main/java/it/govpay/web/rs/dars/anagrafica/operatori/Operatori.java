@@ -68,7 +68,7 @@ public class Operatori extends DarsService {
 	
 	@Override
 	public Servizio getFunzionalita() {
-		return Servizio.Anagrafica_Utenti;
+		return Servizio.ANAGRAFICA_RUOLI;
 	}
 
 	@GET

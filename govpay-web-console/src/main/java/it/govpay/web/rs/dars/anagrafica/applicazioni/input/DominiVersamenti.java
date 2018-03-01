@@ -49,7 +49,7 @@ public class DominiVersamenti extends MultiSelectList<Long, List<Long>>{
 	private String applicazioneId = null;
 	private String versamentiId= null;
 	private String nomeServizio = null;
-	private Servizio servizio = Servizio.VERSAMENTI;
+	private Servizio servizio = Servizio.PAGAMENTI_E_PENDENZE;
 
 	public DominiVersamenti(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			 Object... objects) {
