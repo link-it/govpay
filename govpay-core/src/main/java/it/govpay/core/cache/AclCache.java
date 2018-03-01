@@ -39,7 +39,7 @@ public class AclCache {
 		
 		try {
 			this.log.info("Caricamento dei Ruoli registrati nel sistema in corso... "); 
-			ListaAclDTOResponse leggiAclRuoloRegistrateSistema = aclDAO.leggiAclRuoloRegistrateSistema(new ListaAclDTO(null));
+			ListaAclDTOResponse leggiAclRuoloRegistrateSistema = aclDAO.leggiAclRuoloRegistrateSistema();
 			
 			this.log.info("Caricamento dei Ruoli registrati nel sistema trovate ["+leggiAclRuoloRegistrateSistema.getTotalResults()+"] Acl.");
 			List<Acl> results = leggiAclRuoloRegistrateSistema.getResults();
@@ -70,7 +70,7 @@ public class AclCache {
 		
 		try {
 			this.log.info("Caricamento dei Principal registrati nel sistema in corso... "); 
-			ListaAclDTOResponse leggiAclRuoloRegistrateSistema = aclDAO.leggiAclPrincipalRegistrateSistema(new ListaAclDTO(null));
+			ListaAclDTOResponse leggiAclRuoloRegistrateSistema = aclDAO.leggiAclPrincipalRegistrateSistema();
 			
 			this.log.info("Caricamento dei Principal registrati nel sistema trovate ["+leggiAclRuoloRegistrateSistema.getTotalResults()+"] Acl.");
 			List<Acl> results = leggiAclRuoloRegistrateSistema.getResults();

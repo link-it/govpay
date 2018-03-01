@@ -103,9 +103,9 @@ public class AclBD extends BasicBD {
 	 * @throws NotFoundException se non esiste
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public void updateAcl(Acl applicazione) throws NotFoundException, ServiceException {
+	public void updateAcl(Acl acl) throws NotFoundException, ServiceException {
 		try {
-			it.govpay.orm.ACL vo = AclConverter.toVO(applicazione);
+			it.govpay.orm.ACL vo = AclConverter.toVO(acl);
 			IdAcl id = this.getAclService().convertToId(vo);
 
 			if(!this.getAclService().exists(id)) {
@@ -113,8 +113,8 @@ public class AclBD extends BasicBD {
 			}
 
 			this.getAclService().update(id, vo);
-			applicazione.setId(vo.getId());
-			emitAudit(applicazione);
+			acl.setId(vo.getId());
+			emitAudit(acl);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -124,15 +124,15 @@ public class AclBD extends BasicBD {
 
 	/**
 	 * Crea una nuova applicazione con i dati forniti
-	 * @param applicazione
+	 * @param acl
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public void insertAcl(Acl applicazione) throws ServiceException{
+	public void insertAcl(Acl acl) throws ServiceException{
 		try {
-			it.govpay.orm.ACL vo = AclConverter.toVO(applicazione);
+			it.govpay.orm.ACL vo = AclConverter.toVO(acl);
 			this.getAclService().create(vo);
-			applicazione.setId(vo.getId());
-			emitAudit(applicazione);
+			acl.setId(vo.getId());
+			emitAudit(acl);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} 

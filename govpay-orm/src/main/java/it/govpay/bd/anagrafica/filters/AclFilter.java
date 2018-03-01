@@ -35,6 +35,8 @@ public class AclFilter extends AbstractFilter {
 
 	private String ruolo = null;
 	private String principal = null;
+	private String servizio = null;
+	private Boolean forceServizio = null;
 	private Boolean forceRuolo = null;
 	private Boolean forcePrincipal = null;
 	
@@ -66,7 +68,6 @@ public class AclFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.equals(ACL.model().RUOLO, this.ruolo);
-				newExpression.isNotNull(ACL.model().RUOLO);
 			}
 			
 			if(this.forceRuolo != null && this.forceRuolo.booleanValue() == true){
@@ -81,7 +82,6 @@ public class AclFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.equals(ACL.model().PRINCIPAL, this.principal);
-				newExpression.isNotNull(ACL.model().PRINCIPAL);
 			}
 			
 			if(this.forcePrincipal != null && this.forcePrincipal.booleanValue() == true){
@@ -91,6 +91,20 @@ public class AclFilter extends AbstractFilter {
 				newExpression.isNotNull(ACL.model().PRINCIPAL);
 			}
 			
+			if(this.servizio != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(ACL.model().SERVIZIO, this.servizio);
+			}
+
+			if(this.forceServizio != null && this.forceServizio.booleanValue() == true){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.isNotNull(ACL.model().SERVIZIO);
+			}
+						
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -137,6 +151,14 @@ public class AclFilter extends AbstractFilter {
 
 	public void setForcePrincipal(Boolean forcePrincipal) {
 		this.forcePrincipal = forcePrincipal;
+	}
+
+	public String getServizio() {
+		return servizio;
+	}
+
+	public void setServizio(String servizio) {
+		this.servizio = servizio;
 	}
 	
 }

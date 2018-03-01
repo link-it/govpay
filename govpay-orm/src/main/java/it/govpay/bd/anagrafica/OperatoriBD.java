@@ -35,10 +35,8 @@ import org.openspcoop2.utils.UtilsException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
-import it.govpay.bd.model.converter.OperatoreConverter;
-import it.govpay.bd.model.converter.UtenzaConverter;
-import it.govpay.model.Utenza;
 import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.converter.OperatoreConverter;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
 
@@ -122,7 +120,6 @@ public class OperatoriBD extends BasicBD {
 		AclBD aclBD = new AclBD(this);
 		AclFilter filter = aclBD.newFilter();
 		filter.setPrincipal(operatore.getUtenza().getPrincipal());
-		operatore.setAclOperatore(aclBD.findAll(filter));
 		return operatore;
 	}
 
@@ -175,13 +172,11 @@ public class OperatoriBD extends BasicBD {
 	 */
 	public void insertOperatore(Operatore operatore) throws  ServiceException{
 		try {
-			Utenza utenza = operatore.getUtenza();
-			it.govpay.orm.Utenza utenzaVo = UtenzaConverter.toVO(utenza);
-
+			UtenzeBD utenzeBD = new UtenzeBD(this);
 			// autocommit false		
 			this.setAutoCommit(false); 
-			this.getUtenzaService().create(utenzaVo);
-			operatore.setIdUtenza(utenzaVo.getId());
+			utenzeBD.insertUtenza(operatore.getUtenza());
+			operatore.setIdUtenza(operatore.getUtenza().getId());
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
 			this.getOperatoreService().create(vo);
 			operatore.setId(vo.getId());

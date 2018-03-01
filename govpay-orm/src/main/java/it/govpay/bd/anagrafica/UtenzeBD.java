@@ -19,9 +19,10 @@
  */
 package it.govpay.bd.anagrafica;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -29,14 +30,21 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.converter.UtenzaConverter;
-import it.govpay.model.Utenza;
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdUtenza;
+import it.govpay.orm.UtenzaDominio;
+import it.govpay.orm.UtenzaTributo;
 import it.govpay.orm.dao.jdbc.JDBCUtenzaServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.UtenzaDominioFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.UtenzaTributoFieldConverter;
 
 public class UtenzeBD extends BasicBD {
 
@@ -113,7 +121,10 @@ public class UtenzeBD extends BasicBD {
 
 
 	private Utenza getUtenza(it.govpay.orm.Utenza utenzaVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
-		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, this);
+		
+		List<Long> utenzaDominioLst = this.getUtenzeDominio(utenzaVO.getId());
+		List<Long> utenzaTributoLst = this.getUtenzeTributo(utenzaVO.getId());
+		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTributoLst, this);
 		return utenza;
 	}
 
@@ -133,6 +144,8 @@ public class UtenzeBD extends BasicBD {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
 			this.getUtenzaService().update(idUtenza, vo);
+			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
+			this.updateUtenzeTributo(utenza.getId(), utenza.getIdTributi());
 			utenza.setId(vo.getId());
 			emitAudit(utenza);
 		} catch (NotImplementedException e) {
@@ -140,6 +153,97 @@ public class UtenzeBD extends BasicBD {
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	private void updateUtenzeDominio(Long utenza, List<Long> idDomini) throws ServiceException {
+		try {
+			IExpression exp = this.getUtenzaDominioService().newExpression();
+			UtenzaDominioFieldConverter converter = new UtenzaDominioFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaDominio.model()));
+			exp.equals(field, utenza);
+			this.getUtenzaDominioService().deleteAll(exp);
+
+			if(idDomini != null) {
+				for(Long domini: idDomini) {
+					UtenzaDominio dominio = new UtenzaDominio();
+					IdDominio idDominio = new IdDominio();
+					idDominio.setId(domini);
+					dominio.setIdDominio(idDominio);
+					IdUtenza idUtenza = new IdUtenza();
+					idUtenza.setId(utenza);
+					dominio.setIdUtenza(idUtenza);
+					this.getUtenzaDominioService().create(dominio);
+				}
+			}
+		} catch(ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		}
+
+	}
+
+	private void updateUtenzeTributo(Long utenza, List<Long> idTributi) throws ServiceException {
+		try {
+			IExpression exp = this.getUtenzaTributoService().newExpression();
+			UtenzaTributoFieldConverter converter = new UtenzaTributoFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTributo.model()));
+			exp.equals(field, utenza);
+			this.getUtenzaTributoService().deleteAll(exp);
+			
+			if(idTributi != null) {
+				for(Long tributo: idTributi) {
+					UtenzaTributo utenzaTributo = new UtenzaTributo();
+					IdTributo idDominio = new IdTributo();
+					idDominio.setId(tributo);
+					utenzaTributo.setIdTributo(idDominio);
+					IdUtenza idUtenza = new IdUtenza();
+					idUtenza.setId(utenza);
+					utenzaTributo.setIdUtenza(idUtenza);
+					this.getUtenzaTributoService().create(utenzaTributo);
+				}
+			}
+		} catch(ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	private List<Long> getUtenzeTributo(Long utenza) throws ServiceException {
+		try {
+			IPaginatedExpression exp = this.getUtenzaTributoService().newPaginatedExpression();
+			UtenzaTributoFieldConverter converter = new UtenzaTributoFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTributo.model()));
+			exp.equals(field, utenza);
+			return this.getUtenzaTributoService().findAll(exp).stream().map(a -> a.getIdTributo().getId()).collect(Collectors.toList());
+		} catch(ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	private List<Long> getUtenzeDominio(Long utenza) throws ServiceException {
+		try {
+			IPaginatedExpression exp = this.getUtenzaDominioService().newPaginatedExpression();
+			UtenzaDominioFieldConverter converter = new UtenzaDominioFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaDominio.model()));
+			exp.equals(field, utenza);
+			return this.getUtenzaDominioService().findAll(exp).stream().map(a -> a.getIdDominio().getId()).collect(Collectors.toList());
+		} catch(ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -156,6 +260,18 @@ public class UtenzeBD extends BasicBD {
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 			this.getUtenzaService().create(vo);
 			utenza.setId(vo.getId());
+			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
+			this.updateUtenzeTributo(utenza.getId(), utenza.getIdTributi());
+
+			if(utenza.getIdTributi() != null) {
+				for(Long domini: utenza.getIdTributi()) {
+					UtenzaTributo dominio = new UtenzaTributo();
+					IdTributo idDominio = new IdTributo();
+					idDominio.setId(domini);
+					dominio.setIdTributo(idDominio);
+					this.getUtenzaTributoService().create(dominio);
+				}
+			}
 			emitAudit(utenza);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

@@ -1,14 +1,10 @@
 package it.govpay.bd.model;
 
-import java.util.List;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Acl;
-import it.govpay.model.Tributo;
-import it.govpay.model.Utenza;
+import it.govpay.bd.model.Utenza;
 
 public class Applicazione extends it.govpay.model.Applicazione{
 
@@ -18,10 +14,7 @@ private static final long serialVersionUID = 1L;
 		super();
 	}
 	
-	private transient List<Dominio> domini;
-	private transient List<Tributo> tributi;
 	private transient Utenza utenza;
-	private transient List<Acl> aclApplicazione;
 	
 	public Applicazione(BasicBD bd, long idUtenza) throws ServiceException {
 		super();
@@ -43,15 +36,4 @@ private static final long serialVersionUID = 1L;
 		return this.utenza != null ? this.utenza.getPrincipal() : null;
 	}
 
-
-	public List<Acl> getAclApplicazione() {
-		return aclApplicazione;
-	}
-
-
-	public void setAclApplicazione(List<Acl> aclApplicazione) {
-		this.aclApplicazione = aclApplicazione;
-	}
-	
-	
 }

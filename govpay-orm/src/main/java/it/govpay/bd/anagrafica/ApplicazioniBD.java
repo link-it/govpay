@@ -273,10 +273,6 @@ public class ApplicazioniBD extends BasicBD {
 
 			Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreNotifica, connettoreVerifica);
 			applicazione.setUtenza(AnagraficaManager.getUtenza(this, applicazioneVO.getIdUtenza().getId()));
-			AclBD aclBD = new AclBD(this);
-			AclFilter filter = aclBD.newFilter();
-			filter.setPrincipal(applicazione.getUtenza().getPrincipal());
-			applicazione.setAclApplicazione(aclBD.findAll(filter));
 			return applicazione;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);

@@ -11,11 +11,11 @@ public interface IAutorizzato {
 	public List<String> getRuoli();
 	
 	public List<String> getIdDominio();
-	public void setIdDominio(List<String> idDominio) ;
+//	public void setIdDominio(List<String> idDominio) ;
 	public List<String> getIdTributo();
-	public void setIdTributo(List<String> idTributo);
+//	public void setIdTributo(List<String> idTributo);
 	
 	public List<Acl> getAcls(); 
-	public void setAcls(List<Acl> acls);
+//	public void setAcls(List<Acl> acls);
 
 }

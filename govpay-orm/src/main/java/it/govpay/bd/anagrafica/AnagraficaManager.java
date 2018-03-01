@@ -62,7 +62,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
-import it.govpay.model.Utenza;
+import it.govpay.bd.model.Utenza;
 
 public class AnagraficaManager {
 	private static boolean DEBUG = false;

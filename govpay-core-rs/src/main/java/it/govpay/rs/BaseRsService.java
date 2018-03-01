@@ -51,7 +51,7 @@ import it.govpay.core.cache.AclCache;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Utenza;
+import it.govpay.bd.model.Utenza;
 import net.sf.json.JSONObject;
 
 public abstract class BaseRsService {
