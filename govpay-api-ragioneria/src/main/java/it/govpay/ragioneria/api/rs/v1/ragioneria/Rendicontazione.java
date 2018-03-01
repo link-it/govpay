@@ -1,7 +1,5 @@
 package it.govpay.ragioneria.api.rs.v1.ragioneria;
 
-
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -17,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 import it.govpay.rs.v1.controllers.base.RendicontazioneController;
 
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.costanti.Costanti;
 
 
 @Path("/rendicontazione")
@@ -33,28 +32,23 @@ public class Rendicontazione extends BaseRsServiceV1{
 
 
 
-/*
-    @GET
-    @Path("/")
-    
-    @Produces({ "application/json" })
-    public Response rendicontazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
-			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("idDominio") String idDominio){
-        this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rendicontazioneGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio);
-    }
-*/
-
-/*
     @GET
     @Path("/{idFlusso}")
     
     @Produces({ "application/json" })
     public Response rendicontazioneIdFlussoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso){
         this.controller.setRequestResponse(this.request, this.response);
-	return this.controller.rendicontazioneIdFlussoGET(this.getUser(), uriInfo, httpHeaders,  idFlusso);
+        return this.controller.rendicontazioneIdFlussoGET(this.getUser(), uriInfo, httpHeaders,  idFlusso);
     }
-*/
+
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response rendicontazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.rendicontazioneGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio);
+    }
 
 }
 

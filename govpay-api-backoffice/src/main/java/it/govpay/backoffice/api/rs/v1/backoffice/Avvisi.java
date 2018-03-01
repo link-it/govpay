@@ -29,7 +29,6 @@ public class Avvisi extends BaseRsServiceV1{
 
 
 
-
     @GET
     @Path("/{idDominio}/{iuv}")
     
@@ -38,19 +37,6 @@ public class Avvisi extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.avvisiIdDominioIuvGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv);
     }
-
-
-/*
-    @GET
-    @Path("/{idDominio}/{iuv}")
-    
-    @Produces({ "application/json", "application/pdf" })
-    public Response avvisiIdDominioIuvGET_1(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.avvisiIdDominioIuvGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv);
-    }
-*/
-
 
     @POST
     @Path("/{idDominio}")
@@ -61,16 +47,6 @@ public class Avvisi extends BaseRsServiceV1{
         return this.controller.avvisiIdDominioPOST(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
     }
 
-
-/*
-    @POST
-    @Path("/{idDominio}")
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
-    public Response avvisiIdDominioPOST_2(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.avvisiIdDominioPOST(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
-    }
-*/
-
 }
+
+

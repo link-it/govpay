@@ -32,19 +32,7 @@ public class Applicazioni extends BaseRsServiceV1{
 
 
 
-
     @GET
-    @Path("/")
-    
-    @Produces({ "application/json" })
-    public Response applicazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") int pagina,
-			@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") int risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.applicazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
-    }
-
-    
-	@GET
     @Path("/{idA2A}")
     
     @Produces({ "application/json" })
@@ -53,7 +41,6 @@ public class Applicazioni extends BaseRsServiceV1{
         return this.controller.applicazioniIdA2AGET(this.getUser(), uriInfo, httpHeaders,  idA2A);
     }
 
-    
     @PUT
     @Path("/{idA2A}")
     @Consumes({ "application/json" })
@@ -63,5 +50,15 @@ public class Applicazioni extends BaseRsServiceV1{
         return this.controller.applicazioniIdA2APUT(this.getUser(), uriInfo, httpHeaders,  idA2A, is);
     }
 
+    @GET
+    @Path("/")
     
+    @Produces({ "application/json" })
+    public Response applicazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.applicazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
+
 }
+
+
