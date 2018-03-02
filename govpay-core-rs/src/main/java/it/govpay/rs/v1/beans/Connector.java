@@ -2,6 +2,8 @@ package it.govpay.rs.v1.beans;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.model.Connettore.EnumAuthType;
+
 public class Connector extends it.govpay.rs.v1.beans.base.Connector {
 
 	@Override
@@ -14,8 +16,10 @@ public class Connector extends it.govpay.rs.v1.beans.base.Connector {
 	}
 	
 	public Connector(it.govpay.model.Connettore connettore) throws ServiceException {
-		this.setAuth(new it.govpay.rs.v1.beans.TipoAutenticazione(connettore));
+		if(!connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
+			this.setAuth(new it.govpay.rs.v1.beans.TipoAutenticazione(connettore));
 		this.setUrl(connettore.getUrl());
-		this.setVersioneApi(VersioneApiEnum.fromValue(connettore.getVersione().getApiLabel()));
+		if(connettore.getVersione() != null)
+			this.setVersioneApi(VersioneApiEnum.fromValue(connettore.getVersione().getApiLabel()));
 	}
 }

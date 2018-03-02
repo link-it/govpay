@@ -130,7 +130,7 @@ public class UriBuilderUtils {
 	 * @return
 	 */
 	public static String getListDomini(String codStazione) {
-		return getListDomini().queryParam("stazione", codStazione).build().toString();
+		return getListDomini().queryParam("idStazione", codStazione).build().toString();
 	}
 	
 

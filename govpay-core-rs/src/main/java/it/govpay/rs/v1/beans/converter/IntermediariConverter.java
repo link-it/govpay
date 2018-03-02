@@ -3,7 +3,6 @@ package it.govpay.rs.v1.beans.converter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
-import it.govpay.model.Connettore;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Intermediario;
 import it.govpay.rs.v1.beans.base.IntermediarioPost;
@@ -16,10 +15,10 @@ public class IntermediariConverter {
 		Intermediario intermediario = new Intermediario();
 		intermediario.setAbilitato(intermediarioPost.isAbilitato());
 		intermediario.setCodIntermediario(idIntermediario);
-		Connettore connettorePdd = new Connettore();
-		connettorePdd.setPrincipal(intermediarioPost.getPrincipalPagoPa());
 		if(intermediarioPost.getServizioPagoPa() != null) {
 			intermediario.setConnettorePdd(ConnettoriConverter.getConnettore(intermediarioPost.getServizioPagoPa()));
+			intermediario.getConnettorePdd().setPrincipal(intermediarioPost.getPrincipalPagoPa());
+
 		}
 		intermediario.setDenominazione(intermediarioPost.getDenominazione());
 		

@@ -17,29 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.rs.v1.beans;
+package it.govpay.core.dao.anagrafica.dto;
 
-import org.codehaus.jackson.map.annotate.JsonFilter;
+import java.util.List;
 
-@JsonFilter(value="tipoAutenticazione")  
-public class TipoAutenticazione extends it.govpay.rs.v1.beans.base.TipoAutenticazione {
+import it.govpay.bd.model.Dominio;
 
-	public TipoAutenticazione(it.govpay.model.Connettore connettore) {
-		this.username(connettore.getHttpUser())
-		.password(connettore.getHttpPassw())
-		.ksLocation(connettore.getSslKsLocation())
-		.ksPassword(connettore.getSslKsPasswd())
-		.tsLocation(connettore.getSslTsLocation())
-		.tsPassword(connettore.getSslTsPasswd());
-		
-		if(connettore.getSslType() != null)
-			this.tipo(TipoEnum.fromValue(connettore.getSslType().toString()));
-		
+public class FindOperatoriDTOResponse extends BasicFindResponseDTO<Dominio> {
+
+	public FindOperatoriDTOResponse(long totalResults, List<Dominio> domini) {
+		super(totalResults, domini);
 	}
-	
-	@Override
-	public String getJsonIdFilter() {
-		return "tipoAutenticazione";
-	}
+
 }
-

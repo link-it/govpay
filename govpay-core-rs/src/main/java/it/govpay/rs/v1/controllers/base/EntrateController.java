@@ -57,6 +57,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			classMap.put("tipoContabilita", String.class);
 			jsonConfig.setClassMap(classMap);
 			TipoentrataPost entrataRequest= (TipoentrataPost) TipoentrataPost.parse(jsonRequest, TipoentrataPost.class, jsonConfig);
 			

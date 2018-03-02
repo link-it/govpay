@@ -90,17 +90,34 @@ public class TipoentrataPost extends it.govpay.rs.v1.beans.JSONSerializable {
    * Tipologia di codifica del capitolo di bilancio
    **/
   public TipoentrataPost tipoContabilita(TipoContabilitaEnum tipoContabilita) {
-    this.tipoContabilita = tipoContabilita;
-    return this;
-  }
+	    this.tipoContabilita = tipoContabilita;
+	    return this;
+	  }
 
-  @JsonProperty("tipoContabilita")
-  public TipoContabilitaEnum getTipoContabilita() {
-    return tipoContabilita;
-  }
-  public void setTipoContabilita(TipoContabilitaEnum tipoContabilita) {
-    this.tipoContabilita = tipoContabilita;
-  }
+	  @JsonProperty("tipoContabilita")
+	  public TipoContabilitaEnum getTipoContabilitaEnum() {
+	    return tipoContabilita;
+	  }
+	  public void setTipoContabilita(TipoContabilitaEnum tipoContabilita) {
+	    this.tipoContabilita = tipoContabilita;
+	  }
+
+	  /**
+	   * Tipologia di codifica del capitolo di bilancio
+	   **/
+	  public TipoentrataPost tipoContabilita(String tipoContabilita) {
+		  setTipoContabilita(tipoContabilita);
+		  return this;
+	  }
+
+	  @JsonProperty("tipoContabilita")
+	  public String getTipoContabilita() {
+		  return tipoContabilita.toString();
+	  }
+	  public void setTipoContabilita(String tipoContabilita) {
+		  if(tipoContabilita!=null)
+			  this.tipoContabilita = TipoContabilitaEnum.fromValue(tipoContabilita);
+	  }
 
   /**
    * Codifica del capitolo di bilancio

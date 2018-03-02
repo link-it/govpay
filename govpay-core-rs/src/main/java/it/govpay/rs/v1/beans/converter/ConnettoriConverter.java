@@ -31,7 +31,8 @@ public class ConnettoriConverter {
 		}	
 		
 		connettore.setUrl(connector.getUrl());
-		connettore.setVersione(Versione.toEnum(connector.getVersioneApi().toString()));
+		if(connector.getVersioneApi() != null)
+			connettore.setVersione(Versione.toEnum(connector.getVersioneApi().toString()));
 		
 		return connettore;
 	}
