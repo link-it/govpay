@@ -222,7 +222,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			ListaPspDTO listaPspDTO = new ListaPspDTO(null); //TODO IAutorizzato
+			ListaPspDTO listaPspDTO = new ListaPspDTO(user);
 			
 			listaPspDTO.setPagina(pagina);
 			listaPspDTO.setLimit(risultatiPerPagina);

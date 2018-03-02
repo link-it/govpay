@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.UriInfo;
 
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.AclController;
+import it.govpay.rs.v1.costanti.Costanti;
 
 
 @Path("/acl")
@@ -37,7 +39,7 @@ public class Acl extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response aclGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("ruolo") String ruolo, @QueryParam("principal") String principal, @QueryParam("servizio") String servizio){
+    public Response aclGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("ruolo") String ruolo, @QueryParam("principal") String principal, @QueryParam("servizio") String servizio){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.aclGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, ruolo, principal, servizio);
     }

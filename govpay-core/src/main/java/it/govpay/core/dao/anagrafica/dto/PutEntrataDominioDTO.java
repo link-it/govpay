@@ -15,7 +15,6 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 	
 	public PutEntrataDominioDTO(IAutorizzato user) {
 		super(user);
-		// TODO Auto-generated constructor stub
 	}
 
 	public Tributo getTributo() {

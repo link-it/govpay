@@ -17,11 +17,11 @@ public abstract class Versionabile extends BasicModel {
 		GP_SOAP_02_02("SOAP","2.2"),
 		GP_SOAP_02_03("SOAP","2.3"),
 		GP_SOAP_02_05("SOAP","2.5"),
-		GP_REST_03_00("REST","3.0");
+		GP_REST_01_00("REST","1.0");
 		
 		private String api;
 		private String label;
-		private static String[] labels = {"SOAP_2.1","SOAP_2.2","SOAP_2.3","SOAP_2.5","REST_3.0"};
+		private static String[] labels = {"SOAP_2.1","SOAP_2.2","SOAP_2.3","SOAP_2.5","REST_1.0"};
 		
 		Versione(String api, String label){
 			this.label = label;
@@ -36,13 +36,13 @@ public abstract class Versionabile extends BasicModel {
 		}
 		
 		public String getApiLabel(){
-			return this.getApi() + "-" + this.getLabel();
+			return this.getApi() + "_" + this.getLabel();
 		}
 		
 		public int getVersione() {
 			switch (this) {
-			case GP_REST_03_00:
-				return 020300;
+			case GP_REST_01_00:
+				return 020100;
 			case GP_SOAP_02_01:
 				return 010201;
 			case GP_SOAP_02_02:
@@ -58,7 +58,7 @@ public abstract class Versionabile extends BasicModel {
 		} 
 		
 		public static Versione getUltimaVersione(){
-			return GP_REST_03_00;
+			return GP_REST_01_00;
 		}
 
 		public static Versione toEnum(String versione) throws ServiceException {

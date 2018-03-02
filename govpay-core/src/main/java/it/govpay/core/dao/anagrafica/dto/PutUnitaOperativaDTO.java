@@ -12,7 +12,6 @@ public class PutUnitaOperativaDTO extends BasicCreateRequestDTO  {
 	
 	public PutUnitaOperativaDTO(IAutorizzato user) {
 		super(user);
-		// TODO Auto-generated constructor stub
 	}
 
 	public UnitaOperativa getUo() {

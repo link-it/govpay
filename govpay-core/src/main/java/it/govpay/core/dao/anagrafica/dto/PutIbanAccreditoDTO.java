@@ -11,7 +11,6 @@ public class PutIbanAccreditoDTO extends BasicCreateRequestDTO  {
 	
 	public PutIbanAccreditoDTO(IAutorizzato user) {
 		super(user);
-		// TODO Auto-generated constructor stub
 	}
 
 	public IbanAccredito getIban() {

@@ -72,8 +72,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		// Object _utenza
 		Long id_utenza = null;
 		it.govpay.orm.IdUtenza idLogic_utenza = null;
-		// TODO Impostare il corretto metodo che contiene l'identificativo logico
-		//idLogic_utenza = utenzaTributo.getUtenza();
+		idLogic_utenza = utenzaTributo.getIdUtenza();
 		if(idLogic_utenza!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
@@ -90,8 +89,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		// Object _tributo
 		Long id_tributo = null;
 		it.govpay.orm.IdTributo idLogic_tributo = null;
-		// TODO Impostare il corretto metodo che contiene l'identificativo logico
-		//idLogic_tributo = utenzaTributo.getTributo();
+		idLogic_tributo = utenzaTributo.getIdTributo();
 		if(idLogic_tributo!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
@@ -119,14 +117,6 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		);
 		utenzaTributo.setId(id);
 
-		
-		/* 
-         * TODO: resolved TODO references
-       	*/
-        
-        // Delete this line when you have implemented the method
-		throw new NotImplementedException("NotImplemented");
-        // Delete this line when you have implemented the method
 	}
 
 	@Override
@@ -164,8 +154,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		// Object _utenzaTributo_utenza
 		Long id_utenzaTributo_utenza = null;
 		it.govpay.orm.IdUtenza idLogic_utenzaTributo_utenza = null;
-		// TODO Impostare il corretto metodo che contiene l'identificativo logico
-		//idLogic_utenzaTributo_utenza = utenzaTributo.getUtenza();
+		idLogic_utenzaTributo_utenza = utenzaTributo.getIdUtenza();
 		if(idLogic_utenzaTributo_utenza!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
@@ -182,8 +171,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		// Object _utenzaTributo_tributo
 		Long id_utenzaTributo_tributo = null;
 		it.govpay.orm.IdTributo idLogic_utenzaTributo_tributo = null;
-		// TODO Impostare il corretto metodo che contiene l'identificativo logico
-		//idLogic_utenzaTributo_tributo = utenzaTributo.getTributo();
+		idLogic_utenzaTributo_tributo = utenzaTributo.getIdTributo();
 		if(idLogic_utenzaTributo_tributo!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
@@ -225,13 +213,6 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		}
 
 
-		/* 
-         * TODO: resolved TODO references
-       	*/
-        
-        // Delete this line when you have implemented the method
-		throw new NotImplementedException("NotImplemented");
-        // Delete this line when you have implemented the method
 	}
 	
 	@Override

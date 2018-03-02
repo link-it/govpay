@@ -19,30 +19,27 @@
  */
 package it.govpay.rs.v1.beans;
 
-import java.util.stream.Collectors;
-
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
-@JsonFilter(value="ACL")  
-public class ACL extends it.govpay.rs.v1.beans.base.Acl {
+@JsonFilter(value="tipoAutenticazione")  
+public class TipoAutenticazione extends it.govpay.rs.v1.beans.base.TipoAutenticazione {
 
+	public TipoAutenticazione(it.govpay.model.Connettore connettore) {
+		this.username(connettore.getHttpUser())
+		.password(connettore.getHttpPassw())
+		.ksLocation(connettore.getSslKsLocation())
+		.ksPassword(connettore.getSslKsPasswd())
+		.tsLocation(connettore.getSslTsLocation())
+		.tsPassword(connettore.getSslTsPasswd());
+		
+		if(connettore.getTipo() != null)
+			this.tipo(TipoEnum.fromValue(connettore.getTipo().toString()));
+		
+	}
+	
 	@Override
 	public String getJsonIdFilter() {
-		return "ACL";
+		return "tipoAutenticazione";
 	}
-	
-	public static ACL parse(String json) {
-		return (ACL) parse(json, ACL.class);
-	}
-	
-	public ACL(it.govpay.model.Acl acl) {
-		this.principal(acl.getPrincipal())
-		.ruolo(acl.getRuolo())
-		.servizio(ServizioEnum.fromValue(acl.getServizio().toString()));
-		
-		if(acl.getListaDiritti() != null)
-			this.autorizzazioni(acl.getListaDiritti().stream().map(a -> AutorizzazioniEnum.fromValue(a.getCodifica())).collect(Collectors.toList()));
-		
-	}
-
 }
+

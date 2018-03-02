@@ -14,13 +14,8 @@ public class Connector extends it.govpay.rs.v1.beans.base.Connector {
 	}
 	
 	public Connector(it.govpay.model.Connettore connettore) throws ServiceException {
-		this.setAuth(connettore.getTipoAutenticazione());
+		this.setAuth(new it.govpay.rs.v1.beans.TipoAutenticazione(connettore));
 		this.setUrl(connettore.getUrl());
-//		this.setVersione(connettore.getVersione()); //TODO 1.0
-//		this.setServizioNotifica(new Connector);
-//		this.setIdCanale(canale.getCodCanale());
-//		this.setModelloPagamento(ModelloPagamento.fromValue(canale.getModelloPagamento().toString()));
-//		this.setPsp(UriBuilderUtils.getPsp(canale.getPsp(bd).getCodPsp()));
-//		this.setTipoVersamento(TipoVersamento.fromValue(canale.getTipoVersamento().toString()));
+		this.setVersioneApi(VersioneApiEnum.fromValue(connettore.getVersione().getApiLabel()));
 	}
 }

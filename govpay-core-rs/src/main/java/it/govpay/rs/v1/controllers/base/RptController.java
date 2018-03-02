@@ -193,7 +193,7 @@ public class RptController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			ListaRptDTO listaRptDTO = new ListaRptDTO(null); //TODO IAutorizzato
+			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
 			listaRptDTO.setPagina(pagina);
 			listaRptDTO.setLimit(risultatiPerPagina);
 			

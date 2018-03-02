@@ -68,7 +68,7 @@ public class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
   private VersioneApiEnum versioneApi = null;
   
   @JsonProperty("auth")
-  private Object auth = null;
+  private TipoAutenticazione auth = null;
   
   /**
    * Dati di integrazione ad un servizio web
@@ -104,16 +104,16 @@ public class Connector extends it.govpay.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Connector auth(Object auth) {
+  public Connector auth(TipoAutenticazione auth) {
     this.auth = auth;
     return this;
   }
 
   @JsonProperty("auth")
-  public Object getAuth() {
+  public TipoAutenticazione getAuth() {
     return auth;
   }
-  public void setAuth(Object auth) {
+  public void setAuth(TipoAutenticazione auth) {
     this.auth = auth;
   }
 

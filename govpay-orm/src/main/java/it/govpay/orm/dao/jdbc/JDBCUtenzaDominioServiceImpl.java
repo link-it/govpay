@@ -214,13 +214,6 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 		}
 
 
-		/* 
-         * TODO: resolved TODO references
-       	*/
-        
-        // Delete this line when you have implemented the method
-		throw new NotImplementedException("NotImplemented");
-        // Delete this line when you have implemented the method
 	}
 	
 	@Override

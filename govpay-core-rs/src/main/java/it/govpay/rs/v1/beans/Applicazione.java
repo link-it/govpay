@@ -19,8 +19,9 @@ public class Applicazione extends it.govpay.rs.v1.beans.base.Applicazione {
 		this.setAbilitato(applicazione.getUtenza().isAbilitato());
 		
 		CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
-		codificaAvvisi.setCodificaIUV(applicazione.getCodApplicazioneIuv());
-		codificaAvvisi.setRegExp(applicazione.getRegExp());
+		codificaAvvisi.setCodificaIuv(applicazione.getCodApplicazioneIuv());
+		codificaAvvisi.setRegExpIuv(applicazione.getRegExp());
+		codificaAvvisi.setGenerazioneIuvInterna(applicazione.isAutoIuv());
 		this.setCodificaAvvisi(codificaAvvisi);
 		
 		this.setIdA2A(applicazione.getCodApplicazione());

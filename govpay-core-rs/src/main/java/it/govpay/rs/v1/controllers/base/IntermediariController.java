@@ -59,7 +59,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			GetIntermediarioDTO getIntermediarioDTO = new GetIntermediarioDTO(null, idIntermediario); //TODO IAutorizzato
+			GetIntermediarioDTO getIntermediarioDTO = new GetIntermediarioDTO(user, idIntermediario);
 			
 			// INIT DAO
 			
@@ -220,7 +220,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response intermediariIdIntermediarioStazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response intermediariIdIntermediarioStazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "intermediariGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -239,7 +239,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			listaStazioniDTO.setLimit(risultatiPerPagina);
 			listaStazioniDTO.setOrderBy(ordinamento);
 			listaStazioniDTO.setAbilitato(abilitato);
-			listaStazioniDTO.setCodIntermediario(null); //TODO
+			listaStazioniDTO.setCodIntermediario(idIntermediario);
 			
 			// INIT DAO
 			

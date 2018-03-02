@@ -23,7 +23,7 @@ public class DominiConverter {
 		
 		Tributo tributo = new Tributo();
 		
-		// tributo.setAbilitato(entrataRequest.isAbilitato());
+	    tributo.setAbilitato(entrataRequest.isAbilitato());
 		tributo.setCodContabilitaCustom(entrataRequest.getCodiceContabilita());
 		tributo.setCodTributo(idEntrata);
 		tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
@@ -45,12 +45,12 @@ public class DominiConverter {
 			}
 		}
 		
-//		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccredito()); // TODO
-		// entrataDTO.setIbanAccreditoPostale(entrataRequest.getIbanAccreditoPostale()); // TODO
+		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccreditoBancario());
+	    entrataDTO.setIbanAccreditoPostale(entrataRequest.getIbanAccreditoPostale());
 		entrataDTO.setTributo(tributo);
 		entrataDTO.setIdDominio(idDominio);
 		entrataDTO.setIdTributo(idEntrata);
-		// entrataDTO.setIdTipoTributo(entrataRequest.getIdTipoTributo()); // TODO
+//		entrataDTO.setIdTipoTributo(entrataRequest.getIdTipoTributo()); // TODO
 				
 		return entrataDTO;		
 	}

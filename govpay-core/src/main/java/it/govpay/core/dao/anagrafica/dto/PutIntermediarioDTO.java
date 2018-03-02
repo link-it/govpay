@@ -10,7 +10,6 @@ public class PutIntermediarioDTO extends BasicCreateRequestDTO  {
 	
 	public PutIntermediarioDTO(IAutorizzato user) {
 		super(user);
-		// TODO Auto-generated constructor stub
 	}
 
 	public Intermediario getIntermediario() {
