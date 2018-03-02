@@ -29,12 +29,38 @@ import it.govpay.core.dao.anagrafica.dto.FindEntrateDTO;
 import it.govpay.core.dao.anagrafica.dto.FindEntrateDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.GetEntrataDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
+import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.core.utils.GpThreadLocal;
 
 public class EntrateDAO {
+
+	public PutEntrataDTOResponse createOrUpdateEntrata(PutEntrataDTO putTipoTributoDTO) throws ServiceException,TipoTributoNonTrovatoException{
+		PutEntrataDTOResponse intermediarioDTOResponse = new PutEntrataDTOResponse();
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			TipiTributoBD intermediariBD = new TipiTributoBD(bd);
+			TipoTributoFilter filter = intermediariBD.newFilter(false);
+			filter.setCodTributo(putTipoTributoDTO.getCodTributo());
+			
+			// flag creazione o update
+			boolean isCreate = intermediariBD.count(filter) == 0;
+			intermediarioDTOResponse.setCreated(isCreate);
+			if(isCreate) {
+				intermediariBD.insertTipoTributo(putTipoTributoDTO.getTipoTributo());
+			} else {
+				intermediariBD.updateTipoTributo(putTipoTributoDTO.getTipoTributo());
+			}
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new TipoTributoNonTrovatoException(e.getMessage());
+		} finally {
+			bd.closeConnection();
+		}
+		return intermediarioDTOResponse;
+	}
 
 	public FindEntrateDTOResponse findEntrate(FindEntrateDTO findEntrateDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -47,7 +73,6 @@ public class EntrateDAO {
 				filter.setSimpleSearchString(findEntrateDTO.getSimpleSearch());
 			} else {
 				filter = stazioneBD.newFilter(false);
-//				filter.setCodContabilita(findEntrateDTO.getCodContabilita());
 				filter.setSearchAbilitato(findEntrateDTO.getAbilitato());
 			}
 

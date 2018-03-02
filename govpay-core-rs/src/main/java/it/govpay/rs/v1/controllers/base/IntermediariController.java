@@ -20,8 +20,12 @@ import it.govpay.core.dao.anagrafica.dto.FindStazioniDTO;
 import it.govpay.core.dao.anagrafica.dto.FindStazioniDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.GetIntermediarioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetStazioneDTO;
+import it.govpay.core.dao.anagrafica.dto.GetStazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
+import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.IntermediarioNonTrovatoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -30,10 +34,13 @@ import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.Intermediario;
 import it.govpay.rs.v1.beans.ListaIntermediari;
 import it.govpay.rs.v1.beans.ListaStazioni;
+import it.govpay.rs.v1.beans.Stazione;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.rs.v1.beans.base.IntermediarioPost;
+import it.govpay.rs.v1.beans.base.StazionePost;
 import it.govpay.rs.v1.beans.converter.IntermediariConverter;
+import it.govpay.rs.v1.beans.converter.StazioniConverter;
 import net.sf.json.JsonConfig;
 
 
@@ -96,7 +103,62 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
     public Response intermediariIdIntermediarioStazioniIdStazionePUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "intermediariIdIntermediarioStazioniIdStazionePUT";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			String jsonRequest = baos.toString();
+			JsonConfig jsonConfig = new JsonConfig();
+			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			jsonConfig.setClassMap(classMap);
+			StazionePost inrtermediarioRequest= (StazionePost) StazionePost.parse(jsonRequest, StazionePost.class, jsonConfig);
+			
+			PutStazioneDTO putIntermediarioDTO = StazioniConverter.getPutStazioneDTO(inrtermediarioRequest, idIntermediario, idStazione, user);
+			
+			IntermediariDAO intermediariDAO = new IntermediariDAO();
+			
+			PutStazioneDTOResponse putIntermediarioDTOResponse = intermediariDAO.createOrUpdateStazione(putIntermediarioDTO);
+			
+			Status responseStatus = putIntermediarioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(responseStatus).build();
+		} catch (IntermediarioNonTrovatoException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante l'esecuzione del metodo "+ methodName + ": " + e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice(CategoriaEnum.INTERNO.name());
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 
@@ -221,7 +283,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
     }
 
     public Response intermediariIdIntermediarioStazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-    	String methodName = "intermediariGET";  
+    	String methodName = "intermediariIdIntermediarioStazioniGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -264,7 +326,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
 			
 		}catch (Exception e) {
-			log.error("Errore interno durante la ricerca dei Intermediari: " + e.getMessage(), e);
+			log.error("Errore interno durante la ricerca delle Stazioni: " + e.getMessage(), e);
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.INTERNO);
 			respKo.setCodice("");
@@ -283,7 +345,51 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 
 
     public Response intermediariIdIntermediarioStazioniIdStazioneGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "intermediariIdIntermediarioStazioniIdStazioneGET";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			// Parametri - > DTO Input
+			
+			GetStazioneDTO getStazioneDTO = new GetStazioneDTO(user, idIntermediario, idStazione);
+			
+			// INIT DAO
+			
+			IntermediariDAO intermediariDAO = new IntermediariDAO();
+			
+			// CHIAMATA AL DAO
+			
+			GetStazioneDTOResponse getStazioneDTOResponse = intermediariDAO.getStazione(getStazioneDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			Stazione response = new it.govpay.rs.v1.beans.Stazione(getStazioneDTOResponse.getStazione());
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			
+		}catch (Exception e) {
+			log.error("Errore interno durante la ricerca della Stazione: " + e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 

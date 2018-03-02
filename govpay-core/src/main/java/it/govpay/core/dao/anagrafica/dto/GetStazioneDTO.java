@@ -4,8 +4,9 @@ import it.govpay.model.IAutorizzato;
 
 public class GetStazioneDTO extends BasicRequestDTO {
 	
-	public GetStazioneDTO(IAutorizzato user, String codStazione) {
+	public GetStazioneDTO(IAutorizzato user, String codIntermediario, String codStazione) {
 		super(user);
+		this.codIntermediario = codIntermediario;
 		this.codStazione = codStazione;
 	}
 

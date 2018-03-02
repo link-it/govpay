@@ -37,6 +37,9 @@ import it.govpay.core.dao.anagrafica.dto.GetStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetStazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
+import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.IntermediarioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -67,6 +70,39 @@ public class IntermediariDAO {
 			bd.closeConnection();
 		}
 		return intermediarioDTOResponse;
+	}
+
+	public PutStazioneDTOResponse createOrUpdateStazione(PutStazioneDTO putStazioneDTO) throws ServiceException,IntermediarioNonTrovatoException{
+		PutStazioneDTOResponse stazioneDTOResponse = new PutStazioneDTOResponse();
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			
+			try {
+				// inserisco l'iddominio
+				putStazioneDTO.getStazione().setIdIntermediario(AnagraficaManager.getIntermediario(bd, putStazioneDTO.getIdIntermediario()).getId());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new IntermediarioNonTrovatoException(e.getMessage());
+			}
+
+			StazioniBD stazioniBD = new StazioniBD(bd);
+			StazioneFilter filter = stazioniBD.newFilter(false);
+			filter.setCodIntermediario(putStazioneDTO.getIdIntermediario());
+			filter.setCodStazione(putStazioneDTO.getIdStazione());
+			
+			// flag creazione o update
+			boolean isCreate = stazioniBD.count(filter) == 0;
+			stazioneDTOResponse.setCreated(isCreate);
+			if(isCreate) {
+				stazioniBD.insertStazione(putStazioneDTO.getStazione());
+			} else {
+				stazioniBD.updateStazione(putStazioneDTO.getStazione());
+			}
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new IntermediarioNonTrovatoException(e.getMessage());
+		} finally {
+			bd.closeConnection();
+		}
+		return stazioneDTOResponse;
 	}
 
 	public FindIntermediariDTOResponse findIntermediari(FindIntermediariDTO listaIntermediariDTO) throws NotAuthorizedException, ServiceException {
