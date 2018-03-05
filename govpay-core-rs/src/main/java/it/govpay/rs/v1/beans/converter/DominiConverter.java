@@ -26,7 +26,8 @@ public class DominiConverter {
 	    tributo.setAbilitato(entrataRequest.isAbilitato());
 		tributo.setCodContabilitaCustom(entrataRequest.getCodiceContabilita());
 		tributo.setCodTributo(idEntrata);
-		tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
+		if(entrataRequest.getCodificaIUV()!=null)
+			tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
 //		tributo.setDescrizione(entrataRequest.getDescrizione()); //TODO
 		if(entrataRequest.getTipoContabilita() != null) {
 			switch (entrataRequest.getTipoContabilita()) {

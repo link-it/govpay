@@ -106,7 +106,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
 		}catch (Exception e) {
-			log.error("Errore interno durante la ricerca dei PSP: " + e.getMessage(), e);
+			log.error("Errore interno durante la ricerca dei Domini/IbanAccredito: " + e.getMessage(), e);
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.INTERNO);
 			respKo.setCodice("");
