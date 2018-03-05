@@ -175,6 +175,7 @@ public class AclController extends it.govpay.rs.BaseController {
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			classMap.put("servizio", String.class);
 			jsonConfig.setClassMap(classMap);
 			AclPost aclRequest= (AclPost) AclPost.parse(jsonRequest, AclPost.class, jsonConfig);
 

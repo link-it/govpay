@@ -170,12 +170,27 @@ public class AclPost extends it.govpay.rs.v1.beans.JSONSerializable {
     return this;
   }
 
-  @JsonProperty("servizio")
-  public ServizioEnum getServizio() {
+  public ServizioEnum getServizioEnum() {
     return servizio;
   }
   public void setServizio(ServizioEnum servizio) {
     this.servizio = servizio;
+  }
+
+  public AclPost servizio(String servizio) {
+	    this.setServizio(servizio);
+	    return this;
+	  }
+
+  @JsonProperty("servizio")
+  public String getServizio() {
+	  if(servizio !=null)
+		  return servizio.toString();
+	  return null;
+  }
+  public void setServizio(String servizio) {
+	  if(servizio !=null)
+		  this.servizio = ServizioEnum.fromValue(servizio);
   }
 
   /**

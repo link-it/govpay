@@ -32,11 +32,10 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.jdbc.JDBCApplicazioneServiceSearch;
@@ -129,6 +128,22 @@ public class ApplicazioniBD extends BasicBD {
 	 */
 	public void updateApplicazione(Applicazione applicazione) throws NotFoundException, ServiceException {
 		try {
+			
+			UtenzeBD utenzeBD = new UtenzeBD(this);
+			// autocommit false		
+			this.setAutoCommit(false);
+			
+			if(!utenzeBD.exists(applicazione.getUtenza())) {
+				utenzeBD.insertUtenza(applicazione.getUtenza());
+			} else {
+				try {
+					utenzeBD.updateUtenza(applicazione.getUtenza());
+				} catch(NotFoundException e) {
+					throw new ServiceException(e);
+				}
+			}
+			applicazione.setIdUtenza(applicazione.getUtenza().getId());
+
 			it.govpay.orm.Applicazione vo = ApplicazioneConverter.toVO(applicazione);
 			IdApplicazione id = this.getApplicazioneService().convertToId(vo);
 
@@ -167,6 +182,9 @@ public class ApplicazioniBD extends BasicBD {
 			}
 
 			emitAudit(applicazione);
+			this.commit();
+			// ripristino l'autocommit.
+			this.setAutoCommit(true); 
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -186,6 +204,21 @@ public class ApplicazioniBD extends BasicBD {
 	 */
 	public void insertApplicazione(Applicazione applicazione) throws ServiceException{
 		try {
+			UtenzeBD utenzeBD = new UtenzeBD(this);
+			// autocommit false		
+			this.setAutoCommit(false);
+			
+			if(!utenzeBD.exists(applicazione.getUtenza())) {
+				utenzeBD.insertUtenza(applicazione.getUtenza());
+			} else {
+				try {
+					utenzeBD.updateUtenza(applicazione.getUtenza());
+				} catch(NotFoundException e) {
+					throw new ServiceException(e);
+				}
+			}
+			applicazione.setIdUtenza(applicazione.getUtenza().getId());
+
 			it.govpay.orm.Applicazione vo = ApplicazioneConverter.toVO(applicazione);
 			this.getApplicazioneService().create(vo);
 			applicazione.setId(vo.getId());
@@ -215,6 +248,11 @@ public class ApplicazioniBD extends BasicBD {
 			}
 
 			emitAudit(applicazione);
+			
+			this.commit();
+			// ripristino l'autocommit.
+			this.setAutoCommit(true); 
+
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

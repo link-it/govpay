@@ -78,6 +78,25 @@ public class UtenzeBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	/**
+	 * Recupera l'utenza identificata dalla chiave fisica
+	 * 
+	 * @param idUtenza
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public boolean exists(Utenza utenza) throws ServiceException {
+
+		try {
+			return this.getUtenzaService().exists(this.getUtenzaService().convertToId(UtenzaConverter.toVO(utenza)));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	/**
 	 * Recupera l'utenza identificato dalla chiave logica
@@ -91,7 +110,7 @@ public class UtenzeBD extends BasicBD {
 	public Utenza getUtenza(String principal) throws NotFoundException, MultipleResultException, ServiceException {
 		return getUtenza(principal, false);
 	}
-	
+
 	/**
 	 * Recupera l'utenza identificato dalla chiave logica
 	 * 
@@ -150,8 +169,8 @@ public class UtenzeBD extends BasicBD {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
 			this.getUtenzaService().update(idUtenza, vo);
-			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
-			this.updateUtenzeTributo(utenza.getId(), utenza.getIdTributi());
+			this.updateUtenzeDominio(vo.getId(), utenza.getIdDomini());
+			this.updateUtenzeTributo(vo.getId(), utenza.getIdTributi());
 			utenza.setId(vo.getId());
 			emitAudit(utenza);
 		} catch (NotImplementedException e) {
