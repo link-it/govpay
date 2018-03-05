@@ -62,7 +62,7 @@ public class EntrateDAO {
 		return intermediarioDTOResponse;
 	}
 
-	public FindEntrateDTOResponse findEntrate(FindEntrateDTO findEntrateDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public FindEntrateDTOResponse findEntrate(FindEntrateDTO findEntrateDTO) throws NotAuthorizedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 

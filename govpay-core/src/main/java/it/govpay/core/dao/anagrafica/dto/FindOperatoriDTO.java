@@ -25,39 +25,12 @@ import it.govpay.model.IAutorizzato;
 
 public class FindOperatoriDTO extends BasicFindRequestDTO {
 	
-	private String codStazione = null;
-	private String codDominio = null;
-	private String ragioneSociale = null;
 	private Boolean abilitato = null;
 	
 	public FindOperatoriDTO(IAutorizzato user) throws ServiceException {
 		super(user);
-		this.addSortField("codDominio", it.govpay.orm.Dominio.model().COD_DOMINIO);
-		this.addSortField("ragioneSociale", it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
-	}
-
-	public String getCodStazione() {
-		return codStazione;
-	}
-
-	public void setCodStazione(String codStazione) {
-		this.codStazione = codStazione;
-	}
-
-	public String getCodDominio() {
-		return codDominio;
-	}
-
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
-	}
-
-	public String getRagioneSociale() {
-		return ragioneSociale;
-	}
-
-	public void setRagioneSociale(String ragioneSociale) {
-		this.ragioneSociale = ragioneSociale;
+		this.addSortField("principal", it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL);
+		this.addSortField("anagrafica", it.govpay.orm.Operatore.model().NOME);
 	}
 
 	public Boolean getAbilitato() {

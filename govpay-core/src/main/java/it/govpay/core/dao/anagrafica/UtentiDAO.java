@@ -24,9 +24,17 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.OperatoriBD;
+import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
+import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
+import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
+import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 
@@ -104,6 +112,50 @@ public class UtentiDAO {
 			return operatore;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
 			throw new NotAuthenticatedException();
+		} finally {
+			bd.closeConnection();
+		}
+	}
+	
+	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws NotAuthenticatedException, ServiceException, OperatoreNonTrovatoException {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			Operatore operatore = AnagraficaManager.getOperatore(bd, leggiOperatore.getPrincipal());
+			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
+			response.setOperatore(operatore);
+			return response;
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
+			throw new OperatoreNonTrovatoException("Operatore " + leggiOperatore.getPrincipal() + " non censito in Anagrafica");
+		} finally {
+			bd.closeConnection();
+		}
+	}
+	
+	public FindOperatoriDTOResponse findOperatori(FindOperatoriDTO listaOperatoriDTO) throws NotAuthorizedException, ServiceException {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+//			Set<Long> applicazioni = AclEngine.getIdOperatoriAutorizzati(listaOperatoriDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
+//			
+//			if(applicazioni != null && applicazioni.size() == 0) {
+//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per alcun applicazione");
+//			}
+			
+			OperatoriBD applicazioniBD = new OperatoriBD(bd);
+			OperatoreFilter filter = null;
+			if(listaOperatoriDTO.isSimpleSearch()) {
+				filter = applicazioniBD.newFilter(true);
+				filter.setSimpleSearchString(listaOperatoriDTO.getSimpleSearch());
+			} else {
+				filter = applicazioniBD.newFilter(false);
+				filter.setSearchAbilitato(listaOperatoriDTO.getAbilitato());
+			}
+//			filter.setListaIdOperatori(applicazioni.stream().collect(Collectors.toList()));
+			filter.setOffset(listaOperatoriDTO.getOffset());
+			filter.setLimit(listaOperatoriDTO.getLimit());
+			filter.getFilterSortList().addAll(listaOperatoriDTO.getFieldSortList());
+			
+			return new FindOperatoriDTOResponse(applicazioniBD.count(filter), applicazioniBD.findAll(filter));
+			
 		} finally {
 			bd.closeConnection();
 		}

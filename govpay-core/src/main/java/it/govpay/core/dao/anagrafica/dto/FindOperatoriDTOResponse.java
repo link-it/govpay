@@ -21,12 +21,12 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
-import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Operatore;
 
-public class FindOperatoriDTOResponse extends BasicFindResponseDTO<Dominio> {
+public class FindOperatoriDTOResponse extends BasicFindResponseDTO<Operatore> {
 
-	public FindOperatoriDTOResponse(long totalResults, List<Dominio> domini) {
-		super(totalResults, domini);
+	public FindOperatoriDTOResponse(long totalResults, List<Operatore> operatori) {
+		super(totalResults, operatori);
 	}
 
 }
