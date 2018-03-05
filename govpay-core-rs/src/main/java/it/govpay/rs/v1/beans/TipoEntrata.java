@@ -19,24 +19,25 @@
  */
 package it.govpay.rs.v1.beans;
 
-import java.math.BigDecimal;
-
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
-@JsonFilter(value="tipoentrate")  
-public class Tipoentrata extends it.govpay.rs.v1.beans.base.Tipoentrata {
+@JsonFilter(value="tipoEntrate")  
+public class TipoEntrata extends it.govpay.rs.v1.beans.base.TipoEntrata {
 
-	public Tipoentrata(it.govpay.model.TipoTributo tributo) {
+	public TipoEntrata(it.govpay.model.TipoTributo tributo) {
 		this.codiceContabilita(tributo.getCodContabilitaDefault())
-		.codificaIUV(new BigDecimal(tributo.getCodTributoIuvDefault()))
-		.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilitaDefault().toString()))
+		.codificaIUV(tributo.getCodTributoIuvDefault())
 		.descrizione(tributo.getDescrizione())
 		.idEntrata(tributo.getCodTributo());
+		
+		if(tributo.getTipoContabilitaDefault() != null)
+			tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilitaDefault().toString()));
+		
 	}
 	
 	@Override
 	public String getJsonIdFilter() {
-		return "tipoentrate";
+		return "tipoEntrate";
 	}
 }
 

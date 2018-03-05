@@ -17,7 +17,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.FaultBean;
 import it.govpay.rs.v1.beans.ListaTipiEntrata;
-import it.govpay.rs.v1.beans.Tipoentrata;
+import it.govpay.rs.v1.beans.TipoEntrata;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 
 

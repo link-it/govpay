@@ -3,14 +3,15 @@ package it.govpay.rs.v1.beans.base;
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
-import java.math.BigDecimal;
+import it.govpay.rs.v1.beans.base.TipoEntrataPost;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "descrizione",
 "tipoContabilita",
 "codiceContabilita",
 "codificaIUV",
+"idEntrata",
 })
-public class TipoentrataPost extends it.govpay.rs.v1.beans.JSONSerializable {
+public class TipoEntrata extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
@@ -69,11 +70,14 @@ public class TipoentrataPost extends it.govpay.rs.v1.beans.JSONSerializable {
   private String codiceContabilita = null;
   
   @JsonProperty("codificaIUV")
-  private BigDecimal codificaIUV = null;
+  private String codificaIUV = null;
+  
+  @JsonProperty("idEntrata")
+  private String idEntrata = null;
   
   /**
    **/
-  public TipoentrataPost descrizione(String descrizione) {
+  public TipoEntrata descrizione(String descrizione) {
     this.descrizione = descrizione;
     return this;
   }
@@ -89,40 +93,23 @@ public class TipoentrataPost extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * Tipologia di codifica del capitolo di bilancio
    **/
-  public TipoentrataPost tipoContabilita(TipoContabilitaEnum tipoContabilita) {
-	    this.tipoContabilita = tipoContabilita;
-	    return this;
-	  }
+  public TipoEntrata tipoContabilita(TipoContabilitaEnum tipoContabilita) {
+    this.tipoContabilita = tipoContabilita;
+    return this;
+  }
 
-	  @JsonProperty("tipoContabilita")
-	  public TipoContabilitaEnum getTipoContabilitaEnum() {
-	    return tipoContabilita;
-	  }
-	  public void setTipoContabilita(TipoContabilitaEnum tipoContabilita) {
-	    this.tipoContabilita = tipoContabilita;
-	  }
-
-	  /**
-	   * Tipologia di codifica del capitolo di bilancio
-	   **/
-	  public TipoentrataPost tipoContabilita(String tipoContabilita) {
-		  setTipoContabilita(tipoContabilita);
-		  return this;
-	  }
-
-	  @JsonProperty("tipoContabilita")
-	  public String getTipoContabilita() {
-		  return tipoContabilita.toString();
-	  }
-	  public void setTipoContabilita(String tipoContabilita) {
-		  if(tipoContabilita!=null)
-			  this.tipoContabilita = TipoContabilitaEnum.fromValue(tipoContabilita);
-	  }
+  @JsonProperty("tipoContabilita")
+  public TipoContabilitaEnum getTipoContabilita() {
+    return tipoContabilita;
+  }
+  public void setTipoContabilita(TipoContabilitaEnum tipoContabilita) {
+    this.tipoContabilita = tipoContabilita;
+  }
 
   /**
    * Codifica del capitolo di bilancio
    **/
-  public TipoentrataPost codiceContabilita(String codiceContabilita) {
+  public TipoEntrata codiceContabilita(String codiceContabilita) {
     this.codiceContabilita = codiceContabilita;
     return this;
   }
@@ -138,17 +125,32 @@ public class TipoentrataPost extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * Cifra identificativa negli IUV
    **/
-  public TipoentrataPost codificaIUV(BigDecimal codificaIUV) {
+  public TipoEntrata codificaIUV(String codificaIUV) {
     this.codificaIUV = codificaIUV;
     return this;
   }
 
   @JsonProperty("codificaIUV")
-  public BigDecimal getCodificaIUV() {
+  public String getCodificaIUV() {
     return codificaIUV;
   }
-  public void setCodificaIUV(BigDecimal codificaIUV) {
+  public void setCodificaIUV(String codificaIUV) {
     this.codificaIUV = codificaIUV;
+  }
+
+  /**
+   **/
+  public TipoEntrata idEntrata(String idEntrata) {
+    this.idEntrata = idEntrata;
+    return this;
+  }
+
+  @JsonProperty("idEntrata")
+  public String getIdEntrata() {
+    return idEntrata;
+  }
+  public void setIdEntrata(String idEntrata) {
+    this.idEntrata = idEntrata;
   }
 
   @Override
@@ -159,36 +161,38 @@ public class TipoentrataPost extends it.govpay.rs.v1.beans.JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TipoentrataPost tipoentrataPost = (TipoentrataPost) o;
-    return Objects.equals(descrizione, tipoentrataPost.descrizione) &&
-        Objects.equals(tipoContabilita, tipoentrataPost.tipoContabilita) &&
-        Objects.equals(codiceContabilita, tipoentrataPost.codiceContabilita) &&
-        Objects.equals(codificaIUV, tipoentrataPost.codificaIUV);
+    TipoEntrata tipoEntrata = (TipoEntrata) o;
+    return Objects.equals(descrizione, tipoEntrata.descrizione) &&
+        Objects.equals(tipoContabilita, tipoEntrata.tipoContabilita) &&
+        Objects.equals(codiceContabilita, tipoEntrata.codiceContabilita) &&
+        Objects.equals(codificaIUV, tipoEntrata.codificaIUV) &&
+        Objects.equals(idEntrata, tipoEntrata.idEntrata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipoContabilita, codiceContabilita, codificaIUV);
+    return Objects.hash(descrizione, tipoContabilita, codiceContabilita, codificaIUV, idEntrata);
   }
 
-  public static TipoentrataPost parse(String json) {
-    return (TipoentrataPost) parse(json, TipoentrataPost.class);
+  public static TipoEntrata parse(String json) {
+    return (TipoEntrata) parse(json, TipoEntrata.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "tipoentrataPost";
+    return "tipoEntrata";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TipoentrataPost {\n");
+    sb.append("class TipoEntrata {\n");
     
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
+    sb.append("    idEntrata: ").append(toIndentedString(idEntrata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

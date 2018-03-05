@@ -458,7 +458,7 @@ public class DominiDAO {
 			TipoTributo tipoTributo = null;
 			// bollo telematico
 			try {
-				tipoTributo = AnagraficaManager.getTipoTributo(bd, putEntrataDominioDTO.getIdTipoTributo());
+				tipoTributo = AnagraficaManager.getTipoTributo(bd, putEntrataDominioDTO.getIdTributo());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new TipoTributoNonTrovatoException(e.getMessage());
 			}

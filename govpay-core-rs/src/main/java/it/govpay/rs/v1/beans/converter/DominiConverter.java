@@ -50,7 +50,6 @@ public class DominiConverter {
 		entrataDTO.setTributo(tributo);
 		entrataDTO.setIdDominio(idDominio);
 		entrataDTO.setIdTributo(idEntrata);
-//		entrataDTO.setIdTipoTributo(entrataRequest.getIdTipoTributo()); // TODO
 				
 		return entrataDTO;		
 	}

@@ -86,7 +86,7 @@ public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
   private String idEntrata = null;
   
   @JsonProperty("tipoEntrata")
-  private Tipoentrata tipoEntrata = null;
+  private TipoEntrata tipoEntrata = null;
   
   /**
    **/
@@ -199,16 +199,16 @@ public class Entrata extends it.govpay.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Entrata tipoEntrata(Tipoentrata tipoEntrata) {
+  public Entrata tipoEntrata(TipoEntrata tipoEntrata) {
     this.tipoEntrata = tipoEntrata;
     return this;
   }
 
   @JsonProperty("tipoEntrata")
-  public Tipoentrata getTipoEntrata() {
+  public TipoEntrata getTipoEntrata() {
     return tipoEntrata;
   }
-  public void setTipoEntrata(Tipoentrata tipoEntrata) {
+  public void setTipoEntrata(TipoEntrata tipoEntrata) {
     this.tipoEntrata = tipoEntrata;
   }
 

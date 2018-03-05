@@ -11,7 +11,6 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 	private String idTributo;
 	private String ibanAccredito;
 	private String ibanAccreditoPostale;
-	private String idTipoTributo;
 	
 	public PutEntrataDominioDTO(IAutorizzato user) {
 		super(user);
@@ -55,14 +54,6 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 
 	public void setIbanAccreditoPostale(String ibanAccreditoPostale) {
 		this.ibanAccreditoPostale = ibanAccreditoPostale;
-	}
-
-	public String getIdTipoTributo() {
-		return idTipoTributo;
-	}
-
-	public void setIdTipoTributo(String idTipoTributo) {
-		this.idTipoTributo = idTipoTributo;
 	}
 
 }

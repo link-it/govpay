@@ -25,9 +25,9 @@ import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.FaultBean;
 import it.govpay.rs.v1.beans.ListaTipiEntrata;
-import it.govpay.rs.v1.beans.Tipoentrata;
+import it.govpay.rs.v1.beans.TipoEntrata;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.rs.v1.beans.base.TipoentrataPost;
+import it.govpay.rs.v1.beans.base.TipoEntrataPost;
 import it.govpay.rs.v1.beans.converter.EntrateConverter;
 import net.sf.json.JsonConfig;
 
@@ -59,7 +59,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 			classMap.put("tipoContabilita", String.class);
 			jsonConfig.setClassMap(classMap);
-			TipoentrataPost entrataRequest= (TipoentrataPost) TipoentrataPost.parse(jsonRequest, TipoentrataPost.class, jsonConfig);
+			TipoEntrataPost entrataRequest= (TipoEntrataPost) TipoEntrataPost.parse(jsonRequest, TipoEntrataPost.class, jsonConfig);
 			
 			PutEntrataDTO putIntermediarioDTO = EntrateConverter.getPutEntrataDTO(entrataRequest, idEntrata, user);
 			
@@ -116,7 +116,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Tipoentrata response = new it.govpay.rs.v1.beans.Tipoentrata(listaDominiEntrateDTOResponse.getTipoTributo());
+			TipoEntrata response = new it.govpay.rs.v1.beans.TipoEntrata(listaDominiEntrateDTOResponse.getTipoTributo());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -168,7 +168,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			ListaTipiEntrata response = new ListaTipiEntrata(findEntrateDTOResponse.getResults().stream().map(t -> new Tipoentrata(t)).collect(Collectors.toList()), 
+			ListaTipiEntrata response = new ListaTipiEntrata(findEntrateDTOResponse.getResults().stream().map(t -> new TipoEntrata(t)).collect(Collectors.toList()), 
 					uriInfo.getRequestUri(), findEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
