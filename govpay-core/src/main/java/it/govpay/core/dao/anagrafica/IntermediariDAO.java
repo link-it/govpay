@@ -129,20 +129,20 @@ public class IntermediariDAO {
 		}
 	}
 	
-	public GetIntermediarioDTOResponse getIntermediario(GetIntermediarioDTO getIntermediarioDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public GetIntermediarioDTOResponse getIntermediario(GetIntermediarioDTO getIntermediarioDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			GetIntermediarioDTOResponse response = new GetIntermediarioDTOResponse(AnagraficaManager.getIntermediario(bd, getIntermediarioDTO.getCodIntermediario()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new NotFoundException("Intermediario " + getIntermediarioDTO.getCodIntermediario() + " non censito in Anagrafica");
+			throw new IntermediarioNonTrovatoException("Intermediario " + getIntermediarioDTO.getCodIntermediario() + " non censito in Anagrafica");
 		} finally {
 			bd.closeConnection();
 		}
 	}
 	
 	
-	public FindStazioniDTOResponse findStazioni(FindStazioniDTO findStazioniDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public FindStazioniDTOResponse findStazioni(FindStazioniDTO findStazioniDTO) throws NotAuthorizedException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			

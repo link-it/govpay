@@ -68,7 +68,7 @@ public class ApplicazioniDAO {
 		}
 	}
 	
-	public GetApplicazioneDTOResponse getApplicazione(GetApplicazioneDTO getApplicazioneDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public GetApplicazioneDTOResponse getApplicazione(GetApplicazioneDTO getApplicazioneDTO) throws NotAuthorizedException, ApplicazioneNonTrovataException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 //			Set<String> applicazioni = AclEngine.getApplicazioniAutorizzati(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
@@ -80,7 +80,7 @@ public class ApplicazioniDAO {
 			GetApplicazioneDTOResponse response = new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new NotFoundException("Applicazione " + getApplicazioneDTO.getCodApplicazione() + " non censita in Anagrafica");
+			throw new ApplicazioneNonTrovataException("Applicazione " + getApplicazioneDTO.getCodApplicazione() + " non censita in Anagrafica");
 		} finally {
 			bd.closeConnection();
 		}

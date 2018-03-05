@@ -68,7 +68,6 @@ import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
@@ -175,7 +174,7 @@ public class DominiDAO {
 		}
 	}
 
-	public GetDominioDTOResponse getDominio(GetDominioDTO getDominioDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public GetDominioDTOResponse getDominio(GetDominioDTO getDominioDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			//			Set<String> domini = AclEngine.getDominiAutorizzati(getDominioDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
@@ -187,13 +186,13 @@ public class DominiDAO {
 			GetDominioDTOResponse response = new GetDominioDTOResponse(AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new NotFoundException("Dominio " + getDominioDTO.getCodDominio() + " non censito in Anagrafica");
+			throw new DominioNonTrovatoException("Dominio " + getDominioDTO.getCodDominio() + " non censito in Anagrafica");
 		} finally {
 			bd.closeConnection();
 		}
 	}
 
-	public FindUnitaOperativeDTOResponse findUnitaOperative(FindUnitaOperativeDTO findUnitaOperativeDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public FindUnitaOperativeDTOResponse findUnitaOperative(FindUnitaOperativeDTO findUnitaOperativeDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findUnitaOperativeDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
@@ -216,7 +215,7 @@ public class DominiDAO {
 			try {
 				filter.setDominioFilter(AnagraficaManager.getDominio(bd, findUnitaOperativeDTO.getCodDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new NotFoundException("Dominio " + findUnitaOperativeDTO.getCodDominio() + " non censito in Anagrafica");
+				throw new DominioNonTrovatoException("Dominio " + findUnitaOperativeDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 			filter.setOffset(findUnitaOperativeDTO.getOffset());
 			filter.setLimit(findUnitaOperativeDTO.getLimit());
@@ -229,7 +228,7 @@ public class DominiDAO {
 		}
 	}
 
-	public GetUnitaOperativaDTOResponse getUnitaOperativa(GetUnitaOperativaDTO getUnitaOperativaDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public GetUnitaOperativaDTOResponse getUnitaOperativa(GetUnitaOperativaDTO getUnitaOperativaDTO) throws NotAuthorizedException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			//			Set<String> domini = AclEngine.getDominiAutorizzati(getUnitaOperativaDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
@@ -242,12 +241,12 @@ public class DominiDAO {
 			try {
 				dominio = AnagraficaManager.getDominio(bd, getUnitaOperativaDTO.getCodDominio());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new NotFoundException("Dominio " + getUnitaOperativaDTO.getCodDominio() + " non censito in Anagrafica");
+				throw new DominioNonTrovatoException("Dominio " + getUnitaOperativaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 
 			return new GetUnitaOperativaDTOResponse(AnagraficaManager.getUnitaOperativaByCodUnivocoUo(bd, dominio.getId(), getUnitaOperativaDTO.getCodUnivocoUnitaOperativa()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new NotFoundException("Unita Operativa " + getUnitaOperativaDTO.getCodUnivocoUnitaOperativa() + " non censito in Anagrafica per il dominio " + getUnitaOperativaDTO.getCodDominio());
+			throw new UnitaOperativaNonTrovataException("Unita Operativa " + getUnitaOperativaDTO.getCodUnivocoUnitaOperativa() + " non censito in Anagrafica per il dominio " + getUnitaOperativaDTO.getCodDominio());
 		} finally {
 			bd.closeConnection();
 		}
@@ -285,7 +284,7 @@ public class DominiDAO {
 		return putUoDTOResponse;
 	}
 
-	public FindIbanDTOResponse findIban(FindIbanDTO findIbanDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public FindIbanDTOResponse findIban(FindIbanDTO findIbanDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findIbanDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
@@ -307,7 +306,7 @@ public class DominiDAO {
 			try {
 				filter.setIdDominio(AnagraficaManager.getDominio(bd, findIbanDTO.getCodDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new NotFoundException("Dominio " + findIbanDTO.getCodDominio() + " non censito in Anagrafica");
+				throw new DominioNonTrovatoException("Dominio " + findIbanDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 			filter.setOffset(findIbanDTO.getOffset());
 			filter.setLimit(findIbanDTO.getLimit());
@@ -319,7 +318,7 @@ public class DominiDAO {
 		}
 	}
 
-	public GetIbanDTOResponse getIban(GetIbanDTO getIbanDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public GetIbanDTOResponse getIban(GetIbanDTO getIbanDTO) throws NotAuthorizedException, DominioNonTrovatoException, IbanAccreditoNonTrovatoException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			//			Set<String> domini = AclEngine.getDominiAutorizzati(getIbanDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
@@ -332,12 +331,12 @@ public class DominiDAO {
 			try {
 				dominio = AnagraficaManager.getDominio(bd, getIbanDTO.getCodDominio());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new NotFoundException("Dominio " + getIbanDTO.getCodDominio() + " non censito in Anagrafica");
+				throw new DominioNonTrovatoException("Dominio " + getIbanDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 			GetIbanDTOResponse response = new GetIbanDTOResponse(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), getIbanDTO.getCodIbanAccredito()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new NotFoundException("Iban di accredito " + getIbanDTO.getCodIbanAccredito() + " non censito in Anagrafica per il dominio " + getIbanDTO.getCodDominio());
+			throw new IbanAccreditoNonTrovatoException("Iban di accredito " + getIbanDTO.getCodIbanAccredito() + " non censito in Anagrafica per il dominio " + getIbanDTO.getCodDominio());
 		} finally {
 			bd.closeConnection();
 		}
@@ -375,7 +374,7 @@ public class DominiDAO {
 		return putIbanAccreditoDTOResponse;
 	}
 
-	public FindTributiDTOResponse findTributi(FindTributiDTO findTributiDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public FindTributiDTOResponse findTributi(FindTributiDTO findTributiDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			//			Set<Long> domini = AclEngine.getIdDominiAutorizzati(findTributiDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
@@ -398,7 +397,7 @@ public class DominiDAO {
 			try {
 				filter.setIdDominio(AnagraficaManager.getDominio(bd, findTributiDTO.getCodDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new NotFoundException("Dominio " + findTributiDTO.getCodDominio() + " non censito in Anagrafica");
+				throw new DominioNonTrovatoException("Dominio " + findTributiDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 			filter.setOffset(findTributiDTO.getOffset());
 			filter.setLimit(findTributiDTO.getLimit());
@@ -417,7 +416,7 @@ public class DominiDAO {
 		}
 	}
 
-	public GetTributoDTOResponse getTributo(GetTributoDTO getTributoDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public GetTributoDTOResponse getTributo(GetTributoDTO getTributoDTO) throws NotAuthorizedException, DominioNonTrovatoException, TributoNonTrovatoException, ServiceException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			//			Set<String> domini = AclEngine.getDominiAutorizzati(getTributoDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
@@ -430,14 +429,14 @@ public class DominiDAO {
 			try {
 				dominio = AnagraficaManager.getDominio(bd, getTributoDTO.getCodDominio());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new NotFoundException("Dominio " + getTributoDTO.getCodDominio() + " non censito in Anagrafica");
+				throw new DominioNonTrovatoException("Dominio " + getTributoDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 			it.govpay.bd.model.Tributo tributo = AnagraficaManager.getTributo(bd, dominio.getId(), getTributoDTO.getCodTributo());
 			IbanAccredito ibanAccredito = tributo.getIbanAccreditoPostale(bd);
 			GetTributoDTOResponse response = new GetTributoDTOResponse(tributo, ibanAccredito);
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new NotFoundException("Tributo " + getTributoDTO.getCodTributo() + " non censito in Anagrafica per il dominio " + getTributoDTO.getCodDominio());
+			throw new TributoNonTrovatoException("Tributo " + getTributoDTO.getCodTributo() + " non censito in Anagrafica per il dominio " + getTributoDTO.getCodDominio());
 		} finally {
 			bd.closeConnection();
 		}
