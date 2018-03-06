@@ -204,12 +204,12 @@ public class AclPost extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("autorizzazioni")
   public List<String> getAutorizzazioni() {
 	  if(autorizzazioni != null)
-		  return autorizzazioni;//.stream().map(autorizzazione -> autorizzazione.toString()).collect(Collectors.toList());
+		  return autorizzazioni;
 	  else return null;
   }
   public void setAutorizzazioni(List<String> autorizzazioni) {
 	  if(autorizzazioni != null)
-		  this.autorizzazioni = autorizzazioni;//.stream().map(autorizzazione -> AutorizzazioniEnum.fromValue(autorizzazione)).collect(Collectors.toList());;
+		  this.autorizzazioni = autorizzazioni;
   }
 
   @Override

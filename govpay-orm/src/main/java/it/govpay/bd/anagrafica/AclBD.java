@@ -31,7 +31,9 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.model.Acl;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.orm.IdAcl;
+import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.jdbc.JDBCACLServiceSearch;
 
 public class AclBD extends BasicBD {
@@ -140,15 +142,28 @@ public class AclBD extends BasicBD {
 
 	public void deleteAcl(Long id) throws ServiceException, NotFoundException{
 		try {
-			IdAcl idAcl = new IdAcl();
-			idAcl.setIdAcl(id);
-			idAcl.setId(id);
-			
-			if(!this.getAclService().exists(idAcl)) {
+
+			if(!((IDBACLService)this.getAclService()).exists(id)) {
 				throw new NotFoundException();
 			}
 			
-			this.getAclService().deleteById(idAcl);
+			((IDBACLService)this.getAclService()).deleteById(id);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} 
+	}
+
+	public boolean existsAcl(String ruolo, String principal, Servizio servizio) throws ServiceException {
+		try {
+
+			IdAcl id = new IdAcl();
+			id.setRuolo(ruolo);
+			id.setPrincipal(principal);
+			id.setServizio(servizio.getCodifica());
+			
+			return this.getAclService().exists(id);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {

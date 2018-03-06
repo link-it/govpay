@@ -249,7 +249,9 @@
   </mapping>
   <mapping name="id-acl" class="it.govpay.orm.IdAcl">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="idAcl" field="idAcl" usage="required"/>
+    <value name="ruolo" field="ruolo" usage="required"/>
+    <value name="principal" field="principal" usage="required"/>
+    <value name="servizio" field="servizio" usage="required"/>
   </mapping>
   <mapping name="id-singola-revoca" class="it.govpay.orm.IdSingolaRevoca">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

@@ -639,10 +639,12 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		// Object _operatore
 		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
 		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA));
+
+		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA));
 		sqlQueryObjectGet.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ID_UTENZA.PRINCIPAL,true));
 
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.addWhereCondition("id=?");
+		sqlQueryObjectGet.addWhereCondition(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id=?");
 		sqlQueryObjectGet.addWhereCondition(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id_utenza="+this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA) + ".id");
 
 		// Recupero _operatore
@@ -695,7 +697,8 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		// Object _operatore
 		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
-		sqlQueryObjectGet.addSelectField("id");
+		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA));
+		sqlQueryObjectGet.addSelectField(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
 //		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id_utenza="+this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA) + ".id");

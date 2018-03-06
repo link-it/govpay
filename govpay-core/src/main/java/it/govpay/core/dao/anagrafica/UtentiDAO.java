@@ -198,13 +198,15 @@ public class UtentiDAO {
 				putOperatoreDTO.getOperatore().getUtenza().setIdTributi(idTributi);
 			}
 			
+			putOperatoreDTO.getOperatore().setIdUtenza(AnagraficaManager.getUtenza(bd, putOperatoreDTO.getOperatore().getUtenza().getPrincipal()).getId());
+			
 			if(isCreate) {
 				operatoriBD.insertOperatore(putOperatoreDTO.getOperatore());
 			} else {
 				operatoriBD.updateOperatore(putOperatoreDTO.getOperatore());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new OperatoreNonTrovatoException(e.getMessage());
+			throw new OperatoreNonTrovatoException(e.getMessage(), e);
 		} finally {
 			bd.closeConnection();
 		}

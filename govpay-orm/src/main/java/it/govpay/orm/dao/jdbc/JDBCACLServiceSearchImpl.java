@@ -19,17 +19,11 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.ACL;
-import it.govpay.orm.IdAcl;
-import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.ACLFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -51,6 +45,12 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
+
+import it.govpay.orm.ACL;
+import it.govpay.orm.IdAcl;
+import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.ACLFetch;
 
 /**     
  * JDBCACLServiceSearchImpl
@@ -101,7 +101,9 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 	public IdAcl convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, ACL acl) throws NotImplementedException, ServiceException, Exception{
 	
 		IdAcl idACL = new IdAcl();
-		idACL.setIdAcl(acl.getId());
+		idACL.setRuolo(acl.getRuolo());
+		idACL.setPrincipal(acl.getPrincipal());
+		idACL.setServizio(acl.getServizio());
 	
 		return idACL;
 	}
@@ -129,8 +131,10 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 
         try{
 			List<IField> fields = new ArrayList<IField>();
-			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(ACL.model())));
-			
+			fields.add(ACL.model().RUOLO);
+			fields.add(ACL.model().PRINCIPAL);
+			fields.add(ACL.model().SERVIZIO);
+
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
@@ -610,8 +614,11 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 
 		// Object _acl
 		sqlQueryObjectGet.addFromTable(this.getACLFieldConverter().toTable(ACL.model()));
-		sqlQueryObjectGet.addSelectField("id");
+		sqlQueryObjectGet.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,false));
+		sqlQueryObjectGet.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,false));
+		sqlQueryObjectGet.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,false));
 		sqlQueryObjectGet.setANDLogicOperator(true);
+		
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _acl
@@ -619,7 +626,9 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_acl = new ArrayList<Class<?>>();
-		listaFieldIdReturnType_acl.add(Long.class);
+		listaFieldIdReturnType_acl.add(ACL.model().RUOLO.getFieldType());
+		listaFieldIdReturnType_acl.add(ACL.model().PRINCIPAL.getFieldType());
+		listaFieldIdReturnType_acl.add(ACL.model().SERVIZIO.getFieldType());
 		it.govpay.orm.IdAcl id_acl = null;
 		List<Object> listaFieldId_acl = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_acl, searchParams_acl);
@@ -631,7 +640,13 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		else{
 			// set _acl
 			id_acl = new it.govpay.orm.IdAcl();
-			id_acl.setIdAcl((Long)listaFieldId_acl.get(0));
+			if(listaFieldId_acl.get(0) != null)
+				id_acl.setRuolo((String)listaFieldId_acl.get(0));
+			
+			if(listaFieldId_acl.get(1) != null)
+				id_acl.setPrincipal((String)listaFieldId_acl.get(1));
+			
+			id_acl.setServizio((String)listaFieldId_acl.get(2));
 		}
 		
 		return id_acl;
@@ -668,16 +683,27 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		// Devono essere mappati nella where condition i metodi dell'oggetto id.getXXX
 		sqlQueryObjectGet.setANDLogicOperator(true);
 //		sqlQueryObjectGet.setSelectDistinct(true);
-		sqlQueryObjectGet.addWhereCondition("id=?");
+		if(id.getRuolo()!=null)
+			sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,true)+"=?");
+		if(id.getPrincipal()!=null)
+			sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,true)+"=?");
+		
+		sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,true)+"=?");
+
+		List<JDBCObject> lst = new ArrayList<JDBCObject>();
+		if(id.getRuolo()!=null)
+			lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getRuolo(),ACL.model().RUOLO.getFieldType()));
+		
+		if(id.getPrincipal()!=null)
+			lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getPrincipal(),ACL.model().PRINCIPAL.getFieldType()));
+		
+		lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getServizio(),ACL.model().SERVIZIO.getFieldType()));
 
 		// Recupero _acl
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_acl = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdAcl(),Long.class),
-		};
 		Long id_acl = null;
 		try{
 			id_acl = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-						Long.class, searchParams_acl);
+						Long.class, lst.toArray(new JDBCObject[] {}));
 		}catch(NotFoundException notFound){
 			if(throwNotFound){
 				throw new NotFoundException(notFound);

@@ -98,7 +98,18 @@ public class AclDAO {
 		try {
 			AclBD aclBD = new AclBD(bd);
 			PostAclDTOResponse leggiAclDTOResponse = new PostAclDTOResponse();
-			aclBD.insertAcl(postAclDTO.getAcl());
+			boolean exists = aclBD.existsAcl(postAclDTO.getAcl().getRuolo(), postAclDTO.getAcl().getPrincipal(), postAclDTO.getAcl().getServizio());
+			leggiAclDTOResponse.setCreated(!exists);
+			if(exists) {
+				try {
+					aclBD.updateAcl(postAclDTO.getAcl());
+				} catch (NotFoundException e) {
+					throw new ServiceException(e);
+				}
+			} else {
+				aclBD.insertAcl(postAclDTO.getAcl());
+			}
+			
 			leggiAclDTOResponse.setCreated(true);
 			return leggiAclDTOResponse;
 		} finally {

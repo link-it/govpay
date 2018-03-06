@@ -14,7 +14,7 @@ public class OperatoriConverter {
 	public static PutOperatoreDTO getPutOperatoreDTO(OperatorePost operatoreRequest, String principal,	IAutorizzato user) {
 		PutOperatoreDTO putOperatoreDTO = new PutOperatoreDTO(user);
 		
-		Operatore operatore = new Operatore();;
+		Operatore operatore = new Operatore();
 		Utenza utenza = new Utenza();
 		utenza.setAbilitato(operatoreRequest.isAbilitato());
 		utenza.setPrincipal(principal);

@@ -40,7 +40,8 @@ public class OperatoreConverter {
 		it.govpay.orm.Operatore vo = new it.govpay.orm.Operatore();
 		vo.setId(dto.getId());
 		IdUtenza idUtenza = new IdUtenza();
-		idUtenza.setId(dto.getUtenza().getId());
+		idUtenza.setId(dto.getIdUtenza());
+		idUtenza.setPrincipal(dto.getUtenza().getPrincipal());
 		vo.setIdUtenza(idUtenza);
 		vo.setNome(dto.getNome());
 		return vo;

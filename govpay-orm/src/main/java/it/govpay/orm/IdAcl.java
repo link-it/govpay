@@ -35,7 +35,9 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="id-acl">
  * 		&lt;sequence>
- * 			&lt;element name="idAcl" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ruolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="servizio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -50,7 +52,9 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-acl", 
   propOrder = {
-  	"idAcl"
+  	"ruolo",
+  	"principal",
+  	"servizio"
   }
 )
 
@@ -74,12 +78,28 @@ public class IdAcl extends org.openspcoop2.utils.beans.BaseBean implements Seria
 		this.id=new Long(-1);
   }
 
-  public long getIdAcl() {
-    return this.idAcl;
+  public java.lang.String getRuolo() {
+    return this.ruolo;
   }
 
-  public void setIdAcl(long idAcl) {
-    this.idAcl = idAcl;
+  public void setRuolo(java.lang.String ruolo) {
+    this.ruolo = ruolo;
+  }
+
+  public java.lang.String getPrincipal() {
+    return this.principal;
+  }
+
+  public void setPrincipal(java.lang.String principal) {
+    this.principal = principal;
+  }
+
+  public java.lang.String getServizio() {
+    return this.servizio;
+  }
+
+  public void setServizio(java.lang.String servizio) {
+    this.servizio = servizio;
   }
 
   private static final long serialVersionUID = 1L;
@@ -89,8 +109,16 @@ public class IdAcl extends org.openspcoop2.utils.beans.BaseBean implements Seria
 
 
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="long")
-  @XmlElement(name="idAcl",required=true,nillable=false)
-  protected long idAcl;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ruolo",required=true,nillable=false)
+  protected java.lang.String ruolo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="principal",required=true,nillable=false)
+  protected java.lang.String principal;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="servizio",required=true,nillable=false)
+  protected java.lang.String servizio;
 
 }

@@ -3,6 +3,8 @@ package it.govpay.rs.v1.beans.base;
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
+
+import it.govpay.model.Acl.Diritti;
 import it.govpay.rs.v1.beans.base.AclPost;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,12 +121,22 @@ public class Acl extends it.govpay.rs.v1.beans.JSONSerializable {
     }
 
     public static AutorizzazioniEnum fromValue(String text) {
-      for (AutorizzazioniEnum b : AutorizzazioniEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
+        for (AutorizzazioniEnum b : AutorizzazioniEnum.values()) {
+          if (String.valueOf(b.value).equals(text)) {
+            return b;
+          }
         }
+        return null;
       }
-      return null;
+
+    public static AutorizzazioniEnum fromValue(Diritti text) {
+    	switch(text) {
+		case ESECUZIONE: return AutorizzazioniEnum.ESECUZIONE;
+		case LETTURA: return AutorizzazioniEnum.LETTURA;
+		case SCRITTURA: return AutorizzazioniEnum.SCRITTURA;
+		default:
+			break;}
+    	return null;
     }
   }
 

@@ -10,7 +10,7 @@ import org.codehaus.jackson.map.annotate.JsonFilter;
 import it.govpay.rs.v1.costanti.Costanti;
 
 @JsonFilter(value="lista") 
-public abstract class Lista<T> extends JSONSerializable {
+public class Lista<T> extends JSONSerializable {
 
 	private long numRisultati;
 	private long numPagine;
