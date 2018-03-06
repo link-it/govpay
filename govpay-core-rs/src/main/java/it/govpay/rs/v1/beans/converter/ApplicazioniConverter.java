@@ -5,10 +5,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
-import it.govpay.model.Connettore;
-import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.rs.v1.beans.base.ApplicazionePost;
 import it.govpay.rs.v1.beans.base.CodificaAvvisi;
 
@@ -19,8 +17,9 @@ public class ApplicazioniConverter {
 		Applicazione applicazione = new Applicazione();
 		Utenza utenza = new Utenza();
 		utenza.setAbilitato(applicazionePost.isAbilitato());
-		utenza.setPrincipal(applicazione.getPrincipal());
+		utenza.setPrincipal(applicazionePost.getPrincipal());
 		applicazione.setUtenza(utenza);
+		applicazioneDTO.setIdUtenza(applicazionePost.getPrincipal());
 		
 		CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
 		codificaAvvisi.setCodificaIuv(applicazione.getCodApplicazioneIuv());
@@ -30,7 +29,8 @@ public class ApplicazioniConverter {
 		applicazione.setCodApplicazioneIuv(applicazionePost.getCodificaAvvisi().getCodificaIuv());
 		applicazione.setRegExp(applicazionePost.getCodificaAvvisi().getRegExpIuv());
 		applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna());
-		applicazione.setCodApplicazione(applicazione.getCodApplicazione());
+		applicazione.setCodApplicazione(idA2A);
+		applicazione.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 		applicazione.setConnettoreNotifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioNotifica()));
 		applicazione.setConnettoreVerifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioVerifica()));
 		applicazioneDTO.setApplicazione(applicazione);

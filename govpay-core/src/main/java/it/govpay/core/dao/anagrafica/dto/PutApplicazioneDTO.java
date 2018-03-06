@@ -7,6 +7,7 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 	
 	private Applicazione applicazione;
 	private String idApplicazione;
+	private String idUtenza;
 	
 	public PutApplicazioneDTO(IAutorizzato user) {
 		super(user);
@@ -26,6 +27,14 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 
 	public void setIdApplicazione(String idApplicazione) {
 		this.idApplicazione = idApplicazione;
+	}
+
+	public String getIdUtenza() {
+		return idUtenza;
+	}
+
+	public void setIdUtenza(String idUtenza) {
+		this.idUtenza = idUtenza;
 	}
 
 }

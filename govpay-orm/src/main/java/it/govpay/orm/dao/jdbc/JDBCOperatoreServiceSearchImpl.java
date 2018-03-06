@@ -48,7 +48,6 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
 import it.govpay.orm.IdOperatore;
-import it.govpay.orm.IdUtenza;
 import it.govpay.orm.Operatore;
 import it.govpay.orm.dao.jdbc.converter.OperatoreFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.OperatoreFetch;
@@ -522,7 +521,13 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
+		
+		if(expression.inUseModel(Operatore.model().ID_UTENZA,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(Operatore.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(Operatore.model().ID_UTENZA);
+			sqlQueryObject.addWhereCondition(tableName1+".id_utenza="+tableName2+".id");
+		}
+
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdOperatore id) throws NotFoundException, ServiceException, NotImplementedException, Exception{

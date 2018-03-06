@@ -19,17 +19,11 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.Applicazione;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.ApplicazioneFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -51,6 +45,12 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
+
+import it.govpay.orm.Applicazione;
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.ApplicazioneFetch;
 
 /**     
  * JDBCApplicazioneServiceSearchImpl
@@ -529,6 +529,13 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
+		
+		if(expression.inUseModel(Applicazione.model().ID_UTENZA,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(Applicazione.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(Applicazione.model().ID_UTENZA);
+			sqlQueryObject.addWhereCondition(tableName1+".id_utenza="+tableName2+".id");
+		}
+
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdApplicazione id) throws NotFoundException, ServiceException, NotImplementedException, Exception{

@@ -34,6 +34,7 @@ public class ApplicazioneConverter {
 		dto.setCodApplicazione(vo.getCodApplicazione());
 		dto.setConnettoreNotifica(connettoreNotifica);
 		dto.setConnettoreVerifica(connettoreVerifica);
+
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
 		dto.setTrusted(vo.getTrusted());
@@ -60,7 +61,7 @@ public class ApplicazioneConverter {
 		
 		vo.setFirmaRicevuta(dto.getFirmaRichiesta().getCodifica());
 		IdUtenza idUtenza = new IdUtenza();
-		idUtenza.setPrincipal(dto.getPrincipal());
+		idUtenza.setId(dto.getIdUtenza());
 		vo.setIdUtenza(idUtenza);
 		vo.setTrusted(dto.isTrusted());
 		vo.setCodApplicazioneIuv(dto.getCodApplicazioneIuv());
