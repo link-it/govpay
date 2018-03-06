@@ -47,7 +47,6 @@ import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
-import it.govpay.orm.UtenzaDominio;
 import it.govpay.orm.UtenzaTributo;
 import it.govpay.orm.dao.jdbc.converter.UtenzaTributoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.UtenzaTributoFetch;
@@ -115,7 +114,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 			List<Map<String,Object>> select = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[]{}));
 			
 	        for(Map<String, Object> record: select) {
-	        	UtenzaTributo utenzaTributo = (UtenzaTributo) this.getFetch().fetch(jdbcProperties.getDatabase(), UtenzaDominio.model(), record);
+	        	UtenzaTributo utenzaTributo = (UtenzaTributo) this.getFetch().fetch(jdbcProperties.getDatabase(), UtenzaTributo.model(), record);
 	
 	    		if(idMappingResolutionBehaviour==null ||
 	    			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
