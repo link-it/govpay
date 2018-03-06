@@ -3,6 +3,8 @@ package it.govpay.rs.v1.beans.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
@@ -13,12 +15,14 @@ import it.govpay.rs.v1.beans.base.AclPost.AutorizzazioniEnum;
 
 public class AclConverter {
 	
-	public static PostAclDTO getPostAclDTO(AclPost aclPost, IAutorizzato user) {
+	public static PostAclDTO getPostAclDTO(AclPost aclPost, IAutorizzato user) throws ServiceException {
+		
 		PostAclDTO aclDTO = new PostAclDTO(user);
 		Acl acl = new Acl();
 		
 		List<Diritti> lst = new ArrayList<>();
-		for(AutorizzazioniEnum auth: aclPost.getAutorizzazioni()) {
+		for(String authS: aclPost.getAutorizzazioni()) {
+			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
 			switch(auth) {
 			case ESECUZIONE: lst.add(Acl.Diritti.ESECUZIONE);
 				break;
@@ -34,7 +38,7 @@ public class AclConverter {
 		acl.setListaDiritti(lst);
 		acl.setPrincipal(aclPost.getPrincipal());
 		acl.setRuolo(aclPost.getRuolo());
-		acl.setServizio(Servizio.valueOf(aclPost.getServizio().toString()));
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
 		aclDTO.setAcl(acl);
 
 		return aclDTO;		

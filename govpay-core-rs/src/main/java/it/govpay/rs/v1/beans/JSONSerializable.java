@@ -25,7 +25,8 @@ public abstract class JSONSerializable {
 	public abstract String getJsonIdFilter();
 	
 	public String toJSON(String fields) {
-		return toJSON(fields, new ObjectMapper());
+		ObjectMapper mapper = new ObjectMapper();
+		return toJSON(fields, mapper);
 	}
 	
 	public String toJSON(String fields,ObjectMapper mapper) {

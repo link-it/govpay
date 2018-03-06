@@ -1,6 +1,7 @@
 package it.govpay.rs.v1.beans.base;
 
 import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
 import java.util.ArrayList;
@@ -128,7 +129,7 @@ public class AclPost extends it.govpay.rs.v1.beans.JSONSerializable {
 
       
   @JsonProperty("autorizzazioni")
-  private List<AutorizzazioniEnum> autorizzazioni = new ArrayList<AutorizzazioniEnum>();
+  private List<String> autorizzazioni = new ArrayList<String>();
   
   /**
    * ruolo a cui si applica l'acl
@@ -195,17 +196,20 @@ public class AclPost extends it.govpay.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public AclPost autorizzazioni(List<AutorizzazioniEnum> autorizzazioni) {
-    this.autorizzazioni = autorizzazioni;
+  public AclPost autorizzazioni(List<String> autorizzazioni) {
+    this.setAutorizzazioni(autorizzazioni);
     return this;
   }
 
   @JsonProperty("autorizzazioni")
-  public List<AutorizzazioniEnum> getAutorizzazioni() {
-    return autorizzazioni;
+  public List<String> getAutorizzazioni() {
+	  if(autorizzazioni != null)
+		  return autorizzazioni;//.stream().map(autorizzazione -> autorizzazione.toString()).collect(Collectors.toList());
+	  else return null;
   }
-  public void setAutorizzazioni(List<AutorizzazioniEnum> autorizzazioni) {
-    this.autorizzazioni = autorizzazioni;
+  public void setAutorizzazioni(List<String> autorizzazioni) {
+	  if(autorizzazioni != null)
+		  this.autorizzazioni = autorizzazioni;//.stream().map(autorizzazione -> AutorizzazioniEnum.fromValue(autorizzazione)).collect(Collectors.toList());;
   }
 
   @Override
