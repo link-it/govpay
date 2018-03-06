@@ -35,6 +35,7 @@ import org.openspcoop2.utils.UtilsException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.converter.OperatoreConverter;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
@@ -219,4 +220,34 @@ public class OperatoriBD extends BasicBD {
 		}
 	}
 
+	public void deleteOperatore(String principal) throws ServiceException, NotFoundException {
+		boolean oldAutoCommit = this.isAutoCommit();
+		try {
+			
+			this.setAutoCommit(false); 
+			
+			IdOperatore idOperatore = new IdOperatore();
+			idOperatore.setPrincipal(principal);
+			
+			if(!this.getOperatoreService().exists(idOperatore )) {
+				throw new NotFoundException();
+			}
+			
+			Utenza utenza = AnagraficaManager.getOperatore(this, principal).getUtenza();
+			this.getOperatoreService().deleteById(idOperatore);
+			
+			// chiama utenza bd. delete
+			new UtenzeBD(this).deleteUtenza(utenza, true);
+			
+			this.commit();
+		} catch (NotImplementedException | MultipleResultException e) {
+			this.rollback(); 
+			throw new ServiceException(e);
+		} catch (ServiceException e) {
+			this.rollback();
+			throw e;
+		} finally {
+			this.setAutoCommit(oldAutoCommit); 
+		} 
+	}
 }

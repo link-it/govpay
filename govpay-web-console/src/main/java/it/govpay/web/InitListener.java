@@ -25,6 +25,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -37,7 +38,8 @@ import it.govpay.web.utils.ConsoleProperties;
 public class InitListener implements ServletContextListener {
 
 	private static boolean initialized = false;
-	
+	private static Logger log = null;
+
 	public static boolean isInitialized() {
 		return InitListener.initialized;
 	}
@@ -45,19 +47,23 @@ public class InitListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		try{
-			
-			URI log4j2Config = null;
-			try {
-				log4j2Config = ConsoleProperties.getInstance().getLog4j2Config();
-				if(log4j2Config != null) {
-					LoggerWrapperFactory.setLogConfiguration(log4j2Config);
-				} else {
-//					LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
-				}
-			} catch (Exception e) {
-				LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore durante la configurazione del Logger: " + e);
+
+			URI log4j2Config =  ConsoleProperties.getInstance().getLog4j2Config();
+			if(log4j2Config != null) {
+				LoggerWrapperFactory.setLogConfiguration(log4j2Config);
+			} else {
+				LoggerWrapperFactory.setLogConfiguration("/log4j2.xml");
 			}
-			
+
+			log = LoggerWrapperFactory.getLogger("boot");	
+			log.info("Inizializzazione GovPay Console in corso");
+
+			if(log4j2Config != null) {
+				log.info("Caricata configurazione logger: " + log4j2Config.getPath());
+			} else {
+				log.info("Configurazione logger da classpath.");
+			}
+
 			GovpayConfig.newInstance4GovPayConsole(InitListener.class.getResourceAsStream("/govpayConsole.properties"));
 			RicevutaPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
 			AvvisoPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
@@ -67,7 +73,9 @@ public class InitListener implements ServletContextListener {
 		} catch(Exception e){
 			throw new RuntimeException("Inizializzazione di GovPay Console fallita: " + e, e);
 		}
+		log.info("Inizializzazione GovPay Console completata con successo.");
 		initialized = true;
+		
 	}
 
 

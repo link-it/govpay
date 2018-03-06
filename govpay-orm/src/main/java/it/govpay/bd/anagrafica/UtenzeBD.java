@@ -184,11 +184,7 @@ public class UtenzeBD extends BasicBD {
 
 	private void updateUtenzeDominio(Long utenza, List<Long> idDomini) throws ServiceException {
 		try {
-			IExpression exp = this.getUtenzaDominioService().newExpression();
-			UtenzaDominioFieldConverter converter = new UtenzaDominioFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaDominio.model()));
-			exp.equals(field, utenza);
-			this.getUtenzaDominioService().deleteAll(exp);
+			deleteUtenzeDominio(utenza);
 
 			if(idDomini != null) {
 				for(Long domini: idDomini) {
@@ -202,23 +198,30 @@ public class UtenzeBD extends BasicBD {
 					this.getUtenzaDominioService().create(dominio);
 				}
 			}
-		} catch(ExpressionException e) {
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
+	}
+
+	private void deleteUtenzeDominio(Long utenza) throws ServiceException {
+		try {
+			IExpression exp = this.getUtenzaDominioService().newExpression();
+			UtenzaDominioFieldConverter converter = new UtenzaDominioFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaDominio.model()));
+			exp.equals(field, utenza);
+			this.getUtenzaDominioService().deleteAll(exp);
+		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
+		} catch(ExpressionException e) {
 			throw new ServiceException(e);
-		}
-
+		} 
 	}
 
 	private void updateUtenzeTributo(Long utenza, List<Long> idTributi) throws ServiceException {
 		try {
-			IExpression exp = this.getUtenzaTributoService().newExpression();
-			UtenzaTributoFieldConverter converter = new UtenzaTributoFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTributo.model()));
-			exp.equals(field, utenza);
-			this.getUtenzaTributoService().deleteAll(exp);
+			deleteUtenzeTributo(utenza);
 			
 			if(idTributi != null) {
 				for(Long tributo: idTributi) {
@@ -232,11 +235,23 @@ public class UtenzeBD extends BasicBD {
 					this.getUtenzaTributoService().create(utenzaTributo);
 				}
 			}
-		} catch(ExpressionException e) {
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
+	}
+
+	private void deleteUtenzeTributo(Long utenza) throws ServiceException{
+		try {
+			IExpression exp = this.getUtenzaTributoService().newExpression();
+			UtenzaTributoFieldConverter converter = new UtenzaTributoFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTributo.model()));
+			exp.equals(field, utenza);
+			this.getUtenzaTributoService().deleteAll(exp);
+		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
+		} catch(ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -287,19 +302,52 @@ public class UtenzeBD extends BasicBD {
 			utenza.setId(vo.getId());
 			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(utenza.getId(), utenza.getIdTributi());
-
-			if(utenza.getIdTributi() != null) {
-				for(Long domini: utenza.getIdTributi()) {
-					UtenzaTributo dominio = new UtenzaTributo();
-					IdTributo idDominio = new IdTributo();
-					idDominio.setId(domini);
-					dominio.setIdTributo(idDominio);
-					this.getUtenzaTributoService().create(dominio);
-				}
-			}
 			emitAudit(utenza);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		}
+	}
+	
+	public void deleteUtenza(Utenza utenza) throws NotFoundException, ServiceException {
+		this.deleteUtenza(utenza, false);
+	}
+	/**
+	 * Aggiorna il utenza
+	 * 
+	 * @param utenza
+	 * @throws NotFoundException
+	 * @throws ServiceException
+	 */
+	public void deleteUtenza(Utenza utenza, boolean commitParent) throws NotFoundException, ServiceException {
+		boolean oldAutoCommit = this.isAutoCommit();
+		try {
+			if(!commitParent)
+				this.setAutoCommit(false); 
+			
+			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
+			
+			IdUtenza idUtenza = this.getUtenzaService().convertToId(vo);
+			if(!this.getUtenzaService().exists(idUtenza)) {
+				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
+			}
+			this.deleteUtenzeDominio(vo.getId());
+			this.deleteUtenzeTributo(vo.getId());
+			this.getUtenzaService().delete(vo);
+			if(!commitParent)
+				this.commit();
+			
+			emitAudit(utenza);
+		} catch (NotImplementedException | MultipleResultException | UtilsException  e) {
+			if(!commitParent)
+				this.rollback();
+			throw new ServiceException(e);
+		} catch (ServiceException e) {
+			if(!commitParent)
+				this.rollback();
+			throw e;
+		} finally {
+			if(!commitParent)
+				this.setAutoCommit(oldAutoCommit); 
 		}
 	}
 

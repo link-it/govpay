@@ -23,6 +23,7 @@ package it.govpay.core.dao.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -31,6 +32,7 @@ import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
+import it.govpay.core.dao.anagrafica.dto.DeleteOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
@@ -208,6 +210,28 @@ public class UtentiDAO {
 		}
 		return operatoreDTOResponse;
 	}
+	
+	/**
+	 * @param deleteOperatoreDTO
+	 */
+	public void deleteOperatore(DeleteOperatoreDTO deleteOperatoreDTO) throws NotAuthorizedException, OperatoreNonTrovatoException, ServiceException {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		
+//		Set<String> applicazioni = AclEngine.getApplicazioniAutorizzati(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
+//		
+//		if(applicazioni != null && !applicazioni.contains(getApplicazioneDTO.getCodApplicazione())) {
+//			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per l'applicazione " + getApplicazioneDTO.getCodApplicazione());
+//		}
+
+		try {
+			new OperatoriBD(bd).deleteOperatore(deleteOperatoreDTO.getPrincipal());
+		} catch (NotFoundException e) {
+			throw new OperatoreNonTrovatoException(e.getMessage());
+		} finally {
+			bd.closeConnection();
+		}
+	}
+	
 }
 
 
