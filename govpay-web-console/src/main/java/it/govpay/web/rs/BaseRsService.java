@@ -120,7 +120,8 @@ public abstract class BaseRsService {
 		listaDiritti.add(Diritti.LETTURA);
 		listaDiritti.add(Diritti.SCRITTURA);
 		listaDiritti.add(Diritti.ESECUZIONE);
-		return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+		return true;
+//		return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
 //		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
 //		return topDirittiOperatore > Acl.NO_DIRITTI;
 	}
@@ -133,7 +134,8 @@ public abstract class BaseRsService {
 	public boolean isServizioAbilitatoLettura(BasicBD bd, Acl.Servizio servizio) throws ServiceException{
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(Diritti.LETTURA);
-		return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+		return true;
+	//	return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
 //		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
 //		return topDirittiOperatore >= Acl.DIRITTI_LETTURA;
 	}
@@ -147,7 +149,8 @@ public abstract class BaseRsService {
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(Diritti.SCRITTURA);
 		listaDiritti.add(Diritti.ESECUZIONE);
-		return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
+		return true;
+		//	return AclEngine.isAuthorized(getOperatoreByPrincipal(bd).getUtenza(), servizio, listaDiritti);
 //		int topDirittiOperatore = getTopDirittiServizioOperatore(bd, servizio);
 //		return topDirittiOperatore == Acl.DIRITTI_SCRITTURA;
 	}
@@ -227,11 +230,11 @@ public abstract class BaseRsService {
 	protected List<String> getRuoliOperatore(BasicBD bd, it.govpay.model.Operatore operatore){
 		List<String> listaRuoliPosseduti = new ArrayList<String>();
 		// caricamento dei ruoli ricevuti nella richiesta http
-		for (String chiaveRuolo : this.aclCache.getChiaviRuoli()) {
-			if(this.request.isUserInRole(chiaveRuolo)){
-				listaRuoliPosseduti.add(this.aclCache.getRuolo(chiaveRuolo));
-			}
-		}
+//		for (String chiaveRuolo : this.aclCache.getChiaviRuoli()) {
+//			if(this.request.isUserInRole(chiaveRuolo)){
+//				listaRuoliPosseduti.add(this.aclCache.getRuolo(chiaveRuolo));
+//			}
+//		}
 		return listaRuoliPosseduti;
 	}
 

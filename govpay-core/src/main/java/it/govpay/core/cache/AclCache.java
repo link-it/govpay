@@ -10,7 +10,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.AclDAO;
-import it.govpay.core.dao.anagrafica.dto.ListaAclDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaAclDTOResponse;
 import it.govpay.model.Acl;
 
