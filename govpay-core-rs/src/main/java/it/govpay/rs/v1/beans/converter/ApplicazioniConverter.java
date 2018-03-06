@@ -1,5 +1,8 @@
 package it.govpay.rs.v1.beans.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Applicazione;
@@ -20,6 +23,25 @@ public class ApplicazioniConverter {
 		utenza.setPrincipal(applicazionePost.getPrincipal());
 		applicazione.setUtenza(utenza);
 		applicazioneDTO.setIdUtenza(applicazionePost.getPrincipal());
+		
+		// TODO controllare tipi generati
+		if(applicazionePost.getDomini() != null) {
+			List<String> idDomini = new ArrayList<>();
+			for (Object id : applicazionePost.getDomini()) {
+				idDomini.add(id.toString());
+			}
+			applicazioneDTO.setIdDomini(idDomini);
+		}
+		
+		// TODO controllare tipi generati
+		if(applicazionePost.getEntrate() != null) {
+			List<String> idTributi = new ArrayList<>();
+			for (Object id : applicazionePost.getEntrate()) {
+				idTributi.add(id.toString());
+			}
+			
+			applicazioneDTO.setIdTributi(idTributi);
+		}
 		
 		CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
 		codificaAvvisi.setCodificaIuv(applicazione.getCodApplicazioneIuv());

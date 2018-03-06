@@ -20,6 +20,9 @@
 package it.govpay.core.dao.anagrafica;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -32,6 +35,8 @@ import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
+import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -159,6 +164,49 @@ public class UtentiDAO {
 		} finally {
 			bd.closeConnection();
 		}
+	}
+
+	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException {
+		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			OperatoriBD operatoriBD = new OperatoriBD(bd);
+			OperatoreFilter filter = operatoriBD.newFilter(false);
+			filter.setPrincipal(putOperatoreDTO.getPrincipal());
+			
+			// flag creazione o update
+			boolean isCreate = operatoriBD.count(filter) == 0;
+			operatoreDTOResponse.setCreated(isCreate);
+			
+			if(putOperatoreDTO.getIdDomini() != null) {
+				List<Long> idDomini = new ArrayList<>();
+				for (String codDominio : putOperatoreDTO.getIdDomini()) {
+					idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
+				}
+				
+				putOperatoreDTO.getOperatore().getUtenza().setIdDomini(idDomini );
+			}
+			
+			if(putOperatoreDTO.getIdTributi() != null) {
+				List<Long> idTributi = new ArrayList<>();
+				for (String codTributo : putOperatoreDTO.getIdTributi()) {
+					idTributi.add(AnagraficaManager.getTipoTributo(bd, codTributo).getId());
+				}
+				
+				putOperatoreDTO.getOperatore().getUtenza().setIdTributi(idTributi);
+			}
+			
+			if(isCreate) {
+				operatoriBD.insertOperatore(putOperatoreDTO.getOperatore());
+			} else {
+				operatoriBD.updateOperatore(putOperatoreDTO.getOperatore());
+			}
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new OperatoreNonTrovatoException(e.getMessage());
+		} finally {
+			bd.closeConnection();
+		}
+		return operatoreDTOResponse;
 	}
 }
 

@@ -39,11 +39,9 @@ import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.IntermediarioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.core.utils.GpThreadLocal;
 
 public class IntermediariDAO {

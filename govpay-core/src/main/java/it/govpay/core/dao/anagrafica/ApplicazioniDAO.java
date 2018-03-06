@@ -19,6 +19,9 @@
  */
 package it.govpay.core.dao.anagrafica;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -34,7 +37,6 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.UtenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.core.utils.GpThreadLocal;
 
 public class ApplicazioniDAO {
@@ -89,7 +91,7 @@ public class ApplicazioniDAO {
 	
 
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
-	UtenzaNonTrovataException,ApplicazioneNonTrovataException {
+	ApplicazioneNonTrovataException {
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
@@ -98,6 +100,25 @@ public class ApplicazioniDAO {
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
 
+			if(putApplicazioneDTO.getIdDomini() != null) {
+				List<Long> idDomini = new ArrayList<>();
+				for (String codDominio : putApplicazioneDTO.getIdDomini()) {
+					idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
+				}
+				
+				putApplicazioneDTO.getApplicazione().getUtenza().setIdDomini(idDomini );
+			}
+			
+			if(putApplicazioneDTO.getIdTributi() != null) {
+				List<Long> idTributi = new ArrayList<>();
+				for (String codTributo : putApplicazioneDTO.getIdTributi()) {
+					idTributi.add(AnagraficaManager.getTipoTributo(bd, codTributo).getId());
+				}
+				
+				putApplicazioneDTO.getApplicazione().getUtenza().setIdTributi(idTributi);
+			}
+			
+			
 			// flag creazione o update
 			boolean isCreate = applicazioniBD.count(filter) == 0;
 			applicazioneDTOResponse.setCreated(isCreate);

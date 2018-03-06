@@ -33,7 +33,6 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.converter.OperatoreConverter;
