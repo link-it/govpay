@@ -39,7 +39,9 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
@@ -154,9 +156,10 @@ public class UtentiDAO {
 				filter.setSimpleSearchString(listaOperatoriDTO.getSimpleSearch());
 			} else {
 				filter = applicazioniBD.newFilter(false);
-				filter.setSearchAbilitato(listaOperatoriDTO.getAbilitato());
+				
 			}
-//			filter.setListaIdOperatori(applicazioni.stream().collect(Collectors.toList()));
+			
+			filter.setSearchAbilitato(listaOperatoriDTO.getAbilitato());
 			filter.setOffset(listaOperatoriDTO.getOffset());
 			filter.setLimit(listaOperatoriDTO.getLimit());
 			filter.getFilterSortList().addAll(listaOperatoriDTO.getFieldSortList());
@@ -168,13 +171,14 @@ public class UtentiDAO {
 		}
 	}
 
-	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException {
+	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoTributoNonTrovatoException, DominioNonTrovatoException {
 		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter(false);
 			filter.setPrincipal(putOperatoreDTO.getPrincipal());
+			filter.setSearchModeEquals(true); // ricerca esatta del principal che sto inserendo
 			
 			// flag creazione o update
 			boolean isCreate = operatoriBD.count(filter) == 0;
@@ -183,7 +187,11 @@ public class UtentiDAO {
 			if(putOperatoreDTO.getIdDomini() != null) {
 				List<Long> idDomini = new ArrayList<>();
 				for (String codDominio : putOperatoreDTO.getIdDomini()) {
-					idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
+					try {
+						idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
+					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+						throw new DominioNonTrovatoException(e.getMessage(), e);
+					}
 				}
 				
 				putOperatoreDTO.getOperatore().getUtenza().setIdDomini(idDomini );
@@ -192,17 +200,21 @@ public class UtentiDAO {
 			if(putOperatoreDTO.getIdTributi() != null) {
 				List<Long> idTributi = new ArrayList<>();
 				for (String codTributo : putOperatoreDTO.getIdTributi()) {
-					idTributi.add(AnagraficaManager.getTipoTributo(bd, codTributo).getId());
+					try {
+						idTributi.add(AnagraficaManager.getTipoTributo(bd, codTributo).getId());
+					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+						throw new TipoTributoNonTrovatoException(e.getMessage(), e);
+					}
 				}
 				
 				putOperatoreDTO.getOperatore().getUtenza().setIdTributi(idTributi);
 			}
 			
-			putOperatoreDTO.getOperatore().setIdUtenza(AnagraficaManager.getUtenza(bd, putOperatoreDTO.getOperatore().getUtenza().getPrincipal()).getId());
 			
 			if(isCreate) {
 				operatoriBD.insertOperatore(putOperatoreDTO.getOperatore());
 			} else {
+				putOperatoreDTO.getOperatore().setIdUtenza(AnagraficaManager.getUtenza(bd, putOperatoreDTO.getOperatore().getUtenza().getPrincipal()).getId());
 				operatoriBD.updateOperatore(putOperatoreDTO.getOperatore());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

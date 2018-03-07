@@ -11,7 +11,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -52,7 +51,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			leggiPendenzaDTO.setCodA2A(idA2A);
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
 			
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
@@ -122,7 +121,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 				listaPendenzeDTO.setOrderBy(ordinamento);
 			// INIT DAO
 			
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			
 			// CHIAMATA AL DAO
 			

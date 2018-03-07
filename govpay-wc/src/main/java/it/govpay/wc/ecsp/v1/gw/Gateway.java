@@ -76,7 +76,7 @@ public class Gateway extends BaseRsServiceV1{
 			
 			ctx =  GpThreadLocal.get();
 
-			WebControllerDAO webControllerDAO = new WebControllerDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			WebControllerDAO webControllerDAO = new WebControllerDAO();
 			
 			RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = webControllerDAO.gestisciRichiestaWebController(aggiornaPagamentiPortaleDTO);
 		
@@ -138,7 +138,7 @@ public class Gateway extends BaseRsServiceV1{
 			
 			ctx =  GpThreadLocal.get();
 
-			WebControllerDAO webControllerDAO = new WebControllerDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			WebControllerDAO webControllerDAO = new WebControllerDAO();
 			
 			RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = webControllerDAO.gestisciRichiestaWebController(aggiornaPagamentiPortaleDTO);
 		

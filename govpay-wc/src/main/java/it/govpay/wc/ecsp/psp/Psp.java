@@ -57,7 +57,7 @@ public class Psp extends BaseRsServiceV1 {
 			redirectDaPspDTO.setIdSession(idSession);
 			redirectDaPspDTO.setPrincipal(principal);
 			
-			WebControllerDAO webControllerDAO = new WebControllerDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			WebControllerDAO webControllerDAO = new WebControllerDAO();
 			
 			RedirectDaPspDTOResponse redirectDaPspDTOResponse = webControllerDAO.gestisciRedirectPsp(redirectDaPspDTO);
 			

@@ -60,7 +60,7 @@ public class RptController extends it.govpay.rs.BaseController {
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiRptDTO.setCcp(ccp);
 			
-			RptDAO ricevuteDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			RptDAO ricevuteDAO = new RptDAO(); 
 			
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 			
@@ -121,7 +121,7 @@ public class RptController extends it.govpay.rs.BaseController {
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
 			
-			RptDAO ricevuteDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			RptDAO ricevuteDAO = new RptDAO(); 
 			
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRpt(leggiPagamentoPortaleDTO);
 			
@@ -218,7 +218,7 @@ public class RptController extends it.govpay.rs.BaseController {
 				listaRptDTO.setOrderBy(ordinamento);
 			// INIT DAO
 			
-			RptDAO rptDAO = new RptDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			RptDAO rptDAO = new RptDAO();
 			
 			// CHIAMATA AL DAO
 			

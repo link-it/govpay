@@ -42,10 +42,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.model.Utenza;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -113,16 +110,11 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			}else{
 				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 				String principal = this.getParameter(uriInfo, principalId, String.class);
-				String ruoloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ruolo.id");
-				String ruolo = this.getParameter(uriInfo, ruoloId, String.class);
 
 				if(StringUtils.isNotEmpty(principal)){
 					filter.setPrincipal(principal);
 				}
 
-				if(StringUtils.isNotEmpty(ruolo)){
-					filter.setRuolo(ruolo);
-				}
 			}
 			long count = operatoriBD.count(filter);
 
@@ -152,7 +144,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);

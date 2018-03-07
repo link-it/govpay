@@ -35,7 +35,7 @@ import it.govpay.orm.Operatore;
 public class OperatoreFilter extends AbstractFilter {
 	
 	private String principal= null;
-	private String ruolo = null;
+	private boolean searchModeEquals = false; 
 
 	public enum SortFields {
 	}
@@ -58,15 +58,13 @@ public class OperatoreFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.principal != null){
-				newExpression.ilike(Operatore.model().ID_UTENZA.PRINCIPAL, this.principal,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(Operatore.model().ID_UTENZA.PRINCIPAL, this.principal,LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(Operatore.model().ID_UTENZA.PRINCIPAL, this.principal);
 				addAnd = true;
 			}
-//			if(this.ruolo != null){ //TODO pintori
-//				if(addAnd) newExpression.and();
-//				newExpression.ilike(Operatore.model().PROFILO, this.ruolo,LikeMode.ANYWHERE);
-//				addAnd = true;
-//			}
-			
+
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
@@ -92,12 +90,13 @@ public class OperatoreFilter extends AbstractFilter {
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
-
-	public String getRuolo() {
-		return ruolo;
+	
+	public boolean isSearchModeEquals() {
+		return searchModeEquals;
 	}
 
-	public void setRuolo(String ruolo) {
-		this.ruolo = ruolo;
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
 	}
+
 }

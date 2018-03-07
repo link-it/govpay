@@ -25,6 +25,7 @@ public class Operatore  extends it.govpay.rs.v1.beans.base.Operatore{
 		this.abilitato(operatore.getUtenza().isAbilitato())
 		.principal(operatore.getUtenza().getPrincipal())
 		.ragioneSociale(operatore.getNome());
+		
 	}
 
 }
