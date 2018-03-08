@@ -2,11 +2,9 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
-import it.govpay.bd.model.Canale;
+public class ListaCanaliDTOResponse  extends BasicFindResponseDTO<LeggiCanaleDTOResponse> {
 
-public class ListaCanaliDTOResponse  extends BasicFindResponseDTO<Canale> {
-
-		public ListaCanaliDTOResponse(long totalResults, List<Canale> results) {
+		public ListaCanaliDTOResponse(long totalResults, List<LeggiCanaleDTOResponse> results) {
 			super(totalResults, results);
 		}
 

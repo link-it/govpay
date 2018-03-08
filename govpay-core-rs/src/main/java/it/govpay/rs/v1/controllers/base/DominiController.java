@@ -683,7 +683,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(responseStatus).build();
-		} catch (DominioNonTrovatoException  | TipoTributoNonTrovatoException | TributoNonTrovatoException e) {
+		} catch (DominioNonTrovatoException  | TipoTributoNonTrovatoException | TributoNonTrovatoException | IbanAccreditoNonTrovatoException e) {
 			log.error(e.getMessage(), e);
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.OPERAZIONE);

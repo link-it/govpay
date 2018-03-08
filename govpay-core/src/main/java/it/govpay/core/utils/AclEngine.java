@@ -46,10 +46,10 @@ public class AclEngine {
 		}
 		
 		if(authorized) {
-			if(codDominio != null)
+			if(codDominio != null && !user.getIdDominio().isEmpty())
 				authorized = authorized && user.getIdDominio().contains(codDominio);
 	
-			if(codTributo != null)
+			if(codTributo != null && !user.getIdTributo().isEmpty())
 				authorized = authorized && user.getIdTributo().contains(codTributo);
 		}
 		

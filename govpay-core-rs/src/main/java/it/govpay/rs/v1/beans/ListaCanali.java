@@ -5,6 +5,9 @@ import java.util.List;
 
 public class ListaCanali extends Lista<Canale> {
 	
+	public ListaCanali() {
+	}
+	
 	public ListaCanali(List<Canale> canale, URI requestUri, long count, long pagina, long limit) {
 		super(canale, requestUri, count, pagina, limit);
 	}

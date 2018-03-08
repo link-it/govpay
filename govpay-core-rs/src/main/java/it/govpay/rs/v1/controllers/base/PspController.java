@@ -11,7 +11,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.anagrafica.PspDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiCanaleDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiCanaleDTOResponse;
@@ -64,7 +63,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			PspDAO pspDAO = new PspDAO();
 			
 			// CHIAMATA AL DAO
 			
@@ -73,8 +72,8 @@ public class PspController extends it.govpay.rs.BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.rs.v1.beans.Canale> results = new ArrayList<it.govpay.rs.v1.beans.Canale>();
-			for(it.govpay.bd.model.Canale psp: listaDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Canale(psp, pspDAO));
+			for(LeggiCanaleDTOResponse elem: listaDTOResponse.getResults()) {
+				results.add(new it.govpay.rs.v1.beans.Canale(elem.getCanale(), elem.getPsp()));
 			}
 			
 			ListaCanali response = new ListaCanali(results, uriInfo.getRequestUri(),
@@ -119,11 +118,11 @@ public class PspController extends it.govpay.rs.BaseController {
 			leggiPspDTO.setIdCanale(idCanale);
 			leggiPspDTO.setTipoVersamento(TipoVersamento.toEnum(tipoVersamento));
 			
-			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			PspDAO pspDAO = new PspDAO(); 
 			
 			LeggiCanaleDTOResponse leggiPspDTOResponse = pspDAO.leggiCanale(leggiPspDTO);
 			
-			it.govpay.rs.v1.beans.Canale response = new it.govpay.rs.v1.beans.Canale(leggiPspDTOResponse.getCanale(), pspDAO);
+			it.govpay.rs.v1.beans.Canale response = new it.govpay.rs.v1.beans.Canale(leggiPspDTOResponse.getCanale(), leggiPspDTOResponse.getPsp());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
 		}catch (PspNonTrovatoException e) {
@@ -171,7 +170,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			LeggiPspDTO leggiPspDTO = new LeggiPspDTO(user);
 			leggiPspDTO.setIdPsp(idPsp);
 			
-			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId())); 
+			PspDAO pspDAO = new PspDAO(); 
 			
 			LeggiPspDTOResponse leggiPspDTOResponse = pspDAO.leggiPsp(leggiPspDTO);
 			
@@ -233,7 +232,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			PspDAO pspDAO = new PspDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			PspDAO pspDAO = new PspDAO();
 			
 			// CHIAMATA AL DAO
 			

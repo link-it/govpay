@@ -98,12 +98,12 @@ public class PagamentiPortaleDAO {
 					versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
 				}
 
-				UnitaOperativa uo = AnagraficaManager.getUnitaOperativa(bd, versamentoModel.getIdUo());
+				UnitaOperativa uo = versamentoModel.getUo(bd);
 				if(!uo.isAbilitato()) {
 					throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+uo.getCodUo()+"].", EsitoOperazione.UOP_001, uo.getCodUo());
 				}
 
-				Dominio dominio = AnagraficaManager.getDominio(bd, uo.getIdDominio()); 
+				Dominio dominio = uo.getDominio(bd); 
 				if(!dominio.isAbilitato()) {
 					throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+dominio.getCodDominio()+"].", EsitoOperazione.DOM_001, dominio.getCodDominio());
 				}
@@ -152,7 +152,7 @@ public class PagamentiPortaleDAO {
 						hasBollo = true;
 					}
 
-					IbanAccredito ibanAccreditoTmp = AnagraficaManager.getIbanAccredito(bd, singoloVersamento.getIdIbanAccredito());
+					IbanAccredito ibanAccreditoTmp = singoloVersamento.getIbanAccredito(bd);
 
 					if(ibanAccreditoTmp != null)
 						contoPostale = contoPostale && ibanAccreditoTmp.isPostale();
@@ -165,7 +165,7 @@ public class PagamentiPortaleDAO {
 				Versamento vTmp = versamenti.get(0);
 				List<SingoloVersamento> singoliVersamenti = vTmp.getSingoliVersamenti(bd);
 				SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
-				IbanAccredito ibanAccreditoTmp = AnagraficaManager.getIbanAccredito(bd, singoloVersamento.getIdIbanAccredito());
+				IbanAccredito ibanAccreditoTmp = singoloVersamento.getIbanAccredito(bd);
 				if(!ibanAccreditoTmp.isPostale())
 					ibanAccredito = ibanAccreditoTmp;
 			}

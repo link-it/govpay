@@ -22,89 +22,108 @@ import it.govpay.core.dao.anagrafica.dto.ListaCanaliDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Canale.TipoVersamento;
 
-public class PspDAO extends BasicBD{
+public class PspDAO {
 
-	public PspDAO(BasicBD basicBD) {
-		super(basicBD);
+	public PspDAO() {
 	}
 
 	public ListaPspDTOResponse listaPsp(ListaPspDTO listaPspDTO) throws ServiceException{
-		PspBD pspBD = new PspBD(this);
-		PspFilter filter = pspBD.newFilter();
-
-		filter.setOffset(listaPspDTO.getOffset());
-		filter.setLimit(listaPspDTO.getLimit());
-		filter.setSearchAbilitato(listaPspDTO.getAbilitato());
-		filter.setBollo(listaPspDTO.getBollo());
-		filter.setStorno(listaPspDTO.getStorno()); 
-		filter.setFilterSortList(listaPspDTO.getFieldSortList());
-
-		long count = pspBD.count(filter);
-
-		List<Psp> resList = new ArrayList<Psp>();
-		if(count > 0) {
-			resList = pspBD.findAll(filter);
-		} 
-
-		return new ListaPspDTOResponse(count, resList);
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+		
+			PspBD pspBD = new PspBD(bd);
+			PspFilter filter = pspBD.newFilter();
+	
+			filter.setOffset(listaPspDTO.getOffset());
+			filter.setLimit(listaPspDTO.getLimit());
+			filter.setSearchAbilitato(listaPspDTO.getAbilitato());
+			filter.setBollo(listaPspDTO.getBollo());
+			filter.setStorno(listaPspDTO.getStorno()); 
+			filter.setFilterSortList(listaPspDTO.getFieldSortList());
+	
+			long count = pspBD.count(filter);
+	
+			List<Psp> resList = new ArrayList<Psp>();
+			if(count > 0) {
+				resList = pspBD.findAll(filter);
+			} 
+	
+			return new ListaPspDTOResponse(count, resList);
+		} finally {
+			bd.closeConnection();
+		}
 	}
 
 	public LeggiPspDTOResponse leggiPsp(LeggiPspDTO leggiPspDTO) throws ServiceException,PspNonTrovatoException{
-
 		LeggiPspDTOResponse response = new LeggiPspDTOResponse();
-
-		PspBD pspBD = new PspBD(this);
-		Psp psp;
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			psp = pspBD.getPsp(leggiPspDTO.getIdPsp());
+			PspBD pspBD = new PspBD(bd);
+			Psp psp = pspBD.getPsp(leggiPspDTO.getIdPsp());
 			response.setPsp(psp);
+			return response;
 		} catch (NotFoundException e) {
 			throw new PspNonTrovatoException(e.getMessage(), e);
 		} catch (MultipleResultException e) {
 			throw new PspNonTrovatoException(e.getMessage(), e);
+		} finally {
+			bd.closeConnection();
 		}
-		return response;
 	}
 
 	public ListaCanaliDTOResponse listaCanali(ListaCanaliDTO listaPspDTO) throws ServiceException{
-		PspBD pspBD = new PspBD(this);
-		CanaleFilter filter = pspBD.newCanaleFilter();
-
-		filter.setOffset(listaPspDTO.getOffset());
-		filter.setLimit(listaPspDTO.getLimit());
-		filter.setAbilitato(listaPspDTO.getAbilitato());
-		filter.setModello(listaPspDTO.getModello());
-		if(listaPspDTO.getTipoVersamento() != null)
-			filter.setTipoVersamento(TipoVersamento.valueOf(listaPspDTO.getTipoVersamento())); 
-		filter.setFilterSortList(listaPspDTO.getFieldSortList());
-		filter.setCodPsp(listaPspDTO.getIdPsp());
-
-		long count = pspBD.countCanali(filter);
-
-		List<Canale> resList = new ArrayList<Canale>();
-		if(count > 0) {
-			resList = pspBD.findAllCanali(filter);
-		} 
-
-		return new ListaCanaliDTOResponse(count, resList);
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			PspBD pspBD = new PspBD(bd);
+			CanaleFilter filter = pspBD.newCanaleFilter();
+	
+			filter.setOffset(listaPspDTO.getOffset());
+			filter.setLimit(listaPspDTO.getLimit());
+			filter.setAbilitato(listaPspDTO.getAbilitato());
+			filter.setModello(listaPspDTO.getModello());
+			if(listaPspDTO.getTipoVersamento() != null)
+				filter.setTipoVersamento(TipoVersamento.valueOf(listaPspDTO.getTipoVersamento())); 
+			filter.setFilterSortList(listaPspDTO.getFieldSortList());
+			filter.setCodPsp(listaPspDTO.getIdPsp());
+	
+			long count = pspBD.countCanali(filter);
+	
+			List<LeggiCanaleDTOResponse> listaRs = new ArrayList<LeggiCanaleDTOResponse>();
+			List<Canale> listaCanali = new ArrayList<Canale>();
+			if(count > 0) {
+				listaCanali = pspBD.findAllCanali(filter);
+				for (Canale canale : listaCanali) {
+					LeggiCanaleDTOResponse elem = new LeggiCanaleDTOResponse();
+					elem.setCanale(canale);
+					elem.setPsp(canale.getPsp(bd)); 
+					listaRs.add(elem );
+				}
+			} 
+	
+			return new ListaCanaliDTOResponse(count, listaRs);
+		} finally {
+			bd.closeConnection();
+		}
 	}
 
 	public LeggiCanaleDTOResponse leggiCanale(LeggiCanaleDTO leggiCanaleDTO) throws ServiceException,PspNonTrovatoException{
-
 		LeggiCanaleDTOResponse response = new LeggiCanaleDTOResponse();
-
-		PspBD pspBD = new PspBD(this);
-		Canale canale;
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			canale = pspBD.getCanale(leggiCanaleDTO.getIdPsp(), leggiCanaleDTO.getIdCanale(), leggiCanaleDTO.getTipoVersamento());
+			PspBD pspBD = new PspBD(bd);
+			Canale canale = pspBD.getCanale(leggiCanaleDTO.getIdPsp(), leggiCanaleDTO.getIdCanale(), leggiCanaleDTO.getTipoVersamento());
 			response.setCanale(canale);
+			response.setPsp(canale.getPsp(bd)); 
+			return response;
 		} catch (NotFoundException e) {
 			throw new PspNonTrovatoException(e.getMessage(), e);
 		} catch (MultipleResultException e) {
 			throw new PspNonTrovatoException(e.getMessage(), e);
+		} finally {
+			bd.closeConnection();
 		}
-		return response;
 	}
 }

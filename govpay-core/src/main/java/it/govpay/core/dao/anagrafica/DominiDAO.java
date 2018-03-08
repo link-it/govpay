@@ -443,7 +443,7 @@ public class DominiDAO {
 	}
 	
 	public PutEntrataDominioDTOResponse createOrUpdateEntrataDominio(PutEntrataDominioDTO putEntrataDominioDTO) throws ServiceException, 
-		DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException{
+		DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException{
 		PutEntrataDominioDTOResponse putIbanAccreditoDTOResponse = new PutEntrataDominioDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
@@ -463,6 +463,27 @@ public class DominiDAO {
 			}
 			
 			putEntrataDominioDTO.getTributo().setIdTipoTributo(tipoTributo.getId());
+			
+			// Iban Accredito 
+			try {
+				if(putEntrataDominioDTO.getIbanAccredito() != null) {
+					putEntrataDominioDTO.getTributo().setIdIbanAccredito(AnagraficaManager.getIbanAccredito(bd, AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId(),
+							putEntrataDominioDTO.getIbanAccredito()).getId()); 
+				}
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new IbanAccreditoNonTrovatoException(e.getMessage());
+			}
+			
+			// Iban Accredito postale
+			try {
+				if(putEntrataDominioDTO.getIbanAccreditoPostale() != null) {
+					putEntrataDominioDTO.getTributo().setIdIbanAccreditoPostale(AnagraficaManager.getIbanAccredito(bd, AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId(),
+							putEntrataDominioDTO.getIbanAccreditoPostale()).getId()); 
+				}
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new IbanAccreditoNonTrovatoException(e.getMessage());
+			}
+			
 			
 			TributiBD tributiBD = new TributiBD(bd);
 			TributoFilter filter = tributiBD.newFilter(); 

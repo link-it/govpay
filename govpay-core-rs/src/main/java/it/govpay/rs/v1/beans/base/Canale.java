@@ -69,12 +69,27 @@ public class Canale extends it.govpay.rs.v1.beans.JSONSerializable {
     return this;
   }
 
-  @JsonProperty("modelloPagamento")
-  public ModelloPagamento getModelloPagamento() {
-    return modelloPagamento;
-  }
-  public void setModelloPagamento(ModelloPagamento modelloPagamento) {
+  public ModelloPagamento getModelloPagamentoEnum() {
+	    return modelloPagamento;
+	  }
+  public void setModelloPagamento(ModelloPagamento modelloPagamento)  {
     this.modelloPagamento = modelloPagamento;
+  }
+  public void setModelloPagamento(String modelloPagamento) throws Exception{
+	  if(modelloPagamento != null) {
+		  this.modelloPagamento = ModelloPagamento.fromValue(modelloPagamento);
+		  if(this.modelloPagamento == null)
+			  throw new Exception("valore ["+modelloPagamento+"] non ammesso per la property modelloPagamento");
+	  }
+  }
+  
+  @JsonProperty("modelloPagamento")
+  public String getModelloPagamento() {
+	  if(modelloPagamento != null) {
+		  return modelloPagamento.toString();
+	  } else {
+		  return null;
+	  }
   }
 
   /**
