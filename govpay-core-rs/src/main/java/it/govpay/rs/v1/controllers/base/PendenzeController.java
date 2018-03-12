@@ -2,7 +2,9 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -11,20 +13,30 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
+import it.govpay.core.dao.commons.Versamento;
+import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.ListaPendenze;
+import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.Pendenza;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.rs.v1.beans.base.PendenzaPost;
+import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
+import net.sf.json.JsonConfig;
 
 
 
@@ -165,12 +177,68 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 
     public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+			String jsonRequest = baos.toString();
+			JsonConfig jsonConfig = new JsonConfig();
+			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			jsonConfig.setClassMap(classMap);
+			PendenzaPost pendenzaPost= (PendenzaPost) PendenzaPost.parse(jsonRequest, PendenzaPost.class, jsonConfig);
+			
+			Versamento versamento = PagamentiPortaleConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza); 
+			
+			
+//			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+//
+			PagamentiPortaleResponseOk responseOk = null;//PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 201);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(Status.CREATED).entity(responseOk.toJSON(null)).build();
+//		} catch(GovPayException e) {
+//			log.error("Errore durante il processo di pagamento", e);
+//			FaultBean respKo = new FaultBean();
+//			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+//			respKo.setCodice(e.getCodEsito().name());
+//			respKo.setDescrizione(e.getDescrizioneEsito());
+//			respKo.setDettaglio(e.getMessage());
+//			try {
+//				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+//			}catch(Exception e1) {
+//				log.error("Errore durante il log della risposta", e1);
+//			}
+//			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante il processo di pagamento", e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 
 
     public Response pendenzeIdDominioIuvGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
+    	//client
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
