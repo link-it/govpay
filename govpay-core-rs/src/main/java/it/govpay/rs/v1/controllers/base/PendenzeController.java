@@ -24,6 +24,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
@@ -179,7 +180,68 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     }
 
     public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			
+//			String jsonRequest = baos.toString();
+//			JsonConfig jsonConfig = new JsonConfig();
+//			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+//			jsonConfig.setClassMap(classMap);
+//			PendenzaPost pendenzaPost= (PendenzaPost) PendenzaPost.parse(jsonRequest, PendenzaPost.class, jsonConfig);
+			
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			
+			PatchPendenzaDTO patchPendenzaDTO = new PatchPendenzaDTO(user);
+			patchPendenzaDTO.setIdA2a(idA2A);
+			patchPendenzaDTO.setIdPendenza(idPendenza);
+//			patchPendenzaDTO.setStato(stato);
+//			patchPendenzaDTO.setDescrizioneStato(descrizioneStato); //TODO model
+			
+			pendenzeDAO.cambioStato(patchPendenzaDTO);
+			
+			Status responseStatus = Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(responseStatus).build();
+		} catch(GovPayException e) {
+			log.error("Errore durante il processo di pagamento", e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice(e.getCodEsito().name());
+			respKo.setDescrizione(e.getDescrizioneEsito());
+			respKo.setDettaglio(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} catch (Exception e) {
+			log.error("Errore interno durante il processo di pagamento", e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 
