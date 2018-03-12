@@ -70,7 +70,7 @@ public class PagamentoPortale extends it.govpay.rs.v1.beans.base.Pagamento {
 			this.setCanale(UriBuilderUtils.getCanale(pagamentoPortale.getCodPsp(), pagamentoPortale.getCodCanale(), pagamentoPortale.getTipoVersamento()));
 		
 		this.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
-		this.setRpts(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
+		this.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 		if(pagamentoPortale.getImporto() != null) 
 			this.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
 
