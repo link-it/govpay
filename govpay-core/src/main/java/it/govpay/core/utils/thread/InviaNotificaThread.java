@@ -80,6 +80,7 @@ public class InviaNotificaThread implements Runnable {
 		GpContext ctx = null;
 		BasicBD bd = null;
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			if(notifica.getIdRpt() != null) {
 				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
 					ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRpt());
@@ -114,7 +115,8 @@ public class InviaNotificaThread implements Runnable {
 			}
 			GpThreadLocal.set(ctx);
 			
-			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getConnettoreNotifica().getVersione());
+			
+			ctx.setupPaClient(notifica.getApplicazione(bd).getCodApplicazione(), notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getConnettoreNotifica().getVersione());
 					
 			MDC.put("op", ctx.getTransactionId());
 			
@@ -122,8 +124,6 @@ public class InviaNotificaThread implements Runnable {
 			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null || notifica.getApplicazione(bd).getConnettoreNotifica().getUrl() == null) {
 				ctx.log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]. Spedizione inibita.");
-				if(bd == null)
-					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 				NotificheBD notificheBD = new NotificheBD(bd);
 				long tentativi = notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();

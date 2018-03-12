@@ -14,7 +14,7 @@ import javax.ws.rs.core.UriBuilder;
 public class UriBuilderUtils {
 	
 	public static String getRptByDominioIuvCcp(String idDominio,String iuv, String ccp) {
-		return getListRpt().path(idDominio).path(iuv).path(ccp).build().toString(); 
+		return getListRpp().path(idDominio).path(iuv).path(ccp).build().toString(); 
 	}
 
 	public static String getPsp(String codPsp) {
@@ -54,11 +54,11 @@ public class UriBuilderUtils {
 	}
 
 	public static String getRptsByPagamento(String idPagamento) {
-		return getByPagamento(getListRpt(), idPagamento);
+		return getByPagamento(getListRpp(), idPagamento);
 	}
 
 	public static String getRptsByPendenza(String idPendenza) {
-		return getByPendenza(getListRpt(), idPendenza);
+		return getByPendenza(getListRpp(), idPendenza);
 	}
 
 	public static String getListUoByDominio(String idDominio) {
@@ -109,10 +109,6 @@ public class UriBuilderUtils {
 		return getBaseList("pagamenti");
 	}
 
-	private static UriBuilder getListRpt() {
-		return getBaseList("rpt");
-	}
-	
 	private static UriBuilder getListRpp() {
 		return getBaseList("rpp");
 	}
