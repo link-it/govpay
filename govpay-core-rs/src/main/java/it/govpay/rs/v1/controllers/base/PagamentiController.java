@@ -23,15 +23,15 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.beans.FaultBean;
+import it.govpay.core.rs.v1.beans.ListaPagamentiPortale;
+import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
+import it.govpay.core.rs.v1.beans.base.PagamentoPost;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.FaultBean;
-import it.govpay.rs.v1.beans.ListaPagamentiPortale;
-import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.rs.v1.beans.base.PagamentoPost;
 import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
 import net.sf.json.JsonConfig;
 
@@ -126,7 +126,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.rs.v1.beans.PagamentoPortale response = new it.govpay.rs.v1.beans.PagamentoPortale(pagamentoPortaleModel);
+			it.govpay.core.rs.v1.beans.PagamentoPortale response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -204,9 +204,9 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.PagamentoPortale> results = new ArrayList<it.govpay.rs.v1.beans.PagamentoPortale>();
+			List<it.govpay.core.rs.v1.beans.PagamentoPortale> results = new ArrayList<it.govpay.core.rs.v1.beans.PagamentoPortale>();
 			for(it.govpay.bd.model.PagamentoPortale pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.PagamentoPortale(pagamentoPortale));
+				results.add(PagamentiPortaleConverter.toRsModel(pagamentoPortale));
 			}
 			
 			ListaPagamentiPortale response = new ListaPagamentiPortale(results, uriInfo.getRequestUri(),

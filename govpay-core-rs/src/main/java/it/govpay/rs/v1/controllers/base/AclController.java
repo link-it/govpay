@@ -23,15 +23,15 @@ import it.govpay.core.dao.anagrafica.dto.ListaAclDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.AclNonTrovatoException;
+import it.govpay.core.rs.v1.beans.ACL;
+import it.govpay.core.rs.v1.beans.ListaAcl;
+import it.govpay.core.rs.v1.beans.base.AclPost;
+import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.ACL;
-import it.govpay.rs.v1.beans.ListaAcl;
-import it.govpay.rs.v1.beans.base.AclPost;
-import it.govpay.rs.v1.beans.base.FaultBean;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.rs.v1.beans.converter.AclConverter;
 import net.sf.json.JsonConfig;
 
@@ -76,9 +76,9 @@ public class AclController extends it.govpay.rs.BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			List<it.govpay.rs.v1.beans.ACL> results = new ArrayList<it.govpay.rs.v1.beans.ACL>();
+			List<it.govpay.core.rs.v1.beans.ACL> results = new ArrayList<it.govpay.core.rs.v1.beans.ACL>();
 			for(it.govpay.model.Acl acl: listaACLDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.ACL(acl));
+				results.add(AclConverter.toRsModel(acl));
 			}
 
 			ListaAcl response = new ListaAcl(results, uriInfo.getRequestUri(),
@@ -134,7 +134,7 @@ public class AclController extends it.govpay.rs.BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			ACL response = new it.govpay.rs.v1.beans.ACL(leggiACLDTOResponse.getAcl());
+			ACL response = AclConverter.toRsModel(leggiACLDTOResponse.getAcl());
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

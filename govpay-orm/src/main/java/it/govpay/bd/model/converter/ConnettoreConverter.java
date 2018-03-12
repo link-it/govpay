@@ -25,7 +25,6 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Connettore;
-import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.Versionabile.Versione;
 
 public class ConnettoreConverter {
@@ -99,9 +98,6 @@ public class ConnettoreConverter {
 				if(Connettore.P_VERSIONE.equals(connettore.getCodProprieta())) {
 					dto.setVersione(Versione.toEnum(connettore.getValore()));
 				}
-				
-				dto.setTipo(Tipo.SOAP);
-
 			}
 		}
 		return dto;

@@ -26,22 +26,20 @@ import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.IbanAccreditoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.IntermediarioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
+import it.govpay.core.rs.v1.beans.Intermediario;
+import it.govpay.core.rs.v1.beans.ListaIntermediari;
+import it.govpay.core.rs.v1.beans.ListaStazioni;
+import it.govpay.core.rs.v1.beans.Stazione;
+import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.core.rs.v1.beans.base.IntermediarioPost;
+import it.govpay.core.rs.v1.beans.base.StazionePost;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.Intermediario;
-import it.govpay.rs.v1.beans.ListaIntermediari;
-import it.govpay.rs.v1.beans.ListaStazioni;
-import it.govpay.rs.v1.beans.Stazione;
-import it.govpay.rs.v1.beans.base.FaultBean;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.rs.v1.beans.base.IntermediarioPost;
-import it.govpay.rs.v1.beans.base.StazionePost;
 import it.govpay.rs.v1.beans.converter.IntermediariConverter;
 import it.govpay.rs.v1.beans.converter.StazioniConverter;
 import net.sf.json.JsonConfig;
@@ -80,7 +78,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			GetIntermediarioDTOResponse getIntermediarioDTOResponse = intermediariDAO.getIntermediario(getIntermediarioDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
-			Intermediario response = new it.govpay.rs.v1.beans.Intermediario(getIntermediarioDTOResponse.getIntermediario());
+			Intermediario response = IntermediariConverter.toRsModel(getIntermediarioDTOResponse.getIntermediario());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -208,9 +206,9 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Intermediario> results = new ArrayList<it.govpay.rs.v1.beans.Intermediario>();
+			List<it.govpay.core.rs.v1.beans.Intermediario> results = new ArrayList<it.govpay.core.rs.v1.beans.Intermediario>();
 			for(it.govpay.model.Intermediario intermediario: listaIntermediariDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Intermediario(intermediario));
+				results.add(IntermediariConverter.toRsModel(intermediario));
 			}
 			
 			ListaIntermediari response = new ListaIntermediari(results, uriInfo.getRequestUri(),
@@ -328,9 +326,9 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Stazione> results = new ArrayList<it.govpay.rs.v1.beans.Stazione>();
+			List<it.govpay.core.rs.v1.beans.Stazione> results = new ArrayList<it.govpay.core.rs.v1.beans.Stazione>();
 			for(it.govpay.bd.model.Stazione stazione: listaStazioniDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Stazione(stazione));
+				results.add(StazioniConverter.toRsModel(stazione));
 			}
 			
 			ListaStazioni response = new ListaStazioni(results, uriInfo.getRequestUri(),
@@ -384,7 +382,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Stazione response = new it.govpay.rs.v1.beans.Stazione(getStazioneDTOResponse.getStazione());
+			Stazione response = StazioniConverter.toRsModel(getStazioneDTOResponse.getStazione());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

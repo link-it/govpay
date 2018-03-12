@@ -19,18 +19,16 @@ import it.govpay.core.dao.anagrafica.dto.GetEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.GetEntrataDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.IbanAccreditoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.rs.v1.beans.FaultBean;
+import it.govpay.core.rs.v1.beans.ListaTipiEntrata;
+import it.govpay.core.rs.v1.beans.TipoEntrata;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.core.rs.v1.beans.base.TipoEntrataPost;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.FaultBean;
-import it.govpay.rs.v1.beans.ListaTipiEntrata;
-import it.govpay.rs.v1.beans.TipoEntrata;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.rs.v1.beans.base.TipoEntrataPost;
 import it.govpay.rs.v1.beans.converter.EntrateConverter;
 import net.sf.json.JsonConfig;
 
@@ -131,7 +129,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			TipoEntrata response = new it.govpay.rs.v1.beans.TipoEntrata(listaDominiEntrateDTOResponse.getTipoTributo());
+			TipoEntrata response = EntrateConverter.toTipoEntrataRsModel(listaDominiEntrateDTOResponse.getTipoTributo());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -195,7 +193,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			ListaTipiEntrata response = new ListaTipiEntrata(findEntrateDTOResponse.getResults().stream().map(t -> new TipoEntrata(t)).collect(Collectors.toList()), 
+			ListaTipiEntrata response = new ListaTipiEntrata(findEntrateDTOResponse.getResults().stream().map(t -> EntrateConverter.toTipoEntrataRsModel(t)).collect(Collectors.toList()), 
 					uriInfo.getRequestUri(), findEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

@@ -28,7 +28,6 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.model.Iuv;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Psp;
@@ -36,14 +35,16 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
+import it.govpay.model.Iuv;
 import it.govpay.model.Versionabile;
 import it.govpay.model.Versionabile.Versione;
-import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoTransazione;
 import it.govpay.servizi.commons.FlussoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
 import it.govpay.servizi.commons.ModelloPagamento;
+import it.govpay.servizi.commons.Pagamento.Allegato;
 import it.govpay.servizi.commons.StatoRevoca;
 import it.govpay.servizi.commons.StatoTransazione;
 import it.govpay.servizi.commons.StatoVersamento;
@@ -51,12 +52,11 @@ import it.govpay.servizi.commons.TipoAllegato;
 import it.govpay.servizi.commons.TipoRendicontazione;
 import it.govpay.servizi.commons.TipoVersamento;
 import it.govpay.servizi.commons.Transazione;
-import it.govpay.servizi.commons.Pagamento.Allegato;
+import it.govpay.servizi.gpprt.GpAvviaTransazionePagamentoResponse;
+import it.govpay.servizi.gpprt.GpChiediListaPspResponse;
 import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata;
 import it.govpay.servizi.gpprt.GpChiediStatoRichiestaStornoResponse.Storno;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
-import it.govpay.servizi.gpprt.GpAvviaTransazionePagamentoResponse;
-import it.govpay.servizi.gpprt.GpChiediListaPspResponse;
 
 public class Gp21Utils {
 
@@ -380,4 +380,36 @@ public class Gp21Utils {
 		return iuvCaricati;
 	}
 	
+	
+	public static it.govpay.core.rs.v1.beans.base.Riscossione toRiscossione(Pagamento pagamento, Versionabile.Versione versione, BasicBD bd, int idx, String urlPendenza, String urlRpt) throws ServiceException {
+		it.govpay.core.rs.v1.beans.base.Riscossione riscossione = new it.govpay.core.rs.v1.beans.base.Riscossione();
+
+		if(pagamento.getAllegato() != null) {
+			Allegato allegato = new Allegato();
+			allegato.setTesto(pagamento.getAllegato());
+			allegato.setTipo(TipoAllegato.valueOf(pagamento.getTipoAllegato().toString()));
+			riscossione.setAllegato(allegato);
+		}
+		
+		riscossione.setIndice(new BigDecimal(idx));
+		riscossione.setIdDominio(pagamento.getCodDominio());
+		riscossione.setIuv(pagamento.getIuv()); 
+		riscossione.setIdVocePendenza(pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
+		riscossione.setCommissioni(pagamento.getCommissioniPsp());
+		riscossione.setData(pagamento.getDataPagamento());
+		riscossione.setImporto(pagamento.getImportoPagato());
+		riscossione.setIur(pagamento.getIur());
+		riscossione.setPendenza(urlPendenza); 
+		riscossione.setRpt(urlRpt);
+		riscossione.setIbanAccredito(pagamento.getIbanAccredito());
+//		riscossione.setCausaleRevoca(pagamento.getCausaleRevoca());
+//		riscossione.setDatiEsitoRevoca(pagamento.getDatiEsitoRevoca());
+//		riscossione.setDatiRevoca(pagamento.getDatiRevoca());
+//		riscossione.setEsitoRevoca(pagamento.getEsitoRevoca());
+//		riscossione.setImportoRevocato(pagamento.getImportoRevocato());
+//		riscossione.setDataAcquisizione(pagamento.getDataAcquisizione());
+//		riscossione.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
+		
+		return riscossione;
+	}
 }

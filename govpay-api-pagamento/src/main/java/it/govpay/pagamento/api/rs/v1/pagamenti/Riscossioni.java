@@ -1,9 +1,5 @@
 package it.govpay.pagamento.api.rs.v1.pagamenti;
 
-import it.govpay.rs.v1.beans.base.Riscossione;
-import it.govpay.rs.v1.beans.base.StatoRiscossione;
-
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -17,7 +13,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.rs.v1.controllers.base.RiscossioniController;
-
+import it.govpay.core.rs.v1.beans.base.Riscossione;
+import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
 
