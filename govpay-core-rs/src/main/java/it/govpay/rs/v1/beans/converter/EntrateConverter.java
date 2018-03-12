@@ -1,13 +1,9 @@
 package it.govpay.rs.v1.beans.converter;
 
-import java.math.BigDecimal;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
-import it.govpay.core.rs.v1.beans.Entrata;
 import it.govpay.core.rs.v1.beans.TipoEntrata;
-import it.govpay.core.rs.v1.beans.base.Entrata.TipoContabilitaEnum;
 import it.govpay.core.rs.v1.beans.base.TipoEntrataPost;
 import it.govpay.model.IAutorizzato;
 

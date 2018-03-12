@@ -2,8 +2,11 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
+
+import it.govpay.core.rs.v1.beans.base.TipoEntrataPost.TipoContabilitaEnum;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "url",
 "versioneApi",
@@ -95,12 +98,24 @@ public class Connector extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("versioneApi")
-  public VersioneApiEnum getVersioneApi() {
-    return versioneApi;
+  public String getVersioneApi() {
+	  if(versioneApi != null)
+		  return versioneApi.toString();
+	  return null;
+  }
+  public void setVersioneApi(String versioneApi) {
+	  if(versioneApi != null)
+		  this.versioneApi =VersioneApiEnum.fromValue(versioneApi);
+  }
+  
+  @JsonIgnore
+  public VersioneApiEnum getVersioneApiEnum() {
+	    return versioneApi;
   }
   public void setVersioneApi(VersioneApiEnum versioneApi) {
     this.versioneApi = versioneApi;
   }
+
 
   /**
    **/
