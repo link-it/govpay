@@ -1,6 +1,6 @@
 package it.govpay.model;
 
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 
 public class TipoTributo extends BasicModel {
 	private static final long serialVersionUID = 1L;
@@ -8,7 +8,7 @@ public class TipoTributo extends BasicModel {
 	private Long id; 
 	private String codTributo;
 	private String descrizione;
-	private TipoContabilta tipoContabilitaDefault;
+	private TipoContabilita tipoContabilitaDefault;
 	private String codContabilitaDefault;
 	private String codTributoIuvDefault;
 	
@@ -30,10 +30,10 @@ public class TipoTributo extends BasicModel {
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
 	}
-	public TipoContabilta getTipoContabilitaDefault() {
+	public TipoContabilita getTipoContabilitaDefault() {
 		return tipoContabilitaDefault;
 	}
-	public void setTipoContabilitaDefault(TipoContabilta tipoContabilitaDefault) {
+	public void setTipoContabilitaDefault(TipoContabilita tipoContabilitaDefault) {
 		this.tipoContabilitaDefault = tipoContabilitaDefault;
 	}
 	public String getCodContabilitaDefault() {

@@ -6,6 +6,7 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.TipoTributo;
 import it.govpay.rs.v1.beans.base.TipoEntrataPost;
+import it.govpay.model.Tributo.TipoContabilita;
 
 public class EntrateConverter {
 
@@ -19,7 +20,23 @@ public class EntrateConverter {
 			tipoTributo.setCodTributoIuvDefault(entrataPost.getCodificaIUV().toString());
 		tipoTributo.setCodTributo(idEntrata);
 		tipoTributo.setDescrizione(entrataPost.getDescrizione());
-		tipoTributo.setTipoContabilitaDefault(null);
+		if(entrataPost.getTipoContabilitaEnum() != null) {
+			switch (entrataPost.getTipoContabilitaEnum()) {
+			case ALTRO:
+				tipoTributo.setTipoContabilitaDefault(TipoContabilita.ALTRO);
+				break;
+			case ENTRATA:
+				tipoTributo.setTipoContabilitaDefault(TipoContabilita.CAPITOLO);
+				break;
+			case SIOPE:
+				tipoTributo.setTipoContabilitaDefault(TipoContabilita.SIOPE);
+				break;
+			case SPECIALE:
+			default:
+				tipoTributo.setTipoContabilitaDefault(TipoContabilita.SPECIALE);
+				break;
+			}
+		}
 
 		entrataDTO.setCodTributo(idEntrata);
 		entrataDTO.setTipoTributo(tipoTributo);

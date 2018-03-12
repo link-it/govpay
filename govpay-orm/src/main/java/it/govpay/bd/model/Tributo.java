@@ -40,7 +40,7 @@ public class Tributo extends it.govpay.model.Tributo {
 	
 	// Business
 	
-	public TipoContabilta getTipoContabilita() {
+	public TipoContabilita getTipoContabilita() {
 		if(getTipoContabilitaCustom() != null)
 			return getTipoContabilitaCustom();
 		else 

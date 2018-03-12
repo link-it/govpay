@@ -11,7 +11,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.model.TipoTributo;
-import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.dinamic.SelectList;
@@ -45,7 +44,7 @@ public class TipoContabilita extends SelectList<String>{
 			BasicBD bd = (BasicBD) objects[0];
 			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
 			TipoTributo tipoTributo = tipiTributoBD.getTipoTributo(Long.parseLong(idTipoTributoValue));
-			TipoContabilta tipoContabilitaDefault = tipoTributo.getTipoContabilitaDefault();
+			it.govpay.model.Tributo.TipoContabilita tipoContabilitaDefault = tipoTributo.getTipoContabilitaDefault();
 
 			// prelevo il valore dal parent
 			if(tipoContabilitaDefault != null) {
@@ -65,10 +64,10 @@ public class TipoContabilita extends SelectList<String>{
 
 		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		List<Voce<String>> lst = new ArrayList<Voce<String>>();
-		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), it.govpay.model.Tributo.TipoContabilita.CAPITOLO.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), it.govpay.model.Tributo.TipoContabilita.SPECIALE.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), it.govpay.model.Tributo.TipoContabilita.SIOPE.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), it.govpay.model.Tributo.TipoContabilita.ALTRO.getCodifica()));
 
 		if(StringUtils.isEmpty(idTipoTributoValue)){
 			return lst;
@@ -79,21 +78,21 @@ public class TipoContabilita extends SelectList<String>{
 			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
 			TipoTributo tipoTributo = tipiTributoBD.getTipoTributo(Long.parseLong(idTipoTributoValue));
 
-			TipoContabilta tipoContabilitaDefault = tipoTributo.getTipoContabilitaDefault();
+			it.govpay.model.Tributo.TipoContabilita tipoContabilitaDefault = tipoTributo.getTipoContabilitaDefault();
 			if(tipoContabilitaDefault != null) {
 				switch(tipoContabilitaDefault){
 				case ALTRO:
-					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
+					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), it.govpay.model.Tributo.TipoContabilita.ALTRO.getCodifica() + "_p"));
 					break;
 				case SIOPE:
-					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
+					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), it.govpay.model.Tributo.TipoContabilita.SIOPE.getCodifica() + "_p"));
 					break;
 				case SPECIALE:
-					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
+					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), it.govpay.model.Tributo.TipoContabilita.SPECIALE.getCodifica() + "_p"));
 					break;
 				case CAPITOLO:
 				default:
-					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
+					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), it.govpay.model.Tributo.TipoContabilita.CAPITOLO.getCodifica() + "_p"));
 					break;
 				}
 			} 

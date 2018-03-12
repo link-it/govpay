@@ -66,7 +66,7 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Iuv;
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
@@ -605,7 +605,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 								StringBuilder sb = new StringBuilder();
 
-								TipoContabilta tipoContabilita = entry.getTipoContabilita(bd) != null ? entry.getTipoContabilita(bd) : TipoContabilta.CAPITOLO;
+								TipoContabilita tipoContabilita = entry.getTipoContabilita(bd) != null ? entry.getTipoContabilita(bd) : TipoContabilita.CAPITOLO;
 								String tipoContabilitaValue = null;
 								switch (tipoContabilita) {
 								case ALTRO:

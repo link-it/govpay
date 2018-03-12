@@ -1,6 +1,6 @@
 package it.govpay.core.utils;
 
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 
 public class VersamentoContext {
 	
@@ -8,7 +8,7 @@ public class VersamentoContext {
 	private String codUnivocoDebitore;
 	
 	//Valorizzati solo se il versamento ha un solo singolo pagamento
-	private TipoContabilta tipoContabilita;
+	private TipoContabilita tipoContabilita;
 	private String codContabilita;
 	
 	//Valorizzato solo se il versamento ha un solo singolo pagamento associato ad un tributo censito
@@ -22,11 +22,11 @@ public class VersamentoContext {
 		this.codUoBeneficiaria = codUoBeneficiaria;
 	}
 
-	public TipoContabilta getTipoContabilita() {
+	public TipoContabilita getTipoContabilita() {
 		return tipoContabilita;
 	}
 
-	public void setTipoContabilita(TipoContabilta tipoContabilita) {
+	public void setTipoContabilita(TipoContabilita tipoContabilita) {
 		this.tipoContabilita = tipoContabilita;
 	}
 
