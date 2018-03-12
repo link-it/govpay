@@ -14,7 +14,6 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
-import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
@@ -29,7 +28,7 @@ import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.rs.v1.beans.ListaRpt;
+import it.govpay.rs.v1.beans.ListaRpp;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
@@ -64,7 +63,7 @@ public class RptController extends it.govpay.rs.BaseController {
 			
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 			
-			it.govpay.rs.v1.beans.Rpt response = new it.govpay.rs.v1.beans.Rpt(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
+			it.govpay.rs.v1.beans.Rpp response = new it.govpay.rs.v1.beans.Rpp(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
 		}catch (RicevutaNonTrovataException e) {
@@ -226,12 +225,12 @@ public class RptController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Rpt> results = new ArrayList<it.govpay.rs.v1.beans.Rpt>();
+			List<it.govpay.rs.v1.beans.Rpp> results = new ArrayList<it.govpay.rs.v1.beans.Rpp>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Rpt(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),leggiRptDtoResponse.getCanale(),leggiRptDtoResponse.getPsp()));
+				results.add(new it.govpay.rs.v1.beans.Rpp(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),leggiRptDtoResponse.getCanale(),leggiRptDtoResponse.getPsp()));
 			}
 			
-			ListaRpt response = new ListaRpt(results, uriInfo.getRequestUri(),
+			ListaRpp response = new ListaRpp(results, uriInfo.getRequestUri(),
 					listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

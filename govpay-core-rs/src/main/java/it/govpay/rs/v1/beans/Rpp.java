@@ -1,32 +1,36 @@
 package it.govpay.rs.v1.beans;
 
+import javax.xml.bind.JAXBException;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.xml.sax.SAXException;
 
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.rs.v1.beans.base.EsitoRpt;
 import it.govpay.rs.v1.beans.base.ModelloPagamento;
 
-public class Rpt  extends it.govpay.rs.v1.beans.base.Rpt{
+public class Rpp  extends it.govpay.rs.v1.beans.base.Rpp{
 
-public Rpt() {}
+public Rpp() {}
 	
 	@Override
 	public String getJsonIdFilter() {
-		return "rpt";
+		return "rpp";
 	}
 	
-	public static Rpt parse(String json) {
-		return (Rpt) parse(json, Rpt.class);
+	public static Rpp parse(String json) {
+		return (Rpp) parse(json, Rpp.class);
 	}
 	
 	
-	public Rpt(it.govpay.bd.model.Rpt rpt, Versamento versamento, Applicazione applicazione, Canale canale, Psp psp) throws ServiceException {
+	public Rpp(it.govpay.bd.model.Rpt rpt, Versamento versamento, Applicazione applicazione, Canale canale, Psp psp) throws ServiceException {
 		
 		this.setCanale(UriBuilderUtils.getCanale(psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().getCodifica()));
 		this.setCcp(rpt.getCcp());
@@ -82,6 +86,19 @@ public Rpt() {}
 		}
 		this.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
 		this.setStato(rpt.getStato().toString());
+		try {
+			this.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt()));
+			
+			if(rpt.getXmlRt() != null) {
+				this.setRt(JaxbUtils.toRT(rpt.getXmlRt()));
+			}
+		} catch(SAXException e) {
+			throw new ServiceException(e);
+		} catch (JAXBException e) {
+			throw new ServiceException(e);
+		}
+		
+		
 	}
 	
 	@Override
