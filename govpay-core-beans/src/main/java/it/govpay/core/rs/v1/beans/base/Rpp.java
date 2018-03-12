@@ -3,6 +3,7 @@ package it.govpay.core.rs.v1.beans.base;
 import java.util.Date;
 import java.util.Objects;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
@@ -152,13 +153,30 @@ public class Rpp extends JSONSerializable {
     return this;
   }
 
-  @JsonProperty("modelloPagamento")
-  public ModelloPagamento getModelloPagamento() {
-    return modelloPagamento;
+  @JsonIgnore
+  public ModelloPagamento getModelloPagamentoEnum() {
+	    return modelloPagamento;
   }
   public void setModelloPagamento(ModelloPagamento modelloPagamento) {
     this.modelloPagamento = modelloPagamento;
   }
+  
+  public void setModelloPagamento(String modelloPagamento) throws Exception{
+	  if(modelloPagamento != null) {
+		  this.modelloPagamento = ModelloPagamento.fromValue(modelloPagamento);
+		  if(this.modelloPagamento == null)
+			  throw new Exception("valore ["+modelloPagamento+"] non ammesso per la property modelloPagamento");
+	  }
+  }
+  
+  @JsonProperty("modelloPagamento")
+  public String getModelloPagamento() {
+	  if(modelloPagamento != null) {
+		  return modelloPagamento.toString();
+	  } else {
+		  return null;
+	  }
+}
 
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
@@ -231,13 +249,30 @@ public class Rpp extends JSONSerializable {
     return this;
   }
 
-  @JsonProperty("esito")
-  public EsitoRpt getEsito() {
+  @JsonIgnore
+  public EsitoRpt getEsitoEnum() {
     return esito;
   }
   public void setEsito(EsitoRpt esito) {
     this.esito = esito;
   }
+  
+  public void setEsito(String esito) throws Exception{
+	  if(esito != null) {
+		  this.esito = EsitoRpt.fromValue(esito);
+		  if(this.esito == null)
+			  throw new Exception("valore ["+esito+"] non ammesso per la property esito");
+	  }
+  }
+  
+  @JsonProperty("esito")
+  public String getEsito() {
+	  if(esito != null) {
+		  return esito.toString();
+	  } else {
+		  return null;
+	  }
+}
 
   /**
    * Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico
