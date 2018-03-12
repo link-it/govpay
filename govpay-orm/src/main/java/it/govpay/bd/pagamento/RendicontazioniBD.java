@@ -110,4 +110,6 @@ public class RendicontazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	
 }

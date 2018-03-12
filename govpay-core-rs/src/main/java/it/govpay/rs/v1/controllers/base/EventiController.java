@@ -33,7 +33,7 @@ public class EventiController extends it.govpay.rs.BaseController {
 
 
     public Response eventiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv) {
-    	String methodName = "pspGET";  
+    	String methodName = "eventiGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
