@@ -41,9 +41,10 @@ public class RendicontazioniDAO{
 			if(count > 0) {
 				List<Fr> findAll = rendicontazioniBD.findAll(filter);
 
-				for (Fr rendicontazione : findAll) {
+				for (Fr fr : findAll) {
 					LeggiRendicontazioneDTOResponse elem = new LeggiRendicontazioneDTOResponse();
-					elem.setFr(rendicontazione);
+					elem.setFr(fr);
+					elem.setRendicontazioni(fr.getRendicontazioni(bd));
 					resList.add(elem);
 				}
 			} 
@@ -65,6 +66,7 @@ public class RendicontazioniDAO{
 			rendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
 
 			response.setFr(rendicontazione);
+			response.setRendicontazioni(rendicontazione.getRendicontazioni(bd));
 
 		} catch (NotFoundException e) {
 			throw new RendicontazioneNonTrovataException(e.getMessage(), e);
