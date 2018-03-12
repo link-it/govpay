@@ -14,14 +14,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.commons.Versamento;
-import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
-import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
@@ -30,7 +29,6 @@ import it.govpay.model.IAutorizzato;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.ListaPendenze;
-import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.Pendenza;
 import it.govpay.rs.v1.beans.base.FaultBean;
 import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
@@ -198,26 +196,30 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			Versamento versamento = PagamentiPortaleConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza); 
 			
 			
-//			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
-//
-			PagamentiPortaleResponseOk responseOk = null;//PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
+			putVersamentoDTO.setVersamento(versamento);
+			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 201);
+			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.CREATED).entity(responseOk.toJSON(null)).build();
-//		} catch(GovPayException e) {
-//			log.error("Errore durante il processo di pagamento", e);
-//			FaultBean respKo = new FaultBean();
-//			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-//			respKo.setCodice(e.getCodEsito().name());
-//			respKo.setDescrizione(e.getDescrizioneEsito());
-//			respKo.setDettaglio(e.getMessage());
-//			try {
-//				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-//			}catch(Exception e1) {
-//				log.error("Errore durante il log della risposta", e1);
-//			}
-//			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return Response.status(responseStatus).build();
+		} catch(GovPayException e) {
+			log.error("Errore durante il processo di pagamento", e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice(e.getCodEsito().name());
+			respKo.setDescrizione(e.getDescrizioneEsito());
+			respKo.setDettaglio(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();

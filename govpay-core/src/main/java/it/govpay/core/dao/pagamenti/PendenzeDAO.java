@@ -95,20 +95,23 @@ public class PendenzeDAO{
 	}
 	
 	
-	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws ServiceException, PendenzaNonTrovataException,StazioneNonTrovataException,TipoTributoNonTrovatoException{
+	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws PendenzaNonTrovataException, GovPayException{
 		PutPendenzaDTOResponse dominioDTOResponse = new PutPendenzaDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
+			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-			versamentoBusiness.caricaVersamento(putVersamentoDTO.getVersamento(), false, true);
+			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
+			
+			versamentoBusiness.caricaVersamento(chiediVersamento, false, true);
 
-//		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-//			throw new PendenzaNonTrovataException(e.getMessage());
-		} catch (GovPayException e) {
-			throw new ServiceException(e);
+		} catch (ServiceException e) {
+			throw new GovPayException(e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return dominioDTOResponse;
 	}

@@ -1,6 +1,6 @@
 package it.govpay.core.dao.pagamenti.dto;
 
-import it.govpay.bd.model.Versamento;
+import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.model.IAutorizzato;
 
