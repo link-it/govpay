@@ -44,7 +44,7 @@ import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -220,10 +220,10 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 			String tipoContabilitaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
 			List<Voce<String>> tipoContabilitaValues = new ArrayList<Voce<String>>();
 			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilita.CAPITOLO.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilita.SPECIALE.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilita.SIOPE.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilita.ALTRO.getCodifica()));
 			SelectList<String> tipoContabilita = new SelectList<String>(tipoContabilitaId, tipoContabilitaLabel, null, false, false, true, tipoContabilitaValues );
 			this.infoRicercaMap.put(tipoContabilitaId, tipoContabilita);
 
@@ -326,10 +326,10 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 			// tipoContabilita
 			String tipoContabilitaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
 			List<Voce<String>> tipoContabilitaValues = new ArrayList<Voce<String>>();
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilita.CAPITOLO.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilita.SPECIALE.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilita.SIOPE.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilita.ALTRO.getCodifica()));
 			SelectList<String> tipoContabilita = new SelectList<String>(tipoContabilitaId, tipoContabilitaLabel, null, true, false, true, tipoContabilitaValues );
 			tipoContabilita.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.suggestion"));
 			this.infoCreazioneMap.put(tipoContabilitaId, tipoContabilita);
@@ -488,7 +488,7 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 			// dati del tributo
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label"), tributo.getCodTributo());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), tributo.getDescrizione());
-			TipoContabilta tipoContabilita = tributo.getTipoContabilitaDefault() != null ? tributo.getTipoContabilitaDefault() : TipoContabilta.CAPITOLO;
+			TipoContabilita tipoContabilita = tributo.getTipoContabilitaDefault() != null ? tributo.getTipoContabilitaDefault() : TipoContabilita.CAPITOLO;
 			String tipoContabilitaValue = null;
 			switch (tipoContabilita) {
 			case ALTRO:
@@ -588,7 +588,7 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 			jsonConfig.setRootClass(TipoTributo.class);
 			entry = (TipoTributo) JSONObject.toBean( jsonObject, jsonConfig );
 
-			TipoContabilta tipoContabilita =  TipoContabilta.toEnum(tipocontabilitaS);
+			TipoContabilita tipoContabilita =  TipoContabilita.toEnum(tipocontabilitaS);
 			entry.setTipoContabilitaDefault(tipoContabilita); 
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -667,7 +667,7 @@ public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDar
 	public String getSottotitolo(TipoTributo entry, BasicBD bd) throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
 
-		TipoContabilta tipoContabilita = entry.getTipoContabilitaDefault() != null ? entry.getTipoContabilitaDefault() : TipoContabilta.CAPITOLO;
+		TipoContabilita tipoContabilita = entry.getTipoContabilitaDefault() != null ? entry.getTipoContabilitaDefault() : TipoContabilita.CAPITOLO;
 		String tipoContabilitaValue = null;
 		switch (tipoContabilita) {
 		case ALTRO:

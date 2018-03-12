@@ -21,7 +21,7 @@ package it.govpay.bd.model.converter;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Tributo;
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.TipoTributo;
@@ -63,12 +63,12 @@ public class TributoConverter {
 		if(vo.getIdIbanAccreditoPostale() != null)
 			dto.setIdIbanAccreditoPostale(vo.getIdIbanAccreditoPostale().getId());
 		if(vo.getTipoContabilita() != null)
-			dto.setTipoContabilitaCustom(TipoContabilta.toEnum(vo.getTipoContabilita()));
+			dto.setTipoContabilitaCustom(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setCodContabilitaCustom(vo.getCodiceContabilita());
 		dto.setCodTributoIuvCustom(vo.getCodTributoIuv());
 		
 		if(vo.getTipoTributo().getTipoContabilita() != null) 
-			dto.setTipoContabilitaDefault(TipoContabilta.toEnum(vo.getTipoTributo().getTipoContabilita()));
+			dto.setTipoContabilitaDefault(TipoContabilita.toEnum(vo.getTipoTributo().getTipoContabilita()));
 		dto.setCodContabilitaDefault(vo.getTipoTributo().getCodContabilita());
 		dto.setCodTributoIuvDefault(vo.getTipoTributo().getCodTributoIuv());
 		

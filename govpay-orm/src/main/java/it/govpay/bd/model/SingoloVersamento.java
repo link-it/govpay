@@ -88,7 +88,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			this.setIdIbanAccredito(ibanAccredito.getId());
 	}
 	
-	public Tributo.TipoContabilta getTipoContabilita(BasicBD bd) throws ServiceException {
+	public Tributo.TipoContabilita getTipoContabilita(BasicBD bd) throws ServiceException {
 		if(this.getTipoContabilita() != null)
 			return this.getTipoContabilita();
 		else

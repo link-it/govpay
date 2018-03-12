@@ -49,7 +49,7 @@ import it.govpay.model.Dominio;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Tributo;
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
@@ -255,7 +255,7 @@ public class VersamentoUtils {
 			
 			try {
 				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, versamento.getUo(bd).getDominio(bd).getId(), singoloVersamento.getTributo().getIbanAccredito()));
-				model.setTipoContabilita(TipoContabilta.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
+				model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
 				model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.VER_020, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());

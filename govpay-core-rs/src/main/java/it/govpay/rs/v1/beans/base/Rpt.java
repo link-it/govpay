@@ -1,13 +1,11 @@
 package it.govpay.rs.v1.beans.base;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.rs.v1.beans.base.EsitoRpt;
-import it.govpay.rs.v1.beans.base.ModelloPagamento;
-import it.govpay.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
-
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idDominio",
 "iuv",
@@ -20,7 +18,6 @@ import java.util.Date;
 "dataRichiesta",
 "dataRicevuta",
 "esito",
-"importo",
 })
 public class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
   
@@ -56,9 +53,6 @@ public class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("esito")
   private EsitoRpt esito = null;
-  
-  @JsonProperty("importo")
-  private BigDecimal importo = null;
   
   /**
    * Identificativo ente creditore
@@ -145,6 +139,7 @@ public class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
     return this;
   }
 
+  @JsonIgnore
   public ModelloPagamento getModelloPagamentoEnum() {
     return modelloPagamento;
   }
@@ -238,28 +233,29 @@ public class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
     return this;
   }
 
-  @JsonProperty("esito")
-  public EsitoRpt getEsito() {
+  @JsonIgnore
+  public EsitoRpt getEsitoEnum() {
     return esito;
   }
   public void setEsito(EsitoRpt esito) {
     this.esito = esito;
   }
-
-  /**
-   * Importo totale riscosso, corrispondente alla somma delle singole riscossioni.
-   **/
-  public Rpt importo(BigDecimal importo) {
-    this.importo = importo;
-    return this;
+  
+  public void setEsito(String esito) throws Exception{
+	  if(esito != null) {
+		  this.esito = EsitoRpt.fromValue(esito);
+		  if(this.esito == null)
+			  throw new Exception("valore ["+esito+"] non ammesso per la property esito");
+	  }
   }
-
-  @JsonProperty("importo")
-  public BigDecimal getImporto() {
-    return importo;
-  }
-  public void setImporto(BigDecimal importo) {
-    this.importo = importo;
+  
+  @JsonProperty("esito")
+  public String getEsito() {
+	  if(esito != null) {
+		  return esito.toString();
+	  } else {
+		  return null;
+	  }
   }
 
   @Override
@@ -281,13 +277,12 @@ public class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
         Objects.equals(dettaglioStato, rpt.dettaglioStato) &&
         Objects.equals(dataRichiesta, rpt.dataRichiesta) &&
         Objects.equals(dataRicevuta, rpt.dataRicevuta) &&
-        Objects.equals(esito, rpt.esito) &&
-        Objects.equals(importo, rpt.importo);
+        Objects.equals(esito, rpt.esito);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, ccp, pendenza, canale, modelloPagamento, stato, dettaglioStato, dataRichiesta, dataRicevuta, esito, importo);
+    return Objects.hash(idDominio, iuv, ccp, pendenza, canale, modelloPagamento, stato, dettaglioStato, dataRichiesta, dataRicevuta, esito);
   }
 
   public static Rpt parse(String json) {
@@ -315,7 +310,6 @@ public class Rpt extends it.govpay.rs.v1.beans.JSONSerializable {
     sb.append("    dataRichiesta: ").append(toIndentedString(dataRichiesta)).append("\n");
     sb.append("    dataRicevuta: ").append(toIndentedString(dataRicevuta)).append("\n");
     sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
-    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("}");
     return sb.toString();
   }

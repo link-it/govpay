@@ -50,7 +50,6 @@ import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Tributo;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
-import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.web.rs.dars.anagrafica.tributi.input.CodContabilita;
 import it.govpay.web.rs.dars.anagrafica.tributi.input.CodificaTributoInIuv;
 import it.govpay.web.rs.dars.anagrafica.tributi.input.TipoContabilita;
@@ -593,32 +592,32 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 				// prelevo le versioni statiche per l'update
 				SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId+"_update");
 
-				TipoContabilta tipoContabilitaCustom = entry.getTipoContabilitaCustom();
-				TipoContabilta tipoContabilitaDefault = entry.getTipoContabilitaDefault();
+				it.govpay.model.Tributo.TipoContabilita tipoContabilitaCustom = entry.getTipoContabilitaCustom();
+				it.govpay.model.Tributo.TipoContabilita tipoContabilitaDefault = entry.getTipoContabilitaDefault();
 
 				List<Voce<String>> lst = new ArrayList<Voce<String>>();
 				if(tipoContabilitaDefault != null){
 					switch(tipoContabilitaDefault){
 					case ALTRO:
-						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), it.govpay.model.Tributo.TipoContabilita.ALTRO.getCodifica() + "_p"));
 						break;
 					case SIOPE:
-						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), it.govpay.model.Tributo.TipoContabilita.SIOPE.getCodifica() + "_p"));
 						break;
 					case SPECIALE:
-						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), it.govpay.model.Tributo.TipoContabilita.SPECIALE.getCodifica() + "_p"));
 						break;
 					case CAPITOLO:
 					default:
-						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
+						lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), it.govpay.model.Tributo.TipoContabilita.CAPITOLO.getCodifica() + "_p"));
 						break;
 					}
 				}
 
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), it.govpay.model.Tributo.TipoContabilita.CAPITOLO.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), it.govpay.model.Tributo.TipoContabilita.SPECIALE.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), it.govpay.model.Tributo.TipoContabilita.SIOPE.getCodifica()));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), it.govpay.model.Tributo.TipoContabilita.ALTRO.getCodifica()));
 
 
 				if(tipoContabilitaCustom == null) {
@@ -739,7 +738,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccreditoPostale.label"), ibanAccredito.getCodIban());
 			}
 
-			TipoContabilta tipoContabilita = tributo.getTipoContabilita() != null ? tributo.getTipoContabilita() : TipoContabilta.CAPITOLO;
+			it.govpay.model.Tributo.TipoContabilita tipoContabilita = tributo.getTipoContabilita() != null ? tributo.getTipoContabilita() : it.govpay.model.Tributo.TipoContabilita.CAPITOLO;
 			String tipoContabilitaValue = null;
 			switch (tipoContabilita) {
 			case ALTRO:
@@ -861,7 +860,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 
 			// imposto i valori custom solo se sono valorizzati correttamente. 
 			if(StringUtils.isNotEmpty(tipocontabilitaS) && !tipocontabilitaS.endsWith("_p")){
-				TipoContabilta tipoContabilita =  TipoContabilta.toEnum(tipocontabilitaS);
+				it.govpay.model.Tributo.TipoContabilita tipoContabilita =  it.govpay.model.Tributo.TipoContabilita.toEnum(tipocontabilitaS);
 				entry.setTipoContabilitaCustom(tipoContabilita);
 			} 
 
@@ -954,7 +953,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 	public String getSottotitolo(Tributo entry, BasicBD bd) throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
 
-		TipoContabilta tipoContabilita = entry.getTipoContabilita() != null ? entry.getTipoContabilita() : TipoContabilta.CAPITOLO;
+		it.govpay.model.Tributo.TipoContabilita tipoContabilita = entry.getTipoContabilita() != null ? entry.getTipoContabilita() : it.govpay.model.Tributo.TipoContabilita.CAPITOLO;
 		String tipoContabilitaValue = null;
 		switch (tipoContabilita) {
 		case ALTRO:

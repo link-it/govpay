@@ -27,7 +27,7 @@ public class Tributo extends TipoTributo {
 	
 	public static final String BOLLOT = "BOLLOT";
 	
-	public enum TipoContabilta {
+	public enum TipoContabilita {
 	    CAPITOLO("0"),
 	    SPECIALE("1"),
 	    SIOPE("2"),
@@ -35,19 +35,19 @@ public class Tributo extends TipoTributo {
 	    
 		private String codifica;
 
-		TipoContabilta(String codifica) {
+		TipoContabilita(String codifica) {
 			this.codifica = codifica;
 		}
 		public String getCodifica() {
 			return codifica;
 		}
 		
-		public static TipoContabilta toEnum(String codifica) throws ServiceException {
-			for(TipoContabilta p : TipoContabilta.values()){
+		public static TipoContabilita toEnum(String codifica) throws ServiceException {
+			for(TipoContabilita p : TipoContabilita.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilta.values()));
+			throw new ServiceException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class Tributo extends TipoTributo {
 	private Long idIbanAccredito;
 	private Long idIbanAccreditoPostale;
 	private boolean abilitato;
-	private TipoContabilta tipoContabilitaCustom;
+	private TipoContabilita tipoContabilitaCustom;
 	private String codContabilitaCustom;
 	private String codTributoIuvCustom;
 	
@@ -85,10 +85,10 @@ public class Tributo extends TipoTributo {
 	public void setIdTipoTributo(long idTipoTributo) {
 		this.idTipoTributo = idTipoTributo;
 	}
-	public TipoContabilta getTipoContabilitaCustom() {
+	public TipoContabilita getTipoContabilitaCustom() {
 		return tipoContabilitaCustom;
 	}
-	public void setTipoContabilitaCustom(TipoContabilta tipoContabilitaCustom) {
+	public void setTipoContabilitaCustom(TipoContabilita tipoContabilitaCustom) {
 		this.tipoContabilitaCustom = tipoContabilitaCustom;
 	}
 	public String getCodContabilitaCustom() {

@@ -24,7 +24,7 @@ import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.FR;
 import it.govpay.orm.Incasso;
@@ -372,7 +372,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			singoloVersamento.setHashDocumento((String) record.get(i++));
 			singoloVersamento.setProvinciaResidenza((String) record.get(i++));
 			if(record.get(i) != null) {
-				singoloVersamento.setTipoContabilita(TipoContabilta.toEnum((String) record.get(i++)));
+				singoloVersamento.setTipoContabilita(TipoContabilita.toEnum((String) record.get(i++)));
 			} else {
 				i++;
 			}

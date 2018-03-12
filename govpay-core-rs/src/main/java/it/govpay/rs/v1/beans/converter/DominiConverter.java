@@ -10,7 +10,7 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.rs.v1.beans.base.DominioPost;
 import it.govpay.rs.v1.beans.base.EntrataPost;
 import it.govpay.rs.v1.beans.base.IbanAccreditoPost;
@@ -32,16 +32,16 @@ public class DominiConverter {
 		if(entrataRequest.getTipoContabilita() != null) {
 			switch (entrataRequest.getTipoContabilita()) {
 			case ALTRO:
-				tributo.setTipoContabilitaCustom(TipoContabilta.ALTRO);
+				tributo.setTipoContabilitaCustom(TipoContabilita.ALTRO);
 				break;
 			case ENTRATA:
-				tributo.setTipoContabilitaCustom(TipoContabilta.CAPITOLO);
+				tributo.setTipoContabilitaCustom(TipoContabilita.CAPITOLO);
 				break;
 			case SIOPE:
-				tributo.setTipoContabilitaCustom(TipoContabilta.SIOPE);
+				tributo.setTipoContabilitaCustom(TipoContabilita.SIOPE);
 				break;
 			case SPECIALE:
-				tributo.setTipoContabilitaCustom(TipoContabilta.SPECIALE);
+				tributo.setTipoContabilitaCustom(TipoContabilita.SPECIALE);
 				break;
 			}
 		}

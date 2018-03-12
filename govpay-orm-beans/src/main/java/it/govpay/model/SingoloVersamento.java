@@ -62,7 +62,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String hashDocumento;
 	private String provinciaResidenza;
 	private Long idIbanAccredito;
-	private Tributo.TipoContabilta tipoContabilita;
+	private Tributo.TipoContabilita tipoContabilita;
 	private String codContabilita;
 	private String note;
 	
@@ -148,11 +148,11 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		this.idIbanAccredito = idIbanAccredito;
 	}
 
-	public Tributo.TipoContabilta getTipoContabilita() {
+	public Tributo.TipoContabilita getTipoContabilita() {
 		return tipoContabilita;
 	}
 
-	public void setTipoContabilita(Tributo.TipoContabilta tipoContabilita) {
+	public void setTipoContabilita(Tributo.TipoContabilita tipoContabilita) {
 		this.tipoContabilita = tipoContabilita;
 	}
 
