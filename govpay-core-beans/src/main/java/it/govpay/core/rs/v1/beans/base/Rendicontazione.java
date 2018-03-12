@@ -1,13 +1,13 @@
-package it.govpay.rs.v1.beans.base;
+package it.govpay.core.rs.v1.beans.base;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.rs.v1.beans.base.Riscossione;
-import it.govpay.rs.v1.beans.base.Segnalazione;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "iuv",
 "iur",
@@ -18,7 +18,7 @@ import java.util.List;
 "segnalazioni",
 "riscossione",
 })
-public class Rendicontazione extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Rendicontazione extends JSONSerializable {
   
   @JsonProperty("iuv")
   private String iuv = null;

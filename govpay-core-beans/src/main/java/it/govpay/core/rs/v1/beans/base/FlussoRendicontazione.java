@@ -1,10 +1,13 @@
-package it.govpay.rs.v1.beans.base;
+package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.rs.v1.beans.base.FlussoRendicontazioneIndex;
-import it.govpay.rs.v1.beans.base.Rendicontazione;
-import it.govpay.rs.v1.beans.base.Segnalazione;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
+import it.govpay.core.rs.v1.beans.base.FlussoRendicontazioneIndex;
+import it.govpay.core.rs.v1.beans.base.Rendicontazione;
+import it.govpay.core.rs.v1.beans.base.Segnalazione;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +25,7 @@ import java.util.List;
 "segnalazioni",
 "rendicontazioni",
 })
-public class FlussoRendicontazione extends it.govpay.rs.v1.beans.JSONSerializable {
+public class FlussoRendicontazione extends JSONSerializable {
   
   @JsonProperty("idFlusso")
   private String idFlusso = null;

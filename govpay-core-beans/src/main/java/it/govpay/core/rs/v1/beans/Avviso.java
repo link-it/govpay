@@ -17,16 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.rs.v1.beans;
-
-import java.util.stream.Collectors;
+package it.govpay.core.rs.v1.beans;
 
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
-import it.govpay.model.avvisi.AvvisoPagamento;
-
 @JsonFilter(value="avviso")  
-public class Avviso extends it.govpay.rs.v1.beans.base.Avviso {
+public class Avviso extends it.govpay.core.rs.v1.beans.base.Avviso {
 
 	@Override
 	public String getJsonIdFilter() {
@@ -35,9 +31,6 @@ public class Avviso extends it.govpay.rs.v1.beans.base.Avviso {
 	
 	public static Avviso parse(String json) {
 		return (Avviso) parse(json, Avviso.class);
-	}
-	
-	public Avviso(AvvisoPagamento avviso) {
 	}
 
 }

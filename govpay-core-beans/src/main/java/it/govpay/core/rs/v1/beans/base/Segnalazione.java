@@ -1,12 +1,15 @@
-package it.govpay.rs.v1.beans.base;
+package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "codice",
 "descrizione",
 })
-public class Segnalazione extends it.govpay.rs.v1.beans.JSONSerializable {
+public class Segnalazione extends JSONSerializable {
   
   @JsonProperty("codice")
   private String codice = null;

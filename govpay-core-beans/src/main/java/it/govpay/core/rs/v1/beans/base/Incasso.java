@@ -2,8 +2,6 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.rs.v1.beans.base.IncassoIndex;
-import it.govpay.rs.v1.beans.base.Riscossione;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

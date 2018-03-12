@@ -1,8 +1,10 @@
-package it.govpay.rs.v1.beans.base;
+package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.rs.v1.beans.base.IncassoPost;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
+
 import java.util.Date;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "causale",
@@ -11,7 +13,7 @@ import java.util.Date;
 "dataContabile",
 "id",
 })
-public class IncassoIndex extends it.govpay.rs.v1.beans.JSONSerializable {
+public class IncassoIndex extends JSONSerializable {
   
   @JsonProperty("causale")
   private String causale = null;
