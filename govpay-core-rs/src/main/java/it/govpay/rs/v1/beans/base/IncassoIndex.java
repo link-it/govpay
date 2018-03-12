@@ -2,23 +2,16 @@ package it.govpay.rs.v1.beans.base;
 
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.rs.v1.beans.base.IncassoIndex;
-import it.govpay.rs.v1.beans.base.Riscossione;
-import java.util.ArrayList;
+import it.govpay.rs.v1.beans.base.IncassoPost;
 import java.util.Date;
-import java.util.List;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"id",
 "causale",
 "importo",
 "dataValuta",
 "dataContabile",
-"riscossioni",
+"id",
 })
-public class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
-  
-  @JsonProperty("id")
-  private String id = null;
+public class IncassoIndex extends it.govpay.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("causale")
   private String causale = null;
@@ -32,29 +25,13 @@ public class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
   
-  @JsonProperty("riscossioni")
-  private List<Riscossione> riscossioni = new ArrayList<Riscossione>();
-  
-  /**
-   * Identificativo dell'incasso
-   **/
-  public Incasso id(String id) {
-    this.id = id;
-    return this;
-  }
-
   @JsonProperty("id")
-  public String getId() {
-    return id;
-  }
-  public void setId(String id) {
-    this.id = id;
-  }
-
+  private String id = null;
+  
   /**
    * Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
    **/
-  public Incasso causale(String causale) {
+  public IncassoIndex causale(String causale) {
     this.causale = causale;
     return this;
   }
@@ -69,7 +46,7 @@ public class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Incasso importo(Double importo) {
+  public IncassoIndex importo(Double importo) {
     this.importo = importo;
     return this;
   }
@@ -85,7 +62,7 @@ public class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * Data di valuta dell'incasso
    **/
-  public Incasso dataValuta(Date dataValuta) {
+  public IncassoIndex dataValuta(Date dataValuta) {
     this.dataValuta = dataValuta;
     return this;
   }
@@ -101,7 +78,7 @@ public class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
   /**
    * Data di contabile dell'incasso
    **/
-  public Incasso dataContabile(Date dataContabile) {
+  public IncassoIndex dataContabile(Date dataContabile) {
     this.dataContabile = dataContabile;
     return this;
   }
@@ -115,18 +92,19 @@ public class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Identificativo dell'incasso
    **/
-  public Incasso riscossioni(List<Riscossione> riscossioni) {
-    this.riscossioni = riscossioni;
+  public IncassoIndex id(String id) {
+    this.id = id;
     return this;
   }
 
-  @JsonProperty("riscossioni")
-  public List<Riscossione> getRiscossioni() {
-    return riscossioni;
+  @JsonProperty("id")
+  public String getId() {
+    return id;
   }
-  public void setRiscossioni(List<Riscossione> riscossioni) {
-    this.riscossioni = riscossioni;
+  public void setId(String id) {
+    this.id = id;
   }
 
   @Override
@@ -137,40 +115,38 @@ public class Incasso extends it.govpay.rs.v1.beans.JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Incasso incasso = (Incasso) o;
-    return Objects.equals(id, incasso.id) &&
-        Objects.equals(causale, incasso.causale) &&
-        Objects.equals(importo, incasso.importo) &&
-        Objects.equals(dataValuta, incasso.dataValuta) &&
-        Objects.equals(dataContabile, incasso.dataContabile) &&
-        Objects.equals(riscossioni, incasso.riscossioni);
+    IncassoIndex incassoIndex = (IncassoIndex) o;
+    return Objects.equals(causale, incassoIndex.causale) &&
+        Objects.equals(importo, incassoIndex.importo) &&
+        Objects.equals(dataValuta, incassoIndex.dataValuta) &&
+        Objects.equals(dataContabile, incassoIndex.dataContabile) &&
+        Objects.equals(id, incassoIndex.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, causale, importo, dataValuta, dataContabile, riscossioni);
+    return Objects.hash(causale, importo, dataValuta, dataContabile, id);
   }
 
-  public static Incasso parse(String json) {
-    return (Incasso) parse(json, Incasso.class);
+  public static IncassoIndex parse(String json) {
+    return (IncassoIndex) parse(json, IncassoIndex.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "incasso";
+    return "incassoIndex";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Incasso {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("class IncassoIndex {\n");
+    
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
     sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
-    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -11,17 +11,23 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
-import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.servizi.commons.EsitoOperazione;
 
 public class PendenzeDAO{
 
@@ -94,6 +100,67 @@ public class PendenzeDAO{
 		return response;
 	}
 	
+	
+	public PatchPendenzaDTOResponse cambioStato(PatchPendenzaDTO patchPendenzaDTO) throws PendenzaNonTrovataException, GovPayException{
+		
+		PatchPendenzaDTOResponse response = new PatchPendenzaDTOResponse();
+		BasicBD bd = null;
+		
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, patchPendenzaDTO.getIdA2a()).getId(), patchPendenzaDTO.getIdPendenza());
+		
+//				List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+//				diritti.add(Diritti.SCRITTURA);
+//				diritti.add(Diritti.ESECUZIONE);
+//				if(annullaVersamentoDTO.getOperatore() != null && 
+//						!AclEngine.isAuthorized(annullaVersamentoDTO.getOperatore().getUtenza(),Servizio.PAGAMENTI_E_PENDENZE, versamentoLetto.getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
+//					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
+//				}
+			//TODO acl
+
+			
+			
+			StatoVersamento current = null;
+			switch(patchPendenzaDTO.getStato()) {
+			case ANNULLATO: current = StatoVersamento.ANNULLATO;
+				break;
+			case DA_PAGARE: current = StatoVersamento.NON_ESEGUITO;
+				break;
+			default:
+				break;
+			}
+			
+			StatoVersamento previous = current == StatoVersamento.ANNULLATO ? StatoVersamento.NON_ESEGUITO : StatoVersamento.ANNULLATO;
+			
+			// Se è già nello stesso stato non devo far nulla.
+			if(versamentoLetto.getStatoVersamento().equals(current)) {
+				return response;
+			}
+			
+			// Se è in stato NON_ESEGUITO lo annullo
+			if(versamentoLetto.getStatoVersamento().equals(previous)) {
+				versamentoLetto.setStatoVersamento(current);
+				versamentoLetto.setDescrizioneStato(patchPendenzaDTO.getDescrizioneStato());
+				versamentiBD.updateVersamento(versamentoLetto);
+				return response;
+			}
+			
+			// Se non è nello stato corretto non posso aggiornarne lo stato
+			throw new GovPayException(EsitoOperazione.VER_009, patchPendenzaDTO.getIdA2a(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getStatoVersamento().toString());
+
+		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} catch (NotFoundException e) {
+			throw new PendenzaNonTrovataException(e.getMessage(), e);
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+
+	}
 	
 	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws PendenzaNonTrovataException, GovPayException{
 		PutPendenzaDTOResponse dominioDTOResponse = new PutPendenzaDTOResponse();
