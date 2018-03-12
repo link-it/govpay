@@ -57,7 +57,6 @@ public Rpt() {}
 		this.setEsito(eRpt);
 		
 		this.setIdDominio(rpt.getCodDominio());
-		this.setImporto(rpt.getImportoTotalePagato());
 		this.setIuv(rpt.getIuv());
 		if(canale.getModelloPagamento() != null) {
 			ModelloPagamento mod = null;
