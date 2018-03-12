@@ -7,13 +7,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
-public class ListaRpt extends Lista<Rpt> {
+public class ListaRpp extends Lista<Rpp> {
 	
-	public ListaRpt() {
+	public ListaRpp() {
 		super();
 	}
 	
-	public ListaRpt(List<Rpt> rpt, URI requestUri, long count, long pagina, long limit) {
+	public ListaRpp(List<Rpp> rpt, URI requestUri, long count, long pagina, long limit) {
 		super(rpt, requestUri, count, pagina, limit);
 	}
 	
