@@ -26,14 +26,15 @@ import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.rs.v1.beans.ListaRpp;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.core.rs.v1.beans.Rpp;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.rs.v1.beans.converter.RptConverter;
 import it.govpay.rs.BaseController;
+import it.govpay.rs.v1.beans.converter.RptConverter;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
 
@@ -89,7 +90,7 @@ public class RppController extends BaseController {
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA
-			List<it.govpay.core.rs.v1.beans.Rpp> results = new ArrayList<it.govpay.core.rs.v1.beans.Rpp>();
+			List<Rpp> results = new ArrayList<Rpp>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
 				results.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),leggiRptDtoResponse.getCanale(),leggiRptDtoResponse.getPsp()));
 			}
@@ -279,7 +280,7 @@ public class RppController extends BaseController {
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
 
-			it.govpay.core.rs.v1.beans.Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
+			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 		}catch (RicevutaNonTrovataException e) {
 			log.error(e.getMessage(), e);

@@ -13,13 +13,13 @@ import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RendicontazioneNonTrovataException;
+import it.govpay.core.rs.v1.beans.Applicazione;
+import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseController;
-import it.govpay.rs.v1.beans.Applicazione;
-import it.govpay.rs.v1.beans.base.FaultBean;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 
 
 
