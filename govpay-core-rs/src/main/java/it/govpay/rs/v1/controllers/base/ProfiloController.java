@@ -12,13 +12,14 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
+import it.govpay.core.rs.v1.beans.FaultBean;
+import it.govpay.core.rs.v1.beans.ListaAcl;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.beans.FaultBean;
-import it.govpay.rs.v1.beans.ListaAcl;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.rs.v1.beans.converter.AclConverter;
 
 public class ProfiloController extends it.govpay.rs.BaseController {
 
@@ -50,9 +51,9 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.ACL> results = new ArrayList<it.govpay.rs.v1.beans.ACL>();
+			List<it.govpay.core.rs.v1.beans.ACL> results = new ArrayList<it.govpay.core.rs.v1.beans.ACL>();
 			for(Acl acl: user.getAcls()) {
-				results.add(new it.govpay.rs.v1.beans.ACL(acl));
+				results.add(AclConverter.toRsModel(acl));
 			}
 
 			ListaAcl response = new ListaAcl(results, uriInfo.getRequestUri(),

@@ -5,20 +5,19 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
+import it.govpay.core.rs.v1.beans.Applicazione;
+import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
+import it.govpay.core.rs.v1.beans.base.CodificaAvvisi;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.FirmaRichiesta;
-import it.govpay.rs.v1.beans.base.ApplicazionePost;
-import it.govpay.rs.v1.beans.base.CodificaAvvisi;
 
 public class ApplicazioniConverter {
 	
 	public static PutApplicazioneDTO getPutApplicazioneDTO(ApplicazionePost applicazionePost, String idA2A, IAutorizzato user) throws ServiceException {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
-		Applicazione applicazione = new Applicazione();
-		Utenza utenza = new Utenza();
+		it.govpay.bd.model.Applicazione applicazione = new it.govpay.bd.model.Applicazione();
+		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
 		utenza.setAbilitato(applicazionePost.isAbilitato());
 		utenza.setPrincipal(applicazionePost.getPrincipal());
 		applicazione.setUtenza(utenza);
@@ -60,4 +59,21 @@ public class ApplicazioniConverter {
 		return applicazioneDTO;		
 	}
 
+	public static Applicazione toRsModel(it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+		Applicazione rsModel = new Applicazione();
+		rsModel.setAbilitato(applicazione.getUtenza().isAbilitato());
+		
+		CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
+		codificaAvvisi.setCodificaIuv(applicazione.getCodApplicazioneIuv());
+		codificaAvvisi.setRegExpIuv(applicazione.getRegExp());
+		codificaAvvisi.setGenerazioneIuvInterna(applicazione.isAutoIuv());
+		rsModel.setCodificaAvvisi(codificaAvvisi);
+		
+		rsModel.setIdA2A(applicazione.getCodApplicazione());
+		rsModel.setPrincipal(applicazione.getUtenza().getPrincipal());
+		rsModel.setServizioNotifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreNotifica()));
+		rsModel.setServizioVerifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreVerifica()));
+		
+		return rsModel;
+	}
 }

@@ -21,15 +21,15 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
+import it.govpay.core.rs.v1.beans.Applicazione;
+import it.govpay.core.rs.v1.beans.ListaApplicazioni;
+import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
+import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.Applicazione;
-import it.govpay.rs.v1.beans.ListaApplicazioni;
-import it.govpay.rs.v1.beans.base.ApplicazionePost;
-import it.govpay.rs.v1.beans.base.FaultBean;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.rs.v1.beans.converter.ApplicazioniConverter;
 import net.sf.json.JsonConfig;
 
@@ -68,7 +68,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Applicazione response = new it.govpay.rs.v1.beans.Applicazione(getApplicazioneDTOResponse.getApplicazione());
+			Applicazione response = ApplicazioniConverter.toRsModel(getApplicazioneDTOResponse.getApplicazione());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -196,9 +196,9 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Applicazione> results = new ArrayList<it.govpay.rs.v1.beans.Applicazione>();
+			List<it.govpay.core.rs.v1.beans.Applicazione> results = new ArrayList<it.govpay.core.rs.v1.beans.Applicazione>();
 			for(it.govpay.bd.model.Applicazione applicazione: listaApplicazioniDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Applicazione(applicazione));
+				results.add(ApplicazioniConverter.toRsModel(applicazione));
 			}
 			
 			ListaApplicazioni response = new ListaApplicazioni(results, uriInfo.getRequestUri(),

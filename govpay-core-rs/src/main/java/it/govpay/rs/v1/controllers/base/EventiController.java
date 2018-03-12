@@ -15,12 +15,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
+import it.govpay.core.rs.v1.beans.ListaEventi;
+import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.beans.ListaEventi;
-import it.govpay.rs.v1.beans.base.FaultBean;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.rs.v1.beans.converter.EventiConverter;
 
 
 
@@ -62,9 +63,9 @@ public class EventiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Evento> results = new ArrayList<it.govpay.rs.v1.beans.Evento>();
+			List<it.govpay.core.rs.v1.beans.Evento> results = new ArrayList<it.govpay.core.rs.v1.beans.Evento>();
 			for(it.govpay.model.Evento evento: listaEventiDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Evento(evento));
+				results.add(EventiConverter.toRsModel(evento));
 			}
 			
 			ListaEventi response = new ListaEventi(results, uriInfo.getRequestUri(),

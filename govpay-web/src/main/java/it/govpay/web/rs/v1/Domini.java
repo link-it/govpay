@@ -58,19 +58,20 @@ import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.exceptions.BaseException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.Dominio;
+import it.govpay.core.rs.v1.beans.Errore;
+import it.govpay.core.rs.v1.beans.ListaDomini;
+import it.govpay.core.rs.v1.beans.ListaUnitaOperative;
+import it.govpay.core.rs.v1.beans.UnitaOperativa;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.rs.v1.beans.Dominio;
 import it.govpay.rs.legacy.beans.Entrata;
-import it.govpay.rs.v1.beans.Errore;
 import it.govpay.rs.legacy.beans.Iban;
-import it.govpay.rs.v1.beans.ListaDomini;
 import it.govpay.rs.legacy.beans.ListaEntrate;
 import it.govpay.rs.legacy.beans.ListaIbanAccredito;
-import it.govpay.rs.v1.beans.ListaUnitaOperative;
-import it.govpay.rs.v1.beans.UnitaOperativa;
+import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.beans.converter.DominiConverter;
 import it.govpay.rs.v1.controllers.base.DominiController;
 
 
@@ -116,13 +117,13 @@ public class Domini extends BaseRsServiceV1 {
 			
 			List<Dominio> domini = new ArrayList<Dominio>();
 			for(it.govpay.bd.model.Dominio d : findDominiDTOResponse.getResults()) {
-				domini.add(new Dominio(d));
+				domini.add(DominiConverter.toRsModel(d));
 			}
 			
 			ListaDomini listaDomini = new ListaDomini(domini, uriInfo.getRequestUri(), findDominiDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaDomini.toJSON(fields)).build();
 		} catch (BaseException e) {
-			return Response.status(e.getTransportErrorCode()).entity(new Errore(e)).build();
+			return Response.status(e.getTransportErrorCode()).entity(new Errore(e.getCode(),e.getMessage(),e.getDetails())).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante la ricerca dei domini", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -147,7 +148,7 @@ public class Domini extends BaseRsServiceV1 {
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, codDominio);
 			
 			GetDominioDTOResponse getDominioDTOResponse = new DominiDAO().getDominio(getDominioDTO);
-			Dominio dominio = new Dominio(getDominioDTOResponse.getDominio());
+			Dominio dominio = DominiConverter.toRsModel(getDominioDTOResponse.getDominio());
 			
 			return Response.status(Status.OK).entity(dominio.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
@@ -188,7 +189,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			List<UnitaOperativa> unitaOperative = new ArrayList<UnitaOperativa>();
 			for(it.govpay.bd.model.UnitaOperativa uo : findUnitaOperativeDTOResponse.getResults()) {
-				unitaOperative.add(new UnitaOperativa(uo));
+				unitaOperative.add(DominiConverter.toUnitaOperativaRsModel(uo));
 			}
 			ListaUnitaOperative listaUnitaOperative = new ListaUnitaOperative(unitaOperative, uriInfo.getRequestUri(), findUnitaOperativeDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
@@ -227,7 +228,7 @@ public class Domini extends BaseRsServiceV1 {
 			GetUnitaOperativaDTO getUnitaOperativaDTO = new GetUnitaOperativaDTO(user, codDominio, codUnivoco);
 			GetUnitaOperativaDTOResponse getUnitaOperativaDTOResponse = new DominiDAO().getUnitaOperativa(getUnitaOperativaDTO);
 			
-			UnitaOperativa unitaOperativa = new UnitaOperativa(getUnitaOperativaDTOResponse.getUnitaOperativa());
+			UnitaOperativa unitaOperativa = DominiConverter.toUnitaOperativaRsModel(getUnitaOperativaDTOResponse.getUnitaOperativa());
 			
 			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {

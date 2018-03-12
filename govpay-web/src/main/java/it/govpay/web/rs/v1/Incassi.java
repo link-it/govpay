@@ -54,15 +54,15 @@ import it.govpay.core.business.model.RichiestaIncassoDTO;
 import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.Errore;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.rs.v1.beans.Errore;
-import it.govpay.rs.v1.controllers.base.IncassiController;
 import it.govpay.rs.legacy.beans.Incasso;
 import it.govpay.rs.legacy.beans.IncassoExt;
+import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.controllers.base.IncassiController;
 
 @Path("/v1/incassi")
 public class Incassi extends BaseRsServiceV1 {
@@ -116,7 +116,7 @@ public class Incassi extends BaseRsServiceV1 {
 			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (IncassiException e) {
-			Errore errore = new Errore(e);
+			Errore errore = new Errore(e.getCode(),e.getMessage(),e.getDetails());
 			try { this.controller.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2.getMessage());}
 			return Response.status(422).entity(errore).build();
 		} catch (Exception e) {

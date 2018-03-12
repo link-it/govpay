@@ -1,19 +1,22 @@
 package it.govpay.rs.v1.beans.converter;
 
+import java.math.BigDecimal;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
+import it.govpay.core.rs.v1.beans.Entrata;
+import it.govpay.core.rs.v1.beans.TipoEntrata;
+import it.govpay.core.rs.v1.beans.base.Entrata.TipoContabilitaEnum;
+import it.govpay.core.rs.v1.beans.base.TipoEntrataPost;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.TipoTributo;
-import it.govpay.rs.v1.beans.base.TipoEntrataPost;
-import it.govpay.model.Tributo.TipoContabilita;
 
 public class EntrateConverter {
 
 	public static PutEntrataDTO getPutEntrataDTO(TipoEntrataPost entrataPost, String idEntrata, IAutorizzato user) throws ServiceException {
 		PutEntrataDTO entrataDTO = new PutEntrataDTO(user);
 		
-		TipoTributo tipoTributo = new TipoTributo();
+		it.govpay.model.TipoTributo tipoTributo = new it.govpay.model.TipoTributo();
 
 		tipoTributo.setCodContabilitaDefault(entrataPost.getCodiceContabilita());
 		if(entrataPost.getCodificaIUV()!=null)
@@ -23,17 +26,17 @@ public class EntrateConverter {
 		if(entrataPost.getTipoContabilitaEnum() != null) {
 			switch (entrataPost.getTipoContabilitaEnum()) {
 			case ALTRO:
-				tipoTributo.setTipoContabilitaDefault(TipoContabilita.ALTRO);
+				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.ALTRO);
 				break;
 			case ENTRATA:
-				tipoTributo.setTipoContabilitaDefault(TipoContabilita.CAPITOLO);
+				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.CAPITOLO);
 				break;
 			case SIOPE:
-				tipoTributo.setTipoContabilitaDefault(TipoContabilita.SIOPE);
+				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.SIOPE);
 				break;
 			case SPECIALE:
 			default:
-				tipoTributo.setTipoContabilitaDefault(TipoContabilita.SPECIALE);
+				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.SPECIALE);
 				break;
 			}
 		}
@@ -41,5 +44,19 @@ public class EntrateConverter {
 		entrataDTO.setCodTributo(idEntrata);
 		entrataDTO.setTipoTributo(tipoTributo);
 		return entrataDTO;		
+	}
+	
+	public static TipoEntrata toTipoEntrataRsModel(it.govpay.model.TipoTributo tributo) {
+		TipoEntrata rsModel = new TipoEntrata();
+		
+		rsModel.codiceContabilita(tributo.getCodContabilitaDefault())
+		.codificaIUV(tributo.getCodTributoIuvDefault())
+		.descrizione(tributo.getDescrizione())
+		.idEntrata(tributo.getCodTributo());
+		
+		if(tributo.getTipoContabilitaDefault() != null)
+			rsModel.tipoContabilita(TipoEntrata.TipoContabilitaEnum.fromValue(tributo.getTipoContabilitaDefault().toString()));
+		
+		return rsModel;
 	}
 }

@@ -24,7 +24,8 @@ import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.rs.v1.beans.JSONSerializable;
+import it.govpay.core.rs.v1.beans.JSONSerializable;
+
 
 @JsonFilter(value="iban")
 public class Iban extends JSONSerializable {

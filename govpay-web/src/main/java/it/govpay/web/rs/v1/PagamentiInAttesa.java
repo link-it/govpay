@@ -32,11 +32,11 @@ import javax.ws.rs.core.UriInfo;
 
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
+import it.govpay.core.rs.v1.beans.PagamentoInAttesa;
 import it.govpay.model.Anagrafica;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.rs.v1.beans.PagamentoInAttesa;
 import it.govpay.rs.v1.controllers.base.PendenzeController;
 
 @Path("/v1/versamenti")

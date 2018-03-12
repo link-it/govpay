@@ -163,15 +163,6 @@ public class Connettore extends Versionabile {
 	public void setAzioneInUrl(boolean azioneInUrl) {
 		this.azioneInUrl = azioneInUrl;
 	}
-
-	public Tipo getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(Tipo tipo) {
-		this.tipo = tipo;
-	}
-
 	public String getPrincipal() {
 		return principal;
 	}

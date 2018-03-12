@@ -27,12 +27,9 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
-import it.govpay.orm.IdPagamento;
 import it.govpay.orm.IdRendicontazione;
 
 public class RendicontazioniBD extends BasicBD {

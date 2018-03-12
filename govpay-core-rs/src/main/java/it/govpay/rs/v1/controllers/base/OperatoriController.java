@@ -24,15 +24,15 @@ import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.rs.v1.beans.FaultBean;
+import it.govpay.core.rs.v1.beans.ListaOperatori;
+import it.govpay.core.rs.v1.beans.Operatore;
+import it.govpay.core.rs.v1.beans.base.OperatorePost;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.FaultBean;
-import it.govpay.rs.v1.beans.ListaOperatori;
-import it.govpay.rs.v1.beans.Operatore;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.rs.v1.beans.base.OperatorePost;
 import it.govpay.rs.v1.beans.converter.OperatoriConverter;
 import net.sf.json.JsonConfig;
 
@@ -192,7 +192,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			LeggiOperatoreDTOResponse getOperatoreDTOResponse = operatoriDAO.getOperatore(leggiOperatoreDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
-			Operatore response = new it.govpay.rs.v1.beans.Operatore(getOperatoreDTOResponse.getOperatore());
+			Operatore response = OperatoriConverter.toRsModel(getOperatoreDTOResponse.getOperatore());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -260,9 +260,9 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Operatore> results = new ArrayList<it.govpay.rs.v1.beans.Operatore>();
+			List<it.govpay.core.rs.v1.beans.Operatore> results = new ArrayList<it.govpay.core.rs.v1.beans.Operatore>();
 			for(it.govpay.bd.model.Operatore operatore: listaOperatoriDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Operatore(operatore));
+				results.add(OperatoriConverter.toRsModel(operatore));
 			}
 			
 			ListaOperatori response = new ListaOperatori(results, uriInfo.getRequestUri(),

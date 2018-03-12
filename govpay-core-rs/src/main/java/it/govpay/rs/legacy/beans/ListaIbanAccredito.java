@@ -3,7 +3,7 @@ package it.govpay.rs.legacy.beans;
 import java.net.URI;
 import java.util.List;
 
-import it.govpay.rs.v1.beans.Lista;
+import it.govpay.core.rs.v1.beans.Lista;
 
 public class ListaIbanAccredito extends Lista<Iban> {
 

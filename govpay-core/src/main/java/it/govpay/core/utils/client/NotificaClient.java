@@ -49,8 +49,8 @@ public class NotificaClient extends BasicClient {
 	
 	public NotificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.NOTIFICA);
-		tipo = applicazione.getConnettoreNotifica().getTipo();
 		versione = applicazione.getConnettoreNotifica().getVersione();
+		this.tipo = Tipo.valueOf(this.versione.getApi());
 		
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
@@ -113,7 +113,12 @@ public class NotificaClient extends BasicClient {
 				sendSoap("paNotificaStorno", new JAXBElement<PaNotificaStorno>(qname, PaNotificaStorno.class, paNotificaStorno), null, false);
 				return;
 			}
+			case REST:
+				
+//				sendJson(azione, jsonBody, header, isAzioneInUrl);
+				break;
 		}
+		
 	}
 	
 	public class SendEsitoResponse {

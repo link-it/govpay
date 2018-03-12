@@ -35,7 +35,6 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.Uo;
 import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
 
 public class TributoFilter extends AbstractFilter {

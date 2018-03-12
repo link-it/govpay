@@ -75,19 +75,6 @@
 			<groupId>concurrent</groupId>
 			<artifactId>concurrent</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<classifier>jdk15</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson-provider</artifactId>
-			<version>2.3.2.Final</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 
 	<build>

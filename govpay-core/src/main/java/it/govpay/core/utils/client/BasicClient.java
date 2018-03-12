@@ -363,6 +363,143 @@ public class BasicClient {
 		}
 		
 	}
+	
+	public byte[] sendJson(String azione, String jsonBody, Object header, boolean isAzioneInUrl) throws ClientException {
+
+		// Creazione Connessione
+		int responseCode;
+		HttpURLConnection connection = null;
+		byte[] msg = null;
+		GpContext ctx = GpThreadLocal.get();
+		String urlString = url.toExternalForm();
+		if(isAzioneInUrl) {
+			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
+			try {
+				url = new URL(urlString.concat(azione));
+			} catch (MalformedURLException e) {
+				throw new ClientException("Url di connessione malformata: " + urlString.concat(azione), e);
+			}
+		} 
+	
+		try {
+			Message requestMsg = new Message();
+			requestMsg.setType(MessageType.REQUEST_OUT);
+			
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(true);
+			connection.setRequestProperty("Accept", "application/json");
+			requestMsg.addHeader(new Property("Accept", "application/json"));
+			requestMsg.setContentType("application/json");
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestMethod("POST");
+	
+			// Imposta Contesto SSL se attivo
+			if(sslContext != null){
+				HttpsURLConnection httpsConn = (HttpsURLConnection) connection;
+				httpsConn.setSSLSocketFactory(sslContext.getSocketFactory());
+				HostNameVerifierDisabled disabilitato = new HostNameVerifierDisabled();
+				httpsConn.setHostnameVerifier(disabilitato);
+			}
+	
+			// Imposta l'autenticazione HTTP Basic se attiva
+			if(ishttpBasicEnabled) {
+				Base64 base = new Base64();
+				String encoding = new String(base.encode((httpBasicUser + ":" + httpBasicPassword).getBytes()));
+				connection.setRequestProperty("Authorization", "Basic " + encoding);
+				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
+			}
+			
+			ctx.getIntegrationCtx().setMsg(jsonBody.getBytes());
+			invokeOutHandlers();
+			
+			if(log.isTraceEnabled()) {
+				StringBuffer sb = new StringBuffer();
+				for(String key : connection.getRequestProperties().keySet()) {
+					sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
+				}
+				sb.append("\n" + new String(ctx.getIntegrationCtx().getMsg()));
+				log.trace(sb.toString());
+			}
+			
+			requestMsg.setContent(ctx.getIntegrationCtx().getMsg());
+			
+			ctx.getContext().getRequest().setOutDate(new Date());
+			ctx.getContext().getRequest().setOutSize(Long.valueOf(ctx.getIntegrationCtx().getMsg().length));
+			ctx.log(requestMsg);
+			
+			connection.getOutputStream().write(ctx.getIntegrationCtx().getMsg());
+	
+		} catch (Exception e) {
+			throw new ClientException(e);
+		}
+		try {
+			responseCode = connection.getResponseCode();
+			ctx.getTransaction().getServer().setTransportCode(Integer.toString(responseCode));
+			
+		} catch (Exception e) {
+			throw new ClientException(e);
+		}
+		
+		Message responseMsg = new Message();
+		responseMsg.setType(MessageType.RESPONSE_IN);
+		
+		for(String key : connection.getHeaderFields().keySet()) {
+			if(connection.getHeaderFields().get(key) != null) {
+				if(key == null)
+					responseMsg.addHeader(new Property("Status-line", connection.getHeaderFields().get(key).get(0)));
+				else if(connection.getHeaderFields().get(key).size() == 1)
+					responseMsg.addHeader(new Property(key, connection.getHeaderFields().get(key).get(0)));
+				else
+					responseMsg.addHeader(new Property(key, ArrayUtils.toString(connection.getHeaderFields().get(key))));
+			}
+		}
+			
+		try {
+			if(responseCode < 300) {
+				try {
+					if(connection.getInputStream() == null) {
+						return null;
+					}
+					msg = connection.getInputStream() != null ? IOUtils.toByteArray(connection.getInputStream()) : new byte[]{};
+					if(msg.length > 0)
+						responseMsg.setContent(msg);
+					return msg;
+				} catch (Exception e) {
+					throw new ClientException("Messaggio di risposta non valido", e);
+				}
+			} else {
+				try {
+					msg = connection.getErrorStream() != null ? IOUtils.toByteArray(connection.getErrorStream()) : new byte[]{};
+					responseMsg.setContent(msg);
+				} catch (IOException e) {
+					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
+				} finally {
+					log.warn("Errore nell'invocazione del Nodo dei Pagamenti [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+				}
+				
+				throw new ClientException("Ricevuto [HTTP " + responseCode + "]");
+			}
+		} finally {
+			if(responseMsg != null) {
+				ctx.getContext().getResponse().setInDate(new Date());
+				if(responseMsg.getContent() != null)
+					ctx.getContext().getResponse().setInSize((long) responseMsg.getContent().length);
+				else
+					ctx.getContext().getResponse().setInSize(0l);
+				ctx.log(responseMsg);
+			}
+
+			if(log.isTraceEnabled() && connection != null && connection.getHeaderFields() != null) {
+				StringBuffer sb = new StringBuffer();
+				for(String key : connection.getHeaderFields().keySet()) { 
+					sb.append("\n\t" + key + ": " + connection.getHeaderField(key));
+				}
+				sb.append("\n" + new String(msg));
+				log.trace(sb.toString());
+			}
+		}
+		
+	}
 
 	public static boolean cleanCache(String bundleKey) {
 		return sslContexts.remove(bundleKey) != null;

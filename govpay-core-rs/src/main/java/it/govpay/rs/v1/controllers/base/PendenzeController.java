@@ -1,7 +1,10 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +14,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
@@ -23,17 +28,22 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.beans.ListaPendenze;
+import it.govpay.core.rs.v1.beans.Pendenza;
+import it.govpay.core.rs.v1.beans.Soggetto;
+import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.PendenzaPost;
+import it.govpay.core.rs.v1.beans.base.StatoPendenza;
+import it.govpay.core.rs.v1.beans.base.VocePendenza;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.ListaPendenze;
-import it.govpay.rs.v1.beans.Pendenza;
-import it.govpay.rs.v1.beans.base.FaultBean;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.rs.v1.beans.base.PendenzaPost;
 import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
+import it.govpay.rs.v1.beans.converter.PendenzeConverter;
 import net.sf.json.JsonConfig;
 
 
@@ -65,7 +75,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza = new Pendenza(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
+			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
 			return Response.status(Status.OK).entity(pendenza.toJSON(null)).build();
 		}catch (PendenzaNonTrovataException e) {
 			log.error(e.getMessage(), e);
@@ -139,9 +149,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Pendenza> results = new ArrayList<it.govpay.rs.v1.beans.Pendenza>();
+			List<it.govpay.core.rs.v1.beans.Pendenza> results = new ArrayList<it.govpay.core.rs.v1.beans.Pendenza>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Pendenza(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti()));
+				results.add(PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti()));
 			}
 			
 			ListaPendenze response = new ListaPendenze(results, uriInfo.getRequestUri(),
@@ -243,8 +253,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     	//client
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
-
-
+	
 }
 
 

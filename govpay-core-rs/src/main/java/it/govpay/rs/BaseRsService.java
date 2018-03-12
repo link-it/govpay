@@ -38,7 +38,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -47,26 +46,17 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.bd.model.Applicazione;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
-import it.govpay.bd.model.Utenza;
 import net.sf.json.JSONObject;
 
 public abstract class BaseRsService {
 	
-	public static List<String> datePatterns = null;
-	static {
-
-		datePatterns = new ArrayList<String>();
-		datePatterns.add(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
-		datePatterns.add(DateFormatUtils.ISO_DATETIME_FORMAT.getPattern());
-		datePatterns.add(DateFormatUtils.ISO_DATE_TIME_ZONE_FORMAT.getPattern());
-		datePatterns.add(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
-	}
-
 	public static final String ERRORE_INTERNO = "Errore Interno";
 
 	@Context protected HttpServletRequest request;
@@ -232,7 +222,7 @@ public abstract class BaseRsService {
 	
 	public static Date convertJsonStringToDate(String dateJson) throws Exception{
 		if(StringUtils.isNotEmpty(dateJson)){
-			String []datPat = datePatterns.toArray(new String[datePatterns.size()]);
+			String []datPat = SimpleDateFormatUtils.datePatterns.toArray(new String[SimpleDateFormatUtils.datePatterns.size()]);
 			return DateUtils.parseDate(dateJson, datPat);
 		}
 		return null;

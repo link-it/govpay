@@ -21,14 +21,15 @@ import it.govpay.core.dao.anagrafica.dto.ListaCanaliDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
+import it.govpay.core.rs.v1.beans.ListaCanali;
+import it.govpay.core.rs.v1.beans.ListaPsp;
+import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.beans.ListaCanali;
-import it.govpay.rs.v1.beans.ListaPsp;
-import it.govpay.rs.v1.beans.base.FaultBean;
-import it.govpay.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.rs.v1.beans.converter.PspConverter;
 
 
 
@@ -71,9 +72,9 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Canale> results = new ArrayList<it.govpay.rs.v1.beans.Canale>();
+			List<it.govpay.core.rs.v1.beans.Canale> results = new ArrayList<it.govpay.core.rs.v1.beans.Canale>();
 			for(LeggiCanaleDTOResponse elem: listaDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Canale(elem.getCanale(), elem.getPsp()));
+				results.add(PspConverter.toCanaleRsModel(elem.getCanale(), elem.getPsp()));
 			}
 			
 			ListaCanali response = new ListaCanali(results, uriInfo.getRequestUri(),
@@ -122,7 +123,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			LeggiCanaleDTOResponse leggiPspDTOResponse = pspDAO.leggiCanale(leggiPspDTO);
 			
-			it.govpay.rs.v1.beans.Canale response = new it.govpay.rs.v1.beans.Canale(leggiPspDTOResponse.getCanale(), leggiPspDTOResponse.getPsp());
+			it.govpay.core.rs.v1.beans.Canale response = PspConverter.toCanaleRsModel(leggiPspDTOResponse.getCanale(), leggiPspDTOResponse.getPsp());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
 		}catch (PspNonTrovatoException e) {
@@ -174,7 +175,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			LeggiPspDTOResponse leggiPspDTOResponse = pspDAO.leggiPsp(leggiPspDTO);
 			
-			it.govpay.rs.v1.beans.Psp response = new it.govpay.rs.v1.beans.Psp(leggiPspDTOResponse.getPsp());
+			it.govpay.core.rs.v1.beans.Psp response = PspConverter.toRsModel(leggiPspDTOResponse.getPsp());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
 		}catch (PspNonTrovatoException e) {
@@ -240,9 +241,9 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.rs.v1.beans.Psp> results = new ArrayList<it.govpay.rs.v1.beans.Psp>();
+			List<it.govpay.core.rs.v1.beans.Psp> results = new ArrayList<it.govpay.core.rs.v1.beans.Psp>();
 			for(it.govpay.bd.model.Psp psp: listaPspDTOResponse.getResults()) {
-				results.add(new it.govpay.rs.v1.beans.Psp(psp));
+				results.add(PspConverter.toRsModel(psp));
 			}
 			
 			ListaPsp response = new ListaPsp(results, uriInfo.getRequestUri(),

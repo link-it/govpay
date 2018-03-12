@@ -58,8 +58,8 @@ public class VerificaClient extends BasicClient {
 	public VerificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.VERIFICA);
 		versione = applicazione.getConnettoreVerifica().getVersione();
-		tipo = applicazione.getConnettoreVerifica().getTipo();
 		codApplicazione = applicazione.getCodApplicazione();
+		this.tipo = Tipo.valueOf(this.versione.getApi());
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
@@ -147,6 +147,8 @@ public class VerificaClient extends BasicClient {
 					ctx.log("verifica.verificaSconosciuto", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 					throw new VersamentoSconosciutoException();
 				}
+			case REST:
+				return null;
 			default:
 				bd.setupConnection(GpThreadLocal.get().getTransactionId());
 				ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, codDominioD, iuvD, "Tipo del connettore (" + tipo + ") non supportato");
