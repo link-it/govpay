@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idA2A",
 "idPendenza",
@@ -20,10 +23,10 @@ public class Notifica extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String idPendenza = null;
   
   @JsonProperty("rpt")
-  private Object rpt = null;
+  private CtRichiestaPagamentoTelematico rpt = null;
   
   @JsonProperty("rt")
-  private Object rt = null;
+  private CtRicevutaTelematica rt = null;
   
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = null;
@@ -63,32 +66,32 @@ public class Notifica extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * richiesta di pagamento telematica in json
    **/
-  public Notifica rpt(Object rpt) {
+  public Notifica rpt(CtRichiestaPagamentoTelematico rpt) {
     this.rpt = rpt;
     return this;
   }
 
   @JsonProperty("rpt")
-  public Object getRpt() {
+  public CtRichiestaPagamentoTelematico getRpt() {
     return rpt;
   }
-  public void setRpt(Object rpt) {
+  public void setRpt(CtRichiestaPagamentoTelematico rpt) {
     this.rpt = rpt;
   }
 
   /**
    * ricevuta di pagamento
    **/
-  public Notifica rt(Object rt) {
+  public Notifica rt(CtRicevutaTelematica rt) {
     this.rt = rt;
     return this;
   }
 
   @JsonProperty("rt")
-  public Object getRt() {
+  public CtRicevutaTelematica getRt() {
     return rt;
   }
-  public void setRt(Object rt) {
+  public void setRt(CtRicevutaTelematica rt) {
     this.rt = rt;
   }
 

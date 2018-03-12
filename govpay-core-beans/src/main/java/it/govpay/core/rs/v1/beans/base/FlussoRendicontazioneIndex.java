@@ -1,15 +1,13 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-import it.govpay.core.rs.v1.beans.base.Segnalazione;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idFlusso",
 "dataFlusso",

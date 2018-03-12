@@ -134,11 +134,12 @@ public class InviaNotificaThread implements Runnable {
 			ctx.log("notifica.spedizione");
 			
 			NotificaClient client = new NotificaClient(notifica.getApplicazione(bd));
-			client.invoke(notifica);
+			client.invoke(notifica,bd);
 			notifica.setStato(StatoSpedizione.SPEDITO);
 			notifica.setDescrizioneStato(null);
 			notifica.setDataAggiornamento(new Date());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			if(bd == null)
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			NotificheBD notificheBD = new NotificheBD(bd);
 			notificheBD.updateSpedito(notifica.getId());
 			

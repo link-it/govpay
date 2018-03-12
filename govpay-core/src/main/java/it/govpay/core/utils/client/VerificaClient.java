@@ -148,6 +148,8 @@ public class VerificaClient extends BasicClient {
 					throw new VersamentoSconosciutoException();
 				}
 			case REST:
+				
+				
 				return null;
 			default:
 				bd.setupConnection(GpThreadLocal.get().getTransactionId());

@@ -364,7 +364,12 @@ public class BasicClient {
 		
 	}
 	
-	public byte[] sendJson(String azione, String jsonBody, Object header, boolean isAzioneInUrl) throws ClientException {
+	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties) throws ClientException {
+		return sendJson(path, jsonBody, headerProperties, true);
+	}
+
+	
+	private byte[] sendJson(String azione, String jsonBody, List<Property> headerProperties, boolean isAzioneInUrl) throws ClientException {
 
 		// Creazione Connessione
 		int responseCode;
@@ -375,6 +380,8 @@ public class BasicClient {
 		if(isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 			try {
+				// elimino la possibilita' di avere due '/'
+				azione = azione.startsWith("/") ? azione.substring(1) : azione;
 				url = new URL(urlString.concat(azione));
 			} catch (MalformedURLException e) {
 				throw new ClientException("Url di connessione malformata: " + urlString.concat(azione), e);
@@ -392,6 +399,13 @@ public class BasicClient {
 			requestMsg.setContentType("application/json");
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestMethod("POST");
+			
+			if(headerProperties!= null  && headerProperties.size() > 0) {
+				for (Property prop : headerProperties) {
+					connection.setRequestProperty(prop.getName(), prop.getValue());
+					requestMsg.addHeader(prop);
+				}
+			}
 	
 			// Imposta Contesto SSL se attivo
 			if(sslContext != null){

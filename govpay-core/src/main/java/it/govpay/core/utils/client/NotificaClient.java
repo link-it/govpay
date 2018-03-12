@@ -19,18 +19,32 @@
  */
 package it.govpay.core.utils.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
+import org.xml.sax.SAXException;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.core.utils.Gp21Utils;
-import it.govpay.bd.model.Applicazione;
+import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.RtUtils;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.Rr;
 import it.govpay.model.Versionabile.Versione;
@@ -70,8 +84,11 @@ public class NotificaClient extends BasicClient {
 	 * @throws ServiceException 
 	 * @throws GovPayException 
 	 * @throws ClientException
+	 * @throws SAXException 
+	 * @throws JAXBException 
+	 * @throws NdpException 
 	 */
-	public void invoke(Notifica notifica) throws ClientException, ServiceException, GovPayException {
+	public void invoke(Notifica notifica, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException {
 		
 		log.debug("Spedisco la notifica di " + notifica.getTipo() + ((notifica.getIdRr() == null) ? " PAGAMENTO" : " STORNO") + " della transazione (" + notifica.getRpt(null).getCodDominio() + ")(" + notifica.getRpt(null).getIuv() + ")(" + notifica.getRpt(null).getCcp() + ") in versione (" + versione.toString() + ") alla URL ("+url+")");
 		
@@ -80,9 +97,9 @@ public class NotificaClient extends BasicClient {
 			if(notifica.getIdRr() == null) {
 				Rpt rpt = notifica.getRpt(null);
 				PaNotificaTransazione paNotificaTransazione = new PaNotificaTransazione();
-				paNotificaTransazione.setCodApplicazione(notifica.getApplicazione(null).getCodApplicazione());
-				paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(null).getCodVersamentoEnte());
-				paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, null));
+				paNotificaTransazione.setCodApplicazione(notifica.getApplicazione(bd).getCodApplicazione());
+				paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(bd).getCodVersamentoEnte());
+				paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, bd));
 				
 				if(notifica.getApplicazione(null).getConnettoreNotifica().getVersione().compareVersione(Versione.GP_SOAP_02_02) >= 0)
 					paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
@@ -91,11 +108,11 @@ public class NotificaClient extends BasicClient {
 				sendSoap("paNotificaTransazione", new JAXBElement<PaNotificaTransazione>(qname, PaNotificaTransazione.class, paNotificaTransazione), null, false);
 				return;
 			} else {
-				Rr rr = notifica.getRr(null);
-				Rpt rpt = notifica.getRr(null).getRpt(null);
+				Rr rr = notifica.getRr(bd);
+				Rpt rpt = notifica.getRr(bd).getRpt(bd);
 				PaNotificaStorno paNotificaStorno = new PaNotificaStorno();
-				paNotificaStorno.setCodApplicazione(notifica.getApplicazione(null).getCodApplicazione());
-				paNotificaStorno.setCodVersamentoEnte(rpt.getVersamento(null).getCodVersamentoEnte());
+				paNotificaStorno.setCodApplicazione(notifica.getApplicazione(bd).getCodApplicazione());
+				paNotificaStorno.setCodVersamentoEnte(rpt.getVersamento(bd).getCodVersamentoEnte());
 				RichiestaStorno richiestaStorno = new RichiestaStorno();
 				richiestaStorno.setCcp(rr.getCcp());
 				richiestaStorno.setCodDominio(rr.getCodDominio());
@@ -114,8 +131,44 @@ public class NotificaClient extends BasicClient {
 				return;
 			}
 			case REST:
+				List<Property> headerProperties = null;
+				String jsonBody = "";
+				String path = "";
 				
-//				sendJson(azione, jsonBody, header, isAzioneInUrl);
+				if(notifica.getIdRr() == null) {
+					Rpt rpt = notifica.getRpt(null);
+					path = "/" + rpt.getCodDominio() + "/"+ rpt.getIuv();
+					
+					it.govpay.core.rs.v1.beans.base.Notifica notificaRsModel = new it.govpay.core.rs.v1.beans.base.Notifica();
+					notificaRsModel.setIdA2A(notifica.getApplicazione(bd).getCodApplicazione());
+					notificaRsModel.setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
+					// rpt
+					notificaRsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt())); 
+					// rt
+					if(rpt.getXmlRt() != null) {
+						String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+						byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), rpt.getCodDominio());
+						CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+						notificaRsModel.setRt(rt);
+					}
+					// elenco pagamenti
+					if(rpt.getPagamenti(bd) != null && rpt.getPagamenti(bd).size() > 0) {
+						List<Riscossione> riscossioni = new ArrayList<Riscossione>();
+						int indice = 1;
+						String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(notifica.getApplicazione(bd).getCodApplicazione(), rpt.getVersamento(bd).getCodVersamentoEnte());
+						String urlRpt = UriBuilderUtils.getRptByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
+						for(Pagamento pagamento : rpt.getPagamenti(bd)) {
+							riscossioni.add(Gp21Utils.toRiscossione(pagamento, versione, bd,indice,urlPendenza,urlRpt));
+							indice ++;
+						}
+						notificaRsModel.setRiscossioni(riscossioni);
+					}
+						
+				} else {
+					throw new ServiceException("Notifica Storno REST non implementata!");
+				}
+				
+				sendJson(path, jsonBody, headerProperties);
 				break;
 		}
 		
