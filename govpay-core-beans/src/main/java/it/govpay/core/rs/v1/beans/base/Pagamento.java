@@ -25,7 +25,7 @@ import it.govpay.core.rs.v1.serializer.CustomBigDecimalSerializer;
 "autenticazioneSoggetto",
 "canale",
 "pendenze",
-"rpts",
+"rpp",
 })
 public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
@@ -121,8 +121,8 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("pendenze")
   private String pendenze = null;
   
-  @JsonProperty("rpts")
-  private String rpts = null;
+  @JsonProperty("rpp")
+  private String rpp = null;
   
   /**
    * Identificativo del pagamento assegnato da GovPay
@@ -366,17 +366,17 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Url per le richieste di pagamento oggetto del Pagamento
    **/
-  public Pagamento rpts(String rpts) {
-    this.rpts = rpts;
+  public Pagamento rpp(String rpp) {
+    this.rpp = rpp;
     return this;
   }
 
-  @JsonProperty("rpts")
-  public String getRpts() {
-    return rpts;
+  @JsonProperty("rpp")
+  public String getRpp() {
+    return rpp;
   }
-  public void setRpts(String rpts) {
-    this.rpts = rpts;
+  public void setRpp(String rpp) {
+    this.rpp = rpp;
   }
 
   @Override
@@ -403,12 +403,12 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
         Objects.equals(canale, pagamento.canale) &&
         Objects.equals(pendenze, pagamento.pendenze) &&
-        Objects.equals(rpts, pagamento.rpts);
+        Objects.equals(rpp, pagamento.rpp);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idSessionePortale, idSessionePsp, nome, importo, stato, pspRedirectUrl, dataRichiestaPagamento, datiAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, canale, pendenze, rpts);
+    return Objects.hash(id, idSessionePortale, idSessionePsp, nome, importo, stato, pspRedirectUrl, dataRichiestaPagamento, datiAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, canale, pendenze, rpp);
   }
 
   public static Pagamento parse(String json) {
@@ -440,7 +440,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
     sb.append("    canale: ").append(toIndentedString(canale)).append("\n");
     sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
-    sb.append("    rpts: ").append(toIndentedString(rpts)).append("\n");
+    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("}");
     return sb.toString();
   }

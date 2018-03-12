@@ -5,16 +5,17 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import it.govpay.core.rs.v1.beans.base.FlussoRendicontazioneIndex;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
-public class ListaRpt extends Lista<Rpt> {
+public class ListaFlussiRendicontazione extends Lista<FlussoRendicontazioneIndex> {
 	
-	public ListaRpt() {
+	public ListaFlussiRendicontazione() {
 		super();
 	}
 	
-	public ListaRpt(List<Rpt> rpt, URI requestUri, long count, long pagina, long limit) {
-		super(rpt, requestUri, count, pagina, limit);
+	public ListaFlussiRendicontazione(List<FlussoRendicontazioneIndex> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
+		super(flussiRendicontazione, requestUri, count, pagina, limit);
 	}
 	
 	@Override

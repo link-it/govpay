@@ -3,8 +3,12 @@ package it.govpay.core.rs.v1.beans.base;
 import java.util.Date;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.core.rs.v1.beans.JSONSerializable;
+
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idDominio",
 "iuv",
@@ -17,8 +21,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "dataRichiesta",
 "dataRicevuta",
 "esito",
+"rpt",
+"rt",
 })
-public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
+public class Rpp extends JSONSerializable {
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -53,10 +59,16 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("esito")
   private EsitoRpt esito = null;
   
+  @JsonProperty("rpt")
+  private CtRichiestaPagamentoTelematico rpt = null;
+  
+  @JsonProperty("rt")
+  private CtRicevutaTelematica rt = null;
+  
   /**
    * Identificativo ente creditore
    **/
-  public Rpt idDominio(String idDominio) {
+  public Rpp idDominio(String idDominio) {
     this.idDominio = idDominio;
     return this;
   }
@@ -72,7 +84,7 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Identificativo univoco di versamento
    **/
-  public Rpt iuv(String iuv) {
+  public Rpp iuv(String iuv) {
     this.iuv = iuv;
     return this;
   }
@@ -88,7 +100,7 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Codice contesto di pagamento
    **/
-  public Rpt ccp(String ccp) {
+  public Rpp ccp(String ccp) {
     this.ccp = ccp;
     return this;
   }
@@ -104,7 +116,7 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Url al dettaglio della pendenza
    **/
-  public Rpt pendenza(String pendenza) {
+  public Rpp pendenza(String pendenza) {
     this.pendenza = pendenza;
     return this;
   }
@@ -120,7 +132,7 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Url al dettaglio del canale utilizzato
    **/
-  public Rpt canale(String canale) {
+  public Rpp canale(String canale) {
     this.canale = canale;
     return this;
   }
@@ -133,38 +145,25 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.canale = canale;
   }
 
-  public Rpt modelloPagamento(String modelloPagamento) throws Exception{
-    this.setModelloPagamento(modelloPagamento);
+  /**
+   **/
+  public Rpp modelloPagamento(ModelloPagamento modelloPagamento) {
+    this.modelloPagamento = modelloPagamento;
     return this;
   }
 
-  @JsonIgnore
-  public ModelloPagamento getModelloPagamentoEnum() {
+  @JsonProperty("modelloPagamento")
+  public ModelloPagamento getModelloPagamento() {
     return modelloPagamento;
   }
-  public void setModelloPagamento(ModelloPagamento modelloPagamento)  {
+  public void setModelloPagamento(ModelloPagamento modelloPagamento) {
     this.modelloPagamento = modelloPagamento;
   }
-  public void setModelloPagamento(String modelloPagamento) throws Exception{
-	  if(modelloPagamento != null) {
-		  this.modelloPagamento = ModelloPagamento.fromValue(modelloPagamento);
-		  if(this.modelloPagamento == null)
-			  throw new Exception("valore ["+modelloPagamento+"] non ammesso per la property modelloPagamento");
-	  }
-  }
-  
-  @JsonProperty("modelloPagamento")
-  public String getModelloPagamento() {
-	  if(modelloPagamento != null) {
-		  return modelloPagamento.toString();
-	  } else {
-		  return null;
-	  }
-  }
+
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
    **/
-  public Rpt stato(String stato) {
+  public Rpp stato(String stato) {
     this.stato = stato;
     return this;
   }
@@ -180,7 +179,7 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Dettaglio fornito dal Nodo dei Pagamenti sullo stato della richiesta.
    **/
-  public Rpt dettaglioStato(String dettaglioStato) {
+  public Rpp dettaglioStato(String dettaglioStato) {
     this.dettaglioStato = dettaglioStato;
     return this;
   }
@@ -196,7 +195,7 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Data di emissione della richiesta di pagamento.
    **/
-  public Rpt dataRichiesta(Date dataRichiesta) {
+  public Rpp dataRichiesta(Date dataRichiesta) {
     this.dataRichiesta = dataRichiesta;
     return this;
   }
@@ -212,7 +211,7 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Data di ricezione della ricevuta telematica
    **/
-  public Rpt dataRicevuta(Date dataRicevuta) {
+  public Rpp dataRicevuta(Date dataRicevuta) {
     this.dataRicevuta = dataRicevuta;
     return this;
   }
@@ -227,34 +226,49 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Rpt esito(EsitoRpt esito) {
+  public Rpp esito(EsitoRpt esito) {
     this.esito = esito;
     return this;
   }
 
-  @JsonIgnore
-  public EsitoRpt getEsitoEnum() {
+  @JsonProperty("esito")
+  public EsitoRpt getEsito() {
     return esito;
   }
   public void setEsito(EsitoRpt esito) {
     this.esito = esito;
   }
-  
-  public void setEsito(String esito) throws Exception{
-	  if(esito != null) {
-		  this.esito = EsitoRpt.fromValue(esito);
-		  if(this.esito == null)
-			  throw new Exception("valore ["+esito+"] non ammesso per la property esito");
-	  }
+
+  /**
+   * Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico
+   **/
+  public Rpp rpt(CtRichiestaPagamentoTelematico rpt) {
+    this.rpt = rpt;
+    return this;
   }
-  
-  @JsonProperty("esito")
-  public String getEsito() {
-	  if(esito != null) {
-		  return esito.toString();
-	  } else {
-		  return null;
-	  }
+
+  @JsonProperty("rpt")
+  public CtRichiestaPagamentoTelematico getRpt() {
+    return rpt;
+  }
+  public void setRpt(CtRichiestaPagamentoTelematico rpt) {
+    this.rpt = rpt;
+  }
+
+  /**
+   * Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica
+   **/
+  public Rpp rt(CtRicevutaTelematica rt) {
+    this.rt = rt;
+    return this;
+  }
+
+  @JsonProperty("rt")
+  public CtRicevutaTelematica getRt() {
+    return rt;
+  }
+  public void setRt(CtRicevutaTelematica rt) {
+    this.rt = rt;
   }
 
   @Override
@@ -265,39 +279,41 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Rpt rpt = (Rpt) o;
-    return Objects.equals(idDominio, rpt.idDominio) &&
-        Objects.equals(iuv, rpt.iuv) &&
-        Objects.equals(ccp, rpt.ccp) &&
-        Objects.equals(pendenza, rpt.pendenza) &&
-        Objects.equals(canale, rpt.canale) &&
-        Objects.equals(modelloPagamento, rpt.modelloPagamento) &&
-        Objects.equals(stato, rpt.stato) &&
-        Objects.equals(dettaglioStato, rpt.dettaglioStato) &&
-        Objects.equals(dataRichiesta, rpt.dataRichiesta) &&
-        Objects.equals(dataRicevuta, rpt.dataRicevuta) &&
-        Objects.equals(esito, rpt.esito);
+    Rpp rpp = (Rpp) o;
+    return Objects.equals(idDominio, rpp.idDominio) &&
+        Objects.equals(iuv, rpp.iuv) &&
+        Objects.equals(ccp, rpp.ccp) &&
+        Objects.equals(pendenza, rpp.pendenza) &&
+        Objects.equals(canale, rpp.canale) &&
+        Objects.equals(modelloPagamento, rpp.modelloPagamento) &&
+        Objects.equals(stato, rpp.stato) &&
+        Objects.equals(dettaglioStato, rpp.dettaglioStato) &&
+        Objects.equals(dataRichiesta, rpp.dataRichiesta) &&
+        Objects.equals(dataRicevuta, rpp.dataRicevuta) &&
+        Objects.equals(esito, rpp.esito) &&
+        Objects.equals(rpt, rpp.rpt) &&
+        Objects.equals(rt, rpp.rt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, ccp, pendenza, canale, modelloPagamento, stato, dettaglioStato, dataRichiesta, dataRicevuta, esito);
+    return Objects.hash(idDominio, iuv, ccp, pendenza, canale, modelloPagamento, stato, dettaglioStato, dataRichiesta, dataRicevuta, esito, rpt, rt);
   }
 
-  public static Rpt parse(String json) {
-    return (Rpt) parse(json, Rpt.class);
+  public static Rpp parse(String json) {
+    return (Rpp) parse(json, Rpp.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "rpt";
+    return "rpp";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Rpt {\n");
-    
+    sb.append("class Rpp {\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    ccp: ").append(toIndentedString(ccp)).append("\n");
@@ -309,6 +325,8 @@ public class Rpt extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    dataRichiesta: ").append(toIndentedString(dataRichiesta)).append("\n");
     sb.append("    dataRicevuta: ").append(toIndentedString(dataRicevuta)).append("\n");
     sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
+    sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
+    sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
     sb.append("}");
     return sb.toString();
   }

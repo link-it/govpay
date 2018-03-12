@@ -7,6 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idA2A",
 "idPendenza",
@@ -14,7 +15,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 "rt",
 "riscossioni",
 })
-public class Notifica extends it.govpay.core.rs.v1.beans.JSONSerializable {
+public class Notifica extends JSONSerializable {
   
   @JsonProperty("idA2A")
   private String idA2A = null;

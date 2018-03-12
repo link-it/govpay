@@ -1,17 +1,21 @@
 package it.govpay.rs.v1.beans.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
+import javax.xml.bind.JAXBException;
 
-import it.govpay.core.rs.v1.beans.Rpt;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.xml.sax.SAXException;
+
+import it.govpay.core.rs.v1.beans.Rpp;
 import it.govpay.core.rs.v1.beans.base.EsitoRpt;
 import it.govpay.core.rs.v1.beans.base.ModelloPagamento;
+import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class RptConverter {
 
 
-	public static Rpt toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, it.govpay.bd.model.Canale canale, it.govpay.bd.model.Psp psp) throws ServiceException {
-		Rpt rsModel = new Rpt();
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, it.govpay.bd.model.Canale canale, it.govpay.bd.model.Psp psp) throws ServiceException {
+		Rpp rsModel = new Rpp();
 		
 		rsModel.setCanale(UriBuilderUtils.getCanale(psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().getCodifica()));
 		rsModel.setCcp(rpt.getCcp());
@@ -67,6 +71,18 @@ public class RptConverter {
 		}
 		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
 		rsModel.setStato(rpt.getStato().toString());
+		
+		try {
+			rsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt()));
+			
+			if(rpt.getXmlRt() != null) {
+				rsModel.setRt(JaxbUtils.toRT(rpt.getXmlRt()));
+			}
+		} catch(SAXException e) {
+			throw new ServiceException(e);
+		} catch (JAXBException e) {
+			throw new ServiceException(e);
+		}
 		
 		return rsModel;
 	}
