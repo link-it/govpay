@@ -14,6 +14,7 @@ import it.govpay.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.rs.v1.beans.base.PagamentoPost;
 import it.govpay.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.rs.v1.beans.base.Pendenza;
+import it.govpay.rs.v1.beans.base.PendenzaPost;
 import it.govpay.rs.v1.beans.base.Soggetto;
 import it.govpay.rs.v1.beans.base.VocePendenza;
 import net.sf.json.JSONArray;
@@ -139,6 +140,29 @@ public class PagamentiPortaleConverter {
 		return anagraficaCommons;
 	}
 
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) {
+		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
+
+		if(pendenza.getAnnoRiferimento() != null)
+			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
+
+		versamento.setCausale(pendenza.getCausale());
+		versamento.setCodApplicazione(ida2a);
+
+		versamento.setCodDominio(pendenza.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
+		versamento.setCodVersamentoEnte(idPendenza);
+		versamento.setDataScadenza(pendenza.getDataScadenza());
+		versamento.setDataValidita(pendenza.getDataValidita());
+		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
+		versamento.setImportoTotale(pendenza.getImporto());
+
+		// voci pagamento
+		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+
+		return versamento;
+	}
+	
 	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(Pendenza pendenza) {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
@@ -159,13 +183,12 @@ public class PagamentiPortaleConverter {
 		versamento.setNome(pendenza.getNome());
 
 		// voci pagamento
-		fillSingoliVersamentiFromVociPendenza(versamento, pendenza);
+		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
 
 		return versamento;
 	}
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, Pendenza pendenza) {
-		List<VocePendenza> voci = pendenza.getVoci();
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
 
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {

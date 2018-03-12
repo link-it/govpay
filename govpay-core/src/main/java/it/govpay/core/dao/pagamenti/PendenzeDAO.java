@@ -11,11 +11,16 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
+import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
 
 public class PendenzeDAO{
@@ -88,4 +93,27 @@ public class PendenzeDAO{
 		}
 		return response;
 	}
+	
+	
+	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws PendenzaNonTrovataException, GovPayException{
+		PutPendenzaDTOResponse dominioDTOResponse = new PutPendenzaDTOResponse();
+		BasicBD bd = null;
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
+			
+			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
+			
+			versamentoBusiness.caricaVersamento(chiediVersamento, false, true);
+
+		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		return dominioDTOResponse;
+	}
+
 }
