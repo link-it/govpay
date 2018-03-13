@@ -9,6 +9,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.core.rs.v1.beans.Riscossione;
 import it.govpay.core.rs.v1.beans.base.Allegato;
 import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
+import it.govpay.core.rs.v1.beans.base.TipoRiscossione;
 import it.govpay.core.rs.v1.beans.base.Allegato.TipoEnum;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Pagamento.Stato;
@@ -39,6 +40,12 @@ public class RiscossioniConverter {
 				break;
 			default:
 				break;
+			}
+			
+			if(input.getIbanAccredito()!=null) {
+				rsModel.setTipo(TipoRiscossione.MBT);
+			} else {
+				rsModel.setTipo(TipoRiscossione.ENTRATA);
 			}
 			
 			rsModel.setCommissioni(input.getCommissioniPsp());

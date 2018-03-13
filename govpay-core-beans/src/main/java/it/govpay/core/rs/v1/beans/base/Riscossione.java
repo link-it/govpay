@@ -4,6 +4,7 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 import it.govpay.core.rs.v1.beans.base.Allegato;
 import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
+import it.govpay.core.rs.v1.beans.base.TipoRiscossione;
 import java.math.BigDecimal;
 import java.util.Date;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -15,6 +16,7 @@ import java.util.Date;
 "idVocePendenza",
 "rpp",
 "stato",
+"tipo",
 "importo",
 "ibanAccredito",
 "data",
@@ -46,6 +48,9 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("stato")
   private StatoRiscossione stato = null;
+  
+  @JsonProperty("tipo")
+  private TipoRiscossione tipo = null;
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
@@ -190,6 +195,21 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public Riscossione tipo(TipoRiscossione tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+
+  @JsonProperty("tipo")
+  public TipoRiscossione getTipo() {
+    return tipo;
+  }
+  public void setTipo(TipoRiscossione tipo) {
+    this.tipo = tipo;
+  }
+
+  /**
    * Importo riscosso. 
    **/
   public Riscossione importo(BigDecimal importo) {
@@ -285,6 +305,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(idVocePendenza, riscossione.idVocePendenza) &&
         Objects.equals(rpp, riscossione.rpp) &&
         Objects.equals(stato, riscossione.stato) &&
+        Objects.equals(tipo, riscossione.tipo) &&
         Objects.equals(importo, riscossione.importo) &&
         Objects.equals(ibanAccredito, riscossione.ibanAccredito) &&
         Objects.equals(data, riscossione.data) &&
@@ -294,7 +315,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, stato, importo, ibanAccredito, data, commissioni, allegato);
+    return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, stato, tipo, importo, ibanAccredito, data, commissioni, allegato);
   }
 
   public static Riscossione parse(String json) {
@@ -319,6 +340,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
