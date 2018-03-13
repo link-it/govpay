@@ -156,7 +156,7 @@ public class NotificaClient extends BasicClient {
 						List<Riscossione> riscossioni = new ArrayList<Riscossione>();
 						int indice = 1;
 						String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(notifica.getApplicazione(bd).getCodApplicazione(), rpt.getVersamento(bd).getCodVersamentoEnte());
-						String urlRpt = UriBuilderUtils.getRptByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
+						String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 						for(Pagamento pagamento : rpt.getPagamenti(bd)) {
 							riscossioni.add(Gp21Utils.toRiscossione(pagamento, versione, bd,indice,urlPendenza,urlRpt));
 							indice ++;
