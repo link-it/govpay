@@ -19,12 +19,16 @@
  */
 package it.govpay.core.utils.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
@@ -34,6 +38,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
@@ -45,6 +50,7 @@ import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.pa.ObjectFactory;
 import it.govpay.servizi.pa.PaVerificaVersamento;
 import it.govpay.servizi.pa.PaVerificaVersamentoResponse;
+import net.sf.json.JsonConfig;
 
 public class VerificaClient extends BasicClient {
 
@@ -148,7 +154,20 @@ public class VerificaClient extends BasicClient {
 					throw new VersamentoSconosciutoException();
 				}
 			case REST:
+				List<Property> headerProperties = new ArrayList<Property>();
+				headerProperties.add(new Property("Accept", "application/json"));
+				headerProperties.add(new Property("Accept", "application/json"));
+				String jsonResponse = "";
+				String path = "/pendenze/" + codDominio + "/" + iuv; 
 				
+				try {
+					jsonResponse = new String(getJson(path, headerProperties));
+					JsonConfig jsonConfig = new JsonConfig();
+					Pendenza pendenza = (Pendenza) Pendenza.parse(jsonResponse, Pendenza.class, jsonConfig ); 
+					return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VersamentoUtils.getVersamentoFromPendenza(pendenza),bd); 	
+				}catch(Exception e) {
+					log.error("Errore durante l'esecuzione della GET ["+path+"]: "+e.getMessage(),e);
+				}
 				
 				return null;
 			default:

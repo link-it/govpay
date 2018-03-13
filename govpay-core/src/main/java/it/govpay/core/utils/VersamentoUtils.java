@@ -40,6 +40,10 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.rs.v1.beans.base.Pendenza;
+import it.govpay.core.rs.v1.beans.base.PendenzaPost;
+import it.govpay.core.rs.v1.beans.base.Soggetto;
+import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
@@ -410,5 +414,109 @@ public class VersamentoUtils {
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 		versamentoBusiness.caricaVersamento(applicazione, versamento, false, true);
 		return versamento;
+	}
+	
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) {
+		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
+
+		if(pendenza.getAnnoRiferimento() != null)
+			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
+
+		versamento.setCausale(pendenza.getCausale());
+		versamento.setCodApplicazione(ida2a);
+
+		versamento.setCodDominio(pendenza.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
+		versamento.setCodVersamentoEnte(idPendenza);
+		versamento.setDataScadenza(pendenza.getDataScadenza());
+		versamento.setDataValidita(pendenza.getDataValidita());
+		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
+		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setTassonomia(pendenza.getTassonomia());
+		versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
+
+		// voci pagamento
+		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+
+		return versamento;
+	}
+	
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(Pendenza pendenza) {
+		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
+
+		if(pendenza.getAnnoRiferimento() != null)
+			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
+
+		versamento.setCausale(pendenza.getCausale());
+		versamento.setCodApplicazione(pendenza.getIdA2A());
+
+		versamento.setCodDominio(pendenza.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
+		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
+		versamento.setDataScadenza(pendenza.getDataScadenza());
+		versamento.setDataValidita(pendenza.getDataValidita());
+		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
+		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setIuv(pendenza.getNumeroAvviso());
+		versamento.setNome(pendenza.getNome());
+
+		// voci pagamento
+		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+
+		return versamento;
+	}
+
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
+
+		if(voci != null && voci.size() > 0) {
+			for (VocePendenza vocePendenza : voci) {
+				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
+
+				//sv.setCodTributo(value); ??
+
+				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
+				sv.setNote(vocePendenza.getDescrizione());
+				sv.setImporto(vocePendenza.getImporto());
+
+				// Definisce i dati di un bollo telematico
+				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
+					it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico();
+					bollo.setHash(vocePendenza.getHashDocumento());
+					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
+					bollo.setTipo(vocePendenza.getTipoBollo());
+					sv.setBolloTelematico(bollo);
+				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+					sv.setCodTributo(vocePendenza.getCodEntrata());
+
+				} else { // Definisce i dettagli di incasso della singola entrata.
+					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
+					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
+					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
+					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita()));
+					sv.setTributo(tributo);
+				}
+
+				versamento.getSingoloVersamento().add(sv);
+			}
+		}
+	}
+	
+	public static it.govpay.core.dao.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
+		it.govpay.core.dao.commons.Anagrafica anagraficaCommons = null;
+		if(anagraficaRest != null) {
+			anagraficaCommons = new it.govpay.core.dao.commons.Anagrafica();
+			anagraficaCommons.setCap(anagraficaRest.getCap());
+			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
+			anagraficaCommons.setCivico(anagraficaRest.getCivico());
+			anagraficaCommons.setCodUnivoco(anagraficaRest.getIdentificativo());
+			anagraficaCommons.setEmail(anagraficaRest.getEmail());
+			anagraficaCommons.setIndirizzo(anagraficaRest.getIndirizzo());
+			anagraficaCommons.setLocalita(anagraficaRest.getLocalita());
+			anagraficaCommons.setNazione(anagraficaRest.getNazione());
+			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
+			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
+		}
+
+		return anagraficaCommons;
 	}
 }

@@ -304,7 +304,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
     public Response pendenzeIdDominioIuvGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
     	//client
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented [CLIENT]" ).build();
     }
 	
 }

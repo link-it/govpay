@@ -163,7 +163,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 
     public Response pagamentiIdDominioIuvPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
     	//client
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented [CLIENT]" ).build();
     }
 
 

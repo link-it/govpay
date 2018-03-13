@@ -364,12 +364,16 @@ public class BasicClient {
 		
 	}
 	
+	public byte[] getJson(String path, List<Property> headerProperties) throws ClientException {
+		return handleJsonRequest(path, null, headerProperties, "GET", null);
+	}
+	
 	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties) throws ClientException {
-		return sendJson(path, jsonBody, headerProperties, true);
+		return handleJsonRequest(path, jsonBody, headerProperties, "POST", "application/json");
 	}
 
-	
-	private byte[] sendJson(String azione, String jsonBody, List<Property> headerProperties, boolean isAzioneInUrl) throws ClientException {
+	private byte[] handleJsonRequest(String path, String jsonBody, List<Property> headerProperties, 
+			String httpMethod, String contentType) throws ClientException {
 
 		// Creazione Connessione
 		int responseCode;
@@ -377,29 +381,28 @@ public class BasicClient {
 		byte[] msg = null;
 		GpContext ctx = GpThreadLocal.get();
 		String urlString = url.toExternalForm();
-		if(isAzioneInUrl) {
-			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
-			try {
-				// elimino la possibilita' di avere due '/'
-				azione = azione.startsWith("/") ? azione.substring(1) : azione;
-				url = new URL(urlString.concat(azione));
-				log.debug("La richiesta sara' spedita alla URL: ["+url+"].");
-			} catch (MalformedURLException e) {
-				throw new ClientException("Url di connessione malformata: " + urlString.concat(azione), e);
-			}
-		} 
+		if(!urlString.endsWith("/")) urlString = urlString.concat("/");
+		try {
+			// elimino la possibilita' di avere due '/'
+			path = path.startsWith("/") ? path.substring(1) : path;
+			url = new URL(urlString.concat(path));
+			log.debug("La richiesta sara' spedita alla URL: ["+url+"].");
+		} catch (MalformedURLException e) {
+			throw new ClientException("Url di connessione malformata: " + urlString.concat(path), e);
+		}
 	
 		try {
 			Message requestMsg = new Message();
 			requestMsg.setType(MessageType.REQUEST_OUT);
 			
 			connection = (HttpURLConnection) url.openConnection();
-			connection.setDoOutput(true);
-			connection.setRequestProperty("Accept", "application/json");
-			requestMsg.addHeader(new Property("Accept", "application/json"));
-			requestMsg.setContentType("application/json");
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestMethod("POST");
+			if(httpMethod.equals("POST"))
+				connection.setDoOutput(true);
+			if(contentType != null) {
+				requestMsg.setContentType(contentType);
+				connection.setRequestProperty("Content-Type", contentType);
+			}
+			connection.setRequestMethod(httpMethod);
 			
 			if(headerProperties!= null  && headerProperties.size() > 0) {
 				for (Property prop : headerProperties) {
@@ -424,7 +427,8 @@ public class BasicClient {
 				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
 			}
 			
-			ctx.getIntegrationCtx().setMsg(jsonBody.getBytes());
+			
+			ctx.getIntegrationCtx().setMsg(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
 			invokeOutHandlers();
 			
 			if(log.isTraceEnabled()) {
@@ -442,7 +446,8 @@ public class BasicClient {
 			ctx.getContext().getRequest().setOutSize(Long.valueOf(ctx.getIntegrationCtx().getMsg().length));
 			ctx.log(requestMsg);
 			
-			connection.getOutputStream().write(ctx.getIntegrationCtx().getMsg());
+			if(httpMethod.equals("POST"))
+				connection.getOutputStream().write(ctx.getIntegrationCtx().getMsg());
 	
 		} catch (Exception e) {
 			throw new ClientException(e);

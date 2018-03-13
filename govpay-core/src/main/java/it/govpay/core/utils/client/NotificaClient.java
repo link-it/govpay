@@ -131,8 +131,9 @@ public class NotificaClient extends BasicClient {
 				return;
 			}
 			case REST:
-				log.debug("Utilizzo il connettore REST per la spedizione della notifica.");
-				List<Property> headerProperties = null;
+				List<Property> headerProperties = new ArrayList<Property>();
+				headerProperties.add(new Property("Accept", "application/json"));
+				headerProperties.add(new Property("Accept", "application/json"));
 				String jsonBody = "";
 				String path = "";
 				
@@ -170,9 +171,7 @@ public class NotificaClient extends BasicClient {
 				} else {
 					throw new ServiceException("Notifica Storno REST non implementata!");
 				}
-				log.debug("Notifica: ["+jsonBody+"]");
 				sendJson(path, jsonBody, headerProperties);
-				log.debug("Invio notifica completato.");
 				break;
 		}
 		
