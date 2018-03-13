@@ -1,7 +1,5 @@
 package it.govpay.rs.v1.controllers.base;
 
-import java.io.ByteArrayOutputStream;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -9,15 +7,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
-import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
-import it.govpay.core.dao.pagamenti.AvvisiDAO;
-import it.govpay.core.dao.pagamenti.exception.AvvisoNonTrovatoException;
-import it.govpay.core.rs.v1.beans.Avviso;
-import it.govpay.core.rs.v1.beans.FaultBean;
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 
 public class AvvisiController extends it.govpay.rs.BaseController {
@@ -30,7 +19,7 @@ public class AvvisiController extends it.govpay.rs.BaseController {
 
     public Response avvisiIdDominioIuvGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-//    	String methodName = "dominiIdDominioAvvisoAccreditoAvvisoAccreditoGET";  
+//    	String methodName = "avvisiIdDominioIuvGET";  
 //		GpContext ctx = null;
 //		ByteArrayOutputStream baos= null;
 //		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -54,7 +43,7 @@ public class AvvisiController extends it.govpay.rs.BaseController {
 //			
 //			// CONVERT TO JSON DELLA RISPOSTA
 //			
-//			Avviso response = null;//new it.govpay.rs.v1.beans.Avviso(getAvvisoDTOResponse.getAvviso());
+//			Avviso response = AvvisiConverter.toRsModel(getAvvisoDTOResponse);
 //			
 //			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 //			this.log.info("Esecuzione " + methodName + " completata."); 

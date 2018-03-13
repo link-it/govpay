@@ -24,7 +24,7 @@ public class PendenzeConverter {
 		
 		if(versamento.getCausaleVersamento()!= null)
 			try {
-				rsModel.setCausale(versamento.getCausaleVersamento().encode());
+				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
 			} catch (UnsupportedEncodingException e) {
 				throw new ServiceException(e);
 			}

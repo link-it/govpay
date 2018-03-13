@@ -62,7 +62,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr(), leggiRendicontazioneDTOResponse.getRendicontazioni()); 
+			FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr()); 
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

@@ -13,7 +13,7 @@ import javax.ws.rs.core.UriBuilder;
  */
 public class UriBuilderUtils {
 	
-	public static String getRptByDominioIuvCcp(String idDominio,String iuv, String ccp) {
+	public static String getRppByDominioIuvCcp(String idDominio,String iuv, String ccp) {
 		return getListRpp().path(idDominio).path(iuv).path(ccp).build().toString(); 
 	}
 
@@ -122,7 +122,8 @@ public class UriBuilderUtils {
 	}
 	
 	private static UriBuilder getBasePath() {
-		return UriBuilder.fromPath("/");
+		UriBuilder fromPath = UriBuilder.fromPath("/");
+		return fromPath;
 	}
 
 	private static UriBuilder getList(UriBuilder base, String type) {
@@ -137,5 +138,4 @@ public class UriBuilderUtils {
 		return getListDomini().queryParam("idStazione", codStazione).build().toString();
 	}
 	
-
 }

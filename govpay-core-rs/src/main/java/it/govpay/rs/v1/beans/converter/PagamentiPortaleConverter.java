@@ -166,6 +166,8 @@ public class PagamentiPortaleConverter {
 		versamento.setDataValidita(pendenza.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setTassonomia(pendenza.getTassonomia());
+		versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
