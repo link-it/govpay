@@ -80,7 +80,7 @@ public class InviaNotificaThread implements Runnable {
 		GpContext ctx = null;
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			
 			if(notifica.getIdRpt() != null) {
 				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
 					ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRpt());
@@ -114,7 +114,7 @@ public class InviaNotificaThread implements Runnable {
 					ctx.log("notifica.er");
 			}
 			GpThreadLocal.set(ctx);
-			
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			ctx.setupPaClient(notifica.getApplicazione(bd).getCodApplicazione(), notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getConnettoreNotifica().getVersione());
 					

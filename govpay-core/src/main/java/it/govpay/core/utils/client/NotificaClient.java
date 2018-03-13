@@ -131,13 +131,14 @@ public class NotificaClient extends BasicClient {
 				return;
 			}
 			case REST:
+				log.debug("Utilizzo il connettore REST per la spedizione della notifica.");
 				List<Property> headerProperties = null;
 				String jsonBody = "";
 				String path = "";
 				
 				if(notifica.getIdRr() == null) {
 					Rpt rpt = notifica.getRpt(null);
-					path = "/" + rpt.getCodDominio() + "/"+ rpt.getIuv();
+					path = "/pagamenti/" + rpt.getCodDominio() + "/"+ rpt.getIuv();
 					
 					it.govpay.core.rs.v1.beans.base.Notifica notificaRsModel = new it.govpay.core.rs.v1.beans.base.Notifica();
 					notificaRsModel.setIdA2A(notifica.getApplicazione(bd).getCodApplicazione());
@@ -163,12 +164,15 @@ public class NotificaClient extends BasicClient {
 						}
 						notificaRsModel.setRiscossioni(riscossioni);
 					}
-						
+					
+					jsonBody = notificaRsModel.toJSON(null);
+					
 				} else {
 					throw new ServiceException("Notifica Storno REST non implementata!");
 				}
-				
+				log.debug("Notifica: ["+jsonBody+"]");
 				sendJson(path, jsonBody, headerProperties);
+				log.debug("Invio notifica completato.");
 				break;
 		}
 		

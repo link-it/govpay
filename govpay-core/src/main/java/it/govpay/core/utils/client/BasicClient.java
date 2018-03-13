@@ -383,6 +383,7 @@ public class BasicClient {
 				// elimino la possibilita' di avere due '/'
 				azione = azione.startsWith("/") ? azione.substring(1) : azione;
 				url = new URL(urlString.concat(azione));
+				log.debug("La richiesta sara' spedita alla URL: ["+url+"].");
 			} catch (MalformedURLException e) {
 				throw new ClientException("Url di connessione malformata: " + urlString.concat(azione), e);
 			}
