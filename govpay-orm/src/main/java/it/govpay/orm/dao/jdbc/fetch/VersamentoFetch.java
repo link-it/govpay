@@ -114,6 +114,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_anno_tributario", Versamento.model().COD_ANNO_TRIBUTARIO.getFieldType()));
 				setParameter(object, "setCodBundlekey", Versamento.model().COD_BUNDLEKEY.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_bundlekey", Versamento.model().COD_BUNDLEKEY.getFieldType()));
+				setParameter(object, "setDatiAllegati", Versamento.model().DATI_ALLEGATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_allegati", Versamento.model().DATI_ALLEGATI.getFieldType()));
 				return object;
 			}
 			
@@ -196,6 +198,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codAnnoTributario"));
 				setParameter(object, "setCodBundlekey", Versamento.model().COD_BUNDLEKEY.getFieldType(),
 					this.getObjectFromMap(map,"codBundlekey"));
+				setParameter(object, "setDatiAllegati", Versamento.model().DATI_ALLEGATI.getFieldType(),
+					this.getObjectFromMap(map,"datiAllegati"));
 				return object;
 			}
 			

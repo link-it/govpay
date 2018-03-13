@@ -319,6 +319,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_bundlekey";
 			}
 		}
+		if(field.equals(Versamento.model().DATI_ALLEGATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_allegati";
+			}else{
+				return "dati_allegati";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -438,6 +445,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().COD_BUNDLEKEY)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DATI_ALLEGATI)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

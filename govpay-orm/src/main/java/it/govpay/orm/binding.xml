@@ -483,6 +483,7 @@
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
     <value name="codBundlekey" field="codBundlekey" usage="optional"/>
+    <value name="datiAllegati" field="datiAllegati" usage="optional"/>
   </mapping>
   <mapping name="Evento" class="it.govpay.orm.Evento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -519,7 +520,8 @@
     <structure name="idIbanAccredito" field="idIbanAccredito" usage="optional" map-as="_IdIbanAccredito_Type"/>
     <value name="tipoContabilita" field="tipoContabilita" usage="optional"/>
     <value name="codiceContabilita" field="codiceContabilita" usage="optional"/>
-    <value name="note" field="note" usage="optional"/>
+    <value name="descrizione" field="descrizione" usage="optional"/>
+    <value name="datiAllegati" field="datiAllegati" usage="optional"/>
   </mapping>
   <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

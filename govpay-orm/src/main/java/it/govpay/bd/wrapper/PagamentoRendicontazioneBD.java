@@ -158,7 +158,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			lstReturnType.add(SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType());
 			lstReturnType.add(SingoloVersamento.model().TIPO_CONTABILITA.getFieldType());
 			lstReturnType.add(SingoloVersamento.model().CODICE_CONTABILITA.getFieldType());
-			lstReturnType.add(SingoloVersamento.model().NOTE.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().DATI_ALLEGATI.getFieldType());
 			lstReturnType.add(Long.class); //id
 			lstReturnType.add(Long.class); //id_versamento
 			lstReturnType.add(Long.class); //id_tributo

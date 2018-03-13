@@ -56,6 +56,8 @@ public class PagamentoFilter extends AbstractFilter {
 	private String codSingoloVersamentoEnte = null;
 	private String iur;
 	private String iuv;
+	private String idA2A;
+	private String tipo;
 
 	public enum SortFields {
 		DATA
@@ -95,6 +97,22 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.equals(new CustomField("id_rpt", Long.class, "id_rpt", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRpt());
 				addAnd = true;
 			}
+
+			if(this.idA2A != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.idA2A);
+				addAnd = true;
+			}
+
+//			if(this.tipo != null) {
+//				if(addAnd)
+//					newExpression.and();
+//
+//				newExpression.equals(Pagamento.model().STATO, this.tipo);
+//				addAnd = true;
+//			}
 
 			if(this.getIdIncasso() != null) {
 				if(addAnd)
@@ -363,6 +381,22 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setDataPagamentoRitardoIncasso(Date dataPagamentoRitardoIncasso) {
 		this.dataPagamentoRitardoIncasso = dataPagamentoRitardoIncasso;
+	}
+
+	public String getIdA2A() {
+		return idA2A;
+	}
+
+	public void setIdA2A(String idA2A) {
+		this.idA2A = idA2A;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 }

@@ -53,7 +53,8 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.ID_IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new Field("idIbanAccredito",it.govpay.orm.IdIbanAccredito.class,"SingoloVersamento",SingoloVersamento.class));
 		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.CODICE_CONTABILITA = new Field("codiceContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
-		this.NOTE = new Field("note",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -73,7 +74,8 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.ID_IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new ComplexField(father,"idIbanAccredito",it.govpay.orm.IdIbanAccredito.class,"SingoloVersamento",SingoloVersamento.class));
 		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.CODICE_CONTABILITA = new ComplexField(father,"codiceContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
-		this.NOTE = new ComplexField(father,"note",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -103,7 +105,9 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 	 
 	public IField CODICE_CONTABILITA = null;
 	 
-	public IField NOTE = null;
+	public IField DESCRIZIONE = null;
+	 
+	public IField DATI_ALLEGATI = null;
 	 
 
 	@Override

@@ -1292,6 +1292,15 @@
 			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
 			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
 			<xsd:element name="codBundlekey" type="String256" minOccurs="0"/>
+			<xsd:element name="datiAllegati" type="String1024" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -1416,7 +1425,16 @@
 			</xsd:element>
 			<xsd:element name="tipoContabilita" type="String1" minOccurs="0"/>
 			<xsd:element name="codiceContabilita" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="note" type="String512" minOccurs="0"/>
+			<xsd:element name="descrizione" type="String256" minOccurs="0"/>
+			<xsd:element name="datiAllegati" type="String1024" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

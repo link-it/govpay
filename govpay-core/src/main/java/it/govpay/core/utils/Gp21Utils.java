@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.xerces.impl.dv.util.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -36,6 +37,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
+import it.govpay.core.rs.v1.beans.base.Allegato.TipoEnum;
 import it.govpay.model.Iuv;
 import it.govpay.model.Versionabile;
 import it.govpay.model.Versionabile.Versione;
@@ -385,10 +387,10 @@ public class Gp21Utils {
 		it.govpay.core.rs.v1.beans.base.Riscossione riscossione = new it.govpay.core.rs.v1.beans.base.Riscossione();
 
 		if(pagamento.getAllegato() != null) {
-			Allegato allegato = new Allegato();
-			allegato.setTesto(pagamento.getAllegato());
-			allegato.setTipo(TipoAllegato.valueOf(pagamento.getTipoAllegato().toString()));
-//			riscossione.setAllegato(allegato); //TODO
+			it.govpay.core.rs.v1.beans.base.Allegato allegato = new it.govpay.core.rs.v1.beans.base.Allegato();
+			allegato.setTesto(Base64.encode(pagamento.getAllegato()));
+			allegato.setTipo(TipoEnum.valueOf(pagamento.getTipoAllegato().toString()));
+			riscossione.setAllegato(allegato);
 		}
 		
 		riscossione.setIndice(new BigDecimal(idx));

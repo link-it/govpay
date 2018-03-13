@@ -177,8 +177,10 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.TIPO_CONTABILITA.getFieldType()));
 				setParameter(object, "setCodiceContabilita", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.CODICE_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "codice_contabilita", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.CODICE_CONTABILITA.getFieldType()));
-				setParameter(object, "setNote", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.NOTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "note", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.NOTE.getFieldType()));
+				setParameter(object, "setDescrizione", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DESCRIZIONE.getFieldType()));
+				setParameter(object, "setDatiAllegati", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DATI_ALLEGATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_allegati", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DATI_ALLEGATI.getFieldType()));
 				return object;
 			}
 			if(model.equals(RendicontazionePagamento.model().VERSAMENTO)){
@@ -245,6 +247,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_anno_tributario", RendicontazionePagamento.model().VERSAMENTO.COD_ANNO_TRIBUTARIO.getFieldType()));
 				setParameter(object, "setCodBundlekey", RendicontazionePagamento.model().VERSAMENTO.COD_BUNDLEKEY.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_bundlekey", RendicontazionePagamento.model().VERSAMENTO.COD_BUNDLEKEY.getFieldType()));
+				setParameter(object, "setDatiAllegati", RendicontazionePagamento.model().VERSAMENTO.DATI_ALLEGATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_allegati", RendicontazionePagamento.model().VERSAMENTO.DATI_ALLEGATI.getFieldType()));
 				return object;
 			}
 			
@@ -329,6 +333,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Pagamento.codDominio"));
 				setParameter(object, "setIuv", RendicontazionePagamento.model().PAGAMENTO.IUV.getFieldType(),
 					this.getObjectFromMap(map,"Pagamento.iuv"));
+				setParameter(object, "setIndiceDati", RendicontazionePagamento.model().PAGAMENTO.INDICE_DATI.getFieldType(),
+					this.getObjectFromMap(map,"Pagamento.indiceDati"));
 				setParameter(object, "setImportoPagato", RendicontazionePagamento.model().PAGAMENTO.IMPORTO_PAGATO.getFieldType(),
 					this.getObjectFromMap(map,"Pagamento.importoPagato"));
 				setParameter(object, "setDataAcquisizione", RendicontazionePagamento.model().PAGAMENTO.DATA_ACQUISIZIONE.getFieldType(),
@@ -357,6 +363,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Pagamento.esitoRevoca"));
 				setParameter(object, "setDatiEsitoRevoca", RendicontazionePagamento.model().PAGAMENTO.DATI_ESITO_REVOCA.getFieldType(),
 					this.getObjectFromMap(map,"Pagamento.datiEsitoRevoca"));
+				setParameter(object, "setStato", RendicontazionePagamento.model().PAGAMENTO.STATO.getFieldType(),
+					this.getObjectFromMap(map,"Pagamento.stato"));
 				return object;
 			}
 			if(model.equals(RendicontazionePagamento.model().SINGOLO_VERSAMENTO)){
@@ -381,8 +389,10 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"SingoloVersamento.tipoContabilita"));
 				setParameter(object, "setCodiceContabilita", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.CODICE_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"SingoloVersamento.codiceContabilita"));
-				setParameter(object, "setNote", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.NOTE.getFieldType(),
-					this.getObjectFromMap(map,"SingoloVersamento.note"));
+				setParameter(object, "setDescrizione", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"SingoloVersamento.descrizione"));
+				setParameter(object, "setDatiAllegati", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DATI_ALLEGATI.getFieldType(),
+					this.getObjectFromMap(map,"SingoloVersamento.datiAllegati"));
 				return object;
 			}
 			if(model.equals(RendicontazionePagamento.model().VERSAMENTO)){
@@ -449,6 +459,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Versamento.codAnnoTributario"));
 				setParameter(object, "setCodBundlekey", RendicontazionePagamento.model().VERSAMENTO.COD_BUNDLEKEY.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.codBundlekey"));
+				setParameter(object, "setDatiAllegati", RendicontazionePagamento.model().VERSAMENTO.DATI_ALLEGATI.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.datiAllegati"));
 				return object;
 			}
 			
