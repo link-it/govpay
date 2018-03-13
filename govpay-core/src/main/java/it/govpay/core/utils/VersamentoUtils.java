@@ -42,7 +42,9 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
+import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.base.Soggetto;
+import it.govpay.core.rs.v1.beans.base.StatoPendenza;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
@@ -439,6 +441,57 @@ public class VersamentoUtils {
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
 
+		return versamento;
+	}
+	
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) {
+		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
+		
+		if(pendenzaVerificata.getAnnoRiferimento() != null)
+			versamento.setAnnoTributario(pendenzaVerificata.getAnnoRiferimento().intValue());
+
+		versamento.setCausale(pendenzaVerificata.getCausale());
+		versamento.setCodApplicazione(pendenzaVerificata.getIdA2A());
+
+		versamento.setCodDominio(pendenzaVerificata.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenzaVerificata.getIdUnitaOperativa());
+		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
+		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza());
+		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
+		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));
+		versamento.setImportoTotale(pendenzaVerificata.getImporto());
+		if(pendenzaVerificata.getNumeroAvviso()!=null)
+			versamento.setIuv(pendenzaVerificata.getNumeroAvviso().toPlainString());
+		pendenzaVerificata.getCartellaPagamento();
+		pendenzaVerificata.getDatiAllegati();
+		pendenzaVerificata.getImporto();
+		pendenzaVerificata.getTassonomia();
+		pendenzaVerificata.getTassonomiaAvviso();
+		
+		
+//		versamento.setNome(pendenzaVerificata.getNome());
+		
+		StatoPendenza statoPendenza = pendenzaVerificata.getStato();
+		if(statoPendenza != null) {
+			switch (statoPendenza) { 
+			case ANNULLATO:
+//				versamento.set
+				break;
+			case ESEGUITO:
+				break;
+			case ESEGUITO_PARZIALE:
+				break;
+			case NON_ESEGUITO:
+				break;
+			case SCADUTO:
+			default:
+				break;
+			}
+		}
+
+		// voci pagamento
+		fillSingoliVersamentiFromVociPendenza(versamento, pendenzaVerificata.getVoci());
+		
 		return versamento;
 	}
 	

@@ -39,6 +39,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.rs.v1.beans.base.Pendenza;
+import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
@@ -163,8 +164,14 @@ public class VerificaClient extends BasicClient {
 				try {
 					jsonResponse = new String(getJson(path, headerProperties));
 					JsonConfig jsonConfig = new JsonConfig();
-					Pendenza pendenza = (Pendenza) Pendenza.parse(jsonResponse, Pendenza.class, jsonConfig ); 
-					return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VersamentoUtils.getVersamentoFromPendenza(pendenza),bd); 	
+					PendenzaVerificata pendenzaVerificata = (PendenzaVerificata) PendenzaVerificata.parse(jsonResponse, PendenzaVerificata.class, jsonConfig ); 
+					return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VersamentoUtils.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd); 	
+				}catch(ClientException e) {
+					log.error("Errore durante l'esecuzione della GET ["+path+"]: "+e.getMessage(),e);
+					if(e.getResponseCode() != null) { // chiamata terminata con un response code > 299
+						
+					}
+					
 				}catch(Exception e) {
 					log.error("Errore durante l'esecuzione della GET ["+path+"]: "+e.getMessage(),e);
 				}

@@ -66,7 +66,23 @@ public class BasicClient {
 	
 	public class ClientException extends Exception {
 		private static final long serialVersionUID = 1L;
+		private Integer responseCode = null;
 
+		public ClientException(String message, Exception e, Integer responseCode) {
+			super(message, e);
+			this.responseCode = responseCode;
+		}
+
+		public ClientException(Exception e, Integer responseCode) {
+			super(e);
+			this.responseCode = responseCode;
+		}
+
+		public ClientException(String string, Integer responseCode) {
+			super(string);
+			this.responseCode = responseCode;
+		}
+		
 		public ClientException(String message, Exception e) {
 			super(message, e);
 		}
@@ -77,6 +93,10 @@ public class BasicClient {
 
 		public ClientException(String string) {
 			super(string);
+		}
+		
+		public Integer getResponseCode() {
+			return this.responseCode;
 		}
 	}
 	
@@ -328,7 +348,7 @@ public class BasicClient {
 						responseMsg.setContent(msg);
 					return msg;
 				} catch (Exception e) {
-					throw new ClientException("Messaggio di risposta non valido", e);
+					throw new ClientException("Messaggio di risposta non valido", e,responseCode);
 				}
 			} else {
 				try {
@@ -340,7 +360,7 @@ public class BasicClient {
 					log.warn("Errore nell'invocazione del Nodo dei Pagamenti [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 				}
 				
-				throw new ClientException("Ricevuto [HTTP " + responseCode + "]");
+				throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode);
 			}
 		} finally {
 			if(responseMsg != null) {
@@ -485,7 +505,7 @@ public class BasicClient {
 						responseMsg.setContent(msg);
 					return msg;
 				} catch (Exception e) {
-					throw new ClientException("Messaggio di risposta non valido", e);
+					throw new ClientException("Messaggio di risposta non valido", e,responseCode);
 				}
 			} else {
 				try {
@@ -497,7 +517,7 @@ public class BasicClient {
 					log.warn("Errore nell'invocazione del Nodo dei Pagamenti [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 				}
 				
-				throw new ClientException("Ricevuto [HTTP " + responseCode + "]");
+				throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode);
 			}
 		} finally {
 			if(responseMsg != null) {
