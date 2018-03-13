@@ -172,7 +172,8 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 			fields.add(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.PROVINCIA_RESIDENZA);
 			fields.add(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.TIPO_CONTABILITA);
 			fields.add(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.CODICE_CONTABILITA);
-			fields.add(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.NOTE);
+			fields.add(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DESCRIZIONE);
+			fields.add(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DATI_ALLEGATI);
 
 			fields.add(new CustomField("Versamento.id", Long.class, "id", this.getFieldConverter().toTable(RendicontazionePagamento.model().VERSAMENTO)));
 			fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getFieldConverter().toTable(RendicontazionePagamento.model().VERSAMENTO)));
@@ -198,6 +199,7 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.COD_VERSAMENTO_LOTTO);
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.COD_ANNO_TRIBUTARIO);
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.COD_BUNDLEKEY);
+			fields.add(RendicontazionePagamento.model().VERSAMENTO.DATI_ALLEGATI);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
