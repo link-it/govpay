@@ -175,3 +175,8 @@ ALTER TABLE domini DROP COLUMN riuso_iuv;
 ALTER TABLE iban_accredito DROP COLUMN id_seller_bank;
 ALTER TABLE iban_accredito DROP COLUMN id_negozio;
 ALTER TABLE applicazioni DROP COLUMN versione;
+
+ALTER TABLE versamenti add COLUMN dati_allegati TEXT;
+ALTER TABLE singoli_versamenti add COLUMN dati_allegati TEXT;
+ALTER TABLE singoli_versamenti add COLUMN descrizione VARCHAR(256);
+ALTER TABLE singoli_versamenti drop column note;

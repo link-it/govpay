@@ -388,6 +388,7 @@ CREATE TABLE versamenti
 	cod_versamento_lotto VARCHAR(35),
 	cod_anno_tributario VARCHAR(35),
 	cod_bundlekey VARCHAR(256),
+	dati_allegati TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_dominio BIGINT NOT NULL,
@@ -421,7 +422,8 @@ CREATE TABLE singoli_versamenti
 	provincia_residenza VARCHAR(2),
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
-	note VARCHAR(512),
+	descrizione VARCHAR(256),
+	dati_allegati TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_singoli_versamenti') NOT NULL,
 	id_versamento BIGINT NOT NULL,

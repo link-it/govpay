@@ -570,6 +570,7 @@ CREATE TABLE versamenti
 	cod_versamento_lotto VARCHAR2(35 CHAR),
 	cod_anno_tributario VARCHAR2(35 CHAR),
 	cod_bundlekey VARCHAR2(256 CHAR),
+	dati_allegati CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -614,7 +615,8 @@ CREATE TABLE singoli_versamenti
 	provincia_residenza VARCHAR2(2 CHAR),
 	tipo_contabilita VARCHAR2(1 CHAR),
 	codice_contabilita VARCHAR2(255 CHAR),
-	note VARCHAR2(512 CHAR),
+	descrizione VARCHAR2(256 CHAR),
+	dati_allegati CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
