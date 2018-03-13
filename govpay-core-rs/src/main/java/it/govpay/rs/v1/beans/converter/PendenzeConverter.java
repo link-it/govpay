@@ -38,23 +38,23 @@ public class PendenzeConverter {
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNome(versamento.getNome());
-		rsModel.setNumeroAvviso(new BigDecimal(versamento.getIuvProposto()));
+		rsModel.setNumeroAvviso(versamento.getIuvProposto());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
 		
 		StatoPendenza statoPendenza = null;
 
 		switch(versamento.getStatoVersamento()) {
-		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATO;
+		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 			break;
-		case ANOMALO: statoPendenza = StatoPendenza.NON_ESEGUITO;
+		case ANOMALO: statoPendenza = StatoPendenza.NON_ESEGUITA;
 			break;
-		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITO;
+		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
 			break;
-		case ESEGUITO_SENZA_RPT:  statoPendenza = StatoPendenza.ESEGUITO;
+		case ESEGUITO_SENZA_RPT:  statoPendenza = StatoPendenza.ESEGUITA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTO;} else { statoPendenza = StatoPendenza.NON_ESEGUITO;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 			break;
-		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITO_PARZIALE;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
 			break;
 		default:
 			break;

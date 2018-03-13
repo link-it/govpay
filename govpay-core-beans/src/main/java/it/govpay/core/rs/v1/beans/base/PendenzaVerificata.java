@@ -1,23 +1,29 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.util.Objects;
+import org.codehaus.jackson.annotate.JsonProperty;
+import it.govpay.core.rs.v1.beans.base.PendenzaPut;
+import it.govpay.core.rs.v1.beans.base.Soggetto;
+import it.govpay.core.rs.v1.beans.base.StatoPendenzaVerificata;
+import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
+import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-
-import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idDominio",
 "idUnitaOperativa",
-"cartellaPagamento",
+"nome",
+"causale",
 "soggettoPagatore",
 "importo",
 "numeroAvviso",
-"causale",
+"dataCaricamento",
 "dataValidita",
 "dataScadenza",
 "annoRiferimento",
+"cartellaPagamento",
 "datiAllegati",
 "tassonomia",
 "tassonomiaAvviso",
@@ -25,6 +31,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "idA2A",
 "idPendenza",
 "stato",
+"descrizioneStato",
 })
 public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
@@ -34,8 +41,11 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
   @JsonProperty("idUnitaOperativa")
   private String idUnitaOperativa = null;
   
-  @JsonProperty("cartellaPagamento")
-  private String cartellaPagamento = null;
+  @JsonProperty("nome")
+  private String nome = null;
+  
+  @JsonProperty("causale")
+  private String causale = null;
   
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
@@ -44,10 +54,10 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
   private BigDecimal importo = null;
   
   @JsonProperty("numeroAvviso")
-  private BigDecimal numeroAvviso = null;
+  private String numeroAvviso = null;
   
-  @JsonProperty("causale")
-  private String causale = null;
+  @JsonProperty("dataCaricamento")
+  private Date dataCaricamento = null;
   
   @JsonProperty("dataValidita")
   private Date dataValidita = null;
@@ -57,6 +67,9 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
   
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
+  
+  @JsonProperty("cartellaPagamento")
+  private String cartellaPagamento = null;
   
   @JsonProperty("datiAllegati")
   private String datiAllegati = null;
@@ -77,7 +90,10 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
   private String idPendenza = null;
   
   @JsonProperty("stato")
-  private StatoPendenza stato = null;
+  private StatoPendenzaVerificata stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
   
   /**
    * Identificativo del dominio creditore
@@ -112,19 +128,35 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
   }
 
   /**
-   * Identificativo della cartella di pagamento a cui afferisce la pendenza
+   * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
    **/
-  public PendenzaVerificata cartellaPagamento(String cartellaPagamento) {
-    this.cartellaPagamento = cartellaPagamento;
+  public PendenzaVerificata nome(String nome) {
+    this.nome = nome;
     return this;
   }
 
-  @JsonProperty("cartellaPagamento")
-  public String getCartellaPagamento() {
-    return cartellaPagamento;
+  @JsonProperty("nome")
+  public String getNome() {
+    return nome;
   }
-  public void setCartellaPagamento(String cartellaPagamento) {
-    this.cartellaPagamento = cartellaPagamento;
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  /**
+   * Descrizione da inserire nell'avviso di pagamento
+   **/
+  public PendenzaVerificata causale(String causale) {
+    this.causale = causale;
+    return this;
+  }
+
+  @JsonProperty("causale")
+  public String getCausale() {
+    return causale;
+  }
+  public void setCausale(String causale) {
+    this.causale = causale;
   }
 
   /**
@@ -161,33 +193,33 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
   /**
    * Identificativo univoco versamento, assegnato se pagabile da psp
    **/
-  public PendenzaVerificata numeroAvviso(BigDecimal numeroAvviso) {
+  public PendenzaVerificata numeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
     return this;
   }
 
   @JsonProperty("numeroAvviso")
-  public BigDecimal getNumeroAvviso() {
+  public String getNumeroAvviso() {
     return numeroAvviso;
   }
-  public void setNumeroAvviso(BigDecimal numeroAvviso) {
+  public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
   }
 
   /**
-   * descrizione della causale del versamento.
+   * Data di emissione della pendenza
    **/
-  public PendenzaVerificata causale(String causale) {
-    this.causale = causale;
+  public PendenzaVerificata dataCaricamento(Date dataCaricamento) {
+    this.dataCaricamento = dataCaricamento;
     return this;
   }
 
-  @JsonProperty("causale")
-  public String getCausale() {
-    return causale;
+  @JsonProperty("dataCaricamento")
+  public Date getDataCaricamento() {
+    return dataCaricamento;
   }
-  public void setCausale(String causale) {
-    this.causale = causale;
+  public void setDataCaricamento(Date dataCaricamento) {
+    this.dataCaricamento = dataCaricamento;
   }
 
   /**
@@ -239,7 +271,23 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
   }
 
   /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
+   * Identificativo della cartella di pagamento a cui afferisce la pendenza
+   **/
+  public PendenzaVerificata cartellaPagamento(String cartellaPagamento) {
+    this.cartellaPagamento = cartellaPagamento;
+    return this;
+  }
+
+  @JsonProperty("cartellaPagamento")
+  public String getCartellaPagamento() {
+    return cartellaPagamento;
+  }
+  public void setCartellaPagamento(String cartellaPagamento) {
+    this.cartellaPagamento = cartellaPagamento;
+  }
+
+  /**
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.          
    **/
   public PendenzaVerificata datiAllegati(String datiAllegati) {
     this.datiAllegati = datiAllegati;
@@ -255,7 +303,7 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
   }
 
   /**
-   * Macro categoria della pendenza
+   * Macro categoria della pendenza secondo la classificazione del creditore
    **/
   public PendenzaVerificata tassonomia(String tassonomia) {
     this.tassonomia = tassonomia;
@@ -334,17 +382,33 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
 
   /**
    **/
-  public PendenzaVerificata stato(StatoPendenza stato) {
+  public PendenzaVerificata stato(StatoPendenzaVerificata stato) {
     this.stato = stato;
     return this;
   }
 
   @JsonProperty("stato")
-  public StatoPendenza getStato() {
+  public StatoPendenzaVerificata getStato() {
     return stato;
   }
-  public void setStato(StatoPendenza stato) {
+  public void setStato(StatoPendenzaVerificata stato) {
     this.stato = stato;
+  }
+
+  /**
+   * Informazioni addizionali sullo stato della pendenza
+   **/
+  public PendenzaVerificata descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
   }
 
   @Override
@@ -358,26 +422,29 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
     PendenzaVerificata pendenzaVerificata = (PendenzaVerificata) o;
     return Objects.equals(idDominio, pendenzaVerificata.idDominio) &&
         Objects.equals(idUnitaOperativa, pendenzaVerificata.idUnitaOperativa) &&
-        Objects.equals(cartellaPagamento, pendenzaVerificata.cartellaPagamento) &&
+        Objects.equals(nome, pendenzaVerificata.nome) &&
+        Objects.equals(causale, pendenzaVerificata.causale) &&
         Objects.equals(soggettoPagatore, pendenzaVerificata.soggettoPagatore) &&
         Objects.equals(importo, pendenzaVerificata.importo) &&
         Objects.equals(numeroAvviso, pendenzaVerificata.numeroAvviso) &&
-        Objects.equals(causale, pendenzaVerificata.causale) &&
+        Objects.equals(dataCaricamento, pendenzaVerificata.dataCaricamento) &&
         Objects.equals(dataValidita, pendenzaVerificata.dataValidita) &&
         Objects.equals(dataScadenza, pendenzaVerificata.dataScadenza) &&
         Objects.equals(annoRiferimento, pendenzaVerificata.annoRiferimento) &&
+        Objects.equals(cartellaPagamento, pendenzaVerificata.cartellaPagamento) &&
         Objects.equals(datiAllegati, pendenzaVerificata.datiAllegati) &&
         Objects.equals(tassonomia, pendenzaVerificata.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenzaVerificata.tassonomiaAvviso) &&
         Objects.equals(voci, pendenzaVerificata.voci) &&
         Objects.equals(idA2A, pendenzaVerificata.idA2A) &&
         Objects.equals(idPendenza, pendenzaVerificata.idPendenza) &&
-        Objects.equals(stato, pendenzaVerificata.stato);
+        Objects.equals(stato, pendenzaVerificata.stato) &&
+        Objects.equals(descrizioneStato, pendenzaVerificata.descrizioneStato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, cartellaPagamento, soggettoPagatore, importo, numeroAvviso, causale, dataValidita, dataScadenza, annoRiferimento, datiAllegati, tassonomia, tassonomiaAvviso, voci, idA2A, idPendenza, stato);
+    return Objects.hash(idDominio, idUnitaOperativa, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, idA2A, idPendenza, stato, descrizioneStato);
   }
 
   public static PendenzaVerificata parse(String json) {
@@ -396,14 +463,16 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
     
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
-    sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
-    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
+    sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
     sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
     sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
+    sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
@@ -411,6 +480,7 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

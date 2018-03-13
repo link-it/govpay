@@ -28,6 +28,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
      }
 
 
+
     public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
     	String methodName = "profiloGET";  
 		GpContext ctx = null;

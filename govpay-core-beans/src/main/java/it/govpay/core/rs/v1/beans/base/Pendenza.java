@@ -15,16 +15,18 @@ import java.util.List;
 "idPendenza",
 "dominio",
 "unitaOperativa",
-"soggettoPagatore",
 "stato",
+"nome",
+"causale",
+"soggettoPagatore",
 "importo",
 "numeroAvviso",
 "dataCaricamento",
 "dataValidita",
 "dataScadenza",
 "annoRiferimento",
-"nome",
-"causale",
+"cartellaPagamento",
+"datiAllegati",
 "tassonomia",
 "tassonomiaAvviso",
 "voci",
@@ -45,17 +47,23 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("unitaOperativa")
   private String unitaOperativa = null;
   
-  @JsonProperty("soggettoPagatore")
-  private Soggetto soggettoPagatore = null;
-  
   @JsonProperty("stato")
   private StatoPendenza stato = null;
+  
+  @JsonProperty("nome")
+  private String nome = null;
+  
+  @JsonProperty("causale")
+  private String causale = null;
+  
+  @JsonProperty("soggettoPagatore")
+  private Soggetto soggettoPagatore = null;
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
   
   @JsonProperty("numeroAvviso")
-  private BigDecimal numeroAvviso = null;
+  private String numeroAvviso = null;
   
   @JsonProperty("dataCaricamento")
   private Date dataCaricamento = null;
@@ -69,11 +77,11 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
   
-  @JsonProperty("nome")
-  private String nome = null;
+  @JsonProperty("cartellaPagamento")
+  private String cartellaPagamento = null;
   
-  @JsonProperty("causale")
-  private String causale = null;
+  @JsonProperty("datiAllegati")
+  private String datiAllegati = null;
   
   @JsonProperty("tassonomia")
   private String tassonomia = null;
@@ -156,21 +164,6 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Pendenza soggettoPagatore(Soggetto soggettoPagatore) {
-    this.soggettoPagatore = soggettoPagatore;
-    return this;
-  }
-
-  @JsonProperty("soggettoPagatore")
-  public Soggetto getSoggettoPagatore() {
-    return soggettoPagatore;
-  }
-  public void setSoggettoPagatore(Soggetto soggettoPagatore) {
-    this.soggettoPagatore = soggettoPagatore;
-  }
-
-  /**
-   **/
   public Pendenza stato(StatoPendenza stato) {
     this.stato = stato;
     return this;
@@ -182,6 +175,53 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
   public void setStato(StatoPendenza stato) {
     this.stato = stato;
+  }
+
+  /**
+   * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
+   **/
+  public Pendenza nome(String nome) {
+    this.nome = nome;
+    return this;
+  }
+
+  @JsonProperty("nome")
+  public String getNome() {
+    return nome;
+  }
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  /**
+   * Descrizione da inserire nell'avviso di pagamento
+   **/
+  public Pendenza causale(String causale) {
+    this.causale = causale;
+    return this;
+  }
+
+  @JsonProperty("causale")
+  public String getCausale() {
+    return causale;
+  }
+  public void setCausale(String causale) {
+    this.causale = causale;
+  }
+
+  /**
+   **/
+  public Pendenza soggettoPagatore(Soggetto soggettoPagatore) {
+    this.soggettoPagatore = soggettoPagatore;
+    return this;
+  }
+
+  @JsonProperty("soggettoPagatore")
+  public Soggetto getSoggettoPagatore() {
+    return soggettoPagatore;
+  }
+  public void setSoggettoPagatore(Soggetto soggettoPagatore) {
+    this.soggettoPagatore = soggettoPagatore;
   }
 
   /**
@@ -203,16 +243,16 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Identificativo univoco versamento, assegnato se pagabile da psp
    **/
-  public Pendenza numeroAvviso(BigDecimal numeroAvviso) {
+  public Pendenza numeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
     return this;
   }
 
   @JsonProperty("numeroAvviso")
-  public BigDecimal getNumeroAvviso() {
+  public String getNumeroAvviso() {
     return numeroAvviso;
   }
-  public void setNumeroAvviso(BigDecimal numeroAvviso) {
+  public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
   }
 
@@ -281,35 +321,35 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
+   * Identificativo della cartella di pagamento a cui afferisce la pendenza
    **/
-  public Pendenza nome(String nome) {
-    this.nome = nome;
+  public Pendenza cartellaPagamento(String cartellaPagamento) {
+    this.cartellaPagamento = cartellaPagamento;
     return this;
   }
 
-  @JsonProperty("nome")
-  public String getNome() {
-    return nome;
+  @JsonProperty("cartellaPagamento")
+  public String getCartellaPagamento() {
+    return cartellaPagamento;
   }
-  public void setNome(String nome) {
-    this.nome = nome;
+  public void setCartellaPagamento(String cartellaPagamento) {
+    this.cartellaPagamento = cartellaPagamento;
   }
 
   /**
-   * Descrizione da inserire nell'avviso di pagamento
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.          
    **/
-  public Pendenza causale(String causale) {
-    this.causale = causale;
+  public Pendenza datiAllegati(String datiAllegati) {
+    this.datiAllegati = datiAllegati;
     return this;
   }
 
-  @JsonProperty("causale")
-  public String getCausale() {
-    return causale;
+  @JsonProperty("datiAllegati")
+  public String getDatiAllegati() {
+    return datiAllegati;
   }
-  public void setCausale(String causale) {
-    this.causale = causale;
+  public void setDatiAllegati(String datiAllegati) {
+    this.datiAllegati = datiAllegati;
   }
 
   /**
@@ -403,16 +443,18 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(idPendenza, pendenza.idPendenza) &&
         Objects.equals(dominio, pendenza.dominio) &&
         Objects.equals(unitaOperativa, pendenza.unitaOperativa) &&
-        Objects.equals(soggettoPagatore, pendenza.soggettoPagatore) &&
         Objects.equals(stato, pendenza.stato) &&
+        Objects.equals(nome, pendenza.nome) &&
+        Objects.equals(causale, pendenza.causale) &&
+        Objects.equals(soggettoPagatore, pendenza.soggettoPagatore) &&
         Objects.equals(importo, pendenza.importo) &&
         Objects.equals(numeroAvviso, pendenza.numeroAvviso) &&
         Objects.equals(dataCaricamento, pendenza.dataCaricamento) &&
         Objects.equals(dataValidita, pendenza.dataValidita) &&
         Objects.equals(dataScadenza, pendenza.dataScadenza) &&
         Objects.equals(annoRiferimento, pendenza.annoRiferimento) &&
-        Objects.equals(nome, pendenza.nome) &&
-        Objects.equals(causale, pendenza.causale) &&
+        Objects.equals(cartellaPagamento, pendenza.cartellaPagamento) &&
+        Objects.equals(datiAllegati, pendenza.datiAllegati) &&
         Objects.equals(tassonomia, pendenza.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenza.tassonomiaAvviso) &&
         Objects.equals(voci, pendenza.voci) &&
@@ -422,7 +464,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, dominio, unitaOperativa, soggettoPagatore, stato, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, nome, causale, tassonomia, tassonomiaAvviso, voci, rpp, pagamenti);
+    return Objects.hash(idA2A, idPendenza, dominio, unitaOperativa, stato, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, rpp, pagamenti);
   }
 
   public static Pendenza parse(String json) {
@@ -443,16 +485,18 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");
-    sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
+    sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
     sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
     sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
     sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
-    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
-    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
+    sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
+    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");

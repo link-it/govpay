@@ -2,6 +2,7 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
+import it.govpay.core.rs.v1.beans.base.Allegato;
 import java.math.BigDecimal;
 import java.util.Date;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -11,7 +12,7 @@ import java.util.Date;
 "indice",
 "pendenza",
 "idVocePendenza",
-"rpt",
+"rpp",
 "importo",
 "ibanAccredito",
 "data",
@@ -38,8 +39,8 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
   
-  @JsonProperty("rpt")
-  private String rpt = null;
+  @JsonProperty("rpp")
+  private String rpp = null;
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
@@ -54,7 +55,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private BigDecimal commissioni = null;
   
   @JsonProperty("allegato")
-  private Object allegato = null;
+  private Allegato allegato = null;
   
   /**
    * Identificativo ente creditore
@@ -155,17 +156,17 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Url richiesta di pagamento che ha realizzato la riscossione. Se non valorizzato, si tratta di un pagamento senza RPT
    **/
-  public Riscossione rpt(String rpt) {
-    this.rpt = rpt;
+  public Riscossione rpp(String rpp) {
+    this.rpp = rpp;
     return this;
   }
 
-  @JsonProperty("rpt")
-  public String getRpt() {
-    return rpt;
+  @JsonProperty("rpp")
+  public String getRpp() {
+    return rpp;
   }
-  public void setRpt(String rpt) {
-    this.rpt = rpt;
+  public void setRpp(String rpp) {
+    this.rpp = rpp;
   }
 
   /**
@@ -234,16 +235,16 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Riscossione allegato(Object allegato) {
+  public Riscossione allegato(Allegato allegato) {
     this.allegato = allegato;
     return this;
   }
 
   @JsonProperty("allegato")
-  public Object getAllegato() {
+  public Allegato getAllegato() {
     return allegato;
   }
-  public void setAllegato(Object allegato) {
+  public void setAllegato(Allegato allegato) {
     this.allegato = allegato;
   }
 
@@ -262,7 +263,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(indice, riscossione.indice) &&
         Objects.equals(pendenza, riscossione.pendenza) &&
         Objects.equals(idVocePendenza, riscossione.idVocePendenza) &&
-        Objects.equals(rpt, riscossione.rpt) &&
+        Objects.equals(rpp, riscossione.rpp) &&
         Objects.equals(importo, riscossione.importo) &&
         Objects.equals(ibanAccredito, riscossione.ibanAccredito) &&
         Objects.equals(data, riscossione.data) &&
@@ -272,7 +273,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpt, importo, ibanAccredito, data, commissioni, allegato);
+    return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, importo, ibanAccredito, data, commissioni, allegato);
   }
 
   public static Riscossione parse(String json) {
@@ -295,7 +296,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
-    sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
+    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");

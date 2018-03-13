@@ -107,7 +107,7 @@ public class PagamentiPortaleConverter {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
 					ref.setIdDominio(pendenza.getDominio());
-					ref.setNumeroAvviso(pendenza.getNumeroAvviso().toPlainString());
+					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
 					listRefs.add(ref);
 
 				} else	if((pendenza.getDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
@@ -192,7 +192,7 @@ public class PagamentiPortaleConverter {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		if(pendenza.getNumeroAvviso()!=null)
-			versamento.setIuv(pendenza.getNumeroAvviso().toPlainString());
+			versamento.setIuv(pendenza.getNumeroAvviso());
 		versamento.setNome(pendenza.getNome());
 
 		// voci pagamento

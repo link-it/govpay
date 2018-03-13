@@ -92,6 +92,7 @@ public class EventiController extends it.govpay.rs.BaseController {
 		}
     }
 
+
 }
 
 

@@ -156,6 +156,7 @@ public class PspController extends it.govpay.rs.BaseController {
     }
 
 
+
     public Response pspIdPspGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp) {
     	String methodName = "pspIdPspGET";  
 		GpContext ctx = null;
