@@ -72,8 +72,10 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", SingoloVersamento.model().TIPO_CONTABILITA.getFieldType()));
 				setParameter(object, "setCodiceContabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "codice_contabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType()));
-				setParameter(object, "setNote", SingoloVersamento.model().NOTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "note", SingoloVersamento.model().NOTE.getFieldType()));
+				setParameter(object, "setDescrizione", SingoloVersamento.model().DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione", SingoloVersamento.model().DESCRIZIONE.getFieldType()));
+				setParameter(object, "setDatiAllegati", SingoloVersamento.model().DATI_ALLEGATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_allegati", SingoloVersamento.model().DATI_ALLEGATI.getFieldType()));
 				return object;
 			}
 			
@@ -114,8 +116,10 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoContabilita"));
 				setParameter(object, "setCodiceContabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"codiceContabilita"));
-				setParameter(object, "setNote", SingoloVersamento.model().NOTE.getFieldType(),
-					this.getObjectFromMap(map,"note"));
+				setParameter(object, "setDescrizione", SingoloVersamento.model().DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"descrizione"));
+				setParameter(object, "setDatiAllegati", SingoloVersamento.model().DATI_ALLEGATI.getFieldType(),
+					this.getObjectFromMap(map,"datiAllegati"));
 				return object;
 			}
 			

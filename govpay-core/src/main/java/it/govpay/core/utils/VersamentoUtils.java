@@ -459,7 +459,7 @@ public class VersamentoUtils {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		if(pendenza.getNumeroAvviso()!=null)
-			versamento.setIuv(pendenza.getNumeroAvviso().toPlainString());
+			versamento.setIuv(pendenza.getNumeroAvviso());
 		versamento.setNome(pendenza.getNome());
 
 		// voci pagamento

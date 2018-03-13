@@ -40,7 +40,7 @@ public class RiscossioniDAO{
 			filter.setDataInizio(listaRiscossioniDTO.getDataRiscossioneDa());
 			filter.setDataFine(listaRiscossioniDTO.getDataRiscossioneA());
 //			filter.setTipo(listaRiscossioniDTO.getTipo());
-//			filter.setIdA2A(listaRiscossioniDTO.getIdA2A());
+			filter.setIdA2A(listaRiscossioniDTO.getIdA2A());
 			filter.setCodSingoloVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
 			filter.setStati(Arrays.asList(listaRiscossioniDTO.getStato().toString()));
 			

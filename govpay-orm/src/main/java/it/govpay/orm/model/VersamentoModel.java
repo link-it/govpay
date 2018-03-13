@@ -76,6 +76,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.COD_VERSAMENTO_LOTTO = new Field("codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_ANNO_TRIBUTARIO = new Field("codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_BUNDLEKEY = new Field("codBundlekey",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -118,6 +119,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.COD_VERSAMENTO_LOTTO = new ComplexField(father,"codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_ANNO_TRIBUTARIO = new ComplexField(father,"codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_BUNDLEKEY = new ComplexField(father,"codBundlekey",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -192,6 +194,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField COD_ANNO_TRIBUTARIO = null;
 	 
 	public IField COD_BUNDLEKEY = null;
+	 
+	public IField DATI_ALLEGATI = null;
 	 
 
 	@Override

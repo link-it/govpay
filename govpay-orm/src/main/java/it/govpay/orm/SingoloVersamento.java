@@ -47,7 +47,8 @@ import java.io.Serializable;
  * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="datiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -74,7 +75,8 @@ import java.io.Serializable;
   	"idIbanAccredito",
   	"tipoContabilita",
   	"codiceContabilita",
-  	"note"
+  	"descrizione",
+  	"datiAllegati"
   }
 )
 
@@ -194,12 +196,20 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.codiceContabilita = codiceContabilita;
   }
 
-  public java.lang.String getNote() {
-    return this.note;
+  public java.lang.String getDescrizione() {
+    return this.descrizione;
   }
 
-  public void setNote(java.lang.String note) {
-    this.note = note;
+  public void setDescrizione(java.lang.String descrizione) {
+    this.descrizione = descrizione;
+  }
+
+  public java.lang.String getDatiAllegati() {
+    return this.datiAllegati;
+  }
+
+  public void setDatiAllegati(java.lang.String datiAllegati) {
+    this.datiAllegati = datiAllegati;
   }
 
   private static final long serialVersionUID = 1L;
@@ -267,7 +277,11 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   protected java.lang.String codiceContabilita;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="note",required=false,nillable=false)
-  protected java.lang.String note;
+  @XmlElement(name="descrizione",required=false,nillable=false)
+  protected java.lang.String descrizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="datiAllegati",required=false,nillable=false)
+  protected java.lang.String datiAllegati;
 
 }

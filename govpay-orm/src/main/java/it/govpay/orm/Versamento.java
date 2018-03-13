@@ -70,6 +70,7 @@ import java.io.Serializable;
  * 			&lt;element name="codVersamentoLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codAnnoTributario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codBundlekey" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="datiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -118,7 +119,8 @@ import java.io.Serializable;
   	"codLotto",
   	"codVersamentoLotto",
   	"codAnnoTributario",
-  	"codBundlekey"
+  	"codBundlekey",
+  	"datiAllegati"
   }
 )
 
@@ -426,6 +428,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.codBundlekey = codBundlekey;
   }
 
+  public java.lang.String getDatiAllegati() {
+    return this.datiAllegati;
+  }
+
+  public void setDatiAllegati(java.lang.String datiAllegati) {
+    this.datiAllegati = datiAllegati;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -583,5 +593,9 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codBundlekey",required=false,nillable=false)
   protected java.lang.String codBundlekey;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="datiAllegati",required=false,nillable=false)
+  protected java.lang.String datiAllegati;
 
 }

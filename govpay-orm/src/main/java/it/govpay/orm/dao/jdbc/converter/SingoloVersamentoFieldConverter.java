@@ -221,11 +221,18 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "codice_contabilita";
 			}
 		}
-		if(field.equals(SingoloVersamento.model().NOTE)){
+		if(field.equals(SingoloVersamento.model().DESCRIZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".note";
+				return this.toAliasTable(field)+".descrizione";
 			}else{
-				return "note";
+				return "descrizione";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().DATI_ALLEGATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_allegati";
+			}else{
+				return "dati_allegati";
 			}
 		}
 
@@ -307,7 +314,10 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(SingoloVersamento.model().CODICE_CONTABILITA)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
-		if(field.equals(SingoloVersamento.model().NOTE)){
+		if(field.equals(SingoloVersamento.model().DESCRIZIONE)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().DATI_ALLEGATI)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 
