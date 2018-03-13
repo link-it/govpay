@@ -7,12 +7,19 @@ import java.util.Date;
 import java.util.List;
 
 import it.govpay.model.Anagrafica.TIPO;
-
+import it.govpay.model.Versamento.StatoVersamento;
 
 public class Versamento {
+	
+    public StatoVersamento getStatoVersamento() {
+		return statoVersamento;
+	}
 
-    private String codApplicazione;
-    public String getCodApplicazione() {
+	public void setStatoVersamento(StatoVersamento statoVersamento) {
+		this.statoVersamento = statoVersamento;
+	}
+
+	public String getCodApplicazione() {
 		return codApplicazione;
 	}
 
@@ -217,6 +224,8 @@ public class Versamento {
 		this.datiAllegati = datiAllegati;
 	}
 
+	private StatoVersamento statoVersamento;
+    private String codApplicazione;
 	private String codVersamentoEnte;
     private String iuv;
     private String nome;
