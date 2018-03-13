@@ -1,33 +1,34 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * Stato della pendenza:   * ESEGUITO: Pagata  * NON_ESEGUITO: Da pagare  * ESEGUITO_PARZIALE: Pagata parzialmente  * ANNULLATO: Annullata  * SCADUTO: Scaduta
+ * Stato della pendenza:   * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta
  **/
 
 
 /**
- * Stato della pendenza:   * ESEGUITO: Pagata  * NON_ESEGUITO: Da pagare  * ESEGUITO_PARZIALE: Pagata parzialmente  * ANNULLATO: Annullata  * SCADUTO: Scaduta
+ * Stato della pendenza:   * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta
  */
 public enum StatoPendenza {
   
   
   
   
-  ESEGUITO("ESEGUITO"),
+  ESEGUITA("ESEGUITA"),
   
   
-  NON_ESEGUITO("NON_ESEGUITO"),
+  NON_ESEGUITA("NON_ESEGUITA"),
   
   
-  ESEGUITO_PARZIALE("ESEGUITO_PARZIALE"),
+  ESEGUITA_PARZIALE("ESEGUITA_PARZIALE"),
   
   
-  ANNULLATO("ANNULLATO"),
+  ANNULLATA("ANNULLATA"),
   
   
-  SCADUTO("SCADUTO");
+  SCADUTA("SCADUTA");
   
   
   

@@ -6,13 +6,10 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.core.rs.v1.beans.FlussoRendicontazione;
 import it.govpay.core.rs.v1.beans.base.FlussoRendicontazioneIndex;
-import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.core.rs.v1.beans.base.Segnalazione;
-import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Fr.Anomalia;
 
 public class FlussiRendicontazioneConverter {
@@ -88,26 +85,7 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 
-		rsModel.setRiscossione(toRendicontazionePagamentoRsModel(rendicontazione.getPagamento(null)));
-		return rsModel;
-	}
-
-	private static Riscossione toRendicontazionePagamentoRsModel(Pagamento input) throws ServiceException {
-		Riscossione rsModel = new Riscossione();
-		rsModel.setIdDominio(input.getCodDominio());
-		rsModel.setIuv(input.getIuv());
-		rsModel.setIur(input.getIur());
-		rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
-		
-		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(null).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
-		rsModel.setIdVocePendenza(input.getSingoloVersamento(null).getCodSingoloVersamentoEnte());
-		rsModel.setRpt(UriBuilderUtils.getRppByDominioIuvCcp(input.getRpt(null).getCodDominio(), input.getRpt(null).getIuv(), input.getRpt(null).getCcp()));
-		rsModel.setImporto(input.getImportoPagato());
-		rsModel.setIbanAccredito(input.getIbanAccredito());
-		rsModel.setData(input.getDataPagamento());
-		rsModel.setCommissioni(input.getCommissioniPsp());
-		rsModel.setAllegato(input.getAllegato());
-
+		rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null)));
 		return rsModel;
 	}
 }

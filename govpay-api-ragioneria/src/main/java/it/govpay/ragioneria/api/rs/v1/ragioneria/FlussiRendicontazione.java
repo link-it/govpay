@@ -15,7 +15,6 @@ import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.FlussiRendicontazioneController;
 
-
 @Path("/flussiRendicontazione")
 
 public class FlussiRendicontazione extends BaseRsServiceV1{

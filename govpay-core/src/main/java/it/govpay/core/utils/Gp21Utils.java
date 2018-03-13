@@ -388,7 +388,7 @@ public class Gp21Utils {
 			Allegato allegato = new Allegato();
 			allegato.setTesto(pagamento.getAllegato());
 			allegato.setTipo(TipoAllegato.valueOf(pagamento.getTipoAllegato().toString()));
-			riscossione.setAllegato(allegato);
+//			riscossione.setAllegato(allegato); //TODO
 		}
 		
 		riscossione.setIndice(new BigDecimal(idx));
@@ -400,7 +400,7 @@ public class Gp21Utils {
 		riscossione.setImporto(pagamento.getImportoPagato());
 		riscossione.setIur(pagamento.getIur());
 		riscossione.setPendenza(urlPendenza); 
-		riscossione.setRpt(urlRpt);
+		riscossione.setRpp(urlRpt);
 		riscossione.setIbanAccredito(pagamento.getIbanAccredito());
 //		riscossione.setCausaleRevoca(pagamento.getCausaleRevoca());
 //		riscossione.setDatiEsitoRevoca(pagamento.getDatiEsitoRevoca());

@@ -236,6 +236,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
     }
 
 
+
     public Response intermediariIdIntermediarioPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
     	String methodName = "intermediariIdIntermediarioPUT";  
 		GpContext ctx = null;
@@ -294,6 +295,8 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
+
+
 
     public Response intermediariIdIntermediarioStazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "intermediariIdIntermediarioStazioniGET";  

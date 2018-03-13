@@ -136,7 +136,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {    
+    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
