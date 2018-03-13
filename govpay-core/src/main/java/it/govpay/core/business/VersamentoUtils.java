@@ -85,7 +85,7 @@ public class VersamentoUtils {
 		CausaleSemplice causale = model.new CausaleSemplice();
 		causale.setCausale(versamento.getCausale());
 		model.setCausaleVersamento(causale);
-		
+		model.setDatiAllegati(versamento.getDatiAllegati()); 
 		model.setCodAnnoTributario(versamento.getAnnoTributario());
 		model.setCodBundlekey(versamento.getBundlekey());
 		model.setCodLotto(versamento.getCodDebito()); 
@@ -136,7 +136,7 @@ public class VersamentoUtils {
 		model.setIdVersamento(0);
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());
 		model.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
-		model.setNote(singoloVersamento.getNote()); 
+		model.setDescrizione(singoloVersamento.getDescrizione()); 
 		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
 		if(singoloVersamento.getBolloTelematico() != null) {
 			try {
