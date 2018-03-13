@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.core.dao.commons.Anagrafica;
-import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.rs.v1.beans.DatiAddebito;
@@ -25,6 +23,7 @@ import it.govpay.core.rs.v1.beans.base.StatoPagamento;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.IAutorizzato;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONNull;
@@ -83,7 +82,7 @@ public class PagamentiPortaleConverter {
 
 		
 		if(pagamentiPortaleRequest.getSoggettoVersante() != null);
-			pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
+			pagamentiPortaleDTO.setVersante(VersamentoUtils.toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
 		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRichiesta );  
 		JSONArray jsonArrayPendenze = jsonObjectPagamentiPortaleRequest.getJSONArray(PagamentiPortaleConverter.PENDENZE_KEY);
@@ -131,109 +130,12 @@ public class PagamentiPortaleConverter {
 		return pagamentiPortaleDTO;
 	}
 
-	private static Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		Anagrafica anagraficaCommons = null;
-		if(anagraficaRest != null) {
-			anagraficaCommons = new Anagrafica();
-			anagraficaCommons.setCap(anagraficaRest.getCap());
-			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
-			anagraficaCommons.setCivico(anagraficaRest.getCivico());
-			anagraficaCommons.setCodUnivoco(anagraficaRest.getIdentificativo());
-			anagraficaCommons.setEmail(anagraficaRest.getEmail());
-			anagraficaCommons.setIndirizzo(anagraficaRest.getIndirizzo());
-			anagraficaCommons.setLocalita(anagraficaRest.getLocalita());
-			anagraficaCommons.setNazione(anagraficaRest.getNazione());
-			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
-			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
-		}
-
-		return anagraficaCommons;
-	}
-
 	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) {
-		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
-
-		if(pendenza.getAnnoRiferimento() != null)
-			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
-
-		versamento.setCausale(pendenza.getCausale());
-		versamento.setCodApplicazione(ida2a);
-
-		versamento.setCodDominio(pendenza.getIdDominio());
-		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
-		versamento.setCodVersamentoEnte(idPendenza);
-		versamento.setDataScadenza(pendenza.getDataScadenza());
-		versamento.setDataValidita(pendenza.getDataValidita());
-		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
-		versamento.setImportoTotale(pendenza.getImporto());
-		versamento.setTassonomia(pendenza.getTassonomia());
-		versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
-
-		// voci pagamento
-		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-
-		return versamento;
+		return VersamentoUtils.getVersamentoFromPendenza(pendenza, ida2a, idPendenza);
 	}
 	
 	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(Pendenza pendenza) {
-		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
-
-		if(pendenza.getAnnoRiferimento() != null)
-			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
-
-		versamento.setCausale(pendenza.getCausale());
-		versamento.setCodApplicazione(pendenza.getIdA2A());
-
-		versamento.setCodDominio(pendenza.getDominio());
-		versamento.setCodUnitaOperativa(pendenza.getUnitaOperativa());
-		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
-		versamento.setDataScadenza(pendenza.getDataScadenza());
-		versamento.setDataValidita(pendenza.getDataValidita());
-		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
-		versamento.setImportoTotale(pendenza.getImporto());
-		if(pendenza.getNumeroAvviso()!=null)
-			versamento.setIuv(pendenza.getNumeroAvviso());
-		versamento.setNome(pendenza.getNome());
-
-		// voci pagamento
-		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-
-		return versamento;
-	}
-
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
-
-		if(voci != null && voci.size() > 0) {
-			for (VocePendenza vocePendenza : voci) {
-				Versamento.SingoloVersamento sv = new Versamento.SingoloVersamento();
-
-				//sv.setCodTributo(value); ??
-
-				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
-				sv.setNote(vocePendenza.getDescrizione());
-				sv.setImporto(vocePendenza.getImporto());
-
-				// Definisce i dati di un bollo telematico
-				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
-					Versamento.SingoloVersamento.BolloTelematico bollo = new Versamento.SingoloVersamento.BolloTelematico();
-					bollo.setHash(vocePendenza.getHashDocumento());
-					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
-					bollo.setTipo(vocePendenza.getTipoBollo());
-					sv.setBolloTelematico(bollo);
-				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
-					sv.setCodTributo(vocePendenza.getCodEntrata());
-
-				} else { // Definisce i dettagli di incasso della singola entrata.
-					Versamento.SingoloVersamento.Tributo tributo = new Versamento.SingoloVersamento.Tributo();
-					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
-					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
-					tributo.setTipoContabilita(Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita()));
-					sv.setTributo(tributo);
-				}
-
-				versamento.getSingoloVersamento().add(sv);
-			}
-		}
+		return VersamentoUtils.getVersamentoFromPendenza(pendenza);
 	}
 
 	public static PagamentoPortale toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
