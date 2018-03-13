@@ -470,19 +470,7 @@ public class VersamentoUtils {
 			versamento.setTassonomiaAvviso(pendenzaVerificata.getTassonomiaAvviso().toString());
 		versamento.setNome(pendenzaVerificata.getNome());
 		
-		StatoPendenzaVerificata statoPendenza = pendenzaVerificata.getStato();
-		if(statoPendenza != null) {
-			switch (statoPendenza) { 
-			case NON_ESEGUITA:
-				break;
-			case ANNULLATA:
-			case DUPLICATA:
-			case SCADUTA:
-			case SCONOSCIUTA:
-			default: // casi errore
-				break;
-			}
-		}
+		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenzaVerificata.getVoci());

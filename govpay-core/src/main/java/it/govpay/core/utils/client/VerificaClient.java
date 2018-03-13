@@ -40,6 +40,7 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
+import it.govpay.core.rs.v1.beans.base.StatoPendenzaVerificata;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
@@ -161,22 +162,47 @@ public class VerificaClient extends BasicClient {
 				String jsonResponse = "";
 				String path = "/pendenze/" + codDominio + "/" + iuv; 
 				
+				StatoPendenzaVerificata stato = null;
+				PendenzaVerificata pendenzaVerificata = null;
 				try {
-					jsonResponse = new String(getJson(path, headerProperties));
-					JsonConfig jsonConfig = new JsonConfig();
-					PendenzaVerificata pendenzaVerificata = (PendenzaVerificata) PendenzaVerificata.parse(jsonResponse, PendenzaVerificata.class, jsonConfig ); 
-					return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VersamentoUtils.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd); 	
-				}catch(ClientException e) {
-					log.error("Errore durante l'esecuzione della GET ["+path+"]: "+e.getMessage(),e);
-					if(e.getResponseCode() != null) { // chiamata terminata con un response code > 299
-						
+					try {
+						jsonResponse = new String(getJson(path, headerProperties));
+						JsonConfig jsonConfig = new JsonConfig();
+						pendenzaVerificata = (PendenzaVerificata) PendenzaVerificata.parse(jsonResponse, PendenzaVerificata.class, jsonConfig ); 
+					}catch(ClientException e) {
+						ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Errore nella deserializzazione del messaggio di risposta (" + e.getMessage() + ")");
+						throw e;
+					}catch(Exception e) {
+						ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Errore nella deserializzazione del messaggio di risposta (" + e.getMessage() + ")");
+						throw new ClientException(e);
 					}
-					
-				}catch(Exception e) {
-					log.error("Errore durante l'esecuzione della GET ["+path+"]: "+e.getMessage(),e);
+				} finally {
+					bd.setupConnection(GpThreadLocal.get().getTransactionId());
 				}
 				
-				return null;
+				stato = pendenzaVerificata.getStato();
+				switch (stato) {
+					case NON_ESEGUITA: // CASO OK su
+						ctx.log("verifica.avvio", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
+						try {
+							return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VersamentoUtils.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
+						} catch (GovPayException e) {
+							ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
+							throw e;
+						}
+				case ANNULLATA:
+					ctx.log("verifica.verificaAnnullato", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
+					throw new VersamentoAnnullatoException(pendenzaVerificata.getDescrizioneStato());
+				case DUPLICATA:
+					ctx.log("verifica.verificaDuplicato", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
+					throw new VersamentoDuplicatoException(pendenzaVerificata.getDescrizioneStato());
+				case SCADUTA:
+					ctx.log("verifica.verificaScaduto", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
+					throw new VersamentoScadutoException(pendenzaVerificata.getDescrizioneStato());
+				case SCONOSCIUTA:
+					ctx.log("verifica.verificaSconosciuto", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
+					throw new VersamentoSconosciutoException();
+				}
 			default:
 				bd.setupConnection(GpThreadLocal.get().getTransactionId());
 				ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, codDominioD, iuvD, "Tipo del connettore (" + tipo + ") non supportato");
