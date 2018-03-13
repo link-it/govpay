@@ -17,10 +17,4 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.base.Soggetto {
 	public String getJsonIdFilter() {
 		return "soggettoVersante";
 	}
-	
-	public static Soggetto parse(String json) {
-		JSONObject jsonObject = JSONObject.fromObject( json );  
-		return (Soggetto) JSONObject.toBean( jsonObject, jsonConfig );
-	}
-
 }

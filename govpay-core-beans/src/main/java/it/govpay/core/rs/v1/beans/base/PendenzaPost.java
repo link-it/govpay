@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idDominio",
@@ -314,7 +315,19 @@ public class PendenzaPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("tassonomiaAvviso")
-  public TassonomiaAvviso getTassonomiaAvviso() {
+  public String getTassonomiaAvviso() {
+	  if(tassonomiaAvviso != null)
+		  return tassonomiaAvviso.toString();
+	  
+	  return null;
+  }
+  public void setTassonomiaAvviso(String tassonomiaAvviso) {
+	  if(tassonomiaAvviso != null)
+		  this.tassonomiaAvviso = TassonomiaAvviso.fromValue(tassonomiaAvviso);
+  }
+  
+  @JsonIgnore
+  public TassonomiaAvviso getTassonomiaAvvisoEnum() {
     return tassonomiaAvviso;
   }
   public void setTassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {

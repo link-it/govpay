@@ -88,6 +88,12 @@ public abstract class JSONSerializable {
 		return JSONObject.toBean( jsonObject, jsonConfig );
 	}
 	
+	public static Object parse(JSONObject jsonObject, Class<?> clazz, JsonConfig jsonConfig) {
+		jsonConfig.setRootClass(clazz);
+		JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(SimpleDateFormatUtils.datePatterns.toArray(new String[1])) , true);
+
+		return JSONObject.toBean( jsonObject, jsonConfig );
+	}
 
 
 }

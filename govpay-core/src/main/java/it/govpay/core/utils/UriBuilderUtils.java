@@ -52,13 +52,17 @@ public class UriBuilderUtils {
 	public static String getPagamentiByPendenza(String idPendenza) {
 		return getByPendenza(getListPagamenti(), idPendenza);
 	}
+	
+	public static String getPagamentiByIdA2AIdPendenza(String idA2A, String idPendenza) {
+		return getListPagamenti().queryParam("idA2A", idA2A).queryParam("idPendenza", idPendenza).build().toString();
+	}
 
 	public static String getRptsByPagamento(String idPagamento) {
 		return getByPagamento(getListRpp(), idPagamento);
 	}
 
-	public static String getRptsByPendenza(String idPendenza) {
-		return getByPendenza(getListRpp(), idPendenza);
+	public static String getRppsByIdA2AIdPendenza(String idA2A, String idPendenza) {
+		return getListRpp().queryParam("idA2A", idA2A).queryParam("idPendenza", idPendenza).build().toString();
 	}
 
 	public static String getListUoByDominio(String idDominio) {

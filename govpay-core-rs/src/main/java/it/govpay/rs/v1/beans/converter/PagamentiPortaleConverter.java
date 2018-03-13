@@ -60,7 +60,7 @@ public class PagamentiPortaleConverter {
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
 		else 
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(AutenticazioneSoggettoEnum.N_A.toString());
-		
+
 		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 		pagamentiPortaleDTO.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 
@@ -74,15 +74,15 @@ public class PagamentiPortaleConverter {
 			pagamentiPortaleDTO.setKeyPA(pagamentiPortaleRequest.getTokenWISP().getKeyPA());
 			pagamentiPortaleDTO.setKeyWISP(pagamentiPortaleRequest.getTokenWISP().getKeyWISP());
 		}
-		
+
 		if(pagamentiPortaleRequest.getLingua() != null)
 			pagamentiPortaleDTO.setLingua(pagamentiPortaleRequest.getLingua().toString());
-		
+
 		pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
 
-		
+
 		if(pagamentiPortaleRequest.getSoggettoVersante() != null);
-			pagamentiPortaleDTO.setVersante(VersamentoUtils.toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
+		pagamentiPortaleDTO.setVersante(VersamentoUtils.toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
 		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRichiesta );  
 		JSONArray jsonArrayPendenze = jsonObjectPagamentiPortaleRequest.getJSONArray(PagamentiPortaleConverter.PENDENZE_KEY);
@@ -91,32 +91,31 @@ public class PagamentiPortaleConverter {
 			List<Object> listRefs = new ArrayList<Object>();
 
 			JsonConfig jsonConfigPendenza = new JsonConfig();
-			jsonConfigPendenza.setRootClass(Pendenza.class);
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 			classMap.put("voci", VocePendenza.class);
 			jsonConfigPendenza.setClassMap(classMap);
-			
+
 			for (int i = 0; i < jsonArrayPendenze.size(); i++) {
 
 				JSONObject jsonObjectPendenza = jsonArrayPendenze.getJSONObject(i);
+				
+				PendenzaPost pendenza = (PendenzaPost) PendenzaPost.parse(jsonObjectPendenza, PendenzaPost.class, jsonConfigPendenza );
 
-				Pendenza pendenza = (Pendenza) JSONObject.toBean( jsonObjectPendenza, jsonConfigPendenza );
-
-				if((pendenza.getDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
-					ref.setIdDominio(pendenza.getDominio());
+					ref.setIdDominio(pendenza.getIdDominio());
 					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
 					listRefs.add(ref);
 
-				} else	if((pendenza.getDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
-					
+				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
+
 					PagamentiPortaleDTO.RefVersamentoPendenza ref = pagamentiPortaleDTO. new RefVersamentoPendenza();
 					ref.setIdA2A(pendenza.getIdA2A());
 					ref.setIdPendenza(pendenza.getIdPendenza());
 					listRefs.add(ref);
 
-				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getDominio() != null) {
+				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
 					listRefs.add(versamento);
 				} else {
@@ -133,14 +132,14 @@ public class PagamentiPortaleConverter {
 	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) {
 		return VersamentoUtils.getVersamentoFromPendenza(pendenza, ida2a, idPendenza);
 	}
-	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(Pendenza pendenza) {
+
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) {
 		return VersamentoUtils.getVersamentoFromPendenza(pendenza);
 	}
 
 	public static PagamentoPortale toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
 		PagamentoPortale rsModel = new PagamentoPortale();
-		
+
 		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( pagamentoPortale.getJsonRequest() );  
 
 		rsModel.setId(pagamentoPortale.getIdSessione());
@@ -149,18 +148,18 @@ public class PagamentiPortaleConverter {
 		rsModel.setNome(pagamentoPortale.getNome());
 		rsModel.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
-		
+
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
-		
+
 		if(jsonObjectPagamentiPortaleRequest.containsKey("datiAddebito")) {
-			rsModel.setDatiAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito")));
+			rsModel.setDatiAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito"), DatiAddebito.class));
 		}
 
 		try {
 			if(jsonObjectPagamentiPortaleRequest.containsKey("dataEsecuzionePagamento")) {
 				Object object = jsonObjectPagamentiPortaleRequest.get("dataEsecuzionePagamento");
 				if(object instanceof JSONNull) {
-					
+
 				} else {
 					String dataEsecuzionePagamentoString = jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento");
 					rsModel.setDataEsecuzionePagamento(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataEsecuzionePagamentoString));
@@ -178,10 +177,10 @@ public class PagamentiPortaleConverter {
 		if(jsonObjectPagamentiPortaleRequest.containsKey("autenticazioneSoggetto")) {
 			rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.base.Pagamento.AutenticazioneSoggettoEnum.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto")));
 		}
-		
+
 		if(pagamentoPortale.getCodPsp() != null &&  pagamentoPortale.getCodCanale() != null && pagamentoPortale.getTipoVersamento() != null)
 			rsModel.setCanale(UriBuilderUtils.getCanale(pagamentoPortale.getCodPsp(), pagamentoPortale.getCodCanale(), pagamentoPortale.getTipoVersamento()));
-		
+
 		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 		if(pagamentoPortale.getImporto() != null) 

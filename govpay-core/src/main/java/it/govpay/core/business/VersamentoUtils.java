@@ -124,6 +124,9 @@ public class VersamentoUtils {
 			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, bd));
 		}
 		
+		model.setTassonomia(versamento.getTassonomia());
+		model.setTassonomiaAvviso(versamento.getTassonomiaAvviso());
+		
 		return model;
 	}
 

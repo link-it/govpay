@@ -1,6 +1,8 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import it.govpay.core.rs.v1.beans.base.Soggetto;
 import it.govpay.core.rs.v1.beans.base.StatoPendenza;
@@ -376,7 +378,18 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("tassonomiaAvviso")
-  public TassonomiaAvviso getTassonomiaAvviso() {
+  public String getTassonomiaAvviso() {
+      if(tassonomiaAvviso != null)
+          return tassonomiaAvviso.toString();
+    return null;
+  }	
+  public void setTassonomiaAvviso(String tassonomiaAvviso) {
+	  if(tassonomiaAvviso != null)
+		 this.tassonomiaAvviso = TassonomiaAvviso.fromValue(tassonomiaAvviso);
+  }
+
+  @JsonIgnore
+  public TassonomiaAvviso getTassonomiaAvvisoEnum() {
     return tassonomiaAvviso;
   }
   public void setTassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {

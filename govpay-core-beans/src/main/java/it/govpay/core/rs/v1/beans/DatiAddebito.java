@@ -84,11 +84,5 @@ public class DatiAddebito extends JSONSerializable {
 		jsonConfig.setRootClass(DatiAddebito.class);
 	}
 	public DatiAddebito() {}
-	
-	public static DatiAddebito parse(String json) {
-		JSONObject jsonObject = JSONObject.fromObject( json );  
-		return (DatiAddebito) JSONObject.toBean( jsonObject, jsonConfig );
-	}
-
 
 }

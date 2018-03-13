@@ -40,11 +40,9 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
 import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.base.Soggetto;
-import it.govpay.core.rs.v1.beans.base.StatoPendenzaVerificata;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
@@ -478,7 +476,7 @@ public class VersamentoUtils {
 		return versamento;
 	}
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(Pendenza pendenza) {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -487,8 +485,8 @@ public class VersamentoUtils {
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(pendenza.getIdA2A());
 
-		versamento.setCodDominio(pendenza.getDominio());
-		versamento.setCodUnitaOperativa(pendenza.getUnitaOperativa());
+		versamento.setCodDominio(pendenza.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
@@ -497,6 +495,9 @@ public class VersamentoUtils {
 		if(pendenza.getNumeroAvviso()!=null)
 			versamento.setIuv(pendenza.getNumeroAvviso());
 		versamento.setNome(pendenza.getNome());
+		versamento.setTassonomia(pendenza.getTassonomia());
+		if(pendenza.getTassonomiaAvviso() != null)
+			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());

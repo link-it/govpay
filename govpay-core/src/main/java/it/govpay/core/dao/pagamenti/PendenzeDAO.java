@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
@@ -64,7 +65,15 @@ public class PendenzeDAO{
 					elem.setApplicazione(versamento.getApplicazione(versamentiBD));
 					elem.setDominio(versamento.getDominio(versamentiBD));
 					elem.setUnitaOperativa(versamento.getUo(versamentiBD));
-					elem.setLstSingoliVersamenti(versamento.getSingoliVersamenti(versamentiBD));
+					List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
+					for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+						singoloVersamento.getCodContabilita(bd);
+						singoloVersamento.getIbanAccredito(bd);
+						singoloVersamento.getTipoContabilita(bd);
+						singoloVersamento.getTributo(bd);
+						
+					}
+					elem.setLstSingoliVersamenti(singoliVersamenti);
 
 					resList.add(elem);
 				}
@@ -90,7 +99,15 @@ public class PendenzeDAO{
 			response.setApplicazione(versamento.getApplicazione(versamentiBD));
 			response.setDominio(versamento.getDominio(versamentiBD));
 			response.setUnitaOperativa(versamento.getUo(versamentiBD));
-			response.setLstSingoliVersamenti(versamento.getSingoliVersamenti(versamentiBD));
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
+			response.setLstSingoliVersamenti(singoliVersamenti);
+			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+				singoloVersamento.getCodContabilita(bd);
+				singoloVersamento.getIbanAccredito(bd);
+				singoloVersamento.getTipoContabilita(bd);
+				singoloVersamento.getTributo(bd);
+				
+			}
 
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
