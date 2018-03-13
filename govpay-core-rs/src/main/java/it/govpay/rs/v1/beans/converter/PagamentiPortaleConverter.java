@@ -102,21 +102,21 @@ public class PagamentiPortaleConverter {
 
 				Pendenza pendenza = (Pendenza) JSONObject.toBean( jsonObjectPendenza, jsonConfigPendenza );
 
-				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+				if((pendenza.getDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
-					ref.setIdDominio(pendenza.getIdDominio());
-					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
+					ref.setIdDominio(pendenza.getDominio());
+					ref.setNumeroAvviso(pendenza.getNumeroAvviso().toPlainString());
 					listRefs.add(ref);
 
-				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
+				} else	if((pendenza.getDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
 					
 					PagamentiPortaleDTO.RefVersamentoPendenza ref = pagamentiPortaleDTO. new RefVersamentoPendenza();
 					ref.setIdA2A(pendenza.getIdA2A());
 					ref.setIdPendenza(pendenza.getIdPendenza());
 					listRefs.add(ref);
 
-				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
+				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getDominio() != null) {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
 					listRefs.add(versamento);
 				} else {

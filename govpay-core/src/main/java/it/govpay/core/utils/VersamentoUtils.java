@@ -433,7 +433,8 @@ public class VersamentoUtils {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
-		versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
+		if(pendenza.getTassonomiaAvviso() != null)
+			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
@@ -450,20 +451,23 @@ public class VersamentoUtils {
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(pendenza.getIdA2A());
 
-		versamento.setCodDominio(pendenza.getIdDominio());
-		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
+		versamento.setCodDominio(pendenza.getDominio());
+		versamento.setCodUnitaOperativa(pendenza.getUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
-		versamento.setIuv(pendenza.getNumeroAvviso());
+		if(pendenza.getNumeroAvviso()!=null)
+			versamento.setIuv(pendenza.getNumeroAvviso().toPlainString());
 		versamento.setNome(pendenza.getNome());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
 
 		return versamento;
+		
+		
 	}
 
 	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
