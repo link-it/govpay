@@ -12,6 +12,7 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.rs.v1.beans.Pendenza;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.rs.v1.beans.base.StatoPendenza;
+import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {
@@ -32,12 +33,12 @@ public class PendenzeConverter {
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
-		rsModel.setIdDominio(UriBuilderUtils.getDominio(dominio.getCodDominio()));
+		rsModel.setDominio(UriBuilderUtils.getDominio(dominio.getCodDominio()));
 		rsModel.setIdA2A(applicazione.getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNome(versamento.getNome());
-		rsModel.setNumeroAvviso(versamento.getIuvProposto());
+		rsModel.setNumeroAvviso(new BigDecimal(versamento.getIuvProposto()));
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
 		
 		StatoPendenza statoPendenza = null;
@@ -62,12 +63,12 @@ public class PendenzeConverter {
 
 		rsModel.setStato(statoPendenza);
 		rsModel.setTassonomia(versamento.getTassonomia());
-		rsModel.setTassonomiaAvviso(versamento.getTassonomiaAvviso());
+		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		if(unitaOperativa != null)
-			rsModel.setIdUnitaOperativa(UriBuilderUtils.getUoByDominio(dominio.getCodDominio(), unitaOperativa.getCodUo()));
+			rsModel.setUnitaOperativa(UriBuilderUtils.getUoByDominio(dominio.getCodDominio(), unitaOperativa.getCodUo()));
 		
 		rsModel.setPagamenti(UriBuilderUtils.getPagamentiByPendenza(versamento.getCodVersamentoEnte()));
-		rsModel.setRpts(UriBuilderUtils.getRptsByPendenza(versamento.getCodVersamentoEnte()));
+		rsModel.setRpp(UriBuilderUtils.getRptsByPendenza(versamento.getCodVersamentoEnte()));
 		
 		List<VocePendenza> v = new ArrayList<VocePendenza>();
 		int indice = 1;

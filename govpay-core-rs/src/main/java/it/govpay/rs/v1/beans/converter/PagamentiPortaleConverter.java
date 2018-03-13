@@ -103,21 +103,21 @@ public class PagamentiPortaleConverter {
 
 				Pendenza pendenza = (Pendenza) JSONObject.toBean( jsonObjectPendenza, jsonConfigPendenza );
 
-				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+				if((pendenza.getDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
-					ref.setIdDominio(pendenza.getIdDominio());
-					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
+					ref.setIdDominio(pendenza.getDominio());
+					ref.setNumeroAvviso(pendenza.getNumeroAvviso().toPlainString());
 					listRefs.add(ref);
 
-				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
+				} else	if((pendenza.getDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
 					
 					PagamentiPortaleDTO.RefVersamentoPendenza ref = pagamentiPortaleDTO. new RefVersamentoPendenza();
 					ref.setIdA2A(pendenza.getIdA2A());
 					ref.setIdPendenza(pendenza.getIdPendenza());
 					listRefs.add(ref);
 
-				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
+				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getDominio() != null) {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
 					listRefs.add(versamento);
 				} else {
@@ -167,7 +167,7 @@ public class PagamentiPortaleConverter {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
-		versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
+		versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
@@ -184,14 +184,15 @@ public class PagamentiPortaleConverter {
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(pendenza.getIdA2A());
 
-		versamento.setCodDominio(pendenza.getIdDominio());
-		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
+		versamento.setCodDominio(pendenza.getDominio());
+		versamento.setCodUnitaOperativa(pendenza.getUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
-		versamento.setIuv(pendenza.getNumeroAvviso());
+		if(pendenza.getNumeroAvviso()!=null)
+			versamento.setIuv(pendenza.getNumeroAvviso().toPlainString());
 		versamento.setNome(pendenza.getNome());
 
 		// voci pagamento
