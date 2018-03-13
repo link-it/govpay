@@ -9,6 +9,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
@@ -43,8 +45,8 @@ public class RendicontazioniDAO{
 
 				for (Fr fr : findAll) {
 					LeggiRendicontazioneDTOResponse elem = new LeggiRendicontazioneDTOResponse();
+					populateRendicontazione(fr, bd);
 					elem.setFr(fr);
-					elem.setRendicontazioni(fr.getRendicontazioni(bd));
 					resList.add(elem);
 				}
 			} 
@@ -60,13 +62,13 @@ public class RendicontazioniDAO{
 		LeggiRendicontazioneDTOResponse response = new LeggiRendicontazioneDTOResponse();
 
 		FrBD rendicontazioniBD = new FrBD(bd);
-		Fr rendicontazione;
 		try {
 
-			rendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
-
-			response.setFr(rendicontazione);
-			response.setRendicontazioni(rendicontazione.getRendicontazioni(bd));
+			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
+			populateRendicontazione(flussoRendicontazione, bd);
+			
+			
+			response.setFr(flussoRendicontazione);
 
 		} catch (NotFoundException e) {
 			throw new RendicontazioneNonTrovataException(e.getMessage(), e);
@@ -74,6 +76,21 @@ public class RendicontazioniDAO{
 			bd.closeConnection();
 		}
 		return response;
+	}
+
+	private Fr populateRendicontazione(Fr flussoRendicontazione, BasicBD bd)
+			throws ServiceException {
+
+		List<Rendicontazione> rendicontazioni = flussoRendicontazione.getRendicontazioni(bd);
+		
+		if(rendicontazioni != null) {
+			for(Rendicontazione rend: rendicontazioni) {
+				Pagamento pagamento = rend.getPagamento(bd);
+				pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+				pagamento.getRpt(bd);
+			}
+		}
+		return flussoRendicontazione;
 	}
 	
 

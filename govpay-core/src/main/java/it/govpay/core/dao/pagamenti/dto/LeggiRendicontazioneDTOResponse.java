@@ -17,7 +17,6 @@ import it.govpay.bd.model.Rendicontazione;
 public class LeggiRendicontazioneDTOResponse {
 
 	private Fr fr;
-	private List<Rendicontazione> rendicontazioni;
 
 	public Fr getFr() {
 		return fr;
@@ -26,13 +25,4 @@ public class LeggiRendicontazioneDTOResponse {
 	public void setFr(Fr fr) {
 		this.fr = fr;
 	}
-
-	public List<Rendicontazione> getRendicontazioni() {
-		return rendicontazioni;
-	}
-
-	public void setRendicontazioni(List<Rendicontazione> rendicontazioni) {
-		this.rendicontazioni = rendicontazioni;
-	}
-
 }
