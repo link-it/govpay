@@ -378,7 +378,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 				i++;
 			}
 			singoloVersamento.setCodContabilita((String) record.get(i++));
-			singoloVersamento.setNote((String) record.get(i++));
+			singoloVersamento.setDatiAllegati((String) record.get(i++));
 			
 			singoloVersamento.setId((Long) record.get(i++));
 			singoloVersamento.setIdVersamento((Long) record.get(i++));

@@ -44,7 +44,7 @@ import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
 import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.base.Soggetto;
-import it.govpay.core.rs.v1.beans.base.StatoPendenza;
+import it.govpay.core.rs.v1.beans.base.StatoPendenzaVerificata;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
@@ -460,31 +460,26 @@ public class VersamentoUtils {
 		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
-		if(pendenzaVerificata.getNumeroAvviso()!=null)
-			versamento.setIuv(pendenzaVerificata.getNumeroAvviso().toPlainString());
-		pendenzaVerificata.getCartellaPagamento();
-		pendenzaVerificata.getDatiAllegati();
-		pendenzaVerificata.getImporto();
-		pendenzaVerificata.getTassonomia();
-		pendenzaVerificata.getTassonomiaAvviso();
+		versamento.setIuv(pendenzaVerificata.getNumeroAvviso());
+		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento()); 
+		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
+		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());
 		
+		versamento.setTassonomia(pendenzaVerificata.getTassonomia());
+		if(pendenzaVerificata.getTassonomiaAvviso() != null)
+			versamento.setTassonomiaAvviso(pendenzaVerificata.getTassonomiaAvviso().toString());
+		versamento.setNome(pendenzaVerificata.getNome());
 		
-//		versamento.setNome(pendenzaVerificata.getNome());
-		
-		StatoPendenza statoPendenza = pendenzaVerificata.getStato();
+		StatoPendenzaVerificata statoPendenza = pendenzaVerificata.getStato();
 		if(statoPendenza != null) {
 			switch (statoPendenza) { 
-			case ANNULLATO:
-//				versamento.set
+			case NON_ESEGUITA:
 				break;
-			case ESEGUITO:
-				break;
-			case ESEGUITO_PARZIALE:
-				break;
-			case NON_ESEGUITO:
-				break;
-			case SCADUTO:
-			default:
+			case ANNULLATA:
+			case DUPLICATA:
+			case SCADUTA:
+			case SCONOSCIUTA:
+			default: // casi errore
 				break;
 			}
 		}
@@ -512,7 +507,7 @@ public class VersamentoUtils {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		if(pendenza.getNumeroAvviso()!=null)
-			versamento.setIuv(pendenza.getNumeroAvviso().toPlainString());
+			versamento.setIuv(pendenza.getNumeroAvviso());
 		versamento.setNome(pendenza.getNome());
 
 		// voci pagamento
@@ -532,7 +527,8 @@ public class VersamentoUtils {
 				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
-				sv.setNote(vocePendenza.getDescrizione());
+				sv.setDatiAllegati(vocePendenza.getDatiAllegati());
+				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 
 				// Definisce i dati di un bollo telematico

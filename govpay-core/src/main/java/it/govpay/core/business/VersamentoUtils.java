@@ -137,6 +137,7 @@ public class VersamentoUtils {
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());
 		model.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
 		model.setNote(singoloVersamento.getNote()); 
+		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
 		if(singoloVersamento.getBolloTelematico() != null) {
 			try {
 				model.setTributo(Tributo.BOLLOT, bd);

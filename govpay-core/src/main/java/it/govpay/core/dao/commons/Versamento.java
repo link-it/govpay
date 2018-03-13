@@ -201,6 +201,22 @@ public class Versamento {
 		this.tipo = tipo;
 	}
 
+	public Date getDataCaricamento() {
+		return dataCaricamento;
+	}
+
+	public void setDataCaricamento(Date dataCaricamento) {
+		this.dataCaricamento = dataCaricamento;
+	}
+	
+	public String getDatiAllegati() {
+		return datiAllegati;
+	}
+
+	public void setDatiAllegati(String datiAllegati) {
+		this.datiAllegati = datiAllegati;
+	}
+
 	private String codVersamentoEnte;
     private String iuv;
     private String nome;
@@ -215,12 +231,13 @@ public class Versamento {
     private BigDecimal importoTotale;
     private Date dataScadenza;
     private Date dataValidita;
+    private Date dataCaricamento;
     private Boolean aggiornabile;
     private String codDebito;
     private Integer annoTributario;
     private String bundlekey;
     private String causale;
-    
+    private String datiAllegati;
     
     private TIPO tipo;
     private List<String> spezzoneCausale;
@@ -246,12 +263,12 @@ public class Versamento {
 			this.importo = importo;
 		}
 
-		public String getNote() {
-			return note;
+		public String getDatiAllegati() {
+			return datiAllegati;
 		}
 
-		public void setNote(String note) {
-			this.note = note;
+		public void setDatiAllegati(String datiAllegati) {
+			this.datiAllegati = datiAllegati;
 		}
 
 		public String getCodTributo() {
@@ -278,8 +295,17 @@ public class Versamento {
 			this.tributo = tributo;
 		}
 
+		public String getDescrizione() {
+			return descrizione;
+		}
+
+		public void setDescrizione(String descrizione) {
+			this.descrizione = descrizione;
+		}
+
 		private BigDecimal importo;
-        private String note;
+		private String datiAllegati;
+        private String descrizione;
         private String codTributo;
         private Versamento.SingoloVersamento.BolloTelematico bolloTelematico;
         private Versamento.SingoloVersamento.Tributo tributo;

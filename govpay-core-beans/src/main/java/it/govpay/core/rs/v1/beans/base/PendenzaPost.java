@@ -1,15 +1,12 @@
 package it.govpay.core.rs.v1.beans.base;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-import it.govpay.core.rs.v1.beans.base.PendenzaPut;
-import it.govpay.core.rs.v1.beans.base.Soggetto;
-import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
-import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idDominio",
 "idUnitaOperativa",

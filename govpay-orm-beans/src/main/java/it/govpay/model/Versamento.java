@@ -64,6 +64,7 @@ public class Versamento extends BasicModel {
 	private String codLotto;
 	private String codVersamentoLotto;
 	private Integer codAnnoTributario;
+	private String datiAllegati;
 	
 	private String tassonomiaAvviso;
 	private String tassonomia;
@@ -439,6 +440,14 @@ public class Versamento extends BasicModel {
 
 	public void setCodAnnoTributario(Integer codAnnoTributario) {
 		this.codAnnoTributario = codAnnoTributario;
+	}
+
+	public String getDatiAllegati() {
+		return datiAllegati;
+	}
+
+	public void setDatiAllegati(String datiAllegati) {
+		this.datiAllegati = datiAllegati;
 	}
 	
 	

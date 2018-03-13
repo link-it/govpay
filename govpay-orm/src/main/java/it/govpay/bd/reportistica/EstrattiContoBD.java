@@ -88,7 +88,7 @@ public class EstrattiContoBD extends BasicBD{
 			estrattoConto.setIdSingoloVersamento(rp.getSingoloVersamento().getId()); // id singoloVersamento
 			estrattoConto.setCodSingoloVersamentoEnte(rp.getSingoloVersamento().getCodSingoloVersamentoEnte()); // cod_singolo_versamento_ente
 			estrattoConto.setStatoSingoloVersamento(rp.getSingoloVersamento().getStatoSingoloVersamento()); // stato_singolo_versamento
-			estrattoConto.setNote(rp.getSingoloVersamento().getNote()); // note
+			estrattoConto.setNote(rp.getSingoloVersamento().getDatiAllegati()); // note
 		}
 		
 		if(rp.getIncasso() != null) {

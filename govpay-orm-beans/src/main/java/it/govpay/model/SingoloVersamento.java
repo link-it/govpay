@@ -64,7 +64,8 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private Long idIbanAccredito;
 	private Tributo.TipoContabilita tipoContabilita;
 	private String codContabilita;
-	private String note;
+	private String datiAllegati;
+	private String descrizione;
 	
 	
 	public Long getId() {
@@ -164,13 +165,22 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		this.codContabilita = codContabilita;
 	}
 	
-	public String getNote() {
-		return note;
+	public String getDatiAllegati() {
+		return datiAllegati;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
+	public void setDatiAllegati(String datiAllegati) {
+		this.datiAllegati = datiAllegati;
 	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
+	}
+
 	@Override
 	public int compareTo(SingoloVersamento sv) {
 		return codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());

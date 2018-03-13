@@ -63,7 +63,8 @@ public class SingoloVersamentoConverter {
 			dto.setTipoContabilita(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setHashDocumento(vo.getHashDocumento());
 		dto.setProvinciaResidenza(vo.getProvinciaResidenza());
-		dto.setNote(vo.getNote());
+		dto.setDatiAllegati(vo.getDatiAllegati());
+		dto.setDescrizione(vo.getDescrizione());
 		return dto;
 	}
 
@@ -97,7 +98,8 @@ public class SingoloVersamentoConverter {
 			vo.setTipoContabilita(dto.getTipoContabilita().getCodifica());
 		vo.setHashDocumento(dto.getHashDocumento());
 		vo.setProvinciaResidenza(dto.getProvinciaResidenza());
-		vo.setNote(dto.getNote());
+		vo.setDatiAllegati(dto.getDatiAllegati());
+		vo.setDescrizione(dto.getDescrizione());
 		return vo;
 	}
 }
