@@ -11,6 +11,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
+import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
@@ -20,6 +21,8 @@ import it.govpay.core.dao.pagamenti.exception.RiscossioneNonTrovataException;
 import it.govpay.core.rs.v1.beans.ListaRiscossioni;
 import it.govpay.core.rs.v1.beans.Riscossione;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
+import it.govpay.core.rs.v1.beans.base.TipoRiscossione;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -120,8 +123,18 @@ public class RiscossioniController extends it.govpay.rs.BaseController {
 			findRiscossioniDTO.setDataRiscossioneDa(dataRiscossioneDa);
 			findRiscossioniDTO.setIdA2A(idA2A);
 			findRiscossioniDTO.setIdPendenza(idPendenza);
-			findRiscossioniDTO.setStato(Stato.valueOf(stato));
-			findRiscossioniDTO.setTipo(tipo);
+			StatoRiscossione statoRisc = StatoRiscossione.fromValue(stato);
+			switch(statoRisc) {
+			case INCASSATA: findRiscossioniDTO.setStato(Stato.INCASSATO);
+				break;
+			case RISCOSSA: findRiscossioniDTO.setStato(Stato.PAGATO);
+				break;
+			default:
+				break;
+			
+			}
+			
+			findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(TipoRiscossione.fromValue(tipo).toString()));
 			
 			
 			

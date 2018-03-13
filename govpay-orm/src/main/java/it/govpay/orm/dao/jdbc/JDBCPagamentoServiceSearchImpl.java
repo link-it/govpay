@@ -660,6 +660,30 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		}
 
+		String tableSingoliVersamenti = this.getPagamentoFieldConverter().toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
+		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){
+			String tableVersamenti = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			String tableApplicazioni = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableVersamenti+".id_applicazione="+tableApplicazioni+".id");
+
+			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableSingoliVersamenti);
+
+				String tablePagamenti = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
+				sqlQueryObject.addWhereCondition(tablePagamenti+".id_versamento="+tableSingoliVersamenti+".id");
+
+			}
+
+			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableVersamenti);
+				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+
+			}
+
+		}
+
+
+
 		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
 			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
 			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
@@ -667,7 +691,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 			if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
 				if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)==false){
-					sqlQueryObject.addFromTable(this.getPagamentoFieldConverter().toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO));
+					sqlQueryObject.addFromTable(tableSingoliVersamenti);
 				}
 				String tableName3 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_versamento");
@@ -676,7 +700,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 			if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
 				if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)==false){
-					sqlQueryObject.addFromTable(this.getPagamentoFieldConverter().toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO));
+					sqlQueryObject.addFromTable(tableSingoliVersamenti);
 				}
 				String tableName3 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
 				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_tributo");

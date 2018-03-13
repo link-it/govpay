@@ -8,8 +8,10 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.core.rs.v1.beans.Riscossione;
 import it.govpay.core.rs.v1.beans.base.Allegato;
+import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
 import it.govpay.core.rs.v1.beans.base.Allegato.TipoEnum;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.model.Pagamento.Stato;
 
 public class RiscossioniConverter {
 	
@@ -27,6 +29,18 @@ public class RiscossioniConverter {
 			rsModel.setImporto(input.getImportoPagato());
 			rsModel.setIbanAccredito(input.getIbanAccredito());
 			rsModel.setData(input.getDataPagamento());
+			Stato stato = input.getStato();
+			switch(stato) {
+			case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+				break;
+			case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
+				break;
+			case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
+				break;
+			default:
+				break;
+			}
+			
 			rsModel.setCommissioni(input.getCommissioniPsp());
 			Allegato allegato = new Allegato();
 			allegato.setTesto(Base64.encode(input.getAllegato()));

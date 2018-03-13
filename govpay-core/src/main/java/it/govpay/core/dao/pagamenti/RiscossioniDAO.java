@@ -2,7 +2,6 @@ package it.govpay.core.dao.pagamenti;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -19,7 +18,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RiscossioneNonTrovataException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Pagamento.Stato;
 
 public class RiscossioniDAO{
 
@@ -39,7 +37,7 @@ public class RiscossioniDAO{
 
 			filter.setDataInizio(listaRiscossioniDTO.getDataRiscossioneDa());
 			filter.setDataFine(listaRiscossioniDTO.getDataRiscossioneA());
-//			filter.setTipo(listaRiscossioniDTO.getTipo());
+			filter.setTipo(listaRiscossioniDTO.getTipo());
 			filter.setIdA2A(listaRiscossioniDTO.getIdA2A());
 			filter.setCodSingoloVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
 			filter.setStati(Arrays.asList(listaRiscossioniDTO.getStato().toString()));

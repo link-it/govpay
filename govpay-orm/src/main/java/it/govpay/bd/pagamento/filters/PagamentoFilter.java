@@ -42,6 +42,8 @@ import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoFilter extends AbstractFilter {
 
+	public enum TIPO_PAGAMENTO {ENTRATA, MBT}
+	
 	private Long idIncasso;
 	private Long idRr;
 	private Long idRpt;
@@ -57,7 +59,7 @@ public class PagamentoFilter extends AbstractFilter {
 	private String iur;
 	private String iuv;
 	private String idA2A;
-	private String tipo;
+	private TIPO_PAGAMENTO tipo;
 
 	public enum SortFields {
 		DATA
@@ -106,13 +108,20 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-//			if(this.tipo != null) {
-//				if(addAnd)
-//					newExpression.and();
-//
-//				newExpression.equals(Pagamento.model().STATO, this.tipo);
-//				addAnd = true;
-//			}
+			if(this.tipo != null) {
+				if(addAnd)
+					newExpression.and();
+
+				switch(this.tipo) {
+				case ENTRATA:newExpression.isNotNull(Pagamento.model().IBAN_ACCREDITO);
+					break;
+				case MBT:newExpression.isNull(Pagamento.model().IBAN_ACCREDITO);
+					break;
+				default:
+					break;
+				}
+				addAnd = true;
+			}
 
 			if(this.getIdIncasso() != null) {
 				if(addAnd)
@@ -391,11 +400,11 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idA2A = idA2A;
 	}
 
-	public String getTipo() {
+	public TIPO_PAGAMENTO getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(TIPO_PAGAMENTO tipo) {
 		this.tipo = tipo;
 	}
 

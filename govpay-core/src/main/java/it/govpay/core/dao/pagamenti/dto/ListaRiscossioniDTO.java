@@ -2,6 +2,7 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
 
+import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Pagamento.Stato;
@@ -17,7 +18,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	
 	private Date dataRiscossioneDa;
 	private Date dataRiscossioneA;
-	private String tipo;
+	private TIPO_PAGAMENTO tipo;
 	private String idPendenza;
 	private String idA2A;
 	private String idDominio;
@@ -39,11 +40,11 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 		this.dataRiscossioneA = dataRiscossioneA;
 	}
 
-	public String getTipo() {
+	public TIPO_PAGAMENTO getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(TIPO_PAGAMENTO tipo) {
 		this.tipo = tipo;
 	}
 
