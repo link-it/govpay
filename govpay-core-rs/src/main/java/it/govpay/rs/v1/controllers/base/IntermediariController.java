@@ -211,7 +211,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 				results.add(IntermediariConverter.toRsModel(intermediario));
 			}
 			
-			ListaIntermediari response = new ListaIntermediari(results, uriInfo.getRequestUri(),
+			ListaIntermediari response = new ListaIntermediari(results, this.getServicePath(uriInfo),
 					listaIntermediariDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
@@ -334,7 +334,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 				results.add(StazioniConverter.toRsModel(stazione));
 			}
 			
-			ListaStazioni response = new ListaStazioni(results, uriInfo.getRequestUri(),
+			ListaStazioni response = new ListaStazioni(results, this.getServicePath(uriInfo),
 					listaStazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

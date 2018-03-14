@@ -265,7 +265,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 				results.add(OperatoriConverter.toRsModel(operatore));
 			}
 			
-			ListaOperatori response = new ListaOperatori(results, uriInfo.getRequestUri(),
+			ListaOperatori response = new ListaOperatori(results, this.getServicePath(uriInfo),
 					listaOperatoriDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

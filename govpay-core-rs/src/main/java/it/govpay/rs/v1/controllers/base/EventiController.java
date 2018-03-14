@@ -68,7 +68,7 @@ public class EventiController extends it.govpay.rs.BaseController {
 				results.add(EventiConverter.toRsModel(evento));
 			}
 			
-			ListaEventi response = new ListaEventi(results, uriInfo.getRequestUri(),
+			ListaEventi response = new ListaEventi(results, this.getServicePath(uriInfo),
 					listaEventiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);

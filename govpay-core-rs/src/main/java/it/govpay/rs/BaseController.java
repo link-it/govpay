@@ -5,6 +5,8 @@ package it.govpay.rs;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -109,5 +111,15 @@ public abstract class BaseController {
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
+	}
+	
+	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
+		String baseUri = uriInfo.getBaseUri().toString();
+		String requestUri = uriInfo.getRequestUri().toString();
+		int idxOfBaseUri = requestUri.indexOf(baseUri);
+		
+		String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
+		
+		return new URI(servicePathwithParameters);
 	}
 }

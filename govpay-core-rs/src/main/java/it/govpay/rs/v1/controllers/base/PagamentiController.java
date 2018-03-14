@@ -209,7 +209,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 				results.add(PagamentiPortaleConverter.toRsModel(pagamentoPortale));
 			}
 			
-			ListaPagamentiPortale response = new ListaPagamentiPortale(results, uriInfo.getRequestUri(),
+			ListaPagamentiPortale response = new ListaPagamentiPortale(results, this.getServicePath(uriInfo),
 					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

@@ -201,7 +201,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 				results.add(ApplicazioniConverter.toRsModel(applicazione));
 			}
 			
-			ListaApplicazioni response = new ListaApplicazioni(results, uriInfo.getRequestUri(),
+			ListaApplicazioni response = new ListaApplicazioni(results, this.getServicePath(uriInfo),
 					listaApplicazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
