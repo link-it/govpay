@@ -219,8 +219,8 @@ public class DominiConverter {
 		.idEntrata(tributo.getCodTributo())
 		.tipoEntrata(EntrateConverter.toTipoEntrataRsModel(tributo));
 		
-		if(tributo.getTipoContabilitaDefault() != null) {
-			switch (tributo.getTipoContabilitaDefault()) {
+		if(tributo.getTipoContabilita() != null) {
+			switch (tributo.getTipoContabilita()) {
 			case ALTRO:
 				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.ALTRO);
 				break;
@@ -236,10 +236,6 @@ public class DominiConverter {
 			}
 		}
 		
-		if(tributo.getTipoContabilita()!=null)
-			rsModel.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
-
-
 		if(ibanAccredito != null)
 			rsModel.ibanAccredito(ibanAccredito.getCodIban());
 
