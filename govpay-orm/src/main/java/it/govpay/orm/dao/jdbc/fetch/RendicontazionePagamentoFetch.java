@@ -131,8 +131,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iur", RendicontazionePagamento.model().PAGAMENTO.IUR.getFieldType()));
 				setParameter(object, "setDataPagamento", RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_pagamento", RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO.getFieldType()));
-				setParameter(object, "setIbanAccredito", RendicontazionePagamento.model().PAGAMENTO.IBAN_ACCREDITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iban_accredito", RendicontazionePagamento.model().PAGAMENTO.IBAN_ACCREDITO.getFieldType()));
 				setParameter(object, "setCommissioniPsp", RendicontazionePagamento.model().PAGAMENTO.COMMISSIONI_PSP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "commissioni_psp", RendicontazionePagamento.model().PAGAMENTO.COMMISSIONI_PSP.getFieldType()));
 				setParameter(object, "setTipoAllegato", RendicontazionePagamento.model().PAGAMENTO.TIPO_ALLEGATO.getFieldType(),
@@ -249,6 +247,10 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_bundlekey", RendicontazionePagamento.model().VERSAMENTO.COD_BUNDLEKEY.getFieldType()));
 				setParameter(object, "setDatiAllegati", RendicontazionePagamento.model().VERSAMENTO.DATI_ALLEGATI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_allegati", RendicontazionePagamento.model().VERSAMENTO.DATI_ALLEGATI.getFieldType()));
+				setParameter(object, "setIncasso", RendicontazionePagamento.model().VERSAMENTO.INCASSO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "incasso", RendicontazionePagamento.model().VERSAMENTO.INCASSO.getFieldType()));
+				setParameter(object, "setAnomalie", RendicontazionePagamento.model().VERSAMENTO.ANOMALIE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "anomalie", RendicontazionePagamento.model().VERSAMENTO.ANOMALIE.getFieldType()));
 				return object;
 			}
 			
@@ -343,8 +345,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Pagamento.iur"));
 				setParameter(object, "setDataPagamento", RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"Pagamento.dataPagamento"));
-				setParameter(object, "setIbanAccredito", RendicontazionePagamento.model().PAGAMENTO.IBAN_ACCREDITO.getFieldType(),
-					this.getObjectFromMap(map,"Pagamento.ibanAccredito"));
 				setParameter(object, "setCommissioniPsp", RendicontazionePagamento.model().PAGAMENTO.COMMISSIONI_PSP.getFieldType(),
 					this.getObjectFromMap(map,"Pagamento.commissioniPsp"));
 				setParameter(object, "setTipoAllegato", RendicontazionePagamento.model().PAGAMENTO.TIPO_ALLEGATO.getFieldType(),
@@ -365,6 +365,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Pagamento.datiEsitoRevoca"));
 				setParameter(object, "setStato", RendicontazionePagamento.model().PAGAMENTO.STATO.getFieldType(),
 					this.getObjectFromMap(map,"Pagamento.stato"));
+				setParameter(object, "setTipo", RendicontazionePagamento.model().PAGAMENTO.TIPO.getFieldType(),
+					this.getObjectFromMap(map,"Pagamento.tipo"));
 				return object;
 			}
 			if(model.equals(RendicontazionePagamento.model().SINGOLO_VERSAMENTO)){
@@ -461,6 +463,10 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Versamento.codBundlekey"));
 				setParameter(object, "setDatiAllegati", RendicontazionePagamento.model().VERSAMENTO.DATI_ALLEGATI.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.datiAllegati"));
+				setParameter(object, "setIncasso", RendicontazionePagamento.model().VERSAMENTO.INCASSO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.incasso"));
+				setParameter(object, "setAnomalie", RendicontazionePagamento.model().VERSAMENTO.ANOMALIE.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.anomalie"));
 				return object;
 			}
 			

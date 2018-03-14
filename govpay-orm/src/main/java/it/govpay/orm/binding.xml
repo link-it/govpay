@@ -60,6 +60,7 @@
   <mapping name="idIncasso" class="it.govpay.orm.IdIncasso">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="trn" field="trn" usage="required"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
   </mapping>
   <mapping name="idDominio" class="it.govpay.orm.IdDominio" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -373,8 +374,6 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codIban" field="codIban" usage="required"/>
     <value name="bicAccredito" field="bicAccredito" usage="optional"/>
-    <value name="ibanAppoggio" field="ibanAppoggio" usage="optional"/>
-    <value name="bicAppoggio" field="bicAppoggio" usage="optional"/>
     <value name="postale" field="postale" usage="required"/>
     <value name="attivato" field="attivato" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
@@ -385,7 +384,7 @@
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <structure name="idIbanAccredito" field="idIbanAccredito" usage="optional" map-as="_IdIbanAccredito_Type"/>
-    <structure name="idIbanAccreditoPostale" field="idIbanAccreditoPostale" usage="optional" map-as="_IdIbanAccredito_Type"/>
+    <structure name="idIbanAppoggio" field="idIbanAppoggio" usage="optional" map-as="_IdIbanAccredito_Type"/>
     <value name="tipoContabilita" field="tipoContabilita" usage="optional"/>
     <value name="codiceContabilita" field="codiceContabilita" usage="optional"/>
     <structure field="tipoTributo" usage="required" map-as="it.govpay.orm.TipoTributo"/>
@@ -484,6 +483,8 @@
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
     <value name="codBundlekey" field="codBundlekey" usage="optional"/>
     <value name="datiAllegati" field="datiAllegati" usage="optional"/>
+    <value name="incasso" field="incasso" usage="optional"/>
+    <value name="anomalie" field="anomalie" usage="optional"/>
   </mapping>
   <mapping name="Evento" class="it.govpay.orm.Evento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -630,7 +631,6 @@
     <value name="dataAcquisizione" field="dataAcquisizione" usage="required"/>
     <value name="iur" field="iur" usage="required"/>
     <value name="dataPagamento" field="dataPagamento" usage="required"/>
-    <value name="ibanAccredito" field="ibanAccredito" usage="optional"/>
     <value name="commissioniPsp" field="commissioniPsp" usage="optional"/>
     <value name="tipoAllegato" field="tipoAllegato" usage="optional"/>
     <value name="allegato" field="allegato" usage="optional"/>
@@ -643,6 +643,7 @@
     <value name="datiEsitoRevoca" field="datiEsitoRevoca" usage="optional"/>
     <value name="stato" field="stato" usage="optional"/>
     <structure field="idIncasso" usage="optional" map-as="it.govpay.orm.IdIncasso"/>
+    <value name="tipo" field="tipo" usage="required"/>
   </mapping>
   <mapping name="Notifica" class="it.govpay.orm.Notifica">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -669,6 +670,7 @@
     <value name="nomeDispositivo" field="nomeDispositivo" usage="optional"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <structure name="idOperatore" field="idOperatore" usage="optional" map-as="_IdOperatore_Type"/>
+    <value name="ibanAccredito" field="ibanAccredito" usage="optional"/>
   </mapping>
   <mapping name="FR" class="it.govpay.orm.FR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

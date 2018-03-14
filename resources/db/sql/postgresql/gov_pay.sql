@@ -389,6 +389,8 @@ CREATE TABLE versamenti
 	cod_anno_tributario VARCHAR(35),
 	cod_bundlekey VARCHAR(256),
 	dati_allegati TEXT,
+	incasso VARCHAR(1),
+	anomalie TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_dominio BIGINT NOT NULL,

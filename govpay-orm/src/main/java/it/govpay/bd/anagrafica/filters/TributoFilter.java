@@ -46,7 +46,7 @@ public class TributoFilter extends AbstractFilter {
 	private String codTributo = null;
 	private String descrizione = null; //TODO
 	private Long idIbanAccredito = null;
-	private Long idIbanAccreditoPostale = null;
+	private Long idIbanAppoggio = null;
 	
 	public enum SortFields { }
 	
@@ -109,12 +109,12 @@ public class TributoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.idIbanAccreditoPostale != null){
+			if(this.idIbanAppoggio!= null){
 				if(addAnd)
 					newExpression.and();
 				
 				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				newExpression.equals(new CustomField("id_iban_accredito_postale", Long.class, "id_iban_accredito_postale", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idIbanAccreditoPostale);
+				newExpression.equals(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idIbanAppoggio);
 				addAnd = true;
 			}
 
@@ -205,12 +205,12 @@ public class TributoFilter extends AbstractFilter {
 		this.idIbanAccredito = idIbanAccredito;
 	}
 
-	public Long getIdIbanAccreditoPostale() {
-		return idIbanAccreditoPostale;
+	public Long getIdIbanAppoggio() {
+		return idIbanAppoggio;
 	}
 
-	public void setIdIbanAccreditoPostale(Long idIbanAccreditoPostale) {
-		this.idIbanAccreditoPostale = idIbanAccreditoPostale;
+	public void setIdIbanAppoggio(Long idIbanAppoggio) {
+		this.idIbanAppoggio = idIbanAppoggio;
 	}
 
 }

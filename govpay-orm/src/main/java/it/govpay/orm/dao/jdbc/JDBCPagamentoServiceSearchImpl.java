@@ -170,7 +170,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(Pagamento.model().DATA_ACQUISIZIONE);
 			fields.add(Pagamento.model().IUR);
 			fields.add(Pagamento.model().DATA_PAGAMENTO);
-			fields.add(Pagamento.model().IBAN_ACCREDITO);
 			fields.add(Pagamento.model().COMMISSIONI_PSP);
 			fields.add(Pagamento.model().TIPO_ALLEGATO);
 			fields.add(Pagamento.model().ALLEGATO);
@@ -180,6 +179,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(Pagamento.model().IMPORTO_REVOCATO);
 			fields.add(Pagamento.model().ESITO_REVOCA);
 			fields.add(Pagamento.model().DATI_ESITO_REVOCA);
+			fields.add(Pagamento.model().TIPO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

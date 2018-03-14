@@ -77,6 +77,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.COD_ANNO_TRIBUTARIO = new Field("codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_BUNDLEKEY = new Field("codBundlekey",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"Versamento",Versamento.class);
+		this.INCASSO = new Field("incasso",java.lang.String.class,"Versamento",Versamento.class);
+		this.ANOMALIE = new Field("anomalie",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -120,6 +122,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.COD_ANNO_TRIBUTARIO = new ComplexField(father,"codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_BUNDLEKEY = new ComplexField(father,"codBundlekey",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"Versamento",Versamento.class);
+		this.INCASSO = new ComplexField(father,"incasso",java.lang.String.class,"Versamento",Versamento.class);
+		this.ANOMALIE = new ComplexField(father,"anomalie",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -196,6 +200,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField COD_BUNDLEKEY = null;
 	 
 	public IField DATI_ALLEGATI = null;
+	 
+	public IField INCASSO = null;
+	 
+	public IField ANOMALIE = null;
 	 
 
 	@Override

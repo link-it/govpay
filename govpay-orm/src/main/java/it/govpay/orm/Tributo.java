@@ -38,7 +38,7 @@ import java.io.Serializable;
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idIbanAccreditoPostale" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idIbanAppoggio" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoTributo" type="{http://www.govpay.it/orm}TipoTributo" minOccurs="1" maxOccurs="1"/>
@@ -60,7 +60,7 @@ import java.io.Serializable;
   	"idDominio",
   	"abilitato",
   	"idIbanAccredito",
-  	"idIbanAccreditoPostale",
+  	"idIbanAppoggio",
   	"tipoContabilita",
   	"codiceContabilita",
   	"tipoTributo",
@@ -116,12 +116,12 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.idIbanAccredito = idIbanAccredito;
   }
 
-  public IdIbanAccredito getIdIbanAccreditoPostale() {
-    return this.idIbanAccreditoPostale;
+  public IdIbanAccredito getIdIbanAppoggio() {
+    return this.idIbanAppoggio;
   }
 
-  public void setIdIbanAccreditoPostale(IdIbanAccredito idIbanAccreditoPostale) {
-    this.idIbanAccreditoPostale = idIbanAccreditoPostale;
+  public void setIdIbanAppoggio(IdIbanAccredito idIbanAppoggio) {
+    this.idIbanAppoggio = idIbanAppoggio;
   }
 
   public java.lang.String getTipoContabilita() {
@@ -185,8 +185,8 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="idIbanAccredito",required=false,nillable=false)
   protected IdIbanAccredito idIbanAccredito;
 
-  @XmlElement(name="idIbanAccreditoPostale",required=false,nillable=false)
-  protected IdIbanAccredito idIbanAccreditoPostale;
+  @XmlElement(name="idIbanAppoggio",required=false,nillable=false)
+  protected IdIbanAccredito idIbanAppoggio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoContabilita",required=false,nillable=false)

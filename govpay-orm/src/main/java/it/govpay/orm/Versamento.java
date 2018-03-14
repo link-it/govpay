@@ -71,6 +71,8 @@ import java.io.Serializable;
  * 			&lt;element name="codAnnoTributario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codBundlekey" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="datiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="incasso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="anomalie" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -120,7 +122,9 @@ import java.io.Serializable;
   	"codVersamentoLotto",
   	"codAnnoTributario",
   	"codBundlekey",
-  	"datiAllegati"
+  	"datiAllegati",
+  	"incasso",
+  	"anomalie"
   }
 )
 
@@ -436,6 +440,22 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.datiAllegati = datiAllegati;
   }
 
+  public java.lang.String getIncasso() {
+    return this.incasso;
+  }
+
+  public void setIncasso(java.lang.String incasso) {
+    this.incasso = incasso;
+  }
+
+  public java.lang.String getAnomalie() {
+    return this.anomalie;
+  }
+
+  public void setAnomalie(java.lang.String anomalie) {
+    this.anomalie = anomalie;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -597,5 +617,13 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="datiAllegati",required=false,nillable=false)
   protected java.lang.String datiAllegati;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="incasso",required=false,nillable=false)
+  protected java.lang.String incasso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="anomalie",required=false,nillable=false)
+  protected java.lang.String anomalie;
 
 }

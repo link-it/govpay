@@ -260,6 +260,7 @@
 	<xsd:complexType name="id-incasso">
 		<xsd:sequence>
 			<xsd:element name="trn" type="String35"/>
+			<xsd:element name="codDominio" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -823,8 +824,6 @@
 		<xsd:sequence>
 			<xsd:element name="codIban" type="IBANType"/>
 			<xsd:element name="bicAccredito" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="ibanAppoggio" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="bicAppoggio" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="postale" type="xsd:boolean"/>
 			<xsd:element name="attivato" type="xsd:boolean"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
@@ -881,13 +880,13 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="idIbanAccreditoPostale" type="id-iban-accredito" minOccurs="0">
+			<xsd:element name="idIbanAppoggio" type="id-iban-accredito" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="IbanAccredito"
 								object-type="IbanAccredito" relationship="reversed"/>
-							<linkit:sql-column-mapping name="id_iban_accredito_postale"/>
+							<linkit:sql-column-mapping name="id_iban_appoggio" />
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
@@ -1293,6 +1292,16 @@
 			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
 			<xsd:element name="codBundlekey" type="String256" minOccurs="0"/>
 			<xsd:element name="datiAllegati" type="String1024" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="incasso" type="String1" minOccurs="0"/>
+			<xsd:element name="anomalie" type="String1024" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1857,7 +1866,6 @@
 			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>
 			<xsd:element name="iur" type="String35"/>
 			<xsd:element name="dataPagamento" type="xsd:dateTime"/>
-			<xsd:element name="ibanAccredito" type="IBANType" minOccurs="0"/>
 			<xsd:element name="commissioniPsp" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="tipoAllegato" type="String2" minOccurs="0">
 				<xsd:annotation>
@@ -1898,7 +1906,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			
+			<xsd:element name="tipo" type="String35"/>
 
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1968,6 +1976,10 @@
 					<linkit:sql-table-mapping generate-sql="true" name="incassi"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_inc"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="codDominio"/>
+							<linkit:sql-table-unique-field name="trn"/>
+						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2002,6 +2014,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ibanAccredito" type="String35" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
