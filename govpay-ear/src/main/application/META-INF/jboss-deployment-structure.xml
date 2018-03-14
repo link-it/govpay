@@ -106,4 +106,19 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</dependencies>
 	</sub-deployment>
+	<sub-deployment name="govpay-web-console-${project.version}.war">
+		<exclusions>
+			<module name="org.apache.log4j" />
+			<module name="org.slf4j" />
+			<module name="org.apache.commons.logging" />
+			<module name="org.log4j" />
+			<module name="org.jboss.logging" />
+		</exclusions>
+		<dependencies>
+			<module name="org.apache.cxf" />
+			<module name="org.codehaus.jackson.jackson-xc" />
+			<module name="org.codehaus.jackson.jackson-core-asl" />
+			<module name="org.codehaus.jackson.jackson-mapper-asl" />
+		</dependencies>
+	</sub-deployment>
 </jboss-deployment-structure>
