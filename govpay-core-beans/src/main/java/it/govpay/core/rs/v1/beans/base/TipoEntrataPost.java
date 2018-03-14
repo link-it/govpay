@@ -1,6 +1,8 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -93,6 +95,7 @@ public class TipoEntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable
     return this;
   }
 
+  @JsonIgnore
   public TipoContabilitaEnum getTipoContabilitaEnum() {
     return tipoContabilita;
   }
@@ -100,6 +103,7 @@ public class TipoEntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable
     this.tipoContabilita = tipoContabilita;
   }
 
+  
   /**
    * Tipologia di codifica del capitolo di bilancio
    **/
@@ -108,6 +112,7 @@ public class TipoEntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable
     return this;
   }
 
+    
   @JsonProperty("tipoContabilita")
   public String getTipoContabilita() {
 	  if(tipoContabilita != null)

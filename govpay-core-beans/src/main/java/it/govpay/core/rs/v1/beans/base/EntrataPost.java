@@ -1,6 +1,8 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -111,17 +113,34 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Tipologia di codifica del capitolo di bilancio
    **/
-  public EntrataPost tipoContabilita(TipoContabilitaEnum tipoContabilita) {
+  public EntrataPost tipoContabilitaEnum(TipoContabilitaEnum tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
     return this;
   }
 
-  @JsonProperty("tipoContabilita")
-  public TipoContabilitaEnum getTipoContabilita() {
+  @JsonIgnore
+  public TipoContabilitaEnum getTipoContabilitaEnum() {
     return tipoContabilita;
   }
-  public void setTipoContabilita(TipoContabilitaEnum tipoContabilita) {
+  public void setTipoContabilitaEnum(TipoContabilitaEnum tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
+  }
+
+  public void setTipoContabilita(String modelloPagamento) throws Exception{
+	  if(modelloPagamento != null) {
+		  this.tipoContabilita = TipoContabilitaEnum.fromValue(modelloPagamento);
+		  if(this.tipoContabilita == null)
+			  throw new Exception("valore ["+modelloPagamento+"] non ammesso per la property tipoContabilita");
+	  }
+  }
+  
+  @JsonProperty("tipoContabilita")
+  public String getTipoContabilita() {
+	  if(tipoContabilita != null) {
+		  return tipoContabilita.toString();
+	  } else {
+		  return null;
+	  }
   }
 
   /**

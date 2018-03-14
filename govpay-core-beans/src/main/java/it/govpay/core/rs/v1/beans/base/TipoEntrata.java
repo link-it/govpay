@@ -1,9 +1,10 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
-import it.govpay.core.rs.v1.beans.base.TipoEntrataPost;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "descrizione",
 "tipoContabilita",
@@ -93,17 +94,39 @@ public class TipoEntrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Tipologia di codifica del capitolo di bilancio
    **/
-  public TipoEntrata tipoContabilita(TipoContabilitaEnum tipoContabilita) {
+  public TipoEntrata tipoContabilitaEnum(TipoContabilitaEnum tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
     return this;
   }
 
-  @JsonProperty("tipoContabilita")
-  public TipoContabilitaEnum getTipoContabilita() {
+  @JsonIgnore
+  public TipoContabilitaEnum getTipoContabilitaEnum() {
     return tipoContabilita;
   }
-  public void setTipoContabilita(TipoContabilitaEnum tipoContabilita) {
+  public void setTipoContabilitaEnum(TipoContabilitaEnum tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
+  }
+
+  /**
+   * Tipologia di codifica del capitolo di bilancio
+   **/
+  public TipoEntrata tipoContabilita(String tipoContabilita) {
+	  if(tipoContabilita != null) {
+	    this.tipoContabilita = TipoContabilitaEnum.fromValue(tipoContabilita);
+	  }
+	    return this;
+  }
+
+  @JsonProperty("tipoContabilita")
+  public String getTipoContabilita() {
+	  if(this.tipoContabilita!=null)
+    return tipoContabilita.toString();
+	  return null;
+  }
+  public void setTipoContabilita(String tipoContabilita) {
+	  if(tipoContabilita != null) {
+		    this.tipoContabilita = TipoContabilitaEnum.fromValue(tipoContabilita);
+	  }
   }
 
   /**
