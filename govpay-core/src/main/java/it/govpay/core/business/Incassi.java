@@ -335,6 +335,7 @@ public class Incassi extends BasicBD {
 				incasso.setDispositivo(richiestaIncasso.getDispositivo());
 				incasso.setImporto(richiestaIncasso.getImporto());
 				incasso.setTrn(richiestaIncasso.getTrn());
+				incasso.setIbanAccredito(richiestaIncasso.getIbanAccredito());
 				incasso.setIdApplicazione(idApplicazione);
 				incasso.setIdOperatore(idOperatore); 
 				richiestaIncassoResponse.setIncasso(incasso);

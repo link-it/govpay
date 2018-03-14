@@ -3,10 +3,8 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
-import java.util.List;
 
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Rendicontazione;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
