@@ -95,14 +95,14 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
-		if(field.equals(Tributo.model().ID_IBAN_ACCREDITO_POSTALE.COD_IBAN)){
+		if(field.equals(Tributo.model().ID_IBAN_APPOGGIO.COD_IBAN)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_iban";
 			}else{
 				return "cod_iban";
 			}
 		}
-		if(field.equals(Tributo.model().ID_IBAN_ACCREDITO_POSTALE.ID_DOMINIO.COD_DOMINIO)){
+		if(field.equals(Tributo.model().ID_IBAN_APPOGGIO.ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
 			}else{
@@ -190,11 +190,11 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tributo.model().ID_IBAN_ACCREDITO.ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(Tributo.model().ID_IBAN_ACCREDITO.ID_DOMINIO, returnAlias);
 		}
-		if(field.equals(Tributo.model().ID_IBAN_ACCREDITO_POSTALE.COD_IBAN)){
-			return this.toTable(Tributo.model().ID_IBAN_ACCREDITO_POSTALE, returnAlias);
+		if(field.equals(Tributo.model().ID_IBAN_APPOGGIO.COD_IBAN)){
+			return this.toTable(Tributo.model().ID_IBAN_APPOGGIO, returnAlias);
 		}
-		if(field.equals(Tributo.model().ID_IBAN_ACCREDITO_POSTALE.ID_DOMINIO.COD_DOMINIO)){
-			return this.toTable(Tributo.model().ID_IBAN_ACCREDITO_POSTALE.ID_DOMINIO, returnAlias);
+		if(field.equals(Tributo.model().ID_IBAN_APPOGGIO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Tributo.model().ID_IBAN_APPOGGIO.ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(Tributo.model().TIPO_CONTABILITA)){
 			return this.toTable(Tributo.model(), returnAlias);
@@ -245,11 +245,11 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(Tributo.model().ID_IBAN_ACCREDITO.ID_DOMINIO)){
 			return "domini";
 		}
-		if(model.equals(Tributo.model().ID_IBAN_ACCREDITO_POSTALE)){
+		if(model.equals(Tributo.model().ID_IBAN_APPOGGIO)){
 			return "iban_accredito";
 		}
-		if(model.equals(Tributo.model().ID_IBAN_ACCREDITO_POSTALE.ID_DOMINIO)){
-			return "id_dominio";
+		if(model.equals(Tributo.model().ID_IBAN_APPOGGIO.ID_DOMINIO)){
+			return "domini";
 		}
 		if(model.equals(Tributo.model().TIPO_TRIBUTO)){
 			return "tipi_tributo";

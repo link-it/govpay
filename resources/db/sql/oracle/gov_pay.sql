@@ -571,6 +571,8 @@ CREATE TABLE versamenti
 	cod_anno_tributario VARCHAR2(35 CHAR),
 	cod_bundlekey VARCHAR2(256 CHAR),
 	dati_allegati CLOB,
+	incasso VARCHAR2(1 CHAR),
+	anomalie CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

@@ -51,6 +51,7 @@ public class IncassoModel extends AbstractModel<Incasso> {
 		this.NOME_DISPOSITIVO = new Field("nomeDispositivo",java.lang.String.class,"Incasso",Incasso.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Incasso",Incasso.class));
 		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new Field("idOperatore",it.govpay.orm.IdOperatore.class,"Incasso",Incasso.class));
+		this.IBAN_ACCREDITO = new Field("ibanAccredito",java.lang.String.class,"Incasso",Incasso.class);
 	
 	}
 	
@@ -68,6 +69,7 @@ public class IncassoModel extends AbstractModel<Incasso> {
 		this.NOME_DISPOSITIVO = new ComplexField(father,"nomeDispositivo",java.lang.String.class,"Incasso",Incasso.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Incasso",Incasso.class));
 		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new ComplexField(father,"idOperatore",it.govpay.orm.IdOperatore.class,"Incasso",Incasso.class));
+		this.IBAN_ACCREDITO = new ComplexField(father,"ibanAccredito",java.lang.String.class,"Incasso",Incasso.class);
 	
 	}
 	
@@ -92,6 +94,8 @@ public class IncassoModel extends AbstractModel<Incasso> {
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 	public it.govpay.orm.model.IdOperatoreModel ID_OPERATORE = null;
+	 
+	public IField IBAN_ACCREDITO = null;
 	 
 
 	@Override

@@ -32,16 +32,6 @@ public class Tributo extends it.govpay.model.Tributo {
 	
 	// Business
 	
-	public void setIdIbanAccredito(BasicBD bd, long idIbanAccredito) throws ServiceException {
-		super.setIdIbanAccredito(idIbanAccredito);
-		ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
-	}
-	
-	public void setIdIbanAppoggio(BasicBD bd, long idIbanAppoggio) throws ServiceException {
-		super.setIdIbanAppoggio(idIbanAppoggio);
-		ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
-	}
-	
 	public TipoContabilita getTipoContabilita() {
 		if(getTipoContabilitaCustom() != null)
 			return getTipoContabilitaCustom();
@@ -75,6 +65,10 @@ public class Tributo extends it.govpay.model.Tributo {
 		super.setIdIbanAccredito(ibanAccredito.getId());
 		this.ibanAccredito = ibanAccredito;
 	}
+	public void setIbanAccredito(BasicBD bd, long idIbanAccredito) throws ServiceException {
+		super.setIdIbanAccredito(idIbanAccredito);
+		ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
+	}
 	
 	private transient IbanAccredito ibanAppoggio;
 	public IbanAccredito getIbanAppoggio() throws ServiceException {
@@ -83,6 +77,10 @@ public class Tributo extends it.govpay.model.Tributo {
 	public void setIbanAppoggio(IbanAccredito ibanAppoggio) {
 		super.setIdIbanAppoggio(ibanAppoggio.getId());
 		this.ibanAppoggio = ibanAppoggio;
+	}
+	public void setIbanAppoggio(BasicBD bd, long idIbanAppoggio) throws ServiceException {
+		super.setIdIbanAppoggio(idIbanAppoggio);
+		ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
 	}
 
 	

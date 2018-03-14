@@ -188,8 +188,6 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 			fields.add(IbanAccredito.model().COD_IBAN);
 			fields.add(IbanAccredito.model().POSTALE);
 			fields.add(IbanAccredito.model().BIC_ACCREDITO);
-			fields.add(IbanAccredito.model().IBAN_APPOGGIO);
-			fields.add(IbanAccredito.model().BIC_APPOGGIO);
         
 			fields.add(IbanAccredito.model().ATTIVATO);
 			fields.add(IbanAccredito.model().ABILITATO);

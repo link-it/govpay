@@ -61,7 +61,6 @@ public class PagamentoConverter {
 			if(vo.getTipoAllegato() != null)
 				dto.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
 			dto.setAllegato(vo.getAllegato());
-
 			if(vo.getIdRPT() != null) 
 				dto.setIdRpt(vo.getIdRPT().getId());
 			if(vo.getIdSingoloVersamento() != null)

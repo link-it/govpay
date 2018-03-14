@@ -37,8 +37,6 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codIban" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="bicAccredito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ibanAppoggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="bicAppoggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="postale" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="attivato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
@@ -59,8 +57,6 @@ import java.io.Serializable;
   propOrder = {
   	"codIban",
   	"bicAccredito",
-  	"ibanAppoggio",
-  	"bicAppoggio",
   	"postale",
   	"attivato",
   	"abilitato",
@@ -102,22 +98,6 @@ public class IbanAccredito extends org.openspcoop2.utils.beans.BaseBean implemen
 
   public void setBicAccredito(java.lang.String bicAccredito) {
     this.bicAccredito = bicAccredito;
-  }
-
-  public java.lang.String getIbanAppoggio() {
-    return this.ibanAppoggio;
-  }
-
-  public void setIbanAppoggio(java.lang.String ibanAppoggio) {
-    this.ibanAppoggio = ibanAppoggio;
-  }
-
-  public java.lang.String getBicAppoggio() {
-    return this.bicAppoggio;
-  }
-
-  public void setBicAppoggio(java.lang.String bicAppoggio) {
-    this.bicAppoggio = bicAppoggio;
   }
 
   public boolean isPostale() {
@@ -190,14 +170,6 @@ public class IbanAccredito extends org.openspcoop2.utils.beans.BaseBean implemen
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="bicAccredito",required=false,nillable=false)
   protected java.lang.String bicAccredito;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ibanAppoggio",required=false,nillable=false)
-  protected java.lang.String ibanAppoggio;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="bicAppoggio",required=false,nillable=false)
-  protected java.lang.String bicAppoggio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="postale",required=true,nillable=false)

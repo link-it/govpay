@@ -561,41 +561,42 @@ public class Operazioni{
 		} 
 	}
 
+	// TODO aggiornare procedura di generazione
 	public static String estrattoConto(String serviceName){
-		if(!GovpayConfig.getInstance().isBatchEstrattoConto())
+//		if(!GovpayConfig.getInstance().isBatchEstrattoConto())
 			return "Servizio estratto conto non configurato";
-
-		BasicBD bd = null;
-		GpContext ctx = null;
-		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "EstrattoConto");
-			MDC.put("op", ctx.getTransactionId());
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("EstrattoConto");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			if(BatchManager.startEsecuzione(bd, conto)) {
-				String creaEstrattiContoSuFileSystem = new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
-				aggiornaSondaOK(conto, bd);
-				return creaEstrattiContoSuFileSystem;
-			} else {
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
-			}
-		} catch (Exception e) {
-			log.error("Estratto Conto fallito", e);
-			aggiornaSondaKO(conto, e, bd);
-			return "Estratto Conto#" + e.getMessage();
-		} finally {
-			BatchManager.stopEsecuzione(bd, conto);
-			if(bd != null) bd.closeConnection();
-			if(ctx != null) ctx.log();
-		}
+//
+//		BasicBD bd = null;
+//		GpContext ctx = null;
+//		try {
+//			ctx = new GpContext();
+//			MDC.put("cmd", "EstrattoConto");
+//			MDC.put("op", ctx.getTransactionId());
+//			Service service = new Service();
+//			service.setName(serviceName);
+//			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
+//			ctx.getTransaction().setService(service);
+//			Operation opt = new Operation();
+//			opt.setName("EstrattoConto");
+//			ctx.getTransaction().setOperation(opt);
+//			GpThreadLocal.set(ctx);
+//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+//			if(BatchManager.startEsecuzione(bd, conto)) {
+//				String creaEstrattiContoSuFileSystem = new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
+//				aggiornaSondaOK(conto, bd);
+//				return creaEstrattiContoSuFileSystem;
+//			} else {
+//				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+//			}
+//		} catch (Exception e) {
+//			log.error("Estratto Conto fallito", e);
+//			aggiornaSondaKO(conto, e, bd);
+//			return "Estratto Conto#" + e.getMessage();
+//		} finally {
+//			BatchManager.stopEsecuzione(bd, conto);
+//			if(bd != null) bd.closeConnection();
+//			if(ctx != null) ctx.log();
+//		}
 	}
 
 	public static String generaAvvisi(String serviceName){

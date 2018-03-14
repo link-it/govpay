@@ -175,6 +175,14 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-web-console</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>org.slf4j</groupId>

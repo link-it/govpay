@@ -68,8 +68,6 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iur", Pagamento.model().IUR.getFieldType()));
 				setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_pagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType()));
-				setParameter(object, "setIbanAccredito", Pagamento.model().IBAN_ACCREDITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iban_accredito", Pagamento.model().IBAN_ACCREDITO.getFieldType()));
 				setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "commissioni_psp", Pagamento.model().COMMISSIONI_PSP.getFieldType()));
 				setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),
@@ -90,6 +88,8 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "dati_esito_revoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType()));
 				setParameter(object, "setStato", Pagamento.model().STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato", Pagamento.model().STATO.getFieldType()));
+				setParameter(object, "setTipo", Pagamento.model().TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo", Pagamento.model().TIPO.getFieldType()));
 				return object;
 			}
 			
@@ -126,8 +126,6 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"iur"));
 				setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataPagamento"));
-				setParameter(object, "setIbanAccredito", Pagamento.model().IBAN_ACCREDITO.getFieldType(),
-					this.getObjectFromMap(map,"ibanAccredito"));
 				setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
 					this.getObjectFromMap(map,"commissioniPsp"));
 				setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),
@@ -148,6 +146,8 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"datiEsitoRevoca"));
 				setParameter(object, "setStato", Pagamento.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
+				setParameter(object, "setTipo", Pagamento.model().TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipo"));
 				return object;
 			}
 			

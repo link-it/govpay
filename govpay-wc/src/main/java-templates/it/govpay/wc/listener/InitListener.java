@@ -50,7 +50,7 @@ public class InitListener implements ServletContextListener{
 				it.govpay.bd.GovpayConfig.newInstance4GovPay(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
 				it.govpay.bd.GovpayCustomConfig.newInstance(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
 			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay-WebController fallita: " + e, e);
+				throw new RuntimeException("Inizializzazione di GovPay-WebController ${project.version} (build " + commit + ") fallita: " + e, e);
 			}
 			
 			// Gestione della configurazione di Log4J
@@ -64,7 +64,7 @@ public class InitListener implements ServletContextListener{
 			
 			try {
 				log = LoggerWrapperFactory.getLogger("boot");	
-				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
+				log.info("Inizializzazione GovPay-WebController ${project.version} (build " + commit + ") in corso");
 				
 				if(log4j2Config != null) {
 					log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());

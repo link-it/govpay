@@ -29,8 +29,6 @@ import org.slf4j.Logger;
 
 public class HttpSessionCheckListener implements HttpSessionListener {
 
-//	private static Logger log = LoggerManager.getGUILogger();
-	
 	Logger log = LoggerWrapperFactory.getLogger(HttpSessionCheckListener.class);
 	
 	@Override

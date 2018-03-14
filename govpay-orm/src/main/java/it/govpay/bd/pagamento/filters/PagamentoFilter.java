@@ -112,14 +112,7 @@ public class PagamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				switch(this.tipo) {
-				case ENTRATA:newExpression.isNotNull(Pagamento.model().IBAN_ACCREDITO);
-					break;
-				case MBT:newExpression.isNull(Pagamento.model().IBAN_ACCREDITO);
-					break;
-				default:
-					break;
-				}
+				newExpression.equals(Pagamento.model().TIPO,this.tipo.toString());
 				addAnd = true;
 			}
 

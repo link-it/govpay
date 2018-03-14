@@ -100,6 +100,18 @@
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-web-console</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-web-console</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
 
 	</dependencies>
 
@@ -130,32 +142,37 @@
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-web</artifactId>
-							<contextRoot>/govpay</contextRoot>
+							<contextRoot>/govpay/frontend/api/pagopa</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-api-pagamento</artifactId>
-							<contextRoot>/govpay-api-pagamento</contextRoot>
+							<contextRoot>/govpay/frontend/api/pagamento</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-wc</artifactId>
-							<contextRoot>/govpay-wc</contextRoot>
+							<contextRoot>/govpay/frontend/web/wconnector</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-api-pendenze</artifactId>
-							<contextRoot>/govpay-api-pendenze</contextRoot>
+							<contextRoot>/govpay/backend/api/pendenze</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-api-ragioneria</artifactId>
-							<contextRoot>/govpay-api-ragioneria</contextRoot>
+							<contextRoot>/govpay/backend/api/ragioneria</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-api-backoffice</artifactId>
-							<contextRoot>/govpay-api-backoffice</contextRoot>
+							<contextRoot>/govpay/backend/api/backoffice</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>govpay-web-console</artifactId>
+							<contextRoot>/govpay/backend/gui/backoffice</contextRoot>
 						</webModule>
 					</modules>
 					<version>6</version>

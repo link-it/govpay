@@ -58,10 +58,6 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_iban", IbanAccredito.model().COD_IBAN.getFieldType()));
 				setParameter(object, "setBicAccredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "bic_accredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType()));
-				setParameter(object, "setIbanAppoggio", IbanAccredito.model().IBAN_APPOGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iban_appoggio", IbanAccredito.model().IBAN_APPOGGIO.getFieldType()));
-				setParameter(object, "setBicAppoggio", IbanAccredito.model().BIC_APPOGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "bic_appoggio", IbanAccredito.model().BIC_APPOGGIO.getFieldType()));
 				setParameter(object, "setPostale", IbanAccredito.model().POSTALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "postale", IbanAccredito.model().POSTALE.getFieldType()));
 				setParameter(object, "setAttivato", IbanAccredito.model().ATTIVATO.getFieldType(),
@@ -94,10 +90,6 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codIban"));
 				setParameter(object, "setBicAccredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType(),
 					this.getObjectFromMap(map,"bicAccredito"));
-				setParameter(object, "setIbanAppoggio", IbanAccredito.model().IBAN_APPOGGIO.getFieldType(),
-					this.getObjectFromMap(map,"ibanAppoggio"));
-				setParameter(object, "setBicAppoggio", IbanAccredito.model().BIC_APPOGGIO.getFieldType(),
-					this.getObjectFromMap(map,"bicAppoggio"));
 				setParameter(object, "setPostale", IbanAccredito.model().POSTALE.getFieldType(),
 					this.getObjectFromMap(map,"postale"));
 				setParameter(object, "setAttivato", IbanAccredito.model().ATTIVATO.getFieldType(),

@@ -147,7 +147,6 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			lstReturnType.add(Long.class); //id_singolo_versamento
 			lstReturnType.add(Long.class); //id_rr
 			lstReturnType.add(Long.class); //id_incasso
-			lstReturnType.add(Pagamento.model().IBAN_ACCREDITO.getFieldType());
 			lstReturnType.add(Pagamento.model().COD_DOMINIO.getFieldType());
 			lstReturnType.add(Pagamento.model().IUV.getFieldType());
 			lstReturnType.add(Pagamento.model().STATO.getFieldType());
