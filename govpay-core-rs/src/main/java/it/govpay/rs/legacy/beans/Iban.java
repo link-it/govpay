@@ -40,9 +40,7 @@ public class Iban extends JSONSerializable {
 	public Iban(it.govpay.bd.model.IbanAccredito iban, String codDominio, UriBuilder uriBuilder) throws ServiceException {
 		this.abilitato = iban.isAbilitato();
 		this.iban = iban.getCodIban();
-		this.bic = iban.getCodBicAccredito();
-		this.ibanAppoggio = iban.getCodIbanAppoggio();
-		this.bicAppoggio = iban.getCodBicAppoggio();    
+		this.bic = iban.getCodBic();
 		this.href = uriBuilder.clone().path("domini").path(codDominio).path("iban").path(iban.getCodIban()).build().toString();
 	}
 	

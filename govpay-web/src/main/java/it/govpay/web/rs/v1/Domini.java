@@ -103,8 +103,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.setupContext(uriInfo, httpHeaders, "findDomini");
 			
-			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
-			
 			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			FindDominiDTO findDominiDTO = new FindDominiDTO(user);
@@ -141,8 +139,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.setupContext(uriInfo, httpHeaders, "findDomini");
 			
-			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
-			
 			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, codDominio);
@@ -176,8 +172,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
-			
-			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
 			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			
@@ -220,8 +214,6 @@ public class Domini extends BaseRsServiceV1 {
 			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
-			
-			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
 			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
 			

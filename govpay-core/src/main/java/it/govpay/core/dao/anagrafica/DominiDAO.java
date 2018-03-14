@@ -69,7 +69,6 @@ import it.govpay.core.dao.anagrafica.exception.TributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
 
@@ -407,7 +406,7 @@ public class DominiDAO {
 
 			List<GetTributoDTOResponse> lst = new ArrayList<>();
 			for(it.govpay.bd.model.Tributo t: findAll) {
-				lst.add(new GetTributoDTOResponse(t, t.getIbanAccreditoPostale(bd)));
+				lst.add(new GetTributoDTOResponse(t, t.getIbanAccredito(), t.getIbanAppoggio()));
 			}
 
 			return new FindTributiDTOResponse(ibanAccreditoBD.count(filter), lst);
@@ -432,8 +431,7 @@ public class DominiDAO {
 				throw new DominioNonTrovatoException("Dominio " + getTributoDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 			it.govpay.bd.model.Tributo tributo = AnagraficaManager.getTributo(bd, dominio.getId(), getTributoDTO.getCodTributo());
-			IbanAccredito ibanAccredito = tributo.getIbanAccreditoPostale(bd);
-			GetTributoDTOResponse response = new GetTributoDTOResponse(tributo, ibanAccredito);
+			GetTributoDTOResponse response = new GetTributoDTOResponse(tributo, tributo.getIbanAccredito(), tributo.getIbanAppoggio());
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException("Tributo " + getTributoDTO.getCodTributo() + " non censito in Anagrafica per il dominio " + getTributoDTO.getCodDominio());
@@ -476,9 +474,9 @@ public class DominiDAO {
 			
 			// Iban Accredito postale
 			try {
-				if(putEntrataDominioDTO.getIbanAccreditoPostale() != null) {
-					putEntrataDominioDTO.getTributo().setIdIbanAccreditoPostale(AnagraficaManager.getIbanAccredito(bd, AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId(),
-							putEntrataDominioDTO.getIbanAccreditoPostale()).getId()); 
+				if(putEntrataDominioDTO.getIbanAppoggio() != null) {
+					putEntrataDominioDTO.getTributo().setIdIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId(),
+							putEntrataDominioDTO.getIbanAppoggio()).getId()); 
 				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new IbanAccreditoNonTrovatoException(e.getMessage());

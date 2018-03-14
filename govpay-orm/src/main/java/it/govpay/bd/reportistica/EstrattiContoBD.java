@@ -61,7 +61,6 @@ public class EstrattiContoBD extends BasicBD{
 		estrattoConto.setImportoPagato(rp.getPagamento().getImportoPagato().doubleValue()); // importo pagato
 		estrattoConto.setIuv(rp.getPagamento().getIuv());// iuv
 		estrattoConto.setIur(rp.getPagamento().getIur()); // iur1
-		estrattoConto.setIbanAccredito(rp.getPagamento().getIbanAccredito()); // iban_accredito
 		estrattoConto.setIdRr(rp.getPagamento().getIdRr()); //id_rr
 		estrattoConto.setIdIncasso(rp.getPagamento().getIdIncasso()); //id_incasso
 		estrattoConto.setStatoPagamento(rp.getPagamento().getStato()); // stato_pagamento

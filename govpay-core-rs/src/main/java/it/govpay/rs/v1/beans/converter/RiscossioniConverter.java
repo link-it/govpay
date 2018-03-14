@@ -13,6 +13,7 @@ import it.govpay.core.rs.v1.beans.base.TipoRiscossione;
 import it.govpay.core.rs.v1.beans.base.Allegato.TipoEnum;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 
 public class RiscossioniConverter {
 	
@@ -28,7 +29,6 @@ public class RiscossioniConverter {
 			rsModel.setIdVocePendenza(input.getSingoloVersamento(null).getCodSingoloVersamentoEnte());
 			rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(input.getRpt(null).getCodDominio(), input.getRpt(null).getIuv(), input.getRpt(null).getCcp()));
 			rsModel.setImporto(input.getImportoPagato());
-			rsModel.setIbanAccredito(input.getIbanAccredito());
 			rsModel.setData(input.getDataPagamento());
 			Stato stato = input.getStato();
 			switch(stato) {
@@ -42,11 +42,11 @@ public class RiscossioniConverter {
 				break;
 			}
 			
-			if(input.getIbanAccredito() == null) {
-				rsModel.setTipo(TipoRiscossione.MBT);
-			} else {
+			if(input.getTipo().equals(TipoPagamento.ENTRATA)) {
 				rsModel.setTipo(TipoRiscossione.ENTRATA);
-			}
+			} else {
+				rsModel.setTipo(TipoRiscossione.MBT);
+			} 
 			
 			rsModel.setCommissioni(input.getCommissioniPsp());
 			Allegato allegato = new Allegato();

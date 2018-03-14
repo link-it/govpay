@@ -355,7 +355,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			List<it.govpay.core.rs.v1.beans.Entrata> results = new ArrayList<it.govpay.core.rs.v1.beans.Entrata>();
 			for(GetTributoDTOResponse tributo: listaDominiEntrateDTOResponse.getResults()) {
-				results.add(DominiConverter.toEntrataRsModel(tributo.getTributo(), tributo.getIbanAccreditoPostale()));
+				results.add(DominiConverter.toEntrataRsModel(tributo.getTributo(), tributo.getIbanAppoggio()));
 			}
 			
 			ListaEntrate response = new ListaEntrate(results, this.getServicePath(uriInfo),
@@ -494,7 +494,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Entrata response = DominiConverter.toEntrataRsModel(listaDominiEntrateDTOResponse.getTributo(), listaDominiEntrateDTOResponse.getIbanAccreditoPostale());
+			Entrata response = DominiConverter.toEntrataRsModel(listaDominiEntrateDTOResponse.getTributo(), listaDominiEntrateDTOResponse.getIbanAppoggio());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

@@ -10,7 +10,8 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 	private String idDominio;
 	private String idTributo;
 	private String ibanAccredito;
-	private String ibanAccreditoPostale;
+	private String ibanAppoggio;
+
 	
 	public PutEntrataDominioDTO(IAutorizzato user) {
 		super(user);
@@ -48,12 +49,13 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 		this.ibanAccredito = ibanAccredito;
 	}
 
-	public String getIbanAccreditoPostale() {
-		return ibanAccreditoPostale;
+	public String getIbanAppoggio() {
+		return ibanAppoggio;
 	}
 
-	public void setIbanAccreditoPostale(String ibanAccreditoPostale) {
-		this.ibanAccreditoPostale = ibanAccreditoPostale;
+	public void setIbanAppoggio(String ibanAppoggio) {
+		this.ibanAppoggio = ibanAppoggio;
 	}
+
 
 }

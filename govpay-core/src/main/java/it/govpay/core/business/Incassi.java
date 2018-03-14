@@ -35,6 +35,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
@@ -63,6 +64,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -105,11 +107,21 @@ public class Incassi extends BasicBD {
 			}
 			
 			// Verifica Dominio
+			Dominio dominio = null;
 			try {
-				AnagraficaManager.getDominio(this, richiestaIncasso.getCodDominio());
+				dominio = AnagraficaManager.getDominio(this, richiestaIncasso.getCodDominio());
 			} catch (NotFoundException e) {
 				GpThreadLocal.get().log("incasso.dominioInesistente", richiestaIncasso.getCodDominio());
 				throw new IncassiException(FaultType.DOMINIO_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
+			}
+			
+			// Verifica IbanAccredito, se indicato
+			if(richiestaIncasso.getIbanAccredito() != null)
+			try {
+				AnagraficaManager.getIbanAccredito(this, dominio.getId(), richiestaIncasso.getIbanAccredito());
+			} catch (NotFoundException e) {
+				GpThreadLocal.get().log("incasso.ibanInesistente", richiestaIncasso.getIbanAccredito());
+				throw new IncassiException(FaultType.IBAN_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
 			}
 			
 			Long idApplicazione = null;
@@ -158,7 +170,7 @@ public class Incassi extends BasicBD {
 			// Controllo se il TRN dell'incasso e' gia registrato
 			IncassiBD incassiBD = new IncassiBD(this);
 			try {
-				Incasso incasso = incassiBD.getIncasso(richiestaIncasso.getTrn());
+				Incasso incasso = incassiBD.getIncasso(dominio.getCodDominio(), richiestaIncasso.getTrn());
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!richiestaIncasso.getCausale().equals(incasso.getCausale())) {
@@ -181,7 +193,6 @@ public class Incassi extends BasicBD {
 				// Incasso non registrato.
 				richiestaIncassoResponse.setCreato(true);
 			}
-			
 			
 			// Sto selezionando i pagamenti per impostarli come Incassati.
 			this.enableSelectForUpdate();
@@ -251,6 +262,7 @@ public class Incassi extends BasicBD {
 								}
 								
 								pagamento = new it.govpay.bd.model.Pagamento();
+								pagamento.setTipo(TipoPagamento.ENTRATA);
 								pagamento.setStato(Stato.PAGATO_SENZA_RPT);
 								pagamento.setCodDominio(fr.getCodDominio());
 								pagamento.setDataAcquisizione(rendicontazione.getData());
@@ -260,7 +272,6 @@ public class Incassi extends BasicBD {
 								pagamento.setIuv(rendicontazione.getIuv());
 								pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati());
 								pagamento.setSingoloVersamento(versamento.getSingoliVersamenti(this).get(0));
-								pagamento.setIbanAccredito(versamento.getSingoliVersamenti(this).get(0).getIbanAccredito(this).getCodIban());
 								rendicontazione.setPagamento(pagamento);
 								new PagamentiBD(this).insertPagamento(pagamento);
 								rendicontazione.setIdPagamento(pagamento.getId());
@@ -391,12 +402,7 @@ public class Incassi extends BasicBD {
 	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws NotAuthorizedException, ServiceException {
 		IncassiBD incassiBD = new IncassiBD(this);
 		try {
-			Incasso incasso = null;
-			if(leggiIncassoDTO.getId() != null) {
-				incasso = incassiBD.getIncasso(leggiIncassoDTO.getId());
-			} else {
-				incasso = incassiBD.getIncasso(leggiIncassoDTO.getTrn());
-			}
+			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
 			
 			List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
 			diritti.add(Diritti.LETTURA);

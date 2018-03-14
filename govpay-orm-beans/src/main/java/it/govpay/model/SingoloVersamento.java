@@ -62,6 +62,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String hashDocumento;
 	private String provinciaResidenza;
 	private Long idIbanAccredito;
+	private Long idIbanAppoggio;
 	private Tributo.TipoContabilita tipoContabilita;
 	private String codContabilita;
 	private String datiAllegati;
@@ -184,6 +185,14 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	@Override
 	public int compareTo(SingoloVersamento sv) {
 		return codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
+	}
+
+	public Long getIdIbanAppoggio() {
+		return idIbanAppoggio;
+	}
+
+	public void setIdIbanAppoggio(Long idIbanAppoggio) {
+		this.idIbanAppoggio = idIbanAppoggio;
 	}
 }
 

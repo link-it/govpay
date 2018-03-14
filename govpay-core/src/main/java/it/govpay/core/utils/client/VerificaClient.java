@@ -38,7 +38,6 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.base.StatoPendenzaVerificata;
 import it.govpay.core.utils.GpContext;
@@ -67,7 +66,7 @@ public class VerificaClient extends BasicClient {
 		super(applicazione, TipoConnettore.VERIFICA);
 		versione = applicazione.getConnettoreVerifica().getVersione();
 		codApplicazione = applicazione.getCodApplicazione();
-		this.tipo = Tipo.valueOf(this.versione.getApi());
+		this.tipo = applicazione.getConnettoreVerifica().getTipo();
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}

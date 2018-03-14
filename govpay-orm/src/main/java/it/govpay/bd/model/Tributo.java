@@ -30,14 +30,6 @@ public class Tributo extends it.govpay.model.Tributo {
 	
 	public Tributo() {	}
 	
-	public Tributo(BasicBD bd, Long idIbanAccredito) throws ServiceException {
-		super.setIdIbanAccredito(idIbanAccredito);
-		
-		if(this.getIdIbanAccredito() != null) {
-			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
-		}
-	}
-	
 	// Business
 	
 	public TipoContabilita getTipoContabilita() {
@@ -66,24 +58,29 @@ public class Tributo extends it.govpay.model.Tributo {
 	public boolean isCodTributoIuvCustom(){return getCodTributoIuvCustom() != null;}
 	
 	private transient IbanAccredito ibanAccredito;
-	
 	public IbanAccredito getIbanAccredito() throws ServiceException {
 		return ibanAccredito;
 	}
-	
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
+		super.setIdIbanAccredito(ibanAccredito.getId());
 		this.ibanAccredito = ibanAccredito;
 	}
-	
-	private transient IbanAccredito ibanAccreditoPostale;
-	public IbanAccredito getIbanAccreditoPostale(BasicBD bd) throws ServiceException {
-		if(ibanAccreditoPostale == null && this.getIdIbanAccreditoPostale() != null) {
-			ibanAccreditoPostale = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccreditoPostale());
-		}
-		return ibanAccreditoPostale;
+	public void setIbanAccredito(BasicBD bd, long idIbanAccredito) throws ServiceException {
+		super.setIdIbanAccredito(idIbanAccredito);
+		ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
 	}
-	public void setIbanAccreditoPostale(IbanAccredito ibanAccreditoPostale) {
-		this.ibanAccreditoPostale = ibanAccreditoPostale;
+	
+	private transient IbanAccredito ibanAppoggio;
+	public IbanAccredito getIbanAppoggio() throws ServiceException {
+		return ibanAppoggio;
+	}
+	public void setIbanAppoggio(IbanAccredito ibanAppoggio) {
+		super.setIdIbanAppoggio(ibanAppoggio.getId());
+		this.ibanAppoggio = ibanAppoggio;
+	}
+	public void setIbanAppoggio(BasicBD bd, long idIbanAppoggio) throws ServiceException {
+		super.setIdIbanAppoggio(idIbanAppoggio);
+		ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
 	}
 
 	

@@ -1,7 +1,6 @@
 package it.govpay.core.dao.anagrafica.dto;
 
 import it.govpay.model.IAutorizzato;
-import it.govpay.orm.Psp;
 
 public class ListaIntermediariDTO extends BasicFindRequestDTO{
 

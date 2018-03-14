@@ -61,8 +61,6 @@ public class PagamentoConverter {
 			if(vo.getTipoAllegato() != null)
 				dto.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
 			dto.setAllegato(vo.getAllegato());
-//			dto.setIbanAccredito(vo.getIbanAccredito()); //TODO bussu
-
 			if(vo.getIdRPT() != null) 
 				dto.setIdRpt(vo.getIdRPT().getId());
 			if(vo.getIdSingoloVersamento() != null)
@@ -82,6 +80,9 @@ public class PagamentoConverter {
 
 			if(vo.getIdIncasso() != null)
 				dto.setIdIncasso(vo.getIdIncasso().getId());
+			
+			// TODO
+			dto.setTipo(null);
 			return dto;
 		}catch(Throwable t){
 			throw new ServiceException(t);
@@ -105,7 +106,6 @@ public class PagamentoConverter {
 		if(dto.getTipoAllegato() != null)
 			vo.setTipoAllegato(dto.getTipoAllegato().toString());
 		vo.setAllegato(dto.getAllegato());
-//		vo.setIbanAccredito(dto.getIbanAccredito()); //TODO bussu
 
 		if(dto.getIdRpt() != null) {
 			IdRpt idRpt = new IdRpt();
@@ -140,6 +140,8 @@ public class PagamentoConverter {
 		if(dto.getStato() != null)
 			vo.setStato(dto.getStato().toString());
 
+		// TODO
+		//vo.setTipo(null);
 		return vo;
 	}
 

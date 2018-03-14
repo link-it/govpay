@@ -1,12 +1,7 @@
 package it.govpay.ragioneria.api.rs.v1.ragioneria;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -50,12 +45,12 @@ public class Incassi extends BaseRsServiceV1{
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/{idDominio}/{idIncasso}")
     
     @Produces({ "application/json" })
-    public Response incassiIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
+    public Response incassiIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idIncasso") String idIncasso){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.incassiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.incassiIdGET(this.getUser(), uriInfo, httpHeaders, idDominio, idIncasso);
     }
 
 }

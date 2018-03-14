@@ -54,9 +54,10 @@ public class IncassiBD extends BasicBD {
 		}
 	}
 	
-	public Incasso getIncasso(String trn) throws ServiceException, NotFoundException {
+	public Incasso getIncasso(String codDominio, String trn) throws ServiceException, NotFoundException {
 		try {
 			IdIncasso idIncasso = new IdIncasso();
+			//TODO idIncasso.setCodDominio(codDominio)
 			idIncasso.setTrn(trn);
 			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().get(idIncasso);
 			return IncassoConverter.toDTO(pagamentoVO);

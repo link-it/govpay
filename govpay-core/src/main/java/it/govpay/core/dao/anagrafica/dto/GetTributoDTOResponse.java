@@ -6,22 +6,33 @@ import it.govpay.bd.model.Tributo;
 public class GetTributoDTOResponse {
 	
 	private Tributo tributo;
-	private IbanAccredito ibanAccreditoPostale;
+	private IbanAccredito ibanAccredito;
+	private IbanAccredito ibanAppoggio;
 	
-	public GetTributoDTOResponse(Tributo tributo, IbanAccredito ibanAccreditoPostale) {
+	public GetTributoDTOResponse(Tributo tributo, IbanAccredito ibanAccredito, IbanAccredito ibanAppoggio) {
 		this.tributo = tributo;
+		this.ibanAccredito = ibanAccredito;
+		this.ibanAppoggio = ibanAppoggio;
 	}
 
 	public Tributo getTributo() {
 		return tributo;
 	}
 
-	public IbanAccredito getIbanAccreditoPostale() {
-		return ibanAccreditoPostale;
+	public IbanAccredito getIbanAccredito() {
+		return ibanAccredito;
 	}
 
-	public void setIbanAccreditoPostale(IbanAccredito ibanAccreditoPostale) {
-		this.ibanAccreditoPostale = ibanAccreditoPostale;
+	public void setIbanAccredito(IbanAccredito ibanAccredito) {
+		this.ibanAccredito = ibanAccredito;
+	}
+
+	public IbanAccredito getIbanAppoggio() {
+		return ibanAppoggio;
+	}
+
+	public void setIbanAppoggio(IbanAccredito ibanAppoggio) {
+		this.ibanAppoggio = ibanAppoggio;
 	}
 
 }

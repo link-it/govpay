@@ -275,22 +275,15 @@ public class RptUtils {
 				marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
 			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
 		} else {
-			IbanAccredito ibanAccredito = null;
+			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
+			IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(bd);
 			
-			if(singoloVersamento.getTributo(bd) != null) {
-				if(canale.getPsp(bd).isPostale()) {
-					ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccreditoPostale(bd);
-				} else {
-					ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccredito();
-				}
-			}
-			if(ibanAccredito == null)
-				ibanAccredito = singoloVersamento.getIbanAccredito(bd);
-			
-			datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBicAccredito()));
-			datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
-			datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
 			datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
+			datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBic()));
+			if(ibanAppoggio != null) {
+				datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAppoggio.getCodIban()));
+				datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAppoggio.getCodBic()));
+			}
 		}
 		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
 		datiSingoloVersamento.setCausaleVersamento(buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento()));

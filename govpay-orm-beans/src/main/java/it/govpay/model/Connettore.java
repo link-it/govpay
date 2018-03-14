@@ -65,7 +65,6 @@ public class Connettore extends Versionabile {
 	private String httpUser;
 	private String httpPassw;
 	private String url;
-	private Tipo tipo;
 	private boolean azioneInUrl;
 	
 	private String principal;
@@ -169,4 +168,8 @@ public class Connettore extends Versionabile {
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
+	public Tipo getTipo() {
+		return Tipo.valueOf(super.getVersione().getApi());
+	}
+
 }
