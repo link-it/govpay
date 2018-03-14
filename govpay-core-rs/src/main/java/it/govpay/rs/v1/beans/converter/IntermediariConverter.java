@@ -37,7 +37,7 @@ public class IntermediariConverter {
 		.idIntermediario(i.getCodIntermediario())
 		.principalPagoPa(i.getConnettorePdd().getPrincipal())
 		.servizioPagoPa(ConnettoriConverter.toRsModel(i.getConnettorePdd()))
-		.stazioni(UriBuilderUtils.getFromIntermediari(i.getCodIntermediario()).build().toString());
+		.stazioni(UriBuilderUtils.getStazioni(i.getCodIntermediario()));
 		
 		return rsModel;
 	}

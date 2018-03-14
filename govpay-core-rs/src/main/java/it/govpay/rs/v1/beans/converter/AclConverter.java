@@ -50,22 +50,23 @@ public class AclConverter {
 	public static ACL toRsModel(it.govpay.model.Acl acl) {
 		ACL rsModel = new ACL();
 		rsModel.principal(acl.getPrincipal())
+		.id(acl.getId()+"")
 		.ruolo(acl.getRuolo())
 		.servizio(ServizioEnum.fromValue(acl.getServizio().toString()));
 		
 		if(acl.getListaDiritti() != null)
-			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.fromValue(a.getCodifica())).collect(Collectors.toList()));
+			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> toAutorizzazioneEnum(a)).collect(Collectors.toList()));
 		
 		return rsModel;
 	}
 	
-//    public static AutorizzazioniEnum toAutorizzazioneEnum(Diritti text) {
-//    	switch(text) {
-//		case ESECUZIONE: return AutorizzazioniEnum.ESECUZIONE;
-//		case LETTURA: return AutorizzazioniEnum.LETTURA;
-//		case SCRITTURA: return AutorizzazioniEnum.SCRITTURA;
-//		default:
-//			break;}
-//    	return null;
-//    }
+    public static it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum toAutorizzazioneEnum(Diritti text) {
+    	switch(text) {
+		case ESECUZIONE: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.ESECUZIONE;
+		case LETTURA: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.LETTURA;
+		case SCRITTURA: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.SCRITTURA;
+		default:
+			break;}
+    	return null;
+    }
 }

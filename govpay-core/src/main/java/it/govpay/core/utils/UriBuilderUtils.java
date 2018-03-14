@@ -24,6 +24,10 @@ public class UriBuilderUtils {
 	public static String getStazione(String codIntermediari, String codStazione) {
 		return getList(getFromIntermediari(codIntermediari), "stazioni").path(codStazione).build().toString();
 	}
+	
+	public static String getStazioni(String codIntermediario) {
+		return getList(getFromIntermediari(codIntermediario), "stazioni").build().toString();
+	}
 
 	public static String getDominio(String codCominio) {
 		return getFromDomini(codCominio).build().toString();
