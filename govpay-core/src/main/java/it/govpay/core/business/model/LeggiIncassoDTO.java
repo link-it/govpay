@@ -3,8 +3,8 @@ package it.govpay.core.business.model;
 public class LeggiIncassoDTO {
 	
 	private String principal;
-	private String trn;
-	private Long id;
+	private String idDominio;
+	private String idIncasso;
 	
 	public String getPrincipal() {
 		return principal;
@@ -12,17 +12,17 @@ public class LeggiIncassoDTO {
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
-	public String getTrn() {
-		return trn;
+	public String getIdDominio() {
+		return idDominio;
 	}
-	public void setTrn(String trn) {
-		this.trn = trn;
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
 	}
-	public Long getId() {
-		return id;
+	public String getIdIncasso() {
+		return idIncasso;
 	}
-	public void setId(Long id) {
-		this.id= id;
+	public void setIdIncasso(String idIncasso) {
+		this.idIncasso = idIncasso;
 	}
 
 }

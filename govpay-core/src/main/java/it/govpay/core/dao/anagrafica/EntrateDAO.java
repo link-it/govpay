@@ -33,7 +33,6 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.NotFoundException;
 import it.govpay.core.utils.GpThreadLocal;
 
 public class EntrateDAO {

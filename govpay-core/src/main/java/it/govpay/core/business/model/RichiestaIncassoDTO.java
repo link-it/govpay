@@ -36,6 +36,7 @@ public class RichiestaIncassoDTO {
 	private Date dataValuta;
 	private Date dataContabile;
 	private String dispositivo;
+	private String ibanAccredito;
 	
 	public String getTrn() {
 		return trn;
@@ -90,5 +91,11 @@ public class RichiestaIncassoDTO {
 	}
 	public void setOperatore(Operatore operatore) {
 		this.operatore = operatore;
+	}
+	public String getIbanAccredito() {
+		return ibanAccredito;
+	}
+	public void setIbanAccredito(String ibanAccredito) {
+		this.ibanAccredito = ibanAccredito;
 	}
 }

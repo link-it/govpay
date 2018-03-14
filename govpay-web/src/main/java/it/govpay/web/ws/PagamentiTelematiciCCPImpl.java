@@ -58,7 +58,6 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -345,21 +344,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagamento.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, versamento.getUo(bd), bd));
 			
 			SingoloVersamento singoloVersamento = versamento.getSingoliVersamenti(bd).get(0);
-			IbanAccredito ibanAccredito = null;
-			
-			if(singoloVersamento.getTributo(bd) != null && !singoloVersamento.getTributo(bd).getCodTributo().equals(Tributo.BOLLOT)) {
-				if(canale.getPsp(bd).isPostale()) {
-					ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccreditoPostale(bd);
-				} else {
-					ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccredito();
-				}
-			}
-			
-			if(ibanAccredito == null)
-				ibanAccredito = singoloVersamento.getIbanAccredito(bd);
+			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
 			
 			if(ibanAccredito != null) {
-				datiPagamento.setBicAccredito(ibanAccredito.getCodBicAccredito());
+				datiPagamento.setBicAccredito(ibanAccredito.getCodBic());
 				datiPagamento.setIbanAccredito(ibanAccredito.getCodIban());
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
@@ -591,25 +579,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagamento.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, versamento.getUo(bd), bd));
 			SingoloVersamento singoloVersamento = versamento.getSingoliVersamenti(bd).get(0);
 			
-			IbanAccredito ibanAccredito = null;
-			
-			try {
-				if(singoloVersamento.getTributo(bd) != null && !singoloVersamento.getTributo(bd).getCodTributo().equals(Tributo.BOLLOT)) {
-					if(AnagraficaManager.getPsp(bd, psp).isPostale()) {
-						ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccreditoPostale(bd);
-					} else {
-						ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccredito();
-					}
-				}
-			} catch (Exception e) {
-				// Psp non in anagrafica.
-			}
-			
-			if(ibanAccredito == null)
-				ibanAccredito = singoloVersamento.getIbanAccredito(bd);
+			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
 			
 			if(ibanAccredito != null) {
-				datiPagamento.setBicAccredito(ibanAccredito.getCodBicAccredito());
+				datiPagamento.setBicAccredito(ibanAccredito.getCodBic());
 				datiPagamento.setIbanAccredito(ibanAccredito.getCodIban());
 			}
 			esito.setDatiPagamentoPA(datiPagamento);

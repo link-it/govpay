@@ -45,12 +45,7 @@ public class TributoConverter {
 
 	public static Tributo toDTO(it.govpay.orm.Tributo vo, BasicBD bd) throws ServiceException {
 		
-		Tributo dto = null;
-		if(vo.getIdIbanAccredito() != null) {
-			dto = new Tributo(bd, vo.getIdIbanAccredito().getId());
-		} else {
-			dto = new Tributo(bd, null);
-		}
+		Tributo dto = new Tributo();
 		
 		dto.setId(vo.getId());
 		dto.setIdDominio(vo.getIdDominio().getId());
@@ -61,7 +56,7 @@ public class TributoConverter {
 		if(vo.getIdIbanAccredito() != null)
 			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
 		if(vo.getIdIbanAccreditoPostale() != null)
-			dto.setIdIbanAccreditoPostale(vo.getIdIbanAccreditoPostale().getId());
+			dto.setIdIbanAppoggio(vo.getIdIbanAccreditoPostale().getId());
 		if(vo.getTipoContabilita() != null)
 			dto.setTipoContabilitaCustom(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setCodContabilitaCustom(vo.getCodiceContabilita());
@@ -108,9 +103,9 @@ public class TributoConverter {
 			vo.setIdIbanAccredito(idIbanAccredito);
 		}
 		
-		if(dto.getIdIbanAccreditoPostale() != null) {
+		if(dto.getIdIbanAppoggio() != null) {
 			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
-			idIbanAccredito.setId(dto.getIdIbanAccreditoPostale());
+			idIbanAccredito.setId(dto.getIdIbanAppoggio());
 			vo.setIdIbanAccreditoPostale(idIbanAccredito);
 		}
 		

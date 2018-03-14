@@ -46,6 +46,7 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -57,6 +58,7 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -345,7 +347,7 @@ public class RtUtils extends NdpValidationUtils {
 		boolean irregolare = false;
 		for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
-			CtDatiSingoloVersamentoRPT ctDatiSingoloVersamentoRPT = ctRpt.getDatiVersamento().getDatiSingoloVersamento().get(indice);
+
 			// Se non e' stato completato un pagamento, non faccio niente.
 			if(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().compareTo(BigDecimal.ZERO) == 0)
 				continue;
@@ -358,7 +360,6 @@ public class RtUtils extends NdpValidationUtils {
 				pagamento = pagamentiBD.getPagamento(codDominio, iuv, ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), indice+1);
 				pagamento.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 				pagamento.setRpt(rpt);
-				pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
 				// Se non e' gia' stato incassato, aggiorno lo stato in pagato
 				if(!pagamento.getStato().equals(Stato.INCASSATO)) {
 					pagamento.setStato(Stato.PAGATO);
@@ -371,15 +372,20 @@ public class RtUtils extends NdpValidationUtils {
 				insert = false;
 			} catch (NotFoundException nfe){
 				pagamento = new Pagamento();
+				if(singoloVersamento.getIdTributo() != null && singoloVersamento.getTributo(bd).getCodTributo().equals(Tributo.BOLLOT)) {
+					pagamento.setTipo(TipoPagamento.MBT);
+				} else {
+					pagamento.setTipo(TipoPagamento.ENTRATA);
+				}
 				pagamento.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 				pagamento.setRpt(rpt);
 				pagamento.setSingoloVersamento(singoloVersamento);
 				pagamento.setImportoPagato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato());
 				pagamento.setIur(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
-				pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
 				pagamento.setCodDominio(rpt.getCodDominio());
 				pagamento.setIuv(rpt.getIuv());
 				pagamento.setIndiceDati(indice + 1);
+				pagamento.setCommissioniPsp(pagamento.getCommissioniPsp());
 			} catch (MultipleResultException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

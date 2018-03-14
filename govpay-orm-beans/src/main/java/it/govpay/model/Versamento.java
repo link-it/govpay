@@ -69,7 +69,7 @@ public class Versamento extends BasicModel {
 	private String anomalie;
 	private String tassonomiaAvviso;
 	private String tassonomia;
-
+	
 	public long getIdDominio() {
 		return idDominio;
 	}
@@ -466,7 +466,5 @@ public class Versamento extends BasicModel {
 	public void setAnomalie(String anomalie) {
 		this.anomalie = anomalie;
 	}
-	
-	
 	
 }

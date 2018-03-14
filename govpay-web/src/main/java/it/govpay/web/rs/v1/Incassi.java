@@ -184,11 +184,11 @@ public class Incassi extends BaseRsServiceV1 {
 	}
 	
 	@GET
-	@Path("/{trn}")
+	@Path("/{idDominio}/{idIncasso}")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response leggiIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@PathParam(value="trn") String trn) {
+			@PathParam(value="idDominio") String idDominio, @PathParam(value="idIncasso") String idIncasso) {
 		
 		String methodName = "leggiIncasso"; 
 		BasicBD bd = null;
@@ -201,7 +201,8 @@ public class Incassi extends BaseRsServiceV1 {
 			ctx =  GpThreadLocal.get();
 			
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO();
-			leggiIncassoDTO.setTrn(trn);
+			leggiIncassoDTO.setIdDominio(idDominio);
+			leggiIncassoDTO.setIdIncasso(idIncasso);
 			leggiIncassoDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);

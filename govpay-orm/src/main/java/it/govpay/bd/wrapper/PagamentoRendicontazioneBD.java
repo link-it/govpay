@@ -346,7 +346,6 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			i++;
 		}
 		
-		pagamento.setIbanAccredito((String) record.get(i++));
 		pagamento.setCodDominio((String) record.get(i++));
 		pagamento.setIuv((String) record.get(i++));
 		

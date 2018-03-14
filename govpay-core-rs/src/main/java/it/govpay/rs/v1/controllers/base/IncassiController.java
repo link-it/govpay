@@ -84,7 +84,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response incassiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    public Response incassiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
     	String methodName = "leggiIncasso"; 
 		BasicBD bd = null;
 		GpContext ctx = null; 
@@ -95,7 +95,8 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			ctx =  GpThreadLocal.get();
 			
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO();
-			leggiIncassoDTO.setId(Long.parseLong(id));
+			leggiIncassoDTO.setIdDominio(idDominio);
+			leggiIncassoDTO.setIdIncasso(idIncasso);
 //			leggiIncassoDTO.setPrincipal(principal); //TODO pintori
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);

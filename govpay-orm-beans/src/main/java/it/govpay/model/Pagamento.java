@@ -22,10 +22,15 @@ package it.govpay.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+
 public class Pagamento extends BasicModel {
 
 	private static final long serialVersionUID = 1L;
 
+	public enum TipoPagamento {
+		ENTRATA, MBT
+	}
+	
 	public enum TipoAllegato {
 		ES, BD
 	}
@@ -41,6 +46,7 @@ public class Pagamento extends BasicModel {
 	private int indiceDati;
 	
 	private Stato stato;
+	private TipoPagamento tipo;
 	
 	private BigDecimal importoPagato;
 	private Date dataAcquisizione;
@@ -48,7 +54,6 @@ public class Pagamento extends BasicModel {
 	private BigDecimal commissioniPsp;
 	private TipoAllegato tipoAllegato;
 	private byte[] allegato;
-	private String ibanAccredito;
 	
 	private Long idRpt;
 	private Long idSingoloVersamento;
@@ -204,14 +209,6 @@ public class Pagamento extends BasicModel {
 		this.dataAcquisizioneRevoca = dataAcquisizioneRevoca;
 	}
 
-	public String getIbanAccredito() {
-		return ibanAccredito;
-	}
-
-	public void setIbanAccredito(String ibanAccredito) {
-		this.ibanAccredito = ibanAccredito;
-	}
-
 	public String getCodDominio() {
 		return codDominio;
 	}
@@ -251,5 +248,14 @@ public class Pagamento extends BasicModel {
 	public void setIndiceDati(int indiceDati) {
 		this.indiceDati = indiceDati;
 	}
+
+	public TipoPagamento getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoPagamento tipo) {
+		this.tipo = tipo;
+	}
+
 }
 

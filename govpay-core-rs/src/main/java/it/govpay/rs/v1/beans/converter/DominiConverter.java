@@ -54,7 +54,7 @@ public class DominiConverter {
 		}
 		
 		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccreditoBancario());
-	    entrataDTO.setIbanAccreditoPostale(entrataRequest.getIbanAccreditoPostale());
+	    entrataDTO.setIbanAppoggio(entrataRequest.getIbanAccreditoPostale());
 		entrataDTO.setTributo(tributo);
 		entrataDTO.setIdDominio(idDominio);
 		entrataDTO.setIdTributo(idEntrata);
@@ -69,10 +69,8 @@ public class DominiConverter {
 		
 		iban.setAbilitato(ibanAccreditoPost.isAbilitato());
 		iban.setAttivatoObep(ibanAccreditoPost.isMybank());
-		iban.setCodBicAccredito(ibanAccreditoPost.getBicAccredito());
-		iban.setCodBicAppoggio(ibanAccreditoPost.getBicAppoggio());
+		iban.setCodBic(ibanAccreditoPost.getBicAccredito());
 		iban.setCodIban(idIbanAccredito);
-		iban.setCodIbanAppoggio(ibanAccreditoPost.getIbanAppoggio());
 		iban.setPostale(ibanAccreditoPost.isPostale());
 		
 		ibanAccreditoDTO.setIban(iban);
@@ -193,9 +191,8 @@ public class DominiConverter {
 	public static Iban toIbanRsModel(it.govpay.bd.model.IbanAccredito iban) throws ServiceException {
 		Iban rsModel = new Iban();
 		rsModel.abilitato(iban.isAbilitato())
-		.bicAccredito(iban.getCodBicAccredito())
+		.bicAccredito(iban.getCodBic())
 		.ibanAccredito(iban.getCodIban())
-		.ibanAppoggio(iban.getCodIbanAppoggio())
 		.mybank(iban.isAttivatoObep())
 		.postale(iban.isPostale());
 		

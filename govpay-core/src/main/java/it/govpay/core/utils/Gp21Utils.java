@@ -154,9 +154,6 @@ public class Gp21Utils {
 			p.setDataAcquisizione(pagamento.getDataAcquisizione());
 			p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
 		}
-		if(versione.compareVersione(Versione.GP_SOAP_02_05) >= 0) {
-			p.setIbanAccredito(pagamento.getIbanAccredito());
-		}
 		return p;
 	}
 
@@ -403,7 +400,6 @@ public class Gp21Utils {
 		riscossione.setIur(pagamento.getIur());
 		riscossione.setPendenza(urlPendenza); 
 		riscossione.setRpp(urlRpt);
-		riscossione.setIbanAccredito(pagamento.getIbanAccredito());
 //		riscossione.setCausaleRevoca(pagamento.getCausaleRevoca());
 //		riscossione.setDatiEsitoRevoca(pagamento.getDatiEsitoRevoca());
 //		riscossione.setDatiRevoca(pagamento.getDatiRevoca());
