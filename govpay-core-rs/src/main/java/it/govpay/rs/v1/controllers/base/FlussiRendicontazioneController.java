@@ -116,6 +116,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setIdDominio(idDominio);
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
+			findRendicontazioniDTO.setOrderBy("-dataAcquisizione");
 			
 			// INIT DAO
 			

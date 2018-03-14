@@ -74,7 +74,7 @@ public class InitListener implements ServletContextListener{
 				}
 				gpConfig.readProperties();
 			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
+				throw new RuntimeException("Inizializzazione di GovPay-API-Ragioneria fallita: " + e, e);
 			}
 
 			// Configurazione del logger Diagnostici/Tracce/Dump

@@ -75,7 +75,8 @@ public class FlussiRendicontazioneConverter {
 		
 		rsModel.setImporto(rendicontazione.getImporto());
 		
-		rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().toString()));
+		if(rendicontazione.getEsito() != null)
+			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		rsModel.setData(rendicontazione.getData());
 		if(rendicontazione.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();

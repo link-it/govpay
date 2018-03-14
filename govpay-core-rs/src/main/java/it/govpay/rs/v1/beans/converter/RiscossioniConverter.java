@@ -42,7 +42,7 @@ public class RiscossioniConverter {
 				break;
 			}
 			
-			if(input.getIbanAccredito()!=null) {
+			if(input.getIbanAccredito() == null) {
 				rsModel.setTipo(TipoRiscossione.MBT);
 			} else {
 				rsModel.setTipo(TipoRiscossione.ENTRATA);
@@ -51,7 +51,8 @@ public class RiscossioniConverter {
 			rsModel.setCommissioni(input.getCommissioniPsp());
 			Allegato allegato = new Allegato();
 			allegato.setTesto(Base64.encode(input.getAllegato()));
-			allegato.setTipo(TipoEnum.fromValue(input.getTipoAllegato().toString()));
+			if(input.getTipoAllegato() != null)
+				allegato.setTipo(TipoEnum.fromValue(input.getTipoAllegato().toString()));
 			rsModel.setAllegato(allegato);
 		} catch(ServiceException e) {}
 

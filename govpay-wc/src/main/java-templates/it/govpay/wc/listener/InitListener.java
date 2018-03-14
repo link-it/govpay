@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -20,6 +21,7 @@ import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.GovpayConfig;
@@ -28,8 +30,7 @@ import it.govpay.core.utils.GpThreadLocal;
 
 public class InitListener implements ServletContextListener{
 
-	//TODO pintori template
-	private static Logger log = null;//LoggerWrapperFactory.getLogger("boot");	
+	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
 	private static boolean initialized = false;
 
 	public static boolean isInitialized() {
@@ -40,7 +41,7 @@ public class InitListener implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent sce) {
 		GpContext ctx = null;
 		// Commit id
-		String commit = "9e3d8bab6d416d659be45a4f32a7697da47fa54d";
+		String commit = "${git.commit.id}";
 		if(commit.length() > 7) commit = commit.substring(0, 7);
 		try{
 			GovpayConfig gpConfig = null;
@@ -49,9 +50,8 @@ public class InitListener implements ServletContextListener{
 				it.govpay.bd.GovpayConfig.newInstance4GovPay(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
 				it.govpay.bd.GovpayCustomConfig.newInstance(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
 			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
+				throw new RuntimeException("Inizializzazione di GovPay-WebController fallita: " + e, e);
 			}
-			
 			
 			// Gestione della configurazione di Log4J
 			URI log4j2Config = gpConfig.getLog4j2Config();
@@ -73,14 +73,14 @@ public class InitListener implements ServletContextListener{
 				}
 				gpConfig.readProperties();
 			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
+				throw new RuntimeException("Inizializzazione di GovPay-WebController ${project.version} fallita: " + e, e);
 			}
 
 			// Configurazione del logger Diagnostici/Tracce/Dump
 			try {
 				DiagnosticConfig diagnosticConfig = new DiagnosticConfig();
-				Properties props = new Properties();
 				InputStream is = InitListener.class.getResourceAsStream("/msgDiagnostici.properties");
+				Properties props = new Properties();
 				props.load(is);
 				diagnosticConfig.setDiagnosticConfigProperties(props);
 				diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
@@ -105,7 +105,7 @@ public class InitListener implements ServletContextListener{
 
 			} catch (Exception e) {
 				log.error("Errore durante la configurazione dei diagnostici", e);
-				throw new RuntimeException("Inizializzazione GovPay 2.4.7 (build " + commit + ") fallita.", e);
+				throw new RuntimeException("Inizializzazione GovPay-WebController ${project.version} (build " + commit + ") fallita.", e);
 			}
 
 
@@ -125,32 +125,42 @@ public class InitListener implements ServletContextListener{
 			} catch (Exception e) {
 				log.error("Errore durante predisposizione del contesto: " + e);
 				if(ctx != null) ctx.log();
-				throw new RuntimeException("Inizializzazione GovPay 2.4.7 (build " + commit + ") fallita.", e);
+				throw new RuntimeException("Inizializzazione GovPay-WebController ${project.version} (build " + commit + ") fallita.", e);
 			}
-			
-			//		per ora vengono inizializzate nel govpay web
 			
 			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.wc");
 			AclCache.newInstance(log);
-			//			ConnectionManager.initialize();
-			//			OperazioneFactory.init();
+			ConnectionManager.initialize();
 		} catch(Exception e){
-			throw new RuntimeException("Inizializzazione di GovPay-API-Pagamento fallita: " + e, e);
+			throw new RuntimeException("Inizializzazione di GovPay-WebController fallita: " + e, e);
 		}
 
 		ctx.log();
 
-		log.info("Inizializzazione GovPay 2.4.7 (build " + commit + ") completata con successo.");
+		log.info("Inizializzazione GovPay-WebController ${project.version} (build " + commit + ") completata con successo.");
 		initialized = true;
 	}
 
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		//		try {
-		//			ConnectionManager.shutdown();
-		//		} catch (Exception e) {
-		//			LogManager.getLogger().warn("Errore nella de-registrazione JMX: " + e);
-		//		}
+		MDC.put("cmd", "Shutdown");
+		MDC.put("op", UUID.randomUUID().toString() );
+		
+		log.info("Shutdown Govpay-WebController in corso...");
+		
+//		log.info("De-registrazione delle cache ...");
+//		AnagraficaManager.unregister();
+//		log.info("De-registrazione delle cache completato");
+//		
+//		log.info("Shutdown del Connection Manager ...");
+//		try {
+//			ConnectionManager.shutdown();
+//			log.info("Shutdown del Connection Manager completato.");
+//		} catch (Exception e) {
+//			log.warn("Errore nello shutdown del Connection Manager: " + e);
+//		}
+		
+		log.info("Shutdown di Govpay-WebController completato.");
 	}
 }

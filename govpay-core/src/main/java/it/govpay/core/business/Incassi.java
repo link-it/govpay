@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -35,6 +34,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
@@ -61,7 +61,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -88,21 +87,6 @@ public class Incassi extends BasicBD {
 			if(richiestaIncasso.getCausale() == null) {
 				GpThreadLocal.get().log("incasso.sintassi", "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
-			}
-			
-			if(richiestaIncasso.getTrn() == null) {
-				GpThreadLocal.get().log("incasso.sintassi", "trn mancante");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
-			}
-			
-			if(richiestaIncasso.getTrn().length() > 512) {
-				GpThreadLocal.get().log("incasso.sintassi", "trn troppo lungo");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificato un trn che eccede il massimo numero di caratteri consentiti (512)");
-			}
-			
-			if(richiestaIncasso.getTrn().contains(" ")) {
-				GpThreadLocal.get().log("incasso.sintassi", "trn non deve contenere spazi");
-				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificato un trn contenente spazi");
 			}
 			
 			if(richiestaIncasso.getCausale().length() > 512) {
@@ -146,6 +130,29 @@ public class Incassi extends BasicBD {
 				throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
 			} 
 			
+			
+			// Validazione della causale
+			String causale = richiestaIncasso.getCausale();
+			String iuv = null;
+			String idf = null;
+			
+			try {
+				if(causale != null) {
+					// Riversamento singolo
+					iuv = IncassoUtils.getRiferimentoIncassoSingolo(causale);
+					idf = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
+				}
+			} catch (Throwable e) {
+				log.error("Riscontrato errore durante il parsing della causale",e);
+			} finally {
+				if(iuv == null && idf==null) {
+					GpThreadLocal.get().log("incasso.causaleNonValida", causale);
+					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
+				}
+			}
+			
+			// OVERRIDE TRN NUOVA GESTIONE
+			richiestaIncasso.setTrn(iuv != null ? iuv : idf);
 			RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
 			
 			// Controllo se il TRN dell'incasso e' gia registrato
@@ -176,26 +183,6 @@ public class Incassi extends BasicBD {
 			}
 			
 			
-			// Validazione della causale
-			String causale = richiestaIncasso.getCausale();
-			String iuv = null;
-			String idf = null;
-			
-			try {
-				if(causale != null) {
-					// Riversamento singolo
-					iuv = IncassoUtils.getRiferimentoIncassoSingolo(causale);
-					idf = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
-				}
-			} catch (Throwable e) {
-				log.error("Riscontrato errore durante il parsing della causale",e);
-			} finally {
-				if(iuv == null && idf==null) {
-					GpThreadLocal.get().log("incasso.causaleNonValida", causale);
-					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
-				}
-			}
-
 			// Sto selezionando i pagamenti per impostarli come Incassati.
 			this.enableSelectForUpdate();
 			setAutoCommit(false);

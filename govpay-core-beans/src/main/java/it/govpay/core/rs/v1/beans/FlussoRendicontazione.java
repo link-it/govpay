@@ -19,7 +19,10 @@
  */
 package it.govpay.core.rs.v1.beans;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonFilter;
+
+import it.govpay.core.utils.SimpleDateFormatUtils;
 
 @JsonFilter(value="flussoRendicontazione")  
 public class FlussoRendicontazione extends it.govpay.core.rs.v1.beans.base.FlussoRendicontazione {
@@ -33,4 +36,10 @@ public class FlussoRendicontazione extends it.govpay.core.rs.v1.beans.base.Fluss
 		return (FlussoRendicontazione) parse(json, FlussoRendicontazione.class);
 	}
 	
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
+	}
 }
