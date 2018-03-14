@@ -1,7 +1,5 @@
 package it.govpay.rs.v1.beans.converter;
 
-import java.math.BigDecimal;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -13,12 +11,13 @@ import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.rs.v1.beans.Dominio;
 import it.govpay.core.rs.v1.beans.Entrata;
 import it.govpay.core.rs.v1.beans.Iban;
+import it.govpay.core.rs.v1.beans.TipoEntrata;
 import it.govpay.core.rs.v1.beans.UnitaOperativa;
 import it.govpay.core.rs.v1.beans.base.DominioPost;
+import it.govpay.core.rs.v1.beans.base.Entrata.TipoContabilitaEnum;
 import it.govpay.core.rs.v1.beans.base.EntrataPost;
 import it.govpay.core.rs.v1.beans.base.IbanAccreditoPost;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativaPost;
-import it.govpay.core.rs.v1.beans.base.Entrata.TipoContabilitaEnum;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IAutorizzato;
@@ -220,6 +219,22 @@ public class DominiConverter {
 		.idEntrata(tributo.getCodTributo())
 		.tipoEntrata(EntrateConverter.toTipoEntrataRsModel(tributo));
 		
+		if(tributo.getTipoContabilitaDefault() != null) {
+			switch (tributo.getTipoContabilitaDefault()) {
+			case ALTRO:
+				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.ALTRO);
+				break;
+			case CAPITOLO:
+				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.ENTRATA);
+				break;
+			case SIOPE:
+				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.SIOPE);
+				break;
+			case SPECIALE:
+				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.SPECIALE);
+				break;
+			}
+		}
 		
 		if(tributo.getTipoContabilita()!=null)
 			rsModel.tipoContabilita(TipoContabilitaEnum.fromValue(tributo.getTipoContabilita().toString()));
