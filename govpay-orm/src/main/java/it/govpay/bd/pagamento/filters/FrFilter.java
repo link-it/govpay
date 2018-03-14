@@ -332,7 +332,7 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.codDominio != null){
+			if(this.codDominio != null && this.codDominio.size() > 0){
 				newExpression.in(FR.model().COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}

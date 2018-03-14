@@ -16,6 +16,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
@@ -75,9 +76,14 @@ public abstract class BaseController {
 	
 
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(o);
-		this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, json.getBytes(), responseCode);
+		if(o != null && o instanceof JSONSerializable) {
+			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((JSONSerializable) o).toJSON(null).getBytes(), responseCode);
+		}
+		else {
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(o);
+			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, json.getBytes(), responseCode);
+		}
 	}
 	
 	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) {

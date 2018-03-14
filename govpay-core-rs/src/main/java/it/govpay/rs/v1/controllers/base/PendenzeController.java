@@ -76,11 +76,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.NOT_FOUND.getStatusCode());
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
-			return Response.status(Status.NOT_FOUND).entity(respKo).build();
+			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
 		}catch (Exception e) {
 			log.error("Errore interno durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
@@ -88,11 +88,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -160,11 +160,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			respKo.setCodice("");
 			respKo.setDescrizione(e.getMessage());
 			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo, 500);
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 		} finally {
 			if(ctx != null) ctx.log();
 		}

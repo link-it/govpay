@@ -33,14 +33,16 @@ public class RiscossioniDAO{
 
 			filter.setOffset(listaRiscossioniDTO.getOffset());
 			filter.setLimit(listaRiscossioniDTO.getLimit());
-			filter.setIdDomini(Arrays.asList(listaRiscossioniDTO.getIdDominio()));
+			if(listaRiscossioniDTO.getIdDominio() != null)
+				filter.setIdDomini(Arrays.asList(listaRiscossioniDTO.getIdDominio()));
 
 			filter.setDataInizio(listaRiscossioniDTO.getDataRiscossioneDa());
 			filter.setDataFine(listaRiscossioniDTO.getDataRiscossioneA());
 			filter.setTipo(listaRiscossioniDTO.getTipo());
 			filter.setIdA2A(listaRiscossioniDTO.getIdA2A());
 			filter.setCodSingoloVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
-			filter.setStati(Arrays.asList(listaRiscossioniDTO.getStato().toString()));
+			if(listaRiscossioniDTO.getStato() != null)
+				filter.setStati(Arrays.asList(listaRiscossioniDTO.getStato().toString()));
 			
 			filter.setFilterSortList(listaRiscossioniDTO.getFieldSortList());
 

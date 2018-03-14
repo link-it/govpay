@@ -34,7 +34,8 @@ public class RendicontazioniDAO{
 
 			filter.setOffset(listaRendicontazioniDTO.getOffset());
 			filter.setLimit(listaRendicontazioniDTO.getLimit());
-			filter.setCodDominio(Arrays.asList(listaRendicontazioniDTO.getIdDominio()));
+			if(listaRendicontazioniDTO.getIdDominio() != null)
+				filter.setCodDominio(Arrays.asList(listaRendicontazioniDTO.getIdDominio()));
 			filter.setFilterSortList(listaRendicontazioniDTO.getFieldSortList());
 
 			long count = rendicontazioniBD.count(filter);
@@ -45,7 +46,7 @@ public class RendicontazioniDAO{
 
 				for (Fr fr : findAll) {
 					LeggiRendicontazioneDTOResponse elem = new LeggiRendicontazioneDTOResponse();
-					populateRendicontazione(fr, bd);
+					//populateRendicontazione(fr, bd);
 					elem.setFr(fr);
 					resList.add(elem);
 				}
