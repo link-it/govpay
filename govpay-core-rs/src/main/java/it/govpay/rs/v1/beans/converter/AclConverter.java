@@ -51,8 +51,39 @@ public class AclConverter {
 		ACL rsModel = new ACL();
 		rsModel.principal(acl.getPrincipal())
 		.id(acl.getId()+"")
-		.ruolo(acl.getRuolo())
-		.servizio(ServizioEnum.fromValue(acl.getServizio().toString()));
+		.ruolo(acl.getRuolo());
+		
+		if(acl.getServizio() != null) {
+			switch(acl.getServizio()) {
+			case ANAGRAFICA_APPLICAZIONI:
+				rsModel.setServizio(ServizioEnum.ANAGRAFICA_APPLICAZIONI);
+				break;
+			case ANAGRAFICA_CREDITORE:
+				rsModel.setServizio(ServizioEnum.ANAGRAFICA_CREDITORE);
+				break;
+			case ANAGRAFICA_PAGOPA:
+				rsModel.setServizio(ServizioEnum.ANAGRAFICA_PAGOPA);
+				break;
+			case ANAGRAFICA_RUOLI:
+				rsModel.setServizio(ServizioEnum.ANAGRAFICA_RUOLI);
+				break;
+			case CONFIGURAZIONE_E_MANUTENZIONE:
+				rsModel.setServizio(ServizioEnum.CONFIGURAZIONE_E_MANUTENZIONE);
+				break;
+			case GIORNALE_DEGLI_EVENTI:
+				rsModel.setServizio(ServizioEnum.GIORNALE_DEGLI_EVENTI);
+				break;
+			case PAGAMENTI_E_PENDENZE:
+				rsModel.setServizio(ServizioEnum.PAGAMENTI_E_PENDENZE);
+				break;
+			case RENDICONTAZIONI_E_INCASSI:
+				rsModel.setServizio(ServizioEnum.RENDICONTAZIONI_E_INCASSI);
+				break;
+			case STATISTICHE:
+				rsModel.setServizio(ServizioEnum.STATISTICHE);
+				break;
+			}
+		}
 		
 		if(acl.getListaDiritti() != null)
 			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> toAutorizzazioneEnum(a)).collect(Collectors.toList()));
