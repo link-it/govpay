@@ -96,9 +96,9 @@ public class VersamentoConverter {
 			dto.setCodVersamentoLotto(vo.getCodVersamentoLotto()); 
 			dto.setCodBundlekey(vo.getCodBundlekey()); 
 			dto.setDatiAllegati(vo.getDatiAllegati());
-			
-//			dto.setIncasso(vo.getIncasso()); // TODO sbloccare
-//			dto.setAnomalie(vo.getAnomalie());
+			if(vo.getIncasso() != null)
+				dto.setIncasso(Boolean.parseBoolean(vo.getIncasso()));
+			dto.setAnomalie(vo.getAnomalie());
 			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
@@ -163,8 +163,9 @@ public class VersamentoConverter {
 			vo.setCodBundlekey(dto.getCodBundlekey());
 			vo.setDatiAllegati(dto.getDatiAllegati());
 			
-//			vo.setIncasso(dto.getIncasso()); // TODO sbloccare
-//			vo.setAnomalie(dto.getAnomalie());
+			if(dto.getIncasso()!=null)
+				vo.setIncasso(dto.getIncasso().toString());
+			vo.setAnomalie(dto.getAnomalie());
 			return vo;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
