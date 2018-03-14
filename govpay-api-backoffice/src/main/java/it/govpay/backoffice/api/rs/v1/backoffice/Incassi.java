@@ -1,9 +1,7 @@
-package it.govpay.ragioneria.api.rs.v1.ragioneria;
+package it.govpay.backoffice.api.rs.v1.backoffice;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -41,22 +39,13 @@ public class Incassi extends BaseRsServiceV1{
         return this.controller.incassiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
     }
 
-    @POST
-    @Path("/")
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
-    public Response incassiPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.incassiPOST(this.getUser(), uriInfo, httpHeaders, is);
-    }
-
     @GET
     @Path("/{idDominio}/{idIncasso}")
     
     @Produces({ "application/json" })
-    public Response incassiIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idIncasso") String idIncasso){
+    public Response incassiIdDominioIdIncassoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idIncasso") String idIncasso){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.incassiIdGET(this.getUser(), uriInfo, httpHeaders, idDominio, idIncasso);
+        return this.controller.incassiIdDominioIdIncassoGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idIncasso);
     }
 
 }

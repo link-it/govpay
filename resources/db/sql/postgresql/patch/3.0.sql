@@ -197,3 +197,6 @@ update pagamenti set tipo = 'ENTRATA' where iban_accredito is not null;
 update pagamenti set tipo = 'MBT' where iban_accredito is null;
 ALTER TABLE pagamenti DROP COLUMN iban_accredito;
 ALTER TABLE pagamenti ALTER COLUMN tipo SET NOT NULL;
+
+ALTER TABLE versamenti ADD COLUMN incasso VARCHAR(1);
+ALTER TABLE versamenti ADD COLUMN anomalie TEXT;

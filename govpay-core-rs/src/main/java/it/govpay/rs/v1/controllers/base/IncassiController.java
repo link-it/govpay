@@ -117,6 +117,11 @@ public class IncassiController extends it.govpay.rs.BaseController {
     }
 
 
+    public Response incassiIdDominioIdIncassoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
     public Response incassiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is) {
     	String methodName = "inserisciIncasso"; 
 		

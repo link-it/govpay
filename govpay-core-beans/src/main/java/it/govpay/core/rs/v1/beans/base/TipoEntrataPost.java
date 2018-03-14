@@ -159,11 +159,11 @@ public class TipoEntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TipoEntrataPost tipoEntrata = (TipoEntrataPost) o;
-    return Objects.equals(descrizione, tipoEntrata.descrizione) &&
-        Objects.equals(tipoContabilita, tipoEntrata.tipoContabilita) &&
-        Objects.equals(codiceContabilita, tipoEntrata.codiceContabilita) &&
-        Objects.equals(codificaIUV, tipoEntrata.codificaIUV);
+    TipoEntrataPost tipoEntrataPost = (TipoEntrataPost) o;
+    return Objects.equals(descrizione, tipoEntrataPost.descrizione) &&
+        Objects.equals(tipoContabilita, tipoEntrataPost.tipoContabilita) &&
+        Objects.equals(codiceContabilita, tipoEntrataPost.codiceContabilita) &&
+        Objects.equals(codificaIUV, tipoEntrataPost.codificaIUV);
   }
 
   @Override

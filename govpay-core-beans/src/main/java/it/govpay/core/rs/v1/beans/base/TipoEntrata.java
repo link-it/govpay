@@ -1,9 +1,9 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
+import it.govpay.core.rs.v1.beans.base.TipoEntrataPost;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "descrizione",
 "tipoContabilita",

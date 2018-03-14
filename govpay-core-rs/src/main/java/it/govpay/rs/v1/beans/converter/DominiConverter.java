@@ -53,8 +53,8 @@ public class DominiConverter {
 			}
 		}
 		
-		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccreditoBancario());
-	    entrataDTO.setIbanAppoggio(entrataRequest.getIbanAccreditoPostale());
+		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccredito());
+	    entrataDTO.setIbanAppoggio(entrataRequest.getIbanAppoggio());
 		entrataDTO.setTributo(tributo);
 		entrataDTO.setIdDominio(idDominio);
 		entrataDTO.setIdTributo(idEntrata);
@@ -226,13 +226,13 @@ public class DominiConverter {
 
 
 		if(ibanAccredito != null)
-			rsModel.ibanAccreditoPostale(ibanAccredito.getCodIban());
+			rsModel.ibanAccredito(ibanAccredito.getCodIban());
 
 		if(tributo.getIbanAccredito()!=null)
-			rsModel.ibanAccreditoBancario(tributo.getIbanAccredito().getCodIban());
+			rsModel.ibanAppoggio(tributo.getIbanAccredito().getCodIban());
 
 		if(tributo.getCodTributoIuv()!=null)
-			rsModel.codificaIUV(new BigDecimal(tributo.getCodTributoIuv()));
+			rsModel.codificaIUV(tributo.getCodTributoIuv());
 		
 		return rsModel;
 	}

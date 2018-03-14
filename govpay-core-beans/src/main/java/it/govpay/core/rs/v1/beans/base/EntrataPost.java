@@ -3,10 +3,9 @@ package it.govpay.core.rs.v1.beans.base;
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
-import java.math.BigDecimal;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"ibanAccreditoBancario",
-"ibanAccreditoPostale",
+"ibanAccredito",
+"ibanAppoggio",
 "tipoContabilita",
 "codiceContabilita",
 "codificaIUV",
@@ -14,11 +13,11 @@ import java.math.BigDecimal;
 })
 public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
-  @JsonProperty("ibanAccreditoBancario")
-  private String ibanAccreditoBancario = null;
+  @JsonProperty("ibanAccredito")
+  private String ibanAccredito = null;
   
-  @JsonProperty("ibanAccreditoPostale")
-  private String ibanAccreditoPostale = null;
+  @JsonProperty("ibanAppoggio")
+  private String ibanAppoggio = null;
   
     
   /**
@@ -74,39 +73,39 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String codiceContabilita = null;
   
   @JsonProperty("codificaIUV")
-  private BigDecimal codificaIUV = null;
+  private String codificaIUV = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
   
   /**
    **/
-  public EntrataPost ibanAccreditoBancario(String ibanAccreditoBancario) {
-    this.ibanAccreditoBancario = ibanAccreditoBancario;
+  public EntrataPost ibanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
     return this;
   }
 
-  @JsonProperty("ibanAccreditoBancario")
-  public String getIbanAccreditoBancario() {
-    return ibanAccreditoBancario;
+  @JsonProperty("ibanAccredito")
+  public String getIbanAccredito() {
+    return ibanAccredito;
   }
-  public void setIbanAccreditoBancario(String ibanAccreditoBancario) {
-    this.ibanAccreditoBancario = ibanAccreditoBancario;
+  public void setIbanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
   }
 
   /**
    **/
-  public EntrataPost ibanAccreditoPostale(String ibanAccreditoPostale) {
-    this.ibanAccreditoPostale = ibanAccreditoPostale;
+  public EntrataPost ibanAppoggio(String ibanAppoggio) {
+    this.ibanAppoggio = ibanAppoggio;
     return this;
   }
 
-  @JsonProperty("ibanAccreditoPostale")
-  public String getIbanAccreditoPostale() {
-    return ibanAccreditoPostale;
+  @JsonProperty("ibanAppoggio")
+  public String getIbanAppoggio() {
+    return ibanAppoggio;
   }
-  public void setIbanAccreditoPostale(String ibanAccreditoPostale) {
-    this.ibanAccreditoPostale = ibanAccreditoPostale;
+  public void setIbanAppoggio(String ibanAppoggio) {
+    this.ibanAppoggio = ibanAppoggio;
   }
 
   /**
@@ -144,16 +143,16 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Cifra identificativa negli IUV
    **/
-  public EntrataPost codificaIUV(BigDecimal codificaIUV) {
+  public EntrataPost codificaIUV(String codificaIUV) {
     this.codificaIUV = codificaIUV;
     return this;
   }
 
   @JsonProperty("codificaIUV")
-  public BigDecimal getCodificaIUV() {
+  public String getCodificaIUV() {
     return codificaIUV;
   }
-  public void setCodificaIUV(BigDecimal codificaIUV) {
+  public void setCodificaIUV(String codificaIUV) {
     this.codificaIUV = codificaIUV;
   }
 
@@ -182,8 +181,8 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
       return false;
     }
     EntrataPost entrataPost = (EntrataPost) o;
-    return Objects.equals(ibanAccreditoBancario, entrataPost.ibanAccreditoBancario) &&
-        Objects.equals(ibanAccreditoPostale, entrataPost.ibanAccreditoPostale) &&
+    return Objects.equals(ibanAccredito, entrataPost.ibanAccredito) &&
+        Objects.equals(ibanAppoggio, entrataPost.ibanAppoggio) &&
         Objects.equals(tipoContabilita, entrataPost.tipoContabilita) &&
         Objects.equals(codiceContabilita, entrataPost.codiceContabilita) &&
         Objects.equals(codificaIUV, entrataPost.codificaIUV) &&
@@ -192,7 +191,7 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ibanAccreditoBancario, ibanAccreditoPostale, tipoContabilita, codiceContabilita, codificaIUV, abilitato);
+    return Objects.hash(ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, codificaIUV, abilitato);
   }
 
   public static EntrataPost parse(String json) {
@@ -209,8 +208,8 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class EntrataPost {\n");
     
-    sb.append("    ibanAccreditoBancario: ").append(toIndentedString(ibanAccreditoBancario)).append("\n");
-    sb.append("    ibanAccreditoPostale: ").append(toIndentedString(ibanAccreditoPostale)).append("\n");
+    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
+    sb.append("    ibanAppoggio: ").append(toIndentedString(ibanAppoggio)).append("\n");
     sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
