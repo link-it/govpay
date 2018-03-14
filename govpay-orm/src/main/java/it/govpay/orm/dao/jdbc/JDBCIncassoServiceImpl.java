@@ -115,6 +115,7 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().DATA_CONTABILE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().DATA_ORA_INCASSO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_DISPOSITIVO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().IBAN_ACCREDITO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
 
@@ -129,6 +130,7 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getDataContabile(),Incasso.model().DATA_CONTABILE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getDataOraIncasso(),Incasso.model().DATA_ORA_INCASSO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getNomeDispositivo(),Incasso.model().NOME_DISPOSITIVO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getIbanAccredito(),Incasso.model().IBAN_ACCREDITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class)
 		);
@@ -234,6 +236,8 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 		lstObjects_incasso.add(new JDBCObject(incasso.getDataOraIncasso(), Incasso.model().DATA_ORA_INCASSO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_DISPOSITIVO,false), "?");
 		lstObjects_incasso.add(new JDBCObject(incasso.getNomeDispositivo(), Incasso.model().NOME_DISPOSITIVO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().IBAN_ACCREDITO,false), "?");
+		lstObjects_incasso.add(new JDBCObject(incasso.getIbanAccredito(), Incasso.model().IBAN_ACCREDITO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}

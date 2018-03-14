@@ -326,6 +326,20 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "dati_allegati";
 			}
 		}
+		if(field.equals(Versamento.model().INCASSO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".incasso";
+			}else{
+				return "incasso";
+			}
+		}
+		if(field.equals(Versamento.model().ANOMALIE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".anomalie";
+			}else{
+				return "anomalie";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -448,6 +462,12 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DATI_ALLEGATI)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().INCASSO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().ANOMALIE)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

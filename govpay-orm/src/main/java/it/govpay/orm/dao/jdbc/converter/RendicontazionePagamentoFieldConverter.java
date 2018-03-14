@@ -571,13 +571,6 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 				return "data_pagamento";
 			}
 		}
-		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.IBAN_ACCREDITO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iban_accredito";
-			}else{
-				return "iban_accredito";
-			}
-		}
 		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.COMMISSIONI_PSP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".commissioni_psp";
@@ -660,6 +653,20 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 				return this.toAliasTable(field)+".trn";
 			}else{
 				return "trn";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.ID_INCASSO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
 			}
 		}
 		if(field.equals(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -1089,6 +1096,20 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 				return "dati_allegati";
 			}
 		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.INCASSO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".incasso";
+			}else{
+				return "incasso";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ANOMALIE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".anomalie";
+			}else{
+				return "anomalie";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -1318,9 +1339,6 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO)){
 			return this.toTable(RendicontazionePagamento.model().PAGAMENTO, returnAlias);
 		}
-		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.IBAN_ACCREDITO)){
-			return this.toTable(RendicontazionePagamento.model().PAGAMENTO, returnAlias);
-		}
 		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.COMMISSIONI_PSP)){
 			return this.toTable(RendicontazionePagamento.model().PAGAMENTO, returnAlias);
 		}
@@ -1356,6 +1374,12 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 		}
 		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.ID_INCASSO.TRN)){
 			return this.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_INCASSO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.ID_INCASSO.COD_DOMINIO)){
+			return this.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_INCASSO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().PAGAMENTO.TIPO)){
+			return this.toTable(RendicontazionePagamento.model().PAGAMENTO, returnAlias);
 		}
 		if(field.equals(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
 			return this.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
@@ -1538,6 +1562,12 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.DATI_ALLEGATI)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.INCASSO)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ANOMALIE)){
 			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
 		}
 

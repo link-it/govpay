@@ -386,6 +386,8 @@ CREATE TABLE versamenti
 	cod_anno_tributario VARCHAR(35),
 	cod_bundlekey VARCHAR(256),
 	dati_allegati LONGTEXT,
+	incasso VARCHAR(1),
+	anomalie LONGTEXT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,

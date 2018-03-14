@@ -81,20 +81,6 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 				return "bic_accredito";
 			}
 		}
-		if(field.equals(IbanAccredito.model().IBAN_APPOGGIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iban_appoggio";
-			}else{
-				return "iban_appoggio";
-			}
-		}
-		if(field.equals(IbanAccredito.model().BIC_APPOGGIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".bic_appoggio";
-			}else{
-				return "bic_appoggio";
-			}
-		}
 		if(field.equals(IbanAccredito.model().POSTALE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".postale";
@@ -140,12 +126,6 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
 		if(field.equals(IbanAccredito.model().BIC_ACCREDITO)){
-			return this.toTable(IbanAccredito.model(), returnAlias);
-		}
-		if(field.equals(IbanAccredito.model().IBAN_APPOGGIO)){
-			return this.toTable(IbanAccredito.model(), returnAlias);
-		}
-		if(field.equals(IbanAccredito.model().BIC_APPOGGIO)){
 			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
 		if(field.equals(IbanAccredito.model().POSTALE)){

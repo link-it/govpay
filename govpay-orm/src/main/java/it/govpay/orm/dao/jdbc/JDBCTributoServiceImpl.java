@@ -107,7 +107,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		// Object _ibanAccreditoInstance2
 		Long id_ibanAccreditoInstance2 = null;
 		it.govpay.orm.IdIbanAccredito idLogic_ibanAccreditoInstance2 = null;
-		idLogic_ibanAccreditoInstance2 = tributo.getIdIbanAccreditoPostale();
+		idLogic_ibanAccreditoInstance2 = tributo.getIdIbanAppoggio();
 		if(idLogic_ibanAccreditoInstance2!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
@@ -148,7 +148,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_iban_accredito","?");
-		sqlQueryObjectInsert.addInsertField("id_iban_accredito_postale","?");
+		sqlQueryObjectInsert.addInsertField("id_iban_appoggio","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
 
 		// Insert tributo
@@ -245,7 +245,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		// Object _tributo_ibanAccreditoInstance2
 		Long id_tributo_ibanAccreditoInstance2 = null;
 		it.govpay.orm.IdIbanAccredito idLogic_tributo_ibanAccreditoInstance2 = null;
-		idLogic_tributo_ibanAccreditoInstance2 = tributo.getIdIbanAccreditoPostale();
+		idLogic_tributo_ibanAccreditoInstance2 = tributo.getIdIbanAppoggio();
 		if(idLogic_tributo_ibanAccreditoInstance2!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
@@ -258,6 +258,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 				}
 			}
 		}
+
 		// Object _tributo_tipoTributo
 		Long id_tributo_tipoTributo = null;
 		it.govpay.orm.IdTipoTributo idLogic_tributo_tipoTributo = new it.govpay.orm.IdTipoTributo();
@@ -310,7 +311,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_iban_accredito","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_iban_accredito_postale","?");
+			sqlQueryObjectUpdate.addUpdateField("id_iban_appoggio","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_tributo","?");
