@@ -435,6 +435,9 @@ public class VersamentoUtils {
 		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null)
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
+		
+//		versamento.setIncasso(pendenza.getIncasso()); //TODO
+//		versamento.setAnomalie(pendenza.getAnomalie()); 
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
@@ -469,6 +472,9 @@ public class VersamentoUtils {
 		versamento.setNome(pendenzaVerificata.getNome());
 		
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+		
+//		versamento.setIncasso(pendenza.getIncasso()); //TODO
+//		versamento.setAnomalie(pendenza.getAnomalie()); 
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenzaVerificata.getVoci());
@@ -498,6 +504,9 @@ public class VersamentoUtils {
 		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null)
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
+		
+//		versamento.setIncasso(pendenza.getIncasso()); //TODO
+//		versamento.setAnomalie(pendenza.getAnomalie()); 
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());

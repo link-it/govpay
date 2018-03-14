@@ -224,6 +224,22 @@ public class Versamento {
 		this.datiAllegati = datiAllegati;
 	}
 
+	public Boolean getIncasso() {
+		return incasso;
+	}
+
+	public void setIncasso(Boolean incasso) {
+		this.incasso = incasso;
+	}
+
+	public String getAnomalie() {
+		return anomalie;
+	}
+
+	public void setAnomalie(String anomalie) {
+		this.anomalie = anomalie;
+	}
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -247,6 +263,8 @@ public class Versamento {
     private String bundlekey;
     private String causale;
     private String datiAllegati;
+	private Boolean incasso;
+	private String anomalie;
     
     private TIPO tipo;
     private List<String> spezzoneCausale;

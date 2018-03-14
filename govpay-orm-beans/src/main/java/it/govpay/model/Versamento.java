@@ -65,7 +65,8 @@ public class Versamento extends BasicModel {
 	private String codVersamentoLotto;
 	private Integer codAnnoTributario;
 	private String datiAllegati;
-	
+	private Boolean incasso;
+	private String anomalie;
 	private String tassonomiaAvviso;
 	private String tassonomia;
 
@@ -448,6 +449,22 @@ public class Versamento extends BasicModel {
 
 	public void setDatiAllegati(String datiAllegati) {
 		this.datiAllegati = datiAllegati;
+	}
+
+	public Boolean getIncasso() {
+		return incasso;
+	}
+
+	public void setIncasso(Boolean incasso) {
+		this.incasso = incasso;
+	}
+
+	public String getAnomalie() {
+		return anomalie;
+	}
+
+	public void setAnomalie(String anomalie) {
+		this.anomalie = anomalie;
 	}
 	
 	

@@ -159,6 +159,9 @@ public class PagamentiPortaleDAO {
 				}
 
 				sommaImporti += vTmp.getImportoTotale().doubleValue();
+				
+				// init incasso
+				vTmp.setIncasso(hasBollo ? null : false);
 			}
 
 			if(numeroPagamenti == 1) {

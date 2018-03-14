@@ -66,6 +66,10 @@ public class PendenzeConverter {
 		rsModel.setStato(statoPendenza);
 		rsModel.setTassonomia(versamento.getTassonomia());
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
+		
+//		rsModel.setIncasso(versamento.getIncasso()); //TODO
+//		rsModel.setAnomalie(versamento.getAnomalie()); 
+		
 		if(unitaOperativa != null && !unitaOperativa.getCodUo().equals(Dominio.EC))
 			rsModel.setUnitaOperativa(UriBuilderUtils.getUoByDominio(dominio.getCodDominio(), unitaOperativa.getCodUo()));
 		

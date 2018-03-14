@@ -127,6 +127,9 @@ public class VersamentoUtils {
 		model.setTassonomia(versamento.getTassonomia());
 		model.setTassonomiaAvviso(versamento.getTassonomiaAvviso());
 		
+		model.setIncasso(versamento.getIncasso());
+		model.setAnomalie(versamento.getAnomalie()); 
+		
 		return model;
 	}
 
