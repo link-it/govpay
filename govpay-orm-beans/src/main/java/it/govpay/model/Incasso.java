@@ -35,6 +35,7 @@ public class Incasso extends BasicModel {
 	private Date dataIncasso;
 	private Date dataContabile;
 	private String dispositivo;
+	private String ibanAccredito;
 	private Long idApplicazione;
 	private Long idOperatore;
 	
@@ -106,6 +107,12 @@ public class Incasso extends BasicModel {
 	}
 	public void setIdOperatore(Long idOperatore) {
 		this.idOperatore = idOperatore;
+	}
+	public String getIbanAccredito() {
+		return ibanAccredito;
+	}
+	public void setIbanAccredito(String ibanAccredito) {
+		this.ibanAccredito = ibanAccredito;
 	}
 }
 

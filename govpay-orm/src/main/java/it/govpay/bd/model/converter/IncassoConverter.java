@@ -26,7 +26,7 @@ public class IncassoConverter {
 			
 			dto.setImporto(BigDecimal.valueOf(vo.getImporto()));
 			dto.setTrn(vo.getTrn());
-			
+			dto.setIbanAccredito(vo.getIbanAccredito()); //TODO
 			return dto;
 	}
 
@@ -51,7 +51,7 @@ public class IncassoConverter {
 		}
 		vo.setImporto(dto.getImporto().doubleValue());
 		vo.setTrn(dto.getTrn());
-		
+		vo.setIbanAccredito(dto.getIbanAccredito());
 		return vo;
 }
 }
