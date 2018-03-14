@@ -50,8 +50,22 @@ public class EntrateConverter {
 		.descrizione(tributo.getDescrizione())
 		.idEntrata(tributo.getCodTributo());
 		
-		if(tributo.getTipoContabilitaDefault() != null)
-			rsModel.tipoContabilita(TipoEntrata.TipoContabilitaEnum.fromValue(tributo.getTipoContabilitaDefault().toString()));
+		if(tributo.getTipoContabilitaDefault() != null) {
+			switch (tributo.getTipoContabilitaDefault()) {
+			case ALTRO:
+				rsModel.tipoContabilita(TipoEntrata.TipoContabilitaEnum.ALTRO);
+				break;
+			case CAPITOLO:
+				rsModel.tipoContabilita(TipoEntrata.TipoContabilitaEnum.ENTRATA);
+				break;
+			case SIOPE:
+				rsModel.tipoContabilita(TipoEntrata.TipoContabilitaEnum.SIOPE);
+				break;
+			case SPECIALE:
+				rsModel.tipoContabilita(TipoEntrata.TipoContabilitaEnum.SPECIALE);
+				break;
+			}
+		}
 		
 		return rsModel;
 	}
