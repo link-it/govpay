@@ -31,7 +31,6 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.IuvBD;
-import it.govpay.bd.pagamento.util.CustomIuv;
 import it.govpay.core.business.model.CaricaIuvDTO;
 import it.govpay.core.business.model.CaricaIuvDTOResponse;
 import it.govpay.core.business.model.GeneraIuvDTO;

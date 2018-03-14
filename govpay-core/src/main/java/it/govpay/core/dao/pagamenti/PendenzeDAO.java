@@ -22,11 +22,7 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
