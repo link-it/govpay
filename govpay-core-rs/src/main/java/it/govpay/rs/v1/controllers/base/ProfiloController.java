@@ -57,7 +57,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 				results.add(AclConverter.toRsModel(acl));
 			}
 
-			ListaAcl response = new ListaAcl(results, uriInfo.getRequestUri(),
+			ListaAcl response = new ListaAcl(results, this.getServicePath(uriInfo),
 					results.size(), 1, results.size());
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);

@@ -146,7 +146,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 				results.add(PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti()));
 			}
 			
-			ListaPendenze response = new ListaPendenze(results, uriInfo.getRequestUri(),
+			ListaPendenze response = new ListaPendenze(results, this.getServicePath(uriInfo),
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

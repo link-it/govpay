@@ -77,7 +77,7 @@ public class PspController extends it.govpay.rs.BaseController {
 				results.add(PspConverter.toCanaleRsModel(elem.getCanale(), elem.getPsp()));
 			}
 			
-			ListaCanali response = new ListaCanali(results, uriInfo.getRequestUri(),
+			ListaCanali response = new ListaCanali(results, this.getServicePath(uriInfo),
 					listaDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
@@ -247,7 +247,7 @@ public class PspController extends it.govpay.rs.BaseController {
 				results.add(PspConverter.toRsModel(psp));
 			}
 			
-			ListaPsp response = new ListaPsp(results, uriInfo.getRequestUri(),
+			ListaPsp response = new ListaPsp(results, this.getServicePath(uriInfo),
 					listaPspDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

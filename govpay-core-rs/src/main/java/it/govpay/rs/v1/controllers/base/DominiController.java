@@ -234,7 +234,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 				results.add(DominiConverter.toRsModel(dominio));
 			}
 			
-			ListaDomini response = new ListaDomini(results, uriInfo.getRequestUri(),
+			ListaDomini response = new ListaDomini(results, this.getServicePath(uriInfo),
 					listaDominiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
@@ -358,7 +358,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 				results.add(DominiConverter.toEntrataRsModel(tributo.getTributo(), tributo.getIbanAccreditoPostale()));
 			}
 			
-			ListaEntrate response = new ListaEntrate(results, uriInfo.getRequestUri(),
+			ListaEntrate response = new ListaEntrate(results, this.getServicePath(uriInfo),
 					listaDominiEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
@@ -431,7 +431,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 				results.add(DominiConverter.toUnitaOperativaRsModel(uo));
 			}
 			
-			ListaUnitaOperative response = new ListaUnitaOperative(results, uriInfo.getRequestUri(),
+			ListaUnitaOperative response = new ListaUnitaOperative(results, this.getServicePath(uriInfo),
 					listaDominiUoDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
@@ -810,7 +810,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 				results.add(DominiConverter.toIbanRsModel(ibanAccredito));
 			}
 			
-			ListaIbanAccredito response = new ListaIbanAccredito(results, uriInfo.getRequestUri(),
+			ListaIbanAccredito response = new ListaIbanAccredito(results, this.getServicePath(uriInfo),
 					listaDominiIbanDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

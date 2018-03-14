@@ -83,7 +83,7 @@ public class AclController extends it.govpay.rs.BaseController {
 				results.add(AclConverter.toRsModel(acl));
 			}
 
-			ListaAcl response = new ListaAcl(results, uriInfo.getRequestUri(),
+			ListaAcl response = new ListaAcl(results, this.getServicePath(uriInfo),
 					listaACLDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
