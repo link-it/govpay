@@ -29,7 +29,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
-import it.govpay.model.TipoTributo;
+import it.govpay.orm.TipoTributo;
 import it.govpay.orm.Tributo;
 
 
