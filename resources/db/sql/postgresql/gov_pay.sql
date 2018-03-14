@@ -170,8 +170,6 @@ CREATE TABLE iban_accredito
 (
 	cod_iban VARCHAR(255) NOT NULL,
 	bic_accredito VARCHAR(255),
-	iban_appoggio VARCHAR(255),
-	bic_appoggio VARCHAR(255),
 	postale BOOLEAN NOT NULL,
 	attivato BOOLEAN NOT NULL,
 	abilitato BOOLEAN NOT NULL,
@@ -220,14 +218,14 @@ CREATE TABLE tributi
 	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	id_iban_accredito BIGINT,
-	id_iban_accredito_postale BIGINT,
+	id_iban_appoggio BIGINT,
 	id_tipo_tributo BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trb_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_trb_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
-	CONSTRAINT fk_trb_id_iban_accredito_postale FOREIGN KEY (id_iban_accredito_postale) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_trb_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
 	CONSTRAINT fk_trb_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
 );
@@ -431,12 +429,14 @@ CREATE TABLE singoli_versamenti
 	id_versamento BIGINT NOT NULL,
 	id_tributo BIGINT,
 	id_iban_accredito BIGINT,
+	id_iban_appoggio BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
 	CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_sng_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 );
 
@@ -683,10 +683,13 @@ CREATE TABLE incassi
 	data_contabile DATE,
 	data_ora_incasso TIMESTAMP NOT NULL,
 	nome_dispositivo VARCHAR(512),
+	iban_accredito VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_incassi') NOT NULL,
 	id_applicazione BIGINT,
 	id_operatore BIGINT,
+	-- unique constraints
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
@@ -707,7 +710,6 @@ CREATE TABLE pagamenti
 	data_acquisizione TIMESTAMP NOT NULL,
 	iur VARCHAR(35) NOT NULL,
 	data_pagamento TIMESTAMP NOT NULL,
-	iban_accredito VARCHAR(255),
 	commissioni_psp DOUBLE PRECISION,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR(2),
@@ -719,6 +721,7 @@ CREATE TABLE pagamenti
 	esito_revoca VARCHAR(140),
 	dati_esito_revoca VARCHAR(140),
 	stato VARCHAR(35),
+	tipo VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti') NOT NULL,
 	id_rpt BIGINT,
