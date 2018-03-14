@@ -28,6 +28,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoAllegato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.orm.IdIncasso;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdRr;
@@ -81,8 +82,7 @@ public class PagamentoConverter {
 			if(vo.getIdIncasso() != null)
 				dto.setIdIncasso(vo.getIdIncasso().getId());
 			
-			// TODO
-			dto.setTipo(null);
+			dto.setTipo(TipoPagamento.valueOf(vo.getTipo()));
 			return dto;
 		}catch(Throwable t){
 			throw new ServiceException(t);
@@ -140,8 +140,7 @@ public class PagamentoConverter {
 		if(dto.getStato() != null)
 			vo.setStato(dto.getStato().toString());
 
-		// TODO
-		//vo.setTipo(null);
+		vo.setTipo(dto.getTipo().toString());
 		return vo;
 	}
 

@@ -180,3 +180,20 @@ ALTER TABLE versamenti add COLUMN dati_allegati TEXT;
 ALTER TABLE singoli_versamenti add COLUMN dati_allegati TEXT;
 ALTER TABLE singoli_versamenti add COLUMN descrizione VARCHAR(256);
 ALTER TABLE singoli_versamenti drop column note;
+
+ALTER TABLE iban_accredito DROP COLUMN iban_appoggio;
+ALTER TABLE iban_accredito DROP COLUMN bic_appoggio;
+
+ALTER TABLE tributi RENAME COLUMN id_iban_accredito_postale TO id_iban_appoggio;
+
+ALTER TABLE singoli_versamenti add column id_iban_appoggio BIGINT;
+ALTER TABLE singoli_versamenti add CONSTRAINT fk_sng_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id);
+
+ALTER TABLE incassi add column iban_accredito VARCHAR(35);
+ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn);
+
+ALTER TABLE pagamenti ADD COLUMN tipo VARCHAR(35);
+update pagamenti set tipo = 'ENTRATA' where iban_accredito is not null;
+update pagamenti set tipo = 'MBT' where iban_accredito is null;
+ALTER TABLE pagamenti DROP COLUMN iban_accredito;
+ALTER TABLE pagamenti ALTER COLUMN tipo SET NOT NULL;

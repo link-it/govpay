@@ -519,6 +519,7 @@
     <value name="hashDocumento" field="hashDocumento" usage="optional"/>
     <value name="provinciaResidenza" field="provinciaResidenza" usage="optional"/>
     <structure name="idIbanAccredito" field="idIbanAccredito" usage="optional" map-as="_IdIbanAccredito_Type"/>
+    <structure name="idIbanAppoggio" field="idIbanAppoggio" usage="optional" map-as="_IdIbanAccredito_Type"/>
     <value name="tipoContabilita" field="tipoContabilita" usage="optional"/>
     <value name="codiceContabilita" field="codiceContabilita" usage="optional"/>
     <value name="descrizione" field="descrizione" usage="optional"/>
