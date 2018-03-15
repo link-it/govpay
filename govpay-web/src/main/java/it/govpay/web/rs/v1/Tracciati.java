@@ -102,14 +102,26 @@ public class Tracciati extends BaseRsServiceV1 {
 			return Response.status(Status.CREATED).entity(tracciato).build();
 			
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (NotAuthenticatedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il caricamento del tracciato", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -145,14 +157,26 @@ public class Tracciati extends BaseRsServiceV1 {
 			return Response.status(Status.OK).entity(tracciato).build();
 			
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (NotAuthenticatedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante la lettura del tracciato", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -201,14 +225,26 @@ public class Tracciati extends BaseRsServiceV1 {
 			return Response.status(Status.OK).entity(listaTracciati).build();
 			
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (NotAuthenticatedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],403);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.FORBIDDEN).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante la lettura del tracciato", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();

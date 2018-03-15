@@ -1,20 +1,14 @@
 package it.govpay.core.dao.pagamenti.exception;
 
-public class RicevutaNonTrovataException extends Exception{
+import it.govpay.core.dao.commons.exception.NonTrovataException;
 
-	public RicevutaNonTrovataException() {
-		
-	}
+public class RicevutaNonTrovataException extends NonTrovataException{
+
 	public RicevutaNonTrovataException(String message) {
 		super(message);
 	}
-	
-	public RicevutaNonTrovataException(String message,Throwable t) {
+	public RicevutaNonTrovataException(String message, Throwable t) {
 		super(message, t);
-	}
-	
-	public RicevutaNonTrovataException(Throwable t) {
-		super(t);
 	}
 
 	/**

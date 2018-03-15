@@ -1,24 +1,16 @@
 package it.govpay.core.dao.anagrafica.exception;
 
-import it.govpay.core.dao.commons.exception.RedirectException;
+import it.govpay.core.dao.commons.exception.NonTrovataException;
 
-public class UnitaOperativaNonTrovataException extends RedirectException{
 
-	public UnitaOperativaNonTrovataException(String location) {
-		super(location);
+public class UnitaOperativaNonTrovataException extends NonTrovataException{
+	public UnitaOperativaNonTrovataException(String message) {
+		super(message);
 	}
-	
-	public UnitaOperativaNonTrovataException(String location, String message) {
-		super(location,message);
+	public UnitaOperativaNonTrovataException(String message, Throwable t) {
+		super(message, t);
 	}
-	
-	public UnitaOperativaNonTrovataException(String location,Throwable t) {
-		super(location, t);
-	}
-	
-	public UnitaOperativaNonTrovataException(String location, String message ,Throwable t) {
-		super(location,message,t);
-	}
+
 
 	/**
 	 * 

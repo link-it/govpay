@@ -30,11 +30,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.rs.v1.beans.PagamentoInAttesa;
 import it.govpay.model.Anagrafica;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.PendenzeController;
@@ -87,7 +87,11 @@ public class PagamentiInAttesa extends BaseRsServiceV1 {
 			return Response.status(Status.OK).entity(pia).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 

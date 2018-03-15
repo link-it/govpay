@@ -21,17 +21,29 @@ package it.govpay.core.exceptions;
 
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 
-public class NotAuthorizedException extends BaseExceptionV1 {
-
-	private static final long serialVersionUID = 1L;
+public abstract class BaseExceptionV1 extends BaseException {
 	
-	public NotAuthorizedException(String cause) {
-		super("Operazione non autorizzata", "403000", cause, CategoriaEnum.AUTORIZZAZIONE);
+	transient private static final long serialVersionUID = 1L;
+	private CategoriaEnum categoria;
+	
+	public BaseExceptionV1(String message, String subCode, String description, CategoriaEnum categoria) {
+		super(message, subCode, description);
+		this.categoria = categoria;
 	}
 	
-	@Override
-	public int getTransportErrorCode() {
-		return 403;
+	public BaseExceptionV1(String message, String subCode, String description, CategoriaEnum categoria, Throwable t) {
+		super(message, subCode, description, t);
+		this.categoria = categoria;
 	}
+	
+	public CategoriaEnum getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(CategoriaEnum categoria) {
+		this.categoria = categoria;
+	}
+	
+	
+	
 	
 }
