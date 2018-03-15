@@ -113,7 +113,11 @@ public class Incassi extends BaseRsServiceV1 {
 			else 
 				return Response.status(Status.OK).entity(incassoExt).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (IncassiException e) {
 			Errore errore = new Errore(e.getCode(),e.getMessage(),e.getDetails());
@@ -121,7 +125,11 @@ public class Incassi extends BaseRsServiceV1 {
 			return Response.status(422).entity(errore).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -171,11 +179,19 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(listaIncassi).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -210,11 +226,19 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(new IncassoExt(leggiIncassoDTOResponse.getIncasso(), bd)).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();

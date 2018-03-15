@@ -35,7 +35,7 @@ public class RptDAO{
 			Rpt	rpt = rptBD.getRpt(leggiRptDTO.getIdDominio(), leggiRptDTO.getIuv(), leggiRptDTO.getCcp());
 
 			if(rpt.getXmlRt() == null)
-				throw new RicevutaNonTrovataException();
+				throw new RicevutaNonTrovataException(null);
 
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento(bd));
@@ -60,7 +60,7 @@ public class RptDAO{
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
 
 			if(rpt.getXmlRt() == null)
-				throw new RicevutaNonTrovataException();
+				throw new RicevutaNonTrovataException(null);
 
 			response.setRpt(rpt);
 			response.setDominio(rpt.getDominio(bd));

@@ -1,28 +1,17 @@
 package it.govpay.core.dao.anagrafica.exception;
 
-import it.govpay.core.dao.commons.exception.RedirectException;
+import it.govpay.core.dao.commons.exception.NonTrovataException;
 
-public class DominioNonTrovatoException extends RedirectException{
 
-	public DominioNonTrovatoException(String location) {
-		super(location);
+public class DominioNonTrovatoException extends NonTrovataException{
+
+	public DominioNonTrovatoException(String message) {
+		super(message);
 	}
-	
-	public DominioNonTrovatoException(String location, String message) {
-		super(location,message);
-	}
-	
-	public DominioNonTrovatoException(String location,Throwable t) {
-		super(location, t);
-	}
-	
-	public DominioNonTrovatoException(String location, String message ,Throwable t) {
-		super(location,message,t);
+	public DominioNonTrovatoException(String message, Throwable t) {
+		super(message, t);
 	}
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 }

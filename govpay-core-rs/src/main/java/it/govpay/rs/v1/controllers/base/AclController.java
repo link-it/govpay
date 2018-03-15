@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.AclDAO;
@@ -23,13 +22,10 @@ import it.govpay.core.dao.anagrafica.dto.ListaAclDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaAclDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.AclNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
+import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.rs.v1.beans.ACL;
 import it.govpay.core.rs.v1.beans.ListaAcl;
 import it.govpay.core.rs.v1.beans.base.AclPost;
-import it.govpay.core.rs.v1.beans.base.FaultBean;
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -90,18 +86,10 @@ public class AclController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
 
+		}catch (BaseExceptionV1 e) {
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
-			log.error("Errore interno durante la ricerca delle ACL: " + e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -142,30 +130,10 @@ public class AclController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 
-		}catch (NotFoundException e) {
-			log.error(e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.NOT_FOUND.getStatusCode());
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
+		}catch (BaseExceptionV1 e) {
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
-			log.error("Errore interno durante la ricerca delle ACL: " + e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -204,30 +172,10 @@ public class AclController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(responseStatus).build();
-			//		} catch (DominioNonTrovatoException  | StazioneNonTrovataException  | TipoTributoNonTrovatoException e) {
-			//			log.error(e.getMessage(), e);
-			//			FaultBean respKo = new FaultBean();
-			//			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			//			respKo.setCodice("");
-			//			respKo.setDescrizione(e.getMessage());
-			//			try {
-			//				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			//			}catch(Exception e1) {
-			//				log.error("Errore durante il log della risposta", e1);
-			//			}
-			//			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
-		} catch (Exception e) {
-			log.error("Errore interno durante l'esecuzione del metodo "+ methodName + ": " + e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice(CategoriaEnum.INTERNO.name());
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		}catch (BaseExceptionV1 e) {
+			return handleException(uriInfo, httpHeaders, methodName, e);
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -264,30 +212,10 @@ public class AclController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).build();
 
-		} catch (AclNonTrovatoException e) {
-			log.error(e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.NOT_FOUND.getStatusCode());
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
+		}catch (BaseExceptionV1 e) {
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
-			log.error("Errore interno durante l'eliminazione della ACL: " + e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

@@ -188,11 +188,19 @@ public class Domini extends BaseRsServiceV1 {
 			ListaUnitaOperative listaUnitaOperative = new ListaUnitaOperative(unitaOperative, uriInfo.getRequestUri(), findUnitaOperativeDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -224,11 +232,19 @@ public class Domini extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -273,11 +289,19 @@ public class Domini extends BaseRsServiceV1 {
 			ListaIbanAccredito listaUnitaOperative = new ListaIbanAccredito(ibans, uriInfo.getRequestUri(), findIbanDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -311,11 +335,19 @@ public class Domini extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(unitaOperativa.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -360,11 +392,19 @@ public class Domini extends BaseRsServiceV1 {
 			ListaEntrate listaUnitaOperative = new ListaEntrate(entrate, uriInfo.getRequestUri(), findTributiDTOResponse.getTotalResults(), offset, limit);
 			return Response.status(Status.OK).entity(listaUnitaOperative.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();
@@ -398,11 +438,19 @@ public class Domini extends BaseRsServiceV1 {
 			
 			return Response.status(Status.OK).entity(entrata.toJSON(fields)).build();
 		} catch (NotAuthorizedException e) {
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			try {
+				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
+			} catch (Exception e1) {
+				log.error("Errore interno durante il log della risposta", e1);
+			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(ctx != null) ctx.log();

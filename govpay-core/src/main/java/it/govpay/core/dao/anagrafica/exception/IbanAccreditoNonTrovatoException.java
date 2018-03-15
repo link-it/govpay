@@ -1,23 +1,15 @@
 package it.govpay.core.dao.anagrafica.exception;
 
-import it.govpay.core.dao.commons.exception.RedirectException;
+import it.govpay.core.dao.commons.exception.NonTrovataException;
 
-public class IbanAccreditoNonTrovatoException extends RedirectException{
 
-	public IbanAccreditoNonTrovatoException(String location) {
-		super(location);
+public class IbanAccreditoNonTrovatoException extends NonTrovataException{
+
+	public IbanAccreditoNonTrovatoException(String message) {
+		super(message);
 	}
-	
-	public IbanAccreditoNonTrovatoException(String location, String message) {
-		super(location,message);
-	}
-	
-	public IbanAccreditoNonTrovatoException(String location,Throwable t) {
-		super(location, t);
-	}
-	
-	public IbanAccreditoNonTrovatoException(String location, String message ,Throwable t) {
-		super(location,message,t);
+	public IbanAccreditoNonTrovatoException(String message, Throwable t) {
+		super(message, t);
 	}
 
 	/**
