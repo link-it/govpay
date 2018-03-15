@@ -31,6 +31,9 @@ import org.apache.commons.lang.StringUtils;
 
 
 public class Versamento extends BasicModel {
+	
+	public static final String INCASSO_FALSE = "f";
+	public static final String INCASSO_TRUE = "t";
 
 	public enum StatoVersamento {
 		NON_ESEGUITO,

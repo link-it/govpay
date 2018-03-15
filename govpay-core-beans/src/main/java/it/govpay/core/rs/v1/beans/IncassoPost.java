@@ -19,6 +19,10 @@
  */
 package it.govpay.core.rs.v1.beans;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
+import it.govpay.core.utils.SimpleDateFormatUtils;
+
 public class IncassoPost extends it.govpay.core.rs.v1.beans.base.IncassoPost{
 	
 	public IncassoPost() {
@@ -28,6 +32,13 @@ public class IncassoPost extends it.govpay.core.rs.v1.beans.base.IncassoPost{
 	@Override
 	public String getJsonIdFilter() {
 		return "incassiPost";
+	}
+	
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
 	}
 	
 }
