@@ -129,7 +129,16 @@ public class VersamentoUtils {
 		
 		model.setIncasso(versamento.getIncasso());
 		model.setAnomalie(versamento.getAnomalie()); 
-		
+
+		if(versamento.getIuv() != null) {
+			if(versamento.getIuv().startsWith("0")) {
+				model.setIuvVersamento(versamento.getIuv().substring(1));
+			} else {
+				model.setIuvVersamento(versamento.getIuv().substring(3));
+			}
+			model.setNumeroAvviso(versamento.getIuv());
+			model.setAvvisatura("C");
+		}
 		return model;
 	}
 

@@ -101,6 +101,12 @@ public class VersamentoConverter {
 			}
 			dto.setAnomalie(vo.getAnomalie());
 			
+			dto.setIuvVersamento(vo.getIuvVersamento());
+			dto.setNumeroAvviso(vo.getNumeroAvviso());
+			dto.setAvvisatura(vo.getAvvisatura());
+			dto.setTipoPagamento(vo.getTipoPagamento());
+			
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -168,6 +174,12 @@ public class VersamentoConverter {
 				vo.setIncasso(dto.getIncasso() ? Versamento.INCASSO_TRUE : Versamento.INCASSO_FALSE);
 			}
 			vo.setAnomalie(dto.getAnomalie());
+			
+			vo.setIuvVersamento(dto.getIuvVersamento());
+			vo.setNumeroAvviso(dto.getNumeroAvviso());
+			vo.setAvvisatura(dto.getAvvisatura());
+			vo.setTipoPagamento(dto.getTipoPagamento());
+
 			return vo;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

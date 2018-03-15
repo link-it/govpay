@@ -200,3 +200,9 @@ ALTER TABLE pagamenti ALTER COLUMN tipo SET NOT NULL;
 
 ALTER TABLE versamenti ADD COLUMN incasso VARCHAR(1);
 ALTER TABLE versamenti ADD COLUMN anomalie TEXT;
+
+ALTER TABLE versamenti ADD COLUMN iuv_versamento VARCHAR(35);
+ALTER TABLE versamenti ADD COLUMN numero_avviso VARCHAR(35);
+ALTER TABLE versamenti ADD COLUMN avvisatura VARCHAR(1);
+ALTER TABLE versamenti ADD COLUMN tipo_pagamento INT;
+

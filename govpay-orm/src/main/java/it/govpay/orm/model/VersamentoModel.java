@@ -79,6 +79,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"Versamento",Versamento.class);
 		this.INCASSO = new Field("incasso",java.lang.String.class,"Versamento",Versamento.class);
 		this.ANOMALIE = new Field("anomalie",java.lang.String.class,"Versamento",Versamento.class);
+		this.IUV_VERSAMENTO = new Field("iuvVersamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.NUMERO_AVVISO = new Field("numeroAvviso",java.lang.String.class,"Versamento",Versamento.class);
+		this.AVVISATURA = new Field("avvisatura",java.lang.String.class,"Versamento",Versamento.class);
+		this.TIPO_PAGAMENTO = new Field("tipoPagamento",java.lang.Integer.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -124,6 +128,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"Versamento",Versamento.class);
 		this.INCASSO = new ComplexField(father,"incasso",java.lang.String.class,"Versamento",Versamento.class);
 		this.ANOMALIE = new ComplexField(father,"anomalie",java.lang.String.class,"Versamento",Versamento.class);
+		this.IUV_VERSAMENTO = new ComplexField(father,"iuvVersamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.NUMERO_AVVISO = new ComplexField(father,"numeroAvviso",java.lang.String.class,"Versamento",Versamento.class);
+		this.AVVISATURA = new ComplexField(father,"avvisatura",java.lang.String.class,"Versamento",Versamento.class);
+		this.TIPO_PAGAMENTO = new ComplexField(father,"tipoPagamento",java.lang.Integer.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -204,6 +212,14 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField INCASSO = null;
 	 
 	public IField ANOMALIE = null;
+	 
+	public IField IUV_VERSAMENTO = null;
+	 
+	public IField NUMERO_AVVISO = null;
+	 
+	public IField AVVISATURA = null;
+	 
+	public IField TIPO_PAGAMENTO = null;
 	 
 
 	@Override

@@ -44,6 +44,7 @@ import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
+import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.rs.v1.beans.Entrata;
 import it.govpay.core.rs.v1.beans.Iban;
 import it.govpay.core.rs.v1.beans.ListaDomini;
@@ -292,36 +293,14 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (DominioNonTrovatoException  e) {
-			log.error(e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.NOT_FOUND.getStatusCode());
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
+		}catch (RedirectException e) {
+			return handleRedirectException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
-			log.error("Errore interno durante la ricerca dei PSP: " + e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
     }
-
-
 
     public Response dominiIdDominioEntrateGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioEntrateGET";  

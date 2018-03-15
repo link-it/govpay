@@ -389,6 +389,10 @@ CREATE TABLE versamenti
 	dati_allegati TEXT,
 	incasso VARCHAR(1),
 	anomalie TEXT,
+	iuv_versamento VARCHAR(35),
+	numero_avviso VARCHAR(35),
+	avvisatura VARCHAR(1),
+	tipo_pagamento INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_dominio BIGINT NOT NULL,

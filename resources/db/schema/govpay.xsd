@@ -1310,6 +1310,10 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="iuvVersamento" type="String35" minOccurs="0"/>
+			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
+			<xsd:element name="avvisatura" type="String1" minOccurs="0"/>
+			<xsd:element name="tipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

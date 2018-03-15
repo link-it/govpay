@@ -264,4 +264,8 @@ ALTER TABLE pagamenti MODIFY (tipo NOT NULL);
 
 ALTER TABLE versamenti ADD incasso VARCHAR2(1 CHAR);
 ALTER TABLE versamenti ADD anomalie CLOB;
+ALTER TABLE versamenti ADD iuv_versamento VARCHAR2(35 CHAR);
+ALTER TABLE versamenti ADD numero_avviso VARCHAR2(35 CHAR);
+ALTER TABLE versamenti ADD avvisatura VARCHAR2(1 CHAR);
+ALTER TABLE versamenti ADD tipo_pagamento NUMBER;
 

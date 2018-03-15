@@ -485,6 +485,10 @@
     <value name="datiAllegati" field="datiAllegati" usage="optional"/>
     <value name="incasso" field="incasso" usage="optional"/>
     <value name="anomalie" field="anomalie" usage="optional"/>
+    <value name="iuvVersamento" field="iuvVersamento" usage="optional"/>
+    <value name="numeroAvviso" field="numeroAvviso" usage="optional"/>
+    <value name="avvisatura" field="avvisatura" usage="optional"/>
+    <value name="tipoPagamento" field="tipoPagamento" usage="optional"/>
   </mapping>
   <mapping name="Evento" class="it.govpay.orm.Evento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
