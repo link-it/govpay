@@ -1,12 +1,16 @@
 package it.govpay.rs.v1.beans.converter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.Pagamento;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.rs.v1.beans.Incasso;
 import it.govpay.core.rs.v1.beans.IncassoPost;
+import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.model.IAutorizzato;
 
 public class IncassiConverter {
@@ -31,7 +35,15 @@ public class IncassiConverter {
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto().doubleValue());
 		rsModel.setId(i.getId()+ "");
-		rsModel.setRiscossioni(null);
+		
+		if(i.getPagamenti(null)!= null) {
+			List<Riscossione> riscossioni = new ArrayList<Riscossione>();
+			for (Pagamento pagamento : i.getPagamenti(null)) {
+				riscossioni.add(RiscossioniConverter.toRsModel(pagamento));
+			}
+			
+			rsModel.setRiscossioni(riscossioni);
+		}
 		
 		return rsModel;
 	}

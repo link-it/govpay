@@ -6,6 +6,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Incasso;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
@@ -26,6 +27,15 @@ public class IncassiDAO {
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			ListaIncassiDTOResponse listaIncassiDTOResponse = incassi.listaIncassi(listaIncassoDTO);
 			 
+			if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
+				for (Incasso incasso : listaIncassiDTOResponse.getResults()) {
+					// popolo valori
+					incasso.getPagamenti(bd);
+					incasso.getApplicazione(bd);
+					incasso.getDominio(bd);
+				}
+			}
+			
 			return listaIncassiDTOResponse;
 		}catch (NotAuthorizedException e) {
 			// TODO
@@ -45,6 +55,9 @@ public class IncassiDAO {
 		try {
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			response = incassi.leggiIncasso(leggiIncassoDTO);
+			response.getIncasso().getPagamenti(bd);
+			response.getIncasso().getApplicazione(bd);
+			response.getIncasso().getDominio(bd);
 
 		}catch (NotAuthorizedException e) {
 			// TODO
@@ -68,6 +81,10 @@ public class IncassiDAO {
 			richiestaIncassoDTO.setApplicazione(applicazione);
 			
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
+			
+			richiestaIncassoDTOResponse.getIncasso().getPagamenti(bd);
+			richiestaIncassoDTOResponse.getIncasso().getApplicazione(bd);
+			richiestaIncassoDTOResponse.getIncasso().getDominio(bd);
 		} catch (NotAuthorizedException e) {
 			// TODO
 			throw e;
