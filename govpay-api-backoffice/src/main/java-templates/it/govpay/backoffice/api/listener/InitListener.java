@@ -130,7 +130,7 @@ public class InitListener implements ServletContextListener{
 			}
 			
 			RicevutaPagamentoProperties.newInstance(gpConfig.getResourceDir());
-			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.backoffice");
+			AnagraficaManager.newInstance(null);//"it.govpay.cache.anagrafica.backoffice");
 			ConnectionManager.initialize();
 			AclCache.newInstance(log);
 			//			OperazioneFactory.init();
