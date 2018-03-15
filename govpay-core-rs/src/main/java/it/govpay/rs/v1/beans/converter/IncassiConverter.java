@@ -12,13 +12,13 @@ import it.govpay.model.IAutorizzato;
 public class IncassiConverter {
 
 	
-	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost, IAutorizzato user) {
+	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost, String idDominio, IAutorizzato user) {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
 		dto.setCausale(incassoPost.getCausale());
 		dto.setDataValuta(incassoPost.getDataValuta());
 		dto.setDataContabile(incassoPost.getDataContabile());
 		dto.setImporto(new BigDecimal(incassoPost.getImporto()));
-//		dto.setCodDominio(incassoPost.get);
+		dto.setCodDominio(idDominio);
 		return dto;
 	}
 	

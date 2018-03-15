@@ -181,7 +181,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			ctx =  GpThreadLocal.get();
 			
 			it.govpay.core.rs.v1.beans.IncassoPost incasso = (IncassoPost) it.govpay.core.rs.v1.beans.IncassoPost.parse(baos.toString(), it.govpay.core.rs.v1.beans.IncassoPost.class, new JsonConfig());
-			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso,user);
+			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
 			
