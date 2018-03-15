@@ -18,10 +18,10 @@ import java.util.Date;
 "stato",
 "tipo",
 "importo",
-"ibanAccredito",
 "data",
 "commissioni",
 "allegato",
+"incasso",
 })
 public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
@@ -55,9 +55,6 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("importo")
   private BigDecimal importo = null;
   
-  @JsonProperty("ibanAccredito")
-  private String ibanAccredito = null;
-  
   @JsonProperty("data")
   private Date data = null;
   
@@ -66,6 +63,9 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("allegato")
   private Allegato allegato = null;
+  
+  @JsonProperty("incasso")
+  private String incasso = null;
   
   /**
    * Identificativo ente creditore
@@ -226,22 +226,6 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Iban di accredito della riscossione comunicato nella RPT o individuato in fase di incasso
-   **/
-  public Riscossione ibanAccredito(String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
-    return this;
-  }
-
-  @JsonProperty("ibanAccredito")
-  public String getIbanAccredito() {
-    return ibanAccredito;
-  }
-  public void setIbanAccredito(String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
-  }
-
-  /**
    * Data di esecuzione della riscossione
    **/
   public Riscossione data(Date data) {
@@ -288,6 +272,22 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.allegato = allegato;
   }
 
+  /**
+   * Riferimento all'operazione di incasso
+   **/
+  public Riscossione incasso(String incasso) {
+    this.incasso = incasso;
+    return this;
+  }
+
+  @JsonProperty("incasso")
+  public String getIncasso() {
+    return incasso;
+  }
+  public void setIncasso(String incasso) {
+    this.incasso = incasso;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -307,15 +307,15 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(stato, riscossione.stato) &&
         Objects.equals(tipo, riscossione.tipo) &&
         Objects.equals(importo, riscossione.importo) &&
-        Objects.equals(ibanAccredito, riscossione.ibanAccredito) &&
         Objects.equals(data, riscossione.data) &&
         Objects.equals(commissioni, riscossione.commissioni) &&
-        Objects.equals(allegato, riscossione.allegato);
+        Objects.equals(allegato, riscossione.allegato) &&
+        Objects.equals(incasso, riscossione.incasso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, stato, tipo, importo, ibanAccredito, data, commissioni, allegato);
+    return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
   public static Riscossione parse(String json) {
@@ -342,10 +342,10 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    commissioni: ").append(toIndentedString(commissioni)).append("\n");
     sb.append("    allegato: ").append(toIndentedString(allegato)).append("\n");
+    sb.append("    incasso: ").append(toIndentedString(incasso)).append("\n");
     sb.append("}");
     return sb.toString();
   }
