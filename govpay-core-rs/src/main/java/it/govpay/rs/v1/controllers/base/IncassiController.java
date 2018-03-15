@@ -19,6 +19,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.IncassoNonTrovatoException;
+import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.rs.v1.beans.Incasso;
 import it.govpay.core.rs.v1.beans.IncassoPost;
 import it.govpay.core.rs.v1.beans.ListaIncassi;
@@ -194,18 +195,19 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, incassoExt.toJSON(null), responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(responseStatus).entity(incassoExt.toJSON(null)).build();
-//		} catch (DominioNonTrovatoException  | StazioneNonTrovataException  | TipoTributoNonTrovatoException e) {
-//			log.error(e.getMessage(), e);
-//			FaultBean respKo = new FaultBean();
-//			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-//			respKo.setCodice("");
-//			respKo.setDescrizione(e.getMessage());
-//			try {
-//				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.NOT_FOUND.getStatusCode());
-//			}catch(Exception e1) {
-//				log.error("Errore durante il log della risposta", e1);
-//			}
-//			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
+		} catch (IncassiException e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice(e.getCode());
+			respKo.setDescrizione(e.getMessage());
+			respKo.setDettaglio(e.getDetails()); 
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 422);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(422).entity(respKo.toJSON(null)).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante l'esecuzione del metodo "+ methodName + ": " + e.getMessage(), e);
 			FaultBean respKo = new FaultBean();

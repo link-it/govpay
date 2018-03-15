@@ -57,7 +57,7 @@ public class IncassiDAO {
 		return response;
 	}
 
-	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException{
+	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException, IncassiException{
 		RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = new RichiestaIncassoDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
@@ -72,8 +72,9 @@ public class IncassiDAO {
 			// TODO
 			throw e;
 		} catch (IncassiException e) {
+			throw e;
 			// TODO
-						throw new ServiceException(e);
+//						throw new ServiceException(e);
 //			Errore errore = new Errore(e.getCode(),e.getMessage(),e.getDetails());
 		} catch (Exception e) {
 			// TODO

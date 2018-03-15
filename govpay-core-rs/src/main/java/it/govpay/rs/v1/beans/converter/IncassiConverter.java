@@ -17,7 +17,7 @@ public class IncassiConverter {
 		dto.setCausale(incassoPost.getCausale());
 		dto.setDataValuta(incassoPost.getDataValuta());
 		dto.setDataContabile(incassoPost.getDataContabile());
-		dto.setImporto(new BigDecimal(incassoPost.getImporto()));
+		dto.setImporto(BigDecimal.valueOf(incassoPost.getImporto().doubleValue()));
 		dto.setCodDominio(idDominio);
 		return dto;
 	}

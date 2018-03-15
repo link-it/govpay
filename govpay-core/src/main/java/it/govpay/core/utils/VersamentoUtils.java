@@ -474,7 +474,7 @@ public class VersamentoUtils {
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 		
 //		versamento.setIncasso(pendenza.getIncasso()); //TODO
-//		versamento.setAnomalie(pendenza.getAnomalie()); 
+//		versamento.setAnomalie(pendenzaVerificata.getAnomalie()); 
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenzaVerificata.getVoci());
