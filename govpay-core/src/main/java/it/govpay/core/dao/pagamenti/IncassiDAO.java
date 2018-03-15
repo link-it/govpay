@@ -1,5 +1,7 @@
 package it.govpay.core.dao.pagamenti;
 
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -7,6 +9,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
@@ -30,7 +34,15 @@ public class IncassiDAO {
 			if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
 				for (Incasso incasso : listaIncassiDTOResponse.getResults()) {
 					// popolo valori
-					incasso.getPagamenti(bd);
+					List<Pagamento> pagamenti = incasso.getPagamenti(bd);
+					
+					if(pagamenti != null) {
+						for(Pagamento pagamento: pagamenti) {
+							pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+							pagamento.getRpt(bd);
+						}
+					}
+					
 					incasso.getApplicazione(bd);
 					incasso.getDominio(bd);
 				}
@@ -55,7 +67,15 @@ public class IncassiDAO {
 		try {
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			response = incassi.leggiIncasso(leggiIncassoDTO);
-			response.getIncasso().getPagamenti(bd);
+			List<Pagamento> pagamenti = response.getIncasso().getPagamenti(bd);
+			
+			if(pagamenti != null) {
+				for(Pagamento pagamento: pagamenti) {
+					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+					pagamento.getRpt(bd);
+				}
+			}
+			
 			response.getIncasso().getApplicazione(bd);
 			response.getIncasso().getDominio(bd);
 
@@ -81,8 +101,15 @@ public class IncassiDAO {
 			richiestaIncassoDTO.setApplicazione(applicazione);
 			
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
+			List<Pagamento> pagamenti = richiestaIncassoDTOResponse.getIncasso().getPagamenti(bd);
 			
-			richiestaIncassoDTOResponse.getIncasso().getPagamenti(bd);
+			if(pagamenti != null) {
+				for(Pagamento pagamento: pagamenti) {
+					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+					pagamento.getRpt(bd);
+				}
+			}
+			
 			richiestaIncassoDTOResponse.getIncasso().getApplicazione(bd);
 			richiestaIncassoDTOResponse.getIncasso().getDominio(bd);
 		} catch (NotAuthorizedException e) {
