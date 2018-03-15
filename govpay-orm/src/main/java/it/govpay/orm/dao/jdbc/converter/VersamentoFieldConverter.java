@@ -340,6 +340,34 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "anomalie";
 			}
 		}
+		if(field.equals(Versamento.model().IUV_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv_versamento";
+			}else{
+				return "iuv_versamento";
+			}
+		}
+		if(field.equals(Versamento.model().NUMERO_AVVISO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".numero_avviso";
+			}else{
+				return "numero_avviso";
+			}
+		}
+		if(field.equals(Versamento.model().AVVISATURA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avvisatura";
+			}else{
+				return "avvisatura";
+			}
+		}
+		if(field.equals(Versamento.model().TIPO_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_pagamento";
+			}else{
+				return "tipo_pagamento";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -468,6 +496,18 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().ANOMALIE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().IUV_VERSAMENTO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().NUMERO_AVVISO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().AVVISATURA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().TIPO_PAGAMENTO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

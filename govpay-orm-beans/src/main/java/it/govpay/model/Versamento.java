@@ -72,7 +72,43 @@ public class Versamento extends BasicModel {
 	private String anomalie;
 	private String tassonomiaAvviso;
 	private String tassonomia;
+	private String iuvVersamento;
+	private String numeroAvviso;
+	private String avvisatura;
+	private Integer tipoPagamento;
 	
+	public String getIuvVersamento() {
+		return iuvVersamento;
+	}
+
+	public void setIuvVersamento(String iuvVersamento) {
+		this.iuvVersamento = iuvVersamento;
+	}
+
+	public String getNumeroAvviso() {
+		return numeroAvviso;
+	}
+
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+	}
+
+	public String getAvvisatura() {
+		return avvisatura;
+	}
+
+	public void setAvvisatura(String avvisatura) {
+		this.avvisatura = avvisatura;
+	}
+
+	public Integer getTipoPagamento() {
+		return tipoPagamento;
+	}
+
+	public void setTipoPagamento(Integer tipoPagamento) {
+		this.tipoPagamento = tipoPagamento;
+	}
+
 	public long getIdDominio() {
 		return idDominio;
 	}

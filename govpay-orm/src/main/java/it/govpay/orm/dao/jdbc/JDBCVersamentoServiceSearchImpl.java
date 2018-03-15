@@ -196,6 +196,10 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().DATI_ALLEGATI);
 			fields.add(Versamento.model().INCASSO);
 			fields.add(Versamento.model().ANOMALIE);
+			fields.add(Versamento.model().IUV_VERSAMENTO);
+			fields.add(Versamento.model().NUMERO_AVVISO);
+			fields.add(Versamento.model().AVVISATURA);
+			fields.add(Versamento.model().TIPO_PAGAMENTO);
 
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));

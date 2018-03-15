@@ -73,6 +73,10 @@ import java.io.Serializable;
  * 			&lt;element name="datiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="incasso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="anomalie" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuvVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvisatura" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipoPagamento" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -124,7 +128,11 @@ import java.io.Serializable;
   	"codBundlekey",
   	"datiAllegati",
   	"incasso",
-  	"anomalie"
+  	"anomalie",
+  	"iuvVersamento",
+  	"numeroAvviso",
+  	"avvisatura",
+  	"tipoPagamento"
   }
 )
 
@@ -456,6 +464,38 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.anomalie = anomalie;
   }
 
+  public java.lang.String getIuvVersamento() {
+    return this.iuvVersamento;
+  }
+
+  public void setIuvVersamento(java.lang.String iuvVersamento) {
+    this.iuvVersamento = iuvVersamento;
+  }
+
+  public java.lang.String getNumeroAvviso() {
+    return this.numeroAvviso;
+  }
+
+  public void setNumeroAvviso(java.lang.String numeroAvviso) {
+    this.numeroAvviso = numeroAvviso;
+  }
+
+  public java.lang.String getAvvisatura() {
+    return this.avvisatura;
+  }
+
+  public void setAvvisatura(java.lang.String avvisatura) {
+    this.avvisatura = avvisatura;
+  }
+
+  public java.lang.Integer getTipoPagamento() {
+    return this.tipoPagamento;
+  }
+
+  public void setTipoPagamento(java.lang.Integer tipoPagamento) {
+    this.tipoPagamento = tipoPagamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -625,5 +665,21 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="anomalie",required=false,nillable=false)
   protected java.lang.String anomalie;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuvVersamento",required=false,nillable=false)
+  protected java.lang.String iuvVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="numeroAvviso",required=false,nillable=false)
+  protected java.lang.String numeroAvviso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avvisatura",required=false,nillable=false)
+  protected java.lang.String avvisatura;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @XmlElement(name="tipoPagamento",required=false,nillable=false)
+  protected java.lang.Integer tipoPagamento;
 
 }

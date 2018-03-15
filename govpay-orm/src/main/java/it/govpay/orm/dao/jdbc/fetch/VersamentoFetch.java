@@ -120,6 +120,14 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "incasso", Versamento.model().INCASSO.getFieldType()));
 				setParameter(object, "setAnomalie", Versamento.model().ANOMALIE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "anomalie", Versamento.model().ANOMALIE.getFieldType()));
+				setParameter(object, "setIuvVersamento", Versamento.model().IUV_VERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_versamento", Versamento.model().IUV_VERSAMENTO.getFieldType()));
+				setParameter(object, "setNumeroAvviso", Versamento.model().NUMERO_AVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "numero_avviso", Versamento.model().NUMERO_AVVISO.getFieldType()));
+				setParameter(object, "setAvvisatura", Versamento.model().AVVISATURA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura", Versamento.model().AVVISATURA.getFieldType()));
+				setParameter(object, "setTipoPagamento", Versamento.model().TIPO_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_pagamento", Versamento.model().TIPO_PAGAMENTO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				return object;
 			}
 			
@@ -208,6 +216,14 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"incasso"));
 				setParameter(object, "setAnomalie", Versamento.model().ANOMALIE.getFieldType(),
 					this.getObjectFromMap(map,"anomalie"));
+				setParameter(object, "setIuvVersamento", Versamento.model().IUV_VERSAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"iuvVersamento"));
+				setParameter(object, "setNumeroAvviso", Versamento.model().NUMERO_AVVISO.getFieldType(),
+					this.getObjectFromMap(map,"numeroAvviso"));
+				setParameter(object, "setAvvisatura", Versamento.model().AVVISATURA.getFieldType(),
+					this.getObjectFromMap(map,"avvisatura"));
+				setParameter(object, "setTipoPagamento", Versamento.model().TIPO_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"tipoPagamento"));
 				return object;
 			}
 			

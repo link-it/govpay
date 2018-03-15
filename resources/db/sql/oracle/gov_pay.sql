@@ -571,6 +571,10 @@ CREATE TABLE versamenti
 	dati_allegati CLOB,
 	incasso VARCHAR2(1 CHAR),
 	anomalie CLOB,
+	iuv_versamento VARCHAR2(35 CHAR),
+	numero_avviso VARCHAR2(35 CHAR),
+	avvisatura VARCHAR2(1 CHAR),
+	tipo_pagamento NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

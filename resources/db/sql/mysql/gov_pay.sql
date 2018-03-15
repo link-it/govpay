@@ -386,6 +386,10 @@ CREATE TABLE versamenti
 	dati_allegati LONGTEXT,
 	incasso VARCHAR(1),
 	anomalie LONGTEXT,
+	iuv_versamento VARCHAR(35),
+	numero_avviso VARCHAR(35),
+	avvisatura VARCHAR(1),
+	tipo_pagamento INT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,
