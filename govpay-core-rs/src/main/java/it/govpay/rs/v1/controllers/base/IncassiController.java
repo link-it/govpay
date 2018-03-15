@@ -1,7 +1,6 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,8 +99,8 @@ public class IncassiController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response incassiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
-    	String methodName = "dominiIdDominioGET";  
+    public Response incassiIdDominioIdIncassoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+    	String methodName = "incassiIdDominioIdIncassoGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -162,14 +161,14 @@ public class IncassiController extends it.govpay.rs.BaseController {
 		}
     }
 
+//
+//    public Response incassiIdDominioIdIncassoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+//        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+//    }
 
-    public Response incassiIdDominioIdIncassoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
 
-
-    public Response incassiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is) {
-    	String methodName = "incassiPOST"; 
+    public Response incassiIdDominioPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+    	String methodName = "incassiIdDominioPOST"; 
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
