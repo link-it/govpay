@@ -122,7 +122,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response incassiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is) {
+    public Response incassiIdDominioPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
     	String methodName = "inserisciIncasso"; 
 		
 		BasicBD bd = null;
