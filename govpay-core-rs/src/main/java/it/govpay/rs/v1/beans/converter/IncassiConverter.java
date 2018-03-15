@@ -4,19 +4,21 @@ import java.math.BigDecimal;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.core.business.model.RichiestaIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.rs.v1.beans.Incasso;
 import it.govpay.core.rs.v1.beans.IncassoPost;
+import it.govpay.model.IAutorizzato;
 
 public class IncassiConverter {
 
 	
-	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost) {
-		RichiestaIncassoDTO dto = new RichiestaIncassoDTO();
+	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost, IAutorizzato user) {
+		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
 		dto.setCausale(incassoPost.getCausale());
 		dto.setDataValuta(incassoPost.getDataValuta());
 		dto.setDataContabile(incassoPost.getDataContabile());
 		dto.setImporto(new BigDecimal(incassoPost.getImporto()));
+//		dto.setCodDominio(incassoPost.get);
 		return dto;
 	}
 	

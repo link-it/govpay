@@ -1,8 +1,6 @@
 package it.govpay.rs.v1.controllers.base;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +12,19 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.core.business.model.LeggiIncassoDTO;
-import it.govpay.core.business.model.LeggiIncassoDTOResponse;
-import it.govpay.core.business.model.ListaIncassiDTO;
-import it.govpay.core.business.model.ListaIncassiDTOResponse;
-import it.govpay.core.business.model.RichiestaIncassoDTO;
-import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
-import it.govpay.core.exceptions.IncassiException;
-import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.rs.v1.beans.Errore;
+import it.govpay.core.dao.pagamenti.IncassiDAO;
+import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
+import it.govpay.core.dao.pagamenti.exception.IncassoNonTrovatoException;
 import it.govpay.core.rs.v1.beans.Incasso;
 import it.govpay.core.rs.v1.beans.IncassoPost;
 import it.govpay.core.rs.v1.beans.ListaIncassi;
+import it.govpay.core.rs.v1.beans.base.FaultBean;
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -46,72 +42,122 @@ public class IncassiController extends it.govpay.rs.BaseController {
 
 
     public Response incassiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
-    	String methodName = "cercaIncassi"; 
-		
-		BasicBD bd = null;
-		GpContext ctx = null; 
-		
+    	String methodName = "incassiGET";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		String campi = null;
 		try{
-
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
 			ctx =  GpThreadLocal.get();
 			
-			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(null);
+			// Parametri - > DTO Input
+			
+			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(user);
+			
 			listaIncassoDTO.setPagina(pagina);
 			listaIncassoDTO.setLimit(risultatiPerPagina);
 			
-			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-			ListaIncassiDTOResponse listaIncassiDTOResponse = incassi.listaIncassi(listaIncassoDTO);
+			// INIT DAO
 			
-			List<Incasso> listaIncassi = new ArrayList<Incasso>();
+			IncassiDAO incassiDAO = new IncassiDAO();
+			
+			// CHIAMATA AL DAO
+			
+			ListaIncassiDTOResponse listaIncassiDTOResponse = incassiDAO.listaIncassi(listaIncassoDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			List<it.govpay.core.rs.v1.beans.Incasso> listaIncassi = new ArrayList<it.govpay.core.rs.v1.beans.Incasso>();
 			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getResults()) {
 				listaIncassi.add(IncassiConverter.toRsModel(i));
 			}
 			
-			return Response.status(Status.OK).entity(new ListaIncassi(listaIncassi, uriInfo.getBaseUri(), listaIncassiDTOResponse.getTotalResults(), pagina, risultatiPerPagina).toJSON(null)).build();
-		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
-			return Response.status(Status.UNAUTHORIZED).build();
-		} catch (Exception e) {
-			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			ListaIncassi response = new ListaIncassi(listaIncassi, this.getServicePath(uriInfo),
+					listaIncassiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			
+		}catch (Exception e) {
+			log.error("Errore interno durante la ricerca degli incassi: " + e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
     }
 
 
     public Response incassiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
-    	String methodName = "leggiIncasso"; 
-		BasicBD bd = null;
-		GpContext ctx = null; 
-		
+    	String methodName = "dominiIdDominioGET";  
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
-			this.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
 			ctx =  GpThreadLocal.get();
 			
-			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO();
+			// Parametri - > DTO Input
+			
+			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(user);
 			leggiIncassoDTO.setIdDominio(idDominio);
 			leggiIncassoDTO.setIdIncasso(idIncasso);
-//			leggiIncassoDTO.setPrincipal(principal); //TODO pintori
+
+			// INIT DAO
 			
-			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-			LeggiIncassoDTOResponse leggiIncassoDTOResponse = incassi.leggiIncasso(leggiIncassoDTO);
+			IncassiDAO incassiDAO = new IncassiDAO();
 			
-			return Response.status(Status.OK).entity(IncassiConverter.toRsModel(leggiIncassoDTOResponse.getIncasso()).toJSON(null)).build();
-		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
-			return Response.status(Status.UNAUTHORIZED).build();
-		} catch (Exception e) {
-			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			// CHIAMATA AL DAO
+			
+			LeggiIncassoDTOResponse leggiIncassoDTOResponse = incassiDAO.leggiIncasso(leggiIncassoDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			Incasso response = IncassiConverter.toRsModel(leggiIncassoDTOResponse.getIncasso());
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			
+		}catch (IncassoNonTrovatoException  e) {
+			log.error(e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.NOT_FOUND.getStatusCode());
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
+		}catch (Exception e) {
+			log.error("Errore interno durante la ricerca dei PSP: " + e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("");
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
     }
@@ -123,58 +169,60 @@ public class IncassiController extends it.govpay.rs.BaseController {
 
 
     public Response incassiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , InputStream is) {
-    	String methodName = "inserisciIncasso"; 
-		
-		BasicBD bd = null;
-		GpContext ctx = null; 
-		ByteArrayOutputStream baos = null, baosResponse = null;
-		ByteArrayInputStream bais = null;
-		
+    	String methodName = "incassiPOST"; 
+		GpContext ctx = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
 			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
 			BaseRsService.copy(is, baos);
-
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			
 			ctx =  GpThreadLocal.get();
 			
 			it.govpay.core.rs.v1.beans.IncassoPost incasso = (IncassoPost) it.govpay.core.rs.v1.beans.IncassoPost.parse(baos.toString(), it.govpay.core.rs.v1.beans.IncassoPost.class, new JsonConfig());
-			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso);
+			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso,user);
 			
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, null); //TODO pintori
-			richiestaIncassoDTO.setApplicazione(applicazione);
+			IncassiDAO incassiDAO = new IncassiDAO();
 			
-			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
+			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.richiestaIncasso(richiestaIncassoDTO);
 			
 			Incasso incassoExt = IncassiConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, incassoExt.toJSON(null));
-
-			Status status = richiestaIncassoDTOResponse.isCreato() ? Status.CREATED : Status.OK;
-			return Response.status(status).entity(incassoExt.toJSON(null)).build();
-		} catch (NotAuthorizedException e) {
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
-			return Response.status(Status.UNAUTHORIZED).build();
-		} catch (IncassiException e) {
-			Errore errore = new Errore(e.getCode(),e.getMessage(),e.getDetails());
-			try { this.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2.getMessage());}
-			return Response.status(422).entity(errore).build();
+			Status responseStatus = richiestaIncassoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, incassoExt.toJSON(null), responseStatus.getStatusCode());
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return Response.status(responseStatus).entity(incassoExt.toJSON(null)).build();
+//		} catch (DominioNonTrovatoException  | StazioneNonTrovataException  | TipoTributoNonTrovatoException e) {
+//			log.error(e.getMessage(), e);
+//			FaultBean respKo = new FaultBean();
+//			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+//			respKo.setCodice("");
+//			respKo.setDescrizione(e.getMessage());
+//			try {
+//				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.NOT_FOUND.getStatusCode());
+//			}catch(Exception e1) {
+//				log.error("Errore durante il log della risposta", e1);
+//			}
+//			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
 		} catch (Exception e) {
-			log.error("Errore interno durante il processo di incasso", e);
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			log.error("Errore interno durante l'esecuzione del metodo "+ methodName + ": " + e.getMessage(), e);
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice(CategoriaEnum.INTERNO.name());
+			respKo.setDescrizione(e.getMessage());
+			try {
+				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			}catch(Exception e1) {
+				log.error("Errore durante il log della risposta", e1);
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 		} finally {
-			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
-			if(bais != null) try { bais.close();} catch (IOException e) {}
-			if(baos != null) try { baos.flush(); baos.close();} catch (IOException e) {}
-			if(baosResponse != null) try { baosResponse.flush(); baosResponse.close();} catch (IOException e) {}
 		}
     }
-
-
 }
 
 

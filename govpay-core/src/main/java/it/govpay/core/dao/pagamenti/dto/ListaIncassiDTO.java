@@ -17,28 +17,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.model;
+package it.govpay.core.dao.pagamenti.dto;
 
-import it.govpay.bd.model.Incasso;
+import java.util.Date;
 
-public class RichiestaIncassoDTOResponse {
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.IAutorizzato;
 
-	private Incasso incasso;
-	private boolean isCreato;
-
-	public boolean isCreato() {
-		return isCreato;
+public class ListaIncassiDTO extends BasicFindRequestDTO {
+	
+	public ListaIncassiDTO(IAutorizzato user) {
+		super(user);
 	}
 
-	public void setCreato(boolean isCreato) {
-		this.isCreato = isCreato;
-	}
+	private Date inizio;
+	private Date fine;
+	private String principal;
 
-	public Incasso getIncasso() {
-		return incasso;
+	public Date getInizio() {
+		return inizio;
 	}
-
-	public void setIncasso(Incasso incasso) {
-		this.incasso = incasso;
+	public void setInizio(Date inizio) {
+		this.inizio = inizio;
 	}
+	public Date getFine() {
+		return fine;
+	}
+	public void setFine(Date fine) {
+		this.fine = fine;
+	}
+	public String getPrincipal() {
+		return this.getUser() != null ? this.getUser().getPrincipal() : principal;
+	}
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
+	
 }

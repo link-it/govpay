@@ -20,8 +20,8 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.core.business.Incassi;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
-import it.govpay.core.business.model.RichiestaIncassoDTO;
-import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.dao.versamenti.PagamentiAttesaDAO;
 import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTO;
 import it.govpay.core.dao.versamenti.dto.CaricaVersamentoDTOResponse;
@@ -348,7 +348,7 @@ public class OperazioneFactory {
 
 
 		Incassi incassi = new Incassi(bd);
-		RichiestaIncassoDTO richiestaIncasso = new RichiestaIncassoDTO();
+		RichiestaIncassoDTO richiestaIncasso = new RichiestaIncassoDTO(null);
 		richiestaIncasso.setCausale(request.getCausale());
 		richiestaIncasso.setImporto(new BigDecimal(request.getImporto(), MathContext.DECIMAL64));
 		richiestaIncasso.setDataContabile(request.getDataContabile());

@@ -1,13 +1,20 @@
-package it.govpay.core.business.model;
+package it.govpay.core.dao.pagamenti.dto;
 
-public class LeggiIncassoDTO {
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.IAutorizzato;
+
+public class LeggiIncassoDTO extends BasicFindRequestDTO {
+	
+	public LeggiIncassoDTO(IAutorizzato user) {
+		super(user);
+	}
 	
 	private String principal;
 	private String idDominio;
 	private String idIncasso;
 	
 	public String getPrincipal() {
-		return principal;
+		return this.getUser() != null ? this.getUser().getPrincipal() : principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;

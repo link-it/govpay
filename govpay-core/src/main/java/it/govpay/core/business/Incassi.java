@@ -46,12 +46,12 @@ import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
-import it.govpay.core.business.model.LeggiIncassoDTO;
-import it.govpay.core.business.model.LeggiIncassoDTOResponse;
-import it.govpay.core.business.model.ListaIncassiDTO;
-import it.govpay.core.business.model.ListaIncassiDTOResponse;
-import it.govpay.core.business.model.RichiestaIncassoDTO;
-import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
@@ -187,11 +187,11 @@ public class Incassi extends BasicBD {
 				}
 				
 				richiestaIncassoResponse.setIncasso(incasso);
-				richiestaIncassoResponse.setCreato(false);
+				richiestaIncassoResponse.setCreated(false);
 				return richiestaIncassoResponse;
 			} catch(NotFoundException nfe) {
 				// Incasso non registrato.
-				richiestaIncassoResponse.setCreato(true);
+				richiestaIncassoResponse.setCreated(true);
 			}
 			
 			// Sto selezionando i pagamenti per impostarli come Incassati.
@@ -400,7 +400,7 @@ public class Incassi extends BasicBD {
 		return response;
 	}
 	
-	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws NotAuthorizedException, ServiceException {
+	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws NotFoundException,NotAuthorizedException, ServiceException {
 		IncassiBD incassiBD = new IncassiBD(this);
 		try {
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
@@ -416,7 +416,7 @@ public class Incassi extends BasicBD {
 			response.setIncasso(incasso);
 			return response;
 		} catch (NotFoundException e) {
-			return null;
+			throw e;
 		}
 	}
 }

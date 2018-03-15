@@ -17,15 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.business.model;
+package it.govpay.core.dao.pagamenti.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 import it.govpay.bd.model.Operatore;
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.IAutorizzato;
 import it.govpay.bd.model.Applicazione;
 
-public class RichiestaIncassoDTO {
+public class RichiestaIncassoDTO extends BasicFindRequestDTO {
+	
+	public RichiestaIncassoDTO(IAutorizzato user) {
+		super(user);
+	}
 	
 	private Applicazione applicazione;
 	private Operatore operatore;

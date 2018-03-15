@@ -24,7 +24,8 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.core.business.model.RichiestaIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
+import it.govpay.model.IAutorizzato;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -106,8 +107,8 @@ public class Incasso {
 		this.dominio = dominio;
 	}
 	
-	public RichiestaIncassoDTO toRichiestaIncassoDTO() {
-		RichiestaIncassoDTO dto = new RichiestaIncassoDTO();
+	public RichiestaIncassoDTO toRichiestaIncassoDTO(IAutorizzato user) {
+		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
 		dto.setCausale(causale);
 		dto.setCodDominio(dominio);
 		dto.setDataValuta(data_valuta);

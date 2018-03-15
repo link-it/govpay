@@ -46,12 +46,12 @@ import com.sun.istack.Nullable;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.business.model.LeggiIncassoDTO;
-import it.govpay.core.business.model.LeggiIncassoDTOResponse;
-import it.govpay.core.business.model.ListaIncassiDTO;
-import it.govpay.core.business.model.ListaIncassiDTOResponse;
-import it.govpay.core.business.model.RichiestaIncassoDTO;
-import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.Errore;
@@ -97,7 +97,7 @@ public class Incassi extends BaseRsServiceV1 {
 			ctx =  GpThreadLocal.get();
 			
 			Incasso incasso = Incasso.parse(baos.toString());
-			RichiestaIncassoDTO richiestaIncassoDTO = incasso.toRichiestaIncassoDTO();
+			RichiestaIncassoDTO richiestaIncassoDTO = incasso.toRichiestaIncassoDTO(null);
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, getPrincipal());
 			richiestaIncassoDTO.setApplicazione(applicazione);
 			
@@ -108,7 +108,7 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			this.controller.logResponse(uriInfo, httpHeaders, methodName, incassoExt);
 
-			if(richiestaIncassoDTOResponse.isCreato())
+			if(richiestaIncassoDTOResponse.isCreated())
 				return Response.status(Status.CREATED).entity(incassoExt).build();
 			else 
 				return Response.status(Status.OK).entity(incassoExt).build();
@@ -200,7 +200,7 @@ public class Incassi extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO();
+			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(null);
 			leggiIncassoDTO.setIdDominio(idDominio);
 			leggiIncassoDTO.setIdIncasso(idIncasso);
 			leggiIncassoDTO.setPrincipal(getPrincipal());

@@ -1,4 +1,4 @@
-package it.govpay.core.business.model;
+package it.govpay.core.dao.pagamenti.dto;
 
 import it.govpay.bd.model.Incasso;
 
