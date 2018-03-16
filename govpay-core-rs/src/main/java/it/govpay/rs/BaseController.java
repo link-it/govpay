@@ -17,9 +17,25 @@ import javax.ws.rs.core.UriInfo;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
+import org.openspcoop2.utils.openapi.validator.OpenapiApiValidatorConfig;
+import org.openspcoop2.utils.openapi.validator.Test;
+import org.openspcoop2.utils.openapi.validator.Validator;
+import org.openspcoop2.utils.rest.ApiFactory;
+import org.openspcoop2.utils.rest.ApiFormats;
+import org.openspcoop2.utils.rest.ApiReaderConfig;
+import org.openspcoop2.utils.rest.IApiReader;
+import org.openspcoop2.utils.rest.ProcessingException;
+import org.openspcoop2.utils.rest.ValidatorException;
+import org.openspcoop2.utils.rest.api.Api;
+import org.openspcoop2.utils.rest.entity.TextHttpRequestEntity;
+import org.openspcoop2.utils.rest.entity.TextHttpResponseEntity;
+import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.bd.GovpayConfig;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -41,10 +57,27 @@ public abstract class BaseController {
 	protected String nomeServizio;
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
+	private Validator validator;
 	
 	public BaseController(String nomeServizio, Logger log) {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
+		
+		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+			try {
+				IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
+				apiReader.init(log, BaseController.class.getResource(GovpayConfig.getInstance().getOpenapiResource()).toURI(), new ApiReaderConfig());
+				Api api = apiReader.read();
+				
+				this.validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
+				OpenapiApiValidatorConfig config = new OpenapiApiValidatorConfig();
+				config.setJsonValidatorAPI(ApiName.FGE);
+				validator.init(LoggerWrapperFactory.getLogger(Test.class), api, config);
+			} catch(Exception e) {
+				this.log.error("Errore durante l'init del modulo di validazione: " + e.getMessage(), e);
+			}
+		}
+
 	}
 	
 	public void setRequestResponse(HttpServletRequest request,HttpServletResponse response) {
@@ -97,26 +130,86 @@ public abstract class BaseController {
 	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws NotAuthorizedException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
+		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+			try {
+				TextHttpRequestEntity httpEntity = new TextHttpRequestEntity();
+				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+				httpEntity.setUrl(getServicePath(uriInfo).toString());
+				httpEntity.setContent(new String(baos.toByteArray()));
+				httpEntity.setContentType("application/json");
+				this.validator.validate(httpEntity);
+			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+				throw new NotAuthorizedException(e.getMessage());
+			}
+		}
 	}
 	
 	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) throws NotAuthorizedException{
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
+		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+			try {
+				TextHttpRequestEntity httpEntity = new TextHttpRequestEntity();
+				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+				httpEntity.setUrl(getServicePath(uriInfo).toString());
+				httpEntity.setContent(new String(baos));
+				httpEntity.setContentType("application/json");
+				this.validator.validate(httpEntity);
+			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+				throw new NotAuthorizedException(e.getMessage());
+			}
+		}
 	}
 
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws NotAuthorizedException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
+		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+			try {
+				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+				httpEntity.setUrl(getServicePath(uriInfo).toString());
+				httpEntity.setContent(new String(baos.toByteArray()));
+				httpEntity.setContentType("application/json");
+				this.validator.validate(httpEntity);
+			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+				throw new NotAuthorizedException(e.getMessage());
+			}
+		}
 	}
 	
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes) throws NotAuthorizedException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
+		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+			try {
+				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+				httpEntity.setUrl(getServicePath(uriInfo).toString());
+				httpEntity.setContent(new String(bytes));
+				httpEntity.setContentType("application/json");
+				this.validator.validate(httpEntity);
+			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+				throw new NotAuthorizedException(e.getMessage());
+			}
+		}
 	}
 	
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) throws NotAuthorizedException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
+		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+			try {
+				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+				httpEntity.setUrl(getServicePath(uriInfo).toString());
+				httpEntity.setContent(new String(bytes));
+				httpEntity.setContentType("application/json");
+				this.validator.validate(httpEntity);
+			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+				throw new NotAuthorizedException(e.getMessage());
+			}
+		}
 	}
 	
 	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
