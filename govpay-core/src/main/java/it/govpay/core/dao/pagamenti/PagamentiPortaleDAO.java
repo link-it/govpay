@@ -309,7 +309,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			return leggiPagamentoPortaleDTOResponse;
 		}catch(NotFoundException e) {
-			throw new PagamentoPortaleNonTrovatoException(null, "Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getIdSessione()+"]");
+			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getIdSessione()+"]");
 		}finally {
 			bd.closeConnection();
 		}

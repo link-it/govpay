@@ -20,12 +20,8 @@ import it.govpay.core.dao.anagrafica.dto.ListaCanaliDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaCanaliDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
-import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.rs.v1.beans.ListaCanali;
 import it.govpay.core.rs.v1.beans.ListaPsp;
-import it.govpay.core.rs.v1.beans.base.FaultBean;
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Canale.TipoVersamento;
@@ -85,8 +81,6 @@ public class PspController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -119,8 +113,6 @@ public class PspController extends it.govpay.rs.BaseController {
 			it.govpay.core.rs.v1.beans.Canale response = PspConverter.toCanaleRsModel(leggiPspDTOResponse.getCanale(), leggiPspDTOResponse.getPsp());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -152,8 +144,6 @@ public class PspController extends it.govpay.rs.BaseController {
 			it.govpay.core.rs.v1.beans.Psp response = PspConverter.toRsModel(leggiPspDTOResponse.getPsp());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -207,8 +197,6 @@ public class PspController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {

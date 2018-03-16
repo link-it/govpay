@@ -4,6 +4,7 @@
 package it.govpay.rs;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,12 +31,13 @@ import org.openspcoop2.utils.rest.ProcessingException;
 import org.openspcoop2.utils.rest.ValidatorException;
 import org.openspcoop2.utils.rest.api.Api;
 import org.openspcoop2.utils.rest.entity.TextHttpRequestEntity;
-import org.openspcoop2.utils.rest.entity.TextHttpResponseEntity;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
@@ -66,14 +68,16 @@ public abstract class BaseController {
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			try {
 				IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
-				apiReader.init(log, BaseController.class.getResource(GovpayConfig.GOVPAY_OPEN_API_FILE).toURI(), new ApiReaderConfig());
+
+				File file = new File(""); //TODO agganciare definizione swagger
+				apiReader.init(log, file, new ApiReaderConfig());
 				Api api = apiReader.read();
 				
 				this.validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
 				OpenapiApiValidatorConfig config = new OpenapiApiValidatorConfig();
 				config.setJsonValidatorAPI(ApiName.FGE);
 				validator.init(LoggerWrapperFactory.getLogger(Test.class), api, config);
-			} catch(Exception e) {
+			} catch(Throwable e) {
 				this.log.error("Errore durante l'init del modulo di validazione: " + e.getMessage(), e);
 			}
 		}
@@ -165,16 +169,16 @@ public abstract class BaseController {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
-			try {
-				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
-				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
-				httpEntity.setUrl(getServicePath(uriInfo).toString());
-				httpEntity.setContent(new String(baos.toByteArray()));
-				httpEntity.setContentType("application/json");
-				this.validator.validate(httpEntity);
-			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
-				throw new NotAuthorizedException(e.getMessage());
-			}
+//			try {
+//				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+//				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+//				httpEntity.setUrl(getServicePath(uriInfo).toString());
+//				httpEntity.setContent(new String(baos.toByteArray()));
+//				httpEntity.setContentType("application/json");
+//				this.validator.validate(httpEntity);
+//			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+//				throw new NotAuthorizedException(e.getMessage());
+//			}
 		}
 	}
 	
@@ -182,16 +186,16 @@ public abstract class BaseController {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
-			try {
-				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
-				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
-				httpEntity.setUrl(getServicePath(uriInfo).toString());
-				httpEntity.setContent(new String(bytes));
-				httpEntity.setContentType("application/json");
-				this.validator.validate(httpEntity);
-			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
-				throw new NotAuthorizedException(e.getMessage());
-			}
+//			try {
+//				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+//				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+//				httpEntity.setUrl(getServicePath(uriInfo).toString());
+//				httpEntity.setContent(new String(bytes));
+//				httpEntity.setContentType("application/json");
+//				this.validator.validate(httpEntity);
+//			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+//				throw new NotAuthorizedException(e.getMessage());
+//			}
 		}
 	}
 	
@@ -199,16 +203,16 @@ public abstract class BaseController {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
-			try {
-				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
-				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
-				httpEntity.setUrl(getServicePath(uriInfo).toString());
-				httpEntity.setContent(new String(bytes));
-				httpEntity.setContentType("application/json");
-				this.validator.validate(httpEntity);
-			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
-				throw new NotAuthorizedException(e.getMessage());
-			}
+//			try {
+//				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+//				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+//				httpEntity.setUrl(getServicePath(uriInfo).toString());
+//				httpEntity.setContent(new String(bytes));
+//				httpEntity.setContentType("application/json");
+//				this.validator.validate(httpEntity);
+//			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+//				throw new NotAuthorizedException(e.getMessage());
+//			}
 		}
 	}
 	
@@ -223,6 +227,19 @@ public abstract class BaseController {
 	}
 	
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e) {
+		
+		if(e instanceof BaseExceptionV1) {
+			return handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e);
+		}
+		
+		if(e instanceof RedirectException) {
+			return handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e);
+		}
+		
+		if(e instanceof GovPayException) {
+			return handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e);
+		}
+		
 		log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
@@ -236,7 +253,7 @@ public abstract class BaseController {
 		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 	}
 
-	protected Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e) {
+	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e) {
 		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(e.getCategoria());
@@ -249,6 +266,26 @@ public abstract class BaseController {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
 		return Response.status(e.getTransportErrorCode()).entity(respKo.toJSON(null)).build();
+	}
+
+	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e) {
+		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
+		FaultBean respKo = new FaultBean();
+		respKo.setCategoria(e.getFaultBean()!=null ? CategoriaEnum.PAGOPA:CategoriaEnum.OPERAZIONE);
+		respKo.setCodice(e.getCodEsito().toString());
+		respKo.setDescrizione(e.getMessage());
+		respKo.setDettaglio(e.getDescrizioneEsito());
+		try {
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.INTERNAL_SERVER_ERROR.getStatusCode());
+		}catch(Exception e1) {
+			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
+		}
+		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).entity(respKo.toJSON(null)).build();
+	}
+
+	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e) {
+		log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
+		return Response.seeOther(e.getURILocation()).build();
 	}
 
 

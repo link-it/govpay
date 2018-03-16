@@ -21,7 +21,7 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
-import it.govpay.core.exceptions.BaseExceptionV1;
+import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.rs.v1.beans.ListaOperatori;
 import it.govpay.core.rs.v1.beans.Operatore;
 import it.govpay.core.rs.v1.beans.base.OperatorePost;
@@ -72,8 +72,6 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(responseStatus).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -112,8 +110,6 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).build();
 
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -154,8 +150,6 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -208,8 +202,6 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {

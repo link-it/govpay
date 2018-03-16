@@ -61,7 +61,7 @@ public class WebControllerDAO extends BaseDAO{
 			try {
 				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(aggiornaPagamentiPortaleDTO.getIdSessione());
 			}catch(NotFoundException e) {
-				throw new PagamentoPortaleNonTrovatoException(null, "Non esiste un pagamento associato all'ID sessione ["+aggiornaPagamentiPortaleDTO.getIdSessione()+"]");
+				throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID sessione ["+aggiornaPagamentiPortaleDTO.getIdSessione()+"]");
 			}
 
 			switch (pagamentoPortale.getCodiceStato()) {
@@ -284,7 +284,7 @@ public class WebControllerDAO extends BaseDAO{
 			try {
 				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessionePsp(redirectDaPspDTO.getIdSession());
 			}catch(NotFoundException e) {
-				throw new PagamentoPortaleNonTrovatoException(null, "Non esiste un pagamento associato all'ID sessione Psp ["+redirectDaPspDTO.getIdSession()+"]");
+				throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID sessione Psp ["+redirectDaPspDTO.getIdSession()+"]");
 			}
 
 			if(redirectDaPspDTO.getEsito() == null || redirectDaPspDTO.getIdSession() == null)

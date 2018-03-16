@@ -22,7 +22,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
-import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.rs.v1.beans.ListaPendenze;
 import it.govpay.core.rs.v1.beans.Pendenza;
@@ -69,8 +68,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
 			return Response.status(Status.OK).entity(pendenza.toJSON(null)).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -133,8 +130,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -190,8 +185,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 				log.error("Errore durante il log della risposta", e1);
 			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -247,8 +240,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 				log.error("Errore durante il log della risposta", e1);
 			}
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {

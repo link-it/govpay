@@ -18,7 +18,6 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RiscossioneNonTrovataException;
-import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.rs.v1.beans.ListaRiscossioni;
 import it.govpay.core.rs.v1.beans.Riscossione;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
@@ -72,8 +71,6 @@ public class RiscossioniController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -136,8 +133,6 @@ public class RiscossioniController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
