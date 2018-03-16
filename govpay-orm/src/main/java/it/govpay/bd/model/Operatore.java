@@ -36,8 +36,6 @@ public class Operatore extends it.govpay.model.Operatore{
 	
 	private transient Utenza utenza;
 	
-	
-	
 	public Operatore(BasicBD bd, long idUtenza) throws ServiceException {
 		super();
 		this.setIdUtenza(idUtenza); 
@@ -49,7 +47,6 @@ public class Operatore extends it.govpay.model.Operatore{
 		return utenza;
 	}
 
-
 	public void setUtenza(Utenza utenza) {
 		this.utenza = utenza;
 	}
@@ -57,6 +54,5 @@ public class Operatore extends it.govpay.model.Operatore{
 	public String getPrincipal() {
 		return this.utenza != null ? this.utenza.getPrincipal() : null;
 	}
-
 }
 

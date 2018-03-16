@@ -8,8 +8,70 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.IAutorizzato;
 import it.govpay.bd.model.Utenza;
+import it.govpay.core.exceptions.NotAuthenticatedException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 
 public class AclEngine {
+	
+	public static NotAuthorizedException toNotAuthorizedException(IAutorizzato user) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Utenza [").append(user != null ? user.getPrincipal() : "NON RICONOSCIUTA ] non autorizzata.");
+		return new NotAuthorizedException(sb.toString());
+	}
+	
+	public static NotAuthenticatedException toNotAuthenticatedException(IAutorizzato user) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Utenza [").append(user != null ? user.getPrincipal() : "NON RICONOSCIUTA ] non autorizzata.");
+		return new NotAuthenticatedException(sb.toString());
+	}
+	
+	public static NotAuthorizedException toNotAuthorizedException(IAutorizzato user, Servizio servizio, List<Diritti> listaDiritti ) {
+		StringBuilder sb = new StringBuilder();
+		
+		StringBuilder sbDiritti = new StringBuilder();
+		
+		for (Diritti diritti : listaDiritti) {
+			if(sbDiritti.length() >0) 
+				sbDiritti.append(", ");
+			
+			sbDiritti.append(diritti);
+		}
+		
+		sb.append("Utenza [").append(user != null ? user.getPrincipal() : "NON RICONOSCIUTA").append("] non possiede i Diritti [").append(sbDiritti.toString()).append("] necessari per il Servizio [").append(servizio).append("]");
+		
+		
+		return new NotAuthorizedException(sb.toString());
+	}
+	
+	public static NotAuthorizedException toNotAuthorizedException(IAutorizzato user, Servizio servizio, List<Diritti> listaDiritti, String codDominio, String codTributo) {
+		StringBuilder sb = new StringBuilder();
+		
+		StringBuilder sbDiritti = new StringBuilder();
+		
+		for (Diritti diritti : listaDiritti) {
+			if(sbDiritti.length() >0) 
+				sbDiritti.append(", ");
+			
+			sbDiritti.append(diritti);
+		}
+		
+		sb.append("Utenza [").append(user != null ? user.getPrincipal() : "NON RICONOSCIUTA").append("] non possiede i Diritti [").append(sbDiritti.toString()).append("] necessari per il Servizio [").append(servizio).append("]");
+		
+		
+		return new NotAuthorizedException(sb.toString());
+	}
+	
+	public static boolean isAuthorizedLettura(IAutorizzato user, Servizio servizio) throws NotAuthorizedException {
+		return isAuthorized(user, servizio, Diritti.LETTURA);
+	}
+	
+	public static boolean isAuthorizedScrittura(IAutorizzato user, Servizio servizio)  throws NotAuthorizedException {
+		return isAuthorized(user, servizio, Diritti.SCRITTURA);
+	}
+	
+	public static boolean isAuthorizedEsecuzione(IAutorizzato user, Servizio servizio)  throws NotAuthorizedException {
+		return isAuthorized(user, servizio, Diritti.ESECUZIONE);
+	}
 	
 	public static boolean isAuthorized(IAutorizzato user, Servizio servizio, Diritti diritto) {
 		List<Diritti> listaDiritti = new ArrayList<Diritti>();
@@ -32,18 +94,7 @@ public class AclEngine {
 	}
 	
 	public static boolean isAuthorized(IAutorizzato user, Servizio servizio, String codDominio, String codTributo, List<Diritti> listaDiritti) {
-		boolean authorized = false;
-		for(Acl acl : user.getAcls()) {
-			
-			if(acl.getServizio().equals(servizio)) {
-				for (Diritti dirittoTmp : listaDiritti) {
-					if(acl.getListaDiritti().contains(dirittoTmp)) {
-						 authorized = true;
-						 break;
-					}
-				}
-			}
-		}
+		boolean authorized = isAuthorized(user, servizio, listaDiritti); 
 		
 		if(authorized) {
 			if(codDominio != null && !user.getIdDominio().isEmpty())
@@ -60,7 +111,7 @@ public class AclEngine {
 		if(isAuthorized(utenza, servizio, diritti)) {
 			return utenza.getIdDomini();
 		} else {
-			return new ArrayList<>();
+			return null;
 		}
 	}
 
@@ -68,7 +119,7 @@ public class AclEngine {
 		if(isAuthorized(utenza, servizio, diritti)) {
 			return utenza.getIdDominio();
 		} else {
-			return new ArrayList<>();
+			return null;
 		}
 	}
 
@@ -76,7 +127,7 @@ public class AclEngine {
 		if(isAuthorized(utenza, servizio, diritti)) {
 			return utenza.getIdTributo();
 		} else {
-			return new ArrayList<>();
+			return null;
 		}
 	}
 
@@ -84,7 +135,7 @@ public class AclEngine {
 		if(isAuthorized(utenza, servizio, diritti)) {
 			return utenza.getIdTributi();
 		} else {
-			return new ArrayList<>();
+			return null;
 		}
 	} 
 }

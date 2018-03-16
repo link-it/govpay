@@ -42,13 +42,16 @@ import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 
 
-public class UtentiDAO {
+public class UtentiDAO extends BaseDAO{
 
 	public enum TipoUtenza {
 		PORTALE, OPERATORE, APPLICAZIONE;
@@ -79,24 +82,11 @@ public class UtentiDAO {
 			bd.closeConnection();
 		}
 	}
-
-	public void populateUser(IAutorizzato user) throws NotAuthenticatedException, ServiceException {
+	
+	public void populateUser(IAutorizzato user) throws NotAuthenticatedException, ServiceException, NotAuthorizedException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			try {
-				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
-				user = applicazione.getUtenza();
-			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
-				try {
-					Operatore operatore = AnagraficaManager.getOperatore(bd, user.getPrincipal());
-					user = operatore.getUtenza();
-				} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
-					throw new NotAuthenticatedException();					
-				}
-				
-			}
-
-			
+			this.populateUser(user, bd);
 		} finally {
 			bd.closeConnection();
 		}
@@ -126,9 +116,10 @@ public class UtentiDAO {
 		}
 	}
 	
-	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws NotAuthenticatedException, ServiceException, OperatoreNonTrovatoException {
+	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws NotAuthenticatedException, ServiceException, OperatoreNonTrovatoException, NotAuthorizedException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
+			this.autorizzaRichiesta(leggiOperatore.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
 			Operatore operatore = AnagraficaManager.getOperatore(bd, leggiOperatore.getPrincipal());
 			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
 			response.setOperatore(operatore);
@@ -140,14 +131,10 @@ public class UtentiDAO {
 		}
 	}
 	
-	public FindOperatoriDTOResponse findOperatori(FindOperatoriDTO listaOperatoriDTO) throws NotAuthorizedException, ServiceException {
+	public FindOperatoriDTOResponse findOperatori(FindOperatoriDTO listaOperatoriDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-//			Set<Long> applicazioni = AclEngine.getIdOperatoriAutorizzati(listaOperatoriDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
-//			
-//			if(applicazioni != null && applicazioni.size() == 0) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per alcun applicazione");
-//			}
+			this.autorizzaRichiesta(listaOperatoriDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
 			
 			OperatoriBD applicazioniBD = new OperatoriBD(bd);
 			OperatoreFilter filter = null;
@@ -171,10 +158,11 @@ public class UtentiDAO {
 		}
 	}
 
-	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoTributoNonTrovatoException, DominioNonTrovatoException {
+	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoTributoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException {
 		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
+			this.autorizzaRichiesta(putOperatoreDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter(false);
 			filter.setPrincipal(putOperatoreDTO.getPrincipal());
@@ -227,17 +215,13 @@ public class UtentiDAO {
 	
 	/**
 	 * @param deleteOperatoreDTO
+	 * @throws NotAuthenticatedException 
 	 */
-	public void deleteOperatore(DeleteOperatoreDTO deleteOperatoreDTO) throws NotAuthorizedException, OperatoreNonTrovatoException, ServiceException {
+	public void deleteOperatore(DeleteOperatoreDTO deleteOperatoreDTO) throws NotAuthorizedException, OperatoreNonTrovatoException, ServiceException, NotAuthenticatedException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		
-//		Set<String> applicazioni = AclEngine.getApplicazioniAutorizzati(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
-//		
-//		if(applicazioni != null && !applicazioni.contains(getApplicazioneDTO.getCodApplicazione())) {
-//			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per l'applicazione " + getApplicazioneDTO.getCodApplicazione());
-//		}
-
 		try {
+			this.autorizzaRichiesta(deleteOperatoreDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
 			new OperatoriBD(bd).deleteOperatore(deleteOperatoreDTO.getPrincipal());
 		} catch (NotFoundException e) {
 			throw new OperatoreNonTrovatoException(e.getMessage());

@@ -25,12 +25,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.AvvisiPagamentoBD;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
+import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.exception.AvvisoNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.avvisi.AvvisoPagamento;
 
-public class AvvisiDAO {
+public class AvvisiDAO extends BaseDAO{
 
 //	public PutAvvisoDTOResponse createOrUpdate(PutAvvisoDTO putAvvisoDTO) throws ServiceException,
 //	AvvisoNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException{

@@ -15,62 +15,78 @@ import it.govpay.core.dao.anagrafica.dto.ListaAclDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.AclNonTrovatoException;
+import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 
-public class AclDAO {
+public class AclDAO extends BaseDAO{
 
 	public ListaAclDTOResponse leggiAclRuoloRegistrateSistema() throws ServiceException {
 		ListaAclDTO listaAclDTO = new ListaAclDTO(null);
 		listaAclDTO.setForceRuolo(true);
-		return this.listaAcl(listaAclDTO);
+		return this._listaAcl(listaAclDTO);
 	}
 	
-	public ListaAclDTOResponse listaAcl(ListaAclDTO listaAclDTO) throws ServiceException {
+	public ListaAclDTOResponse listaAcl(ListaAclDTO listaAclDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException  {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
-			
-			AclBD aclBD = new AclBD(bd);
-			AclFilter filter = aclBD.newFilter();
-
-			if(listaAclDTO.getForceRuolo() != null)
-				filter.setForceRuolo(listaAclDTO.getForceRuolo());
-			
-			if(listaAclDTO.getForcePrincipal() != null)
-				filter.setForcePrincipal(listaAclDTO.getForcePrincipal());
-			
-			if(listaAclDTO.getPrincipal() != null)
-				filter.setPrincipal(listaAclDTO.getPrincipal());
-			
-			if(listaAclDTO.getRuolo() != null)
-				filter.setRuolo(listaAclDTO.getRuolo());
-			
-			if(listaAclDTO.getServizio() != null)
-				filter.setServizio(listaAclDTO.getServizio());
-			
-			return new ListaAclDTOResponse(aclBD.count(filter), aclBD.findAll(filter));
-			
+			this.autorizzaRichiesta(listaAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
+			return this._listaAcl(listaAclDTO, bd);
 		} finally {
 			bd.closeConnection();
 		}
 	}
 	
+	private ListaAclDTOResponse _listaAcl(ListaAclDTO listaAclDTO) throws ServiceException {
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		try {
+			return _listaAcl(listaAclDTO, bd);
+		} finally {
+			bd.closeConnection();
+		}
+	}
+	
+	private ListaAclDTOResponse _listaAcl(ListaAclDTO listaAclDTO ,BasicBD bd ) throws ServiceException {
+		AclBD aclBD = new AclBD(bd);
+		AclFilter filter = aclBD.newFilter();
+
+		if(listaAclDTO.getForceRuolo() != null)
+			filter.setForceRuolo(listaAclDTO.getForceRuolo());
+		
+		if(listaAclDTO.getForcePrincipal() != null)
+			filter.setForcePrincipal(listaAclDTO.getForcePrincipal());
+		
+		if(listaAclDTO.getPrincipal() != null)
+			filter.setPrincipal(listaAclDTO.getPrincipal());
+		
+		if(listaAclDTO.getRuolo() != null)
+			filter.setRuolo(listaAclDTO.getRuolo());
+		
+		if(listaAclDTO.getServizio() != null)
+			filter.setServizio(listaAclDTO.getServizio());
+		
+		filter.setOffset(listaAclDTO.getOffset());
+		filter.setLimit(listaAclDTO.getLimit());
+		filter.getFilterSortList().addAll(listaAclDTO.getFieldSortList());
+		
+		return new ListaAclDTOResponse(aclBD.count(filter), aclBD.findAll(filter));
+	}
+	
 	public ListaAclDTOResponse leggiAclPrincipalRegistrateSistema() throws ServiceException {
 		ListaAclDTO listaAclDTO = new ListaAclDTO(null);
 		listaAclDTO.setForcePrincipal(true);
-		return this.listaAcl(listaAclDTO);
+		return this._listaAcl(listaAclDTO);
 	}
 	
-	public LeggiAclDTOResponse leggiAcl(LeggiAclDTO leggiAclDTO) throws NotAuthorizedException, NotFoundException, ServiceException {
+	public LeggiAclDTOResponse leggiAcl(LeggiAclDTO leggiAclDTO) throws NotAuthorizedException, NotFoundException, ServiceException, NotAuthenticatedException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		
-//		Set<String> applicazioni = AclEngine.getApplicazioniAutorizzati(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
-//		
-//		if(applicazioni != null && !applicazioni.contains(getApplicazioneDTO.getCodApplicazione())) {
-//			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per l'applicazione " + getApplicazioneDTO.getCodApplicazione());
-//		}
-
 		try {
+			this.autorizzaRichiesta(leggiAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
+			
 			AclBD aclBD = new AclBD(bd);
 			LeggiAclDTOResponse leggiAclDTOResponse = new LeggiAclDTOResponse();
 			leggiAclDTOResponse.setAcl(aclBD.getAcl(leggiAclDTO.getIdAcl()));
@@ -85,17 +101,14 @@ public class AclDAO {
 	/**
 	 * @param putDominioDTO
 	 * @return
+	 * @throws NotAuthenticatedException 
 	 */
-	public PostAclDTOResponse create(PostAclDTO postAclDTO) throws NotAuthorizedException, ServiceException {
+	public PostAclDTOResponse create(PostAclDTO postAclDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException { 
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-		
-//		Set<String> applicazioni = AclEngine.getApplicazioniAutorizzati(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
-//		
-//		if(applicazioni != null && !applicazioni.contains(getApplicazioneDTO.getCodApplicazione())) {
-//			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per l'applicazione " + getApplicazioneDTO.getCodApplicazione());
-//		}
 
 		try {
+			this.autorizzaRichiesta(postAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd); 
+			
 			AclBD aclBD = new AclBD(bd);
 			PostAclDTOResponse leggiAclDTOResponse = new PostAclDTOResponse();
 			boolean exists = aclBD.existsAcl(postAclDTO.getAcl().getRuolo(), postAclDTO.getAcl().getPrincipal(), postAclDTO.getAcl().getServizio());
@@ -119,17 +132,14 @@ public class AclDAO {
 
 	/**
 	 * @param deleteAclDTO
+	 * @throws NotAuthenticatedException 
 	 */
-	public void deleteAcl(DeleteAclDTO deleteAclDTO) throws NotAuthorizedException, AclNonTrovatoException, ServiceException {
+	public void deleteAcl(DeleteAclDTO deleteAclDTO) throws NotAuthorizedException, AclNonTrovatoException, ServiceException, NotAuthenticatedException { 
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		
-//		Set<String> applicazioni = AclEngine.getApplicazioniAutorizzati(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
-//		
-//		if(applicazioni != null && !applicazioni.contains(getApplicazioneDTO.getCodApplicazione())) {
-//			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per l'applicazione " + getApplicazioneDTO.getCodApplicazione());
-//		}
-
 		try {
+			this.autorizzaRichiesta(deleteAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd); 
+			
 			new AclBD(bd).deleteAcl(deleteAclDTO.getIdAcl());
 		} catch (NotFoundException e) {
 			throw new AclNonTrovatoException(e.getMessage());

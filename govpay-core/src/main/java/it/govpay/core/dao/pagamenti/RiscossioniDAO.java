@@ -12,6 +12,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
+import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
@@ -19,7 +20,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RiscossioneNonTrovataException;
 import it.govpay.core.utils.GpThreadLocal;
 
-public class RiscossioniDAO{
+public class RiscossioniDAO extends BaseDAO{
 
 	public RiscossioniDAO() {
 	}

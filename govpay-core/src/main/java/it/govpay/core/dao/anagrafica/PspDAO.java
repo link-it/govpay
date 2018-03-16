@@ -22,18 +22,24 @@ import it.govpay.core.dao.anagrafica.dto.ListaCanaliDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaPspDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.PspNonTrovatoException;
+import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.exceptions.NotAuthenticatedException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Canale.TipoVersamento;
 
-public class PspDAO {
+public class PspDAO extends BaseDAO{
 
 	public PspDAO() {
 	}
 
-	public ListaPspDTOResponse listaPsp(ListaPspDTO listaPspDTO) throws ServiceException{
+	public ListaPspDTOResponse listaPsp(ListaPspDTO listaPspDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-		try {
-		
+		try { 
+			this.autorizzaRichiesta(listaPspDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
+			
 			PspBD pspBD = new PspBD(bd);
 			PspFilter filter = pspBD.newFilter();
 	
@@ -57,10 +63,11 @@ public class PspDAO {
 		}
 	}
 
-	public LeggiPspDTOResponse leggiPsp(LeggiPspDTO leggiPspDTO) throws ServiceException,PspNonTrovatoException{
+	public LeggiPspDTOResponse leggiPsp(LeggiPspDTO leggiPspDTO) throws ServiceException,PspNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiPspDTOResponse response = new LeggiPspDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
+			this.autorizzaRichiesta(leggiPspDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			PspBD pspBD = new PspBD(bd);
 			Psp psp = pspBD.getPsp(leggiPspDTO.getIdPsp());
 			response.setPsp(psp);
@@ -74,9 +81,10 @@ public class PspDAO {
 		}
 	}
 
-	public ListaCanaliDTOResponse listaCanali(ListaCanaliDTO listaPspDTO) throws ServiceException{
+	public ListaCanaliDTOResponse listaCanali(ListaCanaliDTO listaPspDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
+			this.autorizzaRichiesta(listaPspDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			PspBD pspBD = new PspBD(bd);
 			CanaleFilter filter = pspBD.newCanaleFilter();
 	
@@ -109,10 +117,11 @@ public class PspDAO {
 		}
 	}
 
-	public LeggiCanaleDTOResponse leggiCanale(LeggiCanaleDTO leggiCanaleDTO) throws ServiceException,PspNonTrovatoException{
+	public LeggiCanaleDTOResponse leggiCanale(LeggiCanaleDTO leggiCanaleDTO) throws ServiceException,PspNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiCanaleDTOResponse response = new LeggiCanaleDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
+			this.autorizzaRichiesta(leggiCanaleDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			PspBD pspBD = new PspBD(bd);
 			Canale canale = pspBD.getCanale(leggiCanaleDTO.getIdPsp(), leggiCanaleDTO.getIdCanale(), leggiCanaleDTO.getTipoVersamento());
 			response.setCanale(canale);

@@ -94,4 +94,18 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 	public void setAclRuoli(List<Acl> aclRuoli) {
 		this.aclRuoli = aclRuoli;
 	}
+	
+	@Override
+	public void merge(IAutorizzato src) {
+		if(src instanceof Utenza) {
+			Utenza srcUtenza = (Utenza) src;
+			
+			this.setAbilitato(srcUtenza.isAbilitato());
+			this.setAclPrincipal(srcUtenza.getAcls());
+			this.setIdDomini(srcUtenza.getIdDomini());
+			this.setIdTributi(srcUtenza.getIdTributi());
+			this.setId(srcUtenza.getId());
+			this.setRuoli(srcUtenza.getRuoli());
+		}
+	}
 }

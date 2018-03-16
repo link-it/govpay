@@ -10,7 +10,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.Rendicontazione;
+import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
@@ -22,7 +22,7 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 
-public class IncassiDAO {
+public class IncassiDAO extends BaseDAO{
 
 	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthorizedException, ServiceException{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

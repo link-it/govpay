@@ -5,12 +5,13 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
 import it.govpay.core.rs.v1.costanti.Costanti;
 
 @JsonFilter(value="lista") 
-public class Lista<T> extends JSONSerializable {
+public class Lista<T extends JSONSerializable> extends JSONSerializable {
 
 	private long numRisultati;
 	private long numPagine;
@@ -64,6 +65,22 @@ public class Lista<T> extends JSONSerializable {
 	
 	public Lista() {
 		
+	}
+	
+	public String toJSONArray(String fields) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		
+		for (T t : risultati) {
+			if(sb.length() > 1)
+				sb.append(",");
+			
+			sb.append(t.toJSON(fields));
+		}
+		
+		sb.append("]");
+		
+		return sb.toString();
 	}
 	
 	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long limit) {

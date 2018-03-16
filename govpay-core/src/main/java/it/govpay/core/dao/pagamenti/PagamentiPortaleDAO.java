@@ -24,6 +24,7 @@ import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.core.business.Wisp;
 import it.govpay.core.business.model.SceltaWISP;
+import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
@@ -46,7 +47,7 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.orm.IdVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 
-public class PagamentiPortaleDAO {
+public class PagamentiPortaleDAO extends BaseDAO {
 
 	private static final String ACTION_BACK = "back";
 	private static final String ACTION_RETURN = "return";

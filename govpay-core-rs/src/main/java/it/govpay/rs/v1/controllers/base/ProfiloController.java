@@ -13,9 +13,7 @@ import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.exceptions.BaseExceptionV1;
-import it.govpay.core.rs.v1.beans.FaultBean;
 import it.govpay.core.rs.v1.beans.ListaAcl;
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl;
@@ -61,9 +59,9 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			ListaAcl response = new ListaAcl(results, this.getServicePath(uriInfo),
 					results.size(), 1, results.size());
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSONArray(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return Response.status(Status.OK).entity(response.toJSONArray(null)).build();
 			
 		}catch (BaseExceptionV1 e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);

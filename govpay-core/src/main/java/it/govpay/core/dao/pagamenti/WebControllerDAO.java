@@ -16,6 +16,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.core.business.model.SceltaWISP;
+import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaWebControllerDTO;
@@ -37,7 +38,7 @@ import it.govpay.model.Anagrafica;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.servizi.commons.EsitoOperazione;
 
-public class WebControllerDAO {
+public class WebControllerDAO extends BaseDAO{
 
 	public static final String OK = "OK";
 	private static final String ACTION_BACK = "back";

@@ -152,7 +152,7 @@
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>govpay-wc</artifactId>
-							<contextRoot>/govpay/frontend/web/wconnector</contextRoot>
+							<contextRoot>/govpay/frontend/web/connector</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
