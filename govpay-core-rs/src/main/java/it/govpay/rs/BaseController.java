@@ -4,6 +4,7 @@
 package it.govpay.rs;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,7 +31,6 @@ import org.openspcoop2.utils.rest.ProcessingException;
 import org.openspcoop2.utils.rest.ValidatorException;
 import org.openspcoop2.utils.rest.api.Api;
 import org.openspcoop2.utils.rest.entity.TextHttpRequestEntity;
-import org.openspcoop2.utils.rest.entity.TextHttpResponseEntity;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
@@ -68,14 +68,16 @@ public abstract class BaseController {
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			try {
 				IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
-				apiReader.init(log, BaseController.class.getResource(GovpayConfig.GOVPAY_OPEN_API_FILE).toURI(), new ApiReaderConfig());
+
+				File file = new File(""); //TODO agganciare definizione swagger
+				apiReader.init(log, file, new ApiReaderConfig());
 				Api api = apiReader.read();
 				
 				this.validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
 				OpenapiApiValidatorConfig config = new OpenapiApiValidatorConfig();
 				config.setJsonValidatorAPI(ApiName.FGE);
 				validator.init(LoggerWrapperFactory.getLogger(Test.class), api, config);
-			} catch(Exception e) {
+			} catch(Throwable e) {
 				this.log.error("Errore durante l'init del modulo di validazione: " + e.getMessage(), e);
 			}
 		}
@@ -167,16 +169,16 @@ public abstract class BaseController {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
-			try {
-				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
-				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
-				httpEntity.setUrl(getServicePath(uriInfo).toString());
-				httpEntity.setContent(new String(baos.toByteArray()));
-				httpEntity.setContentType("application/json");
-				this.validator.validate(httpEntity);
-			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
-				throw new NotAuthorizedException(e.getMessage());
-			}
+//			try {
+//				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+//				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+//				httpEntity.setUrl(getServicePath(uriInfo).toString());
+//				httpEntity.setContent(new String(baos.toByteArray()));
+//				httpEntity.setContentType("application/json");
+//				this.validator.validate(httpEntity);
+//			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+//				throw new NotAuthorizedException(e.getMessage());
+//			}
 		}
 	}
 	
@@ -184,16 +186,16 @@ public abstract class BaseController {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
-			try {
-				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
-				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
-				httpEntity.setUrl(getServicePath(uriInfo).toString());
-				httpEntity.setContent(new String(bytes));
-				httpEntity.setContentType("application/json");
-				this.validator.validate(httpEntity);
-			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
-				throw new NotAuthorizedException(e.getMessage());
-			}
+//			try {
+//				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+//				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+//				httpEntity.setUrl(getServicePath(uriInfo).toString());
+//				httpEntity.setContent(new String(bytes));
+//				httpEntity.setContentType("application/json");
+//				this.validator.validate(httpEntity);
+//			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+//				throw new NotAuthorizedException(e.getMessage());
+//			}
 		}
 	}
 	
@@ -201,16 +203,16 @@ public abstract class BaseController {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
-			try {
-				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
-				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
-				httpEntity.setUrl(getServicePath(uriInfo).toString());
-				httpEntity.setContent(new String(bytes));
-				httpEntity.setContentType("application/json");
-				this.validator.validate(httpEntity);
-			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
-				throw new NotAuthorizedException(e.getMessage());
-			}
+//			try {
+//				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
+//				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
+//				httpEntity.setUrl(getServicePath(uriInfo).toString());
+//				httpEntity.setContent(new String(bytes));
+//				httpEntity.setContentType("application/json");
+//				this.validator.validate(httpEntity);
+//			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
+//				throw new NotAuthorizedException(e.getMessage());
+//			}
 		}
 	}
 	
