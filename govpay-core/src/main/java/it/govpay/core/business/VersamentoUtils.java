@@ -129,14 +129,17 @@ public class VersamentoUtils {
 		
 		model.setIncasso(versamento.getIncasso());
 		model.setAnomalie(versamento.getAnomalie()); 
+		model.setNumeroAvviso(versamento.getNumeroAvviso());	
 
-		if(versamento.getIuv() != null) {
-			if(versamento.getIuv().startsWith("0")) {
-				model.setIuvVersamento(versamento.getIuv().substring(1));
-			} else {
-				model.setIuvVersamento(versamento.getIuv().substring(3));
-			}
-			model.setNumeroAvviso(versamento.getIuv());
+		if(versamento.getNumeroAvviso() != null) {
+			model.setIuvVersamento(getIuvFromNumeroAvviso(versamento.getNumeroAvviso()));
+			
+//			if(versamento.getIuv().startsWith("0")) {
+//				model.setIuvVersamento(versamento.getIuv().substring(1));
+//			} else {
+//				model.setIuvVersamento(versamento.getIuv().substring(3));
+//			}
+//			model.setNumeroAvviso(versamento.getIuv());
 			model.setAvvisatura("C");
 		}
 		return model;
@@ -344,5 +347,28 @@ public class VersamentoUtils {
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 		versamentoBusiness.caricaVersamento(applicazione, versamento, false, true);
 		return versamento;
+	}
+	
+	public static String getIuvFromNumeroAvviso(String numeroAvviso) throws GovPayException {
+		if(numeroAvviso == null)
+			return null;
+		
+		try {
+			Long.parseLong(numeroAvviso);
+		}catch(Exception e) {
+			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
+		}
+		
+		if(numeroAvviso.startsWith("0")) // '0' + applicationCode(2) + ref(13) + check(2)
+			return numeroAvviso.substring(3);
+		else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("3")) // '3' + segregationCode(2) +  ref(13) + check(2) 
+			return numeroAvviso.substring(1);
+		else 
+			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
+//		return numeroAvviso;
 	}
 }

@@ -35,12 +35,12 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
-import it.govpay.bd.GovpayConfig;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
@@ -63,10 +63,10 @@ public abstract class BaseController {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
 		
-		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			try {
 				IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
-				apiReader.init(log, BaseController.class.getResource(GovpayConfig.getInstance().getOpenapiResource()).toURI(), new ApiReaderConfig());
+				apiReader.init(log, BaseController.class.getResource(GovpayConfig.GOVPAY_OPEN_API_FILE).toURI(), new ApiReaderConfig());
 				Api api = apiReader.read();
 				
 				this.validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
@@ -130,7 +130,7 @@ public abstract class BaseController {
 	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws NotAuthorizedException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
-		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			try {
 				TextHttpRequestEntity httpEntity = new TextHttpRequestEntity();
 				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
@@ -147,7 +147,7 @@ public abstract class BaseController {
 	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) throws NotAuthorizedException{
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
-		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			try {
 				TextHttpRequestEntity httpEntity = new TextHttpRequestEntity();
 				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
@@ -164,7 +164,7 @@ public abstract class BaseController {
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws NotAuthorizedException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
-		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			try {
 				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
 				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
@@ -181,7 +181,7 @@ public abstract class BaseController {
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes) throws NotAuthorizedException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
-		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			try {
 				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
 				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
@@ -198,7 +198,7 @@ public abstract class BaseController {
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) throws NotAuthorizedException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
-		if(GovpayConfig.getInstance().isValidazioneAbilitata()) {
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			try {
 				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
 				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
@@ -229,7 +229,7 @@ public abstract class BaseController {
 		respKo.setCodice("");
 		respKo.setDescrizione(e.getMessage());
 		try {
-			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.INTERNAL_SERVER_ERROR.getStatusCode());
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta", e1);
 		}

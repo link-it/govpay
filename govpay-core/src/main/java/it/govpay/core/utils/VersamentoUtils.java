@@ -435,6 +435,7 @@ public class VersamentoUtils {
 		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null)
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
+		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
 //		versamento.setIncasso(pendenza.getIncasso()); //TODO
 //		versamento.setAnomalie(pendenza.getAnomalie()); 
@@ -461,7 +462,7 @@ public class VersamentoUtils {
 		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
-		versamento.setIuv(pendenzaVerificata.getNumeroAvviso());
+	
 		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento()); 
 		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
 		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());
@@ -472,6 +473,8 @@ public class VersamentoUtils {
 		versamento.setNome(pendenzaVerificata.getNome());
 		
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+		versamento.setNumeroAvviso(pendenzaVerificata.getNumeroAvviso());
+//		versamento.setIuv(pendenzaVerificata.getNumeroAvviso());
 		
 //		versamento.setIncasso(pendenza.getIncasso()); //TODO
 //		versamento.setAnomalie(pendenzaVerificata.getAnomalie()); 
@@ -498,12 +501,15 @@ public class VersamentoUtils {
 		versamento.setDataValidita(pendenza.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
-		if(pendenza.getNumeroAvviso()!=null)
-			versamento.setIuv(pendenza.getNumeroAvviso());
+	
 		versamento.setNome(pendenza.getNome());
 		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null)
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
+		
+		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
+//		if(pendenza.getNumeroAvviso()!=null)
+//			versamento.setIuv(pendenza.getNumeroAvviso());
 		
 //		versamento.setIncasso(pendenza.getIncasso()); //TODO
 //		versamento.setAnomalie(pendenza.getAnomalie()); 

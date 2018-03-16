@@ -16,7 +16,8 @@ public class StazioniConverter {
 		it.govpay.bd.model.Stazione stazione = new it.govpay.bd.model.Stazione();
 
 		stazione.setAbilitato(stazionePost.isAbilitato());
-		stazione.setApplicationCode(stazione.getApplicationCode());
+		String applicationCodeS = idStazione.substring(idStazione.indexOf("_")+1);
+		stazione.setApplicationCode(Integer.parseInt(applicationCodeS)); 
 		stazione.setCodStazione(idStazione);
 		stazione.setPassword(stazionePost.getPassword());
 		

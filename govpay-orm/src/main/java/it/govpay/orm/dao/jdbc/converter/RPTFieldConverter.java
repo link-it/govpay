@@ -510,7 +510,7 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return "versamenti";
 		}
 		if(model.equals(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "id_applicazione";
+			return "applicazioni";
 		}
 		if(model.equals(RPT.model().ID_PAGAMENTO_PORTALE)){
 			return "pagamenti_portale";
@@ -519,7 +519,7 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return "canali";
 		}
 		if(model.equals(RPT.model().ID_CANALE.ID_PSP)){
-			return "id_psp";
+			return "psp";
 		}
 		if(model.equals(RPT.model().ID_APPLICAZIONE)){
 			return "applicazioni";

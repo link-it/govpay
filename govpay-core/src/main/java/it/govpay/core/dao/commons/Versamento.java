@@ -35,13 +35,13 @@ public class Versamento {
 		this.codVersamentoEnte = codVersamentoEnte;
 	}
 
-	public String getIuv() {
-		return iuv;
-	}
-
-	public void setIuv(String iuv) {
-		this.iuv = iuv;
-	}
+//	public String getIuv() {
+//		return iuv;
+//	}
+//
+//	public void setIuv(String iuv) {
+//		this.iuv = iuv;
+//	}
 
 	public String getCodDominio() {
 		return codDominio;
@@ -240,10 +240,18 @@ public class Versamento {
 		this.anomalie = anomalie;
 	}
 
+	public String getNumeroAvviso() {
+		return numeroAvviso;
+	}
+
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+	}
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
-    private String iuv;
+//    private String iuv;
     private String nome;
     private String codDominio;
     private String codLotto;
@@ -265,6 +273,7 @@ public class Versamento {
     private String datiAllegati;
 	private Boolean incasso;
 	private String anomalie;
+	private String numeroAvviso;
     
     private TIPO tipo;
     private List<String> spezzoneCausale;

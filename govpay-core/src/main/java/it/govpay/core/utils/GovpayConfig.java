@@ -45,6 +45,7 @@ public class GovpayConfig {
 	}
 
 	public static final String PROPERTIES_FILE = "/govpay.properties";
+	public static final String GOVPAY_OPEN_API_FILE = "/govpay.json";
 
 	private static GovpayConfig instance;
 
@@ -85,6 +86,8 @@ public class GovpayConfig {
 	
 	private String urlGovpayWC = null;
 	private String urlWISP = null;
+	
+	private boolean validazioneAPIRest;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -107,6 +110,7 @@ public class GovpayConfig {
 		this.batchEstrattoContoPdf = false;
 		this.batchOn=true;
 		this.pddAuthEnable = true;
+		this.validazioneAPIRest = false;
 
 		try {
 
@@ -383,6 +387,11 @@ public class GovpayConfig {
 			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
 				this.batchAvvisiPagamento = true;
 			
+			String validazioneAPIRestString = getProperty("it.govpay.rs.validazione.enabled", props, false, log);
+			if(validazioneAPIRestString != null && Boolean.valueOf(validazioneAPIRestString))
+				this.validazioneAPIRest = true;
+			
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -564,5 +573,8 @@ public class GovpayConfig {
 	public boolean isBatchAvvisiPagamento() {
 		return batchAvvisiPagamento;
 	}
-
+	
+	public boolean isValidazioneAPIRestAbilitata() {
+		return this.validazioneAPIRest;
+	}
 }

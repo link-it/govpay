@@ -331,6 +331,7 @@ public class PspBD extends BasicBD {
 			
 			for(Canale canale: psp.getCanalis()) {
 				canale.setIdPsp(psp.getId());
+				canale.setAbilitato(true); // TODO inserisco i canali abilitati?
 				it.govpay.orm.Canale canaleVO = CanaleConverter.toVO(canale);
 				this.getCanaleService().create(canaleVO);
 				canale.setId(canaleVO.getId());

@@ -106,6 +106,12 @@ public class VersamentoConverter {
 			dto.setAvvisatura(vo.getAvvisatura());
 			dto.setTipoPagamento(vo.getTipoPagamento());
 			
+			// se il numero avviso e' impostato lo iuv proposto deve coincidere con quello inserito a partire dall'avviso
+			// TODO controllare
+			if(dto.getNumeroAvviso() !=  null) {
+				dto.setIuvProposto(dto.getIuvVersamento());
+			}
+			
 			
 			return dto;
 		} catch (UnsupportedEncodingException e) {

@@ -218,13 +218,4 @@ public class GovpayConfig {
 	public List<String> getPspPostali() {
 		return pspPostali;
 	}
-	
-	public boolean isValidazioneAbilitata() {
-		return false;
-	}
-	
-	public String getOpenapiResource() {
-		return "/govpay.json";
-	}
-
 }
