@@ -12,7 +12,7 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.exceptions.BaseExceptionV1;
+import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.rs.v1.beans.FaultBean;
 import it.govpay.core.rs.v1.beans.ListaAcl;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
@@ -65,8 +65,6 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {

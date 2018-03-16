@@ -10,12 +10,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
+import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
-import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.rs.v1.beans.FlussoRendicontazione;
 import it.govpay.core.rs.v1.beans.ListaFlussiRendicontazione;
 import it.govpay.core.utils.GpContext;
@@ -66,8 +66,6 @@ public class FlussiRendicontazioneController extends BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -113,8 +111,6 @@ public class FlussiRendicontazioneController extends BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {

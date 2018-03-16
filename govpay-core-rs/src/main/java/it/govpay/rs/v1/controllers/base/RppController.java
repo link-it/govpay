@@ -22,11 +22,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
-import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
-import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.rs.v1.beans.ListaRpp;
-import it.govpay.core.rs.v1.beans.base.FaultBean;
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.rs.v1.beans.Rpp;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -100,8 +96,6 @@ public class RppController extends BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -164,8 +158,6 @@ public class RppController extends BaseController {
 					return Response.status(Status.OK).type(accept).entity(rt).build();
 				}
 			}
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -199,30 +191,8 @@ public class RppController extends BaseController {
 
 			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(ricevutaDTOResponse.getRpt().getXmlRpt());
 			return Response.status(Status.OK).entity(rpt).build();
-		}catch (RicevutaNonTrovataException e) {
-			log.error(e.getMessage(), e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.NOT_FOUND.getStatusCode());
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.NOT_FOUND).entity(respKo.toJSON(null)).build();
 		}catch (Exception e) {
-			log.error("Errore interno durante la " + methodName, e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.INTERNO);
-			respKo.setCodice("");
-			respKo.setDescrizione(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
 			if(ctx != null) ctx.log();
 		} 
@@ -255,8 +225,6 @@ public class RppController extends BaseController {
 
 			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {

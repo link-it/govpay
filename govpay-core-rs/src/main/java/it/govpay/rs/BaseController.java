@@ -35,7 +35,9 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
@@ -223,6 +225,19 @@ public abstract class BaseController {
 	}
 	
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e) {
+		
+		if(e instanceof BaseExceptionV1) {
+			return handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e);
+		}
+		
+		if(e instanceof RedirectException) {
+			return handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e);
+		}
+		
+		if(e instanceof GovPayException) {
+			return handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e);
+		}
+		
 		log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
@@ -236,7 +251,7 @@ public abstract class BaseController {
 		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 	}
 
-	protected Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e) {
+	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e) {
 		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(e.getCategoria());
@@ -249,6 +264,26 @@ public abstract class BaseController {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
 		return Response.status(e.getTransportErrorCode()).entity(respKo.toJSON(null)).build();
+	}
+
+	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e) {
+		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
+		FaultBean respKo = new FaultBean();
+		respKo.setCategoria(e.getFaultBean()!=null ? CategoriaEnum.PAGOPA:CategoriaEnum.OPERAZIONE);
+		respKo.setCodice(e.getCodEsito().toString());
+		respKo.setDescrizione(e.getMessage());
+		respKo.setDettaglio(e.getDescrizioneEsito());
+		try {
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.INTERNAL_SERVER_ERROR.getStatusCode());
+		}catch(Exception e1) {
+			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
+		}
+		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).entity(respKo.toJSON(null)).build();
+	}
+
+	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e) {
+		log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
+		return Response.seeOther(e.getURILocation()).build();
 	}
 
 

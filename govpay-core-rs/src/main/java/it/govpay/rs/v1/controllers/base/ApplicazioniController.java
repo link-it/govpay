@@ -20,7 +20,6 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
-import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.rs.v1.beans.Applicazione;
 import it.govpay.core.rs.v1.beans.ListaApplicazioni;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
@@ -72,8 +71,6 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -113,8 +110,6 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(responseStatus).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -166,8 +161,6 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {

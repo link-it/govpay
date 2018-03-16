@@ -18,7 +18,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
-import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.rs.v1.beans.Incasso;
 import it.govpay.core.rs.v1.beans.IncassoPost;
 import it.govpay.core.rs.v1.beans.ListaIncassi;
@@ -79,8 +78,6 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -122,8 +119,6 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -158,8 +153,6 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, incassoExt.toJSON(null), responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(responseStatus).entity(incassoExt.toJSON(null)).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {

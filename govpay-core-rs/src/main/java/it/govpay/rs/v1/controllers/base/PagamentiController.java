@@ -21,7 +21,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
-import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.base.PagamentoPost;
@@ -74,8 +73,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 201);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.CREATED).entity(responseOk.toJSON(null)).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -107,8 +104,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
@@ -171,9 +166,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
-			
-		}catch (BaseExceptionV1 e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
 		} finally {
