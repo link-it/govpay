@@ -391,7 +391,6 @@ public class GovpayConfig {
 			if(validazioneAPIRestString != null && Boolean.valueOf(validazioneAPIRestString))
 				this.validazioneAPIRest = true;
 			
-			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;

@@ -8,6 +8,7 @@ import java.util.Date;
 "importo",
 "dataValuta",
 "dataContabile",
+"ibanAccredito",
 })
 public class IncassoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
@@ -22,6 +23,9 @@ public class IncassoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
+  
+  @JsonProperty("ibanAccredito")
+  private String ibanAccredito = null;
   
   /**
    * Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
@@ -86,6 +90,22 @@ public class IncassoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.dataContabile = dataContabile;
   }
 
+  /**
+   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+   **/
+  public IncassoPost ibanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
+    return this;
+  }
+
+  @JsonProperty("ibanAccredito")
+  public String getIbanAccredito() {
+    return ibanAccredito;
+  }
+  public void setIbanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -98,12 +118,13 @@ public class IncassoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.equals(causale, incassoPost.causale) &&
         Objects.equals(importo, incassoPost.importo) &&
         Objects.equals(dataValuta, incassoPost.dataValuta) &&
-        Objects.equals(dataContabile, incassoPost.dataContabile);
+        Objects.equals(dataContabile, incassoPost.dataContabile) &&
+        Objects.equals(ibanAccredito, incassoPost.ibanAccredito);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(causale, importo, dataValuta, dataContabile);
+    return Objects.hash(causale, importo, dataValuta, dataContabile, ibanAccredito);
   }
 
   public static IncassoPost parse(String json) {
@@ -124,6 +145,7 @@ public class IncassoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
     sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
+    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("}");
     return sb.toString();
   }

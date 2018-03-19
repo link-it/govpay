@@ -11,9 +11,11 @@ import java.util.Date;
 "importo",
 "dataValuta",
 "dataContabile",
-"id",
+"ibanAccredito",
+"idDominio",
+"idIncasso",
 })
-public class IncassoIndex extends JSONSerializable {
+public class IncassoIndex extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("causale")
   private String causale = null;
@@ -27,8 +29,14 @@ public class IncassoIndex extends JSONSerializable {
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
   
-  @JsonProperty("id")
-  private String id = null;
+  @JsonProperty("ibanAccredito")
+  private String ibanAccredito = null;
+  
+  @JsonProperty("idDominio")
+  private String idDominio = null;
+  
+  @JsonProperty("idIncasso")
+  private String idIncasso = null;
   
   /**
    * Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
@@ -94,19 +102,51 @@ public class IncassoIndex extends JSONSerializable {
   }
 
   /**
-   * Identificativo dell'incasso
+   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi
    **/
-  public IncassoIndex id(String id) {
-    this.id = id;
+  public IncassoIndex ibanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
     return this;
   }
 
-  @JsonProperty("id")
-  public String getId() {
-    return id;
+  @JsonProperty("ibanAccredito")
+  public String getIbanAccredito() {
+    return ibanAccredito;
   }
-  public void setId(String id) {
-    this.id = id;
+  public void setIbanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
+  }
+
+  /**
+   * Identificativo ente creditore
+   **/
+  public IncassoIndex idDominio(String idDominio) {
+    this.idDominio = idDominio;
+    return this;
+  }
+
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
+  }
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
+  }
+
+  /**
+   * Identificativo dell'incasso
+   **/
+  public IncassoIndex idIncasso(String idIncasso) {
+    this.idIncasso = idIncasso;
+    return this;
+  }
+
+  @JsonProperty("idIncasso")
+  public String getIdIncasso() {
+    return idIncasso;
+  }
+  public void setIdIncasso(String idIncasso) {
+    this.idIncasso = idIncasso;
   }
 
   @Override
@@ -122,12 +162,14 @@ public class IncassoIndex extends JSONSerializable {
         Objects.equals(importo, incassoIndex.importo) &&
         Objects.equals(dataValuta, incassoIndex.dataValuta) &&
         Objects.equals(dataContabile, incassoIndex.dataContabile) &&
-        Objects.equals(id, incassoIndex.id);
+        Objects.equals(ibanAccredito, incassoIndex.ibanAccredito) &&
+        Objects.equals(idDominio, incassoIndex.idDominio) &&
+        Objects.equals(idIncasso, incassoIndex.idIncasso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(causale, importo, dataValuta, dataContabile, id);
+    return Objects.hash(causale, importo, dataValuta, dataContabile, ibanAccredito, idDominio, idIncasso);
   }
 
   public static IncassoIndex parse(String json) {
@@ -148,7 +190,9 @@ public class IncassoIndex extends JSONSerializable {
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
     sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -6,17 +6,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"id",
+"idDominio",
+"idIncasso",
 "causale",
 "importo",
 "dataValuta",
 "dataContabile",
+"ibanAccredito",
 "riscossioni",
 })
 public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
-  @JsonProperty("id")
-  private String id = null;
+  @JsonProperty("idDominio")
+  private String idDominio = null;
+  
+  @JsonProperty("idIncasso")
+  private String idIncasso = null;
   
   @JsonProperty("causale")
   private String causale = null;
@@ -30,23 +35,42 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
   
+  @JsonProperty("ibanAccredito")
+  private String ibanAccredito = null;
+  
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = new ArrayList<Riscossione>();
   
   /**
-   * Identificativo dell'incasso
+   * Identificativo ente creditore
    **/
-  public Incasso id(String id) {
-    this.id = id;
+  public Incasso idDominio(String idDominio) {
+    this.idDominio = idDominio;
     return this;
   }
 
-  @JsonProperty("id")
-  public String getId() {
-    return id;
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
   }
-  public void setId(String id) {
-    this.id = id;
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
+  }
+
+  /**
+   * Identificativo dell'incasso
+   **/
+  public Incasso idIncasso(String idIncasso) {
+    this.idIncasso = idIncasso;
+    return this;
+  }
+
+  @JsonProperty("idIncasso")
+  public String getIdIncasso() {
+    return idIncasso;
+  }
+  public void setIdIncasso(String idIncasso) {
+    this.idIncasso = idIncasso;
   }
 
   /**
@@ -113,6 +137,22 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+   **/
+  public Incasso ibanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
+    return this;
+  }
+
+  @JsonProperty("ibanAccredito")
+  public String getIbanAccredito() {
+    return ibanAccredito;
+  }
+  public void setIbanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
+  }
+
+  /**
    **/
   public Incasso riscossioni(List<Riscossione> riscossioni) {
     this.riscossioni = riscossioni;
@@ -136,17 +176,19 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
       return false;
     }
     Incasso incasso = (Incasso) o;
-    return Objects.equals(id, incasso.id) &&
+    return Objects.equals(idDominio, incasso.idDominio) &&
+        Objects.equals(idIncasso, incasso.idIncasso) &&
         Objects.equals(causale, incasso.causale) &&
         Objects.equals(importo, incasso.importo) &&
         Objects.equals(dataValuta, incasso.dataValuta) &&
         Objects.equals(dataContabile, incasso.dataContabile) &&
+        Objects.equals(ibanAccredito, incasso.ibanAccredito) &&
         Objects.equals(riscossioni, incasso.riscossioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, causale, importo, dataValuta, dataContabile, riscossioni);
+    return Objects.hash(idDominio, idIncasso, causale, importo, dataValuta, dataContabile, ibanAccredito, riscossioni);
   }
 
   public static Incasso parse(String json) {
@@ -163,11 +205,13 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Incasso {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
     sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
+    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("}");
     return sb.toString();

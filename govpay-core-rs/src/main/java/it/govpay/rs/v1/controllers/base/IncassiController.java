@@ -20,7 +20,7 @@ import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.rs.v1.beans.Incasso;
 import it.govpay.core.rs.v1.beans.IncassoPost;
-import it.govpay.core.rs.v1.beans.ListaIncassi;
+import it.govpay.core.rs.v1.beans.ListaIncassiIndex;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -66,12 +66,12 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Incasso> listaIncassi = new ArrayList<it.govpay.core.rs.v1.beans.Incasso>();
+			List<it.govpay.core.rs.v1.beans.IncassoIndex> listaIncassi = new ArrayList<it.govpay.core.rs.v1.beans.IncassoIndex>();
 			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getResults()) {
-				listaIncassi.add(IncassiConverter.toRsModel(i));
+				listaIncassi.add(IncassiConverter.toRsIndexModel(i));
 			}
 			
-			ListaIncassi response = new ListaIncassi(listaIncassi, this.getServicePath(uriInfo),
+			ListaIncassiIndex response = new ListaIncassiIndex(listaIncassi, this.getServicePath(uriInfo),
 					listaIncassiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

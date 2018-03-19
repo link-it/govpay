@@ -296,6 +296,43 @@
 				<version>2.3.2.Final</version>
 				<scope>provided</scope>
 			</dependency>
+			
+							
+		<dependency>
+		    <groupId>io.swagger.core.v3</groupId>
+		    <artifactId>swagger-models</artifactId>
+		    <version>2.0.0-rc4</version>
+		</dependency>
+				
+		<dependency>
+		    <groupId>io.swagger.core.v3</groupId>
+		    <artifactId>swagger-core</artifactId>
+		    <version>2.0.0-rc4</version>
+		</dependency>
+				
+		<dependency>
+		    <groupId>io.swagger</groupId>
+		    <artifactId>swagger-parser</artifactId>
+		    <version>2.0.0-rc1</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.swagger.parser.v3</groupId>
+		    <artifactId>swagger-parser-core</artifactId>
+		    <version>2.0.0-rc3</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>io.swagger.parser.v3</groupId>
+		    <artifactId>swagger-parser-v3</artifactId>
+		    <version>2.0.0-rc3</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>com.github.fge</groupId>
+		    <artifactId>json-schema-validator</artifactId>
+		    <version>2.0.0</version>
+		</dependency>
+			
 
 		</dependencies>
 	</dependencyManagement>

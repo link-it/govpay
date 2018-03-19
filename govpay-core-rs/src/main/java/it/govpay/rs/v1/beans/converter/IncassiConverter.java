@@ -10,6 +10,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.rs.v1.beans.Incasso;
 import it.govpay.core.rs.v1.beans.IncassoPost;
+import it.govpay.core.rs.v1.beans.IncassoIndex;
 import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.model.IAutorizzato;
 
@@ -34,8 +35,10 @@ public class IncassiConverter {
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto().doubleValue());
-		rsModel.setId(i.getId()+ "");
+		rsModel.setIdIncasso(i.getId()+ "");
+		rsModel.setIdDominio(i.getCodDominio());
 		
+		rsModel.setIbanAccredito(i.getIbanAccredito());
 		if(i.getPagamenti(null)!= null) {
 			List<Riscossione> riscossioni = new ArrayList<Riscossione>();
 			for (Pagamento pagamento : i.getPagamenti(null)) {
@@ -44,6 +47,21 @@ public class IncassiConverter {
 			
 			rsModel.setRiscossioni(riscossioni);
 		}
+		
+		return rsModel;
+	}
+	
+	public static IncassoIndex toRsIndexModel(it.govpay.bd.model.Incasso i) throws ServiceException {
+		IncassoIndex rsModel = new IncassoIndex();
+		
+		rsModel.setCausale(i.getCausale());
+		rsModel.setDataContabile(i.getDataContabile());
+		rsModel.setDataValuta(i.getDataValuta());
+		rsModel.setImporto(i.getImporto().doubleValue());
+		rsModel.setIdIncasso(i.getId()+ "");
+		rsModel.setIdDominio(i.getCodDominio());
+		
+		rsModel.setIbanAccredito(i.getIbanAccredito());
 		
 		return rsModel;
 	}

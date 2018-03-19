@@ -26,7 +26,7 @@ import it.govpay.rs.BaseRsService;
 public class GatewayController extends BaseController {
 
 	public GatewayController(String nomeServizio, Logger log) {
-		super(nomeServizio, log);
+		super(nomeServizio, log, false);
 	}
 
 	

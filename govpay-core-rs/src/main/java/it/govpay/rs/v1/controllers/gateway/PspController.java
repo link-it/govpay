@@ -20,7 +20,7 @@ import it.govpay.rs.BaseController;
 public class PspController  extends BaseController {
 
 	public PspController(String nomeServizio, Logger log) {
-		super(nomeServizio, log);
+		super(nomeServizio, log, false);
 	}
 
 	public Response getPsp(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders, String idSession, String esito) {
