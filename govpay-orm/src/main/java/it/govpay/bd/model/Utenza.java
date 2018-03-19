@@ -36,12 +36,12 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 
 	@Override
 	public List<String> getIdDominio() {
-		return this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList());
+		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;
 	}
 
 	@Override
 	public List<String> getIdTributo() {
-		return this.tributi.stream().map(d -> d.getCodTributo()).collect(Collectors.toList());
+		return this.tributi != null ? this.tributi.stream().map(d -> d.getCodTributo()).collect(Collectors.toList()) : null;
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 	}
 	
 	@Override
-	public void merge(IAutorizzato src) {
+	public void merge(IAutorizzato src) throws ServiceException  {
 		if(src instanceof Utenza) {
 			Utenza srcUtenza = (Utenza) src;
 			
@@ -106,6 +106,8 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 			this.setIdTributi(srcUtenza.getIdTributi());
 			this.setId(srcUtenza.getId());
 			this.setRuoli(srcUtenza.getRuoli());
+			this.setDomini(srcUtenza.getDomini(null));
+			this.setTributi(srcUtenza.getTributi(null));
 		}
 	}
 }

@@ -35,6 +35,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenz
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -42,6 +43,8 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.WISPUtils;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IbanAccredito;
 import it.govpay.orm.IdVersamento;
@@ -295,16 +298,15 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}
 	}
 
-	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException{
+	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 		try {
+			this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-			PagamentoPortale pagamentoPortale = null;
-
-			pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getIdSessione());
+			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getIdSessione());
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 
 			return leggiPagamentoPortaleDTOResponse;
@@ -315,10 +317,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}
 	}
 
-	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException{
+	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 		try {
+			this.autorizzaRichiesta(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
+			
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
 

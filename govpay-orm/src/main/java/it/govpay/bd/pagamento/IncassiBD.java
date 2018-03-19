@@ -98,7 +98,7 @@ public class IncassiBD extends BasicBD {
 		try {
 			List<Incasso> incassoLst = new ArrayList<Incasso>();
 
-			if(filter.getCodDomini() != null && filter.getCodDomini().isEmpty()) return incassoLst;
+			// if(filter.getCodDomini() != null && filter.getCodDomini().isEmpty()) return incassoLst;
 			List<it.govpay.orm.Incasso> incassoVOLst = this.getIncassoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Incasso incassoVO: incassoVOLst) {
 				incassoLst.add(IncassoConverter.toDTO(incassoVO));

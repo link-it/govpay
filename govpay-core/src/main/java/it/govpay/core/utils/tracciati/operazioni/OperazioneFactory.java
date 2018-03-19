@@ -357,9 +357,7 @@ public class OperazioneFactory {
 		richiestaIncasso.setCodDominio(request.getDominio());
 		richiestaIncasso.setDataValuta(request.getDataValuta());
 		richiestaIncasso.setDispositivo(request.getDispositivo());
-		richiestaIncasso.setOperatore(tracciato.getOperatore(bd));
-		
-		
+		richiestaIncasso.setOperatore(tracciato.getOperatore(bd)); // TODO cosa succede se l'operatore ha solo ACL per ruolo??
 		
 		IncassoResponse response = new IncassoResponse();
 

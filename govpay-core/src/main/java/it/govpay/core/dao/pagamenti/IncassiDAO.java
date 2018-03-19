@@ -21,6 +21,8 @@ import it.govpay.core.dao.pagamenti.exception.IncassoNonTrovatoException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 
 public class IncassiDAO extends BaseDAO{
 
@@ -28,6 +30,7 @@ public class IncassiDAO extends BaseDAO{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 		try {
+			this.autorizzaRichiesta(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			ListaIncassiDTOResponse listaIncassiDTOResponse = incassi.listaIncassi(listaIncassoDTO);
 			 

@@ -1,7 +1,6 @@
 package it.govpay.core.dao.pagamenti;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -11,6 +10,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -19,24 +19,41 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RendicontazioneNonTrovataException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
+import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 
 public class RendicontazioniDAO extends BaseDAO{
 
 	public RendicontazioniDAO() {
 	}
 
-	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException{
+	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
+		List<String> listaDominiFiltro = null;
 		try {
+			this.autorizzaRichiesta(listaRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
+			
+			// Autorizzazione sui domini
+			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
+			if(listaDominiFiltro == null) {
+				throw new NotAuthorizedException("L'utenza autenticata ["+listaRendicontazioniDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
+			}
+			
 			FrBD rendicontazioniBD = new FrBD(bd);
 			FrFilter filter = rendicontazioniBD.newFilter();
 
 			filter.setOffset(listaRendicontazioniDTO.getOffset());
 			filter.setLimit(listaRendicontazioniDTO.getLimit());
-			if(listaRendicontazioniDTO.getIdDominio() != null)
-				filter.setCodDominio(Arrays.asList(listaRendicontazioniDTO.getIdDominio()));
+			if(listaRendicontazioniDTO.getIdDominio() != null) {
+				listaDominiFiltro.add(listaRendicontazioniDTO.getIdDominio());
+			}
+			if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
+				filter.setCodDominio(listaDominiFiltro);
+			}
 			filter.setFilterSortList(listaRendicontazioniDTO.getFieldSortList());
 
 			long count = rendicontazioniBD.count(filter);
@@ -59,17 +76,20 @@ public class RendicontazioniDAO extends BaseDAO{
 		}
 	}
 
-	public LeggiRendicontazioneDTOResponse leggiRendicontazione(LeggiRendicontazioneDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException{
+	public LeggiRendicontazioneDTOResponse leggiRendicontazione(LeggiRendicontazioneDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		LeggiRendicontazioneDTOResponse response = new LeggiRendicontazioneDTOResponse();
 
-		FrBD rendicontazioniBD = new FrBD(bd);
+		
 		try {
-
+			this.autorizzaRichiesta(leggiRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
+			
+			FrBD rendicontazioniBD = new FrBD(bd);	
 			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
+			
+			// controllo che il dominio sia autorizzato
+			this.autorizzaRichiesta(leggiRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, flussoRendicontazione.getDominio(bd).getCodDominio(), null, bd);
 			populateRendicontazione(flussoRendicontazione, bd);
-			
-			
 			response.setFr(flussoRendicontazione);
 
 		} catch (NotFoundException e) {

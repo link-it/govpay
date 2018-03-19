@@ -10,6 +10,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -18,24 +19,41 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RiscossioneNonTrovataException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
+import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 
 public class RiscossioniDAO extends BaseDAO{
 
 	public RiscossioniDAO() {
 	}
 
-	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException{
+	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
+		List<String> listaDominiFiltro = null;
 		try {
+			this.autorizzaRichiesta(listaRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			
+			// Autorizzazione sui domini
+			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			if(listaDominiFiltro == null) {
+				throw new NotAuthorizedException("L'utenza autenticata ["+listaRiscossioniDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+			}
+			
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			PagamentoFilter filter = pagamentiBD.newFilter();
 
 			filter.setOffset(listaRiscossioniDTO.getOffset());
 			filter.setLimit(listaRiscossioniDTO.getLimit());
-			if(listaRiscossioniDTO.getIdDominio() != null)
-				filter.setIdDomini(Arrays.asList(listaRiscossioniDTO.getIdDominio()));
+			if(listaRiscossioniDTO.getIdDominio() != null) {
+				listaDominiFiltro.add(listaRiscossioniDTO.getIdDominio());
+			}
+			if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
+				filter.setIdDomini(listaDominiFiltro);
+			}
 
 			filter.setDataInizio(listaRiscossioniDTO.getDataRiscossioneDa());
 			filter.setDataFine(listaRiscossioniDTO.getDataRiscossioneA());
@@ -67,14 +85,20 @@ public class RiscossioniDAO extends BaseDAO{
 		}
 	}
 
-	public LeggiRiscossioneDTOResponse leggiRiscossione(LeggiRiscossioneDTO leggiRiscossioniDTO) throws ServiceException,RiscossioneNonTrovataException{
+	public LeggiRiscossioneDTOResponse leggiRiscossione(LeggiRiscossioneDTO leggiRiscossioniDTO) throws ServiceException,RiscossioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		LeggiRiscossioneDTOResponse response = new LeggiRiscossioneDTOResponse();
 
-		PagamentiBD pagamentiBD = new PagamentiBD(bd);
+		
 		try {
-
+			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			
+			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			Pagamento flussoPagamento = pagamentiBD.getPagamento(leggiRiscossioniDTO.getIdDominio(), leggiRiscossioniDTO.getIuv(), leggiRiscossioniDTO.getIur(), leggiRiscossioniDTO.getIndice());
+			
+			// controllo che il dominio sia autorizzato
+			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, flussoPagamento.getDominio(bd).getCodDominio(), null, bd);
+			
 			populatePagamento(flussoPagamento, bd);
 			response.setPagamento(flussoPagamento);
 

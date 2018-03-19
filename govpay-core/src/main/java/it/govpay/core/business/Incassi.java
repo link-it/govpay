@@ -34,11 +34,11 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -128,6 +128,7 @@ public class Incassi extends BasicBD {
 			Long idOperatore = null;
 			List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
 			diritti.add(Diritti.SCRITTURA);
+			
 			
 			// Verifica autorizzazione all'incasso e acquisizione applicazione chiamante
 			if(richiestaIncasso.getApplicazione() != null) {
@@ -367,17 +368,12 @@ public class Incassi extends BasicBD {
 
 	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthorizedException, ServiceException {
 		List<String> domini = null;
-		try {
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, listaIncassoDTO.getPrincipal());
-			List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
-			diritti.add(Diritti.LETTURA);
-			domini = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
-			if(domini != null && domini.size() == 0) {
-				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
-			}
-		} catch (NotFoundException e) {
+		List<Diritti> diritti = new ArrayList<Diritti>(); 
+		diritti.add(Diritti.LETTURA);
+		domini = AclEngine.getDominiAutorizzati((Utenza) listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
+		if(domini == null) {
 			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
-		} 
+		}
 		
 		IncassiBD incassiBD = new IncassiBD(this);
 		IncassoFilter newFilter = incassiBD.newFilter();
@@ -405,11 +401,10 @@ public class Incassi extends BasicBD {
 		try {
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
 			
-			List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+			List<Diritti> diritti = new ArrayList<Diritti>();
 			diritti.add(Diritti.LETTURA);
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, leggiIncassoDTO.getPrincipal());
-			List<String> domini = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
-			if(domini != null && !domini.contains(incasso.getCodDominio())) {
+			List<String> domini = AclEngine.getDominiAutorizzati((Utenza) leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
+			if(domini == null || (domini.size() > 0 && !domini.contains(incasso.getCodDominio()))) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per il dominio " + incasso.getCodDominio());
 			}
 			LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();

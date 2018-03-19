@@ -97,15 +97,54 @@ public class AclEngine {
 		boolean authorized = isAuthorized(user, servizio, listaDiritti); 
 		
 		if(authorized) {
-			if(codDominio != null && !user.getIdDominio().isEmpty())
-				authorized = authorized && user.getIdDominio().contains(codDominio);
-	
-			if(codTributo != null && !user.getIdTributo().isEmpty())
-				authorized = authorized && user.getIdTributo().contains(codTributo);
+			if(codDominio != null) {
+				List<String> dominiAutorizzati = getDominiAutorizzati((Utenza) user, servizio, listaDiritti);
+				
+				if(dominiAutorizzati == null) 
+					return false;
+				
+				if(!dominiAutorizzati.isEmpty())
+					authorized = authorized && dominiAutorizzati.contains(codDominio);
+			}
+			
+			if(codTributo != null) {
+				List<String> tributiAutorizzati = getTributiAutorizzati((Utenza) user, servizio, listaDiritti);
+				
+				if(tributiAutorizzati == null) 
+					return false;
+				
+				if(!tributiAutorizzati.isEmpty())
+					authorized = authorized && tributiAutorizzati.contains(codTributo);
+			}
 		}
 		
 		return authorized;
 	}
+	
+	public static List<Long> getIdDominiAutorizzati(Utenza utenza, Servizio servizio, Diritti diritto) {
+		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		listaDiritti.add(diritto);
+		return getIdDominiAutorizzati(utenza, servizio, listaDiritti);
+	}
+	
+	public static List<String> getDominiAutorizzati(Utenza utenza, Servizio servizio, Diritti diritto) {
+		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		listaDiritti.add(diritto);
+		return getDominiAutorizzati(utenza, servizio, listaDiritti);
+	}
+
+	public static List<String> getTributiAutorizzati(Utenza utenza, Servizio servizio, Diritti diritto) {
+		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		listaDiritti.add(diritto);
+		return getTributiAutorizzati(utenza, servizio, listaDiritti);
+	}
+
+	public static List<Long> getIdTributiAutorizzati(Utenza utenza, Servizio servizio, Diritti diritto) {
+		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		listaDiritti.add(diritto);
+		return getIdTributiAutorizzati(utenza, servizio, listaDiritti);
+	}
+	
 
 	public static List<Long> getIdDominiAutorizzati(Utenza utenza, Servizio servizio, List<Diritti> diritti) {
 		if(isAuthorized(utenza, servizio, diritti)) {
@@ -114,7 +153,7 @@ public class AclEngine {
 			return null;
 		}
 	}
-
+	
 	public static List<String> getDominiAutorizzati(Utenza utenza, Servizio servizio, List<Diritti> diritti) {
 		if(isAuthorized(utenza, servizio, diritti)) {
 			return utenza.getIdDominio();

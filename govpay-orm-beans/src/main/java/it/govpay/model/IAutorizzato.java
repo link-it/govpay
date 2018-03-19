@@ -2,6 +2,8 @@ package it.govpay.model;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 public interface IAutorizzato {
 	
 	public void setPrincipal(String principal);
@@ -18,5 +20,5 @@ public interface IAutorizzato {
 	public List<Acl> getAcls(); 
 //	public void setAcls(List<Acl> acls);
 
-	public void merge(IAutorizzato src); 
+	public void merge(IAutorizzato src) throws ServiceException; 
 }

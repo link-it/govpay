@@ -89,7 +89,7 @@ public class Incassi extends BaseRsServiceV1 {
 		
 		try{
 			baos = new ByteArrayOutputStream();
-			BaseRsService.copy(is, baos);
+			BaseRsService.copy(is, baos);	
 			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, baos);
 
@@ -97,7 +97,7 @@ public class Incassi extends BaseRsServiceV1 {
 			ctx =  GpThreadLocal.get();
 			
 			Incasso incasso = Incasso.parse(baos.toString());
-			RichiestaIncassoDTO richiestaIncassoDTO = incasso.toRichiestaIncassoDTO(null);
+			RichiestaIncassoDTO richiestaIncassoDTO = incasso.toRichiestaIncassoDTO(this.getUser());
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, getPrincipal());
 			richiestaIncassoDTO.setApplicazione(applicazione);
 			
@@ -162,12 +162,11 @@ public class Incassi extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(null);
+			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(this.getUser());
 			listaIncassoDTO.setInizio(inizio);
 			listaIncassoDTO.setFine(fine);
 			listaIncassoDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			listaIncassoDTO.setLimit(limit);
-			listaIncassoDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			ListaIncassiDTOResponse listaIncassiDTOResponse = incassi.listaIncassi(listaIncassoDTO);
@@ -216,10 +215,9 @@ public class Incassi extends BaseRsServiceV1 {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
-			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(null);
+			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(this.getUser());
 			leggiIncassoDTO.setIdDominio(idDominio);
 			leggiIncassoDTO.setIdIncasso(idIncasso);
-			leggiIncassoDTO.setPrincipal(getPrincipal());
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			LeggiIncassoDTOResponse leggiIncassoDTOResponse = incassi.leggiIncasso(leggiIncassoDTO);

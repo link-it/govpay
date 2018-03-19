@@ -131,7 +131,7 @@ public class RppController extends BaseController {
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRpt(leggiPagamentoPortaleDTO);
+			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 
 			if(accept.equalsIgnoreCase(MediaType.APPLICATION_OCTET_STREAM)) {
 				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
@@ -187,7 +187,7 @@ public class RppController extends BaseController {
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRpt(leggiPagamentoPortaleDTO);
+			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 
 			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(ricevutaDTOResponse.getRpt().getXmlRpt());
 			return Response.status(Status.OK).entity(rpt).build();
