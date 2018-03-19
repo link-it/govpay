@@ -44,6 +44,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.model.IAutorizzato;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Iuv.TipoIUV;
@@ -66,12 +67,12 @@ public class PagamentiAttesaDAO extends BasicBD {
 		
 		// AUTORIZZAZIONE
 		if(caricaVersamentoDTO.getApplicazione() != null && !caricaVersamentoDTO.getApplicazione().getCodApplicazione().equals(caricaVersamentoDTO.getVersamento().getApplicazione(this).getCodApplicazione())) {
-			throw new NotAuthorizedException("TODO"); //TODO
+			throw AclEngine.toNotAuthorizedException((IAutorizzato)caricaVersamentoDTO.getApplicazione().getUtenza(),Servizio.PAGAMENTI_E_PENDENZE, diritti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null); 
 		}
 		
 		if(caricaVersamentoDTO.getOperatore() != null && 
 				!AclEngine.isAuthorized(caricaVersamentoDTO.getOperatore().getUtenza(),Servizio.PAGAMENTI_E_PENDENZE, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
-			throw new NotAuthorizedException("TODO"); //TODO
+			throw AclEngine.toNotAuthorizedException((IAutorizzato)caricaVersamentoDTO.getOperatore().getUtenza(),Servizio.PAGAMENTI_E_PENDENZE, diritti, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null); 
 		}
 		
 		Versamento versamento = caricaVersamentoDTO.getVersamento();
