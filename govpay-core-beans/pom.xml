@@ -126,6 +126,11 @@
 									<wsdl>${basedir}/src/main/resources/wsdl/GpRnd_2.3.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/GpRnd_2.3.wsdl</wsdlLocation>
 								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/GpPrt_2.5.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/GpPrt_2.5.wsdl</wsdlLocation>
+								</wsdlOption>								
 							</wsdlOptions>
 						</configuration>
 						<goals>

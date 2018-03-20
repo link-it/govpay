@@ -249,7 +249,10 @@ public class RptUtils {
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
 		datiVersamento.setImportoTotaleDaVersare(versamento.getImportoTotale());
-		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(canale.getTipoVersamento().getCodifica()));
+		if(canale != null)
+			datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(canale.getTipoVersamento().getCodifica()));
+		else 
+			datiVersamento.setTipoVersamento(StTipoVersamento.BBT);
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
 		datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
 		datiVersamento.setFirmaRicevuta(rpt.getFirmaRichiesta().getCodifica());
@@ -308,9 +311,15 @@ public class RptUtils {
 		try {
 			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
-			inviaRPT.setIdentificativoCanale(rpt.getCanale(bd).getCodCanale());
-			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCanale(bd).getCodIntermediario());
-			inviaRPT.setIdentificativoPSP(rpt.getPsp(bd).getCodPsp());
+			if(rpt.getCanale(bd) != null) {
+				inviaRPT.setIdentificativoCanale(rpt.getCanale(bd).getCodCanale());
+				inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCanale(bd).getCodIntermediario());
+				inviaRPT.setIdentificativoPSP(rpt.getPsp(bd).getCodPsp());
+			} else {
+				inviaRPT.setIdentificativoCanale("AGID_01");
+				inviaRPT.setIdentificativoIntermediarioPSP("97735020584");
+				inviaRPT.setIdentificativoPSP("97735020584_02");
+			}
 			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
 			inviaRPT.setRpt(rpt.getXmlRpt());
 			
@@ -340,48 +349,51 @@ public class RptUtils {
 		}
 	}
 
-	public static it.govpay.core.business.model.Risposta inviaRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, BasicBD bd) throws GovPayException, ClientException, ServiceException {
-		if(rpts.size() == 1) {
-			return inviaRPT(rpts.get(0), bd);
-		} else {
-			bd.closeConnection();
-			Evento evento = new Evento();
-			it.govpay.core.business.model.Risposta risposta = null;
-			try {
-				NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
-				NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
+	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, BasicBD bd) throws GovPayException, ClientException, ServiceException {
+		bd.closeConnection();
+		Evento evento = new Evento();
+		it.govpay.core.business.model.Risposta risposta = null;
+		try {
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
+			NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
+			
+			if(rpts.get(0).getCanale(bd) != null) {
 				inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCanale(bd).getCodCanale());
 				inviaCarrelloRpt.setIdentificativoIntermediarioPSP(rpts.get(0).getCanale(bd).getCodIntermediario());
 				inviaCarrelloRpt.setIdentificativoPSP(rpts.get(0).getPsp(bd).getCodPsp());
-				inviaCarrelloRpt.setPassword(stazione.getPassword());
-				TipoListaRPT listaRpt = new TipoListaRPT();
-				for(Rpt rpt : rpts) {
-					TipoElementoListaRPT elementoListaRpt = new TipoElementoListaRPT();
-					elementoListaRpt.setCodiceContestoPagamento(rpt.getCcp());
-					elementoListaRpt.setIdentificativoDominio(rpt.getCodDominio());
-					elementoListaRpt.setIdentificativoUnivocoVersamento(rpt.getIuv());
-					elementoListaRpt.setRpt(rpt.getXmlRpt());
-					if(rpt.getFirmaRichiesta() == FirmaRichiesta.NESSUNA)
-						elementoListaRpt.setTipoFirma("");
-					else
-						elementoListaRpt.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
-					listaRpt.getElementoListaRPT().add(elementoListaRpt);
-				}
-				inviaCarrelloRpt.setListaRPT(listaRpt);
-				risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaCarrelloRPT(intermediario, stazione, inviaCarrelloRpt, rpts.get(0).getCodCarrello())); 
-				return risposta;
-			} finally {
-				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+			} else {
+				inviaCarrelloRpt.setIdentificativoCanale("AGID_01");
+				inviaCarrelloRpt.setIdentificativoIntermediarioPSP("97735020584");
+				inviaCarrelloRpt.setIdentificativoPSP("97735020584_02");
+			}
+			inviaCarrelloRpt.setPassword(stazione.getPassword());
+			TipoListaRPT listaRpt = new TipoListaRPT();
+			for(Rpt rpt : rpts) {
+				TipoElementoListaRPT elementoListaRpt = new TipoElementoListaRPT();
+				elementoListaRpt.setCodiceContestoPagamento(rpt.getCcp());
+				elementoListaRpt.setIdentificativoDominio(rpt.getCodDominio());
+				elementoListaRpt.setIdentificativoUnivocoVersamento(rpt.getIuv());
+				elementoListaRpt.setRpt(rpt.getXmlRpt());
+				if(rpt.getFirmaRichiesta() == FirmaRichiesta.NESSUNA)
+					elementoListaRpt.setTipoFirma("");
+				else
+					elementoListaRpt.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
+				listaRpt.getElementoListaRPT().add(elementoListaRpt);
+			}
+			inviaCarrelloRpt.setListaRPT(listaRpt);
+			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaCarrelloRPT(intermediario, stazione, inviaCarrelloRpt, rpts.get(0).getCodCarrello())); 
+			return risposta;
+		} finally {
+			bd.setupConnection(GpThreadLocal.get().getTransactionId());
 
-				GiornaleEventi giornale = new GiornaleEventi(bd);
-				for(Rpt rpt : rpts) {
-					buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaCarrelloRPT, bd);
-					giornale.registraEvento(evento);
-				}
+			GiornaleEventi giornale = new GiornaleEventi(bd);
+			for(Rpt rpt : rpts) {
+				buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaCarrelloRPT, bd);
+				giornale.registraEvento(evento);
 			}
 		}
 	}
-
+	
 	private static void buildEvento(Evento evento, Rpt rpt, Risposta risposta, TipoEvento tipoEvento, BasicBD bd) throws ServiceException {
 		evento.setAltriParametriRichiesta(null);
 		evento.setAltriParametriRisposta(null);

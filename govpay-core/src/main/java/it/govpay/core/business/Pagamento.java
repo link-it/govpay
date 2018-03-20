@@ -264,42 +264,46 @@ public class Pagamento extends BasicBD {
 
 				ctx.log("rpt.validazioneSemanticaOk", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 			}
-
-			it.govpay.bd.model.Psp psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
-
-			ctx.log("rpt.validazioneSemanticaPsp", psp.getCodPsp(), canale.getCodCanale());
-
-			if(isBollo && !psp.isBolloGestito()){
-				throw new GovPayException(EsitoOperazione.PAG_003);
+			
+			// Aggiornamento WISP2.0
+			it.govpay.bd.model.Psp psp = null;
+			if(canale != null) {
+				psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
+	
+				ctx.log("rpt.validazioneSemanticaPsp", psp.getCodPsp(), canale.getCodCanale());
+	
+				if(isBollo && !psp.isBolloGestito()){
+					throw new GovPayException(EsitoOperazione.PAG_003);
+				}
+	
+				// Verifico che il canale sia compatibile con la richiesta
+				if(!canale.isAbilitato())
+					throw new GovPayException(EsitoOperazione.PSP_001, psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().toString());
+	
+				if(versamenti.size() > 1 && !canale.getModelloPagamento().equals(ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO)) {
+					throw new GovPayException(EsitoOperazione.PAG_001);
+				}
+	
+				if(canale.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP)){
+					throw new GovPayException(EsitoOperazione.PAG_002);
+				}
+	
+				if(canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO) && ibanAddebito == null){
+					throw new GovPayException(EsitoOperazione.PAG_004);
+				} 
+	
+				// Se non sono in Addebito Diretto, ignoro l'iban di addebito
+				if(!canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO)) {
+					ibanAddebito = null;
+				}
+	
+				if(canale.getTipoVersamento().equals(TipoVersamento.MYBANK) && (versamenti.size() > 1 || versamenti.get(0).getSingoliVersamenti(this).size() > 1)){
+					throw new GovPayException(EsitoOperazione.PAG_005);
+				}
+	
+				ctx.log("rpt.validazioneSemanticaPspOk", psp.getCodPsp(), canale.getCodCanale());
 			}
-
-			// Verifico che il canale sia compatibile con la richiesta
-			if(!canale.isAbilitato())
-				throw new GovPayException(EsitoOperazione.PSP_001, psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().toString());
-
-			if(versamenti.size() > 1 && !canale.getModelloPagamento().equals(ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO)) {
-				throw new GovPayException(EsitoOperazione.PAG_001);
-			}
-
-			if(canale.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP)){
-				throw new GovPayException(EsitoOperazione.PAG_002);
-			}
-
-			if(canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO) && ibanAddebito == null){
-				throw new GovPayException(EsitoOperazione.PAG_004);
-			} 
-
-			// Se non sono in Addebito Diretto, ignoro l'iban di addebito
-			if(!canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO)) {
-				ibanAddebito = null;
-			}
-
-			if(canale.getTipoVersamento().equals(TipoVersamento.MYBANK) && (versamenti.size() > 1 || versamenti.get(0).getSingoliVersamenti(this).size() > 1)){
-				throw new GovPayException(EsitoOperazione.PAG_005);
-			}
-
-			ctx.log("rpt.validazioneSemanticaPspOk", psp.getCodPsp(), canale.getCodCanale());
-
+			
 			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
 
 			Iuv iuvBusiness = new Iuv(this);
@@ -370,20 +374,21 @@ public class Pagamento extends BasicBD {
 			try {
 
 				idTransaction = ctx.openTransaction();
-
-				if(ctx.getPagamentoCtx().getCodCarrello() != null) {
+				Risposta risposta = null;
+				if(ctx.getPagamentoCtx().getCodCarrello() != null || rpts.size() > 1) {
 					ctx.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
 					ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", ctx.getPagamentoCtx().getCodCarrello()));
 					ctx.log("rpt.invioCarrelloRpt");
+					risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, this);
 				} else {
 					ctx.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoInviaRPT);
 					ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", rpts.get(0).getCodDominio()));
 					ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rpts.get(0).getIuv()));
 					ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpts.get(0).getCcp()));
 					ctx.log("rpt.invioRpt");
+					risposta = RptUtils.inviaRPT(rpts.get(0), this);
 				}
 
-				Risposta risposta = RptUtils.inviaRPT(intermediario, stazione, rpts, this);
 
 				setupConnection(GpThreadLocal.get().getTransactionId());
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
