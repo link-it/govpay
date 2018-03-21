@@ -31,9 +31,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+//import javax.ws.rs.OPTIONS;
+//import javax.ws.rs.Path;
+//import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
@@ -83,16 +83,16 @@ public abstract class BaseRsService {
 		this.request = request;
 	}
 
-	@OPTIONS
-	@Path("{path : .*}")
-	public Response optionsAll(@PathParam("path") String path) {
-		return Response.status(Response.Status.NO_CONTENT)
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
-				.header("Access-Control-Allow-Credentials", "true")
-				.header("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST")
-				.build();
-	}
+//	@OPTIONS
+//	@Path("{path : .*}")
+//	public Response optionsAll(@PathParam("path") String path) {
+//		return Response.status(Response.Status.NO_CONTENT)
+//				.header("Access-Control-Allow-Origin", "*")
+//				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+//				.header("Access-Control-Allow-Credentials", "true")
+//				.header("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST")
+//				.build();
+//	}
 
 	protected String getPrincipal(){
 		if(this.request.getUserPrincipal()!=null){

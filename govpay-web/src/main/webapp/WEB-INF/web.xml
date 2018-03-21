@@ -51,8 +51,8 @@
 		<servlet-class>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
 		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
 	</servlet-mapping>
 	
 	<!-- PagamentiTelematiciGPPrt  -->
@@ -71,8 +71,8 @@
 		<servlet-class>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
 		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
 	</servlet-mapping>
 	
 	
@@ -90,6 +90,8 @@
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
 			<url-pattern>/rs/caricatore/*</url-pattern>
 			<url-pattern>/rs/v1/*</url-pattern>
+			<!-- TODO chiarire se e' il client che deve mandare le credenziali nella preflight request delle chiamate -->
+			<http-method-omission>OPTIONS</http-method-omission>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>*</role-name>

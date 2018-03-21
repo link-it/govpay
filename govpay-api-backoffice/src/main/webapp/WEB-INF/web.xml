@@ -20,6 +20,8 @@
 		<web-resource-collection>
 			<web-resource-name>Protetto</web-resource-name>
 			<url-pattern>/rs/v1/*</url-pattern>
+			<!-- TODO chiarire se e' il client che deve mandare le credenziali nella preflight request delle chiamate -->
+			<http-method-omission>OPTIONS</http-method-omission>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>*</role-name>
