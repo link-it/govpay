@@ -455,28 +455,32 @@ CREATE TABLE rpt
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url TEXT,
-	modello_pagamento VARCHAR(16) NOT NULL,
+	modello_pagamento VARCHAR(16),
 	cod_msg_ricevuta VARCHAR(35),
 	data_msg_ricevuta TIMESTAMP,
-	firma_ricevuta VARCHAR(1) NOT NULL,
 	-- Esito del pagamento:\n0: Eseguito\n1: Non eseguito\n2: Parzialmente eseguito\n3: Decorrenza\n4: Decorrenza Parziale
 	cod_esito_pagamento INT,
 	importo_totale_pagato DOUBLE PRECISION,
 	xml_rt BYTEA,
+	cod_canale VARCHAR(35),
+	cod_psp VARCHAR(35),
+	cod_intermediario_psp VARCHAR(35),
+	tipo_versamento VARCHAR(4),
+	tipo_identificativo_attestante VARCHAR(1),
+	identificativo_attestante VARCHAR(35),
+	denominazione_attestante VARCHAR(70),
 	cod_stazione VARCHAR(35) NOT NULL,
 	cod_transazione_rpt VARCHAR(36),
 	cod_transazione_rt VARCHAR(36),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_rpt') NOT NULL,
 	id_versamento BIGINT NOT NULL,
-	id_canale BIGINT NOT NULL,
 	id_portale BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
 	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );

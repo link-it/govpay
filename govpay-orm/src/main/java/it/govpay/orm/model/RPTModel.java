@@ -42,7 +42,6 @@ public class RPTModel extends AbstractModel<RPT> {
 		super();
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"RPT",RPT.class));
-		this.ID_CANALE = new it.govpay.orm.model.IdCanaleModel(new Field("idCanale",it.govpay.orm.IdCanale.class,"RPT",RPT.class));
 		this.ID_PORTALE = new it.govpay.orm.model.IdPortaleModel(new Field("idPortale",it.govpay.orm.IdPortale.class,"RPT",RPT.class));
 		this.COD_CARRELLO = new Field("codCarrello",java.lang.String.class,"RPT",RPT.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"RPT",RPT.class);
@@ -61,10 +60,16 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.MODELLO_PAGAMENTO = new Field("modelloPagamento",java.lang.String.class,"RPT",RPT.class);
 		this.COD_MSG_RICEVUTA = new Field("codMsgRicevuta",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_MSG_RICEVUTA = new Field("dataMsgRicevuta",java.util.Date.class,"RPT",RPT.class);
-		this.FIRMA_RICEVUTA = new Field("firmaRicevuta",java.lang.String.class,"RPT",RPT.class);
 		this.COD_ESITO_PAGAMENTO = new Field("codEsitoPagamento",java.lang.Integer.class,"RPT",RPT.class);
 		this.IMPORTO_TOTALE_PAGATO = new Field("importoTotalePagato",java.lang.Double.class,"RPT",RPT.class);
 		this.XML_RT = new Field("xmlRT",byte[].class,"RPT",RPT.class);
+		this.COD_CANALE = new Field("codCanale",java.lang.String.class,"RPT",RPT.class);
+		this.COD_PSP = new Field("codPsp",java.lang.String.class,"RPT",RPT.class);
+		this.COD_INTERMEDIARIO_PSP = new Field("codIntermediarioPsp",java.lang.String.class,"RPT",RPT.class);
+		this.TIPO_VERSAMENTO = new Field("tipoVersamento",java.lang.String.class,"RPT",RPT.class);
+		this.TIPO_IDENTIFICATIVO_ATTESTANTE = new Field("tipoIdentificativoAttestante",java.lang.String.class,"RPT",RPT.class);
+		this.IDENTIFICATIVO_ATTESTANTE = new Field("identificativoAttestante",java.lang.String.class,"RPT",RPT.class);
+		this.DENOMINAZIONE_ATTESTANTE = new Field("denominazioneAttestante",java.lang.String.class,"RPT",RPT.class);
 		this.COD_STAZIONE = new Field("codStazione",java.lang.String.class,"RPT",RPT.class);
 		this.COD_TRANSAZIONE_RPT = new Field("codTransazioneRPT",java.lang.String.class,"RPT",RPT.class);
 		this.COD_TRANSAZIONE_RT = new Field("codTransazioneRT",java.lang.String.class,"RPT",RPT.class);
@@ -79,7 +84,6 @@ public class RPTModel extends AbstractModel<RPT> {
 		super(father);
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"RPT",RPT.class));
-		this.ID_CANALE = new it.govpay.orm.model.IdCanaleModel(new ComplexField(father,"idCanale",it.govpay.orm.IdCanale.class,"RPT",RPT.class));
 		this.ID_PORTALE = new it.govpay.orm.model.IdPortaleModel(new ComplexField(father,"idPortale",it.govpay.orm.IdPortale.class,"RPT",RPT.class));
 		this.COD_CARRELLO = new ComplexField(father,"codCarrello",java.lang.String.class,"RPT",RPT.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"RPT",RPT.class);
@@ -98,10 +102,16 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.MODELLO_PAGAMENTO = new ComplexField(father,"modelloPagamento",java.lang.String.class,"RPT",RPT.class);
 		this.COD_MSG_RICEVUTA = new ComplexField(father,"codMsgRicevuta",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_MSG_RICEVUTA = new ComplexField(father,"dataMsgRicevuta",java.util.Date.class,"RPT",RPT.class);
-		this.FIRMA_RICEVUTA = new ComplexField(father,"firmaRicevuta",java.lang.String.class,"RPT",RPT.class);
 		this.COD_ESITO_PAGAMENTO = new ComplexField(father,"codEsitoPagamento",java.lang.Integer.class,"RPT",RPT.class);
 		this.IMPORTO_TOTALE_PAGATO = new ComplexField(father,"importoTotalePagato",java.lang.Double.class,"RPT",RPT.class);
 		this.XML_RT = new ComplexField(father,"xmlRT",byte[].class,"RPT",RPT.class);
+		this.COD_CANALE = new ComplexField(father,"codCanale",java.lang.String.class,"RPT",RPT.class);
+		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"RPT",RPT.class);
+		this.COD_INTERMEDIARIO_PSP = new ComplexField(father,"codIntermediarioPsp",java.lang.String.class,"RPT",RPT.class);
+		this.TIPO_VERSAMENTO = new ComplexField(father,"tipoVersamento",java.lang.String.class,"RPT",RPT.class);
+		this.TIPO_IDENTIFICATIVO_ATTESTANTE = new ComplexField(father,"tipoIdentificativoAttestante",java.lang.String.class,"RPT",RPT.class);
+		this.IDENTIFICATIVO_ATTESTANTE = new ComplexField(father,"identificativoAttestante",java.lang.String.class,"RPT",RPT.class);
+		this.DENOMINAZIONE_ATTESTANTE = new ComplexField(father,"denominazioneAttestante",java.lang.String.class,"RPT",RPT.class);
 		this.COD_STAZIONE = new ComplexField(father,"codStazione",java.lang.String.class,"RPT",RPT.class);
 		this.COD_TRANSAZIONE_RPT = new ComplexField(father,"codTransazioneRPT",java.lang.String.class,"RPT",RPT.class);
 		this.COD_TRANSAZIONE_RT = new ComplexField(father,"codTransazioneRT",java.lang.String.class,"RPT",RPT.class);
@@ -114,8 +124,6 @@ public class RPTModel extends AbstractModel<RPT> {
 	
 
 	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
-	 
-	public it.govpay.orm.model.IdCanaleModel ID_CANALE = null;
 	 
 	public it.govpay.orm.model.IdPortaleModel ID_PORTALE = null;
 	 
@@ -153,13 +161,25 @@ public class RPTModel extends AbstractModel<RPT> {
 	 
 	public IField DATA_MSG_RICEVUTA = null;
 	 
-	public IField FIRMA_RICEVUTA = null;
-	 
 	public IField COD_ESITO_PAGAMENTO = null;
 	 
 	public IField IMPORTO_TOTALE_PAGATO = null;
 	 
 	public IField XML_RT = null;
+	 
+	public IField COD_CANALE = null;
+	 
+	public IField COD_PSP = null;
+	 
+	public IField COD_INTERMEDIARIO_PSP = null;
+	 
+	public IField TIPO_VERSAMENTO = null;
+	 
+	public IField TIPO_IDENTIFICATIVO_ATTESTANTE = null;
+	 
+	public IField IDENTIFICATIVO_ATTESTANTE = null;
+	 
+	public IField DENOMINAZIONE_ATTESTANTE = null;
 	 
 	public IField COD_STAZIONE = null;
 	 

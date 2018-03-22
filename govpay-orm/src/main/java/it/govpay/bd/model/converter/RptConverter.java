@@ -19,21 +19,19 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Rpt;
-import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Rpt.EsitoPagamento;
-import it.govpay.model.Rpt.FirmaRichiesta;
-import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Rpt.TipoIdentificativoAttestante;
-import it.govpay.orm.IdCanale;
-import it.govpay.orm.IdPortale;
-import it.govpay.orm.IdVersamento;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.bd.model.Rpt;
+import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Rpt.TipoIdentificativoAttestante;
+import it.govpay.orm.IdPortale;
+import it.govpay.orm.IdVersamento;
 
 public class RptConverter {
 
@@ -86,13 +84,13 @@ public class RptConverter {
 		
 		dto.setDescrizioneStatoConservazione(vo.getDescrizioneStatoCons());
 
-//		dto.setCodCanale(vo.getCodCanale());
-//		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
-//		dto.setCodPsp(vo.getCodPsp());
-//		if(vo.getTipoIdentificativoAttestante())
-//			dto.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(vo.getTipoIdentificativoAttestante()));
-//		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
-//		dto.setDenominazioneAttestante(vo.getDenominazioneAttestante());
+		dto.setCodCanale(vo.getCodCanale());
+		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
+		dto.setCodPsp(vo.getCodPsp());
+		if(vo.getTipoIdentificativoAttestante() != null)
+			dto.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(vo.getTipoIdentificativoAttestante()));
+		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
+		dto.setDenominazioneAttestante(vo.getDenominazioneAttestante());
 		return dto;
 	}
 
@@ -140,13 +138,13 @@ public class RptConverter {
 		
 		vo.setDescrizioneStatoCons(dto.getDescrizioneStatoConservazione());
 
-//		vo.setCodCanale(vo.getCodCanale());
-//		vo.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
-//		vo.setCodPsp(vo.getCodPsp());
-//		if(dto.getTipoIdentificativoAttestante() != null)
-//			vo.setTipoIdentificativoAttestante(dto.getTipoIdentificativoAttestante().name());
-//		vo.setIdentificativoAttestante(dto.getIdentificativoAttestante());
-//		vo.setDenominazioneAttestante(dto.getDenominazioneAttestante())
+		vo.setCodCanale(dto.getCodCanale());
+		vo.setCodIntermediarioPsp(dto.getCodIntermediarioPsp());
+		vo.setCodPsp(dto.getCodPsp());
+		if(dto.getTipoIdentificativoAttestante() != null)
+			vo.setTipoIdentificativoAttestante(dto.getTipoIdentificativoAttestante().name());
+		vo.setIdentificativoAttestante(dto.getIdentificativoAttestante());
+		vo.setDenominazioneAttestante(dto.getDenominazioneAttestante());
 		
 		return vo;
 	}

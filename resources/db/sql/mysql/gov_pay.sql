@@ -458,16 +458,22 @@ CREATE TABLE rpt
 	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url LONGTEXT,
-	modello_pagamento VARCHAR(16) NOT NULL,
+	modello_pagamento VARCHAR(16),
 	cod_msg_ricevuta VARCHAR(35),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_msg_ricevuta TIMESTAMP(3),
-	firma_ricevuta VARCHAR(1) NOT NULL,
 	-- Esito del pagamento:\n0: Eseguito\n1: Non eseguito\n2: Parzialmente eseguito\n3: Decorrenza\n4: Decorrenza Parziale
 	cod_esito_pagamento INT,
 	importo_totale_pagato DOUBLE,
 	xml_rt MEDIUMBLOB,
+	cod_canale VARCHAR(35),
+	cod_psp VARCHAR(35),
+	cod_intermediario_psp VARCHAR(35),
+	tipo_versamento VARCHAR(4),
+	tipo_identificativo_attestante VARCHAR(1),
+	identificativo_attestante VARCHAR(35),
+	denominazione_attestante VARCHAR(70),
 	cod_stazione VARCHAR(35) NOT NULL,
 	cod_transazione_rpt VARCHAR(36),
 	cod_transazione_rt VARCHAR(36),
@@ -478,14 +484,12 @@ CREATE TABLE rpt
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,
-	id_canale BIGINT NOT NULL,
 	id_portale BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
 	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;

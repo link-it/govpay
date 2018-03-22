@@ -87,23 +87,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
-		// Object _canale
-		Long id_canale = null;
-		it.govpay.orm.IdCanale idLogic_canale = null;
-		idLogic_canale = rpt.getIdCanale();
-		if(idLogic_canale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_canale = ((JDBCCanaleServiceSearch)(this.getServiceManager().getCanaleServiceSearch())).findTableId(idLogic_canale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_canale = idLogic_canale.getId();
-				if(id_canale==null || id_canale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 		// Object _portale
 		Long id_portale = null;
 		it.govpay.orm.IdPortale idLogic_portale = null;
@@ -141,10 +124,16 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().MODELLO_PAGAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_MSG_RICEVUTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_MSG_RICEVUTA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().FIRMA_RICEVUTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_ESITO_PAGAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().IMPORTO_TOTALE_PAGATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_CANALE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_PSP,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_INTERMEDIARIO_PSP,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().TIPO_VERSAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().IDENTIFICATIVO_ATTESTANTE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DENOMINAZIONE_ATTESTANTE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_STAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_TRANSAZIONE_RPT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_TRANSAZIONE_RT,false),"?");
@@ -152,7 +141,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DESCRIZIONE_STATO_CONS,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_CONSERVAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
-		sqlQueryObjectInsert.addInsertField("id_canale","?");
 		sqlQueryObjectInsert.addInsertField("id_portale","?");
 
 		// Insert rpt
@@ -175,10 +163,16 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getModelloPagamento(),RPT.model().MODELLO_PAGAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodMsgRicevuta(),RPT.model().COD_MSG_RICEVUTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataMsgRicevuta(),RPT.model().DATA_MSG_RICEVUTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getFirmaRicevuta(),RPT.model().FIRMA_RICEVUTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodEsitoPagamento(),RPT.model().COD_ESITO_PAGAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getImportoTotalePagato(),RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getXmlRT(),RPT.model().XML_RT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodCanale(),RPT.model().COD_CANALE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodPsp(),RPT.model().COD_PSP.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodIntermediarioPsp(),RPT.model().COD_INTERMEDIARIO_PSP.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getTipoVersamento(),RPT.model().TIPO_VERSAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getTipoIdentificativoAttestante(),RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getIdentificativoAttestante(),RPT.model().IDENTIFICATIVO_ATTESTANTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDenominazioneAttestante(),RPT.model().DENOMINAZIONE_ATTESTANTE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodStazione(),RPT.model().COD_STAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodTransazioneRPT(),RPT.model().COD_TRANSAZIONE_RPT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodTransazioneRT(),RPT.model().COD_TRANSAZIONE_RT.getFieldType()),
@@ -186,7 +180,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDescrizioneStatoCons(),RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataConservazione(),RPT.model().DATA_CONSERVAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_canale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class)
 		);
 		rpt.setId(id);
@@ -252,23 +245,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
-		// Object _rpt_canale
-		Long id_rpt_canale = null;
-		it.govpay.orm.IdCanale idLogic_rpt_canale = null;
-		idLogic_rpt_canale = rpt.getIdCanale();
-		if(idLogic_rpt_canale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_canale = ((JDBCCanaleServiceSearch)(this.getServiceManager().getCanaleServiceSearch())).findTableId(idLogic_rpt_canale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_canale = idLogic_rpt_canale.getId();
-				if(id_rpt_canale==null || id_rpt_canale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 		// Object _rpt_portale
 		Long id_rpt_portale = null;
 		it.govpay.orm.IdPortale idLogic_rpt_portale = null;
@@ -326,14 +302,26 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodMsgRicevuta(), RPT.model().COD_MSG_RICEVUTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_MSG_RICEVUTA,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getDataMsgRicevuta(), RPT.model().DATA_MSG_RICEVUTA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().FIRMA_RICEVUTA,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getFirmaRicevuta(), RPT.model().FIRMA_RICEVUTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_ESITO_PAGAMENTO,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodEsitoPagamento(), RPT.model().COD_ESITO_PAGAMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().IMPORTO_TOTALE_PAGATO,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getImportoTotalePagato(), RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RT,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getXmlRT(), RPT.model().XML_RT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_CANALE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodCanale(), RPT.model().COD_CANALE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_PSP,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodPsp(), RPT.model().COD_PSP.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_INTERMEDIARIO_PSP,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodIntermediarioPsp(), RPT.model().COD_INTERMEDIARIO_PSP.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().TIPO_VERSAMENTO,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getTipoVersamento(), RPT.model().TIPO_VERSAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getTipoIdentificativoAttestante(), RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().IDENTIFICATIVO_ATTESTANTE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getIdentificativoAttestante(), RPT.model().IDENTIFICATIVO_ATTESTANTE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DENOMINAZIONE_ATTESTANTE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getDenominazioneAttestante(), RPT.model().DENOMINAZIONE_ATTESTANTE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_STAZIONE,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodStazione(), RPT.model().COD_STAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_TRANSAZIONE_RPT,false), "?");
@@ -350,16 +338,10 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_canale","?");
-		}
-		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_portale","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_versamento, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_rpt.add(new JDBCObject(id_rpt_canale, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_portale, Long.class));
