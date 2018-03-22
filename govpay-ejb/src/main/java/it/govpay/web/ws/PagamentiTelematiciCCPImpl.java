@@ -24,8 +24,6 @@ import java.util.Date;
 import java.util.List;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
-import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
-import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.digitpa.schemas._2011.ws.psp.CtSpezzoniCausaleVersamento;
 import it.gov.digitpa.schemas._2011.ws.psp.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.psp.EsitoAttivaRPT;
@@ -38,8 +36,6 @@ import it.gov.digitpa.schemas._2011.ws.psp.PaaVerificaRPTRisposta;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematiciccp.PagamentiTelematiciCCP;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Anagrafica;
-import it.govpay.bd.model.Canale;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Evento;
@@ -49,10 +45,7 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.model.Rpt.FirmaRichiesta;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
@@ -73,6 +66,7 @@ import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
@@ -176,9 +170,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
 
-			Stazione stazione = null;
 			try {
-				stazione = AnagraficaManager.getStazione(bd, codStazione);
+				AnagraficaManager.getStazione(bd, codStazione);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
@@ -228,7 +221,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
 							else {
 								Pagamento pagamento = pagamenti.get(0);
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getDenominazioneAttestante() + " Iur:" + pagamento.getIur() + "]");
 							}
 						}
 					}
@@ -271,29 +264,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 
 			// Identificazione del Psp e del canale
-			Psp psp;
-			try {
-				psp = AnagraficaManager.getPsp(bd, bodyrichiesta.getIdentificativoPSP());
-			} catch (NotFoundException e) {
-				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Psp [Psp:" + bodyrichiesta.getIdentificativoPSP() + "] non censito in anagrafica.");
-			}
 
-			Canale canale = null;
-			try {
-				canale = AnagraficaManager.getCanale(bd, bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), TipoVersamento.ATTIVATO_PRESSO_PSP);
-				evento.setCodCanale(canale.getCodCanale());
-			}catch (NotFoundException e) {
-				throw new NdpException (FaultPa.PAA_SYSTEM_ERROR, codDominio, "Canale [Psp:" + bodyrichiesta.getIdentificativoPSP() + " Canale:"+bodyrichiesta.getIdentificativoCanalePSP()+"] non censito in anagrafica.");
-			}
+			evento.setCodPsp(bodyrichiesta.getIdentificativoPSP());
+			evento.setCodCanale(bodyrichiesta.getIdentificativoCanalePSP());
+			evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 
 			// Creazione dell'RPT
-			Anagrafica versante = toOrm(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante());
-			Rpt rpt = RptUtils.buildRpt(intermediario, stazione, null, versamento, iuvModel, ccp, null, psp, canale, versante, StAutenticazioneSoggetto.N_A.value(), null, null, bd);
+			Rpt rpt = new RptBuilder().buildRptAttivata(bodyrichiesta.getIdentificativoIntermediarioPSP(), bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), versamento, iuv, ccp, bodyrichiesta.getDatiPagamentoPSP(), bd);
 
 			ctx.log("ccp.attivazione", rpt.getCodMsgRichiesta());
-
-			// Da specifica, le RPT ad iniziativa PSP non possono richiedere firma
-			rpt.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 
 			RptBD rptBD = new RptBD(bd);
 
@@ -615,21 +594,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		return response;
 	}
 
-
-	private Anagrafica toOrm(CtSoggettoVersante soggettoVersante) {
-		if(soggettoVersante == null) return null;
-		Anagrafica anagrafica = new Anagrafica();
-		anagrafica.setCap(soggettoVersante.getCapVersante());
-		anagrafica.setCivico(soggettoVersante.getCivicoVersante());
-		anagrafica.setCodUnivoco(soggettoVersante.getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
-		anagrafica.setEmail(soggettoVersante.getEMailVersante());
-		anagrafica.setIndirizzo(soggettoVersante.getIndirizzoVersante());
-		anagrafica.setLocalita(soggettoVersante.getLocalitaVersante());
-		anagrafica.setNazione(soggettoVersante.getNazioneVersante());
-		anagrafica.setProvincia(soggettoVersante.getProvinciaVersante());
-		anagrafica.setRagioneSociale(soggettoVersante.getAnagraficaVersante());
-		return anagrafica;
-	}
 
 	private <T> T buildRisposta(Exception e, String codDominio, T risposta) {
 		return buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), risposta);

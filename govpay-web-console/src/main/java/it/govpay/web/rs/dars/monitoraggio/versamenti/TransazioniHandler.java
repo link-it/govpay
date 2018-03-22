@@ -400,13 +400,11 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 				if(rpt.getDataAggiornamento() != null)
 					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataAggiornamento.label"),this.sdf.format(rpt.getDataAggiornamento()));
 
-				Psp psp = rpt.getPsp(bd);
-				if(psp != null)
-					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
+				if(rpt.getCodPsp() != null)
+					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),rpt.getCodPsp());
 
-				Canale canale = rpt.getCanale(bd);
-				if(canale != null)
-					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".canale.label"),canale.getCodCanale());
+				if(rpt.getCodCanale() != null)
+					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".canale.label"),rpt.getCodCanale());
 
 
 				//			Intermediario intermediario = rpt.getIntermediario(bd);
@@ -449,36 +447,13 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
 				}
 
-				if(canale != null) {
-					TipoVersamento tipoVersamento = canale.getTipoVersamento();
+				if(rpt.getTipoVersamento() != null) {
+					TipoVersamento tipoVersamento = rpt.getTipoVersamento();
 					if(tipoVersamento != null) {
 						Canali canaliDars = new Canali();
 						sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"),
 								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(canaliDars.getNomeServizio() + ".tipoVersamento."+tipoVersamento.name()));
 					}
-				}
-
-				FirmaRichiesta firmaRichiesta = rpt.getFirmaRichiesta();
-				if(firmaRichiesta != null){
-					String firmaRichiestaAsString = null;
-
-					switch (firmaRichiesta) {
-					case AVANZATA:
-						firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata");
-						break;
-					case CA_DES: 
-						firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.ca_des");
-						break;
-					case XA_DES :
-						firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.xa_des");
-						break;
-					case NESSUNA: 
-					default:
-						firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna");
-						break;
-					}
-
-					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label"),firmaRichiestaAsString);
 				}
 
 				if(StringUtils.isNotEmpty(rpt.getCodCarrello()))
@@ -687,15 +662,9 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),entry.getCcp()));
 		}
 
-		Psp psp = null;
-		try {
-			psp = entry.getPsp(bd);
-			if(psp != null)
-				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.id"),
-						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp()));
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
-		}
+		if(entry.getCodPsp() != null)
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),entry.getCodPsp()));
 
 		if(StringUtils.isNotEmpty(entry.getCodDominio())){
 			try{

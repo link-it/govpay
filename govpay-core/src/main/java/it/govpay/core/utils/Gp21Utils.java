@@ -63,9 +63,9 @@ public class Gp21Utils {
 	public static Transazione toTransazione(Versione versione, Rpt rpt, BasicBD bd) throws ServiceException {
 		Transazione t = new Transazione();
 		Canale canale = new Canale();
-		canale.setCodCanale(rpt.getCanale(bd).getCodCanale());
-		canale.setCodPsp(rpt.getPsp(bd).getCodPsp());
-		canale.setTipoVersamento(TipoVersamento.valueOf(rpt.getCanale(bd).getTipoVersamento().getCodifica()));
+		canale.setCodCanale(rpt.getCodCanale());
+		canale.setCodPsp(rpt.getCodPsp());
+		canale.setTipoVersamento(TipoVersamento.valueOf(rpt.getTipoVersamento().getCodifica()));
 		t.setCanale(canale);
 		t.setCcp(rpt.getCcp());
 		t.setCodDominio(rpt.getCodDominio());

@@ -1024,9 +1024,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 							if(esportaRtPdf){
 								Versamento versamento = rpt.getVersamento(bd);
 								// RT in formato pdf
-								String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-								byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
-								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+								CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
 								ByteArrayOutputStream baos = new ByteArrayOutputStream();
 								String auxDigit = dominio.getAuxDigit() + "";
 								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
@@ -1251,9 +1249,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 							if(esportaRtPdf){
 								Versamento versamento = rpt.getVersamento(bd);
 								// RT in formato pdf
-								String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-								byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
-								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+								CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
 								ByteArrayOutputStream baos = new ByteArrayOutputStream();
 								String auxDigit = dominio.getAuxDigit() + "";
 								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());

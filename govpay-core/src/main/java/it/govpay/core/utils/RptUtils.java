@@ -19,69 +19,10 @@
  */
 package it.govpay.core.utils;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiMarcaBolloDigitale;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloVersamentoRPT;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRPT;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDominio;
-import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
-import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaFG;
-import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
-import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
-import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
-import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
-import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
-import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
-import it.gov.digitpa.schemas._2011.pagamenti.StTipoVersamento;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRT;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRTRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPT;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPT;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRPT;
-import it.gov.digitpa.schemas._2011.ws.paa.TipoElementoListaRPT;
-import it.gov.digitpa.schemas._2011.ws.paa.TipoListaRPT;
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.pagamento.RptBD;
-import it.govpay.bd.pagamento.util.IuvUtils;
-import it.govpay.core.business.GiornaleEventi;
-import it.govpay.core.business.model.Risposta;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.thread.InviaRptThread;
-import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.model.Anagrafica;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Dominio;
-import it.govpay.model.Evento;
-import it.govpay.model.IbanAccredito;
-import it.govpay.model.Intermediario;
-import it.govpay.model.Iuv;
-import it.govpay.model.Portale;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.Versamento;
-import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Evento.TipoEvento;
-import it.govpay.model.Rpt.FirmaRichiesta;
-import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.SingoloVersamento.TipoBollo;
-import it.govpay.servizi.commons.EsitoOperazione;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -92,109 +33,46 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.Property;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
+import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
+import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRT;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRTRisposta;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPT;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPT;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRPT;
+import it.gov.digitpa.schemas._2011.ws.paa.TipoElementoListaRPT;
+import it.gov.digitpa.schemas._2011.ws.paa.TipoListaRPT;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.pagamento.RptBD;
+import it.govpay.core.business.GiornaleEventi;
+import it.govpay.core.business.model.Risposta;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NodoClient;
+import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.core.utils.thread.InviaRptThread;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Evento;
+import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.TipoEvento;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.servizi.commons.EsitoOperazione;
+
 public class RptUtils {
 
 	private static Logger log = LogManager.getLogger();
 
 	public static String buildUUID35() {
 		return UUID.randomUUID().toString().replace("-", "");
-	}
-
-	public static Rpt buildRpt(
-			Intermediario intermediario, Stazione stazione, String codCarrello, 
-			Versamento versamento, Iuv iuv, String ccp, Portale portale, Psp psp, 
-			Canale canale, Anagrafica versante, String autenticazione, 
-			String ibanAddebito, String redirect, BasicBD bd) throws ServiceException {
-
-		Rpt rpt = new Rpt();
-		rpt.setCallbackURL(redirect);
-		rpt.setCcp(ccp);
-		rpt.setCodCarrello(codCarrello);
-		rpt.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
-		rpt.setCodMsgRichiesta(buildUUID35());
-		rpt.setCodSessione(null);
-		rpt.setCodStazione(stazione.getCodStazione());
-		rpt.setDataAggiornamento(new Date());
-		rpt.setDataMsgRichiesta(new Date());
-		rpt.setDescrizioneStato(null);
-		rpt.setFirmaRichiesta(versamento.getApplicazione(bd).getFirmaRichiesta());
-		rpt.setId(null);
-		rpt.setIdCanale(canale.getId());
-		if(portale != null)
-			rpt.setIdPortale(portale.getId());
-		rpt.setIdVersamento(versamento.getId());
-		rpt.setIuv(iuv.getIuv());
-		rpt.setModelloPagamento(canale.getModelloPagamento());
-		rpt.setPspRedirectURL(null);
-		rpt.setStato(StatoRpt.RPT_ATTIVATA);
-		rpt.setIdTransazioneRpt(GpThreadLocal.get().getTransactionId());
-		rpt.setVersamento(versamento);
-		rpt.setCanale(canale);
-		rpt.setPsp(psp);
-
-		CtRichiestaPagamentoTelematico richiestaRPT = buildRPT(rpt, versamento, portale, versante, canale, autenticazione, ibanAddebito, bd);
-		byte[] rptXml;
-		try {
-			rptXml = JaxbUtils.toByte(richiestaRPT);
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-		rpt.setXmlRpt(rptXml);
-		return rpt;
-	}
-
-	private static CtRichiestaPagamentoTelematico buildRPT(Rpt rpt, Versamento versamento, Portale portale, Anagrafica versante, Canale canale, String autenticazione, String ibanAddebito, BasicBD bd) throws ServiceException {
-		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
-		ctRpt.setVersioneOggetto(Rpt.VERSIONE);
-		CtDominio ctDominio = new CtDominio();
-		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
-		ctDominio.setIdentificativoStazioneRichiedente(versamento.getApplicazione(bd).getCodApplicazione());
-		ctRpt.setDominio(ctDominio);
-		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
-		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
-		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.fromValue(autenticazione.toString()));
-		ctRpt.setSoggettoVersante(buildSoggettoVersante(versante));
-		ctRpt.setSoggettoPagatore(buildSoggettoPagatore(versamento.getAnagraficaDebitore()));
-		ctRpt.setEnteBeneficiario(buildEnteBeneficiario(versamento.getUo(bd).getDominio(bd), versamento.getUo(bd), bd));
-		ctRpt.setDatiVersamento(buildDatiVersamento(rpt, versamento, canale, ibanAddebito, bd));
-		return ctRpt;
-	}
-
-	private static CtSoggettoVersante buildSoggettoVersante(Anagrafica versante) {
-		if(versante == null) return null;
-		CtSoggettoVersante soggettoVersante = new CtSoggettoVersante();
-		CtIdentificativoUnivocoPersonaFG idUnivocoVersante = new CtIdentificativoUnivocoPersonaFG();
-		String cFiscale = versante.getCodUnivoco();
-		idUnivocoVersante.setCodiceIdentificativoUnivoco(cFiscale);
-		idUnivocoVersante.setTipoIdentificativoUnivoco((cFiscale.length() == 16) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G);
-		soggettoVersante.setAnagraficaVersante(getNotEmpty(versante.getRagioneSociale()));
-		soggettoVersante.setCapVersante(getNotEmpty(versante.getCap()));
-		soggettoVersante.setCivicoVersante(getNotEmpty(versante.getCivico()));
-		soggettoVersante.setEMailVersante(getNotEmpty(versante.getEmail()));
-		soggettoVersante.setIdentificativoUnivocoVersante(idUnivocoVersante);
-		soggettoVersante.setIndirizzoVersante(getNotEmpty(versante.getIndirizzo()));
-		soggettoVersante.setLocalitaVersante(getNotEmpty(versante.getLocalita()));
-		soggettoVersante.setNazioneVersante(getNotEmpty(versante.getNazione()));
-		soggettoVersante.setProvinciaVersante(getNotEmpty(versante.getProvincia()));
-		return soggettoVersante;
-	}
-
-	private static CtSoggettoPagatore buildSoggettoPagatore(Anagrafica debitore) {
-		CtSoggettoPagatore soggettoDebitore = new CtSoggettoPagatore();
-		CtIdentificativoUnivocoPersonaFG idUnivocoDebitore = new CtIdentificativoUnivocoPersonaFG();
-		String cFiscale = debitore.getCodUnivoco();
-		idUnivocoDebitore.setCodiceIdentificativoUnivoco(cFiscale);
-		idUnivocoDebitore.setTipoIdentificativoUnivoco((cFiscale.length() == 16) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G);
-		soggettoDebitore.setAnagraficaPagatore(debitore.getRagioneSociale());
-		soggettoDebitore.setCapPagatore(getNotEmpty(debitore.getCap()));
-		soggettoDebitore.setCivicoPagatore(getNotEmpty(debitore.getCivico()));
-		soggettoDebitore.setEMailPagatore(getNotEmpty(debitore.getEmail()));
-		soggettoDebitore.setIdentificativoUnivocoPagatore(idUnivocoDebitore);
-		soggettoDebitore.setIndirizzoPagatore(getNotEmpty(debitore.getIndirizzo()));
-		soggettoDebitore.setLocalitaPagatore(getNotEmpty(debitore.getLocalita()));
-		soggettoDebitore.setNazionePagatore(getNotEmpty(debitore.getNazione()));
-		soggettoDebitore.setProvinciaPagatore(getNotEmpty(debitore.getProvincia()));
-		return soggettoDebitore;
 	}
 
 	public static CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo, BasicBD bd) throws ServiceException {
@@ -245,62 +123,6 @@ public class RptUtils {
 			return text;
 	}
 
-	private static CtDatiVersamentoRPT buildDatiVersamento(Rpt rpt, Versamento versamento, Canale canale, String ibanAddebito, BasicBD bd) throws ServiceException {
-		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
-		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
-		datiVersamento.setImportoTotaleDaVersare(versamento.getImportoTotale());
-		if(canale != null)
-			datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(canale.getTipoVersamento().getCodifica()));
-		else 
-			datiVersamento.setTipoVersamento(StTipoVersamento.BBT);
-		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
-		datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
-		datiVersamento.setFirmaRicevuta(rpt.getFirmaRichiesta().getCodifica());
-		datiVersamento.setIbanAddebito(ibanAddebito != null ? ibanAddebito : null);
-
-		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
-		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-			datiVersamento.getDatiSingoloVersamento().add(buildDatiSingoloVersamento(rpt, singoloVersamento, bd));
-		}
-
-		return datiVersamento;
-	}
-
-	private static CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, BasicBD bd) throws ServiceException  {
-		CtDatiSingoloVersamentoRPT datiSingoloVersamento = new CtDatiSingoloVersamentoRPT();
-		datiSingoloVersamento.setImportoSingoloVersamento(singoloVersamento.getImportoSingoloVersamento());
-		
-		if(singoloVersamento.getIbanAccredito(bd) != null) {
-			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
-			datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBicAccredito()));
-			datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
-			datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
-			datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
-		} else {
-			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
-			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
-			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-			if(singoloVersamento.getTipoBollo() != null)
-				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
-			else
-				marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
-			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
-			
-		}
-		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
-		datiSingoloVersamento.setCausaleVersamento(buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento()));
-		return datiSingoloVersamento;
-	}
-
-	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
-
-	public static String buildCausaleSingoloVersamento(String iuv, BigDecimal importoTotale) {
-		//Controllo se lo IUV che mi e' stato passato e' ISO11640:2011
-		if(IuvUtils.checkISO11640(iuv))
-			return "/RFS/" + iuv + "/" + nFormatter.format(importoTotale);
-		else 
-			return "/RFB/" + iuv + "/" + nFormatter.format(importoTotale);
-	}
 
 
 
@@ -311,23 +133,14 @@ public class RptUtils {
 		try {
 			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
-			if(rpt.getCanale(bd) != null) {
-				inviaRPT.setIdentificativoCanale(rpt.getCanale(bd).getCodCanale());
-				inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCanale(bd).getCodIntermediario());
-				inviaRPT.setIdentificativoPSP(rpt.getPsp(bd).getCodPsp());
-			} else {
-				inviaRPT.setIdentificativoCanale("AGID_01");
-				inviaRPT.setIdentificativoIntermediarioPSP("97735020584");
-				inviaRPT.setIdentificativoPSP("97735020584_02");
-			}
+			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
+			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
+			inviaRPT.setIdentificativoPSP(rpt.getCodPsp());
 			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
 			inviaRPT.setRpt(rpt.getXmlRpt());
 			
 			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
-			if(rpt.getFirmaRichiesta() == FirmaRichiesta.NESSUNA)
-				inviaRPT.setTipoFirma("");
-			else
-				inviaRPT.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
+			inviaRPT.setTipoFirma("");
 			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
 			return risposta;
 		} finally {
@@ -356,16 +169,9 @@ public class RptUtils {
 		try {
 			NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
 			NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
-			
-			if(rpts.get(0).getCanale(bd) != null) {
-				inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCanale(bd).getCodCanale());
-				inviaCarrelloRpt.setIdentificativoIntermediarioPSP(rpts.get(0).getCanale(bd).getCodIntermediario());
-				inviaCarrelloRpt.setIdentificativoPSP(rpts.get(0).getPsp(bd).getCodPsp());
-			} else {
-				inviaCarrelloRpt.setIdentificativoCanale("AGID_01");
-				inviaCarrelloRpt.setIdentificativoIntermediarioPSP("97735020584");
-				inviaCarrelloRpt.setIdentificativoPSP("97735020584_02");
-			}
+			inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCodCanale());
+			inviaCarrelloRpt.setIdentificativoIntermediarioPSP(rpts.get(0).getCodIntermediarioPsp());
+			inviaCarrelloRpt.setIdentificativoPSP(rpts.get(0).getCodPsp());
 			inviaCarrelloRpt.setPassword(stazione.getPassword());
 			TipoListaRPT listaRpt = new TipoListaRPT();
 			for(Rpt rpt : rpts) {
@@ -374,10 +180,7 @@ public class RptUtils {
 				elementoListaRpt.setIdentificativoDominio(rpt.getCodDominio());
 				elementoListaRpt.setIdentificativoUnivocoVersamento(rpt.getIuv());
 				elementoListaRpt.setRpt(rpt.getXmlRpt());
-				if(rpt.getFirmaRichiesta() == FirmaRichiesta.NESSUNA)
-					elementoListaRpt.setTipoFirma("");
-				else
-					elementoListaRpt.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
+				elementoListaRpt.setTipoFirma("");
 				listaRpt.getElementoListaRPT().add(elementoListaRpt);
 			}
 			inviaCarrelloRpt.setListaRPT(listaRpt);
@@ -399,9 +202,9 @@ public class RptUtils {
 		evento.setAltriParametriRisposta(null);
 		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA);
 		evento.setCcp(rpt.getCcp());
-		evento.setCodCanale(rpt.getCanale(bd).getCodCanale());
+		evento.setCodCanale(rpt.getCodCanale());
 		evento.setCodDominio(rpt.getCodDominio());
-		evento.setCodPsp(rpt.getPsp(bd).getCodPsp());
+		evento.setCodPsp(rpt.getCodPsp());
 		evento.setCodStazione(rpt.getCodStazione());
 		evento.setComponente(Evento.COMPONENTE);
 		evento.setDataRisposta(new Date());
@@ -414,7 +217,7 @@ public class RptUtils {
 		evento.setIuv(rpt.getIuv());
 		evento.setSottotipoEvento(null);
 		evento.setTipoEvento(tipoEvento);
-		evento.setTipoVersamento(rpt.getCanale(bd).getTipoVersamento());
+		evento.setTipoVersamento(rpt.getTipoVersamento());
 
 	}
 

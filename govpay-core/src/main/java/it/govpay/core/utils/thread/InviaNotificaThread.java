@@ -53,8 +53,6 @@ public class InviaNotificaThread implements Runnable {
 		this.notifica.getApplicazione(bd);
 		if(this.notifica.getIdRpt() != null) {
 			this.notifica.getRpt(bd).getVersamento(bd);
-			this.notifica.getRpt(bd).getCanale(bd);
-			this.notifica.getRpt(bd).getPsp(bd);
 			List<Pagamento> pagamenti = this.notifica.getRpt(bd).getPagamenti(bd);
 			if(pagamenti != null) {
 				for(Pagamento pagamento : pagamenti)
@@ -64,8 +62,6 @@ public class InviaNotificaThread implements Runnable {
 			this.notifica.getRr(bd);
 			this.notifica.getRr(bd).getRpt(bd);
 			this.notifica.getRr(bd).getRpt(bd).getVersamento(bd);
-			this.notifica.getRr(bd).getRpt(bd).getCanale(bd);
-			this.notifica.getRr(bd).getRpt(bd).getPsp(bd);
 			List<Pagamento> pagamenti = this.notifica.getRr(bd).getRpt(bd).getPagamenti(bd);
 			if(pagamenti != null) {
 				for(Pagamento pagamento : pagamenti)

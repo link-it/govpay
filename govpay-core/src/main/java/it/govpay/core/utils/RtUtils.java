@@ -59,6 +59,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
@@ -106,39 +107,6 @@ public class RtUtils extends NdpValidationUtils {
 	}
 
 	private static Logger log = LogManager.getLogger();
-
-	public static byte[] validaFirma(String tipoFirma,  byte[] rt, String idDominio) throws NdpException {
-		try {
-			switch (FirmaRichiesta.toEnum(tipoFirma)) {
-			case NESSUNA:
-				return rt;
-			case CA_DES:
-				return validaFirmaCades(rt, idDominio);
-			case XA_DES:
-				return validaFirmaXades(rt, idDominio);
-			default:
-				throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
-			}
-		} catch (ServiceException e) {
-			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
-		}
-	}
-
-	private static byte[] validaFirmaXades(byte[] rt, String idDominio) throws NdpException {
-		try {
-			return SignUtils.cleanXadesSignedFile(rt);
-		} catch (Throwable e) {
-			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio, e.getMessage());
-		}
-	}
-
-	private static byte[] validaFirmaCades(byte[] rt, String idDominio) throws NdpException {		
-		try {
-			return SignUtils.cleanCadesSignedFile(rt);
-		} catch (Throwable e) {
-			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio, e.getMessage());
-		}
-	}
 
 	public static EsitoValidazione validaSemantica(CtRichiestaPagamentoTelematico rpt, CtRicevutaTelematica rt) {
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
@@ -255,20 +223,13 @@ public class RtUtils extends NdpValidationUtils {
 			throw new NdpException(FaultPa.PAA_RT_DUPLICATA, rpt.getCodDominio());
 		}
 		
-		if(!rpt.getFirmaRichiesta().equals(FirmaRichiesta.toEnum(tipoFirma)))
-			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, codDominio, "Richiesta RT con firma [" + rpt.getFirmaRichiesta().getCodifica() + "], ricevuta RT con firma [" + tipoFirma + "]");
-		
-		
 		CtRicevutaTelematica ctRt = null;
 		CtRichiestaPagamentoTelematico ctRpt = null;
 		// Validazione RT
 		try {
-			// Validazione Firma
-			byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rtByte, codDominio);
-			
 			// Validazione Sintattica
 			try {
-				ctRt = JaxbUtils.toRT(rtByteValidato);
+				ctRt = JaxbUtils.toRT(rtByte);
 			} catch (Exception e) {
 				log.warn("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
 				if(e.getCause() != null)
@@ -331,6 +292,10 @@ public class RtUtils extends NdpValidationUtils {
 		rpt.setDescrizioneStato(null);
 		rpt.setXmlRt(rtByte);
 		rpt.setIdTransazioneRt(GpThreadLocal.get().getTransactionId());
+		rpt.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(ctRt.getIstitutoAttestante().getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco().value()));
+		rpt.setIdentificativoAttestante(ctRt.getIstitutoAttestante().getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
+		rpt.setDenominazioneAttestante(ctRt.getIstitutoAttestante().getDenominazioneAttestante());
+		
 		// Aggiorno l'RPT con i dati dell'RT
 		rptBD.updateRpt(rpt.getId(), rpt);
 		

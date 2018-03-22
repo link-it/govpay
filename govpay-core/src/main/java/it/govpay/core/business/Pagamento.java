@@ -70,6 +70,7 @@ import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.UrlUtils;
@@ -355,7 +356,7 @@ public class Pagamento extends BasicBD {
 				} else {
 					ctx.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv.getIuv() + ccp);
 				}
-				Rpt rpt = RptUtils.buildRpt(intermediario, stazione, ctx.getPagamentoCtx().getCodCarrello(), versamento, iuv, ccp, portale, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
+				Rpt rpt = new RptBuilder().buildRpt(ctx.getPagamentoCtx().getCodCarrello(), versamento, canale, iuv.getIuv(), ccp, portale, versante, autenticazione, ibanAddebito, redirect, this);
 				rpt.setCodSessionePortale(ctx.getPagamentoCtx().getCodSessionePortale());
 				rptBD.insertRpt(rpt);
 				rpts.add(rpt);
