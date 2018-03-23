@@ -558,7 +558,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 	public String getSottotitolo(Rpt entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		// ricevuta RT
-		if(entry.getDataMsgRicevuta()!= null){
+		if(entry.getEsitoPagamento() != null){
 			EsitoPagamento esitoPagamento = entry.getEsitoPagamento();
 			String esitoPagamentoString = null;
 			switch (esitoPagamento) {		
