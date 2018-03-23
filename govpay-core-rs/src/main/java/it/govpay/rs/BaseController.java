@@ -186,8 +186,10 @@ public abstract class BaseController {
 				httpEntity.setParametersQuery(properties);
 			}
 			httpEntity.setUrl(getServicePathWithoutParameters(uriInfo).toString());
-			httpEntity.setContent(new String(baos));
-			httpEntity.setContentType(this.request.getContentType());
+			if(baos.length > 0) {
+				httpEntity.setContent(new String(baos));
+				httpEntity.setContentType(this.request.getContentType());
+			}
 			this.validator.validate(httpEntity);
 		} catch (ProcessingException | ValidatorException | URISyntaxException e) {
 			this.log.error("Errore di validazione di richiesta: " + e.getMessage(), e);
