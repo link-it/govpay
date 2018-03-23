@@ -65,7 +65,8 @@ public class Gp21Utils {
 		Canale canale = new Canale();
 		canale.setCodCanale(rpt.getCodCanale());
 		canale.setCodPsp(rpt.getCodPsp());
-		canale.setTipoVersamento(TipoVersamento.valueOf(rpt.getTipoVersamento().getCodifica()));
+		if(rpt.getTipoVersamento() != null)
+			canale.setTipoVersamento(TipoVersamento.valueOf(rpt.getTipoVersamento().getCodifica()));
 		t.setCanale(canale);
 		t.setCcp(rpt.getCcp());
 		t.setCodDominio(rpt.getCodDominio());
@@ -74,7 +75,8 @@ public class Gp21Utils {
 			t.setEsito(EsitoTransazione.valueOf(rpt.getEsitoPagamento().toString()));
 		}
 		t.setIuv(rpt.getIuv());
-		t.setModello(ModelloPagamento.valueOf(rpt.getModelloPagamento().toString()));
+		if(rpt.getModelloPagamento() != null)
+			t.setModello(ModelloPagamento.valueOf(rpt.getModelloPagamento().toString()));
 		t.setRpt(rpt.getXmlRpt());
 		t.setRt(rpt.getXmlRt());
 

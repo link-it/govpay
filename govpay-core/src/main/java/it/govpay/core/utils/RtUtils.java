@@ -55,6 +55,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rpt.FirmaRichiesta;
@@ -295,7 +296,6 @@ public class RtUtils extends NdpValidationUtils {
 		rpt.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(ctRt.getIstitutoAttestante().getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco().value()));
 		rpt.setIdentificativoAttestante(ctRt.getIstitutoAttestante().getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
 		rpt.setDenominazioneAttestante(ctRt.getIstitutoAttestante().getDenominazioneAttestante());
-		
 		// Aggiorno l'RPT con i dati dell'RT
 		rptBD.updateRpt(rpt.getId(), rpt);
 		

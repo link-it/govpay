@@ -65,6 +65,7 @@ public class RendicontazioniBD extends BasicBD {
 			it.govpay.orm.Rendicontazione vo = RendicontazioneConverter.toVO(dto);
 			IdRendicontazione idRendicontazione = new IdRendicontazione();
 			idRendicontazione.setId(dto.getId());
+			idRendicontazione.setIdRendicontazione(dto.getId());
 			this.getRendicontazioneService().update(idRendicontazione, vo);
 			dto.setId(vo.getId());
 		} catch (NotImplementedException e) {

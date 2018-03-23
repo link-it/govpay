@@ -7,14 +7,22 @@
 	</servlet-mapping>
 	
 	<!-- PagamentiTelematiciGPRnd  -->
-
-	<servlet id="GPRnd_v2.3">
+	
+	<servlet id="GPRnd_v2">
 		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
 		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
 		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v2/Rendicontazioni</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v3/Rendicontazioni</url-pattern>
 	</servlet-mapping>
 	
 	<servlet id="GPRnd">
@@ -36,6 +44,14 @@
 		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-name>
 		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v2/Applicazioni</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v3/Applicazioni</url-pattern>
+	</servlet-mapping>
 	
 	<servlet id="GPApp">
 		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-name>
@@ -48,6 +64,15 @@
 	
 	<!-- PagamentiTelematiciGPPrt  -->
 	
+	<servlet id="GPPrt_v2.5">
+		<servlet-name>it.govpay.web.ws.v2_5.PagamentiTelematiciGPPrtImpl</servlet-name>
+		<servlet-class>it.govpay.web.ws.v2_5.PagamentiTelematiciGPPrtImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>it.govpay.web.ws.v2_5.PagamentiTelematiciGPPrtImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v3/Portali</url-pattern>
+	</servlet-mapping>
+	
 	<servlet id="GPPrt_v2.3">
 		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
 		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-class>
@@ -55,6 +80,10 @@
 	<servlet-mapping>
 		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
 		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v2/Portali</url-pattern>
 	</servlet-mapping>
 	
 	<servlet id="GPPrt">
@@ -66,8 +95,6 @@
 		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-name>
 	</servlet-mapping>
 	
-	
-
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Protetto</web-resource-name>
@@ -76,29 +103,13 @@
 			<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPRndService</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
+			<url-pattern>/PagamentiTelematiciGP/soap/*</url-pattern>
 			<url-pattern>/rs/caricatore/*</url-pattern>
 			<url-pattern>/rs/v1/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>*</role-name>
 		</auth-constraint>
-	</security-constraint>
-
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Libero</web-resource-name>
-			<url-pattern>/PagamentiTelematiciCCPservice?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciRTservice?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciGPAppService?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciGPPrtService?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciGPRndService?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali?wsdl</url-pattern>
-		</web-resource-collection>
 	</security-constraint>
 
 	<security-role>
