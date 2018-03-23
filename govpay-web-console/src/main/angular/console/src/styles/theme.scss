@@ -1,0 +1,91 @@
+@import 'variables.scss';
+
+$theme: mat-light-theme($link-primary, $link-accent, $link-error);
+
+@include angular-material-theme($theme);
+
+// Overridden styles
+// mat-datepicker-toggle button
+mat-datepicker-toggle button {
+  color: $link-normal !important;
+}
+
+//SCSS global classes
+.stato-error {
+  color: mat-color($link-error);
+}
+
+.stato-warning {
+  color: mat-color($link-warning);
+}
+
+.stato-normal {
+  color: $link-normal;
+}
+
+.normal-color {
+  color: $link-normal;
+}
+
+.light-color{
+  color: $link-light;
+}
+
+.color-gray{
+  color: $link-gray !important;
+}
+
+.head-shadow {
+  box-shadow: 0 2px 2px 0 $link-shadow !important;
+}
+
+.shadow {
+  box-shadow: 0 1px 1px 0 $link-shadow !important;
+}
+
+.text-sub-color {
+  color: $link-dark-gray;
+}
+
+.text-normal-font {
+  font-size: 16px !important;
+}
+
+.text-sub-font {
+  font-size: 14px !important;
+}
+
+.text-small-font {
+  font-size: 13px !important;
+}
+
+.active-route {
+  color: black;
+  background-color: $link-gray-light;
+}
+
+a, a:hover {
+  text-decoration: none;
+  color: $link-normal;
+}
+
+i.material-icons {
+  color: $link-light;
+}
+
+.dark-material-icons {
+  color: $link-normal !important;
+}
+
+.full-absolute {
+  position: absolute;
+  background-color: $link-gray-container;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.default-background {
+  background-color: $link-form-background;
+}

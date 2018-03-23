@@ -1,0 +1,7 @@
+<div class="d-flex flex-column mobile-search">
+  <mat-form-field class="mat-form-mobile-search" floatLabel="never" color="white">
+    <input #search matInput placeholder="Testo della ricerca" class="input-mobile-search" autocomplete="off"
+           (keyup)="_onEnter($event)" (blur)="_onBlur($event)" autofocus>
+    <mat-icon matSuffix class="md-18">search</mat-icon>
+  </mat-form-field>
+</div>

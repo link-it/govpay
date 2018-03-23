@@ -1,0 +1,37 @@
+<mat-tab-group>
+  <mat-tab label="DATI PENDENZA">
+    <div class="container">
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="_expanded">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="font-weight-500">Riepilogo</mat-panel-title>
+          </mat-expansion-panel-header>
+          <link-riepilogo-view [info]="info"></link-riepilogo-view>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title class="font-weight-500">Dettaglio importi</mat-panel-title>
+          </mat-expansion-panel-header>
+          <link-item-view *ngFor="let item of importi" [component-data]="item" class="link-item-view-fill"></link-item-view>
+          <div class="row sub-totale" *ngIf="importi.length != 0">
+            <div class="col-6 px-0 m-0">
+              <p class="text-truncate font-weight-500">Totale</p>
+            </div>
+            <div class="col-6 px-0 m-0 text-right">
+              <p class="text-truncate font-weight-500">{{us.currencyFormat(_paymentsSum)}}</p>
+            </div>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title class="font-weight-500">Altre informazioni</mat-panel-title>
+          </mat-expansion-panel-header>
+          <link-key-value-view *ngFor="let item of informazioni" [info]="item" class="link-key-value-fill mb-1"></link-key-value-view>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </mat-tab>
+  <mat-tab label="TENTATIVI DI PAGAMENTO">
+    <link-item-view *ngFor="let item of tentativi" [component-data]="item" class="d-block mx-sm-5"></link-item-view>
+  </mat-tab>
+</mat-tab-group>

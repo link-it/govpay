@@ -1,0 +1,26 @@
+<div class="w-100">
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Causale" formControlName="causale_ctrl" autocomplete="off" required>
+    </mat-form-field>
+  </div>
+  <div class="row">
+  <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Importo" formControlName="importo_ctrl" autocomplete="off" required>
+  </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-6" color="accent" [formGroup]="fGroup">
+      <input type="text" matInput [matDatepicker]="pickerDV" autocomplete="off"
+             placeholder="Data valuta" formControlName="dataValuta_ctrl">
+      <mat-datepicker-toggle matSuffix [for]="pickerDV"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDV></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="col-6" color="accent" [formGroup]="fGroup">
+      <input type="text" matInput [matDatepicker]="pickerDC" autocomplete="off"
+             placeholder="Data contabile" formControlName="dataContabile_ctrl">
+      <mat-datepicker-toggle matSuffix [for]="pickerDC"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDC></mat-datepicker>
+    </mat-form-field>
+  </div>
+</div>

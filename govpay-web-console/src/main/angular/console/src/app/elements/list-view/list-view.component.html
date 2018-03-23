@@ -1,0 +1,6 @@
+<div class="d-flex flex-column flex-sm-row h-100">
+  <link-form-view #fv class="col-4 p-3 h-100 overflow-auto d-block" *ngIf="_isVisible()" [fields]="_fields"
+                  (submit-form-data)="_formSubmit($event)"></link-form-view>
+  <link-side-list #sl link-scroll class="col p-3 w-100 h-100 overflow-auto" [(is-loading-progress)]="_preventMultiCall"
+                  [bottomLimit]="!_preventMultiCall" (onScrollBottom)="_loadMoreData()"></link-side-list>
+</div>

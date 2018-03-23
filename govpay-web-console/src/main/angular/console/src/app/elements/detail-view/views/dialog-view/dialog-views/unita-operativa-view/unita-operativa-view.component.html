@@ -1,0 +1,64 @@
+<mat-card class="no-shadow container-fluid">
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-4" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Id unità" formControlName="idUnita_ctrl" autocomplete="off" required>
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-8" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Ragione sociale" formControlName="ragioneSociale_ctrl" autocomplete="off" required>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Indirizzo" formControlName="indirizzo_ctrl" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Numero civico" formControlName="civico_ctrl" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup" autocomplete="off">
+      <input matInput placeholder="Cap" formControlName="cap_ctrl">
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Località" formControlName="localita_ctrl" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Provincia" formControlName="provincia_ctrl" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Nazione" formControlName="nazione_ctrl" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Email" formControlName="email_ctrl" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Pec" formControlName="pec_ctrl" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Sito web" formControlName="web_ctrl" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Telefono" formControlName="tel_ctrl" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Fax" formControlName="fax_ctrl" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Area" formControlName="area_ctrl" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Global location number" formControlName="gln_ctrl" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="w-100" [formGroup]="fGroup">
+    <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+  </div>
+</mat-card>

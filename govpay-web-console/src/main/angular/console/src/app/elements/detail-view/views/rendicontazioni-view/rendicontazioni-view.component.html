@@ -1,0 +1,26 @@
+<div class="container pt-4">
+  <mat-card class="no-shadow mb-4">
+    <p class="d-block font-weight-500 pb-0 color-gray">Riepilogo informazioni</p>
+    <link-riepilogo-view class="d-block" [info]="info"></link-riepilogo-view>
+  </mat-card>
+  <mat-card class="no-shadow mb-4 pb-0">
+    <p class="w-100 m-0 font-weight-500 color-gray">Segnalazioni</p>
+    <mat-card-content>
+      <p class="d-block py-3" *ngIf="segnalazioni.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="segnalazioni.length != 0">
+        <link-item-view class="d-block link-item-view-fill-mat-card" *ngFor="let item of segnalazioni" [component-data]="item"
+                        [use-item-view-directive]="true" [show-over-icons]="false"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="no-shadow mb-4 pb-0">
+    <p class="d-block font-weight-500 matcard-title color-gray">Rendicontazioni</p>
+    <mat-card-content>
+      <p class="d-block matcard-title py-3" *ngIf="rendicontazioni.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="rendicontazioni.length != 0">
+        <link-item-view class="d-block link-item-view-fill-mat-card" *ngFor="let item of rendicontazioni" [component-data]="item"
+                        [use-item-view-directive]="true" [show-over-icons]="false"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

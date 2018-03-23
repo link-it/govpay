@@ -1,0 +1,51 @@
+<div class="container pt-4">
+  <mat-card class="no-shadow mb-4">
+    <p class="font-weight-500 matcard-title pb-3 color-gray">Riepilogo informazioni</p>
+    <p class="matcard-title py-0" *ngIf="domini.length == 0">Nessuna informazione</p>
+    <div class="d-block" *ngIf="domini.length != 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioni" [info]="item"></link-key-value-view>
+    </div>
+    <p class="font-weight-500 matcard-title py-3 color-gray">Codifica avvisi</p>
+    <p class="matcard-title py-0" *ngIf="avvisi.length == 0">Nessuna informazione</p>
+    <div class="d-block" *ngIf="avvisi.length != 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of avvisi" [info]="item"></link-key-value-view>
+    </div>
+    <p class="d-block font-weight-500 matcard-title py-3 color-gray">Servizio verifica</p>
+    <p class="d-block matcard-title py-0" *ngIf="verifiche.length == 0">Nessuna informazione</p>
+    <div class="d-block" *ngIf="verifiche.length != 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of verifiche" [info]="item"></link-key-value-view>
+    </div>
+    <p class="d-block font-weight-500 matcard-title py-3 color-gray">Servizio notifica</p>
+    <p class="d-block matcard-title py-0" *ngIf="notifiche.length == 0">Nessuna informazione</p>
+    <div class="d-block" *ngIf="notifiche.length != 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of notifiche" [info]="item"></link-key-value-view>
+    </div>
+  </mat-card>
+  <mat-card class="no-shadow mb-4 pb-0">
+    <div class="d-flex flex-row">
+      <p class="w-100 mr-3 font-weight-500 matcard-title color-gray">Domini</p>
+      <mat-icon class="action" (click)="_asyncDetail(DOMINIO)"><i class="material-icons dark-material-icons">add</i></mat-icon>
+    </div>
+    <mat-card-content>
+      <p class="d-block matcard-title py-3" *ngIf="domini.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="domini.length != 0">
+        <link-item-view #dliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of domini" [component-data]="item" [use-item-view-directive]="true"
+                        (icon-click)="_iconClick(DOMINIO, dliv, $event)" [over-icons]="['delete']" [show-over-icons]="false"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="no-shadow mb-4 pb-0">
+    <div class="d-flex flex-row">
+      <p class="w-100 mr-3 font-weight-500 matcard-title color-gray">Entrate</p>
+      <mat-icon class="action" (click)="_asyncDetail(ENTRATA)"><i class="material-icons dark-material-icons">add</i></mat-icon>
+    </div>
+    <mat-card-content>
+      <p class="d-block matcard-title py-3" *ngIf="entrate.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="entrate.length != 0">
+        <link-item-view #eliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of entrate" [component-data]="item" [use-item-view-directive]="true"
+                        (icon-click)="_iconClick(ENTRATA, eliv, $event)" [over-icons]="['delete']" [show-over-icons]="false"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<button mat-fab class="fab-action" (click)="_editApplicazione()"><i class="material-icons">edit</i></button>

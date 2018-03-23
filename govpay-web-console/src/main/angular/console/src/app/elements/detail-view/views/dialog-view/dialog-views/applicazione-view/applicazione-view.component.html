@@ -1,0 +1,71 @@
+<mat-card class="no-shadow">
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Id A2A" formControlName="idA2A_ctrl" autocomplete="off" required>
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Principal" formControlName="principal_ctrl" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="w-100" [formGroup]="fGroup">
+    <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+  </div>
+  <p class="color-gray pt-2 mt-3 mb-2">Codifica avvisi</p>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Codifica IUV" formControlName="codificaIuv_ctrl" autocomplete="off">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="RegEx IUV" formControlName="regExpIuv_ctrl" autocomplete="off">
+  </mat-form-field>
+  <div class="w-100" [formGroup]="fGroup">
+    <mat-slide-toggle formControlName="generazioneIuvInterna_ctrl" color="accent">Generazione IUV interna</mat-slide-toggle>
+  </div>
+  <div class="d-block" *ngFor="let service of services; let i = index">
+    <p class="color-gray pt-2 mt-3 mb-2">{{service.title}}</p>
+    <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="URL" [formControlName]="'url_ctrl_'+i" autocomplete="off" required>
+    </mat-form-field>
+    <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+      <!--<input matInput placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i" autocomplete="off">-->
+      <mat-select placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i">
+        <mat-option>Nessuna</mat-option>
+        <mat-option *ngFor="let item of versioni" [value]="item.value">{{item.label}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+      <mat-select #auth placeholder="Tipo autenticazione" [formControlName]="'auth_ctrl_'+i" (selectionChange)="_onAuthChange(auth, i)">
+        <mat-option>Nessuna</mat-option>
+        <mat-option [value]="BASIC">HTTP Basic</mat-option>
+        <mat-option [value]="SSL">SSL</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div *ngIf="service.basicAuth">
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput placeholder="Username" [formControlName]="'username_ctrl_'+i" autocomplete="off" required>
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput placeholder="Password" [formControlName]="'password_ctrl_'+i" autocomplete="off" required>
+      </mat-form-field>
+    </div>
+    <div *ngIf="service.sslAuth">
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <mat-select placeholder="SSL Type" [formControlName]="'ssl_ctrl_'+i" required>
+          <mat-option [value]="CLIENT">Client</mat-option>
+          <mat-option [value]="SERVER">Server</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput placeholder="KeyStore location" [formControlName]="'ksLocation_ctrl_'+i" autocomplete="off" required>
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput placeholder="KeyStore password" [formControlName]="'ksPassword_ctrl_'+i" autocomplete="off" required>
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput placeholder="TrustStore location" [formControlName]="'tsLocation_ctrl_'+i" autocomplete="off">
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput placeholder="TrustStore password" [formControlName]="'tsPassword_ctrl_'+i" autocomplete="off">
+      </mat-form-field>
+    </div>
+  </div>
+</mat-card>

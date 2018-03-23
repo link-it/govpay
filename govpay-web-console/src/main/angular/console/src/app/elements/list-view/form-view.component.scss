@@ -1,0 +1,9 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+form {
+  width: 100%;
+  background-color: $link-form-background;
+  box-shadow: none; //0 1px 2px 0 $link-shadow;
+  overflow: hidden;
+}

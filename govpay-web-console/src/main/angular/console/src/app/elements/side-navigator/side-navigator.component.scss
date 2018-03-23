@@ -1,0 +1,42 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+.side-list-menu-group {
+  display: block;
+  width: 220px;
+}
+
+.menu-group {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.user-panel {
+  background-color: $link-light;
+  margin: 0 -1rem;
+  border-width: 0 0 1px 0;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+}
+
+.user-name {
+  user-select: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bg-head {
+  background: url('../../../assets/background.jpg') !important;
+}
+
+.lower-position {
+  margin-top: 4rem;
+}
+
+// Overridden styles
+// mat-list
+mat-list {
+  padding: .5rem 0 !important;
+}

@@ -1,0 +1,17 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+.mobile-search {
+  background-color: map-get($link-search, lighter);
+  padding: 0 16px;
+  color: white;
+}
+
+.mat-form-mobile-search {
+  height: 56px;
+  color: currentColor;
+}
+
+.input-mobile-search {
+  color: currentColor;
+}

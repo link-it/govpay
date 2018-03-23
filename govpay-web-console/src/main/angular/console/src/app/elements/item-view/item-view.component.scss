@@ -1,0 +1,40 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+//Link-Item Directive
+.item-directive {
+  background-color: $link-form-background;
+  border-bottom: 1px solid $link-border-gray;
+  position: relative;
+  overflow: hidden;
+  min-height: 55px;
+}
+
+.item-directive-hover {
+  background-color: $link-gray-light;
+  border-bottom: 1px solid mat-color($link-accent);
+}
+
+.link-item-download {
+  background-color: $link-gray-light;
+  background: -moz-linear-gradient(right, transparent, $link-gray-light 15%);
+  background: -webkit-linear-gradient(right, transparent, $link-gray-light 15%);
+  background: -o-linear-gradient(right, transparent, $link-gray-light 15%);
+  background: -ms-linear-gradient(right, transparent, $link-gray-light 15%);
+  background: linear-gradient(to right, transparent, $link-gray-light 15%);
+  position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 34%;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.link-item-download-icon {
+  position: relative;
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 16px;
+}

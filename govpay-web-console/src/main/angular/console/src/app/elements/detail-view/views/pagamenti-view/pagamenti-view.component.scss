@@ -1,0 +1,34 @@
+@import '~@angular/material/theming';
+@import '../../../../../styles/variables.scss';
+
+link-riepilogo-view {
+  display: block;
+  margin: 0 !important;
+}
+
+link-item-view:last-child.link-item-view-fill .item-directive {
+  border-bottom: none !important;
+}
+
+// Overridden styles
+// mat-expansion-panel and mat-tab
+mat-expansion-panel-header:hover {
+  background-color: transparent !important;
+}
+
+mat-expansion-panel {
+  box-shadow: 0 1px 1px 0 $link-shadow !important;
+  margin-bottom: 1rem !important;
+}
+
+mat-expansion-panel.dettaglio-carrello {
+  margin-bottom: 0 !important;
+}
+
+mat-expansion-panel:last-child {
+  margin-bottom: 0 !important;
+}
+
+mat-expansion-panel-header {
+  padding: 0 24px !important;
+}
