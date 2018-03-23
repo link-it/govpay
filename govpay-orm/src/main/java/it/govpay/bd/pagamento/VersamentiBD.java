@@ -72,6 +72,27 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	/**
+	 * Recupera il versamento identificato dalla chiave logica
+	 */
+	public Versamento getVersamento(String codDominio, String iuv) throws NotFoundException, ServiceException {
+		try {
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
+			exp.equals(it.govpay.orm.Versamento.model().IUV_VERSAMENTO,iuv);
+			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
+			return VersamentoConverter.toDTO(versamento);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	/**
 	 * Recupera il versamento identificato dalla chiave logica

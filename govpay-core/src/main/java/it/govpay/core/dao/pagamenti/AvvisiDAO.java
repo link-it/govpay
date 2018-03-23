@@ -36,8 +36,10 @@ public class AvvisiDAO extends BaseDAO{
 //	public PutAvvisoDTOResponse createOrUpdate(PutAvvisoDTO putAvvisoDTO) throws ServiceException,
 //	AvvisoNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException{
 //		PutAvvisoDTOResponse dominioDTOResponse = new PutAvvisoDTOResponse();
-//		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-//		try {
+//	BasicBD bd = null;
+//	
+//	try {
+//		bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 //			// stazione
 //			try {
 //				Stazione stazione = AnagraficaManager.getStazione(bd, putAvvisoDTO.getCodStazione());
@@ -94,6 +96,7 @@ public class AvvisiDAO extends BaseDAO{
 //		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 //			throw new AvvisoNonTrovatoException(e.getMessage());
 //		} finally {
+	//if(bd != null)
 //			bd.closeConnection();
 //		}
 //		return dominioDTOResponse;
@@ -101,8 +104,10 @@ public class AvvisiDAO extends BaseDAO{
 
 
 	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws NotAuthorizedException, AvvisoNonTrovatoException, ServiceException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+		
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 //			Set<String> domini = AclEngine.getAvvisiAutorizzati(getAvvisoDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
 //			
 //			if(domini != null && !domini.contains(getAvvisoDTO.getCodAvviso())) {
@@ -117,7 +122,8 @@ public class AvvisiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new AvvisoNonTrovatoException("Avviso codDominio[" + getAvvisoDTO.getCodDominio() + "] iuv ["+getAvvisoDTO.getIuv()+"] non censito in Anagrafica");
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 

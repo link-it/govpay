@@ -28,6 +28,7 @@ import it.govpay.core.rs.v1.beans.Pendenza;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
+import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -210,6 +211,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+			classMap.put("voci", VocePendenza.class);
 			jsonConfig.setClassMap(classMap);
 			PendenzaPost pendenzaPost= (PendenzaPost) PendenzaPost.parse(jsonRequest, PendenzaPost.class, jsonConfig);
 			

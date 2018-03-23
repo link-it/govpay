@@ -40,9 +40,10 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
+		BasicBD bd = null;
+		
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 			// Autorizzazione sui domini
 			List<Long> idDomini = AclEngine.getIdDominiAutorizzati((Utenza) listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
@@ -95,19 +96,21 @@ public class PendenzeDAO extends BaseDAO{
 
 			return new ListaPendenzeDTOResponse(count, resList);
 		}finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
-
-		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		Versamento versamento;
+		BasicBD bd = null;
+		
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
 			
 			Dominio dominio = versamento.getDominio(versamentiBD);
@@ -132,7 +135,8 @@ public class PendenzeDAO extends BaseDAO{
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return response;
 	}
@@ -144,9 +148,8 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
-			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, patchPendenzaDTO.getIdA2a()).getId(), patchPendenzaDTO.getIdPendenza());
@@ -197,9 +200,10 @@ public class PendenzeDAO extends BaseDAO{
 		PutPendenzaDTOResponse dominioDTOResponse = new PutPendenzaDTOResponse();
 		BasicBD bd = null;
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
 			
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			
 
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);

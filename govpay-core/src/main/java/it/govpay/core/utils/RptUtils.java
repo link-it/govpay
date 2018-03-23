@@ -103,7 +103,7 @@ public class RptUtils {
 
 	public static Rpt buildRpt(
 			Intermediario intermediario, Stazione stazione, String codCarrello, 
-			Versamento versamento, Iuv iuv, String ccp, Applicazione applicazione, Psp psp, 
+			Versamento versamento, String iuv, String ccp, Applicazione applicazione, Psp psp, 
 			Canale canale, Anagrafica versante, String autenticazione, 
 			String ibanAddebito, String redirect, BasicBD bd) throws ServiceException {
 
@@ -124,7 +124,7 @@ public class RptUtils {
 		if(applicazione != null)
 			rpt.setIdApplicazione(applicazione.getId());
 		rpt.setIdVersamento(versamento.getId());
-		rpt.setIuv(iuv.getIuv());
+		rpt.setIuv(iuv);
 		rpt.setModelloPagamento(canale.getModelloPagamento());
 		rpt.setPspRedirectURL(null);
 		rpt.setStato(StatoRpt.RPT_ATTIVATA);

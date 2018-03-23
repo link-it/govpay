@@ -36,37 +36,42 @@ public class PspDAO extends BaseDAO{
 	}
 
 	public ListaPspDTOResponse listaPsp(ListaPspDTO listaPspDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-		try { 
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId()); 
 			this.autorizzaRichiesta(listaPspDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
-			
+
 			PspBD pspBD = new PspBD(bd);
 			PspFilter filter = pspBD.newFilter();
-	
+
 			filter.setOffset(listaPspDTO.getOffset());
 			filter.setLimit(listaPspDTO.getLimit());
 			filter.setSearchAbilitato(listaPspDTO.getAbilitato());
 			filter.setBollo(listaPspDTO.getBollo());
 			filter.setStorno(listaPspDTO.getStorno()); 
 			filter.setFilterSortList(listaPspDTO.getFieldSortList());
-	
+
 			long count = pspBD.count(filter);
-	
+
 			List<Psp> resList = new ArrayList<Psp>();
 			if(count > 0) {
 				resList = pspBD.findAll(filter);
 			} 
-	
+
 			return new ListaPspDTOResponse(count, resList);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public LeggiPspDTOResponse leggiPsp(LeggiPspDTO leggiPspDTO) throws ServiceException,PspNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiPspDTOResponse response = new LeggiPspDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiPspDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			PspBD pspBD = new PspBD(bd);
 			Psp psp = pspBD.getPsp(leggiPspDTO.getIdPsp());
@@ -77,17 +82,20 @@ public class PspDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new PspNonTrovatoException(e.getMessage(), e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public ListaCanaliDTOResponse listaCanali(ListaCanaliDTO listaPspDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaPspDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			PspBD pspBD = new PspBD(bd);
 			CanaleFilter filter = pspBD.newCanaleFilter();
-	
+
 			filter.setOffset(listaPspDTO.getOffset());
 			filter.setLimit(listaPspDTO.getLimit());
 			filter.setAbilitato(listaPspDTO.getAbilitato());
@@ -96,9 +104,9 @@ public class PspDAO extends BaseDAO{
 				filter.setTipoVersamento(TipoVersamento.valueOf(listaPspDTO.getTipoVersamento())); 
 			filter.setFilterSortList(listaPspDTO.getFieldSortList());
 			filter.setCodPsp(listaPspDTO.getIdPsp());
-	
+
 			long count = pspBD.countCanali(filter);
-	
+
 			List<LeggiCanaleDTOResponse> listaRs = new ArrayList<LeggiCanaleDTOResponse>();
 			List<Canale> listaCanali = new ArrayList<Canale>();
 			if(count > 0) {
@@ -110,17 +118,20 @@ public class PspDAO extends BaseDAO{
 					listaRs.add(elem );
 				}
 			} 
-	
+
 			return new ListaCanaliDTOResponse(count, listaRs);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public LeggiCanaleDTOResponse leggiCanale(LeggiCanaleDTO leggiCanaleDTO) throws ServiceException,PspNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiCanaleDTOResponse response = new LeggiCanaleDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiCanaleDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			PspBD pspBD = new PspBD(bd);
 			Canale canale = pspBD.getCanale(leggiCanaleDTO.getIdPsp(), leggiCanaleDTO.getIdCanale(), leggiCanaleDTO.getTipoVersamento());
@@ -132,7 +143,8 @@ public class PspDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new PspNonTrovatoException(e.getMessage(), e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 }

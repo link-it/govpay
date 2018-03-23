@@ -81,8 +81,10 @@ public class DominiDAO extends BaseDAO{
 	public PutDominioDTOResponse createOrUpdate(PutDominioDTO putDominioDTO) throws ServiceException,
 	DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutDominioDTOResponse dominioDTOResponse = new PutDominioDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(putDominioDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd); 
 			// stazione
 			try {
@@ -140,14 +142,17 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException(e.getMessage());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return dominioDTOResponse;
 	}
 
 	public FindDominiDTOResponse findDomini(FindDominiDTO listaDominiDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaDominiDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
 
 			DominiBD dominiBD = new DominiBD(bd);
@@ -170,13 +175,16 @@ public class DominiDAO extends BaseDAO{
 			return new FindDominiDTOResponse(dominiBD.count(filter), dominiBD.findAll(filter));
 
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public GetDominioDTOResponse getDominio(GetDominioDTO getDominioDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getDominioDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
 
 			GetDominioDTOResponse response = new GetDominioDTOResponse(AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio()));
@@ -184,13 +192,16 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException("Dominio " + getDominioDTO.getCodDominio() + " non censito in Anagrafica");
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public FindUnitaOperativeDTOResponse findUnitaOperative(FindUnitaOperativeDTO findUnitaOperativeDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(findUnitaOperativeDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
 
 			UnitaOperativeBD unitaOperativeBD = new UnitaOperativeBD(bd);
@@ -216,13 +227,16 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindUnitaOperativeDTOResponse(unitaOperativeBD.count(filter), unitaOperativeBD.findAll(filter));
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public GetUnitaOperativaDTOResponse getUnitaOperativa(GetUnitaOperativaDTO getUnitaOperativaDTO) throws NotAuthorizedException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getUnitaOperativaDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
 
 			Dominio dominio = null;
@@ -236,16 +250,19 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new UnitaOperativaNonTrovataException("Unita Operativa " + getUnitaOperativaDTO.getCodUnivocoUnitaOperativa() + " non censito in Anagrafica per il dominio " + getUnitaOperativaDTO.getCodDominio());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public PutUnitaOperativaDTOResponse createOrUpdateUnitaOperativa(PutUnitaOperativaDTO putUnitaOperativaDTO) throws ServiceException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		PutUnitaOperativaDTOResponse putUoDTOResponse = new PutUnitaOperativaDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(putUnitaOperativaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd);
-			
+
 			try {
 				// inserisco l'iddominio
 				putUnitaOperativaDTO.getUo().setIdDominio(AnagraficaManager.getDominio(bd, putUnitaOperativaDTO.getIdDominio()).getId());
@@ -269,14 +286,17 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new UnitaOperativaNonTrovataException(e.getMessage());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return putUoDTOResponse;
 	}
 
 	public FindIbanDTOResponse findIban(FindIbanDTO findIbanDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(findIbanDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
@@ -300,13 +320,16 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindIbanDTOResponse(ibanAccreditoBD.count(filter), ibanAccreditoBD.findAll(filter));
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public GetIbanDTOResponse getIban(GetIbanDTO getIbanDTO) throws NotAuthorizedException, DominioNonTrovatoException, IbanAccreditoNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getIbanDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
 
 			Dominio dominio = null;
@@ -320,15 +343,18 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IbanAccreditoNonTrovatoException("Iban di accredito " + getIbanDTO.getCodIbanAccredito() + " non censito in Anagrafica per il dominio " + getIbanDTO.getCodDominio());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public PutIbanAccreditoDTOResponse createOrUpdateIbanAccredito(PutIbanAccreditoDTO putIbanAccreditoDTO) throws ServiceException, DominioNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = new PutIbanAccreditoDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
-			
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
 			this.autorizzaRichiesta(putIbanAccreditoDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd);
 			try {
 				// inserisco l'iddominio
@@ -353,14 +379,17 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IbanAccreditoNonTrovatoException(e.getMessage());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return putIbanAccreditoDTOResponse;
 	}
 
 	public FindTributiDTOResponse findTributi(FindTributiDTO findTributiDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(findTributiDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
 
 			TributiBD ibanAccreditoBD = new TributiBD(bd);
@@ -392,13 +421,16 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindTributiDTOResponse(ibanAccreditoBD.count(filter), lst);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public GetTributoDTOResponse getTributo(GetTributoDTO getTributoDTO) throws NotAuthorizedException, DominioNonTrovatoException, TributoNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getTributoDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
 
 			Dominio dominio = null;
@@ -413,15 +445,18 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException("Tributo " + getTributoDTO.getCodTributo() + " non censito in Anagrafica per il dominio " + getTributoDTO.getCodDominio());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public PutEntrataDominioDTOResponse createOrUpdateEntrataDominio(PutEntrataDominioDTO putEntrataDominioDTO) throws ServiceException, 
-		DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{ 
+	DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{ 
 		PutEntrataDominioDTOResponse putIbanAccreditoDTOResponse = new PutEntrataDominioDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(putEntrataDominioDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd);
 			try {
 				// inserisco l'iddominio
@@ -429,7 +464,7 @@ public class DominiDAO extends BaseDAO{
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException(e.getMessage());
 			}
-			
+
 			TipoTributo tipoTributo = null;
 			// bollo telematico
 			try {
@@ -437,9 +472,9 @@ public class DominiDAO extends BaseDAO{
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new TipoTributoNonTrovatoException(e.getMessage());
 			}
-			
+
 			putEntrataDominioDTO.getTributo().setIdTipoTributo(tipoTributo.getId());
-			
+
 			// Iban Accredito 
 			try {
 				if(putEntrataDominioDTO.getIbanAccredito() != null) {
@@ -449,7 +484,7 @@ public class DominiDAO extends BaseDAO{
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new IbanAccreditoNonTrovatoException(e.getMessage());
 			}
-			
+
 			// Iban Accredito postale
 			try {
 				if(putEntrataDominioDTO.getIbanAppoggio() != null) {
@@ -459,8 +494,8 @@ public class DominiDAO extends BaseDAO{
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new IbanAccreditoNonTrovatoException(e.getMessage());
 			}
-			
-			
+
+
 			TributiBD tributiBD = new TributiBD(bd);
 			TributoFilter filter = tributiBD.newFilter(); 
 			filter.setCodDominio(putEntrataDominioDTO.getIdDominio());
@@ -477,7 +512,8 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException(e.getMessage());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return putIbanAccreditoDTOResponse;
 	}

@@ -235,7 +235,7 @@ public class Rpt extends BasicBD{
 				} else {
 					ctx.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv.getIuv() + ccp);
 				}
-				it.govpay.bd.model.Rpt rpt = RptUtils.buildRpt(intermediario, stazione, ctx.getPagamentoCtx().getCodCarrello(), versamento, iuv, ccp, applicazione, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
+				it.govpay.bd.model.Rpt rpt = RptUtils.buildRpt(intermediario, stazione, ctx.getPagamentoCtx().getCodCarrello(), versamento, iuv.getIuv(), ccp, applicazione, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
 				rpt.setCodSessionePortale(ctx.getPagamentoCtx().getCodSessionePortale());
 				
 				if(pagamentoPortale!= null)

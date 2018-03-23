@@ -49,17 +49,19 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 
 public class IntermediariDAO extends BaseDAO{
-	
+
 	public PutIntermediarioDTOResponse createOrUpdateIntermediario(PutIntermediarioDTO putIntermediarioDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutIntermediarioDTOResponse intermediarioDTOResponse = new PutIntermediarioDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(putIntermediarioDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.SCRITTURA,bd); 
-			
+
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = intermediariBD.newFilter(false);
 			filter.setCodIntermediario(putIntermediarioDTO.getIdIntermediario());
-			
+
 			// flag creazione o update
 			boolean isCreate = intermediariBD.count(filter) == 0;
 			intermediarioDTOResponse.setCreated(isCreate);
@@ -71,15 +73,18 @@ public class IntermediariDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return intermediarioDTOResponse;
 	}
 
 	public PutStazioneDTOResponse createOrUpdateStazione(PutStazioneDTO putStazioneDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutStazioneDTOResponse stazioneDTOResponse = new PutStazioneDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(putStazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.SCRITTURA,bd); 
 			try {
 				// inserisco l'iddominio
@@ -92,7 +97,7 @@ public class IntermediariDAO extends BaseDAO{
 			StazioneFilter filter = stazioniBD.newFilter(false);
 			filter.setCodIntermediario(putStazioneDTO.getIdIntermediario());
 			filter.setCodStazione(putStazioneDTO.getIdStazione());
-			
+
 			// flag creazione o update
 			boolean isCreate = stazioniBD.count(filter) == 0;
 			stazioneDTOResponse.setCreated(isCreate);
@@ -104,14 +109,17 @@ public class IntermediariDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return stazioneDTOResponse;
 	}
 
 	public FindIntermediariDTOResponse findIntermediari(FindIntermediariDTO listaIntermediariDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaIntermediariDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = null;
@@ -125,14 +133,15 @@ public class IntermediariDAO extends BaseDAO{
 			filter.setOffset(listaIntermediariDTO.getOffset());
 			filter.setLimit(listaIntermediariDTO.getLimit());
 			filter.getFilterSortList().addAll(listaIntermediariDTO.getFieldSortList());
-			
+
 			return new FindIntermediariDTOResponse(intermediariBD.count(filter), intermediariBD.findAll(filter));
-			
+
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public GetIntermediarioDTOResponse getIntermediario(GetIntermediarioDTO getIntermediarioDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, ServiceException, NotAuthenticatedException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		try {
@@ -142,14 +151,17 @@ public class IntermediariDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException("Intermediario " + getIntermediarioDTO.getCodIntermediario() + " non censito in Anagrafica");
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
-	
+
+
 	public FindStazioniDTOResponse findStazioni(FindStazioniDTO findStazioniDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(findStazioniDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			StazioniBD stazioneBD = new StazioniBD(bd);
 			StazioneFilter filter = null;
@@ -168,16 +180,19 @@ public class IntermediariDAO extends BaseDAO{
 
 			return new FindStazioniDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public GetStazioneDTOResponse getStazione(GetStazioneDTO getStazioneDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, StazioneNonTrovataException, ServiceException, NotAuthenticatedException { 
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getStazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			try {
-				 AnagraficaManager.getIntermediario(bd, getStazioneDTO.getCodIntermediario());
+				AnagraficaManager.getIntermediario(bd, getStazioneDTO.getCodIntermediario());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new IntermediarioNonTrovatoException("Intermediario " + getStazioneDTO.getCodIntermediario() + " non censito in Anagrafica");
 			}
@@ -186,8 +201,9 @@ public class IntermediariDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new StazioneNonTrovataException("Stazione " + getStazioneDTO.getCodStazione() + " non censita in Anagrafica per l'intermediario " + getStazioneDTO.getCodIntermediario());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 }

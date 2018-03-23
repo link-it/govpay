@@ -61,9 +61,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException {
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpContext ctx = GpThreadLocal.get();
-		BasicBD bd = BasicBD.newInstance(ctx.getTransactionId());
+		BasicBD bd = null;
 
 		try {
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 			List<Versamento> versamenti = new ArrayList<Versamento>();
 
 			// Aggiungo il codSessionePortale al PaymentContext
@@ -159,7 +160,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				}
 
 				sommaImporti += vTmp.getImportoTotale().doubleValue();
-				
+
 				// init incasso
 				vTmp.setIncasso(hasBollo ? null : false);
 			}
@@ -294,15 +295,17 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			return response;
 		}finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
 
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
@@ -313,16 +316,18 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}catch(NotFoundException e) {
 			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getIdSessione()+"]");
 		}finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
 
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
-			
+
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
 
@@ -342,7 +347,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<PagamentoPortale>());
 			}
 		}finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 }

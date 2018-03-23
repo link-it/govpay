@@ -63,6 +63,7 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.business.Applicazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -190,26 +191,22 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-
-			IuvBD iuvBD = new IuvBD(bd);
-			Iuv iuvModel = null;
+			
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			Versamento versamento = null;
+			
 			try {
-				iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
-			} catch (NotFoundException e) {
-				// iuv non trovato... se non ho una applicazione di default il pagamento e' sconosciuto.
+				versamento = versamentiBD.getVersamento(codDominio, iuv);
+			}catch (NotFoundException e) {
 				if(dominio.getIdApplicazioneDefault() == null) {
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
 			}
 
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			Versamento versamento = null;
 			try {
 				try {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
-					if(iuvModel == null) throw new NotFoundException();
-
-					versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
+					if(versamento == null) throw new NotFoundException();
 
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, bd);
@@ -235,18 +232,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 				} catch (NotFoundException e) {
 					// Versamento non trovato, devo interrogare l'applicazione.
-					
-					if(iuvModel != null) {
-						ctx.log("ccp.versamentoNonPresente", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), null, null, codDominio, iuv, bd);
-						ctx.log("ccp.versamentoNonPresenteOk", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
-					} else {
-						ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
-						String codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(bd));
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, null, codDominio, iuv, bd);
-						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
-						ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
-					}
+					// Versamento non trovato, devo interrogare l'applicazione.
+					ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
+					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
+					String codApplicazione = new Applicazione(bd).getApplicazioneDominio(dominio,iuv).getCodApplicazione();
+					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, null, codDominio, iuv, bd);
+					new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
+					ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, codDominio, e1.getMessage());
@@ -289,7 +281,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			// Creazione dell'RPT
 			Anagrafica versante = toOrm(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante());
-			Rpt rpt = RptUtils.buildRpt(intermediario, stazione, null, versamento, iuvModel, ccp, null, psp, canale, versante, StAutenticazioneSoggetto.N_A.value(), null, null, bd);
+			Rpt rpt = RptUtils.buildRpt(intermediario, stazione, null, versamento, iuv, ccp, null, psp, canale, versante, StAutenticazioneSoggetto.N_A.value(), null, null, bd);
 
 			ctx.log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
@@ -466,29 +458,25 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
 
-			IuvBD iuvBD = new IuvBD(bd);
-			Iuv iuvModel = null;
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			Versamento versamento = null;
+			
 			try {
-				iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
-				ctx.log("ccp.iuvPresente", iuvModel.getCodVersamentoEnte());
-			} catch (NotFoundException e) {
-				// iuv non trovato... se non ho una applicazione riconducibile il pagamento e' sconosciuto.
+				versamento = versamentiBD.getVersamento(codDominio, iuv);
+				ctx.log("ccp.iuvPresente", versamento.getCodVersamentoEnte());
+			}catch (NotFoundException e) {
 				if(it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(bd)) == null) {
 					ctx.log("ccp.iuvNonPresenteNoAppDefault");
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
 				ctx.log("ccp.iuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione());
 			}
-
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			Versamento versamento = null;
+			
 			try {
 				try {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
-					if(iuvModel == null) throw new NotFoundException();
+					if(versamento == null) throw new NotFoundException();
 					
-					versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
-
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, bd);
 
@@ -515,18 +503,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 				} catch (NotFoundException e) {
 					// Versamento non trovato, devo interrogare l'applicazione.
-					
-					if(iuvModel != null) {
-						ctx.log("ccp.versamentoNonPresente", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), null, null, codDominio, iuv, bd);
-						ctx.log("ccp.versamentoNonPresenteOk", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
-					} else {
-						ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
-						String codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(bd));
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, null, codDominio, iuv, bd);
-						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
-						ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
-					}
+					ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
+					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
+					String codApplicazione = new Applicazione(bd).getApplicazioneDominio(dominio,iuv).getCodApplicazione();
+					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, null, codDominio, iuv, bd);
+					new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
+					ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, codDominio);
@@ -544,7 +526,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti(bd).size() != 1) {
-				throw new NdpException(FaultPa.PAA_SEMANTICA, codDominio, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
+				throw new NdpException(FaultPa.PAA_SEMANTICA, codDominio, "Il versamento contiene piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
 			}
 
 			EsitoVerificaRPT esito = new EsitoVerificaRPT();

@@ -43,13 +43,15 @@ public class EntrateDAO extends BaseDAO{
 
 	public PutEntrataDTOResponse createOrUpdateEntrata(PutEntrataDTO putTipoTributoDTO) throws ServiceException,TipoTributoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutEntrataDTOResponse intermediarioDTOResponse = new PutEntrataDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(putTipoTributoDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd); 
 			TipiTributoBD intermediariBD = new TipiTributoBD(bd);
 			TipoTributoFilter filter = intermediariBD.newFilter(false);
 			filter.setCodTributo(putTipoTributoDTO.getCodTributo());
-			
+
 			// flag creazione o update
 			boolean isCreate = intermediariBD.count(filter) == 0;
 			intermediarioDTOResponse.setCreated(isCreate);
@@ -61,14 +63,17 @@ public class EntrateDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoTributoNonTrovatoException(e.getMessage());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return intermediarioDTOResponse;
 	}
 
 	public FindEntrateDTOResponse findEntrate(FindEntrateDTO findEntrateDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(findEntrateDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 
 			TipiTributoBD stazioneBD = new TipiTributoBD(bd);
@@ -87,20 +92,24 @@ public class EntrateDAO extends BaseDAO{
 
 			return new FindEntrateDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public GetEntrataDTOResponse getEntrata(GetEntrataDTO getEntrataDTO) throws NotAuthorizedException, TipoTributoNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		GetEntrataDTOResponse response = null;
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getEntrataDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 			response = new GetEntrataDTOResponse(AnagraficaManager.getTipoTributo(bd, getEntrataDTO.getCodTipoTributo()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoTributoNonTrovatoException("Entrata " + getEntrataDTO.getCodTipoTributo() + " non censita in Anagrafica");
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return response;
 	}
