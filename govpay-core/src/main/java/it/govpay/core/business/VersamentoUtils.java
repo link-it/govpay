@@ -353,6 +353,9 @@ public class VersamentoUtils {
 		if(numeroAvviso == null)
 			return null;
 		
+		if(numeroAvviso.length() != 18)
+			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
+		
 		try {
 			Long.parseLong(numeroAvviso);
 		}catch(Exception e) {
