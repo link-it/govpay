@@ -329,15 +329,15 @@ public class Gp21Utils {
 		return iuvRichiestiModel;
 	}
 
-	public static List<IuvGenerato> toIuvGenerato(List<it.govpay.core.business.model.Iuv> iuvGeneratiModel, Versione versione) {
+	public static List<IuvGenerato> toIuvGenerato(List<it.govpay.core.business.model.Iuv> iuvGeneratiModel) {
 		List<IuvGenerato> iuvGenerati = new ArrayList<IuvGenerato>();
 		for (it.govpay.core.business.model.Iuv iuvGeneratoModel : iuvGeneratiModel) {
-			iuvGenerati.add(toIuvGenerato(iuvGeneratoModel, versione));
+			iuvGenerati.add(toIuvGenerato(iuvGeneratoModel));
 		}
 		return iuvGenerati;
 	}
 	
-	public static IuvGenerato toIuvGenerato(it.govpay.core.business.model.Iuv iuvGeneratoModel, Versione versione) {
+	public static IuvGenerato toIuvGenerato(it.govpay.core.business.model.Iuv iuvGeneratoModel) {
 		IuvGenerato iuvGenerato = new IuvGenerato();
 		iuvGenerato.setBarCode(iuvGeneratoModel.getBarCode());
 		iuvGenerato.setCodApplicazione(iuvGeneratoModel.getCodApplicazione());
@@ -345,13 +345,11 @@ public class Gp21Utils {
 		iuvGenerato.setCodVersamentoEnte(iuvGeneratoModel.getCodVersamentoEnte());
 		iuvGenerato.setIuv(iuvGeneratoModel.getIuv());
 		iuvGenerato.setQrCode(iuvGeneratoModel.getQrCode());
-		if(versione.compareVersione(Versione.GP_SOAP_02_03) >= 0) {
-			iuvGenerato.setNumeroAvviso(iuvGeneratoModel.getNumeroAvviso());
-		}
+		iuvGenerato.setNumeroAvviso(iuvGeneratoModel.getNumeroAvviso());
 		return iuvGenerato;
 	}
 
-	public static Collection<? extends IuvGenerato> toIuvCaricato(List<it.govpay.core.business.model.Iuv> iuvCaricatiModel, Versione versione) {
+	public static Collection<? extends IuvGenerato> toIuvCaricato(List<it.govpay.core.business.model.Iuv> iuvCaricatiModel) {
 		List<IuvGenerato> iuvCaricati = new ArrayList<IuvGenerato>();
 		for (it.govpay.core.business.model.Iuv iuvCaricatoModel : iuvCaricatiModel) {
 			IuvGenerato iuvCaricato = new IuvGenerato();
@@ -361,16 +359,14 @@ public class Gp21Utils {
 			iuvCaricato.setCodVersamentoEnte(iuvCaricatoModel.getCodVersamentoEnte());
 			iuvCaricato.setIuv(iuvCaricatoModel.getIuv());
 			iuvCaricato.setQrCode(iuvCaricatoModel.getQrCode());
-			if(versione.compareVersione(Versione.GP_SOAP_02_03) >= 0) {
-				iuvCaricato.setNumeroAvviso(iuvCaricatoModel.getNumeroAvviso());
-			}
+			iuvCaricato.setNumeroAvviso(iuvCaricatoModel.getNumeroAvviso());
 			iuvCaricati.add(iuvCaricato);
 		}
 		return iuvCaricati;
 	}
 	
 	
-	public static it.govpay.core.rs.v1.beans.base.Riscossione toRiscossione(Pagamento pagamento, Versionabile.Versione versione, BasicBD bd, int idx, String urlPendenza, String urlRpt) throws ServiceException {
+	public static it.govpay.core.rs.v1.beans.base.Riscossione toRiscossione(Pagamento pagamento, BasicBD bd, int idx, String urlPendenza, String urlRpt) throws ServiceException {
 		it.govpay.core.rs.v1.beans.base.Riscossione riscossione = new it.govpay.core.rs.v1.beans.base.Riscossione();
 
 		if(pagamento.getAllegato() != null) {

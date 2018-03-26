@@ -263,13 +263,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "data_msg_ricevuta";
 			}
 		}
-		if(field.equals(RPT.model().FIRMA_RICEVUTA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".firma_ricevuta";
-			}else{
-				return "firma_ricevuta";
-			}
-		}
 		if(field.equals(RPT.model().COD_ESITO_PAGAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_esito_pagamento";
@@ -289,6 +282,55 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".xml_rt";
 			}else{
 				return "xml_rt";
+			}
+		}
+		if(field.equals(RPT.model().COD_CANALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_canale";
+			}else{
+				return "cod_canale";
+			}
+		}
+		if(field.equals(RPT.model().COD_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_psp";
+			}else{
+				return "cod_psp";
+			}
+		}
+		if(field.equals(RPT.model().COD_INTERMEDIARIO_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_intermediario_psp";
+			}else{
+				return "cod_intermediario_psp";
+			}
+		}
+		if(field.equals(RPT.model().TIPO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_versamento";
+			}else{
+				return "tipo_versamento";
+			}
+		}
+		if(field.equals(RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_identificativo_attestante";
+			}else{
+				return "tipo_identificativo_attestante";
+			}
+		}
+		if(field.equals(RPT.model().IDENTIFICATIVO_ATTESTANTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".identificativo_attestante";
+			}else{
+				return "identificativo_attestante";
+			}
+		}
+		if(field.equals(RPT.model().DENOMINAZIONE_ATTESTANTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".denominazione_attestante";
+			}else{
+				return "denominazione_attestante";
 			}
 		}
 		if(field.equals(RPT.model().COD_STAZIONE)){
@@ -430,9 +472,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RPT.model().DATA_MSG_RICEVUTA)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
-		if(field.equals(RPT.model().FIRMA_RICEVUTA)){
-			return this.toTable(RPT.model(), returnAlias);
-		}
 		if(field.equals(RPT.model().COD_ESITO_PAGAMENTO)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
@@ -440,6 +479,27 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model(), returnAlias);
 		}
 		if(field.equals(RPT.model().XML_RT)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().COD_CANALE)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().COD_PSP)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().COD_INTERMEDIARIO_PSP)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().TIPO_VERSAMENTO)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().IDENTIFICATIVO_ATTESTANTE)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().DENOMINAZIONE_ATTESTANTE)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
 		if(field.equals(RPT.model().COD_STAZIONE)){

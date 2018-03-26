@@ -14,10 +14,10 @@ import it.govpay.core.utils.UriBuilderUtils;
 public class RptConverter {
 
 
-	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, it.govpay.bd.model.Canale canale, it.govpay.bd.model.Psp psp) throws ServiceException {
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		Rpp rsModel = new Rpp();
 		
-		rsModel.setCanale(UriBuilderUtils.getCanale(psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().getCodifica()));
+		rsModel.setCanale(UriBuilderUtils.getCanale(rpt.getCodPsp(), rpt.getCodCanale(), rpt.getTipoVersamento().getCodifica()));
 		rsModel.setCcp(rpt.getCcp());
 		rsModel.setDataRicevuta(rpt.getDataMsgRicevuta());
 		rsModel.setDataRichiesta(rpt.getDataMsgRichiesta());
@@ -47,9 +47,9 @@ public class RptConverter {
 
 		rsModel.setIdDominio(rpt.getCodDominio());
 		rsModel.setIuv(rpt.getIuv());
-		if(canale.getModelloPagamento() != null) {
+		if(rpt.getModelloPagamento() != null) {
 			ModelloPagamento mod = null;
-			switch(canale.getModelloPagamento()) {
+			switch(rpt.getModelloPagamento()) {
 			case ATTIVATO_PRESSO_PSP:
 				mod = ModelloPagamento._4;
 				break;

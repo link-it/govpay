@@ -321,8 +321,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
 			List<Rpt> rpts = versamento.getRpt(bd);
 			for(Rpt rpt : rpts) {
-				// TODO Nardi controllare versione 
-				response.getTransazione().add(Gp21Utils.toTransazione(applicazioneAutenticata.getConnettoreVerifica().getVersione(), rpt, bd));
+				response.getTransazione().add(Gp21Utils.toTransazione(rpt, bd));
 			}
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {

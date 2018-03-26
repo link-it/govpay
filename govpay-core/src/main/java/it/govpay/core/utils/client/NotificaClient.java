@@ -99,7 +99,7 @@ public class NotificaClient extends BasicClient {
 				PaNotificaTransazione paNotificaTransazione = new PaNotificaTransazione();
 				paNotificaTransazione.setCodApplicazione(notifica.getApplicazione(bd).getCodApplicazione());
 				paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(bd).getCodVersamentoEnte());
-				paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, bd));
+				paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(rpt, bd));
 				
 				if(notifica.getApplicazione(null).getConnettoreNotifica().getVersione().compareVersione(Versione.GP_SOAP_02_02) >= 0)
 					paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
@@ -158,7 +158,7 @@ public class NotificaClient extends BasicClient {
 						String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(notifica.getApplicazione(bd).getCodApplicazione(), rpt.getVersamento(bd).getCodVersamentoEnte());
 						String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 						for(Pagamento pagamento : rpt.getPagamenti(bd)) {
-							riscossioni.add(Gp21Utils.toRiscossione(pagamento, versione, bd,indice,urlPendenza,urlRpt));
+							riscossioni.add(Gp21Utils.toRiscossione(pagamento, bd, indice, urlPendenza, urlRpt));
 							indice ++;
 						}
 						notificaRsModel.setRiscossioni(riscossioni);
