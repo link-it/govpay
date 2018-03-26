@@ -73,7 +73,7 @@ public class InviaRptThread implements Runnable {
 			
 			ctx.log("pagamento.invioRptAttivata");
 				
-			Risposta risposta = RptUtils.inviaRPT(rpt, bd);
+			Risposta risposta = RptUtils.inviaRPT(rpt, this.rpt.getIntermediario(bd), this.rpt.getStazione(bd), bd);
 
 			if(bd == null) {
 				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

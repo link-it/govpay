@@ -124,10 +124,6 @@ public class RptUtils {
 			return text;
 	}
 
-	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException {
-		return inviaRPT(rpt, rpt.getIntermediario(bd), rpt.getStazione(bd), bd);
-	}
-
 	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, Intermediario intermediario, Stazione stazione, BasicBD bd) throws GovPayException, ClientException, ServiceException {
 		if(bd != null) bd.closeConnection();
 		Evento evento = new Evento();
@@ -138,12 +134,12 @@ public class RptUtils {
 			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
 			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
 			inviaRPT.setIdentificativoPSP(rpt.getCodPsp());
-			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
+			inviaRPT.setPassword(stazione.getPassword());
 			inviaRPT.setRpt(rpt.getXmlRpt());
 			
 			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
 			inviaRPT.setTipoFirma("");
-			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
+			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(intermediario, stazione, rpt, inviaRPT)); 
 			return risposta;
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null

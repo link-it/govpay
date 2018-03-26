@@ -277,7 +277,7 @@ public class Rpt extends BasicBD{
 					ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rpts.get(0).getIuv()));
 					ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpts.get(0).getCcp()));
 					ctx.log("rpt.invioRpt");
-					risposta = RptUtils.inviaRPT(rpts.get(0), this);
+					risposta = RptUtils.inviaRPT(rpts.get(0), intermediario, stazione, this);
 				}
 
 				setupConnection(GpThreadLocal.get().getTransactionId());
