@@ -45,6 +45,7 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -99,6 +100,11 @@ public class Versamento extends BasicBD {
 				if(generaIuv) {
 					Iuv iuvBusiness = new Iuv(this);
 					iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+					// imposto iuv calcolato
+					versamento.setIuvVersamento(iuv.getIuv()); 
+					// calcolo il numero avviso
+					it.govpay.core.business.model.Iuv iuv2 = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
+					versamento.setNumeroAvviso(iuv2.getNumeroAvviso());
 				}
 			}
 			
@@ -285,7 +291,7 @@ public class Versamento extends BasicBD {
 				codVersamentoEnte = iuvModel.getCodVersamentoEnte();
 			} catch (NotFoundException e) {
 				// Iuv non registrato. Vedo se c'e' un'applicazione da interrogare, altrimenti non e' recuperabile.
-				codApplicazione = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(this));
+				codApplicazione = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv).getCodApplicazione();
 				
 				if(codApplicazione == null) {
 					throw new GovPayException("L'avviso di pagamento [Dominio:" + codDominio + " Iuv:" + iuv + "] non risulta registrato, ne associabile ad un'applicazione censita.", EsitoOperazione.VER_008);

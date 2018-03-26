@@ -220,7 +220,7 @@ public class PendenzeDAO extends BaseDAO{
 				createOrUpdatePendenzaResponse.setCreated(true);
 			}
 			
-			versamentoBusiness.caricaVersamento(chiediVersamento, false, true);
+			versamentoBusiness.caricaVersamento(chiediVersamento, chiediVersamento.getNumeroAvviso() == null, true);
 			
 			// restituisco il versamento creato
 			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);
