@@ -12,28 +12,38 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 - Mailing list: [Utenti GovPay](http://www.gov4j.it/mailman/listinfo/utenti-govpay)
 - Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
 
-## Funzionalità
+## Conformità con la specifica PagoPA
 
-Di seguito un elenco delle principali funzionalità del prodotto.
-* implementazione delle Specifiche PagoPA, con supporto per pagamenti di tipo immediato, differito e ad iniziativa PSP sia monobeneficiario che multibeneficiario.
-* supporto allo storno dei pagamenti.
-* supporto ai pagamenti su circuito MyBank.
-* supporto al pagamento della Marca da Bollo Telematica.
-* aggiornato alla versione 1.7.2 delle interfacce Nodo dei Pagamenti.
-* supporto specifica IUV pluri-intermediati
-* integrazione con gli applicativi dell'Ente preposti alla gestione delle posizioni creditorie tramite Web API.
-* integrazione semplificata del/i portali cittadini dell'Ente.
-* implementazione di servizi accessori ai pagamenti.
-  * servizio di generazione IUV
-  * produzione codici per BarCode e QrCode
-  * produzione tracciati di Iban Accredito e Tabella Controparti
-  * gestione flussi rendicontazione
-  * gestione rendicontazione senza rpt
-  * risoluzione pagamenti incompleti
-  * giornale degli eventi
-  * ...
-* completa integrazione con il software di Porta di Dominio OpenSPCoop.
-* cruscotto Web di gestione e configurazione.
+* Aggiornato alla versione 1.3.2 delle specifiche attuative dei codici di versamento, riversamento e rendicontazione (SACIV)
+* Aggiornato alla versione 1.7.2 delle specifiche attuative del nodo dei pagamenti (SANP)
+* Aggiornato alla versione 2.0 della specifica WISP
+* Supporto ai pagamenti su circuito MyBank
+* Supporto al pagamento della marca da bollo digitale
+* Supporto alla stampa degli Avvisi di Pagamento
+
+## Configurabilità
+
+* Supporto per tutte le modalità di adesione: diretta, intermediario tecnologico e partner tecnologico
+* Multitenant: possibilità di ospitare più domini, intermediari e partner sulla stessa installazione
+* Supporto alla generazione di IUV conformi alla specifica, in accordo a politiche configurabili da utente
+* Integrazione utenze e ruoli da Sistemi esterni di Identity Management
+
+## API per l'integrazione applicativa
+
+* API orientata ai portali per l'attivazione dei pagamenti
+* API orientata ai Gestionali per la gestione delle posizioni debitorie
+* API orientata agli Uffici contabili per le operazioni di riconciliazione
+* Profilazione degli applicativi interni al dominio, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
+
+## Cruscotto di gestione e monitoraggio dei pagamenti
+
+* Implementazione delle funzionalita di Tavolo Operativo richieste dalla specifica AgID
+* Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
+* Gestione archivio pagamenti in attesa (APA)
+* Consultazione dei pagamenti effettuati
+* Consultazione dati di riconciliazione
+* Reportistica nei formati PDF e CSV
+* Giornale degli Eventi
 
 ## Licenza
 
