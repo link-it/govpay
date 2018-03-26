@@ -3,8 +3,6 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Applicazione;
@@ -20,8 +18,6 @@ public class LeggiRptDTOResponse {
 	private Rpt rpt;
 	private Versamento versamento;
 	private Applicazione applicazione;
-	private Canale canale;
-	private Psp psp;
 
 	public Versamento getVersamento() {
 		return versamento;
@@ -45,22 +41,6 @@ public class LeggiRptDTOResponse {
 
 	public void setRpt(Rpt rpt) {
 		this.rpt = rpt;
-	}
-
-	public Canale getCanale() {
-		return canale;
-	}
-
-	public void setCanale(Canale canale) {
-		this.canale = canale;
-	}
-
-	public Psp getPsp() {
-		return psp;
-	}
-
-	public void setPsp(Psp psp) {
-		this.psp = psp;
 	}
 
 }

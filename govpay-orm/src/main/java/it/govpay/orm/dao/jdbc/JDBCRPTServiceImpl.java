@@ -188,7 +188,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getModelloPagamento(),RPT.model().MODELLO_PAGAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodMsgRicevuta(),RPT.model().COD_MSG_RICEVUTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataMsgRicevuta(),RPT.model().DATA_MSG_RICEVUTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getFirmaRicevuta(),RPT.model().FIRMA_RICEVUTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodEsitoPagamento(),RPT.model().COD_ESITO_PAGAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getImportoTotalePagato(),RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getXmlRT(),RPT.model().XML_RT.getFieldType()),
@@ -357,8 +356,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodMsgRicevuta(), RPT.model().COD_MSG_RICEVUTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_MSG_RICEVUTA,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getDataMsgRicevuta(), RPT.model().DATA_MSG_RICEVUTA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().FIRMA_RICEVUTA,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getFirmaRicevuta(), RPT.model().FIRMA_RICEVUTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_ESITO_PAGAMENTO,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodEsitoPagamento(), RPT.model().COD_ESITO_PAGAMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().IMPORTO_TOTALE_PAGATO,false), "?");

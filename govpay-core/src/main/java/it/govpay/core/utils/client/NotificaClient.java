@@ -148,9 +148,7 @@ public class NotificaClient extends BasicClient {
 					notificaRsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt())); 
 					// rt
 					if(rpt.getXmlRt() != null) {
-						String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-						byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), rpt.getCodDominio());
-						CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+						CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
 						notificaRsModel.setRt(rt);
 					}
 					// elenco pagamenti

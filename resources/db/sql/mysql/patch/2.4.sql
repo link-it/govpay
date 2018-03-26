@@ -1,4 +1,3 @@
---GP-523
 
 CREATE TABLE tracciati
 (
@@ -52,7 +51,6 @@ CREATE TABLE operazioni
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
---GP-524
 
 CREATE TABLE gp_audit
 (
@@ -69,7 +67,6 @@ CREATE TABLE gp_audit
        CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
---GP-526
 
 CREATE TABLE ruoli
 (
@@ -83,7 +80,6 @@ CREATE TABLE ruoli
        CONSTRAINT pk_ruoli PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
--- index
 CREATE INDEX index_ruoli_1 ON ruoli (cod_ruolo);
 
 
@@ -122,7 +118,6 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracci
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('cons-req', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('cons-esito', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
---GP-525
 ALTER TABLE rpt ADD COLUMN stato_conservazione VARCHAR(35);
 ALTER TABLE rpt ADD COLUMN descrizione_stato_cons VARCHAR(512);
 ALTER TABLE rpt ADD COLUMN data_conservazione TIMESTAMP(3) DEFAULT 0;

@@ -137,27 +137,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "id_sessione";
 			}
 		}
-		if(field.equals(RPT.model().ID_CANALE.ID_PSP.COD_PSP)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_psp";
-			}else{
-				return "cod_psp";
-			}
-		}
-		if(field.equals(RPT.model().ID_CANALE.COD_CANALE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_canale";
-			}else{
-				return "cod_canale";
-			}
-		}
-		if(field.equals(RPT.model().ID_CANALE.TIPO_VERSAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo_versamento";
-			}else{
-				return "tipo_versamento";
-			}
-		}
 		if(field.equals(RPT.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
@@ -397,15 +376,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
 			return this.toTable(RPT.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
-		if(field.equals(RPT.model().ID_CANALE.ID_PSP.COD_PSP)){
-			return this.toTable(RPT.model().ID_CANALE.ID_PSP, returnAlias);
-		}
-		if(field.equals(RPT.model().ID_CANALE.COD_CANALE)){
-			return this.toTable(RPT.model().ID_CANALE, returnAlias);
-		}
-		if(field.equals(RPT.model().ID_CANALE.TIPO_VERSAMENTO)){
-			return this.toTable(RPT.model().ID_CANALE, returnAlias);
-		}
 		if(field.equals(RPT.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(RPT.model().ID_APPLICAZIONE, returnAlias);
 		}
@@ -514,12 +484,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(RPT.model().ID_PAGAMENTO_PORTALE)){
 			return "pagamenti_portale";
-		}
-		if(model.equals(RPT.model().ID_CANALE)){
-			return "canali";
-		}
-		if(model.equals(RPT.model().ID_CANALE.ID_PSP)){
-			return "psp";
 		}
 		if(model.equals(RPT.model().ID_APPLICAZIONE)){
 			return "applicazioni";

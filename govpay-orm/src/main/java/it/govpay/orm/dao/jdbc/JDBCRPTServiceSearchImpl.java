@@ -625,12 +625,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(RPT.model().ID_CANALE,false)){
-			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
-			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_CANALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_canale="+tableName2+".id");
-		}
-		
 		if(expression.inUseModel(RPT.model().ID_APPLICAZIONE,false)){
 			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
 			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_APPLICAZIONE);
@@ -679,18 +673,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE))
-			));
-
-		// RPT.model().ID_CANALE
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_CANALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_CANALE))
-			));
-
-		// RPT.model().ID_CANALE.ID_PSP
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_CANALE.ID_PSP),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_CANALE.ID_PSP))
 			));
 
 		// RPT.model().ID_PORTALE

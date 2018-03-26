@@ -236,6 +236,11 @@ public class Incassi extends BasicBD {
 						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
 					}
 					
+					PagamentiBD pagamentiBD = new PagamentiBD(this);
+					VersamentiBD versamentiBD = new VersamentiBD(this);
+					Versamento versamentoBusiness = new Versamento(this);
+					RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(this);
+					
 					for(Rendicontazione rendicontazione : fr.getRendicontazioni(this)) {
 						if(!rendicontazione.getStato().equals(StatoRendicontazione.OK)) {
 							GpThreadLocal.get().log("incasso.frAnomala", idf);
@@ -249,14 +254,18 @@ public class Incassi extends BasicBD {
 							// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
 							
 							try {
-								pagamento = new PagamentiBD(this).getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
+								pagamento = pagamentiBD.getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
 								// Pagamento gia presente. 
 							} catch (NotFoundException e) {
 								// Pagamento non presente. Lo inserisco 
 								
 								it.govpay.bd.model.Versamento versamento = null;
 								try {
-									versamento = new Versamento(this).chiediVersamento(null, null, null, null, fr.getCodDominio(), rendicontazione.getIuv());
+									// Workaround per le limitazioni in select for update. Da rimuovere quando lo iuv sara nel versamento.
+									this.disableSelectForUpdate();
+									versamento = versamentoBusiness.chiediVersamento(null, null, null, null, fr.getCodDominio(), rendicontazione.getIuv());
+									this.enableSelectForUpdate();
+									versamentiBD.getVersamento(versamento.getId());
 								} catch (GovPayException gpe) {
 									// Non deve accadere... la rendicontazione e' ok
 									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste");
@@ -274,11 +283,10 @@ public class Incassi extends BasicBD {
 								pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati());
 								pagamento.setSingoloVersamento(versamento.getSingoliVersamenti(this).get(0));
 								rendicontazione.setPagamento(pagamento);
-								new PagamentiBD(this).insertPagamento(pagamento);
+								pagamentiBD.insertPagamento(pagamento);
 								rendicontazione.setIdPagamento(pagamento.getId());
 									
 								//Aggiorno lo stato del versamento:
-								VersamentiBD versamentiBD = new VersamentiBD(this);
 								switch (versamento.getSingoliVersamenti(this).get(0).getStatoSingoloVersamento()) {
 									case NON_ESEGUITO:
 										versamentiBD.updateStatoSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId(), StatoSingoloVersamento.ESEGUITO);
@@ -299,7 +307,7 @@ public class Incassi extends BasicBD {
 						
 						//Aggiorno la FK della rendicontazione
 						rendicontazione.setIdPagamento(pagamento.getId());
-						new RendicontazioniBD(this).updateRendicontazione(rendicontazione);
+						rendicontazioniBD.updateRendicontazione(rendicontazione);
 						
 						pagamenti.add(pagamento);
 					}
