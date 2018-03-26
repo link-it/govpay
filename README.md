@@ -1,9 +1,9 @@
-# GovPay - Porta di accesso al sistema PagoPA
+# GovPay - Porta di accesso al sistema pagoPA
 GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nodo dei Pagamenti SPC del progetto PagoPa per l'integrazione degli enti pubblici con la rete interbancaria.
 
 ## Documentazione
 
-* [Introduzione a GovPay](./resources/doc/pdf/GovPay-PagoPA.pdf)
+* [Introduzione a GovPay](./resources/doc/pdf/GovPay-pagoPA.pdf)
 * [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazioneSOAP.pdf)
 * [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
 
@@ -12,7 +12,7 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 - Mailing list: [Utenti GovPay](http://www.gov4j.it/mailman/listinfo/utenti-govpay)
 - Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
 
-## Conformità con la specifica PagoPA
+## Conformità con la specifica pagoPA
 
 * Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3 
 * Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v1.7.1  
