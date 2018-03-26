@@ -64,12 +64,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class RptBuilder {
 	
-	private static final String codIntermediarioPspWISP20 = "97735020584"; 
-	private static final String codCanaleWISP20 = "97735020584_02"; 
-	private static final String codPspWISP20 = "AGID_01"; 
-	private static final TipoVersamento tipoVersamentoWISP20 = TipoVersamento.BONIFICO_BANCARIO_TESORERIA; 
-	private static final ModelloPagamento modelloPagamentoWISP20 = ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO; 
-	
 	public Rpt buildRptAttivata (String codIntermediarioPsp, 
 			String codPsp, 
 			String codCanale, 
@@ -117,11 +111,11 @@ public class RptBuilder {
 				iuv,
 				ccp,
 				portale,
-				canale != null ? canale.getCodIntermediario() : codIntermediarioPspWISP20,
-				canale != null ? canale.getPsp(bd).getCodPsp() : codPspWISP20,
-				canale != null ? canale.getCodCanale() : codCanaleWISP20,
-				canale != null ? canale.getTipoVersamento() : tipoVersamentoWISP20,
-				canale != null ? canale.getModelloPagamento() : modelloPagamentoWISP20,
+				canale != null ? canale.getCodIntermediario() : Rpt.codIntermediarioPspWISP20,
+				canale != null ? canale.getPsp(bd).getCodPsp() : Rpt.codPspWISP20,
+				canale != null ? canale.getCodCanale() : Rpt.codCanaleWISP20,
+				canale != null ? canale.getTipoVersamento() : Rpt.tipoVersamentoWISP20,
+				canale != null ? canale.getModelloPagamento() : Rpt.modelloPagamentoWISP20,
 				versante,
 				autenticazione,
 				ibanAddebito,

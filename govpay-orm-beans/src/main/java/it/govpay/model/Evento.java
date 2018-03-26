@@ -92,6 +92,9 @@ public class Evento extends BasicModel {
 		categoriaEvento = CategoriaEvento.INTERFACCIA;
 		dataRichiesta = new Date();
 		componente = COMPONENTE;
+		codPsp = Rpt.codPspWISP20;
+		codCanale = Rpt.codCanaleWISP20;
+		tipoVersamento = Rpt.tipoVersamentoWISP20;
 	}
 	
 	public Long getId() {
