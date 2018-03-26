@@ -492,7 +492,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
 					ctx.log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, bd);
+					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv, bd);
 					new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
 					ctx.log("ccp.versamentoIuvNonPresenteOk",applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
