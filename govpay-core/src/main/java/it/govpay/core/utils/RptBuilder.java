@@ -115,7 +115,7 @@ public class RptBuilder {
 				versamento,
 				iuv,
 				ccp,
-				null,
+				portale,
 				canale != null ? canale.getCodIntermediario() : codIntermediarioPspWISP20,
 				canale != null ? canale.getPsp(bd).getCodPsp() : codPspWISP20,
 				canale != null ? canale.getCodCanale() : codCanaleWISP20,
