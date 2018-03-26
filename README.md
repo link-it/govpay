@@ -14,12 +14,11 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 
 ## Conformità con la specifica PagoPA
 
-* Aggiornato alla versione 1.3.2 delle specifiche attuative dei codici di versamento, riversamento e rendicontazione (SACIV)
-* Aggiornato alla versione 1.7.2 delle specifiche attuative del nodo dei pagamenti (SANP)
-* Aggiornato alla versione 2.0 della specifica WISP
-* Supporto ai pagamenti su circuito MyBank
-* Supporto al pagamento della marca da bollo digitale
-* Supporto alla stampa degli Avvisi di Pagamento
+* Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3 
+* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v1.7.1  
+* Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
+* Avviso di pagamento analogico nel sistema pagoPA, v1.2.3
+* Transazioni MyBank attraverso il Nodo dei Pagamenti-SPC, v1.2.1
 
 ## Configurabilità
 
