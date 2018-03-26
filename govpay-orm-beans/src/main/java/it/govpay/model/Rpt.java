@@ -26,6 +26,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Canale.TipoVersamento;
 
 public class Rpt extends BasicModel{
 	
@@ -133,9 +134,12 @@ public class Rpt extends BasicModel{
 		OK; 
 	}
 	
+	public enum TipoIdentificativoAttestante {
+		G,A,B;
+	}
+	
 	private Long id;
 	private long idVersamento;
-	private long idCanale;
 	private Long idApplicazione;
 	private String ccp;
 	private String codCarrello;
@@ -152,9 +156,12 @@ public class Rpt extends BasicModel{
 	private byte[] xmlRpt;
 	private Date dataAggiornamento;
 	private String callbackURL;
-	private ModelloPagamento modelloPagamento;
-	private FirmaRichiesta firmaRichiesta;
 	
+	private String codCanale;
+	private String codPsp;
+	private String codIntermediarioPsp;
+	private TipoVersamento tipoVersamento;
+	private ModelloPagamento modelloPagamento;
 	private String codMsgRicevuta;
 	private Date dataMsgRicevuta;
 	private EsitoPagamento esitoPagamento;
@@ -169,6 +176,29 @@ public class Rpt extends BasicModel{
 	private String descrizioneStatoConservazione;
 	private Long idPagamentoPortale;
 	
+	private TipoIdentificativoAttestante tipoIdentificativoAttestante;
+	private String identificativoAttestante;
+	private String denominazioneAttestante;
+	
+	
+	public TipoIdentificativoAttestante getTipoIdentificativoAttestante() {
+		return tipoIdentificativoAttestante;
+	}
+	public void setTipoIdentificativoAttestante(TipoIdentificativoAttestante tipoIdentificativoAttestante) {
+		this.tipoIdentificativoAttestante = tipoIdentificativoAttestante;
+	}
+	public String getIdentificativoAttestante() {
+		return identificativoAttestante;
+	}
+	public void setIdentificativoAttestante(String identificativoAttestante) {
+		this.identificativoAttestante = identificativoAttestante;
+	}
+	public String getDenominazioneAttestante() {
+		return denominazioneAttestante;
+	}
+	public void setDenominazioneAttestante(String denominazioneAttestante) {
+		this.denominazioneAttestante = denominazioneAttestante;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -180,12 +210,6 @@ public class Rpt extends BasicModel{
 	}
 	public void setIdVersamento(long idVersamento) {
 		this.idVersamento = idVersamento;
-	}
-	public long getIdCanale() {
-		return idCanale;
-	}
-	public void setIdCanale(long idCanale) {
-		this.idCanale = idCanale;
 	}
 	public Long getIdApplicazione() {
 		return idApplicazione;
@@ -277,18 +301,6 @@ public class Rpt extends BasicModel{
 	public void setCallbackURL(String callbackURL) {
 		this.callbackURL = callbackURL;
 	}
-	public ModelloPagamento getModelloPagamento() {
-		return modelloPagamento;
-	}
-	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
-		this.modelloPagamento = modelloPagamento;
-	}
-	public FirmaRichiesta getFirmaRichiesta() {
-		return firmaRichiesta;
-	}
-	public void setFirmaRichiesta(FirmaRichiesta firmaRichiesta) {
-		this.firmaRichiesta = firmaRichiesta;
-	}
 	public Date getDataMsgRicevuta() {
 		return dataMsgRicevuta;
 	}
@@ -361,6 +373,36 @@ public class Rpt extends BasicModel{
 	}
 	public void setIdPagamentoPortale(Long idPagamentoPortale) {
 		this.idPagamentoPortale = idPagamentoPortale;
+	}
+	public String getCodCanale() {
+		return codCanale;
+	}
+	public void setCodCanale(String codCanale) {
+		this.codCanale = codCanale;
+	}
+	public String getCodPsp() {
+		return codPsp;
+	}
+	public void setCodPsp(String codPsp) {
+		this.codPsp = codPsp;
+	}
+	public String getCodIntermediarioPsp() {
+		return codIntermediarioPsp;
+	}
+	public void setCodIntermediarioPsp(String codIntermediarioPsp) {
+		this.codIntermediarioPsp = codIntermediarioPsp;
+	}
+	public TipoVersamento getTipoVersamento() {
+		return tipoVersamento;
+	}
+	public void setTipoVersamento(TipoVersamento tipoVersamento) {
+		this.tipoVersamento = tipoVersamento;
+	}
+	public ModelloPagamento getModelloPagamento() {
+		return modelloPagamento;
+	}
+	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
+		this.modelloPagamento = modelloPagamento;
 	}
 
 }

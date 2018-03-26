@@ -51,8 +51,6 @@ public class RptDAO extends BaseDAO{
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento(bd));
 			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-			response.setCanale(rpt.getCanale(bd));
-			response.setPsp(rpt.getPsp(bd));
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {
@@ -139,9 +137,6 @@ public class RptDAO extends BaseDAO{
 					elem.setRpt(rpt);
 					elem.setVersamento(rpt.getVersamento(bd));
 					elem.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-					elem.setCanale(rpt.getCanale(bd));
-					elem.setPsp(rpt.getPsp(bd));
-
 					resList.add(elem);
 				}
 			} 

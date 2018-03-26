@@ -193,10 +193,16 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			fields.add(RPT.model().CALLBACK_URL);
 			fields.add(RPT.model().COD_MSG_RICEVUTA);
 			fields.add(RPT.model().DATA_MSG_RICEVUTA);
-			fields.add(RPT.model().FIRMA_RICEVUTA);
 			fields.add(RPT.model().COD_ESITO_PAGAMENTO);
 			fields.add(RPT.model().IMPORTO_TOTALE_PAGATO);
 			fields.add(RPT.model().XML_RT);
+			fields.add(RPT.model().COD_CANALE);
+			fields.add(RPT.model().COD_PSP);
+			fields.add(RPT.model().COD_INTERMEDIARIO_PSP);
+			fields.add(RPT.model().TIPO_VERSAMENTO);
+			fields.add(RPT.model().TIPO_IDENTIFICATIVO_ATTESTANTE);
+			fields.add(RPT.model().IDENTIFICATIVO_ATTESTANTE);
+			fields.add(RPT.model().DENOMINAZIONE_ATTESTANTE);
 			fields.add(RPT.model().COD_STAZIONE);
 			fields.add(RPT.model().COD_TRANSAZIONE_RPT);
 			fields.add(RPT.model().COD_TRANSAZIONE_RT);
@@ -207,7 +213,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getRPTFieldConverter().toTable(RPT.model())));
 			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getRPTFieldConverter().toTable(RPT.model())));
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getRPTFieldConverter().toTable(RPT.model())));
-			fields.add(new CustomField("id_canale", Long.class, "id_canale", this.getRPTFieldConverter().toTable(RPT.model())));
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -215,7 +220,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 
 				Long idVersamento = (Long)map.remove("id_versamento");
 
-				Long idCanale = (Long)map.remove("id_canale");
 				Long idPortale = getNullableValueFromMap("id_applicazione", map);
 				Long idPagamentoPortale = getNullableValueFromMap("id_pagamento_portale", map);
 
@@ -229,16 +233,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 				id_rpt_versamento.setId(idVersamento);
 				rpt.setIdVersamento(id_rpt_versamento);
 
-
-				it.govpay.orm.IdCanale id_rpt_canale = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_rpt_canale = ((JDBCCanaleServiceSearch)(this.getServiceManager().getCanaleServiceSearch())).findId(idCanale, false);
-				}else{
-					id_rpt_canale = new it.govpay.orm.IdCanale();
-				}
-				id_rpt_canale.setId(idCanale);
-
-				rpt.setIdCanale(id_rpt_canale);
 
 				if(idPortale != null && idPortale > 0){
 					it.govpay.orm.IdApplicazione id_rpt_applicazione = null;
@@ -553,14 +547,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 				obj.getIdVersamento().getIdApplicazione().setId(imgSaved.getIdVersamento().getIdApplicazione().getId());
 			}
 		}
-		if(obj.getIdCanale()!=null && 
-				imgSaved.getIdCanale()!=null){
-			obj.getIdCanale().setId(imgSaved.getIdCanale().getId());
-			if(obj.getIdCanale().getIdPsp()!=null && 
-					imgSaved.getIdCanale().getIdPsp()!=null){
-				obj.getIdCanale().getIdPsp().setId(imgSaved.getIdCanale().getIdPsp().getId());
-			}
-		}
 
 	}
 	
@@ -625,12 +611,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(RPT.model().ID_CANALE,false)){
-			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
-			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_CANALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_canale="+tableName2+".id");
-		}
-		
 		if(expression.inUseModel(RPT.model().ID_APPLICAZIONE,false)){
 			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
 			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_APPLICAZIONE);
@@ -679,18 +659,6 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE))
-			));
-
-		// RPT.model().ID_CANALE
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_CANALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_CANALE))
-			));
-
-		// RPT.model().ID_CANALE.ID_PSP
-		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_CANALE.ID_PSP),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_CANALE.ID_PSP))
 			));
 
 		// RPT.model().ID_PORTALE

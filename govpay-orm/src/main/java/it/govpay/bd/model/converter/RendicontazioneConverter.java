@@ -21,7 +21,7 @@ public class RendicontazioneConverter {
 		dto.setIuv(vo.getIuv());
 		dto.setIur(vo.getIur());
 		dto.setIndiceDati(vo.getIndiceDati());
-		dto.setImporto(new BigDecimal(vo.getImportoPagato()));
+		dto.setImporto(BigDecimal.valueOf(vo.getImportoPagato()));
 		dto.setData(vo.getData());
 		dto.setEsito(EsitoRendicontazione.toEnum(vo.getEsito()));
 		dto.setStato(StatoRendicontazione.valueOf(vo.getStato()));
