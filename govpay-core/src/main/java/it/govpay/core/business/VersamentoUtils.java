@@ -187,7 +187,7 @@ public class VersamentoUtils {
 			if(!versamento.getApplicazione(bd).isTrusted())
 				throw new GovPayException(EsitoOperazione.VER_019);
 			
-			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd).getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamento.getUo(bd).getDominio(bd).getCodDominio(), null,diritti))
+			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd).getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamento.getUo(bd).getDominio(bd).getCodDominio(), null, diritti))
 				throw new GovPayException(EsitoOperazione.VER_021);
 			
 			try {
@@ -298,11 +298,16 @@ public class VersamentoUtils {
 		
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
-			if(versamento.isAggiornabile() && versamento.getApplicazione(bd).getConnettoreVerifica() != null) {
-				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), versamento.getCodBundlekey(), versamento.getAnagraficaDebitore().getCodUnivoco(), versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd);
+			throw new VersamentoScadutoException(versamento.getDataScadenza());
+		}else {
+			if(versamento.getDataValidita() != null && versamento.getDataValidita().before(new Date())) {
+				if(versamento.getApplicazione(bd).getConnettoreVerifica() != null)
+					versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), versamento.getCodBundlekey(), versamento.getAnagraficaDebitore().getCodUnivoco(), versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd);
+				else // connettore verifica non definito, versamento non aggiornabile
+					throw new VersamentoScadutoException(versamento.getDataScadenza());
 			} else {
-				throw new VersamentoScadutoException(versamento.getDataScadenza());
-			}
+				// versamento valido
+			} 
 		}
 		return versamento;
 	}
