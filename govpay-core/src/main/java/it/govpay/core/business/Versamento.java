@@ -235,7 +235,9 @@ public class Versamento extends BasicBD {
 	}
 
 	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref) throws ServiceException, GovPayException {
-		return this.chiediVersamento(null, null, null, null, ref.getIdDominio(), ref.getNumeroAvviso());
+		// conversione numeroAvviso in iuv
+		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso());
+		return this.chiediVersamento(null, null, null, null, ref.getIdDominio(), iuv);	
 	}
 
 	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoPendenza ref) throws ServiceException, GovPayException {
@@ -266,7 +268,7 @@ public class Versamento extends BasicBD {
 				versamentoModel = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
 				versamentoModel.setIuvProposto(iuv);
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
+				// Non e' nel repo interno. vado oltre e lo richiedo all'applicazione gestrice
 			}
 		}
 
