@@ -1,5 +1,5 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
-	      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+	      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
 	<servlet-mapping>
 		<servlet-name>javax.ws.rs.core.Application</servlet-name>
@@ -7,92 +7,89 @@
 	</servlet-mapping>
 	
 	<!-- PagamentiTelematiciGPRnd  -->
-	
-	<servlet id="GPRnd_v2">
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
-		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/v2/Rendicontazioni</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/v3/Rendicontazioni</url-pattern>
-	</servlet-mapping>
-	
-	<servlet id="GPRnd">
-		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPRndImpl</servlet-name>
+	<servlet id="GPRnd_v1">
+		<servlet-name>GPRnd_v1</servlet-name>
 		<servlet-class>it.govpay.web.ws.PagamentiTelematiciGPRndImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPRndImpl</servlet-name>
+		<servlet-name>GPRnd_v1</servlet-name>
 		<url-pattern>/PagamentiTelematiciGPRndService</url-pattern>
 	</servlet-mapping>
-	
-	<!-- PagamentiTelematiciGPApp  -->
-	
-	<servlet id="GPApp_v2.3">
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-name>
-		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-class>
+	<servlet id="GPRnd_v2">
+		<servlet-name>GPRnd_v2</servlet-name>
+		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni</url-pattern>
+		<servlet-name>GPRnd_v2</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni</url-pattern>
 	</servlet-mapping>
+	<servlet id="GPRnd_v3">
+		<servlet-name>GPRnd_v3</servlet-name>
+		<servlet-class>it.govpay.web.ws.v2_5.PagamentiTelematiciGPRndImpl</servlet-class>
+	</servlet>
 	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/v2/Applicazioni</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/v3/Applicazioni</url-pattern>
+		<servlet-name>GPRnd_v3</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v3/Rendicontazioni</url-pattern>
 	</servlet-mapping>
 	
-	<servlet id="GPApp">
-		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-name>
+	
+	
+	<!-- PagamentiTelematiciGPApp  -->
+	<servlet id="GPApp_v1">
+		<servlet-name>GPApp_v1</servlet-name>
 		<servlet-class>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
+		<servlet-name>GPApp_v1</servlet-name>
 		<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
-		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-name>
 	</servlet-mapping>
+	<servlet id="GPApp_v2">
+		<servlet-name>GPApp_v2</servlet-name>
+		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPAppImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GPApp_v2</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni</url-pattern>
+	</servlet-mapping>
+	<servlet id="GPApp_v3">
+		<servlet-name>GPApp_v3</servlet-name>
+		<servlet-class>it.govpay.web.ws.v2_5.PagamentiTelematiciGPAppImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GPApp_v3</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v3/Applicazioni</url-pattern>
+	</servlet-mapping>
+	
+	
 	
 	<!-- PagamentiTelematiciGPPrt  -->
 	
-	<servlet id="GPPrt_v2.5">
-		<servlet-name>it.govpay.web.ws.v2_5.PagamentiTelematiciGPPrtImpl</servlet-name>
-		<servlet-class>it.govpay.web.ws.v2_5.PagamentiTelematiciGPPrtImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_5.PagamentiTelematiciGPPrtImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/v3/Portali</url-pattern>
-	</servlet-mapping>
 	
-	<servlet id="GPPrt_v2.3">
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
-		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-name>
-		<url-pattern>/PagamentiTelematiciGP/soap/v2/Portali</url-pattern>
-	</servlet-mapping>
-	
-	<servlet id="GPPrt">
-		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-name>
+	<servlet id="GPPrt_v1">
+		<servlet-name>GPPrt_v1</servlet-name>
 		<servlet-class>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
+		<servlet-name>GPPrt_v1</servlet-name>
 		<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
-		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-name>
+	</servlet-mapping>
+	
+	<servlet id="GPPrt_v2">
+		<servlet-name>GPPrt_v2</servlet-name>
+		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPPrtImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GPPrt_v2</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
+	</servlet-mapping>
+	
+	<servlet id="GPPrt_v3">
+		<servlet-name>GPPrt_v3</servlet-name>
+		<servlet-class>it.govpay.web.ws.v2_5.PagamentiTelematiciGPPrtImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GPPrt_v3</servlet-name>
+		<url-pattern>/PagamentiTelematiciGP/soap/v3/Portali</url-pattern>
 	</servlet-mapping>
 	
 	<security-constraint>

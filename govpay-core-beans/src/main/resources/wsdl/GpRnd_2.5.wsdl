@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="wsdl-viewer.xsl"?>
 <wsdl:definitions 
-	xmlns:xformat="http://cxf.apache.org/bindings/xformat" 
-	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" 
+	xmlns:xformat="http://cxf.apache.org/bindings/xformat"
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
 	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
 	xmlns:tns="http://www.govpay.it/servizi/v2_5"
 	xmlns:com="http://www.govpay.it/servizi/commons/"
 	xmlns:com23="http://www.govpay.it/servizi/v2_3/commons/"
-	xmlns:prt="http://www.govpay.it/servizi/v2_5/gpPrt/"
+	xmlns:rnd="http://www.govpay.it/servizi/v2_3/gpRnd/"
 	targetNamespace="http://www.govpay.it/servizi/v2_5" 
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 	name="GP" jaxb:version="2.0">
 	<wsdl:types>
-
+	
 		<xsd:schema targetNamespace="http://www.govpay.it/servizi/commons/">
 		
 			<xsd:complexType name="gpResponse">
@@ -645,7 +645,7 @@
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:schema>
-		
+	
 		<xsd:schema targetNamespace="http://www.govpay.it/servizi/v2_3/commons/">
 			<xsd:import namespace="http://www.govpay.it/servizi/commons/"></xsd:import>
 			
@@ -753,498 +753,157 @@
 				</xsd:sequence>
 			</xsd:complexType>
 		</xsd:schema>
-
-		<xsd:schema targetNamespace="http://www.govpay.it/servizi/v2_5/gpPrt/">
+		
+		<xsd:schema targetNamespace="http://www.govpay.it/servizi/v2_3/gpRnd/">
+		
 			<xsd:import namespace="http://www.govpay.it/servizi/commons/"></xsd:import>
 			<xsd:import namespace="http://www.govpay.it/servizi/v2_3/commons/"></xsd:import>
-
-			<xsd:element name="gpChiediListaPsp">
-				<xsd:complexType />
-			</xsd:element>
-
-			<xsd:element name="gpChiediListaPspResponse">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="com23:gpResponse">
-							<xsd:sequence minOccurs="0">
-								<xsd:element name="psp" minOccurs="0" maxOccurs="unbounded">
-									<xsd:complexType>
-										<xsd:sequence>
-											<xsd:element name="codPsp" type="com:cod35" />
-											<xsd:element name="ragioneSociale" type="xsd:string" />
-											<xsd:element name="urlInfo" type="xsd:anyURI" minOccurs="0" />
-											<xsd:element name="storno" type="xsd:boolean" />
-											<xsd:element name="bollo" type="xsd:boolean" />
-											<xsd:element name="logo" type="xsd:base64Binary" />
-											<xsd:element name="canale" minOccurs="0" maxOccurs="unbounded">
-												<xsd:complexType>
-													<xsd:sequence>
-														<xsd:element name="codCanale" type="com:cod35" />
-														<xsd:element name="tipoVersamento" type="com:tipoVersamento" />
-														<xsd:element name="modelloPagamento" type="com:modelloPagamento" />
-														<xsd:element name="disponibilita" type="xsd:string" minOccurs="0" />
-														<xsd:element name="descrizione" type="xsd:string" minOccurs="0" />
-														<xsd:element name="condizioni" type="xsd:string" minOccurs="0" />
-														<xsd:element name="urlInfo" type="xsd:anyURI" minOccurs="0" />
-														<xsd:element name="logoServizio" type="xsd:base64Binary" />
-													</xsd:sequence>
-												</xsd:complexType>
-											</xsd:element>
-										</xsd:sequence>
-									</xsd:complexType>
-								</xsd:element>
-							</xsd:sequence>
-						</xsd:extension>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="gpAvviaTransazionePagamento">
+			
+			<xsd:element name="gpChiediListaFlussiRendicontazione">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="codSessionePortale" type="com:uuid" minOccurs="0" />
-						<xsd:element name="codPortale" type="com:cod35" />
-						<xsd:element name="versante" type="com:anagrafica" minOccurs="0" />
-						<xsd:element name="ibanAddebito" type="com:cod35" minOccurs="0" />
-						<xsd:element name="autenticazione" type="com:tipoAutenticazione" />
-						<xsd:element name="urlRitorno" type="xsd:anyURI" minOccurs="0" />
-						<xsd:element name="aggiornaSeEsiste" type="xsd:boolean" default="true" minOccurs="0" />
-						<xsd:choice maxOccurs="unbounded">
-							<xsd:element name="versamento" type="com:versamento" />
-							<xsd:element name="versamentoRef" type="com:versamentoKey" />
-						</xsd:choice>
+						<xsd:element name="codDominio" type="com:cod35" minOccurs="0"/>
+						<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0"/>
+						<xsd:element name="dataInizio" type="xsd:date" minOccurs="0"/>
+						<xsd:element name="dataFine" type="xsd:date" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-
-			<xsd:element name="gpAvviaTransazionePagamentoResponse">
+			
+			<xsd:element name="gpChiediListaFlussiRendicontazioneResponse">
 				<xsd:complexType>
 					<xsd:complexContent>
 						<xsd:extension base="com23:gpResponse">
-							<xsd:sequence minOccurs="0">
-								<xsd:element name="urlRedirect" type="xsd:anyURI" minOccurs="0" />
-								<xsd:element name="pspSessionId" type="xsd:string" minOccurs="0" />
-								<xsd:element name="rifTransazione" minOccurs="0" maxOccurs="unbounded">
-									<xsd:complexType>
-										<xsd:sequence>
-											<xsd:element name="codApplicazione" type="com:cod35" />
-											<xsd:element name="codVersamentoEnte" type="com:cod35" />
-											<xsd:element name="codDominio" type="com:cod35" />
-											<xsd:element name="iuv" type="com:cod35" />
-											<xsd:element name="ccp" type="com:cod35" />
-										</xsd:sequence>
-									</xsd:complexType>
-								</xsd:element>
+							<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+								<xsd:element name="flussoRendicontazione" type="com23:estremiFlussoRendicontazione" />
 							</xsd:sequence>
 						</xsd:extension>
 					</xsd:complexContent>
 				</xsd:complexType>
 			</xsd:element>
-
-			<xsd:element name="gpChiediStatoTransazione">
+			
+			<xsd:element name="gpChiediFlussoRendicontazione">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="codPortale" type="com:cod35" />
+						<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0"/>
+						<xsd:element name="codFlusso" type="com:cod35" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="gpChiediFlussoRendicontazioneResponse">
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="com23:gpResponse">
+							<xsd:sequence minOccurs="0">
+								<xsd:element name="flussoRendicontazione" type="com23:flussoRendicontazione" />
+							</xsd:sequence>
+						</xsd:extension>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="gpRegistraIncasso">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="trn" type="com:string512" />
 						<xsd:element name="codDominio" type="com:cod35" />
-						<xsd:element name="iuv" type="com:cod35" />
-						<xsd:element name="ccp" type="com:cod35" />
+						<xsd:element name="causale" type="com:string512" />
+						<xsd:element name="importo" type="com:importo10" />
+						<xsd:element name="dataValuta" type="xsd:date" minOccurs="0" />
+						<xsd:element name="dataContabile" type="xsd:date" minOccurs="0" />
+						<xsd:element name="dispositivo" type="com:string256" minOccurs="0" />
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-
-			<xsd:element name="gpChiediStatoTransazioneResponse">
+			
+			<xsd:element name="gpRegistraIncassoResponse">
 				<xsd:complexType>
 					<xsd:complexContent>
 						<xsd:extension base="com23:gpResponse">
 							<xsd:sequence minOccurs="0">
-								<xsd:element name="transazione" type="com:transazione" minOccurs="0" />
+								<xsd:element name="incasso" type="com23:incasso" />
 							</xsd:sequence>
 						</xsd:extension>
 					</xsd:complexContent>
 				</xsd:complexType>
 			</xsd:element>
-
-			<xsd:element name="gpAvviaRichiestaStorno">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="codPortale" type="com:cod35" />
-						<xsd:element name="codDominio" type="com:cod35" />
-						<xsd:element name="iuv" type="com:cod35" />
-						<xsd:element name="ccp" type="com:cod35" />
-						<xsd:choice>
-							<xsd:sequence>
-								<xsd:element name="causaleRevoca" type="com:string140" />
-								<xsd:element name="datiAggiuntivi" type="com:string140" />
-							</xsd:sequence>
-							<xsd:sequence>
-								<xsd:element name="pagamento" maxOccurs="5">
-									<xsd:complexType>
-										<xsd:sequence>
-											<xsd:element name="iur" type="com:cod35" />
-											<xsd:element name="causaleRevoca" type="com:string140" />
-											<xsd:element name="datiAggiuntivi" type="com:string140" />
-										</xsd:sequence>
-									</xsd:complexType>
-								</xsd:element>
-							</xsd:sequence>
-						</xsd:choice>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="gpAvviaRichiestaStornoResponse">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="com23:gpResponse">
-							<xsd:sequence>
-								<xsd:element name="codRichiestaStorno" type="com:cod35" minOccurs="0" />
-							</xsd:sequence>
-						</xsd:extension>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="gpChiediStatoRichiestaStorno">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="codPortale" type="com:cod35" />
-						<xsd:element name="codRichiestaStorno" type="com:cod35" />
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="gpChiediStatoRichiestaStornoResponse">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="com23:gpResponse">
-							<xsd:sequence minOccurs="0">
-								<xsd:element name="storno">
-									<xsd:complexType>
-										<xsd:sequence>
-											<xsd:element name="codDominio" type="com:cod35" />
-											<xsd:element name="iuv" type="com:cod35" />
-											<xsd:element name="ccp" type="com:cod35" />
-											<xsd:element name="stato" type="com:statoRevoca" />
-											<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0" />
-											<xsd:element name="rr" type="xsd:base64Binary" />
-											<xsd:element name="er" type="xsd:base64Binary" minOccurs="0" />
-											<xsd:element name="pagamento" minOccurs="0" maxOccurs="5" type="com:pagamento" />
-										</xsd:sequence>
-									</xsd:complexType>
-								</xsd:element>
-							</xsd:sequence>
-						</xsd:extension>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
-
-
-			<xsd:element name="gpChiediListaVersamenti">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="codPortale" type="com:cod35" />
-						<xsd:element name="codUnivocoDebitore" type="com:cod35" />
-						<xsd:element name="stato" type="com:statoVersamento" minOccurs="0" maxOccurs="4" />
-						<xsd:element name="ordinamento">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:enumeration value="DATA_SCADENZA_ASC"></xsd:enumeration>
-									<xsd:enumeration value="DATA_SCADENZA_DES"></xsd:enumeration>
-									<xsd:enumeration value="DATA_CARICAMENTO_ASC"></xsd:enumeration>
-									<xsd:enumeration value="DATA_CARICAMENTO_DES"></xsd:enumeration>
-									<xsd:enumeration value="DATA_AGGIORNAMENTO_ASC"></xsd:enumeration>
-									<xsd:enumeration value="DATA_AGGIORNAMENTO_DES"></xsd:enumeration>
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="gpChiediListaVersamentiResponse">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="com23:gpResponse">
-							<xsd:sequence minOccurs="0">
-								<xsd:element name="versamento" minOccurs="0" maxOccurs="unbounded">
-									<xsd:complexType>
-										<xsd:sequence>
-											<xsd:element name="codApplicazione" type="com:cod35" />
-											<xsd:element name="codVersamentoEnte" type="com:cod35" />
-											<xsd:element name="codDominio" type="com:cod35" minOccurs="0" />
-											<xsd:element name="iuv" type="com:cod35" minOccurs="0" />
-											<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
-												<xsd:annotation>
-													<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
-												</xsd:annotation>
-											</xsd:element>
-											<xsd:element name="qrCode" type="xsd:base64Binary" minOccurs="0" />
-											<xsd:element name="barCode" type="xsd:base64Binary" minOccurs="0" />
-											<xsd:element name="stato" type="com:statoVersamento" />
-											<xsd:element name="importoTotale" type="com:importo" />
-											<xsd:choice>
-												<xsd:element name="causale" type="com:string140" minOccurs="0" />
-												<xsd:element name="spezzoneCausale" type="com:string35" minOccurs="0" maxOccurs="6" />
-												<xsd:element name="spezzoneCausaleStrutturata" minOccurs="0" maxOccurs="6">
-													<xsd:complexType>
-														<xsd:sequence>
-															<xsd:element name="causale" type="com:string20" />
-															<xsd:element name="importo" type="com:importo10" />
-														</xsd:sequence>
-													</xsd:complexType>
-												</xsd:element>
-											</xsd:choice>
-											<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0" />
-										</xsd:sequence>
-									</xsd:complexType>
-								</xsd:element>
-							</xsd:sequence>
-						</xsd:extension>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="gpChiediStatoVersamento">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="codPortale" type="com:cod35" />
-						<xsd:choice>
-							<xsd:sequence>
-								<xsd:element name="codApplicazione" type="com:cod35" />
-								<xsd:element name="codVersamentoEnte" type="com:cod35" />
-							</xsd:sequence>
-							<xsd:sequence>
-								<xsd:element name="codDominio" type="com:cod35" />
-								<xsd:element name="iuv" type="com:cod35" />
-							</xsd:sequence>
-							<xsd:sequence>
-								<xsd:element name="bundleKey" type="com:string256" />
-							</xsd:sequence>
-						</xsd:choice>
-						<xsd:element name="codUnivocoDebitore" type="com:string35" minOccurs="0" />
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="gpChiediStatoVersamentoResponse">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="com23:gpResponse">
-							<xsd:sequence minOccurs="0">
-								<xsd:element name="codApplicazione" type="com:cod35" />
-								<xsd:element name="codVersamentoEnte" type="com:cod35" />
-								<xsd:element name="codDominio" type="com:cod35" minOccurs="0" />
-								<xsd:element name="iuv" type="com:cod35" minOccurs="0" />
-								<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
-									<xsd:annotation>
-										<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
-									</xsd:annotation>
-								</xsd:element>
-								<xsd:element name="qrCode" type="xsd:base64Binary" minOccurs="0" />
-								<xsd:element name="barCode" type="xsd:base64Binary" minOccurs="0" />
-								<xsd:element name="stato" type="com:statoVersamento" />
-								<xsd:element name="importoTotale" type="com:importo" minOccurs="0" />
-								<xsd:choice minOccurs="0">
-									<xsd:element name="causale" type="com:string140" />
-									<xsd:element name="spezzoneCausale" type="com:string35" maxOccurs="6" />
-									<xsd:element name="spezzoneCausaleStrutturata" maxOccurs="6">
-										<xsd:complexType>
-											<xsd:sequence>
-												<xsd:element name="causale" type="com:string20" />
-												<xsd:element name="importo" type="com:importo10" />
-											</xsd:sequence>
-										</xsd:complexType>
-									</xsd:element>
-								</xsd:choice>
-								<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0" />
-								<xsd:element name="transazione" type="com:transazione" minOccurs="0" maxOccurs="unbounded" />
-							</xsd:sequence>
-						</xsd:extension>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
+			
 		</xsd:schema>
-
 	</wsdl:types>
-
-	<wsdl:message name="gpChiediListaPsp">
-		<wsdl:part name="bodyrichiesta" element="prt:gpChiediListaPsp" />
+	
+	<wsdl:message name="gpChiediListaFlussiRendicontazione">
+		<wsdl:part name="bodyrichiesta" element="rnd:gpChiediListaFlussiRendicontazione" />
 	</wsdl:message>
 
-	<wsdl:message name="gpChiediListaPspResponse">
-		<wsdl:part name="bodyrisposta" element="prt:gpChiediListaPspResponse" />
+	<wsdl:message name="gpChiediListaFlussiRendicontazioneResponse">
+		<wsdl:part name="bodyrisposta" element="rnd:gpChiediListaFlussiRendicontazioneResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="gpChiediFlussoRendicontazione">
+		<wsdl:part name="bodyrichiesta" element="rnd:gpChiediFlussoRendicontazione" />
 	</wsdl:message>
 
-	<wsdl:message name="gpAvviaTransazionePagamento">
-		<wsdl:part name="bodyrichiesta" element="prt:gpAvviaTransazionePagamento" />
-		<wsdl:part name="metaInfo" element="com:metaInfo" />
+	<wsdl:message name="gpChiediFlussoRendicontazioneResponse">
+		<wsdl:part name="bodyrisposta" element="rnd:gpChiediFlussoRendicontazioneResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="gpRegistraIncasso">
+		<wsdl:part name="bodyrichiesta" element="rnd:gpRegistraIncasso" />
 	</wsdl:message>
 
-	<wsdl:message name="gpAvviaTransazionePagamentoResponse">
-		<wsdl:part name="bodyrisposta" element="prt:gpAvviaTransazionePagamentoResponse" />
+	<wsdl:message name="gpRegistraIncassoResponse">
+		<wsdl:part name="bodyrisposta" element="rnd:gpRegistraIncassoResponse" />
 	</wsdl:message>
-
-	<wsdl:message name="gpChiediStatoTransazione">
-		<wsdl:part name="bodyrichiesta" element="prt:gpChiediStatoTransazione" />
-	</wsdl:message>
-
-	<wsdl:message name="gpChiediStatoTransazioneResponse">
-		<wsdl:part name="bodyrisposta" element="prt:gpChiediStatoTransazioneResponse" />
-	</wsdl:message>
-
-	<wsdl:message name="gpAvviaRichiestaStorno">
-		<wsdl:part name="bodyrichiesta" element="prt:gpAvviaRichiestaStorno" />
-	</wsdl:message>
-
-	<wsdl:message name="gpAvviaRichiestaStornoResponse">
-		<wsdl:part name="bodyrisposta" element="prt:gpAvviaRichiestaStornoResponse" />
-	</wsdl:message>
-
-	<wsdl:message name="gpChiediStatoRichiestaStorno">
-		<wsdl:part name="bodyrichiesta" element="prt:gpChiediStatoRichiestaStorno" />
-	</wsdl:message>
-
-	<wsdl:message name="gpChiediStatoRichiestaStornoResponse">
-		<wsdl:part name="bodyrisposta" element="prt:gpChiediStatoRichiestaStornoResponse" />
-	</wsdl:message>
-
-	<wsdl:message name="gpChiediListaVersamenti">
-		<wsdl:part name="bodyrichiesta" element="prt:gpChiediListaVersamenti" />
-	</wsdl:message>
-
-	<wsdl:message name="gpChiediListaVersamentiResponse">
-		<wsdl:part name="bodyrisposta" element="prt:gpChiediListaVersamentiResponse" />
-	</wsdl:message>
-
-	<wsdl:message name="gpChiediStatoVersamento">
-		<wsdl:part name="bodyrichiesta" element="prt:gpChiediStatoVersamento" />
-	</wsdl:message>
-
-	<wsdl:message name="gpChiediStatoVersamentoResponse">
-		<wsdl:part name="bodyrisposta" element="prt:gpChiediStatoVersamentoResponse" />
-	</wsdl:message>
-
-	<wsdl:portType name="PagamentiTelematiciGPPrt">
-
+	
+	
+	<wsdl:portType name="PagamentiTelematiciGPRnd">
 		<jaxws:bindings xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
 			<jaxws:enableWrapperStyle>false</jaxws:enableWrapperStyle>
 		</jaxws:bindings>
-
-		<wsdl:operation name="gpChiediListaPsp">
-			<wsdl:input message="tns:gpChiediListaPsp" />
-			<wsdl:output message="tns:gpChiediListaPspResponse" />
+		
+		<wsdl:operation name="gpChiediListaFlussiRendicontazione">
+			<wsdl:input message="tns:gpChiediListaFlussiRendicontazione" />
+			<wsdl:output message="tns:gpChiediListaFlussiRendicontazioneResponse" />
 		</wsdl:operation>
-
-		<wsdl:operation name="gpAvviaTransazionePagamento">
-			<wsdl:input message="tns:gpAvviaTransazionePagamento" />
-			<wsdl:output message="tns:gpAvviaTransazionePagamentoResponse" />
+		
+		<wsdl:operation name="gpChiediFlussoRendicontazione">
+			<wsdl:input message="tns:gpChiediFlussoRendicontazione" />
+			<wsdl:output message="tns:gpChiediFlussoRendicontazioneResponse" />
 		</wsdl:operation>
-
-		<wsdl:operation name="gpChiediStatoTransazione">
-			<wsdl:input message="tns:gpChiediStatoTransazione" />
-			<wsdl:output message="tns:gpChiediStatoTransazioneResponse" />
+		
+		<wsdl:operation name="gpRegistraIncasso">
+			<wsdl:input message="tns:gpRegistraIncasso" />
+			<wsdl:output message="tns:gpRegistraIncassoResponse" />
 		</wsdl:operation>
-
-		<wsdl:operation name="gpAvviaRichiestaStorno">
-			<wsdl:input message="tns:gpAvviaRichiestaStorno" />
-			<wsdl:output message="tns:gpAvviaRichiestaStornoResponse" />
-		</wsdl:operation>
-
-		<wsdl:operation name="gpChiediStatoRichiestaStorno">
-			<wsdl:input message="tns:gpChiediStatoRichiestaStorno" />
-			<wsdl:output message="tns:gpChiediStatoRichiestaStornoResponse" />
-		</wsdl:operation>
-
-		<wsdl:operation name="gpChiediListaVersamenti">
-			<wsdl:input message="tns:gpChiediListaVersamenti" />
-			<wsdl:output message="tns:gpChiediListaVersamentiResponse" />
-		</wsdl:operation>
-
-		<wsdl:operation name="gpChiediStatoVersamento">
-			<wsdl:input message="tns:gpChiediStatoVersamento" />
-			<wsdl:output message="tns:gpChiediStatoVersamentoResponse" />
-		</wsdl:operation>
-
 	</wsdl:portType>
-
-	<wsdl:binding name="PagamentiTelematiciGPPrtSOAP" type="tns:PagamentiTelematiciGPPrt">
+	
+	<wsdl:binding name="PagamentiTelematiciGPRndSOAP" type="tns:PagamentiTelematiciGPRnd">
 		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
-		<wsdl:operation name="gpChiediListaPsp">
-			<soap:operation soapAction="gpChiediListaPsp" />
-			<wsdl:input>
-				<soap:body use="literal" />
-			</wsdl:input>
-			<wsdl:output>
-				<soap:body use="literal" />
-			</wsdl:output>
+		
+		<wsdl:operation name="gpChiediListaFlussiRendicontazione">
+			<soap:operation soapAction="gpChiediListaFlussiRendicontazione" />
+			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
-
-		<wsdl:operation name="gpAvviaTransazionePagamento">
-			<soap:operation soapAction="gpAvviaTransazionePagamento" />
-			<wsdl:input>
-				<soap:header message="tns:gpAvviaTransazionePagamento" part="metaInfo" use="literal" />
-				<soap:body use="literal" />
-			</wsdl:input>
-			<wsdl:output>
-				<soap:body use="literal" />
-			</wsdl:output>
+		
+		<wsdl:operation name="gpChiediFlussoRendicontazione">
+			<soap:operation soapAction="gpChiediFlussoRendicontazione" />
+			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
-
-		<wsdl:operation name="gpChiediStatoTransazione">
-			<soap:operation soapAction="gpChiediStatoTransazione" />
-			<wsdl:input>
-				<soap:body use="literal" />
-			</wsdl:input>
-			<wsdl:output>
-				<soap:body use="literal" />
-			</wsdl:output>
-		</wsdl:operation>
-
-		<wsdl:operation name="gpAvviaRichiestaStorno">
-			<soap:operation soapAction="gpAvviaRichiestaStorno" />
-			<wsdl:input>
-				<soap:body use="literal" />
-			</wsdl:input>
-			<wsdl:output>
-				<soap:body use="literal" />
-			</wsdl:output>
-		</wsdl:operation>
-
-		<wsdl:operation name="gpChiediStatoRichiestaStorno">
-			<soap:operation soapAction="gpChiediStatoRichiestaStorno" />
-			<wsdl:input>
-				<soap:body use="literal" />
-			</wsdl:input>
-			<wsdl:output>
-				<soap:body use="literal" />
-			</wsdl:output>
-		</wsdl:operation>
-
-		<wsdl:operation name="gpChiediListaVersamenti">
-			<soap:operation soapAction="gpChiediListaVersamenti" />
-			<wsdl:input>
-				<soap:body use="literal" />
-			</wsdl:input>
-			<wsdl:output>
-				<soap:body use="literal" />
-			</wsdl:output>
-		</wsdl:operation>
-
-		<wsdl:operation name="gpChiediStatoVersamento">
-			<soap:operation soapAction="gpChiediStatoVersamento" />
-			<wsdl:input>
-				<soap:body use="literal" />
-			</wsdl:input>
-			<wsdl:output>
-				<soap:body use="literal" />
-			</wsdl:output>
+		
+		<wsdl:operation name="gpRegistraIncasso">
+			<soap:operation soapAction="gpRegistraIncasso" />
+			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
 	</wsdl:binding>
 
-	<wsdl:service name="PagamentiTelematiciGPPrtService">
-		<wsdl:port name="GPPrtPort" binding="tns:PagamentiTelematiciGPPrtSOAP">
+	<wsdl:service name="PagamentiTelematiciGPRndService">
+		<wsdl:port name="GPRndPort" binding="tns:PagamentiTelematiciGPRndSOAP">
 			<soap:address location="http://www.govpay.it/" />
 		</wsdl:port>
 	</wsdl:service>
-
+	
 </wsdl:definitions>

@@ -29,9 +29,11 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Iuv;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Anomalia;
 import it.govpay.servizi.commons.EsitoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
@@ -42,6 +44,7 @@ import it.govpay.servizi.commons.StatoRendicontazione;
 import it.govpay.servizi.commons.StatoRevoca;
 import it.govpay.servizi.commons.StatoVersamento;
 import it.govpay.servizi.commons.TipoAllegato;
+import it.govpay.servizi.commons.Transazione;
 import it.govpay.servizi.commons.Pagamento.Allegato;
 import it.govpay.servizi.v2_5.gpprt.GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata;
 import it.govpay.servizi.v2_5.gpprt.GpChiediStatoRichiestaStornoResponse.Storno;
@@ -51,6 +54,12 @@ import it.govpay.servizi.v2_5.gpprt.GpChiediListaPspResponse;
 import it.govpay.servizi.v2_5.gpprt.GpChiediListaVersamentiResponse;
 
 public class Gp25Utils {
+	
+	public static Transazione toTransazione(Rpt rpt, BasicBD bd) throws ServiceException {
+		Transazione t = Gp21Utils.toTransazione(Versione.GP_02_05_00, rpt, bd);
+		t.setCanale(null);
+		return t;
+	}
 
 	public static Rendicontazione toRendicontazione(it.govpay.bd.model.Rendicontazione rend, BasicBD bd) throws ServiceException {
 		Rendicontazione rendicontazione = new Rendicontazione();
