@@ -33,7 +33,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Iuv;
-import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Anomalia;
 import it.govpay.servizi.commons.EsitoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
@@ -56,7 +55,7 @@ import it.govpay.servizi.v2_5.gpprt.GpChiediListaVersamentiResponse;
 public class Gp25Utils {
 	
 	public static Transazione toTransazione(Rpt rpt, BasicBD bd) throws ServiceException {
-		Transazione t = Gp21Utils.toTransazione(Versione.GP_02_05_00, rpt, bd);
+		Transazione t = Gp21Utils.toTransazione(rpt, bd);
 		t.setCanale(null);
 		return t;
 	}

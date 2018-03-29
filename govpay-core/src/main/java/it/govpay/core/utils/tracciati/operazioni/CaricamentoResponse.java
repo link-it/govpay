@@ -84,6 +84,10 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 							lst.add(new String(this.qrCode));
 							lst.add(new String(this.barCode));
 							break;
+		case NON_VALIDO:
+			break;
+		default:
+			break;
 		}
 
 		return lst;
