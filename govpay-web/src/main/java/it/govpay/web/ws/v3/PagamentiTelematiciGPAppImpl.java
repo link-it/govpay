@@ -24,45 +24,32 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.jws.HandlerChain;
-import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
-
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
-import org.slf4j.Logger;
-import org.slf4j.MDC;
-
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.FrBD;
 import it.govpay.core.business.model.CaricaIuvDTO;
 import it.govpay.core.business.model.CaricaIuvDTOResponse;
 import it.govpay.core.business.model.GeneraIuvDTO;
 import it.govpay.core.business.model.GeneraIuvDTOResponse;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.Gp21Utils;
 import it.govpay.core.utils.Gp23Utils;
+import it.govpay.core.utils.Gp25Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.FrBD;
+import it.govpay.servizi.v2_5.PagamentiTelematiciGPApp;
 import it.govpay.servizi.commons.EsitoOperazione;
-import it.govpay.servizi.commons.MetaInfo;
-import it.govpay.servizi.commons.StatoVersamento;
-import it.govpay.servizi.v2_3.PagamentiTelematiciGPApp;
 import it.govpay.servizi.v2_3.commons.GpResponse;
 import it.govpay.servizi.v2_3.commons.Mittente;
+import it.govpay.servizi.commons.MetaInfo;
+import it.govpay.servizi.commons.StatoVersamento;
 import it.govpay.servizi.v2_3.gpapp.GpAnnullaVersamento;
 import it.govpay.servizi.v2_3.gpapp.GpCaricaIuv;
 import it.govpay.servizi.v2_3.gpapp.GpCaricaIuvResponse;
@@ -79,11 +66,24 @@ import it.govpay.servizi.v2_3.gpapp.GpGeneraIuvResponse;
 import it.govpay.servizi.v2_3.gpapp.GpNotificaPagamento;
 import it.govpay.web.ws.Utils;
 
+import javax.annotation.Resource;
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
+
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
+
 @WebService(serviceName = "PagamentiTelematiciGPAppService",
-endpointInterface = "it.govpay.servizi.v2_3.PagamentiTelematiciGPApp",
-targetNamespace = "http://www.govpay.it/servizi/v2_3",
+endpointInterface = "it.govpay.servizi.v2_5.PagamentiTelematiciGPApp",
+targetNamespace = "http://www.govpay.it/servizi/v2_5",
 portName = "GPAppPort",
-wsdlLocation="/wsdl/GpApp_2.3.wsdl",
+wsdlLocation="classpath:wsdl/GpApp_2.5.wsdl",
 name="PagamentiTelematiciGPAppService")
 
 @HandlerChain(file="../../../../../handler-chains/handler-chain-gpws.xml")
@@ -94,7 +94,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 	@Resource
 	WebServiceContext wsCtxt;
 
-	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciGPAppImpl.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciGPPrtImpl.class);
 
 	@Override
 	public GpGeneraIuvResponse gpGeneraIuv(GpGeneraIuv bodyrichiesta, MetaInfo metaInfo) {
@@ -321,7 +321,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
 			List<Rpt> rpts = versamento.getRpt(bd);
 			for(Rpt rpt : rpts) {
-				response.getTransazione().add(Gp21Utils.toTransazione(rpt, bd));
+				response.getTransazione().add(Gp25Utils.toTransazione(rpt, bd));
 			}
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {
@@ -487,9 +487,6 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 	private void verificaApplicazione(Applicazione applicazioneAutenticata, String codApplicazione) throws GovPayException {
 		if(!applicazioneAutenticata.getCodApplicazione().equals(codApplicazione))
 			throw new GovPayException(EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
-		
-		if(!applicazioneAutenticata.getUtenza().isAbilitato())
-			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
 	}
 
 }

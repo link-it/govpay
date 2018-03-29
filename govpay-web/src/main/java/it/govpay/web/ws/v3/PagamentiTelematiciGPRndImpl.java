@@ -39,10 +39,14 @@ import org.slf4j.MDC;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.core.business.Versamento;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.Gp23Utils;
 import it.govpay.core.utils.GpContext;
@@ -51,18 +55,21 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.servizi.commons.EsitoOperazione;
-import it.govpay.servizi.v2_3.PagamentiTelematiciGPRnd;
+import it.govpay.servizi.v2_5.PagamentiTelematiciGPRnd;
+import it.govpay.servizi.v2_3.commons.Incasso;
 import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.v2_3.gprnd.GpChiediFlussoRendicontazione;
 import it.govpay.servizi.v2_3.gprnd.GpChiediFlussoRendicontazioneResponse;
 import it.govpay.servizi.v2_3.gprnd.GpChiediListaFlussiRendicontazione;
 import it.govpay.servizi.v2_3.gprnd.GpChiediListaFlussiRendicontazioneResponse;
+import it.govpay.servizi.v2_3.gprnd.GpRegistraIncasso;
+import it.govpay.servizi.v2_3.gprnd.GpRegistraIncassoResponse;
 
 @WebService(serviceName = "PagamentiTelematiciGPRndService",
 endpointInterface = "it.govpay.servizi.v2_3.PagamentiTelematiciGPRnd",
-targetNamespace = "http://www.govpay.it/servizi/v2_3",
+targetNamespace = "http://www.govpay.it/servizi/v2_5",
 portName = "GPRndPort",
-wsdlLocation = "/wsdl/GpRnd_2.3.wsdl",
+wsdlLocation = "classpath:wsdl/GpRnd_2.5.wsdl",
 name="PagamentiTelematiciGPRndService")
 
 @HandlerChain(file="../../../../../handler-chains/handler-chain-gpws.xml")
@@ -192,6 +199,76 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			response = (GpChiediFlussoRendicontazioneResponse) gpe.getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
 		} catch (Exception e) {
 			response = (GpChiediFlussoRendicontazioneResponse) new GovPayException(e).getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
+		} finally {
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
+			if(bd != null) bd.closeConnection();
+		}
+		response.setCodOperazione(MDC.get("op"));
+		return response;
+	}
+	
+	
+	@Override
+	public GpRegistraIncassoResponse gpRegistraIncasso(GpRegistraIncasso bodyrichiesta) {
+		log.info("Richiesta operazione gpRegistraIncasso");
+		GpRegistraIncassoResponse response = new GpRegistraIncassoResponse();
+		GpContext ctx = GpThreadLocal.get();
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			Applicazione applicazione = getApplicazioneAutenticata(bd);
+			ctx.log("gprnd.ricevutaRichiesta");
+
+			RichiestaIncassoDTO richiestaIncassoDTO = new RichiestaIncassoDTO(null);
+			richiestaIncassoDTO.setApplicazione(applicazione);
+			richiestaIncassoDTO.setCausale(bodyrichiesta.getCausale());
+			richiestaIncassoDTO.setCodDominio(bodyrichiesta.getCodDominio());
+			richiestaIncassoDTO.setDataContabile(bodyrichiesta.getDataContabile());
+			richiestaIncassoDTO.setDataValuta(bodyrichiesta.getDataValuta());
+			richiestaIncassoDTO.setImporto(bodyrichiesta.getImporto());
+			richiestaIncassoDTO.setTrn(bodyrichiesta.getTrn());
+			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
+			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
+			
+			it.govpay.bd.model.Incasso i = richiestaIncassoDTOResponse.getIncasso();
+			Incasso incasso = new Incasso();
+			incasso.setCausale(i.getCausale());
+			incasso.setCodDominio(i.getCodDominio());
+			incasso.setDataContabile(i.getDataContabile());
+			incasso.setDataValuta(i.getDataValuta());
+			incasso.setDispositivo(i.getDispositivo());
+			incasso.setImporto(i.getImporto());
+			incasso.setTrn(i.getTrn());
+			for(Pagamento p : i.getPagamenti(bd)) {
+				Incasso.Pagamento pagamento = new Incasso.Pagamento();
+				pagamento.setCodApplicazione(p.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+				pagamento.setCodSingoloVersamentoEnte(p.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
+				pagamento.setCodVersamentoEnte(p.getSingoloVersamento(bd).getVersamento(bd).getCodVersamentoEnte());
+				pagamento.setDataPagamento(p.getDataPagamento());
+				pagamento.setImportoPagato(p.getImportoPagato());
+				pagamento.setIur(p.getIur());
+				pagamento.setIuv(p.getIuv());
+				incasso.getPagamento().add(pagamento);
+			}
+			response.setIncasso(incasso);
+			response.setCodEsito(EsitoOperazione.OK.toString());
+			response.setDescrizioneEsito("Operazione completata con successo");
+			response.setMittente(Mittente.GOV_PAY);
+			ctx.log("gprnd.ricevutaRichiestaOk");
+		} catch (GovPayException gpe) {
+			response = (GpRegistraIncassoResponse) gpe.getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
+		} catch (IncassiException ie) {
+			response.setMittente(Mittente.GOV_PAY);
+			response.setCodEsito(ie.getCode());
+			response.setDescrizioneEsito(ie.getMessage());
+			response.setDettaglioEsito(ie.getDetails());
+			GpThreadLocal.get().log("gprnd.ricevutaRichiestaKo", response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
+		} catch (Exception e) {
+			response = (GpRegistraIncassoResponse) new GovPayException(e).getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
