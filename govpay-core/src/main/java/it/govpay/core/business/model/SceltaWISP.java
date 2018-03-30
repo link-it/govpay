@@ -19,22 +19,17 @@
  */
 package it.govpay.core.business.model;
 
-import it.govpay.bd.model.Canale;
 import it.govpay.core.exceptions.NdpException.FaultNodo;
 
 
 public class SceltaWISP {
-	private Canale canale;
+	private String codPsp;
+	private String codCanale;
+	private String tipoVersamento;
 	private boolean sceltaEffettuata;
 	private boolean pagaDopo;
 	private FaultNodo fault = null;
 	
-	public Canale getCanale() {
-		return canale;
-	}
-	public void setCanale(Canale canale) {
-		this.canale = canale;
-	}
 	public boolean isSceltaEffettuata() {
 		return sceltaEffettuata;
 	}
@@ -52,6 +47,24 @@ public class SceltaWISP {
 	}
 	public void setFault(FaultNodo fault) {
 		this.fault = fault;
+	}
+	public String getCodPsp() {
+		return codPsp;
+	}
+	public void setCodPsp(String codPsp) {
+		this.codPsp = codPsp;
+	}
+	public String getCodCanale() {
+		return codCanale;
+	}
+	public void setCodCanale(String codCanale) {
+		this.codCanale = codCanale;
+	}
+	public String getTipoVersamento() {
+		return tipoVersamento;
+	}
+	public void setTipoVersamento(String tipoVersamento) {
+		this.tipoVersamento = tipoVersamento;
 	}
 	
 }

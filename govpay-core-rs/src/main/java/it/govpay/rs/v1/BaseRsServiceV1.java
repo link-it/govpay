@@ -19,11 +19,42 @@
  */
 package it.govpay.rs.v1;
 
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
+import org.openspcoop2.utils.openapi.validator.OpenapiApiValidatorConfig;
+import org.openspcoop2.utils.openapi.validator.Test;
+import org.openspcoop2.utils.openapi.validator.Validator;
+import org.openspcoop2.utils.rest.ApiFactory;
+import org.openspcoop2.utils.rest.ApiFormats;
+import org.openspcoop2.utils.rest.ApiReaderConfig;
+import org.openspcoop2.utils.rest.IApiReader;
+import org.openspcoop2.utils.rest.api.Api;
+import org.slf4j.Logger;
+
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.rs.BaseRsService;
 
 public class BaseRsServiceV1 extends BaseRsService {
 	
-	public BaseRsServiceV1() {super();}
+	public static Validator validator;
+
+	public static void initValidator(Logger log, byte[] swaggerBackOffice) {
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
+			try {
+				IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
+
+				apiReader.init(log, swaggerBackOffice, new ApiReaderConfig());
+				Api api = apiReader.read();
+				
+				validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
+				OpenapiApiValidatorConfig config = new OpenapiApiValidatorConfig();
+				config.setJsonValidatorAPI(ApiName.FGE);
+				validator.init(LoggerWrapperFactory.getLogger(Test.class), api, config);
+			} catch(Throwable e) {
+				log.error("Errore durante l'init del modulo di validazione: " + e.getMessage(), e);
+			}
+		}
+	}
 	
 	public BaseRsServiceV1(String nomeServizio) {
 		super(nomeServizio);

@@ -35,6 +35,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.servizi.commons.EsitoOperazione;
 
@@ -132,7 +133,6 @@ public class WebControllerDAO extends BaseDAO{
 							}
 
 							SceltaWISP scelta = null;
-							Canale canale= null; 
 							try {
 								scelta = wisp.chiediScelta(applicazioneAutenticata, dominio, pagamentoPortale.getWispKeyPA(), pagamentoPortale.getWispKeyWisp(),false);
 							} catch (Exception e) {
@@ -147,9 +147,6 @@ public class WebControllerDAO extends BaseDAO{
 								tokenWisp = scelta.getFault().toString();
 							} else {
 								tokenWisp = OK;
-								if(scelta.isSceltaEffettuata() && !scelta.isPagaDopo()) {
-									canale = scelta.getCanale();
-								}
 								if(!scelta.isSceltaEffettuata()) {
 									ctx.log("pagamento.risoluzioneWispOkNoScelta");
 									throw new GovPayException(EsitoOperazione.WISP_003);
@@ -173,9 +170,9 @@ public class WebControllerDAO extends BaseDAO{
 								aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","TIMEOUT"));
 								pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
 							} else if(tokenWisp.equals(OK)) {
-								pagamentoPortale.setCodCanale(canale.getCodCanale());
-								pagamentoPortale.setTipoVersamento(canale.getTipoVersamento().getCodifica());
-								pagamentoPortale.setCodCanale(canale.getPsp(bd).getCodPsp());
+								pagamentoPortale.setCodCanale(scelta.getCodCanale());
+								pagamentoPortale.setTipoVersamento(scelta.getTipoVersamento());
+								pagamentoPortale.setCodCanale(scelta.getCodPsp());
 								// procedo al pagamento 
 
 								List<Versamento> versamenti = pagamentoPortale.getVersamenti(bd);
@@ -188,8 +185,18 @@ public class WebControllerDAO extends BaseDAO{
 									if(autenticazioneFromJson == null)
 										autenticazioneFromJson = "N/A";
 
-									List<Rpt> rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, canale, JsonUtils.getIbanAddebitoFromJson(pagamentoPortale.getJsonRequest()),
-											versanteModel, autenticazioneFromJson, pagamentoPortale.getUrlRitorno(), false,pagamentoPortale);
+									List<Rpt> rpts = null;
+									if(scelta.getCodPsp().equals(Rpt.codPspWISP20) && scelta.getCodCanale().equals(Rpt.codCanaleWISP20))
+										rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, null, JsonUtils.getIbanAddebitoFromJson(pagamentoPortale.getJsonRequest()),
+												versanteModel, autenticazioneFromJson, pagamentoPortale.getUrlRitorno(), false,pagamentoPortale);									else {
+										try {
+											Canale canale = AnagraficaManager.getCanale(bd, scelta.getCodPsp(), scelta.getCodCanale(), TipoVersamento.toEnum(scelta.getTipoVersamento()));
+											rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, canale, JsonUtils.getIbanAddebitoFromJson(pagamentoPortale.getJsonRequest()),
+													versanteModel, autenticazioneFromJson, pagamentoPortale.getUrlRitorno(), false,pagamentoPortale);
+										} catch (NotFoundException e) {
+											throw new GovPayException(EsitoOperazione.WISP_002,  scelta.getCodPsp(), scelta.getCodCanale(), scelta.getTipoVersamento());
+										}
+									}
 
 									Rpt rpt = rpts.get(0);
 

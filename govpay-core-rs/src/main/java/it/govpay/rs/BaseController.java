@@ -4,7 +4,6 @@
 package it.govpay.rs;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,18 +20,8 @@ import javax.ws.rs.core.UriInfo;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
-import org.openspcoop2.utils.openapi.validator.OpenapiApiValidatorConfig;
-import org.openspcoop2.utils.openapi.validator.Test;
-import org.openspcoop2.utils.openapi.validator.Validator;
-import org.openspcoop2.utils.rest.ApiFactory;
-import org.openspcoop2.utils.rest.ApiFormats;
-import org.openspcoop2.utils.rest.ApiReaderConfig;
-import org.openspcoop2.utils.rest.IApiReader;
 import org.openspcoop2.utils.rest.ProcessingException;
 import org.openspcoop2.utils.rest.ValidatorException;
-import org.openspcoop2.utils.rest.api.Api;
 import org.openspcoop2.utils.rest.entity.Cookie;
 import org.openspcoop2.utils.rest.entity.TextHttpRequestEntity;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
@@ -50,6 +39,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.log.MessageLoggingHandlerUtils;
+import it.govpay.rs.v1.BaseRsServiceV1;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -63,7 +53,6 @@ public abstract class BaseController {
 	protected String nomeServizio;
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
-	private Validator validator;
 	private boolean validate;
 
 	public BaseController(String nomeServizio, Logger log) {
@@ -74,24 +63,6 @@ public abstract class BaseController {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
 		this.validate = validate;
-		
-		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
-			try {
-				IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
-
-				File file = new File(GovpayConfig.getInstance().getResourceDir(), GovpayConfig.GOVPAY_OPEN_API_FILE);
-				apiReader.init(log, file, new ApiReaderConfig());
-				Api api = apiReader.read();
-				
-				this.validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
-				OpenapiApiValidatorConfig config = new OpenapiApiValidatorConfig();
-				config.setJsonValidatorAPI(ApiName.FGE);
-				validator.init(LoggerWrapperFactory.getLogger(Test.class), api, config);
-			} catch(Throwable e) {
-				this.log.error("Errore durante l'init del modulo di validazione: " + e.getMessage(), e);
-			}
-		}
-
 	}
 	
 	public void setRequestResponse(HttpServletRequest request,HttpServletResponse response) {
@@ -190,7 +161,7 @@ public abstract class BaseController {
 				httpEntity.setContent(new String(baos));
 				httpEntity.setContentType(this.request.getContentType());
 			}
-			this.validator.validate(httpEntity);
+			BaseRsServiceV1.validator.validate(httpEntity);
 		} catch (ProcessingException | ValidatorException | URISyntaxException e) {
 			this.log.error("Errore di validazione di richiesta: " + e.getMessage(), e);
 			throw new NotAuthorizedException(e.getMessage());

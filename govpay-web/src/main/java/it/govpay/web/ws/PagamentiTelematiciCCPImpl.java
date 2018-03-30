@@ -37,6 +37,7 @@ import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
+import it.gov.digitpa.schemas._2011.ws.psp.CtSpezzoneStrutturatoCausaleVersamento;
 import it.gov.digitpa.schemas._2011.ws.psp.CtSpezzoniCausaleVersamento;
 import it.gov.digitpa.schemas._2011.ws.psp.EsitoAttivaRPT;
 import it.gov.digitpa.schemas._2011.ws.psp.EsitoVerificaRPT;
@@ -83,7 +84,6 @@ import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata;
 
 
 @WebService(serviceName = "PagamentiTelematiciCCPservice",
@@ -304,9 +304,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
 					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
 					for(int i=0; i < causale.getSpezzoni().size(); i++) {
-						SpezzoneCausaleStrutturata spezzone = new SpezzoneCausaleStrutturata();
-						spezzone.setCausale(causale.getSpezzoni().get(i));
-						spezzone.setImporto(causale.getImporti().get(i));
+						CtSpezzoneStrutturatoCausaleVersamento spezzone = new CtSpezzoneStrutturatoCausaleVersamento();
+						spezzone.setCausaleSpezzone(causale.getSpezzoni().get(i));
+						spezzone.setImportoSpezzone(causale.getImporti().get(i));
 						datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().add(spezzone);
 					}
 				}
@@ -534,9 +534,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
 					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
 					for(int i=0; i < causale.getSpezzoni().size(); i++) {
-						SpezzoneCausaleStrutturata spezzone = new SpezzoneCausaleStrutturata();
-						spezzone.setCausale(causale.getSpezzoni().get(i));
-						spezzone.setImporto(causale.getImporti().get(i));
+						CtSpezzoneStrutturatoCausaleVersamento spezzone = new CtSpezzoneStrutturatoCausaleVersamento();
+						spezzone.setCausaleSpezzone(causale.getSpezzoni().get(i));
+						spezzone.setImportoSpezzone(causale.getImporti().get(i));
 						datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().add(spezzone);
 					}
 				}
