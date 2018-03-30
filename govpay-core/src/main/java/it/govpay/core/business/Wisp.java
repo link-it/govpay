@@ -30,16 +30,13 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Portale;
 import it.govpay.bd.model.Stazione;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.servizi.commons.EsitoOperazione;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.Property;
 
@@ -96,13 +93,9 @@ public class Wisp extends BasicBD {
 					ctx.getContext().getResponse().addGenericProperty(new Property("codCanale", risposta.getIdentificativoCanale()));
 					ctx.getContext().getResponse().addGenericProperty(new Property("tipoVersamento", risposta.getTipoVersamento().toString()));
 					ctx.log("wisp.risoluzioneWispOkCanale");
-					try {
-						Canale canale = AnagraficaManager.getCanale(this,  risposta.getIdentificativoPSP(), risposta.getIdentificativoCanale(), TipoVersamento.toEnum(risposta.getTipoVersamento().toString()));
-						canale.setPsp(canale.getPsp(this));
-						scelta.setCanale(canale);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.WISP_002,  risposta.getIdentificativoPSP(), risposta.getIdentificativoCanale(), risposta.getTipoVersamento().toString());
-					}
+					scelta.setCodPsp(risposta.getIdentificativoPSP());
+					scelta.setTipoVersamento(risposta.getTipoVersamento().toString());
+					scelta.setCodCanale(risposta.getIdentificativoCanale());
 					scelta.setPagaDopo(false);
 					scelta.setSceltaEffettuata(true);
 					return scelta;

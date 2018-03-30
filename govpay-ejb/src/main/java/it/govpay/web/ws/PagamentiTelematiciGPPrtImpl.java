@@ -284,7 +284,14 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				}
 				
 				if(scelta.isSceltaEffettuata() && !scelta.isPagaDopo()) {
-					canale = scelta.getCanale();
+					if(scelta.getCodPsp().equals(Rpt.codPspWISP20))
+						canale = null;
+					else
+						try {
+							canale = AnagraficaManager.getCanale(bd,  scelta.getCodPsp(), scelta.getCodCanale(), it.govpay.model.Canale.TipoVersamento.toEnum(scelta.getTipoVersamento()));
+						} catch (NotFoundException e) {
+							throw new GovPayException(EsitoOperazione.WISP_002,  scelta.getCodPsp(), scelta.getCodCanale(), scelta.getTipoVersamento());
+						}
 				}
 				if(!scelta.isSceltaEffettuata()) {
 					ctx.log("pagamento.risoluzioneWispOkNoScelta");
@@ -441,9 +448,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				} else {
 					response.setScelta(TipoSceltaWisp.SI);
 					Canale canale = new Canale();
-					canale.setCodCanale(scelta.getCanale().getCodCanale());
-					canale.setCodPsp(scelta.getCanale().getPsp(bd).getCodPsp());
-					canale.setTipoVersamento(TipoVersamento.fromValue(scelta.getCanale().getTipoVersamento().getCodifica()));
+					canale.setCodCanale(scelta.getCodCanale());
+					canale.setCodPsp(scelta.getCodPsp());
+					canale.setTipoVersamento(TipoVersamento.fromValue(scelta.getTipoVersamento()));
 					response.setCanale(canale);
 				}
 			} else {
