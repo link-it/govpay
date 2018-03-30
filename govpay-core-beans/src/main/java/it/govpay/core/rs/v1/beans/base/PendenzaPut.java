@@ -4,9 +4,13 @@ import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import it.govpay.core.rs.v1.beans.base.Soggetto;
 import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
+import it.govpay.core.utils.SimpleDateFormatUtils;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -419,6 +423,13 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
+	}
 }
 
 

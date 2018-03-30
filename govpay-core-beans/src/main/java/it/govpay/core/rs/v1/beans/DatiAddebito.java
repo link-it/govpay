@@ -5,7 +5,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
-import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 

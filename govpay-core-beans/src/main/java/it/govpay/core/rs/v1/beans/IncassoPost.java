@@ -40,5 +40,4 @@ public class IncassoPost extends it.govpay.core.rs.v1.beans.base.IncassoPost{
 		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 		return super.toJSON(fields,mapper);
 	}
-	
 }

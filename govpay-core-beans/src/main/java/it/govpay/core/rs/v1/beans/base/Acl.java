@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -175,12 +176,24 @@ public class Acl extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return this;
   }
 
-  @JsonProperty("servizio")
-  public ServizioEnum getServizio() {
+  @JsonIgnore
+  public ServizioEnum getServizioEnum() {
     return servizio;
   }
   public void setServizio(ServizioEnum servizio) {
     this.servizio = servizio;
+  }
+  
+  @JsonProperty("servizio")
+  public String getServizio() {
+	  if(servizio != null)
+		  return servizio.toString();
+	  
+    return null;
+  }
+  public void setServizio(String servizio) {
+	  if(servizio != null)
+		  this.servizio = ServizioEnum.fromValue(servizio);
   }
 
   /**

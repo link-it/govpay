@@ -8,6 +8,9 @@ import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import it.govpay.core.utils.SimpleDateFormatUtils;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idDominio",
 "idUnitaOperativa",
@@ -495,7 +498,7 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
 
   /**
    * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * (except the first line).	
    */
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
@@ -503,6 +506,13 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
+	}
 }
 
 
