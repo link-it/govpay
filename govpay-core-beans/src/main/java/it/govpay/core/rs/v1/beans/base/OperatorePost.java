@@ -16,10 +16,10 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String ragioneSociale = null;
   
   @JsonProperty("domini")
-  private List<Object> domini = null;
+  private List<String> domini = null;
   
   @JsonProperty("entrate")
-  private List<Object> entrate = null;
+  private List<String> entrate = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -41,34 +41,34 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * domini su cui e' abilitato ad operare
+   * domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutti i domini
    **/
-  public OperatorePost domini(List<Object> domini) {
+  public OperatorePost domini(List<String> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<Object> getDomini() {
+  public List<String> getDomini() {
     return domini;
   }
-  public void setDomini(List<Object> domini) {
+  public void setDomini(List<String> domini) {
     this.domini = domini;
   }
 
   /**
-   * entrate su cui e' abilitato ad operare
+   * entrate su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
    **/
-  public OperatorePost entrate(List<Object> entrate) {
+  public OperatorePost entrate(List<String> entrate) {
     this.entrate = entrate;
     return this;
   }
 
   @JsonProperty("entrate")
-  public List<Object> getEntrate() {
+  public List<String> getEntrate() {
     return entrate;
   }
-  public void setEntrate(List<Object> entrate) {
+  public void setEntrate(List<String> entrate) {
     this.entrate = entrate;
   }
 

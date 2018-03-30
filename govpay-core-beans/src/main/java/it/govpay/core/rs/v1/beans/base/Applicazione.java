@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
+"idA2A",
 "principal",
 "codificaAvvisi",
 "domini",
@@ -12,9 +13,11 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "servizioVerifica",
 "servizioNotifica",
 "abilitato",
-"idA2A",
 })
 public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
+  
+  @JsonProperty("idA2A")
+  private String idA2A = null;
   
   @JsonProperty("principal")
   private String principal = null;
@@ -23,10 +26,10 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private CodificaAvvisi codificaAvvisi = null;
   
   @JsonProperty("domini")
-  private List<Object> domini = null;
+  private List<DominioIndex> domini = null;
   
   @JsonProperty("entrate")
-  private List<Object> entrate = null;
+  private List<TipoEntrataIndex> entrate = null;
   
   @JsonProperty("servizioVerifica")
   private Connector servizioVerifica = null;
@@ -35,11 +38,24 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private Connector servizioNotifica = null;
   
   @JsonProperty("abilitato")
-  private Boolean abilitato = null;
+  private Boolean abilitato = true;
   
+  /**
+   * Identificativo dell'applicazione
+   **/
+  public Applicazione idA2A(String idA2A) {
+    this.idA2A = idA2A;
+    return this;
+  }
+
   @JsonProperty("idA2A")
-  private String idA2A = null;
-  
+  public String getIdA2A() {
+    return idA2A;
+  }
+  public void setIdA2A(String idA2A) {
+    this.idA2A = idA2A;
+  }
+
   /**
    * Identificativo di autenticazione
    **/
@@ -57,7 +73,6 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * informazioni sulla codifica e decodifica degli iuv
    **/
   public Applicazione codificaAvvisi(CodificaAvvisi codificaAvvisi) {
     this.codificaAvvisi = codificaAvvisi;
@@ -75,32 +90,32 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public Applicazione domini(List<Object> domini) {
+  public Applicazione domini(List<DominioIndex> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<Object> getDomini() {
+  public List<DominioIndex> getDomini() {
     return domini;
   }
-  public void setDomini(List<Object> domini) {
+  public void setDomini(List<DominioIndex> domini) {
     this.domini = domini;
   }
 
   /**
    * entrate su cui e' abilitato ad operare
    **/
-  public Applicazione entrate(List<Object> entrate) {
+  public Applicazione entrate(List<TipoEntrataIndex> entrate) {
     this.entrate = entrate;
     return this;
   }
 
   @JsonProperty("entrate")
-  public List<Object> getEntrate() {
+  public List<TipoEntrataIndex> getEntrate() {
     return entrate;
   }
-  public void setEntrate(List<Object> entrate) {
+  public void setEntrate(List<TipoEntrataIndex> entrate) {
     this.entrate = entrate;
   }
 
@@ -150,22 +165,6 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.abilitato = abilitato;
   }
 
-  /**
-   * Identificativo dell'applicazione
-   **/
-  public Applicazione idA2A(String idA2A) {
-    this.idA2A = idA2A;
-    return this;
-  }
-
-  @JsonProperty("idA2A")
-  public String getIdA2A() {
-    return idA2A;
-  }
-  public void setIdA2A(String idA2A) {
-    this.idA2A = idA2A;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -175,19 +174,19 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
       return false;
     }
     Applicazione applicazione = (Applicazione) o;
-    return Objects.equals(principal, applicazione.principal) &&
+    return Objects.equals(idA2A, applicazione.idA2A) &&
+        Objects.equals(principal, applicazione.principal) &&
         Objects.equals(codificaAvvisi, applicazione.codificaAvvisi) &&
         Objects.equals(domini, applicazione.domini) &&
         Objects.equals(entrate, applicazione.entrate) &&
         Objects.equals(servizioVerifica, applicazione.servizioVerifica) &&
         Objects.equals(servizioNotifica, applicazione.servizioNotifica) &&
-        Objects.equals(abilitato, applicazione.abilitato) &&
-        Objects.equals(idA2A, applicazione.idA2A);
+        Objects.equals(abilitato, applicazione.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(principal, codificaAvvisi, domini, entrate, servizioVerifica, servizioNotifica, abilitato, idA2A);
+    return Objects.hash(idA2A, principal, codificaAvvisi, domini, entrate, servizioVerifica, servizioNotifica, abilitato);
   }
 
   public static Applicazione parse(String json) {
@@ -204,6 +203,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Applicazione {\n");
     
+    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
@@ -211,7 +211,6 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    servizioVerifica: ").append(toIndentedString(servizioVerifica)).append("\n");
     sb.append("    servizioNotifica: ").append(toIndentedString(servizioNotifica)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("}");
     return sb.toString();
   }

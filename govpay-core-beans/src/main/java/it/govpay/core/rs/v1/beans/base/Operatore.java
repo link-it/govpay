@@ -5,29 +5,45 @@ import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
+"principal",
 "ragioneSociale",
 "domini",
 "entrate",
 "abilitato",
-"principal",
 })
 public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
+  
+  @JsonProperty("principal")
+  private String principal = null;
   
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
   
   @JsonProperty("domini")
-  private List<Object> domini = null;
+  private List<DominioIndex> domini = new ArrayList<DominioIndex>();
   
   @JsonProperty("entrate")
-  private List<Object> entrate = null;
+  private List<TipoEntrataIndex> entrate = new ArrayList<TipoEntrataIndex>();
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
   
+  /**
+   * Username dell'operatore
+   **/
+  public Operatore principal(String principal) {
+    this.principal = principal;
+    return this;
+  }
+
   @JsonProperty("principal")
-  private String principal = null;
-  
+  public String getPrincipal() {
+    return principal;
+  }
+  public void setPrincipal(String principal) {
+    this.principal = principal;
+  }
+
   /**
    * Nome e cognome dell'operatore
    **/
@@ -47,32 +63,32 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public Operatore domini(List<Object> domini) {
+  public Operatore domini(List<DominioIndex> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<Object> getDomini() {
+  public List<DominioIndex> getDomini() {
     return domini;
   }
-  public void setDomini(List<Object> domini) {
+  public void setDomini(List<DominioIndex> domini) {
     this.domini = domini;
   }
 
   /**
    * entrate su cui e' abilitato ad operare
    **/
-  public Operatore entrate(List<Object> entrate) {
+  public Operatore entrate(List<TipoEntrataIndex> entrate) {
     this.entrate = entrate;
     return this;
   }
 
   @JsonProperty("entrate")
-  public List<Object> getEntrate() {
+  public List<TipoEntrataIndex> getEntrate() {
     return entrate;
   }
-  public void setEntrate(List<Object> entrate) {
+  public void setEntrate(List<TipoEntrataIndex> entrate) {
     this.entrate = entrate;
   }
 
@@ -92,22 +108,6 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.abilitato = abilitato;
   }
 
-  /**
-   * Username dell'operatore
-   **/
-  public Operatore principal(String principal) {
-    this.principal = principal;
-    return this;
-  }
-
-  @JsonProperty("principal")
-  public String getPrincipal() {
-    return principal;
-  }
-  public void setPrincipal(String principal) {
-    this.principal = principal;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -117,16 +117,16 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
       return false;
     }
     Operatore operatore = (Operatore) o;
-    return Objects.equals(ragioneSociale, operatore.ragioneSociale) &&
+    return Objects.equals(principal, operatore.principal) &&
+        Objects.equals(ragioneSociale, operatore.ragioneSociale) &&
         Objects.equals(domini, operatore.domini) &&
         Objects.equals(entrate, operatore.entrate) &&
-        Objects.equals(abilitato, operatore.abilitato) &&
-        Objects.equals(principal, operatore.principal);
+        Objects.equals(abilitato, operatore.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, domini, entrate, abilitato, principal);
+    return Objects.hash(principal, ragioneSociale, domini, entrate, abilitato);
   }
 
   public static Operatore parse(String json) {
@@ -143,11 +143,11 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Operatore {\n");
     
+    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("}");
     return sb.toString();
   }

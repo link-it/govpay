@@ -22,10 +22,10 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
   private CodificaAvvisi codificaAvvisi = null;
   
   @JsonProperty("domini")
-  private List<Object> domini = null;
+  private List<String> domini = null;
   
   @JsonProperty("entrate")
-  private List<Object> entrate = null;
+  private List<String> entrate = null;
   
   @JsonProperty("servizioVerifica")
   private Connector servizioVerifica = null;
@@ -34,7 +34,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
   private Connector servizioNotifica = null;
   
   @JsonProperty("abilitato")
-  private Boolean abilitato = null;
+  private Boolean abilitato = true;
   
   /**
    * Identificativo di autenticazione
@@ -70,32 +70,32 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public ApplicazionePost domini(List<Object> domini) {
+  public ApplicazionePost domini(List<String> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<Object> getDomini() {
+  public List<String> getDomini() {
     return domini;
   }
-  public void setDomini(List<Object> domini) {
+  public void setDomini(List<String> domini) {
     this.domini = domini;
   }
 
   /**
    * entrate su cui e' abilitato ad operare
    **/
-  public ApplicazionePost entrate(List<Object> entrate) {
+  public ApplicazionePost entrate(List<String> entrate) {
     this.entrate = entrate;
     return this;
   }
 
   @JsonProperty("entrate")
-  public List<Object> getEntrate() {
+  public List<String> getEntrate() {
     return entrate;
   }
-  public void setEntrate(List<Object> entrate) {
+  public void setEntrate(List<String> entrate) {
     this.entrate = entrate;
   }
 
