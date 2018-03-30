@@ -1,5 +1,6 @@
 package it.govpay.ragioneria.api.listener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -9,6 +10,7 @@ import java.util.UUID;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.LoggerFactory;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
@@ -27,6 +29,7 @@ import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 
 public class InitListener implements ServletContextListener{
@@ -134,6 +137,12 @@ public class InitListener implements ServletContextListener{
 			ConnectionManager.initialize();
 			AclCache.newInstance(log);
 			//			OperazioneFactory.init();
+			
+			// Inizializzazione del validatore JSON:
+			InputStream swaggerfile = InitListener.class.getResourceAsStream(GovpayConfig.GOVPAY_OPEN_API_FILE);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			IOUtils.copy(swaggerfile, baos);
+			BaseRsServiceV1.initValidator(log, baos.toByteArray());
 		} catch(Exception e){
 			throw new RuntimeException("Inizializzazione di GovPay-API-Ragioneria fallita: " + e, e);
 		}

@@ -2,6 +2,7 @@ package it.govpay.wc.ecsp.v1.gw;
 
 import java.io.InputStream;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -38,8 +39,8 @@ public class Gateway extends BaseRsServiceV1{
 	@GET
 	@Path("/v1/gw/{id}")
 	@Produces({MediaType.TEXT_HTML})
-	public Response get_GW(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, @QueryParam("action") String action, @QueryParam("idDominio") String idDominio,
-			@QueryParam("keyPA") String keyPA, @QueryParam("keyWISP") String keyWISP ,@QueryParam("type") String type) {
+	public Response get_GW(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, @QueryParam("action") String action, @FormParam("idDominio") String idDominio,
+			@FormParam("keyPA") String keyPA, @FormParam("keyWISP") String keyWISP ,@QueryParam("type") String type) {
 		 	this.controller.setRequestResponse(this.request, this.response);
 		 	return this.controller.get_GW(this.getUser(), uriInfo, httpHeaders, idSessione, action, idDominio, keyPA, keyWISP, type);
 	}

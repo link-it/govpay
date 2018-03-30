@@ -66,10 +66,10 @@ import it.govpay.servizi.v2_3.gprnd.GpRegistraIncasso;
 import it.govpay.servizi.v2_3.gprnd.GpRegistraIncassoResponse;
 
 @WebService(serviceName = "PagamentiTelematiciGPRndService",
-endpointInterface = "it.govpay.servizi.v2_3.PagamentiTelematiciGPRnd",
+endpointInterface = "it.govpay.servizi.v2_5.PagamentiTelematiciGPRnd",
 targetNamespace = "http://www.govpay.it/servizi/v2_5",
 portName = "GPRndPort",
-wsdlLocation = "classpath:wsdl/GpRnd_2.5.wsdl",
+wsdlLocation="/wsdl/GpRnd_2.5.wsdl",
 name="PagamentiTelematiciGPRndService")
 
 @HandlerChain(file="../../../../../handler-chains/handler-chain-gpws.xml")

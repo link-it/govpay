@@ -83,7 +83,7 @@ import org.slf4j.MDC;
 endpointInterface = "it.govpay.servizi.v2_5.PagamentiTelematiciGPApp",
 targetNamespace = "http://www.govpay.it/servizi/v2_5",
 portName = "GPAppPort",
-wsdlLocation="classpath:wsdl/GpApp_2.5.wsdl",
+wsdlLocation="/wsdl/GpApp_2.5.wsdl",
 name="PagamentiTelematiciGPAppService")
 
 @HandlerChain(file="../../../../../handler-chains/handler-chain-gpws.xml")

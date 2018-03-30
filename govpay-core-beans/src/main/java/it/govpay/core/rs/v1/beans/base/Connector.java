@@ -26,19 +26,10 @@ public class Connector extends it.govpay.core.rs.v1.beans.JSONSerializable {
     
         
             
-    REST_1_0("REST_1.0"),
+    REST_1_0("REST_1"),
     
-            
-    SOAP_2_0("SOAP_2.0"),
     
-            
-    SOAP_2_1("SOAP_2.1"),
-    
-            
-    SOAP_2_3("SOAP_2.3"),
-    
-            
-    SOAP_2_5("SOAP_2.5");
+    SOAP_2_5("SOAP_3");
             
         
     
