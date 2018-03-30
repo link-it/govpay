@@ -33,6 +33,10 @@ public class UriBuilderUtils {
 		return getFromDomini(codCominio).build().toString();
 	}
 	
+	public static String getEntrata(String codTipoTributo) {
+		return getFromEntrate(codTipoTributo).build().toString();
+	}
+	
 	public static String getUoByDominio(String codCominio, String codUo) {
 		return getFromDomini(codCominio).path("unitaOperative").path(codUo).build().toString();
 	}
@@ -100,6 +104,10 @@ public class UriBuilderUtils {
 	private static UriBuilder getFromDomini(String codDominio) {
 		return getListDomini().path(codDominio);
 	}
+	
+	private static UriBuilder getFromEntrate(String codEntrata) {
+		return getListEntrate().path(codEntrata);
+	}
 
 	private static UriBuilder getListPsp() {
 		return getBaseList("psp");
@@ -111,6 +119,10 @@ public class UriBuilderUtils {
 	
 	private static UriBuilder getListDomini() {
 		return getBaseList("domini");
+	}
+	
+	private static UriBuilder getListEntrate() {
+		return getBaseList("entrate");
 	}
 
 	private static UriBuilder getListPagamenti() {

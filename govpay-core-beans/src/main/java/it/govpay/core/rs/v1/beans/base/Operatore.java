@@ -1,5 +1,6 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

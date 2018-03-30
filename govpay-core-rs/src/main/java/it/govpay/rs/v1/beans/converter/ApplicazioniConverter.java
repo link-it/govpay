@@ -5,12 +5,18 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.rs.v1.beans.Applicazione;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
 import it.govpay.core.rs.v1.beans.base.CodificaAvvisi;
+import it.govpay.core.rs.v1.beans.base.DominioIndex;
+import it.govpay.core.rs.v1.beans.base.TipoEntrataIndex;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.rs.v1.controllers.base.ApplicazioniController;
 
 public class ApplicazioniConverter {
 	
@@ -23,19 +29,18 @@ public class ApplicazioniConverter {
 		applicazione.setUtenza(utenza);
 		applicazioneDTO.setIdUtenza(applicazionePost.getPrincipal());
 		
-		// TODO controllare tipi generati
-		if(applicazionePost.getDomini() != null) {
-			List<String> idDomini = new ArrayList<>();
-			for (Object id : applicazionePost.getDomini()) {
-				idDomini.add(id.toString());
-			}
-			applicazioneDTO.setIdDomini(idDomini);
-		}
+		applicazioneDTO.setIdDomini(applicazionePost.getDomini());
 		
-		// TODO controllare tipi generati
+		applicazione.setTrusted(false);
 		if(applicazionePost.getEntrate() != null) {
 			List<String> idTributi = new ArrayList<>();
-			for (Object id : applicazionePost.getEntrate()) {
+						
+			for (String id : applicazionePost.getEntrate()) {
+				if(id.equals(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_VALUE)) {
+					idTributi.clear();
+					applicazione.setTrusted(true);
+					break;
+				}
 				idTributi.add(id.toString());
 			}
 			
@@ -73,6 +78,40 @@ public class ApplicazioniConverter {
 		rsModel.setPrincipal(applicazione.getUtenza().getPrincipal());
 		rsModel.setServizioNotifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreNotifica()));
 		rsModel.setServizioVerifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreVerifica()));
+		
+		if(applicazione.getUtenza().getDomini(null) != null) {
+			List<DominioIndex> idDomini = new ArrayList<DominioIndex>();
+			for (Dominio dominio : applicazione.getUtenza().getDomini(null)) {
+				DominioIndex dI = new DominioIndex();
+				dI.setIdDominio(dominio.getCodDominio());
+				dI.setRagioneSociale(dominio.getRagioneSociale());
+				dI.setLocation(UriBuilderUtils.getDominio(dominio.getCodDominio()));
+				idDomini.add(dI);
+			}
+			rsModel.setDomini(idDomini);
+		}
+
+		List<TipoEntrataIndex> idTributi = new ArrayList<TipoEntrataIndex>();
+		List<Tributo> tributi = applicazione.getUtenza().getTributi(null);
+		if(tributi == null)
+			tributi = new ArrayList<Tributo>();
+		
+		if(applicazione.isTrusted() && tributi.size() == 0) {
+			TipoEntrataIndex tEI = new TipoEntrataIndex();
+			tEI.setIdEntrata(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_VALUE);
+			tEI.setDescrizione(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_LABEL);
+			idTributi.add(tEI);
+		} else {
+			for (Tributo tributo : tributi) {
+				TipoEntrataIndex tEI = new TipoEntrataIndex();
+				tEI.setIdEntrata(tributo.getCodTributo());
+				tEI.setDescrizione(tributo.getDescrizione());
+				tEI.setLocation(UriBuilderUtils.getEntrata(tributo.getCodTributo())); 
+				idTributi.add(tEI);
+			}
+		}
+		
+		rsModel.setEntrate(idTributi);
 		
 		return rsModel;
 	}

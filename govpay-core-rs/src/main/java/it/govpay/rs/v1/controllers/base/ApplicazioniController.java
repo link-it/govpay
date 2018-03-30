@@ -33,6 +33,9 @@ import net.sf.json.JsonConfig;
 
 
 public class ApplicazioniController extends it.govpay.rs.BaseController {
+	
+	public static final String AUTODETERMINAZIONE_TRIBUTI_VALUE= "autodeterminazione";
+	public static final String AUTODETERMINAZIONE_TRIBUTI_LABEL= "Autodeterminazione delle Entrate";
 
      public ApplicazioniController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
