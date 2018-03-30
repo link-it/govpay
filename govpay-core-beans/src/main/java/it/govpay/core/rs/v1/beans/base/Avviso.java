@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
+
+import it.govpay.core.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "stato",
 "importo",
@@ -105,12 +108,29 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return this;
   }
 
-  @JsonProperty("stato")
-  public StatoEnum getStato() {
+  @JsonIgnore
+  public StatoEnum getStatoEnum() {
     return stato;
   }
   public void setStato(StatoEnum stato) {
     this.stato = stato;
+  }
+  
+  @JsonProperty("stato")
+  public String getStato() {
+	  if(stato != null) {
+		  return stato.value;
+	  } else {
+		  return null;
+	  }
+    
+  }
+  public void setStato(String stato) throws Exception{
+	  if(stato != null) {
+		  this.stato = StatoEnum.fromValue(stato);
+		  if(this.stato == null)
+			  throw new Exception("valore ["+stato+"] non ammesso per la property stato");
+	  }
   }
 
   /**

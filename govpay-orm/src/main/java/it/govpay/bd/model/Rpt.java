@@ -39,8 +39,6 @@ public class Rpt extends it.govpay.model.Rpt{
 	
 	private transient Versamento versamento;
 	private transient Dominio dominio;
-	private transient Canale canale;
-	private transient Psp psp;
 	private transient List<Pagamento> pagamenti;
 	private transient PagamentoPortale pagamentoPortale;
 	
@@ -65,24 +63,6 @@ public class Rpt extends it.govpay.model.Rpt{
 			}
 		}
 		return this.dominio;
-	}
-	
-	public Canale getCanale(BasicBD bd) throws ServiceException {
-		if(canale == null)
-			canale = AnagraficaManager.getCanale(bd, getIdCanale());
-		return canale;
-	}
-	public void setCanale(Canale canale) {
-		this.canale = canale;
-	}
-	
-	public Psp getPsp(BasicBD bd) throws ServiceException {
-		if(psp == null) 
-			psp = AnagraficaManager.getPsp(bd, getCanale(bd).getIdPsp());
-		return psp;
-	}
-	public void setPsp(Psp psp) {
-		this.psp = psp;
 	}
 	
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {

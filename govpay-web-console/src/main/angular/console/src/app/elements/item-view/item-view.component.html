@@ -1,0 +1,10 @@
+<div [link-item]="_itemDirective" class="d-flex flex-row px-4 py-3" (click)="_itemClick($event)"
+     (link-swipe-left)="_swipeLeft()" (link-over)="_onOver()" (link-out)="_onOut()">
+  <div class="w-100">
+    <ng-container #vcRef></ng-container>
+  </div>
+  <div class="link-item-download" *ngIf="_showIcons && _showOverIcons" [@IconViewAnimation]>
+    <mat-icon class="link-item-download-icon action" *ngFor="let icon of _icons"
+              (click)="_iconItemClick($event, icon)">{{icon}}</mat-icon>
+  </div>
+</div>

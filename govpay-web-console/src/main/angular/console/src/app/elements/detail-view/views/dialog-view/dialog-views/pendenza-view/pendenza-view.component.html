@@ -1,0 +1,8 @@
+<mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+  <mat-select #contabilita placeholder="Stato" formControlName="stato_ctrl" required>
+    <mat-option *ngFor="let item of stati" [value]="item.value">{{item.label}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+  <input matInput placeholder="Descrizione" formControlName="descrizioneStato_ctrl" autocomplete="off">
+</mat-form-field>

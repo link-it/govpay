@@ -53,8 +53,10 @@ public class WebControllerDAO extends BaseDAO{
 		RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = new RichiestaWebControllerDTOResponse();
 
 		GpContext ctx = GpThreadLocal.get();
-		BasicBD bd = BasicBD.newInstance(ctx.getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = null;
 
@@ -266,7 +268,8 @@ public class WebControllerDAO extends BaseDAO{
 			}
 
 		}finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 
 		return aggiornaPagamentiPortaleDTOResponse;
@@ -275,9 +278,10 @@ public class WebControllerDAO extends BaseDAO{
 
 	public RedirectDaPspDTOResponse gestisciRedirectPsp(RedirectDaPspDTO redirectDaPspDTO) throws GovPayException, NotAuthorizedException, ServiceException, PagamentoPortaleNonTrovatoException, ParametriNonTrovatiException{
 		RedirectDaPspDTOResponse redirectDaPspDTOResponse = new RedirectDaPspDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
 
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = null;
 
@@ -303,7 +307,8 @@ public class WebControllerDAO extends BaseDAO{
 
 			}
 		}finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 
 		return redirectDaPspDTOResponse;

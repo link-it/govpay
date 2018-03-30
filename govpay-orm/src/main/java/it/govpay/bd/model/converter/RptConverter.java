@@ -27,12 +27,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Rpt;
 import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
-import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPagamentoPortale;
+import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.orm.IdVersamento;
 
 public class RptConverter {
@@ -64,11 +63,7 @@ public class RptConverter {
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		if(vo.getCodEsitoPagamento() != null)
 			dto.setEsitoPagamento(EsitoPagamento.toEnum(vo.getCodEsitoPagamento()));
-		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
-		dto.setIdCanale(vo.getIdCanale().getId());
-		if(vo.getIdApplicazione() != null)  
-			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 		dto.setIdTransazioneRpt(vo.getCodTransazioneRPT());
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
@@ -91,6 +86,15 @@ public class RptConverter {
 		if(vo.getIdPagamentoPortale() != null)
 			dto.setIdPagamentoPortale(vo.getIdPagamentoPortale().getId());
 
+		dto.setCodCanale(vo.getCodCanale());
+		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
+		dto.setCodPsp(vo.getCodPsp());
+		if(vo.getTipoVersamento() != null)
+			dto.setTipoVersamento(TipoVersamento.toEnum(vo.getTipoVersamento()));
+		if(vo.getTipoIdentificativoAttestante() != null)
+			dto.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(vo.getTipoIdentificativoAttestante()));
+		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
+		dto.setDenominazioneAttestante(vo.getDenominazioneAttestante());
 		return dto;
 	}
 
@@ -113,23 +117,17 @@ public class RptConverter {
 		vo.setDataMsgRichiesta(dto.getDataMsgRichiesta());
 		vo.setDataMsgRicevuta(dto.getDataMsgRicevuta());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
-		vo.setFirmaRicevuta(dto.getFirmaRichiesta().getCodifica());
 		vo.setId(dto.getId());
-		IdCanale idCanale = new IdCanale();
-		idCanale.setId(dto.getIdCanale());
-		vo.setIdCanale(idCanale);
-		if(dto.getIdApplicazione() != null) {
-			IdApplicazione idApplicazione = new IdApplicazione(); 
-			idApplicazione.setId(dto.getIdApplicazione());
-			vo.setIdApplicazione(idApplicazione);
-		}
 		IdVersamento idVersamento = new IdVersamento();
 		idVersamento.setId(dto.getIdVersamento());
 		vo.setIdVersamento(idVersamento);
 		if(dto.getImportoTotalePagato() != null)
 			vo.setImportoTotalePagato(dto.getImportoTotalePagato().doubleValue());
 		vo.setIuv(dto.getIuv());
-		vo.setModelloPagamento(Integer.toString(dto.getModelloPagamento().getCodifica()));
+		
+		if(dto.getModelloPagamento() != null)
+			vo.setModelloPagamento(Integer.toString(dto.getModelloPagamento().getCodifica()));
+		
 		vo.setPspRedirectURL(dto.getCallbackURL());
 		vo.setStato(dto.getStato().toString());
 		vo.setXmlRPT(dto.getXmlRpt());
@@ -149,6 +147,16 @@ public class RptConverter {
 		}
 		
 
+		vo.setCodCanale(dto.getCodCanale());
+		vo.setCodIntermediarioPsp(dto.getCodIntermediarioPsp());
+		vo.setCodPsp(dto.getCodPsp());
+		if(dto.getTipoVersamento() != null)
+			vo.setTipoVersamento(dto.getTipoVersamento().getCodifica());
+		if(dto.getTipoIdentificativoAttestante() != null)
+			vo.setTipoIdentificativoAttestante(dto.getTipoIdentificativoAttestante().name());
+		vo.setIdentificativoAttestante(dto.getIdentificativoAttestante());
+		vo.setDenominazioneAttestante(dto.getDenominazioneAttestante());
+		
 		return vo;
 	}
 

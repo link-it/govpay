@@ -1,0 +1,25 @@
+<div class="container p-0" *ngIf="info">
+  <div class="row px-3">
+    <div class="col-8 px-0">
+      <div class="row flex-column m-0">
+        <p class="text-truncate"><span class="text-sub-color">{{info.titolo?.label}}: </span>{{info.titolo?.value}}</p>
+        <p class="text-truncate"><span class="text-sub-color">{{info.sottotitolo?.label}}: </span>{{info.sottotitolo?.value}}</p>
+        <!--<p class="text-truncate" *ngFor="let extra of info.extraInfo"><span class="text-sub-color">{{extra.label}}</span>{{extra.value}}</p>-->
+      </div>
+    </div>
+    <div class="col-4 px-0 text-right">
+      <p [ngClass]="us.importoClass(info.stato)" *ngIf="info.importo != -1">{{us.currencyFormat(info.importo)}}</p>
+      <p class="text-truncate text-sub-color">{{info.stato}}</p>
+    </div>
+  </div>
+  <p class="text-truncate" *ngFor="let extra of info.extraInfo"><span class="text-sub-color">{{extra.label}}</span>{{extra.value}}</p>
+  <p class="mt-3 mb-2 riepilogo-sub-class" *ngIf="info.cancel">Annullamento</p>
+  <div class="row px-3" *ngIf="info.cancel">
+    <div class="col px-0">
+      <div class="row flex-column m-0">
+        <p class="text-truncate"><span class="text-sub-color">Data: </span>{{info.dataAnnullamento}}</p>
+        <p class="text-truncate"><span class="text-sub-color">Causale: </span>{{info.causale}}</p>
+      </div>
+    </div>
+  </div>
+</div>

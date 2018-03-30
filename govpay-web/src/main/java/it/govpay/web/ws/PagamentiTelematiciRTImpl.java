@@ -166,8 +166,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			}
 
 			Rr rr = RrUtils.acquisisciEr(identificativoDominio, identificativoUnivocoVersamento, codiceContestoPagamento, er, bd);
-			evento.setCodCanale(rr.getRpt(bd).getCanale(bd).getCodCanale());
-			evento.setTipoVersamento(rr.getRpt(bd).getCanale(bd).getTipoVersamento());
+			evento.setCodCanale(rr.getRpt(bd).getCodCanale());
+			evento.setTipoVersamento(rr.getRpt(bd).getTipoVersamento());
 			response.setEsito("OK");
 			ctx.log("er.ricezioneOk");
 		} catch (NdpException e) {
@@ -293,8 +293,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			ctx.getContext().getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 			ctx.log("pagamento.acquisizioneRtOk");
 			
-			evento.setCodCanale(rpt.getCanale(bd).getCodCanale());
-			evento.setTipoVersamento(rpt.getCanale(bd).getTipoVersamento());
+			evento.setCodCanale(rpt.getCodCanale());
+			evento.setTipoVersamento(rpt.getTipoVersamento());
 
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("OK");

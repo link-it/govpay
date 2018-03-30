@@ -35,12 +35,13 @@ public class RptDAO extends BaseDAO{
 	public LeggiRptDTOResponse leggiRpt(LeggiRptDTO leggiRptDTO) throws ServiceException,RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiRptDTOResponse response = new LeggiRptDTOResponse();
 
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
 
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			// controllo che il dominio sia autorizzato
 			this.autorizzaRichiesta(leggiRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, leggiRptDTO.getIdDominio(), null, bd);
-			
+
 			RptBD rptBD = new RptBD(bd);
 			Rpt	rpt = rptBD.getRpt(leggiRptDTO.getIdDominio(), leggiRptDTO.getIuv(), leggiRptDTO.getCcp());
 
@@ -50,12 +51,11 @@ public class RptDAO extends BaseDAO{
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento(bd));
 			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-			response.setCanale(rpt.getCanale(bd));
-			response.setPsp(rpt.getPsp(bd));
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return response;
 	}
@@ -63,12 +63,13 @@ public class RptDAO extends BaseDAO{
 	public LeggiRicevutaDTOResponse leggiRt(LeggiRicevutaDTO leggiRicevutaDTO) throws ServiceException,RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiRicevutaDTOResponse response = new LeggiRicevutaDTOResponse();
 
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
 
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			// controllo che il dominio sia autorizzato
 			this.autorizzaRichiesta(leggiRicevutaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, leggiRicevutaDTO.getIdDominio(), null, bd);
-			
+
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
 
@@ -81,19 +82,21 @@ public class RptDAO extends BaseDAO{
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return response;
 	}
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
 		List<String> listaDominiFiltro = null;
+		BasicBD bd = null;
+
 		try {
-			
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
 			this.autorizzaRichiesta(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
-			
+
 			// Autorizzazione sui domini
 			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
@@ -113,11 +116,11 @@ public class RptDAO extends BaseDAO{
 			if(listaRptDTO.getIdDominio() != null) {
 				listaDominiFiltro.add(listaRptDTO.getIdDominio());
 			}
-			
+
 			if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
 				filter.setIdDomini(listaDominiFiltro);
 			}
-			
+
 			filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
 			filter.setIdPendenza(listaRptDTO.getIdPendenza());
 			filter.setCodApplicazione(listaRptDTO.getIdA2A());
@@ -134,16 +137,14 @@ public class RptDAO extends BaseDAO{
 					elem.setRpt(rpt);
 					elem.setVersamento(rpt.getVersamento(bd));
 					elem.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-					elem.setCanale(rpt.getCanale(bd));
-					elem.setPsp(rpt.getPsp(bd));
-
 					resList.add(elem);
 				}
 			} 
 
 			return new ListaRptDTOResponse(count, resList);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 }

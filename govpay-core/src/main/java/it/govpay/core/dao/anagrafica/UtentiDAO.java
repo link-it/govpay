@@ -58,8 +58,10 @@ public class UtentiDAO extends BaseDAO{
 	}
 
 	public IAutorizzato getUser(String principal) throws NotAuthenticatedException, ServiceException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			IAutorizzato user = null;
 			boolean autenticated = false;
 
@@ -74,27 +76,33 @@ public class UtentiDAO extends BaseDAO{
 				user = operatore.getUtenza();
 				autenticated = true;
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
-			
+
 			if(!autenticated) throw new NotAuthenticatedException();
-			
+
 			return user;
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public void populateUser(IAutorizzato user) throws NotAuthenticatedException, ServiceException, NotAuthorizedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.populateUser(user, bd);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public Applicazione getApplicazione(String principal) throws NotAuthenticatedException, ServiceException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
 			return applicazione;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
@@ -103,22 +111,27 @@ public class UtentiDAO extends BaseDAO{
 			bd.closeConnection();
 		}
 	}
-	
+
 	public Operatore getOperatore(String principal) throws NotAuthenticatedException, ServiceException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Operatore operatore = AnagraficaManager.getOperatore(bd, principal);
 			return operatore;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
 			throw new NotAuthenticatedException();
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws NotAuthenticatedException, ServiceException, OperatoreNonTrovatoException, NotAuthorizedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiOperatore.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
 			Operatore operatore = AnagraficaManager.getOperatore(bd, leggiOperatore.getPrincipal());
 			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
@@ -127,15 +140,18 @@ public class UtentiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
 			throw new OperatoreNonTrovatoException("Operatore " + leggiOperatore.getPrincipal() + " non censito in Anagrafica");
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public FindOperatoriDTOResponse findOperatori(FindOperatoriDTO listaOperatoriDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaOperatoriDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
-			
+
 			OperatoriBD applicazioniBD = new OperatoriBD(bd);
 			OperatoreFilter filter = null;
 			if(listaOperatoriDTO.isSimpleSearch()) {
@@ -143,35 +159,38 @@ public class UtentiDAO extends BaseDAO{
 				filter.setSimpleSearchString(listaOperatoriDTO.getSimpleSearch());
 			} else {
 				filter = applicazioniBD.newFilter(false);
-				
+
 			}
-			
+
 			filter.setSearchAbilitato(listaOperatoriDTO.getAbilitato());
 			filter.setOffset(listaOperatoriDTO.getOffset());
 			filter.setLimit(listaOperatoriDTO.getLimit());
 			filter.getFilterSortList().addAll(listaOperatoriDTO.getFieldSortList());
-			
+
 			return new FindOperatoriDTOResponse(applicazioniBD.count(filter), applicazioniBD.findAll(filter));
-			
+
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoTributoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException {
 		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(putOperatoreDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter(false);
 			filter.setPrincipal(putOperatoreDTO.getPrincipal());
 			filter.setSearchModeEquals(true); // ricerca esatta del principal che sto inserendo
-			
+
 			// flag creazione o update
 			boolean isCreate = operatoriBD.count(filter) == 0;
 			operatoreDTOResponse.setCreated(isCreate);
-			
+
 			if(putOperatoreDTO.getIdDomini() != null) {
 				List<Long> idDomini = new ArrayList<>();
 				for (String codDominio : putOperatoreDTO.getIdDomini()) {
@@ -181,10 +200,10 @@ public class UtentiDAO extends BaseDAO{
 						throw new DominioNonTrovatoException(e.getMessage(), e);
 					}
 				}
-				
+
 				putOperatoreDTO.getOperatore().getUtenza().setIdDomini(idDomini );
 			}
-			
+
 			if(putOperatoreDTO.getIdTributi() != null) {
 				List<Long> idTributi = new ArrayList<>();
 				for (String codTributo : putOperatoreDTO.getIdTributi()) {
@@ -194,11 +213,11 @@ public class UtentiDAO extends BaseDAO{
 						throw new TipoTributoNonTrovatoException(e.getMessage(), e);
 					}
 				}
-				
+
 				putOperatoreDTO.getOperatore().getUtenza().setIdTributi(idTributi);
 			}
-			
-			
+
+
 			if(isCreate) {
 				operatoriBD.insertOperatore(putOperatoreDTO.getOperatore());
 			} else {
@@ -208,28 +227,31 @@ public class UtentiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new OperatoreNonTrovatoException(e.getMessage(), e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return operatoreDTOResponse;
 	}
-	
+
 	/**
 	 * @param deleteOperatoreDTO
 	 * @throws NotAuthenticatedException 
 	 */
 	public void deleteOperatore(DeleteOperatoreDTO deleteOperatoreDTO) throws NotAuthorizedException, OperatoreNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-		
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(deleteOperatoreDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
 			new OperatoriBD(bd).deleteOperatore(deleteOperatoreDTO.getPrincipal());
 		} catch (NotFoundException e) {
 			throw new OperatoreNonTrovatoException(e.getMessage());
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 }
 
 

@@ -1,0 +1,28 @@
+<div class="container py-4 px-3">
+  <mat-card class="no-shadow mb-4">
+    <p class="d-block font-weight-500 matcard-title pb-3 color-gray">Riepilogo informazioni</p>
+    <p class="d-block matcard-title py-0" *ngIf="informazioni.length == 0">Nessuna informazione</p>
+    <div class="d-block" *ngIf="informazioni.length != 0">
+      <link-key-value-view *ngFor="let item of informazioni" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    </div>
+    <p class="d-block matcard-title py-3 color-gray">Connettore PDD o PPDOE</p>
+    <p class="d-block matcard-title py-0" *ngIf="connettori.length == 0">Nessuna informazione</p>
+    <div class="d-block" *ngIf="connettori.length != 0">
+      <link-key-value-view *ngFor="let item of connettori" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    </div>
+  </mat-card>
+  <mat-card class="no-shadow pb-0">
+    <div class="d-flex flex-row">
+      <p class="w-100 mr-3 font-weight-500 matcard-title color-gray">Stazioni</p>
+      <mat-icon class="action" (click)="_addEditStazione()"><i class="material-icons dark-material-icons">add</i></mat-icon>
+    </div>
+    <mat-card-content>
+      <p class="d-block matcard-title py-3" *ngIf="stazioni.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="stazioni.length != 0">
+        <link-item-view #sliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of stazioni" [component-data]="item" [use-item-view-directive]="true"
+                        (icon-click)="_iconClick(sliv, $event)" [over-icons]="['edit', 'delete']"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<button mat-fab class="fab-action" (click)="_editRegistro()"><i class="material-icons">edit</i></button>

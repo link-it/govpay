@@ -270,9 +270,9 @@ public class RrUtils extends NdpValidationUtils {
 		evento.setAltriParametriRisposta(null);
 		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA);
 		evento.setCcp(rpt.getCcp());
-		evento.setCodCanale(rpt.getCanale(bd).getCodCanale());
+		evento.setCodCanale(rpt.getCodCanale());
 		evento.setCodDominio(rpt.getCodDominio());
-		evento.setCodPsp(rpt.getPsp(bd).getCodPsp());
+		evento.setCodPsp(rpt.getCodPsp());
 		evento.setCodStazione(rpt.getStazione(bd).getCodStazione());
 		evento.setComponente(Evento.COMPONENTE);
 		evento.setDataRisposta(new Date());
@@ -285,7 +285,7 @@ public class RrUtils extends NdpValidationUtils {
 		evento.setIuv(rpt.getIuv());
 		evento.setSottotipoEvento(null);
 		evento.setTipoEvento(tipoEvento);
-		evento.setTipoVersamento(rpt.getCanale(bd).getTipoVersamento());
+		evento.setTipoVersamento(rpt.getTipoVersamento());
 	}
 
 	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er, BasicBD bd) throws NdpException, ServiceException {

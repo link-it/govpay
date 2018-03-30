@@ -1,0 +1,61 @@
+@import '~@angular/material/theming';
+@import '../../../../../styles/variables.scss';
+
+.sub-totale {
+  margin: 16px 0 -16px 0 !important;
+  //padding-top: 16px !important;
+}
+
+link-riepilogo-view {
+  display: block;
+  margin: 0 !important;
+}
+
+// Overridden styles
+// mat-expansion-panel and mat-tab
+mat-tab-group .mat-tab-body-wrapper {
+  position: absolute !important;
+  top: 49px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+mat-tab-header {
+  position: fixed !important;
+  background-color: mat-color($link-primary);
+  box-shadow: 0 2px 2px 0 $link-shadow !important;
+  width: 100%;
+  z-index: 2;
+}
+
+mat-tab-header .mat-tab-label {
+  color: white;
+  font-weight: normal;
+  font-variant: small-caps;
+}
+
+mat-ink-bar {
+  background-color: mat-color($link-accent) !important;
+}
+
+mat-tab-body .mat-tab-body-content {
+  padding: 1rem;
+}
+
+mat-expansion-panel-header:hover {
+  background-color: transparent !important;
+}
+
+mat-expansion-panel {
+  box-shadow: 0 1px 1px 0 $link-shadow !important;
+  margin-bottom: 1rem !important;
+}
+
+mat-expansion-panel:last-child {
+  margin-bottom: 0 !important;
+}
+
+mat-expansion-panel-header {
+  padding: 0 24px !important;
+}

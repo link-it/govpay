@@ -42,8 +42,8 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.core.utils.Gp21Utils;
+import it.govpay.core.utils.Gp25Utils;
 import it.govpay.core.utils.JaxbUtils;
-import it.govpay.core.utils.RtUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.Rr;
@@ -99,10 +99,8 @@ public class NotificaClient extends BasicClient {
 				PaNotificaTransazione paNotificaTransazione = new PaNotificaTransazione();
 				paNotificaTransazione.setCodApplicazione(notifica.getApplicazione(bd).getCodApplicazione());
 				paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(bd).getCodVersamentoEnte());
-				paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, bd));
-				
-				if(notifica.getApplicazione(null).getConnettoreNotifica().getVersione().compareVersione(Versione.GP_SOAP_02_02) >= 0)
-					paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
+				paNotificaTransazione.setTransazione(Gp25Utils.toTransazione(rpt, bd));
+				paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
 				
 				QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaTransazione");
 				sendSoap("paNotificaTransazione", new JAXBElement<PaNotificaTransazione>(qname, PaNotificaTransazione.class, paNotificaTransazione), null, false);
@@ -148,9 +146,7 @@ public class NotificaClient extends BasicClient {
 					notificaRsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt())); 
 					// rt
 					if(rpt.getXmlRt() != null) {
-						String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-						byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), rpt.getCodDominio());
-						CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+						CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
 						notificaRsModel.setRt(rt);
 					}
 					// elenco pagamenti
@@ -160,7 +156,7 @@ public class NotificaClient extends BasicClient {
 						String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(notifica.getApplicazione(bd).getCodApplicazione(), rpt.getVersamento(bd).getCodVersamentoEnte());
 						String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 						for(Pagamento pagamento : rpt.getPagamenti(bd)) {
-							riscossioni.add(Gp21Utils.toRiscossione(pagamento, versione, bd,indice,urlPendenza,urlRpt));
+							riscossioni.add(Gp21Utils.toRiscossione(pagamento, bd, indice, urlPendenza, urlRpt));
 							indice ++;
 						}
 						notificaRsModel.setRiscossioni(riscossioni);

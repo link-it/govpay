@@ -20,7 +20,10 @@
 package it.govpay.core.business;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -112,20 +115,16 @@ public class Iuv extends BasicBD {
 		String prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, GpThreadLocal.get().getPagamentoCtx().getAllIuvProps(applicazione));
 		IuvBD iuvBD = new IuvBD(this);
 		it.govpay.model.Iuv iuv = null;
-		boolean isNumericOnly = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().isNumericOnly(applicazione, dominio, GpThreadLocal.get().getPagamentoCtx().getAllIuvProps(applicazione));;
 		
-		if(isNumericOnly || type.equals(TipoIUV.NUMERICO)) {
+		if(type.equals(TipoIUV.NUMERICO)) {
 			// il prefisso deve essere numerico
-			try {
-				Long.parseLong(prefix);
-			} catch (NumberFormatException e) {
-//				if(dominio.isIuvPrefixStrict()) {
+			if(StringUtils.isNotEmpty(prefix)) { 
+				try {
+					Long.parseLong(prefix);
+				} catch (NumberFormatException e) {
 					GpThreadLocal.get().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
 					throw new ServiceException("Il prefisso generato [" + prefix + "] non e' numerico.");
-//				} else {
-//					GpThreadLocal.get().log("iuv.generazioneIUVPrefixWarn", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico. Prefisso non utilizzato.", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
-//					prefix = "";
-//				}
+				}
 			}
 			iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.NUMERICO, prefix);
 		} else {
@@ -133,17 +132,16 @@ public class Iuv extends BasicBD {
 			if(prefix.matches("[a-zA-Z0-9]*"))
 				iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.ISO11694, prefix);
 			else {
-//				if(dominio.isIuvPrefixStrict()) {
-					GpThreadLocal.get().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
-					throw new ServiceException("Il prefisso generato [" + prefix + "] non e' alfanumerico.");
-//				} else {
-//					GpThreadLocal.get().log("iuv.generazioneIUVPrefixWarn", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico. Prefisso non utilizzato.", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
-//					iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.ISO11694, "");
-//				}
+				GpThreadLocal.get().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
+				throw new ServiceException("Il prefisso generato [" + prefix + "] non e' alfanumerico.");
 			}
 		}
 		
-		// TODO verificare che lo iuv generato rispetta la regular expr definita nell'applicazione
+		// Verifico che lo iuv generato rispetti la regular expr definita nell'applicazione
+		Pattern patternIuv = Pattern.compile(applicazione.getRegExp());
+		Matcher matcher = patternIuv.matcher(iuv.getIuv()); 
+		if(!matcher.matches())
+			throw new ServiceException("Lo iuv generato [" + prefix + "] non rispetta il pattern previsto dall'applicazione ["+applicazione.getCodApplicazione()+"].");
 		
 		GpThreadLocal.get().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
 		

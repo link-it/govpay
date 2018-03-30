@@ -1,0 +1,12 @@
+<mat-toolbar color="primary" [style.height.px]="_Y">
+  <button mat-icon-button class="action" (click)="_close()"><i class="material-icons">clear</i></button>
+  <h1 class="pl-2" [matTooltip]="_blueData?.info?.dialogTitle">{{_blueData?.info?.dialogTitle}}</h1>
+</mat-toolbar>
+<form class="full-absolute overflow-auto p-4" [style.top.px]="_Y"
+      [formGroup]="blueModalForm" novalidate (ngSubmit)="_save(blueModalForm)">
+  <ng-container #bdfec></ng-container>
+</form>
+<button mat-fab class="fab-action" type="submit" [disabled]="!blueModalForm.valid" (click)="_save(blueModalForm)">
+  <i class="material-icons">save</i>
+</button>
+

@@ -12,6 +12,8 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.rs.v1.beans.Pendenza;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
+import it.govpay.core.rs.v1.beans.Avviso;
+import it.govpay.core.rs.v1.beans.base.Avviso.StatoEnum;
 import it.govpay.core.rs.v1.beans.base.StatoPendenza;
 import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -39,7 +41,7 @@ public class PendenzeConverter {
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNome(versamento.getNome());
-		rsModel.setNumeroAvviso(versamento.getIuvProposto());
+		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
 		rsModel.setDatiAllegati(versamento.getDatiAllegati());
 		
@@ -111,6 +113,51 @@ public class PendenzeConverter {
 		}
 		
 		
+		return rsModel;
+	}
+	
+	
+	public static Avviso toAvvisoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException {
+		Avviso rsModel = new Avviso();
+		
+		if(versamento.getCausaleVersamento()!= null)
+			try {
+				rsModel.setDescrizione(versamento.getCausaleVersamento().getSimple());
+			} catch (UnsupportedEncodingException e) {
+				throw new ServiceException(e);
+			}
+		
+		rsModel.setDataScadenza(versamento.getDataScadenza());
+		rsModel.setDataValidita(versamento.getDataValidita());
+		rsModel.setIdDominio(dominio.getCodDominio());
+		rsModel.setImporto(versamento.getImportoTotale());
+		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
+		rsModel.setTassonomiaAvviso(versamento.getTassonomiaAvviso());
+		rsModel.setBarcode(barCode);
+		rsModel.setQrcode(qrCode);
+		
+		StatoEnum statoPendenza = null;
+
+		switch(versamento.getStatoVersamento()) {
+		case ANNULLATO: statoPendenza = StatoEnum.ANNULLATO;
+			break;
+		case ANOMALO: statoPendenza = StatoEnum.NON_PAGATO;
+			break;
+		case ESEGUITO: statoPendenza = StatoEnum.PAGATO;
+			break;
+		case ESEGUITO_SENZA_RPT:  statoPendenza = StatoEnum.PAGATO;
+			break;
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
+			break;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoEnum.PAGATO;
+			break;
+		default:
+			break;
+		
+		}
+
+		rsModel.setStato(statoPendenza);
+
 		return rsModel;
 	}
 }

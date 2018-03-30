@@ -1,9 +1,9 @@
-# GovPay - Porta di accesso al sistema PagoPA
+# GovPay - Porta di accesso al sistema pagoPA
 GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nodo dei Pagamenti SPC del progetto PagoPa per l'integrazione degli enti pubblici con la rete interbancaria.
 
 ## Documentazione
 
-* [Introduzione a GovPay](./resources/doc/pdf/GovPay-PagoPA.pdf)
+* [Introduzione a GovPay](./resources/doc/pdf/GovPay-pagoPA.pdf)
 * [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazioneSOAP.pdf)
 * [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
 
@@ -12,28 +12,37 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 - Mailing list: [Utenti GovPay](http://www.gov4j.it/mailman/listinfo/utenti-govpay)
 - Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
 
-## Funzionalità
+## Conformità con la specifica pagoPA
 
-Di seguito un elenco delle principali funzionalità del prodotto.
-* implementazione delle Specifiche PagoPA, con supporto per pagamenti di tipo immediato, differito e ad iniziativa PSP sia monobeneficiario che multibeneficiario.
-* supporto allo storno dei pagamenti.
-* supporto ai pagamenti su circuito MyBank.
-* supporto al pagamento della Marca da Bollo Telematica.
-* aggiornato alla versione 1.7.2 delle interfacce Nodo dei Pagamenti.
-* supporto specifica IUV pluri-intermediati
-* integrazione con gli applicativi dell'Ente preposti alla gestione delle posizioni creditorie tramite Web API.
-* integrazione semplificata del/i portali cittadini dell'Ente.
-* implementazione di servizi accessori ai pagamenti.
-  * servizio di generazione IUV
-  * produzione codici per BarCode e QrCode
-  * produzione tracciati di Iban Accredito e Tabella Controparti
-  * gestione flussi rendicontazione
-  * gestione rendicontazione senza rpt
-  * risoluzione pagamenti incompleti
-  * giornale degli eventi
-  * ...
-* completa integrazione con il software di Porta di Dominio OpenSPCoop.
-* cruscotto Web di gestione e configurazione.
+* Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3 
+* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v1.7.1  
+* Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
+* Avviso di pagamento analogico nel sistema pagoPA, v1.2.3
+* Transazioni MyBank attraverso il Nodo dei Pagamenti-SPC, v1.2.1
+
+## Configurabilità
+
+* Supporto per tutte le modalità di adesione: diretta, intermediario tecnologico e partner tecnologico
+* Multitenant: possibilità di ospitare più domini, intermediari e partner sulla stessa installazione
+* Supporto alla generazione di IUV conformi alla specifica, in accordo a politiche configurabili da utente
+* Integrazione utenze e ruoli da Sistemi esterni di Identity Management
+
+## API per l'integrazione applicativa
+
+* API orientata ai portali per l'attivazione dei pagamenti
+* API orientata ai Gestionali per la gestione delle posizioni debitorie
+* API orientata agli Uffici contabili per le operazioni di riconciliazione
+* Profilazione degli applicativi interni al dominio, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
+
+## Cruscotto di gestione e monitoraggio dei pagamenti
+
+* Implementazione delle funzionalita di Tavolo Operativo richieste dalla specifica AgID
+* Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
+* Gestione archivio pagamenti in attesa (APA)
+* Consultazione dei pagamenti effettuati
+* Consultazione dati di riconciliazione
+* Reportistica nei formati PDF e CSV
+* Giornale degli Eventi
 
 ## Licenza
 

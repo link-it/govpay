@@ -20,7 +20,9 @@
 package it.govpay.core.utils.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.UnmarshalException;
@@ -40,6 +42,7 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.base.StatoPendenzaVerificata;
+import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
@@ -159,7 +162,14 @@ public class VerificaClient extends BasicClient {
 				headerProperties.add(new Property("Accept", "application/json"));
 				headerProperties.add(new Property("Accept", "application/json"));
 				String jsonResponse = "";
-				String path = "/pendenze/" + codDominio + "/" + iuv; 
+				
+				String path = null;
+				
+				if(codVersamentoEnte != null) {
+					path = "/pendenze/" + codApplicazione + "/" + codVersamentoEnte;
+				} else {
+					path = "/avvisi/" + codDominio + "/" + iuv;
+				}
 				
 				StatoPendenzaVerificata stato = null;
 				PendenzaVerificata pendenzaVerificata = null;
@@ -167,6 +177,9 @@ public class VerificaClient extends BasicClient {
 					try {
 						jsonResponse = new String(getJson(path, headerProperties));
 						JsonConfig jsonConfig = new JsonConfig();
+						Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+						classMap.put("voci", VocePendenza.class);
+						jsonConfig.setClassMap(classMap);
 						pendenzaVerificata = (PendenzaVerificata) PendenzaVerificata.parse(jsonResponse, PendenzaVerificata.class, jsonConfig ); 
 					}catch(ClientException e) {
 						ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Errore nella deserializzazione del messaggio di risposta (" + e.getMessage() + ")");

@@ -172,6 +172,7 @@ public class Pagamento extends BasicBD {
 		return response;
 	}
 
+
 	public String verificaTransazioniPendenti() throws GovPayException {
 
 		GpContext ctx = GpThreadLocal.get();

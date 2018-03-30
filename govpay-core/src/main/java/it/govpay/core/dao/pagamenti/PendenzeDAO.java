@@ -14,6 +14,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.core.business.model.Iuv;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -29,6 +30,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -40,9 +42,10 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
+		BasicBD bd = null;
+		
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 			// Autorizzazione sui domini
 			List<Long> idDomini = AclEngine.getIdDominiAutorizzati((Utenza) listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
@@ -95,19 +98,21 @@ public class PendenzeDAO extends BaseDAO{
 
 			return new ListaPendenzeDTOResponse(count, resList);
 		}finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
-
-		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		Versamento versamento;
+		BasicBD bd = null;
+		
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
 			
 			Dominio dominio = versamento.getDominio(versamentiBD);
@@ -132,7 +137,8 @@ public class PendenzeDAO extends BaseDAO{
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return response;
 	}
@@ -144,9 +150,8 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
-			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, patchPendenzaDTO.getIdA2a()).getId(), patchPendenzaDTO.getIdPendenza());
@@ -194,13 +199,11 @@ public class PendenzeDAO extends BaseDAO{
 	}
 	
 	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws PendenzaNonTrovataException, GovPayException, NotAuthorizedException, NotAuthenticatedException{ 
-		PutPendenzaDTOResponse dominioDTOResponse = new PutPendenzaDTOResponse();
+		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		BasicBD bd = null;
 		try {
-			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
-			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
+			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
@@ -208,7 +211,25 @@ public class PendenzeDAO extends BaseDAO{
 			// controllo che il dominio sia autorizzato
 			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, chiediVersamento.getDominio(bd).getCodDominio(), null, bd);
 			
-			versamentoBusiness.caricaVersamento(chiediVersamento, false, true);
+			
+			createOrUpdatePendenzaResponse.setCreated(false);
+			try {
+				VersamentiBD versamentiBD = new VersamentiBD(bd);
+				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, putVersamentoDTO.getVersamento().getCodApplicazione()).getId(), putVersamentoDTO.getVersamento().getCodVersamentoEnte());
+			}catch(NotFoundException e) {
+				createOrUpdatePendenzaResponse.setCreated(true);
+			}
+			
+			versamentoBusiness.caricaVersamento(chiediVersamento, chiediVersamento.getNumeroAvviso() == null, true);
+			
+			// restituisco il versamento creato
+			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);
+			createOrUpdatePendenzaResponse.setDominio(chiediVersamento.getDominio(bd));
+			
+			Iuv iuv = IuvUtils.toIuv(chiediVersamento, chiediVersamento.getApplicazione(bd), chiediVersamento.getDominio(bd));
+			
+			createOrUpdatePendenzaResponse.setBarCode(iuv.getBarCode() != null ? new String(iuv.getBarCode()) : null);
+			createOrUpdatePendenzaResponse.setQrCode(iuv.getQrCode() != null ? new String(iuv.getQrCode()) : null);
 
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
@@ -216,7 +237,7 @@ public class PendenzeDAO extends BaseDAO{
 			if(bd != null)
 				bd.closeConnection();
 		}
-		return dominioDTOResponse;
+		return createOrUpdatePendenzaResponse;
 	}
 
 }

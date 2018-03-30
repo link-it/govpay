@@ -89,7 +89,7 @@ public class RppController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			List<Rpp> results = new ArrayList<Rpp>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
-				results.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),leggiRptDtoResponse.getCanale(),leggiRptDtoResponse.getPsp()));
+				results.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
 			}
 			ListaRpp response = new ListaRpp(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
@@ -138,9 +138,7 @@ public class RppController extends BaseController {
 				this.log.info("Esecuzione " + methodName + " completata."); 
 				return Response.status(Status.OK).type(accept).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())).build();
 			} else {
-				String tipoFirma = ricevutaDTOResponse.getRpt().getFirmaRichiesta().getCodifica();
-				byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, ricevutaDTOResponse.getRpt().getXmlRt(), ricevutaDTOResponse.getRpt().getCodDominio());
-				CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+				CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt());
 
 				if(accept.equalsIgnoreCase("application/pdf")) {
 					ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
@@ -223,7 +221,7 @@ public class RppController extends BaseController {
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
 
-			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),leggiRptDTOResponse.getCanale(),leggiRptDTOResponse.getPsp());
+			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione());
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);

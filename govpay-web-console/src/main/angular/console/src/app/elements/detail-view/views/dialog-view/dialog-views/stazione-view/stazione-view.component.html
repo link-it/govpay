@@ -1,0 +1,11 @@
+<div class="row">
+  <mat-form-field class="col-6" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Id stazione" formControlName="idStazione_ctrl" autocomplete="off" required>
+  </mat-form-field>
+  <mat-form-field class="col-6" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Password" formControlName="password_ctrl" autocomplete="off" required>
+  </mat-form-field>
+</div>
+<div class="w-100" [formGroup]="fGroup">
+  <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+</div>

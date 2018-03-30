@@ -1,0 +1,5 @@
+<div class="container my-4" *ngIf="cards.length != 0">
+  <mat-card class="no-shadow" *ngFor="let card of cards">
+    <link-key-value-view class="card-profilo" *ngFor="let info of card" [info]="info"></link-key-value-view>
+  </mat-card>
+</div>

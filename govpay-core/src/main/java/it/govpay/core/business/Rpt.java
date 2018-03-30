@@ -33,6 +33,7 @@ import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -103,36 +104,39 @@ public class Rpt extends BasicBD{
 				} else {
 					log.debug("Autorizzato pagamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]: pagamento in stato " + StatoVersamento.NON_ESEGUITO);
 				}
-
+				
 				log.debug("Verifica scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
-				if(versamentoModel.getDataScadenza() != null && versamentoModel.getDataScadenza().before(adesso) && versamentoModel.isAggiornabile()) {
-					log.info("Scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] decorsa. Avvio richiesta di aggiornamento all'applicazione.");
-					try {
-						versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, this);
-						log.info("Versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] aggiornato tramite servizio di verifica.");
-					} catch (VersamentoAnnullatoException e){
-						log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: versamento annullato");
-						throw new GovPayException(EsitoOperazione.VER_013, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-					} catch (VersamentoScadutoException e) {
-						log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: versamento scaduto");
-						throw new GovPayException(EsitoOperazione.VER_010, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-					} catch (VersamentoDuplicatoException e) {
-						log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: versamento duplicato");
-						throw new GovPayException(EsitoOperazione.VER_012, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-					} catch (VersamentoSconosciutoException e) {
-						log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: versamento sconosciuto");
-						throw new GovPayException(EsitoOperazione.VER_011, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-					} catch (ClientException e) {
-						log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: errore di interazione con il servizio di verifica.");
-						throw new GovPayException(EsitoOperazione.VER_014, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-					}
-				}
-
-				if(versamentoModel.getDataScadenza() != null && versamentoModel.getDataScadenza().before(adesso) && !versamentoModel.isAggiornabile()) {
+				if(versamentoModel.getDataScadenza() != null && versamentoModel.getDataScadenza().before(adesso)) {
 					log.warn("Scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] decorsa.");
 					throw new GovPayException(EsitoOperazione.PAG_007, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+				} else { // versamento non scaduto, controllo data validita'
+					log.debug("Verifica validita' del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
+					if(versamentoModel.getDataValidita() != null && versamentoModel.getDataValidita().before(adesso)) {
+						log.info("Validita del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] decorsa. Avvio richiesta di aggiornamento all'applicazione.");
+						try {
+							versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, this);
+							log.info("Versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] aggiornato tramite servizio di verifica.");
+						} catch (VersamentoAnnullatoException e){
+							log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: versamento annullato");
+							throw new GovPayException(EsitoOperazione.VER_013, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+						} catch (VersamentoScadutoException e) {
+							log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: versamento scaduto");
+							throw new GovPayException(EsitoOperazione.VER_010, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+						} catch (VersamentoDuplicatoException e) {
+							log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: versamento duplicato");
+							throw new GovPayException(EsitoOperazione.VER_012, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+						} catch (VersamentoSconosciutoException e) {
+							log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: versamento sconosciuto");
+							throw new GovPayException(EsitoOperazione.VER_011, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+						} catch (ClientException e) {
+							log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: errore di interazione con il servizio di verifica.");
+							throw new GovPayException(EsitoOperazione.VER_014, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+						}
+					} else { 
+						// versamento valido passo
+					}
 				}
-
+				
 				log.debug("Scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] verificata.");
 
 				if(stazione == null) {
@@ -146,41 +150,45 @@ public class Rpt extends BasicBD{
 				ctx.log("rpt.validazioneSemanticaOk", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 			}
 
-			it.govpay.bd.model.Psp psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
-
-			ctx.log("rpt.validazioneSemanticaPsp", psp.getCodPsp(), canale.getCodCanale());
-
-			if(isBollo && !psp.isBolloGestito()){
-				throw new GovPayException(EsitoOperazione.PAG_003);
+			// Aggiornamento WISP2.0
+			it.govpay.bd.model.Psp psp = null;
+			if(canale != null) {
+				
+				psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
+				ctx.log("rpt.validazioneSemanticaPsp", psp.getCodPsp(), canale.getCodCanale());
+				
+				if(isBollo && !psp.isBolloGestito()){
+					throw new GovPayException(EsitoOperazione.PAG_003);
+				}
+	
+				// Verifico che il canale sia compatibile con la richiesta
+				if(!canale.isAbilitato())
+					throw new GovPayException(EsitoOperazione.PSP_001, psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().toString());
+	
+				if(versamenti.size() > 1 && !canale.getModelloPagamento().equals(ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO)) {
+					throw new GovPayException(EsitoOperazione.PAG_001);
+				}
+	
+				if(canale.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP)){
+					throw new GovPayException(EsitoOperazione.PAG_002);
+				}
+	
+				if(canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO) && ibanAddebito == null){
+					throw new GovPayException(EsitoOperazione.PAG_004);
+				} 
+	
+				// Se non sono in Addebito Diretto, ignoro l'iban di addebito
+				if(!canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO)) {
+					ibanAddebito = null;
+				}
+	
+				if(canale.getTipoVersamento().equals(TipoVersamento.MYBANK) && (versamenti.size() > 1 || versamenti.get(0).getSingoliVersamenti(this).size() > 1)){
+					throw new GovPayException(EsitoOperazione.PAG_005);
+				}
+	
+				ctx.log("rpt.validazioneSemanticaPspOk", psp.getCodPsp(), canale.getCodCanale());
 			}
-
-			// Verifico che il canale sia compatibile con la richiesta
-			if(!canale.isAbilitato())
-				throw new GovPayException(EsitoOperazione.PSP_001, psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().toString());
-
-			if(versamenti.size() > 1 && !canale.getModelloPagamento().equals(ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO)) {
-				throw new GovPayException(EsitoOperazione.PAG_001);
-			}
-
-			if(canale.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP)){
-				throw new GovPayException(EsitoOperazione.PAG_002);
-			}
-
-			if(canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO) && ibanAddebito == null){
-				throw new GovPayException(EsitoOperazione.PAG_004);
-			} 
-
-			// Se non sono in Addebito Diretto, ignoro l'iban di addebito
-			if(!canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO)) {
-				ibanAddebito = null;
-			}
-
-			if(canale.getTipoVersamento().equals(TipoVersamento.MYBANK) && (versamenti.size() > 1 || versamenti.get(0).getSingoliVersamenti(this).size() > 1)){
-				throw new GovPayException(EsitoOperazione.PAG_005);
-			}
-
-			ctx.log("rpt.validazioneSemanticaPspOk", psp.getCodPsp(), canale.getCodCanale());
-
+			
 			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
 
 			Iuv iuvBusiness = new Iuv(this);
@@ -235,7 +243,7 @@ public class Rpt extends BasicBD{
 				} else {
 					ctx.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv.getIuv() + ccp);
 				}
-				it.govpay.bd.model.Rpt rpt = RptUtils.buildRpt(intermediario, stazione, ctx.getPagamentoCtx().getCodCarrello(), versamento, iuv, ccp, applicazione, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
+				it.govpay.bd.model.Rpt rpt = new RptBuilder().buildRpt(ctx.getPagamentoCtx().getCodCarrello(), versamento, canale, iuv.getIuv(), ccp, applicazione, versante, autenticazione, ibanAddebito, redirect, this);
 				rpt.setCodSessionePortale(ctx.getPagamentoCtx().getCodSessionePortale());
 				
 				if(pagamentoPortale!= null)
@@ -258,20 +266,22 @@ public class Rpt extends BasicBD{
 			try {
 
 				idTransaction = ctx.openTransaction();
-
-				if(ctx.getPagamentoCtx().getCodCarrello() != null) {
+				Risposta risposta = null;
+				
+				// SANP 2.1 : deprecato l'uso della nodoInviaRPT (Mi arriva sempre se invocate le api v2)
+				if(ctx.getPagamentoCtx().getCodCarrello() != null || rpts.size() > 1) {
 					ctx.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
 					ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", ctx.getPagamentoCtx().getCodCarrello()));
 					ctx.log("rpt.invioCarrelloRpt");
+					risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, this);
 				} else {
 					ctx.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoInviaRPT);
 					ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", rpts.get(0).getCodDominio()));
 					ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rpts.get(0).getIuv()));
 					ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpts.get(0).getCcp()));
 					ctx.log("rpt.invioRpt");
+					risposta = RptUtils.inviaRPT(rpts.get(0), intermediario, stazione, this);
 				}
-
-				Risposta risposta = RptUtils.inviaRPT(intermediario, stazione, rpts, this);
 
 				setupConnection(GpThreadLocal.get().getTransactionId());
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {

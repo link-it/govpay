@@ -11,17 +11,13 @@ import it.govpay.model.Dominio;
 
 public class CustomIuv {
 
-	public final String getCodApplicazione(Dominio dominio, String iuv, Applicazione applicazioneDefault) throws ServiceException {
-		try {
-			return getCodApplicazione(dominio.getCodDominio(), iuv);
-		} catch (NotImplementedException e){
-			return applicazioneDefault != null ? applicazioneDefault.getCodApplicazione() : null;
-		}
-	}
-
-	protected String getCodApplicazione(String dominio, String iuv) throws ServiceException, NotImplementedException {
-		throw new NotImplementedException();
-	}
+//	public final String getCodApplicazione(Dominio dominio, String iuv, Applicazione applicazioneDefault) throws ServiceException {
+//		try {
+//			return getCodApplicazione(dominio.getCodDominio(), iuv);
+//		} catch (NotImplementedException e){
+//			return applicazioneDefault != null ? applicazioneDefault.getCodApplicazione() : null;
+//		}
+//	}
 
 	public String buildPrefix(Applicazione applicazione, Dominio dominio, Map<String, String> values) throws ServiceException, NotImplementedException {
 		String prefix = dominio.getIuvPrefix();

@@ -1,0 +1,10 @@
+<div class="d-block">
+  <div class="d-flex flex-row pb-3">
+    <mat-icon class="action" (click)="_close()"><i class="material-icons dark-material-icons">clear</i></mat-icon>
+    <p class="w-100 mx-3 my-0 align-self-center">{{data.info.dialogTitle}}</p>
+    <mat-icon (click)="_save(modalForm)"><i class="material-icons dark-material-icons {{!modalForm.valid?'mat-icon-disabled':'action'}}">save</i></mat-icon>
+  </div>
+  <form [formGroup]="modalForm" novalidate (ngSubmit)="_save(modalForm)">
+    <ng-container #dfec class="w-100"></ng-container>
+  </form>
+</div>

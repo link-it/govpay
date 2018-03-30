@@ -27,30 +27,31 @@ import it.govpay.model.Acl.Servizio;
 public class IncassiDAO extends BaseDAO{
 
 	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthorizedException, ServiceException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
 
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			ListaIncassiDTOResponse listaIncassiDTOResponse = incassi.listaIncassi(listaIncassoDTO);
-			 
+
 			if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
 				for (Incasso incasso : listaIncassiDTOResponse.getResults()) {
 					// popolo valori
 					List<Pagamento> pagamenti = incasso.getPagamenti(bd);
-					
+
 					if(pagamenti != null) {
 						for(Pagamento pagamento: pagamenti) {
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 							pagamento.getRpt(bd);
 						}
 					}
-					
+
 					incasso.getApplicazione(bd);
 					incasso.getDominio(bd);
 				}
 			}
-			
+
 			return listaIncassiDTOResponse;
 		}catch (NotAuthorizedException e) {
 			// TODO
@@ -59,26 +60,30 @@ public class IncassiDAO extends BaseDAO{
 			// TODO
 			throw new ServiceException(e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
 
 	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws IncassoNonTrovatoException, NotAuthorizedException, ServiceException{
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
 		LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
 
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			response = incassi.leggiIncasso(leggiIncassoDTO);
 			List<Pagamento> pagamenti = response.getIncasso().getPagamenti(bd);
-			
+
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 					pagamento.getRpt(bd);
 				}
 			}
-			
+
 			response.getIncasso().getApplicazione(bd);
 			response.getIncasso().getDominio(bd);
 
@@ -88,31 +93,34 @@ public class IncassiDAO extends BaseDAO{
 		} catch (NotFoundException e) {
 			throw new IncassoNonTrovatoException(e.getMessage(), e);
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return response;
 	}
 
 	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException, IncassiException{
 		RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = new RichiestaIncassoDTOResponse();
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-			
+
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, richiestaIncassoDTO.getUser().getPrincipal()); 
 			richiestaIncassoDTO.setApplicazione(applicazione);
-			
+
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
 			List<Pagamento> pagamenti = richiestaIncassoDTOResponse.getIncasso().getPagamenti(bd);
-			
+
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 					pagamento.getRpt(bd);
 				}
 			}
-			
+
 			richiestaIncassoDTOResponse.getIncasso().getApplicazione(bd);
 			richiestaIncassoDTOResponse.getIncasso().getDominio(bd);
 		} catch (NotAuthorizedException e) {
@@ -121,13 +129,14 @@ public class IncassiDAO extends BaseDAO{
 		} catch (IncassiException e) {
 			throw e;
 			// TODO
-//						throw new ServiceException(e);
-//			Errore errore = new Errore(e.getCode(),e.getMessage(),e.getDetails());
+			//						throw new ServiceException(e);
+			//			Errore errore = new Errore(e.getCode(),e.getMessage(),e.getDetails());
 		} catch (Exception e) {
 			// TODO
-						throw new ServiceException(e);
+			throw new ServiceException(e);
 		}finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 		return richiestaIncassoDTOResponse;
 	}

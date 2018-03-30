@@ -22,7 +22,7 @@ public class BaseDAO {
 	public void populateUser(IAutorizzato user, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		if(user == null)
 			throw AclEngine.toNotAuthenticatedException(user);
-		
+
 		try {
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
 			user.merge(applicazione.getUtenza());
@@ -35,70 +35,76 @@ public class BaseDAO {
 			}
 		}
 	}
-	
+
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<Diritti> listaDiritti = new ArrayList<Diritti>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti);
 	}
-	
+
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, Diritti diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		List<Diritti> listaDiritti = new ArrayList<Diritti>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti, bd);
 	}
-	
+
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, List<Diritti> diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(user, servizio, diritti, bd); 
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, List<Diritti> diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		// 1. integro le informazioni dell'utente
 		this.populateUser(user, bd);
-		
+
 		// 2. invocazione acl engine
 		boolean authorized = AclEngine.isAuthorized(user, servizio, diritti);
-		
+
 		if(!authorized)
 			throw AclEngine.toNotAuthorizedException(user, servizio, diritti);
 	}
-	
-	
-	
+
+
+
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti, String codDominio, String codTributo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<Diritti> listaDiritti = new ArrayList<Diritti>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti, codDominio, codTributo);
 	}
-	
+
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, Diritti diritti, String codDominio, String codTributo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		List<Diritti> listaDiritti = new ArrayList<Diritti>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti, codDominio, codTributo, bd); 
 	}
-	
-	
+
+
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, List<Diritti> diritti, String codDominio, String codTributo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = null;
+
 		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(user, servizio, diritti, codDominio, codTributo, bd); 
 		} finally {
-			bd.closeConnection();
+			if(bd != null)
+				bd.closeConnection();
 		}
 	}
-	
+
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, List<Diritti> diritti, String codDominio, String codTributo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		// 1. integro le informazioni dell'utente
 		this.populateUser(user, bd);
-		
+
 		// 2. invocazione acl engine
 		boolean authorized = AclEngine.isAuthorized(user, servizio, codDominio, codTributo, diritti);
-		
+
 		if(!authorized)
 			throw AclEngine.toNotAuthorizedException(user, servizio, diritti, codDominio, codTributo);
 	}

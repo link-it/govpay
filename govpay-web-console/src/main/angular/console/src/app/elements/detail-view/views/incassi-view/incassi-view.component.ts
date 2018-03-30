@@ -1,0 +1,118 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
+import { GovpayService } from '../../../../services/govpay.service';
+import { UtilService } from '../../../../services/util.service';
+import { Dato } from '../../../../classes/view/dato';
+import { ModalBehavior } from '../../../../classes/modal-behavior';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import * as moment from 'moment';
+import { Riepilogo } from '../../../../classes/view/riepilogo';
+import { Parameters } from '../../../../classes/parameters';
+import { Standard } from '../../../../classes/view/standard';
+
+@Component({
+  selector: 'link-incassi-view',
+  templateUrl: './incassi-view.component.html',
+  styleUrls: ['./incassi-view.component.scss']
+})
+export class IncassiViewComponent implements IModalDialog, OnInit {
+
+  @Input() informazioni = [];
+  @Input() riscossioni = [];
+
+  @Input() json: any;
+
+  protected info: Riepilogo;
+
+  constructor(public gps: GovpayService, public us: UtilService) { }
+
+  ngOnInit() {
+    this.dettaglioIncasso();
+  }
+
+  protected dettaglioIncasso() {
+    let _url = UtilService.URL_INCASSI+'/'+this.json.idDominio+'/'+this.json.idIncasso;
+    this.gps.getDataService(_url).subscribe(
+      function (_response) {
+        this.json = _response.body;
+        this.mapJsonDetail();
+        this.gps.updateSpinner(false);
+      }.bind(this),
+      (error) => {
+        //console.log(error);
+        this.us.alert(error.message);
+        this.gps.updateSpinner(false);
+      });
+  }
+
+  protected mapJsonDetail() {
+    //Riepilogo
+    let _dvi = UtilService.defaultDisplay({ value: moment(this.json.dataValuta).format('DD/MM/YYYY') });
+    let _dci = UtilService.defaultDisplay({ value: moment(this.json.dataContabile).format('DD/MM/YYYY') });
+    this.info = new Riepilogo({
+      titolo: new Dato({ label: 'Data valuta incasso', value: UtilService.defaultDisplay({ value: _dvi }) }),
+      sottotitolo: new Dato({ label: 'Id incasso', value: this.json.idIncasso }),
+      importo: this.json.importo,
+      extraInfo: [
+        { label: 'Causale: ', value: this.json.causale },
+        { label: 'Data contabile incasso: ', value: UtilService.defaultDisplay({ value: _dci }) }
+      ]
+    });
+
+    //Riscossioni
+    this.riscossioni = this.json.riscossioni.map(function(item) {
+      let p = new Parameters();
+      p.jsonP = item;
+      p.model = this._mapNewItemByType(item, UtilService.URL_RISCOSSIONI);
+      return p;
+    }, this);
+  }
+
+  protected _mapNewItemByType(item: any, type: string): Standard {
+    let _std = new Standard();
+    switch(type) {
+      case UtilService.URL_RISCOSSIONI:
+        let _st = Dato.arraysToDato(
+          ['Pendenza', 'IUV', 'Id dominio'],
+          [ item.idVocePendenza, item.iuv, item.idDominio ],
+          ', '
+        );
+        _std.titolo = new Dato({ label: 'Riscossione (IUR): ', value: item.iur });
+        _std.sottotitolo = _st;
+        _std.importo = item.importo;
+        break;
+    }
+    return _std;
+  }
+
+  save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
+    let _service = null;
+    let _json = null;
+    let _method = null;
+    switch(mb.info.templateName) {
+      case UtilService.INCASSO:
+        _service = UtilService.URL_INCASSI;
+        _json = mb.info.viewModel;
+        _method = UtilService.METHODS.POST;
+        break;
+    }
+    if(_json && _service) {
+      this.gps.saveData(_service, _json, null, _method).subscribe(
+        () => {
+          this.gps.updateSpinner(false);
+          responseService.next(true);
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.alert(error.message);
+        });
+    }
+  }
+
+  refresh(mb: ModalBehavior) {}
+
+  title(): string {
+    return this.json?('Incasso '+this.json.idIncasso):'';
+  }
+}

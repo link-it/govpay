@@ -36,6 +36,7 @@ import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVers
 import it.govpay.core.business.model.Iuv;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Versamento;
 
 public class IuvUtils {
 
@@ -124,5 +125,33 @@ public class IuvUtils {
 		} else {
 			return false;
 		}
+	}
+	
+	public static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio) throws ServiceException {
+		Iuv iuvGenerato = new Iuv();
+		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
+		iuvGenerato.setCodDominio(dominio.getCodDominio());
+		iuvGenerato.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+		iuvGenerato.setIuv(versamento.getIuvVersamento());
+		
+		if(dominio.getAuxDigit() == 0)
+			iuvGenerato.setNumeroAvviso(dominio.getAuxDigit() + String.format("%02d", dominio.getStazione().getApplicationCode()) + versamento.getIuvVersamento());
+		else
+			iuvGenerato.setNumeroAvviso(dominio.getAuxDigit() + versamento.getIuvVersamento());
+		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()).getBytes());
+		try {
+		switch (GovpayConfig.getInstance().getVersioneAvviso()) {
+			case v001:
+				iuvGenerato.setQrCode(buildQrCode001(dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()));
+				break;
+			case v002:
+				iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()));
+				break;
+			}
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		return iuvGenerato;
 	}
 }

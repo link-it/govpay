@@ -347,7 +347,7 @@ public class Rendicontazioni extends BasicBD {
 												it.govpay.model.Iuv iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 												versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 											} catch (NotFoundException nfe) {
-												codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(this));
+												codApplicazione = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv).getCodApplicazione();
 												if(codApplicazione == null) {
 													response.add(idRendicontazione.getIdentificativoFlusso() + "#Acquisizione flusso fallita. Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].");
 													log.error("Errore durante il processamento del flusso di Rendicontazione [Flusso:" + idRendicontazione.getIdentificativoFlusso() + "]: Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "]. Flusso non acquisito.");
