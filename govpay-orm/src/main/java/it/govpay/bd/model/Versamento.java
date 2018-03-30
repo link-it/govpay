@@ -96,7 +96,7 @@ public class Versamento extends it.govpay.model.Versamento {
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(dominio == null) {
-			dominio = AnagraficaManager.getDominio(bd, getIdUo());
+			dominio = AnagraficaManager.getDominio(bd, getIdDominio());
 		} 
 		return dominio;
 	}
