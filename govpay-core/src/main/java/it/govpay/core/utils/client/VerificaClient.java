@@ -160,7 +160,6 @@ public class VerificaClient extends BasicClient {
 			case REST:
 				List<Property> headerProperties = new ArrayList<Property>();
 				headerProperties.add(new Property("Accept", "application/json"));
-				headerProperties.add(new Property("Accept", "application/json"));
 				String jsonResponse = "";
 				
 				String path = null;

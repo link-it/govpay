@@ -90,8 +90,9 @@ public class VersamentoUtils {
 		model.setCodBundlekey(versamento.getBundlekey());
 		model.setCodLotto(versamento.getCodDebito()); 
 		model.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
-		model.setDataCreazione(new Date());
+		model.setDataCreazione(versamento.getDataCaricamento());
 		model.setDataScadenza(versamento.getDataScadenza());
+		model.setDataValidita(versamento.getDataValidita());
 		model.setDataUltimoAggiornamento(new Date());
 		model.setDescrizioneStato(null);
 		model.setNome(versamento.getNome());

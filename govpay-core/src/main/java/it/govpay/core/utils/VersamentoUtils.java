@@ -435,6 +435,7 @@ public class VersamentoUtils {
 		versamento.setCodVersamentoEnte(idPendenza);
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
+		versamento.setDataCaricamento(pendenza.getDataCaricamento());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
@@ -465,6 +466,7 @@ public class VersamentoUtils {
 		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
 		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza());
 		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
+		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento());
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
 	
@@ -504,6 +506,7 @@ public class VersamentoUtils {
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
+		versamento.setDataCaricamento(pendenza.getDataCaricamento());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 	
