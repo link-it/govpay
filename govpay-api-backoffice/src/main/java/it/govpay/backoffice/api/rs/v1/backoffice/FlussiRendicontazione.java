@@ -1,5 +1,7 @@
 package it.govpay.backoffice.api.rs.v1.backoffice;
 
+import java.util.Date;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -43,9 +45,9 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response flussiRendicontazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio){
+    public Response flussiRendicontazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("idDominio") String idDominio, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.flussiRendicontazioneGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio);
+        return this.controller.flussiRendicontazioneGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio,ordinamento,dataDa,dataA);
     }
 
 }

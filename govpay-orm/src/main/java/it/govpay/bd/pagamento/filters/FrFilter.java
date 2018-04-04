@@ -345,11 +345,19 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.datainizio != null && this.dataFine != null) {
+			if(this.datainizio != null) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.between(FR.model().DATA_ORA_FLUSSO, this.datainizio,this.dataFine);
+				newExpression.greaterEquals(FR.model().DATA_ORA_FLUSSO, this.datainizio);
+				addAnd = true;
+			}
+			
+			if(this.dataFine != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(FR.model().DATA_ORA_FLUSSO, this.dataFine);
 				addAnd = true;
 			}
 			

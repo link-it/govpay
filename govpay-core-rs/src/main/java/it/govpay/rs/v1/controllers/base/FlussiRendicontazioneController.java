@@ -1,6 +1,7 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -10,7 +11,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
@@ -20,6 +20,7 @@ import it.govpay.core.rs.v1.beans.FlussoRendicontazione;
 import it.govpay.core.rs.v1.beans.ListaFlussiRendicontazione;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseController;
 import it.govpay.rs.v1.beans.converter.FlussiRendicontazioneConverter;
@@ -75,7 +76,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio) {
+    public Response flussiRendicontazioneGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String ordinamento, String dataDa, String dataA) {
     	String methodName = "flussiRendicontazioneGET";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -92,7 +93,11 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setIdDominio(idDominio);
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
-			findRendicontazioniDTO.setOrderBy("-dataAcquisizione");
+			findRendicontazioniDTO.setOrderBy(ordinamento);
+			if(dataDa != null)
+				findRendicontazioniDTO.setDataDa(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataDa)); 
+			if(dataA != null)
+				findRendicontazioniDTO.setDataA(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataA));
 			
 			// INIT DAO
 			

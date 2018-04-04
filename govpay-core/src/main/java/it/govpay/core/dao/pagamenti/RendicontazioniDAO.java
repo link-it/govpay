@@ -57,6 +57,8 @@ public class RendicontazioniDAO extends BaseDAO{
 				filter.setCodDominio(listaDominiFiltro);
 			}
 			filter.setFilterSortList(listaRendicontazioniDTO.getFieldSortList());
+			filter.setDatainizio(listaRendicontazioniDTO.getDataDa());
+			filter.setDataFine(listaRendicontazioniDTO.getDataA()); 
 
 			long count = rendicontazioniBD.count(filter);
 

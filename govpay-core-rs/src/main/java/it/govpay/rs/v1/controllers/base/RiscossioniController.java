@@ -101,6 +101,7 @@ public class RiscossioniController extends it.govpay.rs.BaseController {
 			findRiscossioniDTO.setDataRiscossioneDa(dataRiscossioneDa);
 			findRiscossioniDTO.setIdA2A(idA2A);
 			findRiscossioniDTO.setIdPendenza(idPendenza);
+			findRiscossioniDTO.setOrderBy(ordinamento);
 			StatoRiscossione statoRisc = StatoRiscossione.fromValue(stato);
 			switch(statoRisc) {
 			case INCASSATA: findRiscossioniDTO.setStato(Stato.INCASSATO);
