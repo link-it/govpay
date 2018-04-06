@@ -301,9 +301,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 					throw new GovPayException(EsitoOperazione.WISP_004);
 				}
 				
-				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", canale.getPsp(bd).getCodPsp()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", canale.getCodCanale()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", canale.getTipoVersamento().getCodifica()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", scelta.getCodPsp()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", scelta.getCodCanale()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", scelta.getTipoVersamento()));
 				
 				ctx.log("pagamento.risoluzioneWispOkCanale");
 			} else {

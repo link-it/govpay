@@ -123,11 +123,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			e.log(log);
 			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			new GovPayException(e).log(log);
+			log.error("Richiesta lista psp fallita", e);
+			GovPayException gpe = new GovPayException(e);
+			response.setCodEsitoOperazione(gpe.getCodEsito());
+			response.setDescrizioneEsitoOperazione(gpe.getMessage());
 			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
-			log.error("Richiesta lista psp fallita",e);
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -302,9 +302,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 					throw new GovPayException(EsitoOperazione.WISP_004);
 				}
 				
-				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", canale.getPsp(bd).getCodPsp()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", canale.getCodCanale()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", canale.getTipoVersamento().getCodifica()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", scelta.getCodPsp()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", scelta.getCodCanale()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", scelta.getTipoVersamento()));
 				
 				ctx.log("pagamento.risoluzioneWispOkCanale");
 			} else {
@@ -360,11 +360,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			e.log(log);
 			ctx.log("pagamento.avviaTransazioneKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione(), e.getCausa() != null ? e.getCausa() : "[--Non specificata--]");
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			new GovPayException(e).log(log);
-			ctx.log("pagamento.avviaTransazioneFail", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 			log.error("Richiesta di pagamento fallita", e);
+			GovPayException gpe = new GovPayException(e);
+			response.setCodEsitoOperazione(gpe.getCodEsito());
+			response.setDescrizioneEsitoOperazione(gpe.getMessage());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -402,11 +402,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			e.log(log);
 			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			new GovPayException(e).log(log);
-			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 			log.error("Richiesta di stato pagamento fallita", e);
+			GovPayException gpe = new GovPayException(e);
+			response.setCodEsitoOperazione(gpe.getCodEsito());
+			response.setDescrizioneEsitoOperazione(gpe.getMessage());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -510,11 +510,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			e.log(log);
 			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			new GovPayException(e).log(log);
-			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 			log.error("Richiesta di stato versamento fallita", e);
+			GovPayException gpe = new GovPayException(e);
+			response.setCodEsitoOperazione(gpe.getCodEsito());
+			response.setDescrizioneEsitoOperazione(gpe.getMessage());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -564,11 +564,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			e.log(log);
 			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			new GovPayException(e).log(log);
-			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 			log.error("Richiesta di storno fallita", e);
+			GovPayException gpe = new GovPayException(e);
+			response.setCodEsitoOperazione(gpe.getCodEsito());
+			response.setDescrizioneEsitoOperazione(gpe.getMessage());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -606,11 +606,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			e.log(log);
 			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			new GovPayException(e).log(log);
-			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 			log.error("Richiesta di stato storno fallita", e);
+			GovPayException gpe = new GovPayException(e);
+			response.setCodEsitoOperazione(gpe.getCodEsito());
+			response.setDescrizioneEsitoOperazione(gpe.getMessage());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -689,9 +689,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			e.log(log);
 			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			new GovPayException(e).log(log);
+			log.error("Richiesta di verifica stato versamento fallita", e);
+			GovPayException gpe = new GovPayException(e);
+			response.setCodEsitoOperazione(gpe.getCodEsito());
+			response.setDescrizioneEsitoOperazione(gpe.getMessage());
 			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
