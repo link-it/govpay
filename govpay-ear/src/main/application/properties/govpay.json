@@ -28,8 +28,6 @@
     "name" : "Backoffice"
   }, {
     "name" : "Ragioneria"
-  }, {
-    "name" : "Gestionale"
   } ],
   "paths" : {
     "/psp" : {
@@ -2175,6 +2173,17 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "in" : "query",
+          "name" : "versioneInterfacciaWISP",
+          "description" : "Versione dell'interfaccia WISP da utilizzare per il pagamento",
+          "required" : false,
+          "example" : "2.0",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "1.3", "2.0" ],
+            "default" : "2.0"
+          }
         } ],
         "requestBody" : {
           "content" : {
@@ -2208,6 +2217,10 @@
                       "type" : "string",
                       "description" : "url a cui redirigere il navigatore per proseguire nel pagamento.",
                       "example" : "https://www.comune.it/pagopa/pap/bdd07392-d90d-11e7-9296-cec278b6b50a"
+                    },
+                    "idSession" : {
+                      "type" : "string",
+                      "description" : "identificativo della sessione di pagamento per la riconciliazione in al ritorno dal psp."
                     }
                   }
                 }
@@ -3143,7 +3156,7 @@
           "schema" : {
             "type" : "string",
             "format" : "csv",
-            "default" : "+dataRiscossione"
+            "default" : "+data"
           }
         }, {
           "name" : "campi",
@@ -3188,7 +3201,7 @@
           }
         }, {
           "in" : "query",
-          "name" : "dataRiscossioneDa",
+          "name" : "dataDa",
           "description" : "Filtro sulla data di riscossione",
           "required" : false,
           "schema" : {
@@ -3197,7 +3210,7 @@
           }
         }, {
           "in" : "query",
-          "name" : "dataRiscossioneA",
+          "name" : "dataA",
           "description" : "Filtro sulla data di riscossione",
           "required" : false,
           "schema" : {
@@ -3339,6 +3352,34 @@
             "type" : "integer",
             "default" : 25,
             "maximum" : 200
+          }
+        }, {
+          "name" : "ordinamento",
+          "in" : "query",
+          "description" : "csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)\n * data",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "csv",
+            "default" : "+data"
+          }
+        }, {
+          "in" : "query",
+          "name" : "dataDa",
+          "description" : "Filtro sulla data di riscossione",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "dataA",
+          "description" : "Filtro sulla data di riscossione",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
           }
         }, {
           "name" : "idDominio",
@@ -3651,103 +3692,6 @@
           },
           "403" : {
             "$ref" : "#/components/responses/403"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/500"
-          }
-        }
-      }
-    },
-    "/pendenze/{idDominio}/{iuv}" : {
-      "get" : {
-        "summary" : "Verifica di una pendenza",
-        "tags" : [ "Gestionale" ],
-        "parameters" : [ {
-          "name" : "idDominio",
-          "in" : "query",
-          "description" : "filtro per dominio creditore",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "iuv",
-          "in" : "query",
-          "description" : "Identificativo di versamento",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "201" : {
-            "description" : "Pendenza",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/pendenzaVerificata"
-                }
-              }
-            }
-          },
-          "401" : {
-            "$ref" : "#/components/responses/401"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/403"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/404"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/500"
-          }
-        }
-      }
-    },
-    "/pagamenti/{idDominio}/{iuv}" : {
-      "post" : {
-        "summary" : "Notifica di un pagamento",
-        "tags" : [ "Gestionale" ],
-        "parameters" : [ {
-          "name" : "idDominio",
-          "in" : "query",
-          "description" : "filtro per dominio creditore",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "iuv",
-          "in" : "query",
-          "description" : "Identificativo di versamento",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "description" : "Notifica di pagamento",
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/notifica"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "201" : {
-            "description" : "notifica acquisita"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/401"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/403"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/404"
           },
           "500" : {
             "$ref" : "#/components/responses/500"
@@ -4564,10 +4508,10 @@
                     "description" : "Codice fiscale dell'ente creditore",
                     "example" : 1.23456789E9
                   },
-                  "iuv" : {
+                  "numeroAvviso" : {
                     "type" : "string",
-                    "description" : "Identificativo univoco versamento, assegnato se pagabile da psp",
-                    "example" : 123456789012345
+                    "description" : "Numero avviso della pendenza, assegnato se pagabile da psp",
+                    "example" : 123456789012345678
                   }
                 }
               }, {
@@ -4579,7 +4523,7 @@
               "idPendenza" : "abcdef12345"
             }, {
               "idDominio" : 1.23456789E9,
-              "iuv" : 123456789012345
+              "numeroAvviso" : 123456789012345678
             }, {
               "idA2A" : "A2A_12345",
               "idPendenza" : "abcdef7890",
@@ -4603,7 +4547,7 @@
               "dataEmissione" : "2017-12-31",
               "dataValidita" : "2018-6-30",
               "dataScadenza" : "2018-12-31",
-              "tassonomia" : "Sanzioni",
+              "tassonomia" : "Sanzioni CdS",
               "tassonomiaAvviso" : "Multe e sanzioni amministrative",
               "voci" : [ {
                 "indice" : 1,
@@ -5467,8 +5411,8 @@
           "versioneApi" : {
             "type" : "string",
             "description" : "Versione delle API di integrazione utilizzate",
-            "example" : "REST_1.0",
-            "enum" : [ "REST_1.0", "SOAP_2.0", "SOAP_2.1", "SOAP_2.3", "SOAP_2.5" ]
+            "example" : "REST_1",
+            "enum" : [ "REST_1", "SOAP_3" ]
           },
           "auth" : {
             "$ref" : "#/components/schemas/tipoAutenticazione"
@@ -6009,48 +5953,6 @@
             "description" : "Testo da codificare nel bar-code dell'avviso"
           }
         }
-      },
-      "notifica" : {
-        "type" : "object",
-        "properties" : {
-          "idA2A" : {
-            "type" : "string",
-            "description" : "codice identificativo del gestionale titolare della pendenza",
-            "example" : "A2A-12345"
-          },
-          "idPendenza" : {
-            "type" : "string",
-            "description" : "codice identificativo della pendenza oggetto del tentativo di pagamento",
-            "example" : "abcdef345"
-          },
-          "rpt" : {
-            "type" : "object",
-            "description" : "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
-          },
-          "rt" : {
-            "type" : "object",
-            "description" : "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
-          },
-          "riscossioni" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/riscossione"
-            }
-          }
-        }
-      },
-      "verifica" : {
-        "type" : "object",
-        "allOf" : [ {
-          "type" : "object",
-          "properties" : {
-            "stato" : {
-              "$ref" : "#/components/schemas/statoPendenza"
-            }
-          }
-        }, {
-          "$ref" : "#/components/schemas/pendenzaPost"
-        } ]
       }
     }
   }

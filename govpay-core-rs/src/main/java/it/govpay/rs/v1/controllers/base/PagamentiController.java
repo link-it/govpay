@@ -40,7 +40,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
      }
 
 
-    public Response pagamentiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale) {
+    public Response pagamentiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, String versioneInterfacciaWISP) {
     	String methodName = "pagamentiPOST";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -62,7 +62,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			String transactionId = ctx.getTransactionId();
 			String idSession = transactionId.replace("-", "");
-			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale);
+			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale,versioneInterfacciaWISP);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			

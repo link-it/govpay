@@ -40,7 +40,6 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.WISPUtils;
@@ -185,121 +184,160 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			String codCanale = null;		
 			String codPsp = null;
 			String tipoVersamento = null;
-			PagamentoPortale pagamentoPortale = null;
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-
-			// gestione dello stato, url_redirect e id_session_psp
-			if(pagamentiPortaleDTO.getKeyPA() != null && pagamentiPortaleDTO.getKeyWISP() != null && pagamentiPortaleDTO.getIdDominio() != null) {
-				// procedo al pagamento
-				Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(pagamentiPortaleDTO.getVersante());
-
-				Wisp wisp = new Wisp(bd);
-				Dominio dominio =null;
-				try {
-					dominio = AnagraficaManager.getDominio(bd, pagamentiPortaleDTO.getIdDominio());
-				} catch (NotFoundException e) {
-					throw new GovPayException("Il pagamento non puo' essere avviato poiche' il dominio utilizzato non esiste [Dominio:"+pagamentiPortaleDTO.getIdDominio()+"].", EsitoOperazione.DOM_000, pagamentiPortaleDTO.getIdDominio());
-				}
-
-				SceltaWISP scelta = null;
-				try {
-					scelta = wisp.chiediScelta(applicazioneAutenticata, dominio, pagamentiPortaleDTO.getKeyPA(), pagamentiPortaleDTO.getKeyWISP());
-				} catch (Exception e) {
-					ctx.log("pagamento.risoluzioneWispKo", e.getMessage());
-					throw new ServiceException(e); 
-				}
-
-				if(!scelta.isSceltaEffettuata()) {
-					ctx.log("pagamento.risoluzioneWispOkNoScelta");
-					throw new GovPayException(EsitoOperazione.WISP_003);
-				}
-				if(scelta.isPagaDopo()) {
-					ctx.log("pagamento.risoluzioneWispOkPagaDopo");
-					throw new GovPayException(EsitoOperazione.WISP_004);
-				}
-
-				// decodifica di tipo versamento e id psp dal canale
-				codCanale = scelta.getCodCanale();
-				tipoVersamento = scelta.getTipoVersamento();
-				codPsp = scelta.getCodPsp();
-				it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(bd);
-				
-				List<Rpt> rpts = null;
-				if(scelta.getCodPsp().equals(Rpt.codPspWISP20) && scelta.getCodCanale().equals(Rpt.codCanaleWISP20))
-					rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
-				else {
-					try {
-						Canale canale = AnagraficaManager.getCanale(bd, codPsp, codCanale, TipoVersamento.toEnum(tipoVersamento));
-						rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.WISP_002,  codPsp, codCanale, tipoVersamento);
-					}
-				}
-				Rpt rpt = rpts.get(0);
-
-				// se ho un redirect 			
-				if(rpt.getPspRedirectURL() != null) {
-					codiceStato = CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP;
-					stato = STATO.IN_CORSO;
-					idSessionePsp = rpt.getCodSessione();
-					redirectUrl = rpt.getPspRedirectURL();
-				} else {
-					stato = STATO.IN_CORSO;
-					codiceStato = CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO;
-					redirectUrl = pagamentiPortaleDTO.getUrlRitorno();
-				}
-
-			} else {
-				// sessione di pagamento non in corso
-				codiceStato = CODICE_STATO.DA_REDIRIGERE_AL_WISP;
-				stato = STATO.IN_CORSO;
-				redirectUrl = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentiPortaleDTO.getIdSessione();
-				for(Versamento versamento: versamenti) {
-					if(versamento.getId() == null) {
-						versamentoBusiness.caricaVersamento(versamento, false, true);
-						IdVersamento idV = new IdVersamento();
-						idV.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
-						idV.setId(versamento.getId());
-						idVersamento.add(idV);
-
-					}
-				}
-			}
-
-			pagamentoPortale = new PagamentoPortale();
-			pagamentoPortale.setCodApplicazione(codApplicazione);
-			pagamentoPortale.setDataRichiesta(new Date());
+			
+			PagamentoPortale pagamentoPortale = new PagamentoPortale();
 			pagamentoPortale.setIdSessione(pagamentiPortaleDTO.getIdSessione());
 			pagamentoPortale.setIdSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
-			pagamentoPortale.setIdSessionePsp(idSessionePsp);
 			pagamentoPortale.setJsonRequest(pagamentiPortaleDTO.getJsonRichiesta());
+			pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idSession",pagamentiPortaleDTO.getIdSessione()));
+			pagamentoPortale.setDataRichiesta(new Date());
+			pagamentoPortale.setCodApplicazione(codApplicazione);
 			pagamentoPortale.setIdVersamento(idVersamento); 
+			pagamentoPortale.setWispIdDominio(codDominio);
+			pagamentoPortale.setNome(nome);
+			pagamentoPortale.setImporto(sommaImporti); 
+			
+			String idSessione = pagamentoPortale.getIdSessione();
+			
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+
+			// procedo al pagamento
+			Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(pagamentiPortaleDTO.getVersante());
+			it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(bd);
+			List<Rpt> rpts = null;
+			switch (pagamentiPortaleDTO.getVersioneInterfacciaWISP()) { 
+			case WISP_1_3:
+				// gestione dello stato, url_redirect e id_session_psp
+				if(pagamentiPortaleDTO.getKeyPA() != null && pagamentiPortaleDTO.getKeyWISP() != null && pagamentiPortaleDTO.getIdDominio() != null) {
+					Wisp wisp = new Wisp(bd);
+					Dominio dominio =null;
+					try {
+						dominio = AnagraficaManager.getDominio(bd, pagamentiPortaleDTO.getIdDominio());
+					} catch (NotFoundException e) {
+						throw new GovPayException("Il pagamento non puo' essere avviato poiche' il dominio utilizzato non esiste [Dominio:"+pagamentiPortaleDTO.getIdDominio()+"].", EsitoOperazione.DOM_000, pagamentiPortaleDTO.getIdDominio());
+					}
+
+					SceltaWISP scelta = null;
+					try {
+						scelta = wisp.chiediScelta(applicazioneAutenticata, dominio, pagamentiPortaleDTO.getKeyPA(), pagamentiPortaleDTO.getKeyWISP());
+					} catch (Exception e) {
+						ctx.log("pagamento.risoluzioneWispKo", e.getMessage());
+						throw new ServiceException(e); 
+					}
+
+					if(!scelta.isSceltaEffettuata()) {
+						ctx.log("pagamento.risoluzioneWispOkNoScelta");
+						throw new GovPayException(EsitoOperazione.WISP_003);
+					}
+					if(scelta.isPagaDopo()) {
+						ctx.log("pagamento.risoluzioneWispOkPagaDopo");
+						throw new GovPayException(EsitoOperazione.WISP_004);
+					}
+
+					// decodifica di tipo versamento e id psp dal canale
+					codCanale = scelta.getCodCanale();
+					tipoVersamento = scelta.getTipoVersamento();
+					codPsp = scelta.getCodPsp();
+
+
+					if(scelta.getCodPsp().equals(Rpt.codPspWISP20) && scelta.getCodCanale().equals(Rpt.codCanaleWISP20))
+						rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
+					else {
+						try {
+							Canale canale = AnagraficaManager.getCanale(bd, codPsp, codCanale, TipoVersamento.toEnum(tipoVersamento));
+							rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
+						} catch (NotFoundException e) {
+							throw new GovPayException(EsitoOperazione.WISP_002,  codPsp, codCanale, tipoVersamento);
+						}
+					}
+					Rpt rpt = rpts.get(0);
+
+					// se ho un redirect 			
+					if(rpt.getPspRedirectURL() != null) {
+						codiceStato = CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP;
+						stato = STATO.IN_CORSO;
+						idSessionePsp = rpt.getCodSessione();
+						redirectUrl = rpt.getPspRedirectURL();
+					} else {
+						stato = STATO.IN_CORSO;
+						codiceStato = CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO;
+						redirectUrl = UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idSession",pagamentiPortaleDTO.getIdSessione());
+					}
+
+				} else {
+					// sessione di pagamento non in corso
+					codiceStato = CODICE_STATO.DA_REDIRIGERE_AL_WISP;
+					stato = STATO.IN_CORSO;
+					redirectUrl = GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentiPortaleDTO.getIdSessione();
+					for(Versamento versamento: versamenti) {
+						if(versamento.getId() == null) {
+							versamentoBusiness.caricaVersamento(versamento, false, true);
+							IdVersamento idV = new IdVersamento();
+							idV.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+							idV.setId(versamento.getId());
+							idVersamento.add(idV);
+
+						}
+					}
+				}
+				
+				// costruire html
+				String template = WISPUtils.readTemplate();
+				String urlReturn = UrlUtils.addParameter(GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() , "action" , ACTION_RETURN);
+				String urlBack = UrlUtils.addParameter(GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() ,"action" , ACTION_BACK);
+				String wispHtml = WISPUtils.getWispHtml(GovpayConfig.getInstance().getUrlWISP(), template, pagamentoPortale, urlReturn, urlBack, enteCreditore, numeroPagamenti, ibanAccredito, contoPostale, hasBollo, sommaImporti,pagamentiModello2,
+						pagamentiPortaleDTO.getLingua()); 
+
+				pagamentoPortale.setWispHtml(wispHtml);
+				break;
+			case WISP_2_0:
+				// sessione di pagamento non in corso
+				codiceStato = CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP;
+				stato = STATO.IN_CORSO;
+				
+				try {
+					rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
+
+					Rpt rpt = rpts.get(0);
+
+					// se ho un redirect 			
+					if(rpt.getPspRedirectURL() != null) {
+						codiceStato = CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP;
+						stato = STATO.IN_CORSO;
+						idSessionePsp = rpt.getCodSessione();
+						redirectUrl = rpt.getPspRedirectURL();
+						idSessione = UrlUtils.getCodSessione(redirectUrl);
+					} else {
+						stato = STATO.IN_CORSO;
+						codiceStato = CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO;
+						redirectUrl = UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idSession",pagamentiPortaleDTO.getIdSessione());
+					}
+					
+					
+					
+				}catch(GovPayException e) {
+					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
+					pagamentoPortale.setStato(STATO.FALLITO);
+					pagamentoPortale.setDescrizioneStato(e.getMessage());
+					pagamentiPortaleBD.insertPagamento(pagamentoPortale);
+					throw e;
+				}
+				break;
+			}
+
+			pagamentoPortale.setIdSessionePsp(idSessionePsp);
 			pagamentoPortale.setPspRedirectUrl(pspRedirect);
 			pagamentoPortale.setCodiceStato(codiceStato);
 			pagamentoPortale.setStato(stato);
-			pagamentoPortale.setWispIdDominio(codDominio);
 			pagamentoPortale.setCodPsp(codPsp);
 			pagamentoPortale.setTipoVersamento(tipoVersamento);
 			pagamentoPortale.setCodCanale(codCanale); 
-			pagamentoPortale.setUrlRitorno(pagamentiPortaleDTO.getUrlRitorno());
-			pagamentoPortale.setNome(nome);
-			pagamentoPortale.setImporto(sommaImporti); 
-
-			// costruire html
-			String template = WISPUtils.readTemplate();
-
-			String urlReturn = UrlUtils.addParameter(GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() , "action" , ACTION_RETURN);
-			String urlBack = UrlUtils.addParameter(GovpayConfig.getInstance().getUrlGovpayWC() + "/" + pagamentoPortale.getIdSessione() ,"action" , ACTION_BACK);
-
-			String wispHtml = WISPUtils.getWispHtml(GovpayConfig.getInstance().getUrlWISP(), template, pagamentoPortale, urlReturn, urlBack, enteCreditore, numeroPagamenti, ibanAccredito, contoPostale, hasBollo, sommaImporti,pagamentiModello2,
-					pagamentiPortaleDTO.getLingua()); 
-
-			pagamentoPortale.setWispHtml(wispHtml);
+			
 			pagamentiPortaleBD.insertPagamento(pagamentoPortale);
 
 			response.setRedirectUrl(redirectUrl);
-			response.setId(pagamentoPortale.getId());
-			response.setIdSessione(pagamentoPortale.getIdSessione()); 
+			response.setId(pagamentoPortale.getIdSessione());
+			response.setIdSessione(idSessione); 
 
 			return response;
 		}finally {

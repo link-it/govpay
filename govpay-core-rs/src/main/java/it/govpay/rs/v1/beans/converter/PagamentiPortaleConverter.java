@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.PagamentoPortale.VersioneInterfacciaWISP;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.rs.v1.beans.DatiAddebito;
@@ -45,14 +46,21 @@ public class PagamentiPortaleConverter {
 		json.setId(dtoResponse.getId());
 		json.setLocation("/pagamenti/"+ dtoResponse.getIdSessione());
 		json.setRedirect(dtoResponse.getRedirectUrl());
+		json.setIdSession(dtoResponse.getIdSessione()); 
 
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, IAutorizzato user, String idSessione, String idSessionePortale) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, IAutorizzato user, String idSessione, String idSessionePortale, String versioneInterfacciaWISP) throws Exception {
 
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
 
+		try {
+			VersioneInterfacciaWISP interfacciaWISP = VersioneInterfacciaWISP.toEnum(versioneInterfacciaWISP);
+			pagamentiPortaleDTO.setVersioneInterfacciaWISP(interfacciaWISP != null ? interfacciaWISP : VersioneInterfacciaWISP.WISP_1_3);
+		}catch(Exception e ) {
+			pagamentiPortaleDTO.setVersioneInterfacciaWISP(VersioneInterfacciaWISP.WISP_1_3);
+		}
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);

@@ -45,12 +45,20 @@ public class UrlUtils {
 		return query_pairs;
 	}
 	
-	public static String getCodSessione(String urlString) throws MalformedURLException, UnsupportedEncodingException {
+	public static String getCodSessione(String urlString)  {
+		return getParameter(urlString, "idSession");
+	}
+	
+	public static String getParameter(String urlString,String parameterName)  {
+		try {
 		URL url = new URL(urlString);
-		if(splitQuery(url).get("idSession") != null)
-			return splitQuery(url).get("idSession").get(0);
+		if(splitQuery(url).get(parameterName) != null)
+			return splitQuery(url).get(parameterName).get(0);
 		else
 			return null;
+		}catch(Exception e) {
+			return null;
+		}
 	}
 	
 	public static URL addParameter(URL url, String paramName, String paramValue) throws MalformedURLException {

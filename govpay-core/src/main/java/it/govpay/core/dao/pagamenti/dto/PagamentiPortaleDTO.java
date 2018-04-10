@@ -3,6 +3,7 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.Date;
 import java.util.List;
 
+import it.govpay.bd.model.PagamentoPortale.VersioneInterfacciaWISP;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Anagrafica;
 import it.govpay.model.IAutorizzato;
@@ -13,6 +14,7 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 		super(user);
 	}
 
+	private VersioneInterfacciaWISP versioneInterfacciaWISP = VersioneInterfacciaWISP.WISP_1_3;
 	private String idSessione = null;
 	private String idSessionePortale =null;
 	private String jsonRichiesta = null;
@@ -118,6 +120,14 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	}
 	public void setAutenticazioneSoggetto(String autenticazioneSoggetto) {
 		this.autenticazioneSoggetto = autenticazioneSoggetto;
+	}
+
+
+	public VersioneInterfacciaWISP getVersioneInterfacciaWISP() {
+		return versioneInterfacciaWISP;
+	}
+	public void setVersioneInterfacciaWISP(VersioneInterfacciaWISP versioneInterfacciaWISP) {
+		this.versioneInterfacciaWISP = versioneInterfacciaWISP;
 	}
 
 

@@ -2,14 +2,21 @@ package it.govpay.core.rs.v1.beans;
 
 public class PagamentiPortaleResponseOk extends JSONSerializable {
 	
-	private long id;
+	private String id;
 	private String location;
 	private String redirect;
+	private String idSession;
 	
-	public long getId() {
+	public String getIdSession() {
+		return idSession;
+	}
+	public void setIdSession(String idSession) {
+		this.idSession = idSession;
+	}
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getLocation() {

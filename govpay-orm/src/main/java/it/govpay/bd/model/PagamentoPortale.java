@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -18,6 +19,30 @@ public class PagamentoPortale extends BasicModel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	public enum VersioneInterfacciaWISP {
+		WISP_1_3("1.3"),  
+		WISP_2_0("2.0");
+		
+		private String codifica; 
+		
+		private VersioneInterfacciaWISP(String codifica) {
+			this.codifica = codifica;
+		}
+		
+		public String getCodifica() {
+			return codifica;
+		}
+		
+		public static VersioneInterfacciaWISP toEnum(String codifica) throws ServiceException {
+			for(VersioneInterfacciaWISP v : VersioneInterfacciaWISP.values()){
+				if(v.getCodifica().equals(codifica))
+					return v;
+			}
+			
+			throw new ServiceException("Codifica inesistente per VersioneInterfacciaWISP. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(VersioneInterfacciaWISP.values()));
+		}
+	}
 
 	public enum STATO { 
 		IN_CORSO, // codici: DA_REDIRIGERE_AL_WISP, PAGAMENTO_IN_CORSO_AL_PSP, PAGAMENTO_IN_ATTESA_DI_ESITO, SELEZIONE_WISP_IN_CORSO
@@ -42,6 +67,7 @@ public class PagamentoPortale extends BasicModel {
 		SELEZIONE_WISP_ANNULLATA
 	}
 
+	private VersioneInterfacciaWISP versioneInterfacciaWISP = VersioneInterfacciaWISP.WISP_2_0;
 	private String codApplicazione = null;
 	private String nome = null;
 	private String versanteIdentificativo = null;
@@ -198,6 +224,13 @@ public class PagamentoPortale extends BasicModel {
 	public void setVersanteIdentificativo(String versanteIdentificativo) {
 		this.versanteIdentificativo = versanteIdentificativo;
 	}
+	public VersioneInterfacciaWISP getVersioneInterfacciaWISP() {
+		return versioneInterfacciaWISP;
+	}
+	public void setVersioneInterfacciaWISP(VersioneInterfacciaWISP versioneInterfacciaWISP) {
+		this.versioneInterfacciaWISP = versioneInterfacciaWISP;
+	}
+
 
 	// business
 	private transient List<Versamento> versamenti;
