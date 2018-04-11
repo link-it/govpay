@@ -39,6 +39,7 @@ import org.slf4j.MDC;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Message;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Server;
 import org.openspcoop2.utils.logger.constants.MessageType;
 
 import it.govpay.core.utils.GpContext;
@@ -165,7 +166,16 @@ public class MessageLoggingHandlerUtils {
 				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
 			ctx.getContext().getResponse().setOutDate(new Date());
 			ctx.getContext().getResponse().setOutSize(Long.valueOf(bytes.length));
-			if(responseCode != null) ctx.getTransaction().getServer().setTransportCode(responseCode.intValue() + "");
+			if(responseCode != null) { 
+				Server server = ctx.getTransaction().getServer();
+				
+				if(server == null) {
+					server = new Server();
+					server.setName(GpContext.GovPay);
+					ctx.getTransaction().setServer(server);
+				}
+				ctx.getTransaction().getServer().setTransportCode(responseCode.intValue() + "");
+			}
 		} else {
 			try {
 				ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);

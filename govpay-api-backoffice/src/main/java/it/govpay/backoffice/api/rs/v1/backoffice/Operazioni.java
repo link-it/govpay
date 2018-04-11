@@ -15,7 +15,7 @@ import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.OperazioniController;
 
-@Path("/eventi")
+@Path("/operazioni")
 
 public class Operazioni extends BaseRsServiceV1{
 
@@ -23,7 +23,7 @@ public class Operazioni extends BaseRsServiceV1{
 	private OperazioniController controller = null;
 
 	public Operazioni() {
-		super("eventi");
+		super("operazioni");
 		this.controller = new OperazioniController(this.nomeServizio,this.log); 
 	}
 
@@ -38,4 +38,13 @@ public class Operazioni extends BaseRsServiceV1{
         return this.controller.operazioniIdGET(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
+    
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response pagamentiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.operazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi);
+    }
 }

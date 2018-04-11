@@ -11,22 +11,16 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.operazioni.OperazioniDAO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
-import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
-import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaOperazioni;
-import it.govpay.core.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.converter.OperazioniConverter;
-import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
 
 public class OperazioniController extends it.govpay.rs.BaseController {
 
