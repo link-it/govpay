@@ -180,8 +180,6 @@ public class StartupEjb {
 		}
 		
 		
-		it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
-
 		ctx.log();
 
 		log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") completata con successo.");

@@ -120,7 +120,6 @@ public class Tracciati extends BasicBD {
 			tracciatiBd.insertTracciato(tracciato);
 
 			inserisciTracciatoDTOResponse.setTracciato(tracciato);
-			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 			log.info("Tracciato inserito con id: " + tracciato.getId());
 			return inserisciTracciatoDTOResponse;
 		} catch (ServiceException e) {
