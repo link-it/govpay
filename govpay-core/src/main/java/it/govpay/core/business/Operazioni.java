@@ -235,6 +235,7 @@ public class Operazioni{
 				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
 				if(notifiche.size() == 0) {
 					BatchManager.stopEsecuzione(bd, ntfy);
+					aggiornaSondaOK(ntfy, bd);
 					return "Nessuna notifica da inviare.";
 				}
 
@@ -685,7 +686,9 @@ public class Operazioni{
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
-			((SondaBatch)sonda).aggiornaStatoSonda(true, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+//			Properties properties = new Properties();
+//			((SondaBatch)sonda).aggiornaStatoSonda(true, properties, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+			((SondaBatch)sonda).aggiornaStatoSonda(true,  new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
 			log.warn("Errore nell'aggiornamento della sonda OK", t);
 		}
@@ -705,6 +708,8 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
+//			Properties properties = new Properties();
+//			((SondaBatch)sonda).aggiornaStatoSonda(false, properties, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
 			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
 			log.warn("Errore nell'aggiornamento della sonda KO", t);

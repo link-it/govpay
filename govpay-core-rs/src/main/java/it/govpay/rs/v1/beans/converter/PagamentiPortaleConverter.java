@@ -17,7 +17,6 @@ import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.PagamentoPortale;
 import it.govpay.core.rs.v1.beans.base.PagamentoPost;
 import it.govpay.core.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
-import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
 import it.govpay.core.rs.v1.beans.base.Soggetto;
 import it.govpay.core.rs.v1.beans.base.StatoPagamento;
@@ -44,7 +43,7 @@ public class PagamentiPortaleConverter {
 		PagamentiPortaleResponseOk  json = new PagamentiPortaleResponseOk();
 
 		json.setId(dtoResponse.getId());
-		json.setLocation("/pagamenti/"+ dtoResponse.getIdSessione());
+		json.setLocation(UriBuilderUtils.getFromPagamenti(dtoResponse.getId()));
 		json.setRedirect(dtoResponse.getRedirectUrl());
 		json.setIdSession(dtoResponse.getIdSessione()); 
 

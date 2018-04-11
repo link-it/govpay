@@ -1,0 +1,51 @@
+package it.govpay.core.dao.operazioni.dto;
+
+public class LeggiOperazioneDTOResponse {
+	
+	private String esito;
+	private String nome;
+	private Integer stato;
+	private String descrizioneStato;
+	
+	
+	public LeggiOperazioneDTOResponse() {
+	}
+	
+	public LeggiOperazioneDTOResponse(String nome) {
+		this.nome = nome;
+	}
+
+	public String getEsito() {
+		return esito;
+	}
+
+	public void setEsito(String esito) {
+		this.esito = esito;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public Integer getStato() {
+		return stato;
+	}
+
+	public void setStato(Integer stato) {
+		this.stato = stato;
+	}
+
+	public String getDescrizioneStato() {
+		return descrizioneStato;
+	}
+
+	public void setDescrizioneStato(String descrizioneStato) {
+		this.descrizioneStato = descrizioneStato;
+	}
+
+
+}

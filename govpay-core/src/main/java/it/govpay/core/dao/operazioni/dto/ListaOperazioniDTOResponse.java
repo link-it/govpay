@@ -17,29 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.rs.v1.beans;
+package it.govpay.core.dao.operazioni.dto;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonFilter;
+import java.util.List;
 
-import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
-@JsonFilter(value="avviso")  
-public class Avviso extends it.govpay.core.rs.v1.beans.base.Avviso {
+public class ListaOperazioniDTOResponse extends BasicFindResponseDTO<LeggiOperazioneDTOResponse> {
 
-	@Override
-	public String getJsonIdFilter() {
-		return "avviso";
+	/**
+	 * @param totalResults
+	 * @param results
+	 */
+	public ListaOperazioniDTOResponse(long totalResults, List<LeggiOperazioneDTOResponse> results) {
+		super(totalResults, results);
 	}
 	
-	public static Avviso parse(String json) {
-		return (Avviso) parse(json, Avviso.class);
-	}
-
-	@Override
-	public String toJSON(String fields) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
-		return super.toJSON(fields,mapper);
-	}
 }

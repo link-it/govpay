@@ -1,20 +1,21 @@
 package it.govpay.pagamento.api.rs.v1.pagamenti;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
-
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import it.govpay.rs.v1.controllers.base.PagamentiController;
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v1.controllers.base.PagamentiController;
 
 
 @Path("/pagamenti")
@@ -35,9 +36,9 @@ public class Pagamenti extends BaseRsServiceV1{
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response pagamentiPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale){
+    public Response pagamentiPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("versioneInterfacciaWISP") String versioneInterfacciaWISP){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale);
+        return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale,versioneInterfacciaWISP);
     }
 
     @GET

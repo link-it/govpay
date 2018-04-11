@@ -80,7 +80,7 @@ public class Versamento extends BasicBD {
 		GpContext ctx = GpThreadLocal.get();
 		try {
 			ctx.log("versamento.validazioneSemantica", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
-			VersamentoUtils.validazioneSemantica(versamento, generaIuv, this);
+			it.govpay.core.utils.VersamentoUtils.validazioneSemantica(versamento, generaIuv, this);
 			ctx.log("versamento.validazioneSemanticaOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 			
 			VersamentiBD versamentiBD = new VersamentiBD(this);
@@ -236,7 +236,7 @@ public class Versamento extends BasicBD {
 
 	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref) throws ServiceException, GovPayException {
 		// conversione numeroAvviso in iuv
-		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso());
+		String iuv = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso());
 		return this.chiediVersamento(null, null, null, null, ref.getIdDominio(), iuv);	
 	}
 
@@ -323,7 +323,7 @@ public class Versamento extends BasicBD {
 		// Se ancora non ho trovato il versamento, lo chiedo all'applicazione
 		if(versamentoModel == null) {
 			try {
-				versamentoModel = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, this);
+				versamentoModel = it.govpay.core.utils.VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, this);
 			} catch (ClientException e){
 				throw new GovPayException(EsitoOperazione.INTERNAL, "verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage());
 			} catch (VersamentoScadutoException e) {
@@ -381,7 +381,7 @@ public class Versamento extends BasicBD {
 		List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(filter);
 		for(it.govpay.bd.model.Versamento versamento : versamenti)
 			try {
-				VersamentoUtils.aggiornaVersamento(versamento, this);
+				it.govpay.core.utils.VersamentoUtils.aggiornaVersamento(versamento, this);
 			} catch (Exception e) {
 				// Aggiornamento andato male. risultera' scaduto.
 			} 

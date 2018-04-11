@@ -45,6 +45,7 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import javax.ws.rs.GET;
@@ -136,6 +137,8 @@ public class Check {
 				filter.setDataCaricamentoMax(cal.getTime());
 				num = tracciatiBD.count(filter);
 			}
+//			Properties properties = new Properties();
+//			((SondaCoda)sonda).aggiornaStatoSonda(num, properties, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
 		return sonda;
@@ -308,7 +311,7 @@ public class Check {
 	}
 	
 	@GET
-	@Path("/{codDominio}")
+	@Path("/domini/{codDominio}")
 	public Response verificaDominioJson(@PathParam(value = "codDominio") String codDominio) {
 		BasicBD bd = null;
 		GpContext ctx = null;

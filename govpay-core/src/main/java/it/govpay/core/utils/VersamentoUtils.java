@@ -584,4 +584,30 @@ public class VersamentoUtils {
 
 		return anagraficaCommons;
 	}
+	
+	public static String getIuvFromNumeroAvviso(String numeroAvviso) throws GovPayException {
+		if(numeroAvviso == null)
+			return null;
+		
+		if(numeroAvviso.length() != 18)
+			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
+		
+		try {
+			Long.parseLong(numeroAvviso);
+		}catch(Exception e) {
+			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
+		}
+		
+		if(numeroAvviso.startsWith("0")) // '0' + applicationCode(2) + ref(13) + check(2)
+			return numeroAvviso.substring(3);
+		else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("3")) // '3' + segregationCode(2) +  ref(13) + check(2) 
+			return numeroAvviso.substring(1);
+		else 
+			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
+//		return numeroAvviso;
+	}
 }

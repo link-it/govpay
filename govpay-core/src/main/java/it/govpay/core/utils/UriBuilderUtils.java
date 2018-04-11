@@ -12,6 +12,10 @@ import javax.ws.rs.core.UriBuilder;
  * 
  */
 public class UriBuilderUtils {
+
+	public static String getFromPagamenti(String idPagamento) {
+		return getListPagamenti().path(idPagamento).build().toString();
+	}
 	
 	public static String getRppByDominioIuvCcp(String idDominio,String iuv, String ccp) {
 		return getListRpp().path(idDominio).path(iuv).path(ccp).build().toString(); 

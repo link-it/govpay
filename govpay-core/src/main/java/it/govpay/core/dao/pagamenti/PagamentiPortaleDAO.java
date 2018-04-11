@@ -307,6 +307,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						idSessionePsp = rpt.getCodSessione();
 						redirectUrl = rpt.getPspRedirectURL();
 						idSessione = UrlUtils.getCodSessione(redirectUrl);
+						pspRedirect = rpt.getPspRedirectURL(); 
 					} else {
 						stato = STATO.IN_CORSO;
 						codiceStato = CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO;

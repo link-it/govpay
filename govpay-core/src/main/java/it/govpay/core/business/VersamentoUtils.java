@@ -19,7 +19,6 @@
  */
 package it.govpay.core.business;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -33,18 +32,9 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.VersamentoAnnullatoException;
-import it.govpay.core.exceptions.VersamentoDuplicatoException;
-import it.govpay.core.exceptions.VersamentoScadutoException;
-import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.AclEngine;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Dominio;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -57,26 +47,6 @@ import it.govpay.servizi.commons.EsitoOperazione;
 
 public class VersamentoUtils {
 	
-	public static void validazioneSemantica(Versamento versamento, boolean generaIuv, BasicBD bd) throws GovPayException, ServiceException {
-		if(generaIuv && versamento.getSingoliVersamenti(bd).size() != 1) {
-			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte());
-		}
-		
-		BigDecimal somma = BigDecimal.ZERO;
-		List<String> codSingoliVersamenti = new ArrayList<String>();
-		for(SingoloVersamento sv : versamento.getSingoliVersamenti(bd)) {
-			if(codSingoliVersamenti.contains(sv.getCodSingoloVersamentoEnte()))
-				throw new GovPayException(EsitoOperazione.VER_001, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte(), sv.getCodSingoloVersamentoEnte());
-			
-			codSingoliVersamenti.add(sv.getCodSingoloVersamentoEnte());
-			somma = somma.add(sv.getImportoSingoloVersamento());
-		}
-		
-		if(somma.compareTo(versamento.getImportoTotale()) != 0) {
-			throw new GovPayException(EsitoOperazione.VER_002, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte(), Double.toString(somma.doubleValue()), Double.toString(versamento.getImportoTotale().doubleValue()));
-		}
-	}
-
 	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException {
 		Versamento model = new Versamento();
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
@@ -133,7 +103,7 @@ public class VersamentoUtils {
 		model.setNumeroAvviso(versamento.getNumeroAvviso());	
 
 		if(versamento.getNumeroAvviso() != null) {
-			model.setIuvVersamento(getIuvFromNumeroAvviso(versamento.getNumeroAvviso()));
+			model.setIuvVersamento(it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso()));
 			
 //			if(versamento.getIuv().startsWith("0")) {
 //				model.setIuvVersamento(versamento.getIuv().substring(1));
@@ -289,95 +259,5 @@ public class VersamentoUtils {
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
 		return anagraficaModel;
-	}
-	
-	
-	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
-		// Se il versamento non e' in attesa, non aggiorno un bel niente
-		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
-			return versamento;
-		
-		// Controllo se la data di scadenza e' indicata ed e' decorsa
-		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
-			throw new VersamentoScadutoException(versamento.getDataScadenza());
-		}else {
-			if(versamento.getDataValidita() != null && versamento.getDataValidita().before(new Date())) {
-				if(versamento.getApplicazione(bd).getConnettoreVerifica() != null)
-					versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), versamento.getCodBundlekey(), versamento.getAnagraficaDebitore().getCodUnivoco(), versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd);
-				else // connettore verifica non definito, versamento non aggiornabile
-					throw new VersamentoScadutoException(versamento.getDataScadenza());
-			} else {
-				// versamento valido
-			} 
-		}
-		return versamento;
-	}
-	
-	
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
-		
-		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
-		String bundlekeyD = bundlekey != null ? bundlekey : "-";
-		String debitoreD = debitore != null ? debitore : "-";
-		String dominioD = dominio != null ? dominio : "-";
-		String iuvD = iuv != null ? iuv : "-";
-		
-		GpContext ctx = GpThreadLocal.get();
-		ctx.log("verifica.avvio", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-		if(applicazione.getConnettoreVerifica() == null) {
-			ctx.log("verifica.nonConfigurata");
-			throw new VersamentoSconosciutoException();
-		}
-		VerificaClient verificaClient = new VerificaClient(applicazione);
-		Versamento versamento = null;
-		try {
-			versamento = verificaClient.invoke(codVersamentoEnte, bundlekey, debitore, dominio, iuv, bd);
-			ctx.log("verifica.Ok", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-		} catch (ClientException e){
-			ctx.log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
-			throw e;
-		} catch (VersamentoScadutoException e) {
-			ctx.log("verifica.Scaduto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-			throw e;
-		} catch (VersamentoAnnullatoException e) {
-			ctx.log("verifica.Annullato", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-			throw e;
-		} catch (VersamentoDuplicatoException e) {
-			ctx.log("verifica.Duplicato", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-			throw e;
-		} catch (VersamentoSconosciutoException e) {
-			ctx.log("verifica.Sconosciuto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-			throw e;
-		} 
-		
-		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-		versamentoBusiness.caricaVersamento(applicazione, versamento, false, true);
-		return versamento;
-	}
-	
-	public static String getIuvFromNumeroAvviso(String numeroAvviso) throws GovPayException {
-		if(numeroAvviso == null)
-			return null;
-		
-		if(numeroAvviso.length() != 18)
-			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
-		
-		try {
-			Long.parseLong(numeroAvviso);
-		}catch(Exception e) {
-			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
-		}
-		
-		if(numeroAvviso.startsWith("0")) // '0' + applicationCode(2) + ref(13) + check(2)
-			return numeroAvviso.substring(3);
-		else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
-			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
-			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("3")) // '3' + segregationCode(2) +  ref(13) + check(2) 
-			return numeroAvviso.substring(1);
-		else 
-			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
-//		return numeroAvviso;
 	}
 }
