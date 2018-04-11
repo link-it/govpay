@@ -308,7 +308,7 @@ public class Check {
 	}
 	
 	@GET
-	@Path("/{codDominio}")
+	@Path("/domini/{codDominio}")
 	public Response verificaDominioJson(@PathParam(value = "codDominio") String codDominio) {
 		BasicBD bd = null;
 		GpContext ctx = null;
