@@ -12,6 +12,10 @@ import javax.ws.rs.core.UriBuilder;
  * 
  */
 public class UriBuilderUtils {
+	
+	public static String getFromOperazioni(String idOperazione) {
+		return getListOperazioni().path(idOperazione).build().toString();
+	}
 
 	public static String getFromPagamenti(String idPagamento) {
 		return getListPagamenti().path(idPagamento).build().toString();
@@ -139,6 +143,10 @@ public class UriBuilderUtils {
 	
 	private static UriBuilder getListPendenze() {
 		return getBaseList("pendenze");
+	}
+	
+	private static UriBuilder getListOperazioni() {
+		return getBaseList("operazioni");
 	}
 	
 	private static UriBuilder getBaseList(String type) {
