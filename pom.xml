@@ -41,8 +41,7 @@
 	<properties>
 		<javaVersion>1.8</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.utils.version>3.0.0-20180319.081024-3</openspcoop2.utils.version>
-		<openspcoop2.generic.version>3.0.0-20180319.081041-3</openspcoop2.generic.version>
+		<openspcoop2.version>3.0.0</openspcoop2.version>
 		<logger.version>2.6.2</logger.version>
 		<rel-to-parent>.</rel-to-parent>
 	</properties>
@@ -248,13 +247,13 @@
 			<dependency>
 				<groupId>org.openspcoop2</groupId>
 				<artifactId>openspcoop2_generic-project</artifactId>
-				<version>${openspcoop2.generic.version}</version>
+				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.openspcoop2</groupId>
 				<artifactId>openspcoop2_utils</artifactId>
-				<version>${openspcoop2.utils.version}</version>
+				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
