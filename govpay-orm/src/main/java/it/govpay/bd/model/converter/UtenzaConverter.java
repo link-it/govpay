@@ -12,6 +12,8 @@ public class UtenzaConverter {
 	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<Long> utenzaDominioLst, List<Long> utenzaTributoLst, BasicBD bd) throws ServiceException {
 		Utenza dto = new Utenza();
 		dto.setPrincipal(vo.getPrincipal());
+//		dto.setSubjectOriginale(vo.getSubjectOriginale()); 
+		
 		dto.setId(vo.getId());
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setIdTributi(utenzaTributoLst);
@@ -26,6 +28,7 @@ public class UtenzaConverter {
 		it.govpay.orm.Utenza vo = new it.govpay.orm.Utenza();
 		vo.setId(dto.getId());
 		vo.setPrincipal(dto.getPrincipal());
+//		vo.setSubjectOriginale(dto.getSubjectOriginale()); 
 		vo.setAbilitato(dto.isAbilitato());
 		return vo;
 	}

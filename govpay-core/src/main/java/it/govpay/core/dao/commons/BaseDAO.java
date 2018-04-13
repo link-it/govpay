@@ -24,7 +24,7 @@ public class BaseDAO {
 			throw AclEngine.toNotAuthenticatedException(user);
 
 		try {
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
+			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal(), user.isCheckSubject());
 			user.merge(applicazione.getUtenza());
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {

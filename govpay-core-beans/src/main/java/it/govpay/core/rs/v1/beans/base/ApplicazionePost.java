@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "principal",
+"subject",
 "codificaAvvisi",
 "domini",
 "entrate",
@@ -17,6 +18,9 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
   
   @JsonProperty("principal")
   private String principal = null;
+  
+  @JsonProperty("subject")
+  private String subject = null;
   
   @JsonProperty("codificaAvvisi")
   private CodificaAvvisi codificaAvvisi = null;
@@ -50,6 +54,22 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
+  }
+  
+  /**
+   * Identificativo di autenticazione con subject
+   **/
+  public ApplicazionePost subject(String subject) {
+    this.subject = subject;
+    return this;
+  }
+
+  @JsonProperty("subject")
+  public String getSubject() {
+    return subject;
+  }
+  public void setSubject(String subject) {
+    this.subject = subject;
   }
 
   /**
@@ -155,6 +175,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
     }
     ApplicazionePost applicazionePost = (ApplicazionePost) o;
     return Objects.equals(principal, applicazionePost.principal) &&
+    	Objects.equals(subject, applicazionePost.subject) &&
         Objects.equals(codificaAvvisi, applicazionePost.codificaAvvisi) &&
         Objects.equals(domini, applicazionePost.domini) &&
         Objects.equals(entrate, applicazionePost.entrate) &&
@@ -165,7 +186,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
   @Override
   public int hashCode() {
-    return Objects.hash(principal, codificaAvvisi, domini, entrate, servizioVerifica, servizioNotifica, abilitato);
+    return Objects.hash(principal, subject, codificaAvvisi, domini, entrate, servizioVerifica, servizioNotifica, abilitato);
   }
 
   public static ApplicazionePost parse(String json) {
@@ -183,6 +204,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
     sb.append("class ApplicazionePost {\n");
     
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
+    sb.append("    subject: ").append(toIndentedString(subject)).append("\n");
     sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");

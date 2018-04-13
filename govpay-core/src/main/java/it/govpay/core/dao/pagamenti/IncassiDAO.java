@@ -108,7 +108,7 @@ public class IncassiDAO extends BaseDAO{
 
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, richiestaIncassoDTO.getUser().getPrincipal()); 
+			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, richiestaIncassoDTO.getUser().getPrincipal(),richiestaIncassoDTO.getUser().isCheckSubject()); 
 			richiestaIncassoDTO.setApplicazione(applicazione);
 
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);

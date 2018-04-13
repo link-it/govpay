@@ -39,7 +39,6 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.core.dao.anagrafica.DominiDAO;
-import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
@@ -65,7 +64,6 @@ import it.govpay.core.rs.v1.beans.ListaUnitaOperative;
 import it.govpay.core.rs.v1.beans.UnitaOperativa;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 import it.govpay.rs.legacy.beans.Entrata;
 import it.govpay.rs.legacy.beans.Iban;
 import it.govpay.rs.legacy.beans.ListaEntrate;
@@ -103,9 +101,7 @@ public class Domini extends BaseRsServiceV1 {
 			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.setupContext(uriInfo, httpHeaders, "findDomini");
 			
-			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
-			
-			FindDominiDTO findDominiDTO = new FindDominiDTO(user);
+			FindDominiDTO findDominiDTO = new FindDominiDTO(this.getUser());
 			findDominiDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			findDominiDTO.setLimit(limit);
 			findDominiDTO.setSimpleSearch(simpleSearch);
@@ -139,9 +135,7 @@ public class Domini extends BaseRsServiceV1 {
 			this.controller.setRequestResponse(this.request, this.response);
 			this.controller.setupContext(uriInfo, httpHeaders, "findDomini");
 			
-			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
-			
-			GetDominioDTO getDominioDTO = new GetDominioDTO(user, codDominio);
+			GetDominioDTO getDominioDTO = new GetDominioDTO(this.getUser(), codDominio);
 			
 			GetDominioDTOResponse getDominioDTOResponse = new DominiDAO().getDominio(getDominioDTO);
 			Dominio dominio = DominiConverter.toRsModel(getDominioDTOResponse.getDominio());
@@ -173,9 +167,7 @@ public class Domini extends BaseRsServiceV1 {
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
-			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
-			
-			FindUnitaOperativeDTO findUnitaOperativeDTO = new FindUnitaOperativeDTO(user, codDominio);
+			FindUnitaOperativeDTO findUnitaOperativeDTO = new FindUnitaOperativeDTO(this.getUser(), codDominio);
 			findUnitaOperativeDTO.setLimit(limit);
 			findUnitaOperativeDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
 			findUnitaOperativeDTO.setSimpleSearch(simpleSearch);
@@ -223,9 +215,7 @@ public class Domini extends BaseRsServiceV1 {
 			this.controller.logRequest(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			ctx =  GpThreadLocal.get();
 			
-			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
-			
-			GetUnitaOperativaDTO getUnitaOperativaDTO = new GetUnitaOperativaDTO(user, codDominio, codUnivoco);
+			GetUnitaOperativaDTO getUnitaOperativaDTO = new GetUnitaOperativaDTO(this.getUser(), codDominio, codUnivoco);
 			GetUnitaOperativaDTOResponse getUnitaOperativaDTOResponse = new DominiDAO().getUnitaOperativa(getUnitaOperativaDTO);
 			
 			UnitaOperativa unitaOperativa = DominiConverter.toUnitaOperativaRsModel(getUnitaOperativaDTOResponse.getUnitaOperativa());
@@ -273,9 +263,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
-			
-			FindIbanDTO findIbanDTO = new FindIbanDTO(user, codDominio);
+			FindIbanDTO findIbanDTO = new FindIbanDTO(this.getUser(), codDominio);
 			findIbanDTO.setIban(iban);
 			findIbanDTO.setLimit(limit);
 			findIbanDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
@@ -326,9 +314,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
-			
-			GetIbanDTO getIbanDTO = new GetIbanDTO(user, codDominio, codIbanAccredito);
+			GetIbanDTO getIbanDTO = new GetIbanDTO(this.getUser(), codDominio, codIbanAccredito);
 			GetIbanDTOResponse getIbanDTOResponse = new DominiDAO().getIban(getIbanDTO);
 			
 			Iban unitaOperativa = new Iban(getIbanDTOResponse.getIbanAccredito(), codDominio, baseUriBuilder);
@@ -376,9 +362,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
-			
-			FindTributiDTO findTributiDTO = new FindTributiDTO(user, codDominio);
+			FindTributiDTO findTributiDTO = new FindTributiDTO(this.getUser(), codDominio);
 			findTributiDTO.setCodTributo(codEntrata);
 			findTributiDTO.setLimit(limit);
 			findTributiDTO.setPagina((int) Math.ceil((offset+1)/(double)limit));
@@ -429,9 +413,7 @@ public class Domini extends BaseRsServiceV1 {
 			
 			UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder().path("v1");
 			
-			IAutorizzato user = new UtentiDAO().getUser(getPrincipal());
-			
-			GetTributoDTO getTributoDTO = new GetTributoDTO(user, codDominio, codTributo);
+			GetTributoDTO getTributoDTO = new GetTributoDTO(this.getUser(), codDominio, codTributo);
 			GetTributoDTOResponse getTributoDTOResponse = new DominiDAO().getTributo(getTributoDTO);
 			
 			Entrata entrata = new Entrata(getTributoDTOResponse.getTributo(), codDominio, baseUriBuilder);

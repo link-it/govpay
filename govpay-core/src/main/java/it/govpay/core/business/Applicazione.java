@@ -1,10 +1,8 @@
 package it.govpay.core.business;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.output.ThresholdingOutputStream;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
@@ -25,14 +23,14 @@ public class Applicazione extends BasicBD{
 	}
 
 	
-	public it.govpay.bd.model.Applicazione getApplicazioneAutenticata(String principal) throws GovPayException, ServiceException {
+	public it.govpay.bd.model.Applicazione getApplicazioneAutenticata(String principal, boolean checkSubject) throws GovPayException, ServiceException {
 		if(principal == null) {
 			throw new GovPayException(EsitoOperazione.AUT_000);
 		}
 		
 		it.govpay.bd.model.Applicazione applicazione = null;
 		try {
-			applicazione =  AnagraficaManager.getApplicazioneByPrincipal(this, principal);
+			applicazione =  AnagraficaManager.getApplicazioneByPrincipal(this, principal,checkSubject);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.AUT_002, principal);
 		}

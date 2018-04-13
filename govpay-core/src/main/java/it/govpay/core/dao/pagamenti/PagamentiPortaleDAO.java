@@ -40,7 +40,6 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.WISPUtils;
@@ -60,7 +59,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	public PagamentiPortaleDAO() {
 	}
 
-	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException {
+	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException {
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
@@ -74,7 +73,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(pagamentiPortaleDTO.getUser().getPrincipal());
+			this.autorizzaRichiesta(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA); 
+			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(pagamentiPortaleDTO.getUser().getPrincipal(),pagamentiPortaleDTO.getUser().isCheckSubject());
 			ctx.log("ws.ricevutaRichiesta");
 			String codApplicazione = applicazioneAutenticata.getCodApplicazione();
 

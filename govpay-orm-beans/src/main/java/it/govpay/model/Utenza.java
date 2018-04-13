@@ -11,9 +11,11 @@ public class Utenza extends BasicModel {
 	
 	private Long id;
 	private String principal;
+	private String subjectOriginale;
 	private boolean abilitato;
 	private List<Long> idDomini;
 	private List<Long> idTributi;
+	private boolean checkSubject;
 	
 	public String getPrincipal() {
 		return principal;
@@ -56,5 +58,19 @@ public class Utenza extends BasicModel {
 		this.idDomini = idDomini;
 	}
 
+	public String getSubjectOriginale() {
+		return subjectOriginale;
+	}
 
+	public void setSubjectOriginale(String subjectOriginale) {
+		this.subjectOriginale = subjectOriginale;
+	}
+
+	public boolean isCheckSubject() {
+		return checkSubject;
+	}
+
+	public void setCheckSubject(boolean checkSubject) {
+		this.checkSubject = checkSubject;
+	}
 }

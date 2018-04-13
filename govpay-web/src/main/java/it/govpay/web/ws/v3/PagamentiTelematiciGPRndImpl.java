@@ -80,6 +80,9 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 
 	@Resource
 	WebServiceContext wsCtxt;
+	
+	// TODO capire come fare
+	boolean checkSubject = false;
 
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciGPRndImpl.class);
 
@@ -287,7 +290,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 
 		Applicazione app = null;
 		try {
-			app = AnagraficaManager.getApplicazioneByPrincipal(bd, wsCtxt.getUserPrincipal().getName());
+			app = AnagraficaManager.getApplicazioneByPrincipal(bd, wsCtxt.getUserPrincipal().getName(),checkSubject);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.AUT_001, wsCtxt.getUserPrincipal().getName());
 		}

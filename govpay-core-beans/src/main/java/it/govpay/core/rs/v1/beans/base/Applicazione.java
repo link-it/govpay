@@ -7,6 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idA2A",
 "principal",
+"subject",
 "codificaAvvisi",
 "domini",
 "entrate",
@@ -21,6 +22,9 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("principal")
   private String principal = null;
+  
+  @JsonProperty("subject")
+  private String subject = null;
   
   @JsonProperty("codificaAvvisi")
   private CodificaAvvisi codificaAvvisi = null;
@@ -72,6 +76,24 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.principal = principal;
   }
 
+  
+  /**
+   * Identificativo di autenticazione con subject
+   **/
+  public Applicazione subject(String subject) {
+    this.subject = subject;
+    return this;
+  }
+
+  @JsonProperty("subject")
+  public String getSubject() {
+    return subject;
+  }
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
+  
+  
   /**
    **/
   public Applicazione codificaAvvisi(CodificaAvvisi codificaAvvisi) {
@@ -176,6 +198,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     Applicazione applicazione = (Applicazione) o;
     return Objects.equals(idA2A, applicazione.idA2A) &&
         Objects.equals(principal, applicazione.principal) &&
+        Objects.equals(subject, applicazione.subject) &&
         Objects.equals(codificaAvvisi, applicazione.codificaAvvisi) &&
         Objects.equals(domini, applicazione.domini) &&
         Objects.equals(entrate, applicazione.entrate) &&
@@ -186,7 +209,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, principal, codificaAvvisi, domini, entrate, servizioVerifica, servizioNotifica, abilitato);
+    return Objects.hash(idA2A, principal, subject, codificaAvvisi, domini, entrate, servizioVerifica, servizioNotifica, abilitato);
   }
 
   public static Applicazione parse(String json) {
@@ -205,6 +228,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
+    sb.append("    subject: ").append(toIndentedString(subject)).append("\n");
     sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");

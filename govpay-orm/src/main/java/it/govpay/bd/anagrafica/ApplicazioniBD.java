@@ -102,10 +102,14 @@ public class ApplicazioniBD extends BasicBD {
 	 * @throws NotFoundException se l'ente non esiste.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public Applicazione getApplicazioneByPrincipal(String principal) throws NotFoundException, MultipleResultException, ServiceException {
+	public Applicazione getApplicazioneByPrincipal(String principal, boolean checkSubject) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			IExpression exp = this.getApplicazioneService().newExpression();
-			exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
+			if(checkSubject) {
+				exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
+			}else {
+				exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
+			}
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(exp);
 			Applicazione applicazione = getApplicazione(applicazioneVO);
 

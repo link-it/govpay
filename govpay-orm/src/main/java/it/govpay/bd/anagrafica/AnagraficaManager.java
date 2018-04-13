@@ -343,10 +343,10 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static Applicazione getApplicazioneByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
+	public static Applicazione getApplicazioneByPrincipal(BasicBD basicBD, String principal, boolean checkSubject) throws ServiceException, NotFoundException {
 		try {
 			String method = "getApplicazioneByPrincipal";
-			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal,checkSubject);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {

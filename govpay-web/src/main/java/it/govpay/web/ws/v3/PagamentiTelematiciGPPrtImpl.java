@@ -87,6 +87,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	@Resource
 	WebServiceContext wsCtxt;
 	
+	// TODO capire come fare
+	boolean checkSubject = false;
+	
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciGPPrtImpl.class);
 	
 	@Override
@@ -99,7 +102,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-			applicazioneBusiness.getApplicazioneAutenticata(getPrincipal());
+			applicazioneBusiness.getApplicazioneAutenticata(getPrincipal(),checkSubject);
 			
 			ctx.log("ws.ricevutaRichiesta");
 			
@@ -140,7 +143,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", bodyrichiesta.getCodSessionePortale() != null ? bodyrichiesta.getCodSessionePortale() : "--Non fornito--"));
 			
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal());
+			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal(),checkSubject);
 			ctx.log("ws.ricevutaRichiesta");
 			
 			applicazioneBusiness.autorizzaApplicazione(bodyrichiesta.getCodPortale(), applicazioneAutenticata, bd);
@@ -206,7 +209,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal());
+			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal(),checkSubject);
 			
 			ctx.log("ws.ricevutaRichiesta");
 			
@@ -245,7 +248,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal());
+			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal(),checkSubject);
 			
 			ctx.log("ws.ricevutaRichiesta");
 			
@@ -290,7 +293,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", bodyrichiesta.getCcp()));
 			
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal());
+			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal(),checkSubject);
 			
 			ctx.log("ws.ricevutaRichiesta");
 			
@@ -337,7 +340,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal());
+			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal(),checkSubject);
 			
 			ctx.log("ws.ricevutaRichiesta");
 			
@@ -376,7 +379,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal());
+			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(getPrincipal(),checkSubject);
 			
 			ctx.log("ws.ricevutaRichiesta");
 			

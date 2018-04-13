@@ -98,7 +98,7 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			Incasso incasso = Incasso.parse(baos.toString());
 			RichiestaIncassoDTO richiestaIncassoDTO = incasso.toRichiestaIncassoDTO(this.getUser());
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, getPrincipal());
+			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, this.getUser().getPrincipal(),this.getUser().isCheckSubject());
 			richiestaIncassoDTO.setApplicazione(applicazione);
 			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
