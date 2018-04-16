@@ -93,7 +93,8 @@ CREATE SEQUENCE seq_utenze start 1 increment 1 maxvalue 9223372036854775807 minv
 
 CREATE TABLE utenze
 (
-	principal VARCHAR(255) NOT NULL,
+	principal VARCHAR(4000) NOT NULL,
+	principal_originale VARCHAR(4000),
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,

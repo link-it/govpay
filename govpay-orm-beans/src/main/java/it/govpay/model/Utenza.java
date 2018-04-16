@@ -11,6 +11,7 @@ public class Utenza extends BasicModel {
 	
 	private Long id;
 	private String principal;
+	private String principalOriginale;
 	private String subjectOriginale;
 	private boolean abilitato;
 	private List<Long> idDomini;
@@ -31,6 +32,14 @@ public class Utenza extends BasicModel {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getPrincipalOriginale() {
+		return principalOriginale;
+	}
+
+	public void setPrincipalOriginale(String principalOriginale) {
+		this.principalOriginale = principalOriginale;
 	}
 
 

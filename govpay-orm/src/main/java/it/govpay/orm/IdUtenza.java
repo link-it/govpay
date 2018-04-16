@@ -36,6 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-utenza">
  * 		&lt;sequence>
  * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principalOriginale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -52,6 +53,7 @@ import java.io.Serializable;
 @XmlType(name = "id-utenza", 
   propOrder = {
   	"principal",
+  	"principalOriginale",
   	"abilitato"
   }
 )
@@ -84,6 +86,14 @@ public class IdUtenza extends org.openspcoop2.utils.beans.BaseBean implements Se
     this.principal = principal;
   }
 
+  public java.lang.String getPrincipalOriginale() {
+    return this.principalOriginale;
+  }
+
+  public void setPrincipalOriginale(java.lang.String principalOriginale) {
+    this.principalOriginale = principalOriginale;
+  }
+
   public boolean isAbilitato() {
     return this.abilitato;
   }
@@ -106,6 +116,10 @@ public class IdUtenza extends org.openspcoop2.utils.beans.BaseBean implements Se
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="principal",required=true,nillable=false)
   protected java.lang.String principal;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="principalOriginale",required=false,nillable=false)
+  protected java.lang.String principalOriginale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=false,nillable=false)

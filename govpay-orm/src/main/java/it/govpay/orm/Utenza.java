@@ -35,7 +35,8 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Utenza">
  * 		&lt;sequence>
- * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principalOriginale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -52,6 +53,7 @@ import java.io.Serializable;
 @XmlType(name = "Utenza", 
   propOrder = {
   	"principal",
+  	"principalOriginale",
   	"abilitato"
   }
 )
@@ -82,6 +84,14 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
 
   public void setPrincipal(java.lang.String principal) {
     this.principal = principal;
+  }
+
+  public java.lang.String getPrincipalOriginale() {
+    return this.principalOriginale;
+  }
+
+  public void setPrincipalOriginale(java.lang.String principalOriginale) {
+    this.principalOriginale = principalOriginale;
   }
 
   public boolean isAbilitato() {
@@ -118,6 +128,10 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="principal",required=true,nillable=false)
   protected java.lang.String principal;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="principalOriginale",required=false,nillable=false)
+  protected java.lang.String principalOriginale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false,defaultValue="true")
