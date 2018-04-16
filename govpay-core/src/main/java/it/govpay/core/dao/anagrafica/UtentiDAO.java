@@ -74,7 +74,9 @@ public class UtentiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiOperatore.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
-			Operatore operatore = AnagraficaManager.getOperatore(bd, leggiOperatore.getPrincipal());
+			OperatoriBD applicazioniBD = new OperatoriBD(bd);
+			
+			Operatore operatore = applicazioniBD.getOperatore(leggiOperatore.getPrincipal());
 			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
 			response.setOperatore(operatore);
 			return response;

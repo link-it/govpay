@@ -42,6 +42,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.transport.Credential;
 import org.openspcoop2.utils.transport.http.HttpServletCredential;
 import org.slf4j.Logger;
@@ -52,6 +53,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.exceptions.NotAuthenticatedException;
+import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
@@ -108,17 +110,15 @@ public abstract class BaseRsService {
 	}
 	
 	protected IAutorizzato getUser() {
-		Utenza user = new Utenza();
 		HttpServletCredential credential = new HttpServletCredential(this.request, this.log);
+		Utenza user = CredentialUtils.getUser(credential);
 		
-		if(credential.getSubject() != null) {
-			user.setPrincipal(credential.getSubject());
-			user.setCheckSubject(true); 
-		} else if(credential.getPrincipal() != null) {
-			user.setPrincipal(credential.getPrincipal());
-			user.setCheckSubject(false); 
-		} else {
-			user.setPrincipal(null);
+		log.debug("Ricevute Credenziali ["+(user != null ? user.getPrincipal() : null)+"]");
+		
+		try {
+			log.debug("Subject Normalizzato: " + Utilities.formatSubject(user.getPrincipal()));
+		}catch(Exception e) {
+			log.error("Errore normalizzazione: "+ e.getMessage(),e); 
 		}
 		
 		user.setRuoli(this.getListaRuoli(credential));

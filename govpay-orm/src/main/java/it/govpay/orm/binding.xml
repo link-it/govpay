@@ -85,7 +85,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codPsp" field="codPsp" usage="required"/>
   </mapping>
-  <mapping name="id-canale" class="it.govpay.orm.IdCanale">
+  <mapping name="idCanale" class="it.govpay.orm.IdCanale">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idPsp" field="idPsp" usage="required" map-as="_IdPsp_Type"/>
     <value name="codCanale" field="codCanale" usage="required"/>
@@ -426,6 +426,7 @@
   <mapping name="Utenza" class="it.govpay.orm.Utenza">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
+    <value name="principalOriginale" field="principalOriginale" usage="optional"/>
     <value name="abilitato" field="abilitato" default="true" usage="required"/>
   </mapping>
   <mapping name="Operatore" class="it.govpay.orm.Operatore">
@@ -549,19 +550,13 @@
     <value name="xmlRPT" field="xmlRPT" usage="required"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
     <value name="callbackURL" field="callbackURL" usage="optional"/>
-    <value name="modelloPagamento" field="modelloPagamento" usage="optional"/>
+    <value name="modelloPagamento" field="modelloPagamento" usage="required"/>
     <value name="codMsgRicevuta" field="codMsgRicevuta" usage="optional"/>
     <value name="dataMsgRicevuta" field="dataMsgRicevuta" usage="optional"/>
+    <value name="firmaRicevuta" field="firmaRicevuta" usage="required"/>
     <value name="codEsitoPagamento" field="codEsitoPagamento" usage="optional"/>
     <value name="importoTotalePagato" field="importoTotalePagato" usage="optional"/>
     <value name="xmlRT" field="xmlRT" usage="optional"/>
-    <value name="codCanale" field="codCanale" usage="optional"/>
-    <value name="codPsp" field="codPsp" usage="optional"/>
-    <value name="codIntermediarioPsp" field="codIntermediarioPsp" usage="optional"/>
-    <value name="tipoVersamento" field="tipoVersamento" usage="optional"/>
-    <value name="tipoIdentificativoAttestante" field="tipoIdentificativoAttestante" usage="optional"/>
-    <value name="identificativoAttestante" field="identificativoAttestante" usage="optional"/>
-    <value name="denominazioneAttestante" field="denominazioneAttestante" usage="optional"/>
     <value name="codStazione" field="codStazione" usage="required"/>
     <value name="codTransazioneRPT" field="codTransazioneRPT" usage="optional"/>
     <value name="codTransazioneRT" field="codTransazioneRT" usage="optional"/>

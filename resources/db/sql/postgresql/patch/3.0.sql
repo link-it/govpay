@@ -32,6 +32,7 @@ alter table incassi add CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore
 
 
 
+
 CREATE SEQUENCE seq_pagamenti_portale start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE pagamenti_portale
@@ -238,4 +239,7 @@ ALTER TABLE versamenti ADD COLUMN iuv_versamento VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN numero_avviso VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN avvisatura VARCHAR(1);
 ALTER TABLE versamenti ADD COLUMN tipo_pagamento INT;
+
+ALTER TABLE utenze ALTER COLUMN principal type VARCHAR(4000);
+ALTER TABLE utenze ADD COLUMN principal_originale VARCHAR(4000);
 

@@ -307,3 +307,6 @@ ALTER TABLE versamenti ADD numero_avviso VARCHAR2(35 CHAR);
 ALTER TABLE versamenti ADD avvisatura VARCHAR2(1 CHAR);
 ALTER TABLE versamenti ADD tipo_pagamento NUMBER;
 
+ALTER TABLE utenze MODIFY principal VARCHAR2(4000 CHAR);
+ALTER TABLE utenze ADD principal_originale VARCHAR2(4000 CHAR);
+

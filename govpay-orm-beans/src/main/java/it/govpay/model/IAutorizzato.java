@@ -12,8 +12,8 @@ public interface IAutorizzato {
 	public void setPrincipal(String principal);
 	public String getPrincipal();
 	
-	public void setSubjectOriginale(String subject);
-	public String getSubjectOriginale();
+	public void setPrincipalOriginale(String subject);
+	public String getPrincipalOriginale();
 	
 	public void setRuoli(List<String> ruoli);
 	public List<String> getRuoli();

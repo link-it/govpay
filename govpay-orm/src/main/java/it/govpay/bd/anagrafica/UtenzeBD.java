@@ -88,12 +88,13 @@ public class UtenzeBD extends BasicBD {
 	 * @throws ServiceException
 	 */
 	public boolean exists(Utenza utenza) throws ServiceException {
-
 		try {
-			return this.getUtenzaService().exists(this.getUtenzaService().convertToId(UtenzaConverter.toVO(utenza)));
+			IExpression expr = this.getUtenzaService().newExpression();
+			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL, utenza.getPrincipalOriginale());
+			return this.getUtenzaService().count(expr).longValue() > 0 ;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -124,9 +125,9 @@ public class UtenzeBD extends BasicBD {
 		try {
 			IExpression expr = this.getUtenzaService().newExpression();
 			if(checkIgnoreCase)
-				expr.ilike(it.govpay.orm.Utenza.model().PRINCIPAL, principal, LikeMode.EXACT);
+				expr.ilike(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, principal, LikeMode.EXACT);
 			else 
-				expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL, principal);
+				expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, principal);
 			
 			it.govpay.orm.Utenza utenzaVO = this.getUtenzaService().find(expr);
 			return getUtenza(utenzaVO);
@@ -152,6 +153,14 @@ public class UtenzeBD extends BasicBD {
 		utenza.setAclPrincipal(aclDB.findAll(filter));
 		return utenza;
 	}
+	
+	public long count(IExpression expr) throws ServiceException {
+		try {
+			return this.getUtenzaService().count(expr).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	/**
 	 * Aggiorna il utenza
@@ -165,7 +174,7 @@ public class UtenzeBD extends BasicBD {
 
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 			IdUtenza idUtenza = this.getUtenzaService().convertToId(vo);
-			if(!this.getUtenzaService().exists(idUtenza)) {
+			if(!this.exists(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
 			this.getUtenzaService().update(idUtenza, vo);
@@ -174,8 +183,6 @@ public class UtenzeBD extends BasicBD {
 			utenza.setId(vo.getId());
 			emitAudit(utenza);
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
@@ -305,7 +312,7 @@ public class UtenzeBD extends BasicBD {
 			emitAudit(utenza);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		}
+		} 
 	}
 	
 	public void deleteUtenza(Utenza utenza) throws NotFoundException, ServiceException {
@@ -327,7 +334,7 @@ public class UtenzeBD extends BasicBD {
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 			
 			IdUtenza idUtenza = this.getUtenzaService().convertToId(vo);
-			if(!this.getUtenzaService().exists(idUtenza)) {
+			if(!this.exists(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
 			this.deleteUtenzeDominio(vo.getId());
@@ -337,7 +344,7 @@ public class UtenzeBD extends BasicBD {
 				this.commit();
 			
 			emitAudit(utenza);
-		} catch (NotImplementedException | MultipleResultException | UtilsException  e) {
+		} catch (NotImplementedException | UtilsException  e) {
 			if(!commitParent)
 				this.rollback();
 			throw new ServiceException(e);

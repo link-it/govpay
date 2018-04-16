@@ -24,32 +24,48 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
+
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.FrBD;
 import it.govpay.core.business.model.CaricaIuvDTO;
 import it.govpay.core.business.model.CaricaIuvDTOResponse;
 import it.govpay.core.business.model.GeneraIuvDTO;
 import it.govpay.core.business.model.GeneraIuvDTOResponse;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.Gp23Utils;
 import it.govpay.core.utils.Gp25Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.FrBD;
-import it.govpay.servizi.v2_5.PagamentiTelematiciGPApp;
 import it.govpay.servizi.commons.EsitoOperazione;
-import it.govpay.servizi.v2_3.commons.GpResponse;
-import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;
+import it.govpay.servizi.v2_3.commons.GpResponse;
+import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.v2_3.gpapp.GpAnnullaVersamento;
 import it.govpay.servizi.v2_3.gpapp.GpCaricaIuv;
 import it.govpay.servizi.v2_3.gpapp.GpCaricaIuvResponse;
@@ -64,20 +80,8 @@ import it.govpay.servizi.v2_3.gpapp.GpChiediStatoVersamentoResponse;
 import it.govpay.servizi.v2_3.gpapp.GpGeneraIuv;
 import it.govpay.servizi.v2_3.gpapp.GpGeneraIuvResponse;
 import it.govpay.servizi.v2_3.gpapp.GpNotificaPagamento;
+import it.govpay.servizi.v2_5.PagamentiTelematiciGPApp;
 import it.govpay.web.ws.Utils;
-
-import javax.annotation.Resource;
-import javax.jws.HandlerChain;
-import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
-
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
-import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 @WebService(serviceName = "PagamentiTelematiciGPAppService",
 endpointInterface = "it.govpay.servizi.v2_5.PagamentiTelematiciGPApp",
@@ -94,9 +98,6 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 	@Resource
 	WebServiceContext wsCtxt;
 	
-	// TODO capire come fare
-	boolean checkSubject = false;
-
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciGPPrtImpl.class);
 
 	@Override
@@ -466,13 +467,14 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 	}
 
 	private Applicazione getApplicazioneAutenticata(BasicBD bd) throws GovPayException, ServiceException {
-		if(wsCtxt.getUserPrincipal() == null) {
-			throw new GovPayException(EsitoOperazione.AUT_000);
-		}
-
 		Applicazione app = null;
 		try {
-			app = AnagraficaManager.getApplicazioneByPrincipal(bd, wsCtxt.getUserPrincipal().getName(),checkSubject);
+			HttpServletRequest request = (HttpServletRequest) wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
+			Utenza user = CredentialUtils.getUser(request, log);
+			if(user == null) {
+				throw new GovPayException(EsitoOperazione.AUT_000);
+			}
+			app = CredentialUtils.getApplicazione(bd,user);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.AUT_001, wsCtxt.getUserPrincipal().getName());
 		}

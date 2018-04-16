@@ -6,7 +6,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Pagamento;
@@ -108,7 +107,7 @@ public class IncassiDAO extends BaseDAO{
 
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, richiestaIncassoDTO.getUser().getPrincipal(),richiestaIncassoDTO.getUser().isCheckSubject()); 
+			Applicazione applicazione = this.getApplicazioneFromUser(richiestaIncassoDTO.getUser(), bd); 
 			richiestaIncassoDTO.setApplicazione(applicazione);
 
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);

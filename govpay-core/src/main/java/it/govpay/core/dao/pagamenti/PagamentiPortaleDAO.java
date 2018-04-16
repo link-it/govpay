@@ -19,6 +19,7 @@ import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
@@ -74,7 +75,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
 			this.autorizzaRichiesta(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA); 
-			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata(pagamentiPortaleDTO.getUser().getPrincipal(),pagamentiPortaleDTO.getUser().isCheckSubject());
+			Applicazione applicazioneAutenticata = applicazioneBusiness.getApplicazioneAutenticata((Utenza) pagamentiPortaleDTO.getUser());
 			ctx.log("ws.ricevutaRichiesta");
 			String codApplicazione = applicazioneAutenticata.getCodApplicazione();
 

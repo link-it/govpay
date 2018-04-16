@@ -20,6 +20,8 @@
 package it.govpay.bd.anagrafica;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -30,6 +32,9 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.utils.Utilities;
+import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
@@ -102,14 +107,10 @@ public class ApplicazioniBD extends BasicBD {
 	 * @throws NotFoundException se l'ente non esiste.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public Applicazione getApplicazioneByPrincipal(String principal, boolean checkSubject) throws NotFoundException, MultipleResultException, ServiceException {
+	public Applicazione getApplicazioneByPrincipal(String principal) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			IExpression exp = this.getApplicazioneService().newExpression();
-			if(checkSubject) {
-				exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
-			}else {
-				exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
-			}
+			exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(exp);
 			Applicazione applicazione = getApplicazione(applicazioneVO);
 
@@ -119,6 +120,35 @@ public class ApplicazioniBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+
+	}
+	/**
+	 * Recupera l'applicazione identificata dal Principal fornito
+	 * 
+	 * @param idEnte
+	 * @return
+	 * @throws NotFoundException se l'ente non esiste.
+	 * @throws ServiceException in caso di errore DB.
+	 */
+	public Applicazione getApplicazioneBySubject(String principal) throws NotFoundException, MultipleResultException, ServiceException {
+		try {
+			IExpression expr = this.getApplicazioneService().newExpression();
+
+			Hashtable<String, String> hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			Enumeration<String> keys = hashSubject.keys();
+			while(keys.hasMoreElements()){
+				String key = keys.nextElement();
+				String value = hashSubject.get(key);
+				expr.like(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, "/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/", LikeMode.ANYWHERE);
+			}
+			
+			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(expr);
+			Applicazione applicazione = getApplicazione(applicazioneVO);
+
+			return applicazione;
+		} catch (NotImplementedException  | ExpressionNotImplementedException | ExpressionException | UtilsException e) { 
 			throw new ServiceException(e);
 		}
 
