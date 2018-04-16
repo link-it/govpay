@@ -8,12 +8,14 @@
   <mapping name="idUtenza" class="it.govpay.orm.IdUtenza" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
+    <value name="principalOriginale" field="principalOriginale" usage="optional"/>
     <value name="abilitato" field="abilitato" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdUtenza_Type" class="it.govpay.orm.IdUtenza" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
+    <value name="principalOriginale" field="principalOriginale" usage="optional"/>
     <value name="abilitato" field="abilitato" usage="optional"/>
   </mapping>
   <mapping name="idPagamento" class="it.govpay.orm.IdPagamento" abstract="false">
@@ -426,7 +428,7 @@
   <mapping name="Utenza" class="it.govpay.orm.Utenza">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
-    <value name="principalOriginale" field="principalOriginale" usage="optional"/>
+    <value name="principalOriginale" field="principalOriginale" usage="required"/>
     <value name="abilitato" field="abilitato" default="true" usage="required"/>
   </mapping>
   <mapping name="Operatore" class="it.govpay.orm.Operatore">

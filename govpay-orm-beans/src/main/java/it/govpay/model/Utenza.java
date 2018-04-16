@@ -33,6 +33,13 @@ public class Utenza extends BasicModel {
 		this.id = id;
 	}
 
+	public String getPrincipalOriginale() {
+		return principalOriginale;
+	}
+
+	public void setPrincipalOriginale(String principalOriginale) {
+		this.principalOriginale = principalOriginale;
+	}
 
 	public boolean isAbilitato() {
 		return this.abilitato;
@@ -56,14 +63,6 @@ public class Utenza extends BasicModel {
 
 	public void setIdDomini(List<Long> idDomini) {
 		this.idDomini = idDomini;
-	}
-
-	public String getPrincipalOriginale() {
-		return principalOriginale;
-	}
-
-	public void setPrincipalOriginale(String principalOriginale) {
-		this.principalOriginale = principalOriginale;
 	}
 
 	public boolean isCheckSubject() {

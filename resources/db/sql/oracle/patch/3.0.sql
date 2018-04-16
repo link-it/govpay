@@ -309,4 +309,6 @@ ALTER TABLE versamenti ADD tipo_pagamento NUMBER;
 
 ALTER TABLE utenze MODIFY principal VARCHAR2(4000 CHAR);
 ALTER TABLE utenze ADD principal_originale VARCHAR2(4000 CHAR);
+update utenze set principal_originale = principal;
+ALTER TABLE utenze MODIFY (principal_originale NOT NULL);
 
