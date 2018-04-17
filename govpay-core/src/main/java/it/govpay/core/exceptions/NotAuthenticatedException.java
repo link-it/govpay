@@ -19,16 +19,14 @@
  */
 package it.govpay.core.exceptions;
 
-public class NotAuthenticatedException extends BaseException {
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+
+public class NotAuthenticatedException extends BaseExceptionV1 {
 
 	private static final long serialVersionUID = 1L;
 	
-	public NotAuthenticatedException() {
-		super("Utente non autenticato");
-	}
-	
 	public NotAuthenticatedException(String cause) {
-		super("Utente non autenticato", "401000", cause);
+		super("Utenza non autenticata", "401000", cause, CategoriaEnum.AUTORIZZAZIONE);
 	}
 	
 	@Override

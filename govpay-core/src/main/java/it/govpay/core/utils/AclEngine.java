@@ -15,13 +15,21 @@ public class AclEngine {
 	
 	public static NotAuthorizedException toNotAuthorizedException(IAutorizzato user) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Utenza [").append(user != null ? user.getPrincipal() : "NON RICONOSCIUTA ] non autorizzata.");
+		String utenza = user != null ? user.getPrincipal() : null;
+		if(utenza != null)
+			sb.append("Utenza [").append(utenza).append("] non autorizzata.");
+		else
+			sb.append("Credenziali non fornite.");
 		return new NotAuthorizedException(sb.toString());
 	}
 	
 	public static NotAuthenticatedException toNotAuthenticatedException(IAutorizzato user) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Utenza [").append(user != null ? user.getPrincipal() : "NON RICONOSCIUTA ] non autorizzata.");
+		String utenza = user != null ? user.getPrincipal() : null;
+		if(utenza != null)
+			sb.append("Utenza [").append(utenza).append("] non autorizzata.");
+		else
+			sb.append("Credenziali non fornite.");
 		return new NotAuthenticatedException(sb.toString());
 	}
 	

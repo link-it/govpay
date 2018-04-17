@@ -32,6 +32,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
@@ -128,7 +129,7 @@ public class UtenzeBD extends BasicBD {
 				expr.ilike(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, principal, LikeMode.EXACT);
 			else 
 				expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, principal);
-			
+
 			it.govpay.orm.Utenza utenzaVO = this.getUtenzaService().find(expr);
 			return getUtenza(utenzaVO);
 		} catch (NotImplementedException e) {
@@ -142,18 +143,18 @@ public class UtenzeBD extends BasicBD {
 
 
 	private Utenza getUtenza(it.govpay.orm.Utenza utenzaVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
-		
+
 		List<Long> utenzaDominioLst = this.getUtenzeDominio(utenzaVO.getId());
 		List<Long> utenzaTributoLst = this.getUtenzeTributo(utenzaVO.getId());
 		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTributoLst, this);
 		AclBD aclDB = new AclBD(this);
 		AclFilter filter = aclDB.newFilter();
 		filter.setPrincipal(utenza.getPrincipal());
-		
+
 		utenza.setAclPrincipal(aclDB.findAll(filter));
 		return utenza;
 	}
-	
+
 	public long count(IExpression expr) throws ServiceException {
 		try {
 			return this.getUtenzaService().count(expr).longValue();
@@ -177,12 +178,33 @@ public class UtenzeBD extends BasicBD {
 			if(!this.exists(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
+
+			Utenza utenza2 = this.getUtenza(utenza.getPrincipalOriginale());
+			// il valore normalizzato del principal puo' cambiare l'ordine delle proprieta' salvate facendo saltare la tabella acl
+			// se il nuovo valore normalizzato coincide con quello vecchio non cambio la chiave
+			String pr, prOld;
+			try {
+				pr = Utilities.formatSubject(utenza.getPrincipal());
+			}catch(Exception e) {
+				pr= utenza.getPrincipal();
+			}
+			try {
+				prOld = Utilities.formatSubject(utenza2.getPrincipal());
+			}catch(Exception e) {
+				prOld= utenza2.getPrincipal();
+			}
+
+			if(pr.equals(prOld)) {
+				idUtenza.setPrincipal(utenza2.getPrincipal());
+				vo.setPrincipal(utenza2.getPrincipal());
+			}
+
 			this.getUtenzaService().update(idUtenza, vo);
 			this.updateUtenzeDominio(vo.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(vo.getId(), utenza.getIdTributi());
 			utenza.setId(vo.getId());
 			emitAudit(utenza);
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
@@ -229,7 +251,7 @@ public class UtenzeBD extends BasicBD {
 	private void updateUtenzeTributo(Long utenza, List<Long> idTributi) throws ServiceException {
 		try {
 			deleteUtenzeTributo(utenza);
-			
+
 			if(idTributi != null) {
 				for(Long tributo: idTributi) {
 					UtenzaTributo utenzaTributo = new UtenzaTributo();
@@ -314,7 +336,7 @@ public class UtenzeBD extends BasicBD {
 			throw new ServiceException(e);
 		} 
 	}
-	
+
 	public void deleteUtenza(Utenza utenza) throws NotFoundException, ServiceException {
 		this.deleteUtenza(utenza, false);
 	}
@@ -330,9 +352,9 @@ public class UtenzeBD extends BasicBD {
 		try {
 			if(!commitParent)
 				this.setAutoCommit(false); 
-			
+
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
-			
+
 			IdUtenza idUtenza = this.getUtenzaService().convertToId(vo);
 			if(!this.exists(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
@@ -342,7 +364,7 @@ public class UtenzeBD extends BasicBD {
 			this.getUtenzaService().delete(vo);
 			if(!commitParent)
 				this.commit();
-			
+
 			emitAudit(utenza);
 		} catch (NotImplementedException | UtilsException  e) {
 			if(!commitParent)

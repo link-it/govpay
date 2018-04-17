@@ -41,11 +41,13 @@ public abstract class BaseException extends Exception {
 	public BaseException(String message, String subCode, String description) {
 		this(message);
 		this.details = "(#"+subCode+") " + description;
+		this.code = subCode;
 	}
 	
 	public BaseException(String message, String subCode, String description, Throwable cause) {
 		this(message, cause);
 		this.details = "(#"+subCode+") " + description;
+		this.code = subCode;
 	}
 
 	public String getCode() {
