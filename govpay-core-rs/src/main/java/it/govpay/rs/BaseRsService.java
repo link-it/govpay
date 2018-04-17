@@ -39,20 +39,13 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.Utilities;
-import org.openspcoop2.utils.transport.Credential;
 import org.openspcoop2.utils.transport.http.HttpServletCredential;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.cache.AclCache;
-import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl;

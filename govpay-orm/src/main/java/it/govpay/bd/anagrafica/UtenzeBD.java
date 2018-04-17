@@ -90,7 +90,7 @@ public class UtenzeBD extends BasicBD {
 	public boolean exists(Utenza utenza) throws ServiceException {
 		try {
 			IExpression expr = this.getUtenzaService().newExpression();
-			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL, utenza.getPrincipalOriginale());
+			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, utenza.getPrincipalOriginale());
 			return this.getUtenzaService().count(expr).longValue() > 0 ;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

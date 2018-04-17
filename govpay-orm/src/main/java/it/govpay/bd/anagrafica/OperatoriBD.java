@@ -151,9 +151,9 @@ public class OperatoriBD extends BasicBD {
 		try {
 			IExpression expr = this.getOperatoreService().newExpression();
 			if(checkIgnoreCase)
-				expr.ilike(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, principal, LikeMode.EXACT);
+				expr.ilike(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE, principal, LikeMode.EXACT);
 			else 
-				expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, principal);
+				expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE, principal);
 			
 			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
 			return getOperatore(operatoreVO);
@@ -311,7 +311,7 @@ public class OperatoriBD extends BasicBD {
 	public boolean exists(Operatore operatore) throws ServiceException {
 		try {
 			IExpression expr = this.getOperatoreService().newExpression();
-			expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL ,operatore.getPrincipal());
+			expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE,operatore.getPrincipal());
 			return this.getOperatoreService().count(expr).longValue() > 0;
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);

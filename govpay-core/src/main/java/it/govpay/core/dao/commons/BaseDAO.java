@@ -21,7 +21,7 @@ import it.govpay.model.IAutorizzato;
 public class BaseDAO {
 
 	public void populateUser(IAutorizzato user, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		if(user == null)
+		if(user == null || user.getPrincipal() == null)
 			throw AclEngine.toNotAuthenticatedException(user);
 
 		try {
