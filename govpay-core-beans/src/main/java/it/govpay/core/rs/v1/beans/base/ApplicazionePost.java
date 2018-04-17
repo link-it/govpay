@@ -51,7 +51,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
   public void setPrincipal(String principal) {
     this.principal = principal;
   }
-
+  
   /**
    **/
   public ApplicazionePost codificaAvvisi(CodificaAvvisi codificaAvvisi) {

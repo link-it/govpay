@@ -1,10 +1,8 @@
 package it.govpay.core.business;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.output.ThresholdingOutputStream;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
@@ -13,9 +11,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.IAutorizzato;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Applicazione extends BasicBD{
@@ -25,16 +26,16 @@ public class Applicazione extends BasicBD{
 	}
 
 	
-	public it.govpay.bd.model.Applicazione getApplicazioneAutenticata(String principal) throws GovPayException, ServiceException {
-		if(principal == null) {
+	public it.govpay.bd.model.Applicazione getApplicazioneAutenticata(Utenza user) throws GovPayException, ServiceException {
+		if(user == null || user.getPrincipal() == null) {
 			throw new GovPayException(EsitoOperazione.AUT_000);
 		}
 		
 		it.govpay.bd.model.Applicazione applicazione = null;
 		try {
-			applicazione =  AnagraficaManager.getApplicazioneByPrincipal(this, principal);
+			applicazione = CredentialUtils.getApplicazione(this, user);  
 		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.AUT_002, principal);
+			throw new GovPayException(EsitoOperazione.AUT_002, user.getPrincipal());
 		}
 		
 		if(applicazione != null) {

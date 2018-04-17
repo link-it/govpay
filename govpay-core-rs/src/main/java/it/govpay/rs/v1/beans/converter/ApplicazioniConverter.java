@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.Applicazione;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
 import it.govpay.core.rs.v1.beans.base.CodificaAvvisi;
@@ -20,12 +21,13 @@ import it.govpay.rs.v1.controllers.base.ApplicazioniController;
 
 public class ApplicazioniConverter {
 	
-	public static PutApplicazioneDTO getPutApplicazioneDTO(ApplicazionePost applicazionePost, String idA2A, IAutorizzato user) throws ServiceException {
+	public static PutApplicazioneDTO getPutApplicazioneDTO(ApplicazionePost applicazionePost, String idA2A, IAutorizzato user) throws ServiceException,NotAuthorizedException {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
 		it.govpay.bd.model.Applicazione applicazione = new it.govpay.bd.model.Applicazione();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
 		utenza.setAbilitato(applicazionePost.isAbilitato());
 		utenza.setPrincipal(applicazionePost.getPrincipal());
+		utenza.setPrincipalOriginale(applicazionePost.getPrincipal()); 
 		applicazione.setUtenza(utenza);
 		applicazioneDTO.setIdUtenza(applicazionePost.getPrincipal());
 		
@@ -75,7 +77,7 @@ public class ApplicazioniConverter {
 		rsModel.setCodificaAvvisi(codificaAvvisi);
 		
 		rsModel.setIdA2A(applicazione.getCodApplicazione());
-		rsModel.setPrincipal(applicazione.getUtenza().getPrincipal());
+		rsModel.setPrincipal(applicazione.getUtenza().getPrincipalOriginale());
 		rsModel.setServizioNotifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreNotifica()));
 		rsModel.setServizioVerifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreVerifica()));
 		

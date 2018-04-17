@@ -39,17 +39,14 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.Utilities;
+import org.openspcoop2.utils.transport.http.HttpServletCredential;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.cache.AclCache;
-import it.govpay.core.exceptions.NotAuthenticatedException;
+import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
@@ -94,18 +91,11 @@ public abstract class BaseRsService {
 //				.build();
 //	}
 
-	protected String getPrincipal(){
-		if(this.request.getUserPrincipal()!=null){
-			return this.request.getUserPrincipal().getName();
-		}
-		return null;
-	}
-	
-	protected List<String> getListaRuoli(){
+	protected List<String> getListaRuoli(HttpServletCredential credential){
 		List<String> listaRuoliPosseduti = new ArrayList<String>();
 		// caricamento dei ruoli ricevuti nella richiesta http
 		for (String chiaveRuolo : this.aclCache.getChiaviRuoli()) {
-			if(this.request.isUserInRole(chiaveRuolo)){
+			if(credential.isUserInRole(chiaveRuolo)){
 				listaRuoliPosseduti.add(this.aclCache.getRuolo(chiaveRuolo));
 			}
 		}
@@ -113,11 +103,20 @@ public abstract class BaseRsService {
 	}
 	
 	protected IAutorizzato getUser() {
-		Utenza user = new Utenza();
-		user.setPrincipal(this.getPrincipal());
-		user.setRuoli(this.getListaRuoli());
+		HttpServletCredential credential = new HttpServletCredential(this.request, this.log);
+		Utenza user = CredentialUtils.getUser(credential);
+		
+		log.debug("Ricevute Credenziali ["+(user != null ? user.getPrincipal() : null)+"]");
+		
+		try {
+			log.debug("Subject Normalizzato: " + Utilities.formatSubject(user.getPrincipal()));
+		}catch(Exception e) {
+			log.error("Errore normalizzazione: "+ e.getMessage(),e); 
+		}
+		
+		user.setRuoli(this.getListaRuoli(credential));
 		List<Acl> aclDaRuoliContainer = new ArrayList<Acl>();
-		for (String ruolo : this.getListaRuoli()) {
+		for (String ruolo : user.getRuoli()) {
 			aclDaRuoliContainer.addAll(this.aclCache.getAclsRuolo(ruolo));
 		}
 		user.setAclRuoli(aclDaRuoliContainer);
@@ -174,18 +173,6 @@ public abstract class BaseRsService {
 
 		if(log!= null)
 			log.info("Invalidate Session completata.");
-	}
-
-	protected Applicazione getApplicazioneAutenticata(BasicBD bd) throws NotAuthenticatedException, ServiceException {
-		if(getPrincipal() == null) {
-			throw new NotAuthenticatedException();
-		}
-
-		try {
-			return AnagraficaManager.getApplicazioneByPrincipal(bd,getPrincipal());
-		} catch (NotFoundException e) {
-			throw new NotAuthenticatedException();
-		}
 	}
 
 	public static boolean isEmpty(List<?> lista){

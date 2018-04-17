@@ -27,7 +27,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -38,9 +40,11 @@ import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.core.business.Versamento;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
@@ -48,14 +52,13 @@ import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.utils.AclEngine;
+import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.Gp23Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.servizi.commons.EsitoOperazione;
-import it.govpay.servizi.v2_5.PagamentiTelematiciGPRnd;
 import it.govpay.servizi.v2_3.commons.Incasso;
 import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.v2_3.gprnd.GpChiediFlussoRendicontazione;
@@ -64,6 +67,7 @@ import it.govpay.servizi.v2_3.gprnd.GpChiediListaFlussiRendicontazione;
 import it.govpay.servizi.v2_3.gprnd.GpChiediListaFlussiRendicontazioneResponse;
 import it.govpay.servizi.v2_3.gprnd.GpRegistraIncasso;
 import it.govpay.servizi.v2_3.gprnd.GpRegistraIncassoResponse;
+import it.govpay.servizi.v2_5.PagamentiTelematiciGPRnd;
 
 @WebService(serviceName = "PagamentiTelematiciGPRndService",
 endpointInterface = "it.govpay.servizi.v2_5.PagamentiTelematiciGPRnd",
@@ -80,7 +84,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 
 	@Resource
 	WebServiceContext wsCtxt;
-
+	
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciGPRndImpl.class);
 
 	@Override
@@ -281,13 +285,14 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 	}
 
 	private Applicazione getApplicazioneAutenticata(BasicBD bd) throws GovPayException, ServiceException {
-		if(wsCtxt.getUserPrincipal() == null) {
-			throw new GovPayException(EsitoOperazione.AUT_000);
-		}
-
 		Applicazione app = null;
 		try {
-			app = AnagraficaManager.getApplicazioneByPrincipal(bd, wsCtxt.getUserPrincipal().getName());
+			HttpServletRequest request = (HttpServletRequest) wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
+			Utenza user = CredentialUtils.getUser(request, log);
+			if(user == null) {
+				throw new GovPayException(EsitoOperazione.AUT_000);
+			}
+			app = CredentialUtils.getApplicazione(bd,user);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.AUT_001, wsCtxt.getUserPrincipal().getName());
 		}

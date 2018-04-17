@@ -30,7 +30,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.dao.anagrafica.dto.DeleteOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
@@ -46,44 +45,15 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.IAutorizzato;
 
 
 public class UtentiDAO extends BaseDAO{
 
 	public enum TipoUtenza {
 		PORTALE, OPERATORE, APPLICAZIONE;
-	}
-
-	public IAutorizzato getUser(String principal) throws NotAuthenticatedException, ServiceException {
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			IAutorizzato user = null;
-			boolean autenticated = false;
-
-			try {
-				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
-				user = applicazione.getUtenza();
-				autenticated = true;
-			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
-
-			try {
-				Operatore operatore = AnagraficaManager.getOperatore(bd, principal);
-				user = operatore.getUtenza();
-				autenticated = true;
-			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { }
-
-			if(!autenticated) throw new NotAuthenticatedException();
-
-			return user;
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
 	}
 
 	public void populateUser(IAutorizzato user) throws NotAuthenticatedException, ServiceException, NotAuthorizedException {
@@ -98,42 +68,15 @@ public class UtentiDAO extends BaseDAO{
 		}
 	}
 
-	public Applicazione getApplicazione(String principal) throws NotAuthenticatedException, ServiceException {
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, principal);
-			return applicazione;
-		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new NotAuthenticatedException();
-		} finally {
-			bd.closeConnection();
-		}
-	}
-
-	public Operatore getOperatore(String principal) throws NotAuthenticatedException, ServiceException {
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			Operatore operatore = AnagraficaManager.getOperatore(bd, principal);
-			return operatore;
-		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
-			throw new NotAuthenticatedException();
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
-	}
-
 	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws NotAuthenticatedException, ServiceException, OperatoreNonTrovatoException, NotAuthorizedException {
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiOperatore.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
-			Operatore operatore = AnagraficaManager.getOperatore(bd, leggiOperatore.getPrincipal());
+			OperatoriBD applicazioniBD = new OperatoriBD(bd);
+			
+			Operatore operatore = applicazioniBD.getOperatore(leggiOperatore.getPrincipal());
 			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
 			response.setOperatore(operatore);
 			return response;

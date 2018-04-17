@@ -72,6 +72,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.principal = principal;
   }
 
+  
   /**
    **/
   public Applicazione codificaAvvisi(CodificaAvvisi codificaAvvisi) {

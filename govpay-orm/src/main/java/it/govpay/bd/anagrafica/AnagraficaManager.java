@@ -172,6 +172,7 @@ public class AnagraficaManager {
 		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazione", String.valueOf(applicazione.getId())));} catch (Exception e) {	}
 		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazione", applicazione.getCodApplicazione()));} catch (Exception e) {	}
 		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazioneByPrincipal", applicazione.getPrincipal()));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazioneBySubject", applicazione.getPrincipal()));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Dominio dominio) {
@@ -197,7 +198,8 @@ public class AnagraficaManager {
 	
 	public static void removeFromCache(Operatore operatore) {
 		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatore", String.valueOf(operatore.getId())));} catch (Exception e) {	}
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatore", String.valueOf(operatore.getUtenza().getPrincipal())));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatoreByPrincipal", String.valueOf(operatore.getUtenza().getPrincipal())));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatoreBySubject", String.valueOf(operatore.getUtenza().getPrincipal())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Utenza utenza) {
@@ -328,6 +330,25 @@ public class AnagraficaManager {
 		try {
 			String method = "getApplicazione";
 			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, codApplicazione, method, codApplicazione);
+			return (Applicazione) applicazione;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
+	
+	public static Applicazione getApplicazioneBySubject(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
+		try {
+			String method = "getApplicazioneBySubject";
+			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -518,9 +539,28 @@ public class AnagraficaManager {
 	}
 	
 	
-	public static Operatore getOperatore(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
+	public static Operatore getOperatoreByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
-			String method = "getOperatore";
+			String method = "getOperatoreByPrincipal";
+			Object operatore = operatoriBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
+			return (Operatore) operatore;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
+	
+	public static Operatore getOperatoreBySubject(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
+		try {
+			String method = "getOperatoreBySubject";
 			Object operatore = operatoriBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Operatore) operatore;
 		} catch (Throwable t) {

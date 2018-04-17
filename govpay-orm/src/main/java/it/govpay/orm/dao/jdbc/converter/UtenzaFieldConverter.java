@@ -74,6 +74,13 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(Utenza.model().PRINCIPAL_ORIGINALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal_originale";
+			}else{
+				return "principal_originale";
+			}
+		}
 		if(field.equals(Utenza.model().ABILITATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".abilitato";
@@ -95,6 +102,9 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 		// the full definition of the table containing the alias
 		
 		if(field.equals(Utenza.model().PRINCIPAL)){
+			return this.toTable(Utenza.model(), returnAlias);
+		}
+		if(field.equals(Utenza.model().PRINCIPAL_ORIGINALE)){
 			return this.toTable(Utenza.model(), returnAlias);
 		}
 		if(field.equals(Utenza.model().ABILITATO)){

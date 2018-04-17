@@ -1,6 +1,6 @@
 -- Censimento dell'utenza amministratore
 
-INSERT INTO utenze (principal) VALUES ('@PRINCIPAL@');
+INSERT INTO utenze (principal,principal_originale) VALUES ('@PRINCIPAL@','@PRINCIPAL@');
 INSERT INTO operatori (nome, id_utenza) VALUES ('@RAGIONE_SOCIALE@', (select id from utenze where principal = '@PRINCIPAL@'));
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Anagrafica Applicazioni','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Anagrafica Creditore','RWX');

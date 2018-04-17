@@ -20,6 +20,7 @@
 package it.govpay.bd.model.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.Utilities;
 
 import it.govpay.bd.model.Operatore;
 import it.govpay.orm.IdUtenza;
@@ -41,7 +42,11 @@ public class OperatoreConverter {
 		vo.setId(dto.getId());
 		IdUtenza idUtenza = new IdUtenza();
 		idUtenza.setId(dto.getIdUtenza());
-		idUtenza.setPrincipal(dto.getUtenza().getPrincipal());
+		try {
+			idUtenza.setPrincipal(Utilities.formatSubject(dto.getPrincipal()));
+		} catch (Exception e) {
+			idUtenza.setPrincipal(dto.getPrincipal());
+		}
 		vo.setIdUtenza(idUtenza);
 		vo.setNome(dto.getNome());
 		return vo;

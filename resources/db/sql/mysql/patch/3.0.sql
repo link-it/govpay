@@ -232,3 +232,7 @@ ALTER TABLE versamenti ADD COLUMN numero_avviso VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN avvisatura VARCHAR(1);
 ALTER TABLE versamenti ADD COLUMN tipo_pagamento INT;
 
+ALTER TABLE utenze MODIFY COLUMN principal VARCHAR(4000);
+ALTER TABLE utenze ADD COLUMN principal_originale VARCHAR(4000);
+update utenze set principal_originale = principal;
+ALTER TABLE utenze MODIFY COLUMN principal_originale VARCHAR(4000) NOT NULL;

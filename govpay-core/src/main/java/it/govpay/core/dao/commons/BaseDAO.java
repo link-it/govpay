@@ -3,6 +3,7 @@ package it.govpay.core.dao.commons;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -20,20 +21,32 @@ import it.govpay.model.IAutorizzato;
 public class BaseDAO {
 
 	public void populateUser(IAutorizzato user, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		if(user == null)
+		if(user == null || user.getPrincipal() == null)
 			throw AclEngine.toNotAuthenticatedException(user);
 
 		try {
-			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
+			Applicazione applicazione = getApplicazioneFromUser(user, bd);
 			user.merge(applicazione.getUtenza());
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {
-				Operatore operatore = AnagraficaManager.getOperatore(bd, user.getPrincipal());
+				Operatore operatore = getOperatoreFromUser(user, bd);
 				user.merge(operatore.getUtenza());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
 				throw AclEngine.toNotAuthorizedException(user);					
 			}
 		}
+	}
+
+	public Applicazione getApplicazioneFromUser(IAutorizzato user, BasicBD bd) throws ServiceException, NotFoundException {
+		Applicazione applicazione = user.isCheckSubject() ? AnagraficaManager.getApplicazioneBySubject(bd, user.getPrincipal())
+				: AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
+		return applicazione;
+	}
+	
+	public Operatore getOperatoreFromUser(IAutorizzato user, BasicBD bd) throws ServiceException, NotFoundException {
+		Operatore operatore = user.isCheckSubject() ? AnagraficaManager.getOperatoreBySubject(bd, user.getPrincipal())
+				: AnagraficaManager.getOperatoreByPrincipal(bd, user.getPrincipal());
+		return operatore;
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {

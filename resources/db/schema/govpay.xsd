@@ -94,6 +94,11 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:simpleType name="String4000">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="4000"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 	<xsd:simpleType name="String256">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="256"/>
@@ -212,6 +217,7 @@
 	<xsd:complexType name="id-utenza">
 		<xsd:sequence>
 			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="principalOriginale" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="abilitato" type="xsd:boolean" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1086,7 +1092,8 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="principal" type="String4000"/>
+			<xsd:element name="principalOriginale" type="String4000"/>
 			<xsd:element name="abilitato" type="xsd:boolean" default="true"/>
 		</xsd:sequence>
 	</xsd:complexType>

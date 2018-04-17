@@ -74,11 +74,15 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 		// Object utenza
 		sqlQueryObjectInsert.addInsertTable(this.getUtenzaFieldConverter().toTable(Utenza.model()));
 		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL_ORIGINALE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().ABILITATO,false),"?");
 
 		// Insert utenza
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getUtenzaFetch().getKeyGeneratorObject(Utenza.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getPrincipal(),Utenza.model().PRINCIPAL.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getPrincipal(),Utenza.model().PRINCIPAL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getPrincipalOriginale(),Utenza.model().PRINCIPAL_ORIGINALE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getAbilitato(),Utenza.model().ABILITATO.getFieldType())
 		);
 		utenza.setId(id);
 
@@ -134,6 +138,10 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_utenza = new java.util.ArrayList<JDBCObject>();
 		sqlQueryObjectUpdate.addUpdateField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL,false), "?");
 		lstObjects_utenza.add(new JDBCObject(utenza.getPrincipal(), Utenza.model().PRINCIPAL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL_ORIGINALE,false), "?");
+		lstObjects_utenza.add(new JDBCObject(utenza.getPrincipalOriginale(), Utenza.model().PRINCIPAL_ORIGINALE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUtenzaFieldConverter().toColumn(Utenza.model().ABILITATO,false), "?");
+		lstObjects_utenza.add(new JDBCObject(utenza.getAbilitato(), Utenza.model().ABILITATO.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_utenza.add(new JDBCObject(tableId, Long.class));
 

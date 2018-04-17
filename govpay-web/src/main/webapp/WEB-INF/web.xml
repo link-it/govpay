@@ -78,7 +78,7 @@
 	</security-role>
 
 	<login-config>
-		<auth-method>BASIC</auth-method>
+		<auth-method>CLIENT-CERT</auth-method>
 	</login-config>
 
 </web-app>
