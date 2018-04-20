@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.gateway.GatewayController;
 
@@ -23,7 +25,7 @@ public class Gateway extends BaseRsServiceV1{
 	
 	private GatewayController controller = null;
 	
-	public Gateway() {
+	public Gateway() throws ServiceException {
 		super("gateway");
 		this.controller = new GatewayController(this.nomeServizio,this.log);
 	}

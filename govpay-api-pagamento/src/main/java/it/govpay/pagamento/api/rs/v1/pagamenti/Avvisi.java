@@ -12,6 +12,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.rs.v1.controllers.base.AvvisiController;
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -24,7 +26,7 @@ public class Avvisi extends BaseRsServiceV1{
 
 	private AvvisiController controller = null;
 
-	public Avvisi() {
+	public Avvisi() throws ServiceException {
 		super("avvisi");
 		this.controller = new AvvisiController(this.nomeServizio,this.log);
 	}

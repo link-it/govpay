@@ -129,8 +129,6 @@ public class InitListener implements ServletContextListener{
 			}
 			
 			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.wc");
-			AclCache.newInstance(log);
-			ConnectionManager.initialize();
 		} catch(Exception e){
 			throw new RuntimeException("Inizializzazione di GovPay-WebController fallita: " + e, e);
 		}

@@ -10,6 +10,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.EventiController;
@@ -22,7 +24,7 @@ public class Eventi extends BaseRsServiceV1{
 
 	private EventiController controller = null;
 
-	public Eventi() {
+	public Eventi() throws ServiceException {
 		super("eventi");
 		this.controller = new EventiController(this.nomeServizio,this.log);
 	}

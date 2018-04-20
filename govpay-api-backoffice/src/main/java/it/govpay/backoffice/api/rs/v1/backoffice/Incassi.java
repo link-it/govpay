@@ -11,6 +11,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.IncassiController;
@@ -23,7 +25,7 @@ public class Incassi extends BaseRsServiceV1{
 
 	private IncassiController controller = null;
 
-	public Incassi() {
+	public Incassi() throws ServiceException {
 		super("incassi");
 		this.controller = new IncassiController(this.nomeServizio,this.log);
 	}

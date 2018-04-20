@@ -11,6 +11,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.PspController;
@@ -23,7 +25,7 @@ public class Psp extends BaseRsServiceV1{
 
 	private PspController controller = null;
 
-	public Psp() {
+	public Psp() throws ServiceException {
 		super("psp");
 		this.controller = new PspController(this.nomeServizio,this.log);
 	}

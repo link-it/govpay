@@ -19,6 +19,7 @@
  */
 package it.govpay.rs.v1;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.openapi.validator.OpenapiApiValidatorConfig;
@@ -56,7 +57,7 @@ public class BaseRsServiceV1 extends BaseRsService {
 		}
 	}
 	
-	public BaseRsServiceV1(String nomeServizio) {
+	public BaseRsServiceV1(String nomeServizio) throws ServiceException {
 		super(nomeServizio);
 	}
 	

@@ -42,6 +42,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import com.sun.istack.Nullable;
 
 import it.govpay.bd.BasicBD;
@@ -71,7 +73,7 @@ public class Incassi extends BaseRsServiceV1 {
 	public static final String NOME_SERVIZIO = "incassi";
 	private IncassiController controller = null;
 	
-	public Incassi() {
+	public Incassi() throws ServiceException {
 		super(NOME_SERVIZIO);
 		this.controller = new IncassiController(NOME_SERVIZIO, this.log);
 	}

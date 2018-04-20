@@ -16,6 +16,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.AclController;
@@ -28,7 +30,7 @@ public class Acl extends BaseRsServiceV1{
 
 	private AclController controller = null;
 
-	public Acl() {
+	public Acl() throws ServiceException {
 		super("acl");
 		this.controller = new AclController(this.nomeServizio,this.log);
 	}

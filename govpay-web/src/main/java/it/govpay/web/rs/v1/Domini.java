@@ -38,6 +38,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
@@ -79,7 +81,7 @@ public class Domini extends BaseRsServiceV1 {
 	public static final String NOME_SERVIZIO = "domini";
 	private DominiController controller = null;
 	
-	public Domini() {
+	public Domini() throws ServiceException {
 		super(NOME_SERVIZIO);
 		this.controller = new DominiController(NOME_SERVIZIO, this.log);
 	}
