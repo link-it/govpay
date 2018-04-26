@@ -31,6 +31,6 @@ public class Psp extends BaseRsServiceV1 {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getPsp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSession") String idSession, @QueryParam("esito") String esito) {
 		this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.getPsp(this.getUser(), uriInfo, httpHeaders, idSession, esito);
+        return this.controller.getPsp(null, uriInfo, httpHeaders, idSession, esito);
 	}
 }

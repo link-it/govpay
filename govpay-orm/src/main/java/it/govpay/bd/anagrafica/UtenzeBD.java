@@ -32,6 +32,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
@@ -177,12 +178,33 @@ public class UtenzeBD extends BasicBD {
 			if(!this.exists(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
+			Utenza utenza2 = this.getUtenza(utenza.getPrincipalOriginale());
+			// il valore normalizzato del principal puo' cambiare l'ordine delle proprieta' salvate facendo saltare la tabella acl
+			// se il nuovo valore normalizzato coincide con quello vecchio non cambio la chiave
+			String pr, prOld;
+			try {
+			        pr = Utilities.formatSubject(utenza.getPrincipal());
+			}catch(Exception e) {
+			        pr= utenza.getPrincipal();
+			}
+			try {
+			        prOld = Utilities.formatSubject(utenza2.getPrincipal());
+			}catch(Exception e) {
+			        prOld= utenza2.getPrincipal();
+			}
+
+			if(pr.equals(prOld)) {
+			        idUtenza.setPrincipal(utenza2.getPrincipal());
+			        vo.setPrincipal(utenza2.getPrincipal());
+			}
+
+			
 			this.getUtenzaService().update(idUtenza, vo);
 			this.updateUtenzeDominio(vo.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(vo.getId(), utenza.getIdTributi());
 			utenza.setId(vo.getId());
 			emitAudit(utenza);
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
