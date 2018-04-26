@@ -157,7 +157,6 @@ public class StartupEjb {
 			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.core");
 			JaxbUtils.init();
 			OperazioneFactory.init();
-			ConnectionManager.initialize();
 			ThreadExecutorManager.setup();
 			JmxOperazioni.register();
 			AvvisoPagamentoProperties.newInstance(GovpayConfig.getInstance().getResourceDir());

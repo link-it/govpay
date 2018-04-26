@@ -28,7 +28,7 @@ public class SceltaWISP {
 	private String tipoVersamento;
 	private boolean sceltaEffettuata;
 	private boolean pagaDopo;
-	private FaultNodo fault = null;
+	private FaultNodo fault;
 	
 	public boolean isSceltaEffettuata() {
 		return sceltaEffettuata;
@@ -66,5 +66,5 @@ public class SceltaWISP {
 	public void setTipoVersamento(String tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
-	
+
 }

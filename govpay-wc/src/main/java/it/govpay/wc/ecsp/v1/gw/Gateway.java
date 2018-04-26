@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.gateway.GatewayController;
 
@@ -23,7 +25,7 @@ public class Gateway extends BaseRsServiceV1{
 	
 	private GatewayController controller = null;
 	
-	public Gateway() {
+	public Gateway() throws ServiceException {
 		super("gateway");
 		this.controller = new GatewayController(this.nomeServizio,this.log);
 	}
@@ -33,7 +35,7 @@ public class Gateway extends BaseRsServiceV1{
 	@Produces({MediaType.TEXT_HTML})
 	public Response post_GW(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, @QueryParam("action") String action) {
 		this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.post_GW(this.getUser(),is, uriInfo, httpHeaders, idSessione, action);
+        return this.controller.post_GW(null,is, uriInfo, httpHeaders, idSessione, action);
 	}
 	
 	@GET
@@ -42,6 +44,6 @@ public class Gateway extends BaseRsServiceV1{
 	public Response get_GW(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String idSessione, @QueryParam("action") String action, @FormParam("idDominio") String idDominio,
 			@FormParam("keyPA") String keyPA, @FormParam("keyWISP") String keyWISP ,@QueryParam("type") String type) {
 		 	this.controller.setRequestResponse(this.request, this.response);
-		 	return this.controller.get_GW(this.getUser(), uriInfo, httpHeaders, idSessione, action, idDominio, keyPA, keyWISP, type);
+		 	return this.controller.get_GW(null, uriInfo, httpHeaders, idSessione, action, idDominio, keyPA, keyWISP, type);
 	}
 }

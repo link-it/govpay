@@ -74,6 +74,7 @@ import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+<<<<<<< HEAD:govpay-web/src/main/java/it/govpay/web/ws/PagamentiTelematiciCCPImpl.java
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Evento;
 import it.govpay.model.Evento.TipoEvento;
@@ -84,6 +85,21 @@ import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
+=======
+
+import javax.annotation.Resource;
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
+
+import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.NotAuthorizedException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
+>>>>>>> origin/2.5.x-#54-Formato_importi_fuori_standard:govpay-ejb/src/main/java/it/govpay/web/ws/PagamentiTelematiciCCPImpl.java
 
 
 @WebService(serviceName = "PagamentiTelematiciCCPservice",

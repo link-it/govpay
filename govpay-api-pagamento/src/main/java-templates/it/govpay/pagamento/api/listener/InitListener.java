@@ -135,8 +135,6 @@ public class InitListener implements ServletContextListener{
 			
 			RicevutaPagamentoProperties.newInstance(gpConfig.getResourceDir());
 			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.pagamento");
-			ConnectionManager.initialize();
-			AclCache.newInstance(log);
 			//			OperazioneFactory.init();
 			
 			// Inizializzazione del validatore JSON:

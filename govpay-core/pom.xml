@@ -2,14 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<repositories>
-		<repository>
-		  <id>joinup</id>
-		  <name>Joinup</name>
-		  <url>https://joinup.ec.europa.eu/nexus/content/repositories/releases/</url>
-		</repository>
-	</repositories>
-
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -72,18 +64,6 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-common</artifactId>
-			<version>4.2.0-RC</version>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-document</artifactId>
-			<version>4.2.0-RC</version>
 		</dependency>
 		
 		<dependency>

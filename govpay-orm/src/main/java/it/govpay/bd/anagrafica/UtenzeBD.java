@@ -178,12 +178,16 @@ public class UtenzeBD extends BasicBD {
 			if(!this.exists(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3.0.0_supporto_subject
 			Utenza utenza2 = this.getUtenza(utenza.getPrincipalOriginale());
 			// il valore normalizzato del principal puo' cambiare l'ordine delle proprieta' salvate facendo saltare la tabella acl
 			// se il nuovo valore normalizzato coincide con quello vecchio non cambio la chiave
 			String pr, prOld;
 			try {
+<<<<<<< HEAD
 				pr = Utilities.formatSubject(utenza.getPrincipal());
 			}catch(Exception e) {
 				pr= utenza.getPrincipal();
@@ -199,6 +203,24 @@ public class UtenzeBD extends BasicBD {
 				vo.setPrincipal(utenza2.getPrincipal());
 			}
 
+=======
+			        pr = Utilities.formatSubject(utenza.getPrincipal());
+			}catch(Exception e) {
+			        pr= utenza.getPrincipal();
+			}
+			try {
+			        prOld = Utilities.formatSubject(utenza2.getPrincipal());
+			}catch(Exception e) {
+			        prOld= utenza2.getPrincipal();
+			}
+
+			if(pr.equals(prOld)) {
+			        idUtenza.setPrincipal(utenza2.getPrincipal());
+			        vo.setPrincipal(utenza2.getPrincipal());
+			}
+
+			
+>>>>>>> 3.0.0_supporto_subject
 			this.getUtenzaService().update(idUtenza, vo);
 			this.updateUtenzeDominio(vo.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(vo.getId(), utenza.getIdTributi());

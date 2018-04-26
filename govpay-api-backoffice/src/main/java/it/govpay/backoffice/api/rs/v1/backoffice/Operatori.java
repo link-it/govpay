@@ -14,6 +14,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.OperatoriController;
@@ -26,7 +28,7 @@ public class Operatori extends BaseRsServiceV1{
 
 	private OperatoriController controller = null;
 
-	public Operatori() {
+	public Operatori() throws ServiceException {
 		super("operatori");
 		this.controller = new OperatoriController(this.nomeServizio,this.log);
 	}

@@ -10,6 +10,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.ProfiloController;
@@ -22,7 +24,7 @@ public class Profilo extends BaseRsServiceV1{
 
 	private ProfiloController controller = null;
 
-	public Profilo() {
+	public Profilo() throws ServiceException {
 		super("profilo");
 		this.controller = new ProfiloController(this.nomeServizio,this.log);
 	}

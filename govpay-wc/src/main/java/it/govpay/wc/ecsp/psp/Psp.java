@@ -10,6 +10,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.gateway.PspController;
 
@@ -18,7 +20,7 @@ public class Psp extends BaseRsServiceV1 {
 	
 	private PspController controller = null;
 	
-	public Psp() {
+	public Psp() throws ServiceException {
 		super("psp");
 		this.controller = new PspController(this.nomeServizio,this.log);
 	}
@@ -29,6 +31,6 @@ public class Psp extends BaseRsServiceV1 {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getPsp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSession") String idSession, @QueryParam("esito") String esito) {
 		this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.getPsp(this.getUser(), uriInfo, httpHeaders, idSession, esito);
+        return this.controller.getPsp(null, uriInfo, httpHeaders, idSession, esito);
 	}
 }

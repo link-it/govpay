@@ -13,6 +13,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.FlussiRendicontazioneController;
@@ -24,7 +26,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
 
 	private FlussiRendicontazioneController controller = null;
 
-	public FlussiRendicontazione() {
+	public FlussiRendicontazione() throws ServiceException {
 		super("flussiRendicontazione");
 		this.controller = new FlussiRendicontazioneController(this.nomeServizio,this.log);
 	}

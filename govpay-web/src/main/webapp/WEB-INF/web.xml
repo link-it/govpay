@@ -47,38 +47,38 @@
 		<url-pattern>/PagamentiTelematiciGP/soap/v3/Portali</url-pattern>
 	</servlet-mapping>
 	
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Protetto</web-resource-name>
-			<url-pattern>/PagamentiTelematiciCCPservice</url-pattern>
-			<url-pattern>/PagamentiTelematiciRTservice</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/soap/*</url-pattern>
-			<url-pattern>/rs/caricatore/*</url-pattern>
-			<url-pattern>/rs/v1/*</url-pattern>
-			<!-- TODO chiarire se e' il client che deve mandare le credenziali nella preflight request delle chiamate -->
-			<http-method-omission>OPTIONS</http-method-omission>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>*</role-name>
-		</auth-constraint>
-	</security-constraint>
+<!-- 	<security-constraint> -->
+<!-- 		<web-resource-collection> -->
+<!-- 			<web-resource-name>Protetto</web-resource-name> -->
+<!-- 			<url-pattern>/PagamentiTelematiciCCPservice</url-pattern> -->
+<!-- 			<url-pattern>/PagamentiTelematiciRTservice</url-pattern> -->
+<!-- 			<url-pattern>/PagamentiTelematiciGP/soap/*</url-pattern> -->
+<!-- 			<url-pattern>/rs/caricatore/*</url-pattern> -->
+<!-- 			<url-pattern>/rs/v1/*</url-pattern> -->
+			<!-- TODO chiarire se e' il client che deve mandare le credenziali nella preflight request delle chiamate --> 
+<!-- 			<http-method-omission>OPTIONS</http-method-omission> -->
+<!-- 		</web-resource-collection> -->
+<!-- 		<auth-constraint> -->
+<!-- 			<role-name>*</role-name> -->
+<!-- 		</auth-constraint> -->
+<!-- 	</security-constraint> -->
 
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Libero</web-resource-name>
-			<url-pattern>/PagamentiTelematiciCCPservice?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciRTservice?wsdl</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/soap/*?wsdl</url-pattern>
-			<url-pattern>/rs/check/*</url-pattern>
-		</web-resource-collection>
-	</security-constraint>
+<!-- 	<security-constraint> -->
+<!-- 		<web-resource-collection> -->
+<!-- 			<web-resource-name>Libero</web-resource-name> -->
+<!-- 			<url-pattern>/PagamentiTelematiciCCPservice?wsdl</url-pattern> -->
+<!-- 			<url-pattern>/PagamentiTelematiciRTservice?wsdl</url-pattern> -->
+<!-- 			<url-pattern>/PagamentiTelematiciGP/soap/*?wsdl</url-pattern> -->
+<!-- 			<url-pattern>/rs/check/*</url-pattern> -->
+<!-- 		</web-resource-collection> -->
+<!-- 	</security-constraint> -->
 
-	<security-role>
-		<role-name>*</role-name>
-	</security-role>
+<!-- 	<security-role> -->
+<!-- 		<role-name>*</role-name> -->
+<!-- 	</security-role> -->
 
-	<login-config>
-		<auth-method>CLIENT-CERT</auth-method>
-	</login-config>
+<!-- 	<login-config> -->
+<!-- 		<auth-method>CLIENT-CERT</auth-method> -->
+<!-- 	</login-config> -->
 
 </web-app>

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.xerces.impl.dv.util.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -232,7 +232,7 @@ public class Gp21Utils {
 
 		if(pagamento.getAllegato() != null) {
 			it.govpay.core.rs.v1.beans.base.Allegato allegato = new it.govpay.core.rs.v1.beans.base.Allegato();
-			allegato.setTesto(Base64.encode(pagamento.getAllegato()));
+			allegato.setTesto(Base64.encodeBase64String(pagamento.getAllegato()));
 			allegato.setTipo(TipoEnum.valueOf(pagamento.getTipoAllegato().toString()));
 			riscossione.setAllegato(allegato);
 		}

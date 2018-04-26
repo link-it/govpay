@@ -13,6 +13,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.base.EntrateController;
@@ -25,7 +27,7 @@ public class Entrate extends BaseRsServiceV1{
 
 	private EntrateController controller = null;
 
-	public Entrate() {
+	public Entrate() throws ServiceException {
 		super("entrate");
 		this.controller = new EntrateController(this.nomeServizio,this.log);
 	}
