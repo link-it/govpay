@@ -41,6 +41,7 @@ public class DataTypeAdapter {
 		format.setDecimalFormatSymbols(custom);
 		format.setGroupingUsed(false);
 		format.setMaximumFractionDigits(2);
+		format.setMinimumFractionDigits(2);
 		return format.format(value);
 	}
 

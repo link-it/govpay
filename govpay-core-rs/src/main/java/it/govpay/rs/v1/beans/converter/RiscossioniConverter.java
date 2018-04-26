@@ -2,7 +2,7 @@ package it.govpay.rs.v1.beans.converter;
 
 import java.math.BigDecimal;
 
-import org.apache.xerces.impl.dv.util.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Pagamento;
@@ -50,7 +50,7 @@ public class RiscossioniConverter {
 			
 			rsModel.setCommissioni(input.getCommissioniPsp());
 			Allegato allegato = new Allegato();
-			allegato.setTesto(Base64.encode(input.getAllegato()));
+			allegato.setTesto(Base64.encodeBase64String(input.getAllegato()));
 			if(input.getTipoAllegato() != null)
 				allegato.setTipo(TipoEnum.fromValue(input.getTipoAllegato().toString()));
 			rsModel.setAllegato(allegato);
