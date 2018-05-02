@@ -1,7 +1,6 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;

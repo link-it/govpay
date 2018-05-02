@@ -14,6 +14,7 @@ public class LeggiPagamentoPortaleDTO extends BasicCreateRequestDTO {
 	
 	private Long id;
 	private String idSessione;
+	private boolean risolviLink = false;
 	
 	public Long getId() {
 		return id;
@@ -26,5 +27,11 @@ public class LeggiPagamentoPortaleDTO extends BasicCreateRequestDTO {
 	}
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
+	}
+	public boolean isRisolviLink() {
+		return risolviLink;
+	}
+	public void setRisolviLink(boolean risolviLink) {
+		this.risolviLink = risolviLink;
 	}
 }

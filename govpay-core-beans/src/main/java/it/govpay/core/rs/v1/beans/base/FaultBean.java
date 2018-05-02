@@ -23,7 +23,10 @@ public class FaultBean extends it.govpay.core.rs.v1.beans.JSONSerializable {
     AUTORIZZAZIONE("AUTORIZZAZIONE"),
     
             
-    RICHIESTA("RICHIESTA"),
+    SINTASSI("SINTASSI"),
+    
+    
+    SEMANTICA("SEMANTICA"),
     
             
     OPERAZIONE("OPERAZIONE"),

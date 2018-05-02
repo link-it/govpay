@@ -22,6 +22,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	private List<FilterSortWrapper> fieldsSort;
 	private Map<String, IField> fieldMap;
 	private int pagina;
+	private FilterSortWrapper defaultSort = null;
 
 	public BasicFindRequestDTO(IAutorizzato user) {
 		super(user);
@@ -72,13 +73,20 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		this.simpleSearch = simpleSearch;
 	}
 	
-	
+	public FilterSortWrapper getDefaultSort() {
+		return defaultSort;
+	}
+
+	public void setDefaultSort(IField field, SortOrder sortOrder) {
+		this.defaultSort = new FilterSortWrapper(field, sortOrder);
+	}
+
 	protected void addSort(IField field, SortOrder sortOrder) {
 		this.fieldsSort.add(new FilterSortWrapper(field, sortOrder));
 	}
 	
 	public List<FilterSortWrapper> getFieldSortList(){
-		return fieldsSort;
+		return (fieldsSort.size() == 0 && defaultSort != null) ? Arrays.asList(defaultSort) : fieldsSort;
 	}
 
 	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {

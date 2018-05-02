@@ -30,6 +30,7 @@ import it.govpay.core.dao.pagamenti.utils.JsonUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException.FaultNodo;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
@@ -37,7 +38,6 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class WebControllerDAO extends BaseDAO{
 
@@ -115,7 +115,7 @@ public class WebControllerDAO extends BaseDAO{
 							try {
 								applicazioneAutenticata = AnagraficaManager.getApplicazione(bd, pagamentoPortale.getCodApplicazione());
 							} catch (NotFoundException e1) {
-								throw new GovPayException("Portale ["+pagamentoPortale.getCodApplicazione()+"] non esistente", EsitoOperazione.APP_000, pagamentoPortale.getCodApplicazione());
+								throw new GovPayException("Applicazione ["+pagamentoPortale.getCodApplicazione()+"] non esistente", EsitoOperazione.APP_000, pagamentoPortale.getCodApplicazione());
 							}
 
 							ctx.log("ws.ricevutaRichiesta");

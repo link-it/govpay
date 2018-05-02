@@ -26,6 +26,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.business.model.SceltaWISP;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException.FaultNodo;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
@@ -35,7 +36,6 @@ import it.govpay.model.Intermediario;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Stazione;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.Property;

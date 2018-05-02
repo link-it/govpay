@@ -46,6 +46,7 @@ import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.AvviaTransazioneDTO;
 import it.govpay.core.business.model.AvviaTransazioneDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.Gp21Utils;
 import it.govpay.core.utils.Gp25Utils;
@@ -54,7 +55,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.model.Iuv;
-import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;
 import it.govpay.servizi.v2_3.commons.Mittente;
@@ -393,7 +393,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			Versamento versamento = versamentoBusiness.chiediVersamento(applicazioneAutenticata, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte(), bodyrichiesta.getBundleKey(), bodyrichiesta.getCodUnivocoDebitore(), bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv());
 			
 			if(bodyrichiesta.getCodUnivocoDebitore() != null && !bodyrichiesta.getCodUnivocoDebitore().equalsIgnoreCase(versamento.getAnagraficaDebitore().getCodUnivoco())) {
-				throw new GovPayException(EsitoOperazione.PRT_005);
+				throw new GovPayException(EsitoOperazione.APP_005);
 			}
 			
 			response.setCodApplicazione(versamento.getApplicazione(bd).getCodApplicazione());

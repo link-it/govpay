@@ -21,13 +21,17 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
 
+import org.openspcoop2.generic_project.expression.SortOrder;
+
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.IAutorizzato;
+import it.govpay.orm.Incasso;
 
 public class ListaIncassiDTO extends BasicFindRequestDTO {
 	
 	public ListaIncassiDTO(IAutorizzato user) {
 		super(user);
+		this.setDefaultSort(Incasso.model().DATA_ORA_INCASSO,SortOrder.DESC);
 	}
 
 	private Date inizio;

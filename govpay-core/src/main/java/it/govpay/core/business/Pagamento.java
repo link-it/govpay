@@ -65,6 +65,7 @@ import it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
@@ -82,7 +83,6 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rr.StatoRr;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Pagamento extends BasicBD {
 
@@ -537,7 +537,7 @@ public class Pagamento extends BasicBD {
 		try {
 			Rr rr = rrBD.getRr(codRichiestaStorno);
 			if(rr.getRpt(this).getIdApplicazione() != null && !applicazioneAutenticata.getId().equals(rr.getRpt(this).getIdApplicazione())) {
-				throw new GovPayException(EsitoOperazione.PRT_004); // TODO sostituire con APP
+				throw new GovPayException(EsitoOperazione.APP_004); 
 			}
 			return rr;
 		} catch (NotFoundException e) {

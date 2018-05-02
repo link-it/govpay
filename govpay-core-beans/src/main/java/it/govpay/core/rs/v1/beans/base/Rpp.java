@@ -37,7 +37,7 @@ public class Rpp extends JSONSerializable {
   private String ccp = null;
   
   @JsonProperty("pendenza")
-  private String pendenza = null;
+  private Object pendenza = null;
   
   @JsonProperty("canale")
   private String canale = null;
@@ -117,16 +117,16 @@ public class Rpp extends JSONSerializable {
   /**
    * Url al dettaglio della pendenza
    **/
-  public Rpp pendenza(String pendenza) {
+  public Rpp pendenza(Object pendenza) {
     this.pendenza = pendenza;
     return this;
   }
 
   @JsonProperty("pendenza")
-  public String getPendenza() {
+  public Object getPendenza() {
     return pendenza;
   }
-  public void setPendenza(String pendenza) {
+  public void setPendenza(Object pendenza) {
     this.pendenza = pendenza;
   }
 

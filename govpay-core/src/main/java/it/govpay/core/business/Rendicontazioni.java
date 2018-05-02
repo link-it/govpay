@@ -71,6 +71,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
@@ -84,7 +85,6 @@ import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 
 public class Rendicontazioni extends BasicBD {

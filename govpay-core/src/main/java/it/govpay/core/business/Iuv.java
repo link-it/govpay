@@ -40,11 +40,11 @@ import it.govpay.core.business.model.GeneraIuvDTO;
 import it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto;
 import it.govpay.core.business.model.GeneraIuvDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv.TipoIUV;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Iuv extends BasicBD {
 	

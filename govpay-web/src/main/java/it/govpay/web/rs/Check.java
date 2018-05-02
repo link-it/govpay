@@ -19,33 +19,10 @@
  */
 package it.govpay.web.rs;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.StazioniBD;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Stazione;
-import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.bd.pagamento.TracciatiBD;
-import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.bd.wrapper.StatoNdP;
-import it.govpay.core.business.Operazioni;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Tracciato.StatoTracciatoType;
-import it.govpay.web.rs.sonde.CheckSonda;
-import it.govpay.web.rs.sonde.DettaglioSonda;
-import it.govpay.web.rs.sonde.DettaglioSonda.TipoSonda;
-import it.govpay.web.rs.sonde.ElencoSonde;
-import it.govpay.web.rs.sonde.SommarioSonda;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 
 import javax.ws.rs.GET;
@@ -57,8 +34,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.MDC;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -73,6 +48,26 @@ import org.openspcoop2.utils.sonde.Sonda.StatoSonda;
 import org.openspcoop2.utils.sonde.SondaException;
 import org.openspcoop2.utils.sonde.SondaFactory;
 import org.openspcoop2.utils.sonde.impl.SondaCoda;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.bd.wrapper.StatoNdP;
+import it.govpay.core.business.Operazioni;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.web.rs.sonde.CheckSonda;
+import it.govpay.web.rs.sonde.DettaglioSonda;
+import it.govpay.web.rs.sonde.DettaglioSonda.TipoSonda;
+import it.govpay.web.rs.sonde.ElencoSonde;
+import it.govpay.web.rs.sonde.SommarioSonda;
 
 @Path("/check")
 public class Check {
@@ -125,18 +120,7 @@ public class Check {
 			if(Operazioni.check_ntfy.equals(checkSonda.getName())) {
 				NotificheBD notBD = new NotificheBD(bd);
 				num = notBD.countNotificheInAttesa();
-			} else if(Operazioni.check_tracciati.equals(checkSonda.getName())) {
-				TracciatiBD tracciatiBD = new TracciatiBD(bd);
-				TracciatoFilter filter = tracciatiBD.newFilter();
-				
-				filter.addStatoTracciato(StatoTracciatoType.IN_CARICAMENTO);
-				filter.addStatoTracciato(StatoTracciatoType.NUOVO);
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.HOUR, -6); //TODO parametrizzare
-				
-				filter.setDataCaricamentoMax(cal.getTime());
-				num = tracciatiBD.count(filter);
-			}
+			} 
 //			Properties properties = new Properties();
 //			((SondaCoda)sonda).aggiornaStatoSonda(num, properties, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());

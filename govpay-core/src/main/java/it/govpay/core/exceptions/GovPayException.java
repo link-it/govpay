@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.govpay.core.exceptions.NdpException.FaultNodo;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.servizi.commons.EsitoOperazione;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.servizi.v2_3.commons.GpResponse;
 import it.govpay.servizi.v2_3.commons.Mittente;
 
@@ -199,6 +199,13 @@ public class GovPayException extends Exception {
 		case WISP_002: return "Canale (" + params[1] + ") del Psp (" + params[0] + ") con tipo versamento (" + params[2] + ") scelto non presente in anagrafica Psp";
 		case WISP_003: return "Il debitore non ha operato alcuna scelta sul WISP";
 		case WISP_004: return "Il debitore ha scelto di pagare dopo tramite avviso di pagamento.";
+		
+		// aggiunti nella versione 3.0.x
+		case APP_003: return "Applicazione (" + params[0] + ") non autorizzata a pagare il versamento (IdA2A:" + params[1] +", Id:"+ params[2] +")";
+		case APP_004: return "Applicazione non autorizzata ad operare sulla transazione indicata";
+		case APP_005: return "Applicazione non autorizzata per l'operazione richiesta";
+		case VER_024: return "Il versamento (IdA2A:" + params[0] +", Id:"+ params[1] +") ha un numero avviso ("+ params[2] +") diverso dall'originale ("+ params[3] +").";
+		case VER_025: return "Il versamento (IdA2A:" + params[0] + ", Id:" + params[1] + ") ha un numero avviso ("+params[4]+") gia' utilizzato dal versamento (IdA2A:" + params[2] + ", Id:" + params[3] + ").";
 		}
 		
 		return "";
@@ -293,6 +300,13 @@ public class GovPayException extends Exception {
 		case WISP_002: return "Errore WISP";
 		case WISP_003: return "Errore WISP";
 		case WISP_004: return "Errore WISP";
+		
+		// aggiunti nella versione 3.0.x
+		case APP_003: return "Richiesta non valida";
+		case APP_004: return "Richiesta non valida";
+		case APP_005: return "Richiesta non valida";
+		case VER_024: return "Richiesta non valida";
+		case VER_025: return "Richiesta non valida";
 		}
 		
 		return "";

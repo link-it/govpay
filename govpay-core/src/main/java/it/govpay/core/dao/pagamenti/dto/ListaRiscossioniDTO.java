@@ -2,6 +2,8 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
 
+import org.openspcoop2.generic_project.expression.SortOrder;
+
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.IAutorizzato;
@@ -14,6 +16,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 		super(user);
 		this.addSortField("data", Pagamento.model().DATA_PAGAMENTO);
 		this.addSortField("stato", Pagamento.model().STATO);
+		this.setDefaultSort(Pagamento.model().DATA_PAGAMENTO,SortOrder.DESC);
 	}
 	
 	private Date dataRiscossioneDa;

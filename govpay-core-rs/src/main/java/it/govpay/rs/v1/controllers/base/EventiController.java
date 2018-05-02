@@ -12,13 +12,10 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaEventi;
-import it.govpay.core.rs.v1.beans.base.FaultBean;
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;

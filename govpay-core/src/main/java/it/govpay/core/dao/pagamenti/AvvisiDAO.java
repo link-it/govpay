@@ -27,8 +27,11 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.exception.AvvisoNonTrovatoException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.avvisi.AvvisoPagamento;
 
 public class AvvisiDAO extends BaseDAO{
@@ -103,16 +106,13 @@ public class AvvisiDAO extends BaseDAO{
 //	}
 
 
-	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws NotAuthorizedException, AvvisoNonTrovatoException, ServiceException {
+	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws NotAuthorizedException, AvvisoNonTrovatoException, ServiceException, NotAuthenticatedException {
 		BasicBD bd = null;
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-//			Set<String> domini = AclEngine.getAvvisiAutorizzati(getAvvisoDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA);
-//			
-//			if(domini != null && !domini.contains(getAvvisoDTO.getCodAvviso())) {
-//				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato in lettura ai servizi " + Servizio.ANAGRAFICA_PAGOPA + " per il dominio " + getAvvisoDTO.getCodAvviso());
-//			}
+			// controllo che l'utenza sia autorizzata per il dominio scelto
+			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, bd);
 
 			AvvisiPagamentoBD avvisiPagamentoBD = new AvvisiPagamentoBD(bd);
 			

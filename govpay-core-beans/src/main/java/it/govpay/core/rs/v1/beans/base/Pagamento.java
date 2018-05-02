@@ -121,10 +121,10 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String canale = null;
   
   @JsonProperty("pendenze")
-  private String pendenze = null;
+  private Object pendenze = null;
   
   @JsonProperty("rpp")
-  private String rpp = null;
+  private Object rpp = null;
   
   /**
    * Identificativo del pagamento assegnato da GovPay
@@ -352,32 +352,32 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Url per le pendenze oggetto del Pagamento
    **/
-  public Pagamento pendenze(String pendenze) {
+  public Pagamento pendenze(Object pendenze) {
     this.pendenze = pendenze;
     return this;
   }
 
   @JsonProperty("pendenze")
-  public String getPendenze() {
+  public Object getPendenze() {
     return pendenze;
   }
-  public void setPendenze(String pendenze) {
+  public void setPendenze(Object pendenze) {
     this.pendenze = pendenze;
   }
 
   /**
    * Url per le richieste di pagamento oggetto del Pagamento
    **/
-  public Pagamento rpp(String rpp) {
+  public Pagamento rpp(Object rpp) {
     this.rpp = rpp;
     return this;
   }
 
   @JsonProperty("rpp")
-  public String getRpp() {
+  public Object getRpp() {
     return rpp;
   }
-  public void setRpp(String rpp) {
+  public void setRpp(Object rpp) {
     this.rpp = rpp;
   }
 

@@ -46,8 +46,12 @@ public class PendenzeController extends it.govpay.rs.BaseController {
      public PendenzeController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
+     
+     public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
+    	 return pendenzeIdA2AIdPendenzaGET(user, uriInfo, httpHeaders, idA2A, idPendenza, true);
+     }
 
-    public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
+    public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean linkListe) {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -68,7 +72,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
+			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti(),true);
 			return Response.status(Status.OK).entity(pendenza.toJSON(null)).build();
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);
@@ -76,8 +80,12 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
+    
     public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
+    	   return pendenzeGET(user, uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, true);
+    }
+
+    public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, boolean linkListe) {
     	GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
 		String methodName = "pendenzeGET";
@@ -122,7 +130,8 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			List<it.govpay.core.rs.v1.beans.Pendenza> results = new ArrayList<it.govpay.core.rs.v1.beans.Pendenza>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				results.add(PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti()));
+				Pendenza rsModel = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti(),true);
+				results.add(rsModel);
 			}
 			
 			ListaPendenze response = new ListaPendenze(results, this.getServicePath(uriInfo),

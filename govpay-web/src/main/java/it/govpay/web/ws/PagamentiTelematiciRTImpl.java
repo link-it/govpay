@@ -24,7 +24,9 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
@@ -47,10 +49,13 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
+import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -121,8 +126,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			String principal = getPrincipal();
-			if(GovpayConfig.getInstance().isPddAuthEnable() && principal == null) {
+			Utenza user = getUtenzaAutenticata();
+			if(GovpayConfig.getInstance().isPddAuthEnable() && user.getPrincipal() == null) {
 				ctx.log("er.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -132,9 +137,20 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				intermediario = AnagraficaManager.getIntermediario(bd, identificativoIntermediarioPA);
 
 				// Controllo autorizzazione
-				if(GovpayConfig.getInstance().isPddAuthEnable() && !principal.equals(intermediario.getConnettorePdd().getPrincipal())){
-					ctx.log("er.erroreAutorizzazione", principal);
-					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + identificativoIntermediarioPA);
+				if(GovpayConfig.getInstance().isPddAuthEnable()){
+					boolean authOk = false;
+					
+					if(user.isCheckSubject()) {
+						// check tra subject
+						authOk = CredentialUtils.checkSubject(intermediario.getConnettorePdd().getPrincipal(), user.getPrincipal());
+					} else {
+						authOk = user.getPrincipal().equals(intermediario.getConnettorePdd().getPrincipal());
+					}
+					
+					if(!authOk) {
+						ctx.log("er.erroreAutorizzazione", user.getPrincipal());
+						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + identificativoIntermediarioPA);
+					}
 				}
 
 				evento.setErogatore(intermediario.getDenominazione());
@@ -245,8 +261,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			String principal = getPrincipal();
-			if(GovpayConfig.getInstance().isPddAuthEnable() && principal == null) {
+			Utenza user =  getUtenzaAutenticata();
+			if(GovpayConfig.getInstance().isPddAuthEnable() && user.getPrincipal() == null) {
 				ctx.log("rt.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -256,9 +272,20 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				intermediario = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
 
 				// Controllo autorizzazione
-				if(GovpayConfig.getInstance().isPddAuthEnable() && !principal.equals(intermediario.getConnettorePdd().getPrincipal())){
-					ctx.log("rt.erroreAutorizzazione", principal);
-					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA() + ". Atteso [" + intermediario.getConnettorePdd().getPrincipal() + "]");
+				if(GovpayConfig.getInstance().isPddAuthEnable()){
+					boolean authOk = false;
+					
+					if(user.isCheckSubject()) {
+						// check tra subject
+						authOk = CredentialUtils.checkSubject(intermediario.getConnettorePdd().getPrincipal(), user.getPrincipal());
+					} else {
+						authOk = user.getPrincipal().equals(intermediario.getConnettorePdd().getPrincipal());
+					}
+					
+					if(!authOk) {
+					ctx.log("rt.erroreAutorizzazione", user.getPrincipal());
+					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + user.getPrincipal() + ") non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA() + ". Atteso [" + intermediario.getConnettorePdd().getPrincipal() + "]");
+					}
 				}
 
 				evento.setErogatore(intermediario.getDenominazione());
@@ -373,11 +400,14 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		return r;
 	}
 
-	private String getPrincipal() throws GovPayException {
-		if(wsCtxt.getUserPrincipal() == null) {
-			return null;
+	private Utenza getUtenzaAutenticata() throws GovPayException {
+		Utenza user = null;
+		try {
+			HttpServletRequest request = (HttpServletRequest) wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
+			user = CredentialUtils.getUser(request, log);
+		} catch (Exception e) {
+			throw new GovPayException(EsitoOperazione.AUT_001, wsCtxt.getUserPrincipal().getName());
 		}
-
-		return wsCtxt.getUserPrincipal().getName();
+		return user;
 	}
 }

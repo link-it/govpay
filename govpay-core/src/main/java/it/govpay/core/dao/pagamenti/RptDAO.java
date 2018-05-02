@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
@@ -45,12 +46,19 @@ public class RptDAO extends BaseDAO{
 			RptBD rptBD = new RptBD(bd);
 			Rpt	rpt = rptBD.getRpt(leggiRptDTO.getIdDominio(), leggiRptDTO.getIuv(), leggiRptDTO.getCcp());
 
-			if(rpt.getXmlRt() == null)
-				throw new RicevutaNonTrovataException(null);
-
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento(bd));
 			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
+			response.setDominio(rpt.getDominio(bd));
+			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
+			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento(bd).getSingoliVersamenti(bd);
+			response.setLstSingoliVersamenti(singoliVersamenti);
+			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+				singoloVersamento.getCodContabilita(bd);
+				singoloVersamento.getIbanAccredito(bd);
+				singoloVersamento.getTipoContabilita(bd);
+				singoloVersamento.getTributo(bd);
+			}
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {
@@ -89,62 +97,66 @@ public class RptDAO extends BaseDAO{
 	}
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
-		List<String> listaDominiFiltro = null;
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			this.autorizzaRichiesta(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
-
-			// Autorizzazione sui domini
-			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
-			if(listaDominiFiltro == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+listaRptDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
-			}
-
-			RptBD rptBD = new RptBD(bd);
-			RptFilter filter = rptBD.newFilter();
-
-			filter.setOffset(listaRptDTO.getOffset());
-			filter.setLimit(listaRptDTO.getLimit());
-			filter.setDataInizio(listaRptDTO.getDataDa());
-			filter.setDataFine(listaRptDTO.getDataA());
-			filter.setStato(listaRptDTO.getStato());
-			filter.setCcp(listaRptDTO.getCcp());
-			filter.setIuv(listaRptDTO.getIuv());
-			if(listaRptDTO.getIdDominio() != null) {
-				listaDominiFiltro.add(listaRptDTO.getIdDominio());
-			}
-
-			if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
-				filter.setIdDomini(listaDominiFiltro);
-			}
-
-			filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
-			filter.setIdPendenza(listaRptDTO.getIdPendenza());
-			filter.setCodApplicazione(listaRptDTO.getIdA2A());
-			filter.setFilterSortList(listaRptDTO.getFieldSortList());
-
-			long count = rptBD.count(filter);
-
-			List<LeggiRptDTOResponse> resList = new ArrayList<LeggiRptDTOResponse>();
-			if(count > 0) {
-				List<Rpt> findAll = rptBD.findAll(filter);
-
-				for (Rpt rpt : findAll) {
-					LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
-					elem.setRpt(rpt);
-					elem.setVersamento(rpt.getVersamento(bd));
-					elem.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-					resList.add(elem);
-				}
-			} 
-
-			return new ListaRptDTOResponse(count, resList);
+			return listaRpt(listaRptDTO, bd);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
 		}
+	}
+
+	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		List<String> listaDominiFiltro;
+		this.autorizzaRichiesta(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+
+		// Autorizzazione sui domini
+		listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		if(listaDominiFiltro == null) {
+			throw new NotAuthorizedException("L'utenza autenticata ["+listaRptDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+		}
+
+		RptBD rptBD = new RptBD(bd);
+		RptFilter filter = rptBD.newFilter();
+
+		filter.setOffset(listaRptDTO.getOffset());
+		filter.setLimit(listaRptDTO.getLimit());
+		filter.setDataInizio(listaRptDTO.getDataDa());
+		filter.setDataFine(listaRptDTO.getDataA());
+		filter.setStato(listaRptDTO.getStato());
+		filter.setCcp(listaRptDTO.getCcp());
+		filter.setIuv(listaRptDTO.getIuv());
+		if(listaRptDTO.getIdDominio() != null) {
+			listaDominiFiltro.add(listaRptDTO.getIdDominio());
+		}
+
+		if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
+			filter.setIdDomini(listaDominiFiltro);
+		}
+
+		filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
+		filter.setIdPendenza(listaRptDTO.getIdPendenza());
+		filter.setCodApplicazione(listaRptDTO.getIdA2A());
+		filter.setFilterSortList(listaRptDTO.getFieldSortList());
+
+		long count = rptBD.count(filter);
+
+		List<LeggiRptDTOResponse> resList = new ArrayList<LeggiRptDTOResponse>();
+		if(count > 0) {
+			List<Rpt> findAll = rptBD.findAll(filter);
+
+			for (Rpt rpt : findAll) {
+				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
+				elem.setRpt(rpt);
+				elem.setVersamento(rpt.getVersamento(bd));
+				elem.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
+				resList.add(elem);
+			}
+		} 
+
+		return new ListaRptDTOResponse(count, resList);
 	}
 }

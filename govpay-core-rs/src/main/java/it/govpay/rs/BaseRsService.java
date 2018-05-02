@@ -107,14 +107,6 @@ public abstract class BaseRsService {
 		HttpServletCredential credential = new HttpServletCredential(this.request, this.log);
 		Utenza user = CredentialUtils.getUser(credential);
 		
-		log.debug("Ricevute Credenziali ["+(user != null ? user.getPrincipal() : null)+"]");
-		
-		try {
-			log.debug("Subject Normalizzato: " + Utilities.formatSubject(user.getPrincipal()));
-		}catch(Exception e) {
-			log.error("Errore normalizzazione: "+ e.getMessage(),e); 
-		}
-		
 		user.setRuoli(this.getListaRuoli(credential));
 		List<Acl> aclDaRuoliContainer = new ArrayList<Acl>();
 		for (String ruolo : user.getRuoli()) {

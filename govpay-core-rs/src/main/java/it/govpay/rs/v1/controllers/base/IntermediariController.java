@@ -26,7 +26,6 @@ import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
-import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.rs.v1.beans.Intermediario;
 import it.govpay.core.rs.v1.beans.ListaIntermediari;
 import it.govpay.core.rs.v1.beans.ListaStazioni;

@@ -31,7 +31,10 @@ import org.slf4j.MDC;
 import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.RequestValidationException;
+import it.govpay.core.exceptions.ResponseValidationException;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
@@ -96,12 +99,12 @@ public abstract class BaseController {
 		GpThreadLocal.set(ctx);
 	}
 	
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o) throws IOException, NotAuthorizedException {
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o) throws IOException, ResponseValidationException {
 		this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, o, null);
 	}
 	
 
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException, NotAuthorizedException {
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException, ResponseValidationException {
 		if(o != null && o instanceof JSONSerializable) {
 			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((JSONSerializable) o).toJSON(null).getBytes(), responseCode);
 		}
@@ -112,7 +115,7 @@ public abstract class BaseController {
 		}
 	}
 	
-	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws NotAuthorizedException {
+	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws RequestValidationException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
@@ -120,7 +123,7 @@ public abstract class BaseController {
 		}
 	}
 	
-	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) throws NotAuthorizedException{
+	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) throws RequestValidationException{
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
@@ -128,7 +131,7 @@ public abstract class BaseController {
 		}
 	}
 
-	private void validateRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders, byte[] baos) throws NotAuthorizedException {
+	private void validateRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders, byte[] baos) throws RequestValidationException {
 		try {
 			TextHttpRequestEntity httpEntity = new TextHttpRequestEntity();
 			httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
@@ -164,11 +167,11 @@ public abstract class BaseController {
 			BaseRsServiceV1.validator.validate(httpEntity);
 		} catch (ProcessingException | ValidatorException | URISyntaxException e) {
 			this.log.error("Errore di validazione di richiesta: " + e.getMessage(), e);
-			throw new NotAuthorizedException(e.getMessage());
+			throw new RequestValidationException(e.getMessage());
 		}
 	}
 
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws NotAuthorizedException {
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws ResponseValidationException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
@@ -185,7 +188,7 @@ public abstract class BaseController {
 		}
 	}
 	
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes) throws NotAuthorizedException {
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes) throws ResponseValidationException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
@@ -202,7 +205,7 @@ public abstract class BaseController {
 		}
 	}
 	
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) throws NotAuthorizedException {
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) throws ResponseValidationException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
@@ -270,7 +273,12 @@ public abstract class BaseController {
 	}
 
 	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e) {
-		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
+		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
+			log.warn("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
+		} else {
+			log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
+		}
+		
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(e.getCategoria());
 		respKo.setCodice(e.getCode());

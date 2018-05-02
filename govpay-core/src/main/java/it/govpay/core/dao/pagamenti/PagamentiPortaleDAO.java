@@ -30,6 +30,10 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
@@ -38,6 +42,7 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -50,7 +55,6 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.orm.IdVersamento;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class PagamentiPortaleDAO extends BaseDAO {
 
@@ -360,6 +364,20 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getIdSessione());
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
+			
+			if(leggiPagamentoPortaleDTO.isRisolviLink()) {
+				PendenzeDAO pendenzeDao = new PendenzeDAO();
+				ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(leggiPagamentoPortaleDTO.getUser());
+				listaPendenzaDTO.setIdPagamento(leggiPagamentoPortaleDTO.getIdSessione());
+				ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
+				leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
+				
+				RptDAO rptDao = new RptDAO(); 
+				ListaRptDTO listaRptDTO = new ListaRptDTO(leggiPagamentoPortaleDTO.getUser());
+				listaRptDTO.setIdPagamento(leggiPagamentoPortaleDTO.getIdSessione());
+				ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
+				leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
+			}
 
 			return leggiPagamentoPortaleDTOResponse;
 		}catch(NotFoundException e) {

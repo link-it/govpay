@@ -29,7 +29,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 
 import java.io.File;
@@ -156,7 +155,6 @@ public class StartupEjb {
 		try {
 			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.core");
 			JaxbUtils.init();
-			OperazioneFactory.init();
 			ThreadExecutorManager.setup();
 			JmxOperazioni.register();
 			AvvisoPagamentoProperties.newInstance(GovpayConfig.getInstance().getResourceDir());

@@ -46,7 +46,6 @@ import it.govpay.core.rs.v1.beans.base.Soggetto;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
-import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Dominio;
@@ -59,7 +58,7 @@ import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.Anagrafica;
-import it.govpay.servizi.commons.EsitoOperazione;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.servizi.commons.Versamento.SpezzoneCausaleStrutturata;
 
 public class VersamentoUtils {
@@ -154,65 +153,6 @@ public class VersamentoUtils {
 		
 		return model;
 	}
-
-	public static Versamento toVersamentoModel(CaricamentoRequest versamento, BasicBD bd) throws ServiceException, GovPayException {
-		Versamento model = new Versamento();
-		model.setAggiornabile(true);
-		it.govpay.model.Anagrafica anagrafica = new it.govpay.model.Anagrafica();
-		anagrafica.setCodUnivoco(versamento.getCfDebitore());
-		anagrafica.setRagioneSociale(versamento.getAnagraficaDebitore()); 
-		anagrafica.setIndirizzo(versamento.getDebitoreIndirizzo());
-		anagrafica.setCivico(versamento.getDebitoreCivico());
-		anagrafica.setProvincia(versamento.getDebitoreProvincia());
-		anagrafica.setCap(versamento.getDebitoreCap());
-		anagrafica.setLocalita(versamento.getDebitoreLocalita());
-		model.setAnagraficaDebitore(anagrafica);
-		
-		CausaleSemplice causale = model.new CausaleSemplice();
-		causale.setCausale(versamento.getCausale());
-		model.setCausaleVersamento(causale);
-		
-		model.setCodBundlekey(versamento.getBundleKey());
-		model.setCodLotto(versamento.getIdDebito()); 
-		model.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
-		model.setDataCreazione(new Date());
-		model.setDataScadenza(versamento.getScadenza());
-		model.setDataUltimoAggiornamento(new Date());
-		model.setDescrizioneStato(null);
-		model.setId(null);
-		try {
-			model.setApplicazione(versamento.getCodApplicazione(), bd);
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.APP_000, versamento.getCodApplicazione());
-		}
-		
-		Dominio dominio = null;
-		try {
-			dominio = AnagraficaManager.getDominio(bd, versamento.getCodDominio());
-			model.setIdDominio(dominio.getId()); 
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.DOM_000, versamento.getCodDominio());
-		}
-		
-		try {
-			model.setUo(dominio.getId(), Dominio.EC, bd);
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.UOP_000, Dominio.EC, versamento.getCodDominio());
-		}
-		
-		model.setImportoTotale(new BigDecimal(versamento.getImporto()));
-		model.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
-		
-		it.govpay.servizi.commons.Versamento.SingoloVersamento svModel = new it.govpay.servizi.commons.Versamento.SingoloVersamento();
-		svModel.setCodSingoloVersamentoEnte(versamento.getCodVersamentoEnte());
-		BigDecimal importoSingoloVersamentoAsBigDecimal  = new BigDecimal(versamento.getImporto());
-		svModel.setImporto(importoSingoloVersamentoAsBigDecimal);
-		svModel.setNote(versamento.getNote());
-		svModel.setCodTributo(versamento.getCodTributo());
-		model.addSingoloVersamento(toSingoloVersamentoModel(model, svModel, bd));
-		
-		return model;
-	}
 	
 	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.servizi.commons.Versamento.SingoloVersamento singoloVersamento, BasicBD bd) throws ServiceException, GovPayException {
 		SingoloVersamento model = new SingoloVersamento();
@@ -279,6 +219,13 @@ public class VersamentoUtils {
 		}
 		versamentoNuovo.setId(versamentoLetto.getId());
 		versamentoNuovo.setDataCreazione(versamentoLetto.getDataCreazione());
+		
+		// aggiornamento del numero avviso se il numero avviso non era stato salvato viene aggiornato automaticamente
+		// se il numero avviso e' diverso da quello che e' stato salvato in origine devo segnalare eccezione
+		if(versamentoLetto.getNumeroAvviso() != null && versamentoNuovo.getNumeroAvviso() !=null
+				&& !versamentoLetto.getNumeroAvviso().equals(versamentoNuovo.getNumeroAvviso())) {
+			throw new GovPayException(EsitoOperazione.VER_024, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), versamentoNuovo.getNumeroAvviso(), versamentoLetto.getNumeroAvviso());
+		}
 		
 		List<SingoloVersamento> singoliversamentiLetti = versamentoLetto.getSingoliVersamenti(bd);
 		List<SingoloVersamento> singoliVersamentiNuovi = versamentoNuovo.getSingoliVersamenti(bd);

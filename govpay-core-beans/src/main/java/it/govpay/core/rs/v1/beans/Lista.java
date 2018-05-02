@@ -90,7 +90,7 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 //		this.pagina = (long) Math.ceil((offset+1)/(double)limit);
 		this.pagina = pagina;
 		this.risultatiPerPagina = limit;
-		this.numRisultati = risultati.size();
+		this.numRisultati = count;
 		
 		
 		URIBuilder builder = new URIBuilder(requestUri);

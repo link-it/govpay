@@ -29,6 +29,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -52,7 +53,6 @@ import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Rpt extends BasicBD{
 	
@@ -88,7 +88,7 @@ public class Rpt extends BasicBD{
 					
 					if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti)) {
 						log.warn("Non autorizzato applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
-						throw new GovPayException(EsitoOperazione.PRT_003, applicazione.getCodApplicazione(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte()); // TODO sostituire PRT -> APP
+						throw new GovPayException(EsitoOperazione.APP_003, applicazione.getCodApplicazione(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 					}
 
 					log.debug("Autorizzato applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]");
@@ -428,7 +428,7 @@ public class Rpt extends BasicBD{
 		try {
 			it.govpay.bd.model.Rpt rpt = rptBD.getRpt(codDominio, iuv, ccp);
 			if(!applicazioneAutenticata.getId().equals(rpt.getIdApplicazione())) {
-				throw new GovPayException(EsitoOperazione.PRT_004); // TODO sostituire con APP
+				throw new GovPayException(EsitoOperazione.APP_004); 
 			}
 			return rpt;
 		} catch (NotFoundException e) {

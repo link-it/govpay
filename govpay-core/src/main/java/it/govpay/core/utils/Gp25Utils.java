@@ -139,7 +139,7 @@ public class Gp25Utils {
 			GpChiediListaPspResponse.Psp psp = new GpChiediListaPspResponse.Psp();
 			psp.setBollo(pspModel.isBolloGestito());
 			psp.setCodPsp(pspModel.getCodPsp());
-			psp.setLogo(PspUtils.getLogo160(pspModel.getCodPsp()));
+			psp.setLogo(PspUtils.logoPsp);
 			psp.setRagioneSociale(pspModel.getRagioneSociale());
 			psp.setStorno(pspModel.isStornoGestito());
 			psp.setUrlInfo(pspModel.getUrlInfo());

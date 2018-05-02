@@ -59,11 +59,6 @@ public class Operazioni{
 	public static final String pnd = "update-pnd";
 	public static final String ntfy = "update-ntfy";
 	public static final String check_ntfy = "check-ntfy";
-	public static final String batch_tracciati = "caricamento-tracciati";
-	public static final String check_tracciati = "check-tracciati";
-	public static final String conto = "update-conto";
-	public static final String conservazione_req = "cons-req";
-	public static final String conservazione_esito = "cons-esito";
 	public static final String batch_generazione_avvisi = "generazione-avvisi";
 
 

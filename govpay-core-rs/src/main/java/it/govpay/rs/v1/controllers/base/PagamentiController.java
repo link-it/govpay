@@ -17,18 +17,24 @@ import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
+import it.govpay.core.rs.v1.beans.Pendenza;
+import it.govpay.core.rs.v1.beans.Rpp;
 import it.govpay.core.rs.v1.beans.base.PagamentoPost;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
+import it.govpay.rs.v1.beans.converter.PendenzeConverter;
+import it.govpay.rs.v1.beans.converter.RptConverter;
 import net.sf.json.JsonConfig;
 
 
@@ -81,6 +87,10 @@ public class PagamentiController extends it.govpay.rs.BaseController {
     }
 
     public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    	return pagamentiIdGET(user, uriInfo, httpHeaders, id, false);
+    }
+    
+    public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id, boolean linkListe) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
 		ByteArrayOutputStream baos= null;
@@ -93,6 +103,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
 			leggiPagamentoPortaleDTO.setIdSessione(id);
+			leggiPagamentoPortaleDTO.setRisolviLink(!linkListe); 
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
@@ -100,6 +111,22 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
 			it.govpay.core.rs.v1.beans.PagamentoPortale response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
+			
+			if(!linkListe) {
+				List<Rpp> rpp = new ArrayList<Rpp>();
+				for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
+					rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
+				}
+				response.setRpp(rpp);
+				
+				List<it.govpay.core.rs.v1.beans.Pendenza> pendenze = new ArrayList<it.govpay.core.rs.v1.beans.Pendenza>();
+				for(LeggiPendenzaDTOResponse ricevutaDTOResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
+					Pendenza rsModel = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti(),true);
+					pendenze.add(rsModel);
+				}
+				response.setPendenze(pendenze);
+			}
+			
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

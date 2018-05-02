@@ -48,7 +48,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String idPendenza = null;
   
   @JsonProperty("dominio")
-  private String dominio = null;
+  private Object dominio = null;
   
   @JsonProperty("unitaOperativa")
   private String unitaOperativa = null;
@@ -137,18 +137,18 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Url per il dominio creditore
+   * Url o definizione del dominio creditore
    **/
-  public Pendenza dominio(String dominio) {
+  public Pendenza dominio(Object dominio) {
     this.dominio = dominio;
     return this;
   }
 
   @JsonProperty("dominio")
-  public String getDominio() {
+  public Object getDominio() {
     return dominio;
   }
-  public void setDominio(String dominio) {
+  public void setDominio(Object dominio) {
     this.dominio = dominio;
   }
 

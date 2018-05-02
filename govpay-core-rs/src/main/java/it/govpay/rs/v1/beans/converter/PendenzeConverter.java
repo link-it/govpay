@@ -19,8 +19,14 @@ import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {
+	
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
+		return toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti, false);
+	}
 
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
+				it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,boolean esplodiDominio) throws ServiceException {
 		Pendenza rsModel = new Pendenza();
 		
 		if(versamento.getCodAnnoTributario()!= null)
@@ -36,7 +42,11 @@ public class PendenzeConverter {
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
-		rsModel.setDominio(UriBuilderUtils.getDominio(dominio.getCodDominio()));
+		if(!esplodiDominio)
+			rsModel.setDominio(UriBuilderUtils.getDominio(dominio.getCodDominio()));
+		else 
+			rsModel.setDominio(DominiConverter.toRsModel(dominio));
+		
 		rsModel.setIdA2A(applicazione.getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());

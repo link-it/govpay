@@ -23,14 +23,15 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaRpp;
+import it.govpay.core.rs.v1.beans.Pendenza;
 import it.govpay.core.rs.v1.beans.Rpp;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
-import it.govpay.core.utils.RtUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.rs.BaseController;
+import it.govpay.rs.v1.beans.converter.PendenzeConverter;
 import it.govpay.rs.v1.beans.converter.RptConverter;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
@@ -222,6 +223,12 @@ public class RppController extends BaseController {
 
 
 			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione());
+			
+			Pendenza pendenza = PendenzeConverter.toRsModel(leggiRptDTOResponse.getVersamento(), leggiRptDTOResponse.getUnitaOperativa(), leggiRptDTOResponse.getApplicazione(),
+					leggiRptDTOResponse.getDominio(), leggiRptDTOResponse.getLstSingoliVersamenti(),true);
+			
+			response.setPendenza(pendenza);
+			
 			return Response.status(Status.OK).entity(response.toJSON(null)).build();
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e);

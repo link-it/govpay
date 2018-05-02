@@ -238,6 +238,9 @@ public class VersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.codPagamentoPortale != null) {
+				newExpression.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {

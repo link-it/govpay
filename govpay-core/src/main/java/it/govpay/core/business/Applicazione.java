@@ -13,11 +13,10 @@ import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Applicazione extends BasicBD{
 
@@ -35,7 +34,7 @@ public class Applicazione extends BasicBD{
 		try {
 			applicazione = CredentialUtils.getApplicazione(this, user);  
 		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.AUT_002, user.getPrincipal());
+			throw new GovPayException(EsitoOperazione.AUT_001, user.getPrincipal());
 		}
 		
 		if(applicazione != null) {

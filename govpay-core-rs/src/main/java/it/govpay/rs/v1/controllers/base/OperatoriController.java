@@ -21,7 +21,6 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
-import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.rs.v1.beans.ListaOperatori;
 import it.govpay.core.rs.v1.beans.Operatore;
 import it.govpay.core.rs.v1.beans.base.OperatorePost;

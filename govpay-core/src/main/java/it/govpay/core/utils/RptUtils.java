@@ -56,6 +56,7 @@ import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -68,8 +69,6 @@ import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt.StatoRpt;
-
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class RptUtils {
 

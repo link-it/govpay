@@ -20,7 +20,6 @@
 package it.govpay.core.business;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +31,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -43,7 +43,6 @@ import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.Anagrafica;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class VersamentoUtils {
 	
@@ -171,58 +170,6 @@ public class VersamentoUtils {
 		}
 		
 		return model;
-	}
-
-	public static void validazioneSemanticaAggiornamento(Versamento versamentoLetto, Versamento versamentoNuovo, BasicBD bd) throws GovPayException, ServiceException {
-		
-		if(!versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) && !versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
-			throw new GovPayException(EsitoOperazione.VER_003, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getStatoVersamento().toString());
-		}
-		if(versamentoLetto.getIdUo() != versamentoNuovo.getIdUo()) {
-			throw new GovPayException(EsitoOperazione.VER_004, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getUo(bd).getCodUo(), versamentoNuovo.getUo(bd).getCodUo());
-		}
-		versamentoNuovo.setId(versamentoLetto.getId());
-		versamentoNuovo.setDataCreazione(versamentoLetto.getDataCreazione());
-		
-		List<SingoloVersamento> singoliversamentiLetti = versamentoLetto.getSingoliVersamenti(bd);
-		List<SingoloVersamento> singoliVersamentiNuovi = versamentoNuovo.getSingoliVersamenti(bd);
-		
-		if(singoliversamentiLetti.size() != singoliVersamentiNuovi.size()) {
-			throw new GovPayException(EsitoOperazione.VER_005, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), Integer.toString(singoliversamentiLetti.size()), Integer.toString(singoliVersamentiNuovi.size()));
-		}
-		Collections.sort(singoliversamentiLetti);
-		Collections.sort(singoliVersamentiNuovi);
-		
-		for(int i=0; i<singoliversamentiLetti.size(); i++) {
-			SingoloVersamento letto = singoliversamentiLetti.get(i);
-			SingoloVersamento nuovo = singoliVersamentiNuovi.get(i);
-			
-			if(!letto.getCodSingoloVersamentoEnte().equals(nuovo.getCodSingoloVersamentoEnte())) {
-				throw new GovPayException(EsitoOperazione.VER_006, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
-			}
-			
-			if(letto.getIdTributo() != null || nuovo.getIdTributo() != null) { // se sono entrambi null OK
-				if(letto.getIdTributo() == null && nuovo.getIdTributo() != null) { // se uno e' null e uno no Eccezione
-					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), "null", Long.toString(nuovo.getIdTributo()));
-				}
-				
-				if(letto.getIdTributo() != null && nuovo.getIdTributo() == null) { // se uno e' null e uno no Eccezione
-					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), "null");
-				}
-				
-				if(letto.getIdTributo().longValue() != nuovo.getIdTributo().longValue()) { // se sono tutti e due non null controllo l'uguaglianza dei long value
-					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), Long.toString(nuovo.getIdTributo()));
-				}
-			}
-
-			if(!(letto.getIbanAccredito(bd) == null && nuovo.getIbanAccredito(bd) == null)) {
-				if(letto.getIbanAccredito(bd) == null || nuovo.getIbanAccredito(bd).getId() == null || !letto.getIbanAccredito(bd).getId().equals(nuovo.getIbanAccredito(bd).getId())) {
-					throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
-				}
-			}
-			nuovo.setId(letto.getId());
-			nuovo.setIdVersamento(letto.getIdVersamento());
-		}
 	}
 	
 	public static it.govpay.model.Anagrafica toAnagraficaModel(Anagrafica anagrafica) {

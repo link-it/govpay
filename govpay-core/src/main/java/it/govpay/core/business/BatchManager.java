@@ -37,11 +37,11 @@ public class BatchManager {
 	private static Logger log = LoggerWrapperFactory.getLogger(BatchManager.class);
 
 	public static boolean startEsecuzione(BasicBD bd, String codBatch) throws ServiceException {
-		log.debug("Verifico possibilita di avviare il batch " + codBatch);
+		log.trace("Verifico possibilita di avviare il batch " + codBatch);
 
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 		if(GovpayConfig.getInstance().getClusterId() == null) {
-			log.debug("ClusterId non impostato. Gestione concorrenza non abilitata. Avvio batch consentito");
+			log.trace("ClusterId non impostato. Gestione concorrenza non abilitata. Avvio batch consentito");
 			return true;
 		}
 		
@@ -55,7 +55,7 @@ public class BatchManager {
 			
 			if(batch == null) {
 				// Batch libero. Procedo a configurare il blocco
-				log.debug("Semaforo " + codBatch + " verde!!! Imposto rosso [" + GovpayConfig.getInstance().getClusterId() + "]");
+				log.trace("Semaforo " + codBatch + " verde!!! Imposto rosso [" + GovpayConfig.getInstance().getClusterId() + "]");
 				batch = new Batch();
 				batch.setCodBatch(codBatch);
 				batch.setInizio(new Date()); 
@@ -64,16 +64,16 @@ public class BatchManager {
 				try {
 					batchBD.update(batch);
 					bd.commit();
-					log.debug("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+					log.trace("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 					return true;
 				} catch (NotFoundException e) {
 					batchBD.insert(batch);
 					bd.commit();
-					log.debug("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+					log.trace("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 					return true;
 				}
 			} else {
-				log.debug("Semaforo rosso impostato dal nodo [" + batch.getNodo() + "]");
+				log.trace("Semaforo rosso impostato dal nodo [" + batch.getNodo() + "]");
 				return false;
 			}
 		} finally {
@@ -121,7 +121,7 @@ public class BatchManager {
 		try {		
 			// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 			if(GovpayConfig.getInstance().getClusterId() == null) {
-				log.debug("ClusterId non impostato. Gestione concorrenza non abilitata. Rimozione semaforo inibita");
+				log.trace("ClusterId non impostato. Gestione concorrenza non abilitata. Rimozione semaforo inibita");
 				return;
 			}
 			
@@ -143,7 +143,7 @@ public class BatchManager {
 						batch.setAggiornamento(null); 
 						batchBD.update(batch);
 						bd.commit();
-						log.debug("Semaforo di concorrenza per il batch " + codBatch + " rimosso.");
+						log.trace("Semaforo di concorrenza per il batch " + codBatch + " rimosso.");
 					} else {
 						// blocco non mio. lo lascio fare
 						log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo di altro nodo");
@@ -169,7 +169,7 @@ public class BatchManager {
 
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 		if(GovpayConfig.getInstance().getClusterId() == null) {
-			log.debug("ClusterId non impostato. Gestione concorrenza non abilitata. Aggiornamento non necessario");
+			log.trace("ClusterId non impostato. Gestione concorrenza non abilitata. Aggiornamento non necessario");
 			return;
 		}
 		boolean wasAutocommit = true;
@@ -188,7 +188,7 @@ public class BatchManager {
 				batch.setAggiornamento(new Date()); 
 				batchBD.update(batch);
 				bd.commit();
-				log.debug("Aggiornato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+				log.trace("Aggiornato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 				return;
 			}
 		} catch (NotFoundException e) {

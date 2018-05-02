@@ -2,6 +2,8 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
 
+import org.openspcoop2.generic_project.expression.SortOrder;
+
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -15,6 +17,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 		this.addSortField("dataValidita", Versamento.model().DATA_VALIDITA);
 		this.addSortField("dataSacadenza", Versamento.model().DATA_SCADENZA);
 		this.addSortField("stato", Versamento.model().STATO_VERSAMENTO);
+		this.setDefaultSort(Versamento.model().DATA_CREAZIONE,SortOrder.DESC);
 	}
 	private Date dataA;
 	private Date dataDa;

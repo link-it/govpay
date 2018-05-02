@@ -28,7 +28,6 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -42,6 +41,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -51,7 +51,6 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class Versamento extends BasicBD {
 
@@ -117,7 +116,7 @@ public class Versamento extends BasicBD {
 					throw new GovPayException(EsitoOperazione.VER_015, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				
 				ctx.log("versamento.validazioneSemanticaAggiornamento", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
-				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, this);
+				it.govpay.core.utils.VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, this);
 				ctx.log("versamento.validazioneSemanticaAggiornamentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				
 				versamentiBD.updateVersamento(versamento, true);
@@ -128,6 +127,19 @@ public class Versamento extends BasicBD {
 				
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") aggiornato");
 			} catch (NotFoundException e) {
+				try {
+					// 	verifica univocita dell'avviso pagamento prima di inserire il nuovo versamento
+					it.govpay.bd.model.Versamento versamentoFromDominioNumeroAvviso = versamentiBD.getVersamentoFromDominioNumeroAvviso(versamento.getDominio(this).getCodDominio(), versamento.getNumeroAvviso());
+				
+					// due pendenze non possono avere lo stesso numero avviso
+					if(!versamentoFromDominioNumeroAvviso.getCodVersamentoEnte().equals(versamento.getCodVersamentoEnte()))
+						throw new GovPayException(EsitoOperazione.VER_025, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), 
+								versamentoFromDominioNumeroAvviso.getApplicazione(this).getCodApplicazione(), versamentoFromDominioNumeroAvviso.getCodVersamentoEnte(),versamento.getNumeroAvviso());
+					
+				}catch(NotFoundException e2) {
+					// ingore
+				}
+				
 				// Versamento nuovo. Inserisco
 				versamentiBD.insertVersamento(versamento);
 				ctx.log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
@@ -344,11 +356,11 @@ public class Versamento extends BasicBD {
 	
 	
 	public it.govpay.bd.model.Versamento chiediVersamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {
-		List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+		List<Diritti> diritti = new ArrayList<Diritti>();
 		diritti.add(Diritti.LETTURA);
 		
 		if(codDominio != null && !AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, codDominio, null,diritti)) {
-			throw new GovPayException(EsitoOperazione.PRT_005);
+			throw new GovPayException(EsitoOperazione.APP_005);
 		}
 		
 		it.govpay.bd.model.Versamento v = chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
@@ -356,7 +368,7 @@ public class Versamento extends BasicBD {
 		if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, v.getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
 			return v;
 		} else {
-			throw new GovPayException(EsitoOperazione.PRT_005);
+			throw new GovPayException(EsitoOperazione.APP_005);
 		}	
 	}
 	
@@ -368,7 +380,7 @@ public class Versamento extends BasicBD {
 		filter.addSortField(filterSortList);
 		
 		List<Long> domini = new ArrayList<Long>();
-		List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+		List<Diritti> diritti = new ArrayList<Diritti>();
 		diritti.add(Diritti.SCRITTURA);
 		diritti.add(Diritti.ESECUZIONE);
 		 List<Long> dominiSet = AclEngine.getIdDominiAutorizzati(applicazioneAutenticata.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, diritti);
