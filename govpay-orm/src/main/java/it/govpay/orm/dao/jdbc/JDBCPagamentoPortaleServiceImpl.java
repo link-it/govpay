@@ -95,6 +95,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().URL_RITORNO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PSP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO_VERSAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().MULTI_BENEFICIARIO,false),"?");
 
 		// Insert pagamentoPortale
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getPagamentoPortaleFetch().getKeyGeneratorObject(PagamentoPortale.model());
@@ -120,7 +121,8 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getDataRichiesta(),PagamentoPortale.model().DATA_RICHIESTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getUrlRitorno(),PagamentoPortale.model().URL_RITORNO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getCodPsp(),PagamentoPortale.model().COD_PSP.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getTipoVersamento(),PagamentoPortale.model().TIPO_VERSAMENTO.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getTipoVersamento(),PagamentoPortale.model().TIPO_VERSAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getMultiBeneficiario(),PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType())
 		);
 		pagamentoPortale.setId(id);
 
@@ -218,6 +220,8 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getCodPsp(), PagamentoPortale.model().COD_PSP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO_VERSAMENTO,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getTipoVersamento(), PagamentoPortale.model().TIPO_VERSAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().MULTI_BENEFICIARIO,false), "?");
+		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getMultiBeneficiario(), PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(tableId, Long.class));
 

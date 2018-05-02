@@ -94,7 +94,7 @@ CREATE SEQUENCE seq_utenze start 1 increment 1 maxvalue 9223372036854775807 minv
 CREATE TABLE utenze
 (
 	principal VARCHAR(4000) NOT NULL,
-	principal_originale VARCHAR(4000),
+	principal_originale VARCHAR(4000) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
@@ -474,6 +474,7 @@ CREATE TABLE pagamenti_portale
 	url_ritorno VARCHAR(1024) NOT NULL,
 	cod_psp VARCHAR(35),
 	tipo_versamento VARCHAR(4),
+	multi_beneficiario VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti_portale') NOT NULL,
 	-- unique constraints

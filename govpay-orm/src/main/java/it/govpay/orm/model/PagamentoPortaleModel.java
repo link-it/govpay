@@ -63,6 +63,7 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.URL_RITORNO = new Field("urlRitorno",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.COD_PSP = new Field("codPsp",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.TIPO_VERSAMENTO = new Field("tipoVersamento",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.MULTI_BENEFICIARIO = new Field("multiBeneficiario",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 	
 	}
 	
@@ -92,6 +93,7 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.URL_RITORNO = new ComplexField(father,"urlRitorno",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.TIPO_VERSAMENTO = new ComplexField(father,"tipoVersamento",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.MULTI_BENEFICIARIO = new ComplexField(father,"multiBeneficiario",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 	
 	}
 	
@@ -140,6 +142,8 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	public IField COD_PSP = null;
 	 
 	public IField TIPO_VERSAMENTO = null;
+	 
+	public IField MULTI_BENEFICIARIO = null;
 	 
 
 	@Override

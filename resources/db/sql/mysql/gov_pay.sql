@@ -92,7 +92,7 @@ CREATE INDEX index_stazioni_1 ON stazioni (cod_stazione);
 CREATE TABLE utenze
 (
 	principal VARCHAR(4000) NOT NULL,
-	principal_originale VARCHAR(4000),
+	principal_originale VARCHAR(4000) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -472,6 +472,7 @@ CREATE TABLE pagamenti_portale
 	url_ritorno VARCHAR(1024) NOT NULL,
 	cod_psp VARCHAR(35),
 	tipo_versamento VARCHAR(4),
+	multi_beneficiario VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- unique constraints

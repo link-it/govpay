@@ -57,6 +57,7 @@ import java.io.Serializable;
  * 			&lt;element name="urlRitorno" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="multiBeneficiario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -92,7 +93,8 @@ import java.io.Serializable;
   	"dataRichiesta",
   	"urlRitorno",
   	"codPsp",
-  	"tipoVersamento"
+  	"tipoVersamento",
+  	"multiBeneficiario"
   }
 )
 
@@ -292,6 +294,14 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
     this.tipoVersamento = tipoVersamento;
   }
 
+  public java.lang.String getMultiBeneficiario() {
+    return this.multiBeneficiario;
+  }
+
+  public void setMultiBeneficiario(java.lang.String multiBeneficiario) {
+    this.multiBeneficiario = multiBeneficiario;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -399,5 +409,9 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoVersamento",required=false,nillable=false)
   protected java.lang.String tipoVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="multiBeneficiario",required=false,nillable=false)
+  protected java.lang.String multiBeneficiario;
 
 }

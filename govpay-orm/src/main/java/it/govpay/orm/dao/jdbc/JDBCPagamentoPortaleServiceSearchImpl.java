@@ -182,6 +182,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			fields.add(PagamentoPortale.model().URL_RITORNO);
 			fields.add(PagamentoPortale.model().COD_PSP);
 			fields.add(PagamentoPortale.model().TIPO_VERSAMENTO);
+			fields.add(PagamentoPortale.model().MULTI_BENEFICIARIO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

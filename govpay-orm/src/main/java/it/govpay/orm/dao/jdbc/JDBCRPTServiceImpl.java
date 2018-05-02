@@ -99,22 +99,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
-		// Object _canale
-		Long id_canale = null;
-		it.govpay.orm.IdCanale idLogic_canale = null;
-		idLogic_canale = rpt.getIdCanale();
-		if(idLogic_canale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_canale = ((JDBCCanaleServiceSearch)(this.getServiceManager().getCanaleServiceSearch())).findTableId(idLogic_canale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_canale = idLogic_canale.getId();
-				if(id_canale==null || id_canale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 		// Object _portale
 		Long id_applicazione = null;
@@ -293,22 +277,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
-		// Object _rpt_canale
-		Long id_rpt_canale = null;
-		it.govpay.orm.IdCanale idLogic_rpt_canale = null;
-		idLogic_rpt_canale = rpt.getIdCanale();
-		if(idLogic_rpt_canale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_canale = ((JDBCCanaleServiceSearch)(this.getServiceManager().getCanaleServiceSearch())).findTableId(idLogic_rpt_canale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_canale = idLogic_rpt_canale.getId();
-				if(id_rpt_canale==null || id_rpt_canale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 		// Object _rpt_portale
 		Long id_rpt_applicazione = null;

@@ -221,6 +221,13 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo_versamento";
 			}
 		}
+		if(field.equals(PagamentoPortale.model().MULTI_BENEFICIARIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".multi_beneficiario";
+			}else{
+				return "multi_beneficiario";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -298,6 +305,9 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().TIPO_VERSAMENTO)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().MULTI_BENEFICIARIO)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 

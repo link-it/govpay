@@ -65,6 +65,7 @@ public class PagamentoPortaleConverter {
 		dto.setTipoVersamento(vo.getTipoVersamento());
 		dto.setNome(vo.getNome());
 		dto.setImporto(vo.getImporto());
+//		dto.setMultiBeneficiario(vo.getMultiBeneficiario()); //TODO
 
 		return dto;
 	}
@@ -96,7 +97,7 @@ public class PagamentoPortaleConverter {
 		vo.setTipoVersamento(dto.getTipoVersamento());
 		vo.setNome(dto.getNome());
 		vo.setImporto(dto.getImporto());
-
+//		vo.setMultiBeneficiario(dto.getMultiBeneficiario()); //TODO
 		return vo;
 	}
 

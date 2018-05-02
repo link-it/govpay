@@ -59,6 +59,7 @@ CREATE TABLE pagamenti_portale
        url_ritorno VARCHAR(1024) NOT NULL,
        cod_psp VARCHAR(35),
        tipo_versamento VARCHAR(4),
+       multi_beneficiario VARCHAR(35),
        -- fk/pk columns
        id BIGINT DEFAULT nextval('seq_pagamenti_portale') NOT NULL,
        -- unique constraints

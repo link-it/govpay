@@ -98,6 +98,8 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_psp", PagamentoPortale.model().COD_PSP.getFieldType()));
 				setParameter(object, "setTipoVersamento", PagamentoPortale.model().TIPO_VERSAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_versamento", PagamentoPortale.model().TIPO_VERSAMENTO.getFieldType()));
+				setParameter(object, "setMultiBeneficiario", PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "multi_beneficiario", PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType()));
 				return object;
 			}
 			
@@ -164,6 +166,8 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codPsp"));
 				setParameter(object, "setTipoVersamento", PagamentoPortale.model().TIPO_VERSAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento"));
+				setParameter(object, "setMultiBeneficiario", PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType(),
+					this.getObjectFromMap(map,"multiBeneficiario"));
 				return object;
 			}
 			

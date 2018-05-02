@@ -138,7 +138,7 @@ CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 CREATE TABLE utenze
 (
 	principal VARCHAR2(4000 CHAR) NOT NULL,
-	principal_originale VARCHAR2(4000 CHAR),
+	principal_originale VARCHAR2(4000 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -678,6 +678,7 @@ CREATE TABLE pagamenti_portale
 	url_ritorno VARCHAR2(1024 CHAR) NOT NULL,
 	cod_psp VARCHAR2(35 CHAR),
 	tipo_versamento VARCHAR2(4 CHAR),
+	multi_beneficiario VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints

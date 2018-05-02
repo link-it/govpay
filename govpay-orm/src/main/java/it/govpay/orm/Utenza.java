@@ -130,7 +130,7 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
   protected java.lang.String principal;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="principalOriginale",required=false,nillable=false)
+  @XmlElement(name="principalOriginale",required=true,nillable=false)
   protected java.lang.String principalOriginale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")

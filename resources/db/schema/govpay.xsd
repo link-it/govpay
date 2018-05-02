@@ -1521,17 +1521,6 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="idCanale" type="id-canale">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Canale" object-type="Canale"
-								relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-
 			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1614,11 +1603,10 @@
 				</xsd:annotation>
 			</xsd:element>
 
-			<xsd:element name="modelloPagamento" type="String16"/>
+			<xsd:element name="modelloPagamento" type="String16" minOccurs="0"/>
 
 			<xsd:element name="codMsgRicevuta" type="String35" minOccurs="0"/>
 			<xsd:element name="dataMsgRicevuta" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="firmaRicevuta" type="String1"/>
 			<xsd:element name="codEsitoPagamento" type="OneDigitDecimal" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1630,6 +1618,13 @@
 			</xsd:element>
 			<xsd:element name="importoTotalePagato" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="xmlRT" type="xsd:base64Binary" minOccurs="0"/>
+			<xsd:element name="codCanale" type="String35" minOccurs="0" />
+			<xsd:element name="codPsp" type="String35" minOccurs="0" />
+			<xsd:element name="codIntermediarioPsp" type="String35" minOccurs="0" />
+			<xsd:element name="tipoVersamento" type="String4" minOccurs="0" />
+			<xsd:element name="tipoIdentificativoAttestante" type="String1" minOccurs="0" />
+			<xsd:element name="identificativoAttestante" type="String35" minOccurs="0" />
+			<xsd:element name="denominazioneAttestante" type="String70" minOccurs="0" />
 			<xsd:element name="codStazione" type="String35"/>
 			<xsd:element name="codTransazioneRPT" type="String36" minOccurs="0"/>
 			<xsd:element name="codTransazioneRT" type="String36" minOccurs="0"/>
@@ -1837,6 +1832,7 @@
 			<xsd:element name="urlRitorno" type="String1024"/>
 			<xsd:element name="codPsp" type="String35" minOccurs="0"/>
 			<xsd:element name="tipoVersamento" type="String4" minOccurs="0"/>
+			<xsd:element name="multiBeneficiario" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
