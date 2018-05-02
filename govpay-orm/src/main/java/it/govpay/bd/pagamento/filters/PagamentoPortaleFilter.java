@@ -19,7 +19,9 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -39,6 +41,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private Date dataFine;
 	private STATO stato;
 	private String versante;
+	private List<String> codDomini;
 
 	public enum SortFields {
 		DATA
@@ -57,16 +60,42 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
+			boolean addAnd = false;
 			
-			if(dataInizio != null)
+			if(dataInizio != null) {
 				newExpression.greaterEquals(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, dataInizio);
-			if(dataFine != null)
+				addAnd = true;
+			}
+			if(dataFine != null) {
+				if(addAnd)
+					newExpression.and();
+				
 				newExpression.lessEquals(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, dataFine);
-			if(stato != null)
+				addAnd = true;
+			}
+			if(stato != null) {
+				if(addAnd)
+					newExpression.and();
+				
 				newExpression.equals(it.govpay.orm.PagamentoPortale.model().STATO, stato.toString());
-			if(versante!= null)
+				addAnd = true;
+			}
+			if(versante!= null) {
+				if(addAnd)
+					newExpression.and();
 				newExpression.equals(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, versante);
+				addAnd = true;
+			}
+			if(codDomini != null && codDomini.size() > 0) {
+				if(addAnd)
+					newExpression.and();
+				codDomini.removeAll(Collections.singleton(null));
+				
+				newExpression.in(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO, this.codDomini);
+				newExpression.isNotNull(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO);
 			
+				addAnd = true;
+			}
 			
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -134,5 +163,12 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		this.stato = stato;
 	}
 
+	public List<String> getCodDomini() {
+		return codDomini;
+	}
+
+	public void setCodDomini(List<String> codDomini) {
+		this.codDomini = codDomini;
+	}
 
 }

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
@@ -38,6 +39,7 @@ import it.govpay.core.exceptions.ResponseValidationException;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -57,6 +59,7 @@ public abstract class BaseController {
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 	private boolean validate;
+	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
 
 	public BaseController(String nomeServizio, Logger log) {
 		this(nomeServizio, log, true);
@@ -245,18 +248,25 @@ public abstract class BaseController {
 		}
 	}
 	
-	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e) {
+	protected ResponseBuilder handleResponseOk(ResponseBuilder responseBuilder, String transactionId) {
+		if(transactionId != null)
+			return responseBuilder.header(this.transactionIdHeaderName, transactionId);
+		else 
+			return responseBuilder;
+	}
+	
+	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
 		
 		if(e instanceof BaseExceptionV1) {
-			return handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e);
+			return handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
 		}
 		
 		if(e instanceof RedirectException) {
-			return handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e);
+			return handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
 		}
 		
 		if(e instanceof GovPayException) {
-			return handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e);
+			return handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
 		}
 		
 		log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
@@ -269,10 +279,13 @@ public abstract class BaseController {
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta", e1);
 		}
-		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+		if(transactionId != null)
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
+		else 
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 	}
 
-	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e) {
+	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e, String transactionId) {
 		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
 			log.warn("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
 		} else {
@@ -289,10 +302,13 @@ public abstract class BaseController {
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
-		return Response.status(e.getTransportErrorCode()).entity(respKo.toJSON(null)).build();
+		if(transactionId != null)
+			return Response.status(e.getTransportErrorCode()).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
+		else
+			return Response.status(e.getTransportErrorCode()).entity(respKo.toJSON(null)).build();
 	}
 
-	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e) {
+	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
 		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(e.getFaultBean()!=null ? CategoriaEnum.PAGOPA:CategoriaEnum.OPERAZIONE);
@@ -304,12 +320,18 @@ public abstract class BaseController {
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
-		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).entity(respKo.toJSON(null)).build();
+		if(transactionId != null)
+			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
+		else 
+			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).entity(respKo.toJSON(null)).build();
 	}
 
-	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e) {
+	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
 		log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
-		return Response.seeOther(e.getURILocation()).build();
+		if(transactionId != null)
+			return Response.seeOther(e.getURILocation()).header(this.transactionIdHeaderName, transactionId).build();
+		else
+			return Response.seeOther(e.getURILocation()).build();
 	}
 
 

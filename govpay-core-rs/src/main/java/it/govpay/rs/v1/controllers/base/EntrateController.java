@@ -42,6 +42,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
     public Response entrateIdEntrataPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata, java.io.InputStream is) {
     	String methodName = "entrateIdEntrataPUT";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -51,6 +52,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
@@ -69,9 +71,9 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(responseStatus).build();
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -82,6 +84,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
     public Response entrateIdEntrataGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata) {
     	String methodName = "entrateIdEntrataGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -89,6 +92,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -108,10 +112,10 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -122,6 +126,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
     public Response entrateGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
     	String methodName = "entrateGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -129,6 +134,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -151,9 +157,9 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

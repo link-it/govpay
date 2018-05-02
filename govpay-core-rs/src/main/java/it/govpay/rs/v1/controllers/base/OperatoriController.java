@@ -44,6 +44,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
     public Response operatoriPrincipalPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal, java.io.InputStream is) {
     	String methodName = "operatoriPrincipalPUT";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -53,6 +54,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
@@ -70,9 +72,9 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(responseStatus).build();
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -83,6 +85,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
     public Response operatoriPrincipalDELETE(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
     	String methodName = "aclIdDELETE";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -90,6 +93,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 
 			// Parametri - > DTO Input
 
@@ -107,10 +111,10 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], Status.OK.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).build();
+			return this.handleResponseOk(Response.status(Status.OK),transactionId).build();
 
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -121,6 +125,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
     public Response operatoriPrincipalGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
     	String methodName = "intermediariIdIntermediarioGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -128,6 +133,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -147,10 +153,10 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -161,6 +167,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
     public Response operatoriGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "operatoriGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -168,6 +175,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -199,10 +207,10 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

@@ -69,6 +69,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioIbanAccreditoIbanAccreditoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
     	String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -76,6 +77,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -95,10 +97,10 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -109,6 +111,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -116,6 +119,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -135,10 +139,10 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -149,6 +153,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idStazione) {
     	String methodName = "dominiGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -156,6 +161,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -187,10 +193,10 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -202,6 +208,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
     	String methodName = "dominiIdDominioGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -209,6 +216,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -228,10 +236,10 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -240,6 +248,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioEntrateGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioEntrateGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -247,6 +256,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -277,10 +287,10 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -291,6 +301,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioUnitaOperativeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {    	
     	String methodName = "dominiIdDominioUnitaOperativeGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -298,6 +309,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -328,10 +340,10 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -342,6 +354,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioEntrateIdEntrataGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
     	String methodName = "dominiIdDominioEntrateIdEntrataGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -349,6 +362,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -368,10 +382,10 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -382,6 +396,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -391,6 +406,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
@@ -408,9 +424,9 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(responseStatus).build();
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -421,6 +437,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -430,6 +447,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
@@ -447,9 +465,9 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(responseStatus).build();
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -460,6 +478,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioEntrateIdEntrataPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
     	String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -469,6 +488,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
@@ -486,9 +506,9 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(responseStatus).build();
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -499,6 +519,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
     	String methodName = "dominiIdDominioPUT";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -508,6 +529,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
@@ -525,9 +547,9 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(responseStatus).build();
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -538,6 +560,7 @@ public class DominiController extends it.govpay.rs.BaseController {
     public Response dominiIdDominioIbanAccreditoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioIbanAccreditoGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -545,6 +568,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -575,10 +599,10 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

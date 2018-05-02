@@ -33,6 +33,7 @@ public class GatewayController extends BaseController {
 	public Response post_GW(IAutorizzato user, InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders, String idSessione, String action) {
 		String methodName = "post_GW";  
 		GpContext ctx = null;
+		String transactionId = null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		ByteArrayOutputStream baos= null;
 		try{
@@ -55,6 +56,7 @@ public class GatewayController extends BaseController {
 			this.log.info("Parametri ricevuti: \n" + aggiornaPagamentiPortaleDTO.toString()); 
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 
 			WebControllerDAO webControllerDAO = new WebControllerDAO();
 			
@@ -64,13 +66,13 @@ public class GatewayController extends BaseController {
 			
 			if(aggiornaPagamentiPortaleDTOResponse.getLocation() != null) {
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ aggiornaPagamentiPortaleDTOResponse.getLocation() +"].");	
-				return Response.seeOther(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())).build();
+				return this.handleResponseOk(Response.seeOther(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())),transactionId).build();
 			} else {
 				this.log.info("Esecuzione " + methodName + " completata, html generato correttamente.");	
-				return Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()).build();
+				return this.handleResponseOk(Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()),transactionId).build();
 			}
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -81,6 +83,7 @@ public class GatewayController extends BaseController {
 			String keyPA, String keyWISP, String type) {
 		String methodName = "get_GW";  
 		GpContext ctx = null;
+		String transactionId = null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
 			String principal = user != null ? user.getPrincipal() : null;
@@ -97,6 +100,7 @@ public class GatewayController extends BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTO.toString().getBytes());
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 
 			WebControllerDAO webControllerDAO = new WebControllerDAO();
 			
@@ -106,13 +110,13 @@ public class GatewayController extends BaseController {
 			
 			if(aggiornaPagamentiPortaleDTOResponse.getLocation() != null) {
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ aggiornaPagamentiPortaleDTOResponse.getLocation() +"].");	
-				return Response.seeOther(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())).build();
+				return this.handleResponseOk(Response.seeOther(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())),transactionId).build();
 			} else {
 				this.log.info("Esecuzione " + methodName + " completata, html generato correttamente.");	
-				return Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()).build();
+				return this.handleResponseOk(Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()),transactionId).build();
 			}
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

@@ -43,6 +43,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.costanti.EsitoOperazione;
+import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -92,6 +93,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			List<IdVersamento> idVersamento = new ArrayList<IdVersamento>();
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			StringBuilder sbNomeVersamenti = new StringBuilder();
+			List<String> listaMultibeneficiari = new ArrayList<String>();
 			// 1. Lista Id_versamento
 			for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
@@ -136,6 +138,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				sbNomeVersamenti.append(versamentoModel.getCodVersamentoEnte());
 
 				versamenti.add(versamentoModel);
+				
+				// colleziono i domini inserendo solo se non presente in lista
+				if(!listaMultibeneficiari.contains(dominio.getCodDominio()))
+					listaMultibeneficiari.add(dominio.getCodDominio());
 			}
 
 			//3. numero dei pagamenti = somma numero singoli versamenti
@@ -202,6 +208,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setWispIdDominio(codDominio);
 			pagamentoPortale.setNome(nome);
 			pagamentoPortale.setImporto(sommaImporti); 
+			
+			// gestione multibeneficiari
+			// se ho solo un dominio all'interno della lista allora vuol dire che i tutti pagamenti riferiscono lo stesso dominio
+			// lascio null se il numero di domini e' > 1
+			if(listaMultibeneficiari.size() == 1) {
+				pagamentoPortale.setMultiBeneficiario(listaMultibeneficiari.get(0)); 
+			}
 			
 			String idSessione = pagamentoPortale.getIdSessione();
 			
@@ -363,6 +376,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getIdSessione());
+			
+			if(pagamentoPortale.getMultiBeneficiario() != null) {
+				// controllo che il dominio sia autorizzato
+				this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
+			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 			
 			if(leggiPagamentoPortaleDTO.isRisolviLink()) {
@@ -394,6 +412,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
+			// Autorizzazione sui domini
+			List<String> codDomini = AclEngine.getDominiAutorizzati((Utenza) listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			if(codDomini == null) {
+				throw new NotAuthorizedException("L'utenza autenticata ["+listaPagamentiPortaleDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+			}
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
@@ -405,6 +428,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setStato(listaPagamentiPortaleDTO.getStato());
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
+			
+			if(codDomini != null && codDomini.size() > 0)
+				filter.setCodDomini(codDomini);
 
 			long count = pagamentiPortaleBD.count(filter);
 

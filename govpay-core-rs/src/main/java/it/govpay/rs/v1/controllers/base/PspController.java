@@ -39,6 +39,7 @@ public class PspController extends it.govpay.rs.BaseController {
     public Response pspIdPspCanaliGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String modello, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -46,6 +47,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -79,10 +81,10 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -92,7 +94,8 @@ public class PspController extends it.govpay.rs.BaseController {
     public Response pspIdPspCanaliIdCanaleTipoVersamentoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp, String idCanale, String tipoVersamento) {
     	String methodName = "pspIdPspCanaliIdCanaleGET";  
 		GpContext ctx = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = null;
+		ByteArrayOutputStream baos = null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 			
 		try{
@@ -100,6 +103,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			LeggiCanaleDTO leggiPspDTO = new LeggiCanaleDTO(user);
 			leggiPspDTO.setIdPsp(idPsp);
@@ -111,10 +115,10 @@ public class PspController extends it.govpay.rs.BaseController {
 			LeggiCanaleDTOResponse leggiPspDTOResponse = pspDAO.leggiCanale(leggiPspDTO);
 			
 			it.govpay.core.rs.v1.beans.Canale response = PspConverter.toCanaleRsModel(leggiPspDTOResponse.getCanale(), leggiPspDTOResponse.getPsp());
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -125,6 +129,7 @@ public class PspController extends it.govpay.rs.BaseController {
     public Response pspIdPspGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idPsp) {
     	String methodName = "pspIdPspGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 			
@@ -133,6 +138,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			LeggiPspDTO leggiPspDTO = new LeggiPspDTO(user);
 			leggiPspDTO.setIdPsp(idPsp);
@@ -142,10 +148,10 @@ public class PspController extends it.govpay.rs.BaseController {
 			LeggiPspDTOResponse leggiPspDTOResponse = pspDAO.leggiPsp(leggiPspDTO);
 			
 			it.govpay.core.rs.v1.beans.Psp response = PspConverter.toRsModel(leggiPspDTOResponse.getPsp());
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -156,6 +162,7 @@ public class PspController extends it.govpay.rs.BaseController {
     public Response pspGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean bollo, Boolean storno) {
     	String methodName = "pspGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -163,6 +170,7 @@ public class PspController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -195,10 +203,10 @@ public class PspController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

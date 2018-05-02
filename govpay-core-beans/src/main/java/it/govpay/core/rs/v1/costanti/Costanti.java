@@ -7,4 +7,7 @@ public class Costanti {
 	
 	
 	public static final Integer NUMERO_MASSIMO_RISULTATI_PER_PAGINA = 500;
+	
+	
+	public static final String HEADER_NAME_OUTPUT_TRANSACTION_ID = "X-Govpay-IdTransazione";
 }

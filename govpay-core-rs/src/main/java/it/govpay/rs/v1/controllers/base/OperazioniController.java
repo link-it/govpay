@@ -31,6 +31,7 @@ public class OperazioniController extends it.govpay.rs.BaseController {
     public Response operazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
     	String methodName = "operazioniGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -38,6 +39,7 @@ public class OperazioniController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 //			String principal = this.getPrincipal();
 			
 			// Parametri - > DTO Input
@@ -68,9 +70,9 @@ public class OperazioniController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -79,6 +81,7 @@ public class OperazioniController extends it.govpay.rs.BaseController {
     public Response operazioniIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "operazioniIdGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -86,6 +89,7 @@ public class OperazioniController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			LeggiOperazioneDTO leggiOperazioneDTO = new LeggiOperazioneDTO(user);
 			leggiOperazioneDTO.setIdOperazione(id);
@@ -98,9 +102,9 @@ public class OperazioniController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

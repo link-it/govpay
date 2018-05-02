@@ -49,6 +49,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
     public Response pagamentiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, String versioneInterfacciaWISP) {
     	String methodName = "pagamentiPOST";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -58,6 +59,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
@@ -66,7 +68,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			jsonConfig.setClassMap(classMap);
 			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class, jsonConfig);
 			
-			String transactionId = ctx.getTransactionId();
+			
 			String idSession = transactionId.replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale,versioneInterfacciaWISP);
 			
@@ -78,9 +80,9 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), 201);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.CREATED).entity(responseOk.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e,transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -93,6 +95,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
     public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id, boolean linkListe) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -100,6 +103,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
 			leggiPagamentoPortaleDTO.setIdSessione(id);
@@ -130,9 +134,9 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -141,7 +145,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 
     public Response pagamentiIdDominioIuvPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
     	//client
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented [CLIENT]" ).build();
+        return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented [CLIENT]" ),null).build();
     }
 
 
@@ -149,6 +153,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
     public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -156,6 +161,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 //			String principal = this.getPrincipal();
 			
 			// Parametri - > DTO Input
@@ -192,9 +198,9 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

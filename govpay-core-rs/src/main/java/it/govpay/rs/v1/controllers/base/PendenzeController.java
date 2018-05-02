@@ -54,6 +54,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean linkListe) {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -62,6 +63,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
 			
@@ -73,9 +75,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti(),true);
-			return Response.status(Status.OK).entity(pendenza.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -87,6 +89,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
     public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, boolean linkListe) {
     	GpContext ctx = null;
+    	String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		String methodName = "pendenzeGET";
 		try{
@@ -95,6 +98,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 			
@@ -139,10 +143,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -151,6 +155,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
     	String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -160,6 +165,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 //			String jsonRequest = baos.toString();
 //			JsonConfig jsonConfig = new JsonConfig();
@@ -182,7 +188,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(responseStatus).build();
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		} catch(GovPayException e) {
 			log.error("Errore durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
@@ -195,9 +201,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -208,6 +214,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
     	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -217,6 +224,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 			JsonConfig jsonConfig = new JsonConfig();
@@ -238,22 +246,22 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.logResponse(uriInfo, httpHeaders, methodName, avviso.toJSON(null), responseStatus.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(responseStatus).entity(avviso.toJSON(null)).build();
-		} catch(GovPayException e) {
-			log.error("Errore durante il processo di pagamento", e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice(e.getCodEsito().name());
-			respKo.setDescrizione(e.getDescrizioneEsito());
-			respKo.setDettaglio(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(responseStatus).entity(avviso.toJSON(null)),transactionId).build();
+//		} catch(GovPayException e) {
+//			log.error("Errore durante il processo di pagamento", e);
+//			FaultBean respKo = new FaultBean();
+//			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
+//			respKo.setCodice(e.getCodEsito().name());
+//			respKo.setDescrizione(e.getDescrizioneEsito());
+//			respKo.setDettaglio(e.getMessage());
+//			try {
+//				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
+//			}catch(Exception e1) {
+//				log.error("Errore durante il log della risposta", e1);
+//			}
+//			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -263,7 +271,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
     public Response pendenzeIdDominioIuvGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
     	//client
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented [CLIENT]" ).build();
+        return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented [CLIENT]" ),null).build();
     }
 	
 }
