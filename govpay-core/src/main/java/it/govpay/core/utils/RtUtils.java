@@ -350,8 +350,7 @@ public class RtUtils extends NdpValidationUtils {
 				pagamento.setIndiceDati(indice + 1);
 				pagamento.setCommissioniPsp(pagamento.getCommissioniPsp());
 			} catch (MultipleResultException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ServiceException("Identificativo pagamento non univoco: [Dominio:"+codDominio+" Iuv:"+iuv+" Iur:"+ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione()+" Indice:"+(indice + 1)+"]");
 			}
 
 			if(ctDatiSingoloPagamentoRT.getAllegatoRicevuta() != null) {
