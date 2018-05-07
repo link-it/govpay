@@ -170,7 +170,7 @@ public class RptBuilder {
 		ctRpt.setVersioneOggetto(Rpt.VERSIONE);
 		CtDominio ctDominio = new CtDominio();
 		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
-		ctDominio.setIdentificativoStazioneRichiedente(versamento.getUo(bd).getDominio(bd).getStazione(bd).getCodStazione());
+		ctDominio.setIdentificativoStazioneRichiedente(versamento.getUo(bd).getDominio(bd).getStazione().getCodStazione());
 		ctRpt.setDominio(ctDominio);
 		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
 		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
