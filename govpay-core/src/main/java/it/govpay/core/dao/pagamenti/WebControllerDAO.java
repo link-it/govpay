@@ -1,21 +1,12 @@
 package it.govpay.core.dao.pagamenti;
 
-import java.util.List;
-
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
-import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
-import it.govpay.core.business.model.SceltaWISP;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
@@ -26,24 +17,15 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.dao.pagamenti.exception.ParametriNonTrovatiException;
 import it.govpay.core.dao.pagamenti.exception.TokenWISPNonValidoException;
 import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
-import it.govpay.core.dao.pagamenti.utils.JsonUtils;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.NdpException.FaultNodo;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
-import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.model.Anagrafica;
-import it.govpay.model.Canale.TipoVersamento;
-import it.govpay.bd.model.Applicazione;
 
 public class WebControllerDAO extends BaseDAO{
 
 	public static final String OK = "OK";
-	private static final String ACTION_BACK = "back";
-	private static final String ACTION_RETURN = "return";
 
 	public WebControllerDAO() {
 
@@ -71,11 +53,6 @@ public class WebControllerDAO extends BaseDAO{
 			case PAGAMENTO_FALLITO:
 				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"));
 				break;
-			case DA_REDIRIGERE_AL_WISP:
-				pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_IN_CORSO);
-				pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-				aggiornaPagamentiPortaleDTOResponse.setWispHtml(pagamentoPortale.getWispHtml());
-				break;
 			case PAGAMENTO_ESEGUITO:
 				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
 				break;
@@ -91,189 +68,7 @@ public class WebControllerDAO extends BaseDAO{
 			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
 				break;
-			case SELEZIONE_WISP_ANNULLATA:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","ANNULLO"));
-				break;
-			case SELEZIONE_WISP_FALLITA:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"));
-				break;
-			case SELEZIONE_WISP_IN_CORSO:
-				if(aggiornaPagamentiPortaleDTO.getAction() == null) {
-					aggiornaPagamentiPortaleDTOResponse.setWispHtml(pagamentoPortale.getWispHtml());
-				} else {
-					if(aggiornaPagamentiPortaleDTO.getAction().equals(ACTION_RETURN)) {
-						if(aggiornaPagamentiPortaleDTO.getWispDominio() != null 
-								&& aggiornaPagamentiPortaleDTO.getWispKeyPA() != null
-								&& aggiornaPagamentiPortaleDTO.getWispKeyWisp() != null)  {
-
-							pagamentoPortale.setWispIdDominio(aggiornaPagamentiPortaleDTO.getWispDominio());
-							pagamentoPortale.setWispKeyPA(aggiornaPagamentiPortaleDTO.getWispKeyPA());
-							pagamentoPortale.setWispKeyWisp(aggiornaPagamentiPortaleDTO.getWispKeyWisp());
-
-							it.govpay.core.business.Applicazione applicazioneBusiness = new it.govpay.core.business.Applicazione(bd);
-							Applicazione applicazioneAutenticata = null;
-							try {
-								applicazioneAutenticata = AnagraficaManager.getApplicazione(bd, pagamentoPortale.getCodApplicazione());
-							} catch (NotFoundException e1) {
-								throw new GovPayException("Applicazione ["+pagamentoPortale.getCodApplicazione()+"] non esistente", EsitoOperazione.APP_000, pagamentoPortale.getCodApplicazione());
-							}
-
-							ctx.log("ws.ricevutaRichiesta");
-							String codPortale = applicazioneAutenticata.getCodApplicazione();
-
-							applicazioneBusiness.autorizzaApplicazione(codPortale, applicazioneAutenticata, bd);
-							ctx.log("ws.autorizzazione");
-
-							it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
-							Dominio dominio =null;
-							try {
-								dominio = AnagraficaManager.getDominio(bd, pagamentoPortale.getWispIdDominio());
-							} catch (NotFoundException e) {
-								throw new GovPayException("Il pagamento non puo' essere avviato poiche' il dominio utilizzato non esiste [Dominio:"+pagamentoPortale.getWispIdDominio()+"].", EsitoOperazione.DOM_000, pagamentoPortale.getWispIdDominio());
-							}
-
-							SceltaWISP scelta = null;
-							try {
-								scelta = wisp.chiediScelta(applicazioneAutenticata, dominio, pagamentoPortale.getWispKeyPA(), pagamentoPortale.getWispKeyWisp(),false);
-							} catch (Exception e) {
-								ctx.log("pagamento.risoluzioneWispKo", e.getMessage());
-								throw new ServiceException(e); 
-							}
-
-							// risoluzione del token wisp
-							String tokenWisp = "";
-
-							if(scelta.getFault() !=null) {
-								tokenWisp = scelta.getFault().toString();
-							} else {
-								tokenWisp = OK;
-								if(!scelta.isSceltaEffettuata()) {
-									ctx.log("pagamento.risoluzioneWispOkNoScelta");
-									throw new GovPayException(EsitoOperazione.WISP_003);
-								}
-								if(scelta.isPagaDopo()) {
-									ctx.log("pagamento.risoluzioneWispOkPagaDopo");
-									throw new GovPayException(EsitoOperazione.WISP_004);
-								}
-							}
-
-							if(tokenWisp.equals(FaultNodo.PPT_WISP_SESSIONE_SCONOSCIUTA.toString())) {
-								pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_FALLITA);
-								pagamentoPortale.setStato(STATO.FALLITO);
-								pagamentoPortale.setDescrizioneStato(scelta.getFault().getFaultString()); 
-								aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"));
-								pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-							} else if(tokenWisp.equals(FaultNodo.PPT_WISP_TIMEOUT_RECUPERO_SCELTA.toString())) {
-								pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_TIMEOUT);
-								pagamentoPortale.setStato(STATO.FALLITO);
-								pagamentoPortale.setDescrizioneStato(scelta.getFault().getFaultString());
-								aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","TIMEOUT"));
-								pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-							} else if(tokenWisp.equals(OK)) {
-								pagamentoPortale.setCodCanale(scelta.getCodCanale());
-								pagamentoPortale.setTipoVersamento(scelta.getTipoVersamento());
-								pagamentoPortale.setCodCanale(scelta.getCodPsp());
-								// procedo al pagamento 
-
-								List<Versamento> versamenti = pagamentoPortale.getVersamenti(bd);
-								Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(JsonUtils.getAnagraficaFromJson(pagamentoPortale.getJsonRequest()));
-
-								try {
-									it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(bd);
-
-									String autenticazioneFromJson = JsonUtils.getAutenticazioneFromJson(pagamentoPortale.getJsonRequest());
-									if(autenticazioneFromJson == null)
-										autenticazioneFromJson = "N/A";
-
-									List<Rpt> rpts = null;
-									if(scelta.getCodPsp().equals(Rpt.codPspWISP20) && scelta.getCodCanale().equals(Rpt.codCanaleWISP20))
-										rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, null, JsonUtils.getIbanAddebitoFromJson(pagamentoPortale.getJsonRequest()),
-												versanteModel, autenticazioneFromJson, pagamentoPortale.getUrlRitorno(), false,pagamentoPortale);									else {
-										try {
-											Canale canale = AnagraficaManager.getCanale(bd, scelta.getCodPsp(), scelta.getCodCanale(), TipoVersamento.toEnum(scelta.getTipoVersamento()));
-											rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, canale, JsonUtils.getIbanAddebitoFromJson(pagamentoPortale.getJsonRequest()),
-													versanteModel, autenticazioneFromJson, pagamentoPortale.getUrlRitorno(), false,pagamentoPortale);
-										} catch (NotFoundException e) {
-											throw new GovPayException(EsitoOperazione.WISP_002,  scelta.getCodPsp(), scelta.getCodCanale(), scelta.getTipoVersamento());
-										}
-									}
-
-									Rpt rpt = rpts.get(0);
-
-									// se ho un redirect 			
-									if(rpt.getPspRedirectURL() != null) {
-										pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
-										pagamentoPortale.setIdSessionePsp(rpt.getCodSessione());
-										pagamentoPortale.setPspRedirectUrl(rpt.getPspRedirectURL()); 
-										aggiornaPagamentiPortaleDTOResponse.setLocation(rpt.getPspRedirectURL());
-									} else {							
-										pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
-										aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getUrlRitorno());
-									}
-								}catch(GovPayException e) {
-									pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
-									pagamentoPortale.setStato(STATO.FALLITO);
-									pagamentoPortale.setDescrizioneStato(e.getMessage());
-									throw new TransazioneRptException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"), e.getMessage(),e);
-								}finally {
-									pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-								}
-							} else {
-								pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
-								pagamentoPortale.setStato(STATO.FALLITO);
-								pagamentoPortale.setDescrizioneStato("Token WISP ["+tokenWisp+"] non valido");
-								pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-								// caso non valido 
-								throw new TokenWISPNonValidoException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"), "Token WISP ["+tokenWisp+"] non valido");
-							}
-						} else {
-							aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"));
-						}
-					} else if(aggiornaPagamentiPortaleDTO.getAction().equals(ACTION_BACK)) {
-						if(aggiornaPagamentiPortaleDTO.getType() == null) {
-							aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"));
-						} else {
-							// controllo del valore di type
-							if(aggiornaPagamentiPortaleDTO.getType().equals("ANNULLO")) {
-								pagamentoPortale.setStato(STATO.ANNULLATO);
-								pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_ANNULLATA);
-								pagamentoPortale.setDescrizioneStato("Pagamento annullato dall'utente.");
-								aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","ANNULLO"));
-							} else if(aggiornaPagamentiPortaleDTO.getType().equals("TIMEOUT")) {
-								pagamentoPortale.setStato(STATO.FALLITO);
-								pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_TIMEOUT);
-								pagamentoPortale.setDescrizioneStato("Selezione WISP Timeout.");
-								aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","TIMEOUT"));
-							} else if(aggiornaPagamentiPortaleDTO.getType().equals("IBAN")) {
-								pagamentoPortale.setStato(STATO.FALLITO);
-								pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_FALLITA);
-								pagamentoPortale.setDescrizioneStato("Selezione WISP Fallita.");
-								aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() ,"esito","FAIL"));
-							} else {
-								pagamentoPortale.setStato(STATO.FALLITO);
-								pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
-								pagamentoPortale.setDescrizioneStato("Invocazione URL Back, Parametro Type ["+aggiornaPagamentiPortaleDTO.getType()+"] non valido");
-								pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-								// caso non valido 
-								throw new GovPayException("Type ["+aggiornaPagamentiPortaleDTO.getType()+"] non valido", EsitoOperazione.INTERNAL, aggiornaPagamentiPortaleDTO.getType());
-							}
-							pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-						}
-					} else {
-						pagamentoPortale.setStato(STATO.FALLITO);
-						pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
-						pagamentoPortale.setDescrizioneStato("Richiesta modifica dello stato per un pagamento in corso, parametro action ["+aggiornaPagamentiPortaleDTO.getAction()+"] ricevuto non valido.");
-						pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-						// caso non valido 
-						throw new ActionNonValidaException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() ,"esito","FAIL"), "L'action ["+aggiornaPagamentiPortaleDTO.getAction()+"] non e' valida.");
-					}
-				}
-				break;
-			case SELEZIONE_WISP_TIMEOUT:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","TIMEOUT"));
-				break;
 			}
-
 		}finally {
 			if(bd != null)
 				bd.closeConnection();

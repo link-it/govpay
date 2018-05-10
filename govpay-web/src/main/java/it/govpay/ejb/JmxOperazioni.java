@@ -105,10 +105,6 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 			 return it.govpay.core.business.Operazioni.acquisizioneRendicontazioni("JmxCall");
 		}
 
-		if(actionName.equals(AGGIORNAMENTO_REGISTRO_PSP)){
-			return it.govpay.core.business.Operazioni.aggiornamentoRegistroPsp("JmxCall");
-		}
-
 		if(actionName.equals(RECUPERO_RPT_PENDENTI)){
 			return it.govpay.core.business.Operazioni.recuperoRptPendenti("JmxCall");
 		}

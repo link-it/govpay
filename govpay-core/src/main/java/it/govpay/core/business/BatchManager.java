@@ -111,7 +111,7 @@ public class BatchManager {
 				log.warn("Individuato timeout del batch " + codBatch + ". La risorsa viene liberata per consentire l'esecuzione del batch.");
 				return null;
 			} else {
-				log.debug("Batch " + codBatch + " in esecuzione sul nodo " + batch.getNodo() + ".");
+				log.trace("Batch " + codBatch + " in esecuzione sul nodo " + batch.getNodo() + ".");
 				return batch;
 			}
 		}
@@ -165,7 +165,7 @@ public class BatchManager {
 	
 	
 	public static void aggiornaEsecuzione(BasicBD bd, String codBatch) throws ServiceException {
-		log.debug("Aggiorno il batch " + codBatch);
+		log.trace("Aggiorno il batch " + codBatch);
 
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 		if(GovpayConfig.getInstance().getClusterId() == null) {

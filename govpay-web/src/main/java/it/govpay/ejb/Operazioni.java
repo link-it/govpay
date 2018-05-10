@@ -45,15 +45,6 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.acquisizioneRendicontazioni("Batch");
 	}
 
-	@Schedule(hour="2", persistent=false)
-	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
-	public static String aggiornamentoRegistroPsp(){
-		if(!GovpayConfig.getInstance().isBatchOn()) {
-			return "Batch non attivi";
-		}
-		return it.govpay.core.business.Operazioni.aggiornamentoRegistroPsp("Batch");
-	}
-
 	@Schedule(hour="*", persistent=false)
 	@AccessTimeout(value=15, unit=TimeUnit.MINUTES)
 	public static String recuperoRptPendenti(){

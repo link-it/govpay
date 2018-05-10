@@ -179,13 +179,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Psp }
-     */
-    public Psp createPsp() {
-        return new Psp();
-    }
-
-    /**
      * Create an instance of {@link Stazione }
      */
     public Stazione createStazione() {
@@ -368,13 +361,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdPsp }
-     */
-    public IdPsp createIdPsp() {
-        return new IdPsp();
-    }
-
-    /**
      * Create an instance of {@link IdCarrello }
      */
     public IdCarrello createIdCarrello() {
@@ -445,13 +431,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdCanale }
-     */
-    public IdCanale createIdCanale() {
-        return new IdCanale();
-    }
-
-    /**
      * Create an instance of {@link Evento }
      */
     public Evento createEvento() {
@@ -484,13 +463,6 @@ public class ObjectFactory {
      */
     public Utenza createUtenza() {
         return new Utenza();
-    }
-
-    /**
-     * Create an instance of {@link Canale }
-     */
-    public Canale createCanale() {
-        return new Canale();
     }
 
     /**

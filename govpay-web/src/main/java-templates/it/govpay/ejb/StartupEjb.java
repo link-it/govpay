@@ -19,10 +19,8 @@
  */
 package it.govpay.ejb;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.business.Psp;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -165,9 +163,6 @@ public class StartupEjb {
 			ctx.log();
 			throw new RuntimeException("Inizializzazione GovPay ${project.version} (build " + commit + ") fallita.", e);
 		}
-
-		SetupThread st = new SetupThread(GpThreadLocal.get().getTransactionId());
-		st.start();
 		
 		ctx.log();
 
@@ -212,40 +207,5 @@ public class StartupEjb {
 		}
 		
 		log.info("Shutdown di GovPay completato.");
-	}
-
-
-
-	public class SetupThread extends Thread {
-		
-		private String transactionId = null;
-		
-		public SetupThread(String transactionId) {
-			this.transactionId = transactionId;
-		}
-		
-		@Override
-		public void run() {
-			BasicBD bd = null;
-			GpContext ctx = null;
-			try {
-				log.debug("Aggiornamento della lista dei PSP in corso...");
-				ctx = new GpContext(this.transactionId);
-				GpThreadLocal.set(ctx);
-				bd = BasicBD.newInstance(this.transactionId);
-				String esito = new Psp(bd).aggiornaRegistro();
-				if(esito.contains("Acquisizione fallita"))
-					log.warn("Aggiornamento della lista dei PSP fallito");
-				else 
-					log.info("Aggiornamento della lista dei PSP completato");
-				
-			} catch (Exception e) {
-				log.error("Aggiornamento della lista dei PSP fallito",e);
-			} finally {
-				if(bd != null) bd.closeConnection();
-				if(ctx != null) ctx.log();
-			}
-		}
-
 	}
 }

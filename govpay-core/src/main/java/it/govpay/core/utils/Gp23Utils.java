@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Anomalia;
 import it.govpay.servizi.commons.EsitoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
@@ -114,7 +113,7 @@ public class Gp23Utils {
 		return fr;
 	}
 
-	public static it.govpay.servizi.commons.Pagamento toPagamento(Pagamento pagamento, Versione versione, BasicBD bd) throws ServiceException {
+	public static it.govpay.servizi.commons.Pagamento toPagamento(Pagamento pagamento, BasicBD bd) throws ServiceException {
 		it.govpay.servizi.commons.Pagamento p = new it.govpay.servizi.commons.Pagamento();
 
 		if(pagamento.getAllegato() != null) {

@@ -111,41 +111,6 @@ public class Operazioni{
 		}
 	}
 
-	public static String aggiornamentoRegistroPsp(String serviceName){
-		BasicBD bd = null;
-		GpContext ctx = null;
-		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "AggiornamentoRegistroPsp");
-			MDC.put("op", ctx.getTransactionId());
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("AggiornamentoRegistroPsp");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			if(BatchManager.startEsecuzione(bd, psp)) {
-				String response = new Psp(bd).aggiornaRegistro();
-				AnagraficaManager.cleanPspCache();
-				aggiornaSondaOK(psp, bd);
-				return response;
-			} else {
-				return "Operazione in corso su altro nodo. Richiesta interrotta.";
-			}
-		} catch (Exception e) {
-			log.error("Aggiornamento della lista dei PSP fallito", e);
-			aggiornaSondaKO(psp, e, bd);
-			return "Acquisizione fallita#" + e;
-		} finally {
-			BatchManager.stopEsecuzione(bd, psp);
-			if(bd != null) bd.closeConnection();
-			if(ctx != null) ctx.log();
-		}
-	}
-
 	public static String recuperoRptPendenti(String serviceName){
 		BasicBD bd = null;
 		GpContext ctx = null;

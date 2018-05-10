@@ -20,6 +20,9 @@
 package it.govpay.core.utils.thread;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -63,7 +66,7 @@ public class InviaRptThread implements Runnable {
 			MDC.put("cmd", "InviaRptThread");
 			MDC.put("op", ctx.getTransactionId());
 			
-			ctx.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoInviaRPT);
+			ctx.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
 			
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
 			
@@ -72,8 +75,10 @@ public class InviaRptThread implements Runnable {
 			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
 			
 			ctx.log("pagamento.invioRptAttivata");
-				
-			Risposta risposta = RptUtils.inviaRPT(rpt, this.rpt.getIntermediario(bd), this.rpt.getStazione(bd), bd);
+			
+			List<Rpt> rpts = new ArrayList<Rpt>();
+			rpts.add(rpt);
+			Risposta risposta = RptUtils.inviaCarrelloRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpts, bd);
 
 			if(bd == null) {
 				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

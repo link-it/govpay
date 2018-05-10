@@ -31,10 +31,6 @@ import org.slf4j.Logger;
 import it.govpay.bd.anagrafica.AuditBD;
 import it.govpay.model.BasicModel;
 
-import it.govpay.orm.dao.IPspService;
-import it.govpay.orm.dao.IDBPspService;
-import it.govpay.orm.dao.ICanaleService;
-import it.govpay.orm.dao.IDBCanaleService;
 import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.IDBIntermediarioService;
 import it.govpay.orm.dao.IStazioneService;
@@ -109,8 +105,6 @@ public class BasicBD {
 	private JDBCServiceManager serviceManager;
 	private JDBCServiceManagerProperties jdbcProperties;
 	
-	private IPspService pspService;
-	private ICanaleService canaleService;
 	private IIntermediarioService intermediarioService;
 	private IStazioneService stazioneService;
 	private IDominioService dominioService;
@@ -190,8 +184,6 @@ public class BasicBD {
 			this.jdbcProperties = this.serviceManager.getJdbcProperties();
 			
 			try {
-				this.pspService = this.serviceManager.getPspService();
-				this.canaleService = this.serviceManager.getCanaleService();
 				this.intermediarioService = this.serviceManager.getIntermediarioService();
 				this.stazioneService = this.serviceManager.getStazioneService();
 				this.dominioService = this.serviceManager.getDominioService();
@@ -240,8 +232,6 @@ public class BasicBD {
 			return;
 		}
 		try {
-			((IDBPspService)this.pspService).enableSelectForUpdate();
-			((IDBCanaleService)this.canaleService).enableSelectForUpdate();
 			((IDBIntermediarioService)this.intermediarioService).enableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).enableSelectForUpdate();
 			((IDBDominioService)this.dominioService).enableSelectForUpdate();
@@ -286,8 +276,6 @@ public class BasicBD {
 			return;
 		}
 		try {
-			((IDBPspService)this.pspService).disableSelectForUpdate();
-			((IDBCanaleService)this.canaleService).disableSelectForUpdate();
 			((IDBIntermediarioService)this.intermediarioService).disableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).disableSelectForUpdate();
 			((IDBDominioService)this.dominioService).disableSelectForUpdate();
@@ -334,20 +322,6 @@ public class BasicBD {
 		return idModulo;
 	}
 	
-	
-	public IPspService getPspService() {
-		if(father != null) {
-			return father.getPspService();
-		}
-		return this.pspService;
-	}
-	
-	public ICanaleService getCanaleService() {
-		if(father != null) {
-			return father.getCanaleService();
-		}
-		return this.canaleService;
-	}
 	
 	public IIntermediarioService getIntermediarioService() {
 		if(father != null) {

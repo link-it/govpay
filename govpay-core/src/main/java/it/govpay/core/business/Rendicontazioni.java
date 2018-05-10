@@ -51,13 +51,11 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.PspBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.FrBD;
@@ -105,8 +103,6 @@ public class Rendicontazioni extends BasicBD {
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 
-			PspBD pspBD = new PspBD(this);
-			List<Psp> lstPsp = pspBD.getPsp();
 			closeConnection();
 
 			for(Stazione stazione : lstStazioni) {
@@ -125,17 +121,12 @@ public class Rendicontazioni extends BasicBD {
 					List<Dominio> lstDomini = dominiBD.findAll(filter);
 
 					for(Dominio dominio : lstDomini) { 
-						List<String> sids = new ArrayList<String>();
-						for(Psp psp : lstPsp) {
-							if(sids.contains(psp.getCodPsp())) continue;
-							sids.add(psp.getCodPsp());
-							log.debug("Acquisizione dei flussi di rendicontazione dal psp [" + psp.getCodPsp() + "] per il dominio [" + dominio.getCodDominio() + "] in corso.");
-							flussiDaAcquisire.addAll(chiediListaFr(client, psp, stazione, dominio));
-						}
+						log.debug("Acquisizione dei flussi di rendicontazione per il dominio [" + dominio.getCodDominio() + "] in corso.");
+						flussiDaAcquisire.addAll(chiediListaFr(client, stazione, dominio));
 					}
 				} else {
 					log.debug("Acquisizione dei flussi di rendicontazione per la stazione [" + stazione.getCodStazione() + "] in corso.");
-					flussiDaAcquisire.addAll(chiediListaFr(client, null, stazione, null));
+					flussiDaAcquisire.addAll(chiediListaFr(client, stazione, null));
 				}
 
 				setupConnection(GpThreadLocal.get().getTransactionId());
@@ -227,17 +218,10 @@ public class Rendicontazioni extends BasicBD {
 							fr.setXml(tracciato);
 
 							String codPsp = null, codDominio = null;
-							try {
-								codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
-								fr.setCodPsp(codPsp);
-								log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
-								AnagraficaManager.getPsp(this, codPsp);
-								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp));
-							} catch (Exception e) {
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoPspNonCensito", codPsp == null ? "null" : codPsp);
-								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp == null ? "null" : codPsp));
-								fr.addAnomalia("007108", "L'identificativo PSP [" + codPsp + "] ricavato dal codice flusso non riferisce un PSP censito");
-							}
+							codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
+							fr.setCodPsp(codPsp);
+							log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
+							GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp));
 
 							Dominio dominio = null;
 							try {
@@ -541,13 +525,12 @@ public class Rendicontazioni extends BasicBD {
 		return false;
 	}
 
-	private List<TipoIdRendicontazione> chiediListaFr(NodoClient client, Psp psp, Stazione stazione, Dominio dominio){
+	private List<TipoIdRendicontazione> chiediListaFr(NodoClient client, Stazione stazione, Dominio dominio){
 		String idTransaction = null;
 		List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<TipoIdRendicontazione>();
 		try {
 			idTransaction = GpThreadLocal.get().openTransaction();
 			GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
-			GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp != null ? psp.getCodPsp() : "-"));
 			GpThreadLocal.get().setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, Azione.nodoChiediElencoFlussiRendicontazione);
 			GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussi");
 
@@ -556,7 +539,6 @@ public class Rendicontazioni extends BasicBD {
 			richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(this).getCodIntermediario());
 			richiesta.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione()); 
 			richiesta.setPassword(stazione.getPassword());
-			if(psp != null) richiesta.setIdentificativoPSP(psp.getCodPsp());
 
 			NodoChiediElencoFlussiRendicontazioneRisposta risposta;
 			try {

@@ -40,8 +40,6 @@ public class OperazioniDAO extends BaseDAO{
 			String esitoOperazione = "";
 			if(leggiOperazioneDTO.getIdOperazione().equals(ACQUISIZIONE_RENDICONTAZIONI)){
 				esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(OperazioniDAO.class.getName());
-			} else if(leggiOperazioneDTO.getIdOperazione().equals(AGGIORNAMENTO_REGISTRO_PSP)){
-				esitoOperazione = it.govpay.core.business.Operazioni.aggiornamentoRegistroPsp(OperazioniDAO.class.getName());
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RECUPERO_RPT_PENDENTI)){
 				esitoOperazione = it.govpay.core.business.Operazioni.recuperoRptPendenti(OperazioniDAO.class.getName());
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RESET_CACHE_ANAGRAFICA)){

@@ -21,27 +21,34 @@ package it.govpay.bd.model;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Psp;
-
 public class Canale extends it.govpay.model.Canale {
 	
 	private static final long serialVersionUID = 1L;
-	 
+	public static final Canale canaleUniversale = new Canale(Rpt.codIntermediarioPspWISP20, Rpt.codPspWISP20, Rpt.codCanaleWISP20,	Rpt.tipoVersamentoWISP20, null);
+
+	
+	public Canale(Psp psp, String codCanale, String tipoVersamento) throws ServiceException {
+		this(psp, codCanale, TipoVersamento.toEnum(tipoVersamento));
+	}
+	
+	public Canale(String codIntermediarioPsp, String codPsp, String codCanale, TipoVersamento tipoVersamento, String ragioneSociale) {
+		this(new Psp(codIntermediarioPsp, codPsp, ragioneSociale), codCanale, tipoVersamento);
+	}
+	
+	public Canale(String codIntermediarioPsp, String codPsp, String codCanale, String tipoVersamento, String ragioneSociale) throws ServiceException {
+		this(new Psp(codIntermediarioPsp, codPsp, ragioneSociale), codCanale, tipoVersamento);
+	}
+	
+	public Canale(Psp psp, String codCanale, TipoVersamento tipoVersamento) {
+		super(codCanale, tipoVersamento);
+		this.psp = psp;
+	}
 	
 	// Business
 	
 	private transient Psp psp;
 	
-	public Psp getPsp(BasicBD bd) throws ServiceException {
-		if(psp == null) {
-			psp = AnagraficaManager.getPsp(bd, this.getIdPsp());
-		}
+	public Psp getPsp() {
 		return psp;
-	}
-	
-	public void setPsp(Psp psp) throws ServiceException {
-		this.psp = psp;
 	}
 }

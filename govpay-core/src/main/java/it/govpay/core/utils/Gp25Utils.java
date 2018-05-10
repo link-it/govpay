@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
@@ -49,7 +48,6 @@ import it.govpay.servizi.v2_5.gpprt.GpChiediListaVersamentiResponse.Versamento.S
 import it.govpay.servizi.v2_5.gpprt.GpChiediStatoRichiestaStornoResponse.Storno;
 import it.govpay.servizi.v2_3.commons.FlussoRendicontazione.Rendicontazione;
 import it.govpay.servizi.v2_5.gpprt.GpAvviaTransazionePagamentoResponse;
-import it.govpay.servizi.v2_5.gpprt.GpChiediListaPspResponse;
 import it.govpay.servizi.v2_5.gpprt.GpChiediListaVersamentiResponse;
 
 public class Gp25Utils {
@@ -130,34 +128,6 @@ public class Gp25Utils {
 			fr.getAnomalia().add(anomalia);
 		}
 		return fr;
-	}
-
-	public static List<GpChiediListaPspResponse.Psp> toPsp(List<Psp> pspsModel) {
-		List<GpChiediListaPspResponse.Psp> psps = new ArrayList<GpChiediListaPspResponse.Psp>();
-
-		for(it.govpay.bd.model.Psp pspModel : pspsModel) {
-			GpChiediListaPspResponse.Psp psp = new GpChiediListaPspResponse.Psp();
-			psp.setBollo(pspModel.isBolloGestito());
-			psp.setCodPsp(pspModel.getCodPsp());
-			psp.setLogo(PspUtils.logoPsp);
-			psp.setRagioneSociale(pspModel.getRagioneSociale());
-			psp.setStorno(pspModel.isStornoGestito());
-			psp.setUrlInfo(pspModel.getUrlInfo());
-			for(it.govpay.bd.model.Canale canaleModel : pspModel.getCanalis()) {
-				GpChiediListaPspResponse.Psp.Canale canale = new GpChiediListaPspResponse.Psp.Canale();
-				canale.setCodCanale(canaleModel.getCodCanale());
-				canale.setCondizioni(canaleModel.getCondizioni());
-				canale.setDescrizione(canaleModel.getDescrizione());
-				canale.setDisponibilita(canaleModel.getDisponibilita());
-				canale.setLogoServizio(PspUtils.getLogo(canaleModel.getModelloPagamento()));
-				canale.setModelloPagamento(PspUtils.toWeb(canaleModel.getModelloPagamento()));
-				canale.setTipoVersamento(PspUtils.toWeb(canaleModel.getTipoVersamento()));
-				canale.setUrlInfo(canaleModel.getUrlInfo());
-				psp.getCanale().add(canale);
-			}
-			psps.add(psp);
-		}
-		return psps;
 	}
 
 	public static List<GpAvviaTransazionePagamentoResponse.RifTransazione> toRifTransazione(List<it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione> rifTransazioniModel) {
