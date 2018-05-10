@@ -25,13 +25,11 @@ import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IAuditService;
 import it.govpay.orm.dao.IBatchService;
-import it.govpay.orm.dao.ICanaleService;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
 import it.govpay.orm.dao.IDBAuditService;
 import it.govpay.orm.dao.IDBBatchService;
-import it.govpay.orm.dao.IDBCanaleService;
 import it.govpay.orm.dao.IDBConnettoreService;
 import it.govpay.orm.dao.IDBDominioService;
 import it.govpay.orm.dao.IDBEventoService;
@@ -45,7 +43,6 @@ import it.govpay.orm.dao.IDBOperatoreService;
 import it.govpay.orm.dao.IDBOperazioneService;
 import it.govpay.orm.dao.IDBPagamentoService;
 import it.govpay.orm.dao.IDBPortaleService;
-import it.govpay.orm.dao.IDBPspService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
@@ -69,7 +66,6 @@ import it.govpay.orm.dao.IOperatoreService;
 import it.govpay.orm.dao.IOperazioneService;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPortaleService;
-import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
@@ -101,7 +97,6 @@ public class BasicBD {
 	private IACLService aclService;
 	private IAuditService auditService;
 	private IBatchService batchService;
-	private ICanaleService canaleService;
 	private IConnettoreService connettoreService;
 	private IDominioService dominioService;
 	private IEventoService eventoService;
@@ -114,7 +109,6 @@ public class BasicBD {
 	private IOperazioneService operazioneService;
 	private IPagamentoService pagamentoService;
 	private IPortaleService portaleService;
-	private IPspService pspService;
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
 	private IRendicontazioneService rendicontazioneService;
 	private IRPTService rptService;
@@ -174,7 +168,6 @@ public class BasicBD {
 				this.aclService = this.serviceManager.getACLService();
 				this.auditService = this.serviceManager.getAuditService();
 				this.batchService = this.serviceManager.getBatchService();
-				this.canaleService = this.serviceManager.getCanaleService();
 				this.connettoreService = this.serviceManager.getConnettoreService();
 				this.dominioService = this.serviceManager.getDominioService();
 				this.eventoService = this.serviceManager.getEventoService();
@@ -187,7 +180,6 @@ public class BasicBD {
 				this.operazioneService = this.serviceManager.getOperazioneService();
 				this.portaleService = this.serviceManager.getPortaleService();
 				this.pagamentoService = this.serviceManager.getPagamentoService();
-				this.pspService = this.serviceManager.getPspService();
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
 				this.rptService = this.serviceManager.getRPTService();
@@ -219,7 +211,6 @@ public class BasicBD {
 			((IDBACLService)this.aclService).enableSelectForUpdate();
 			((IDBAuditService)this.auditService).enableSelectForUpdate();
 			((IDBBatchService)this.batchService).enableSelectForUpdate();
-			((IDBCanaleService)this.canaleService).enableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
 			((IDBDominioService)this.dominioService).enableSelectForUpdate();
 			((IDBEventoService)this.eventoService).enableSelectForUpdate();
@@ -232,7 +223,6 @@ public class BasicBD {
 			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).enableSelectForUpdate();
-			((IDBPspService)this.pspService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
 			((IDBRRService)this.rrService).enableSelectForUpdate();
 			((IDBRuoloService)this.ruoloService).enableSelectForUpdate();
@@ -260,7 +250,6 @@ public class BasicBD {
 			((IDBACLService)this.aclService).disableSelectForUpdate();
 			((IDBAuditService)this.auditService).disableSelectForUpdate();
 			((IDBBatchService)this.batchService).disableSelectForUpdate();
-			((IDBCanaleService)this.canaleService).disableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
 			((IDBDominioService)this.dominioService).disableSelectForUpdate();
 			((IDBEventoService)this.eventoService).disableSelectForUpdate();
@@ -273,7 +262,6 @@ public class BasicBD {
 			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).disableSelectForUpdate();
-			((IDBPspService)this.pspService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
 			((IDBRRService)this.rrService).disableSelectForUpdate();
 			((IDBRuoloService)this.ruoloService).disableSelectForUpdate();
@@ -325,13 +313,6 @@ public class BasicBD {
 			return father.getBatchService();
 		}
 		return batchService;
-	}
-
-	public ICanaleService getCanaleService() {
-		if(father != null) {
-			return father.getCanaleService();
-		}
-		return canaleService;
 	}
 
 	public IConnettoreService getConnettoreService() {
@@ -419,13 +400,6 @@ public class BasicBD {
 		return portaleService;
 	}
 
-	public IPspService getPspService() {
-		if(father != null) {
-			return father.getPspService();
-		}
-		return pspService;
-	}
-	
 	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
 		if(father != null) {
 			return father.getRendicontazionePagamentoServiceSearch();

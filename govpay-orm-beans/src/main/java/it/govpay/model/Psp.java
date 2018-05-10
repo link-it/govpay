@@ -19,96 +19,29 @@
  */
 package it.govpay.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Psp extends BasicModel {	
 	
 	private static final long serialVersionUID = 1L;
-	private Long id; 	
 	private String codPsp;
-	private String codFlusso;
 	private String ragioneSociale;
-	private String urlInfo;
-	private boolean bolloGestito;
-	private boolean stornoGestito;
-	private boolean abilitato;
-	private List<Canale> canali = new ArrayList<Canale>();
+	private String codIntermediarioPsp;
 	
-	public Psp() {
-		canali = new ArrayList<Canale>();
+	public Psp(String codIntermediarioPsp, String codPsp, String ragioneSociale) {
+		this.codPsp = codPsp;
+		this.ragioneSociale = ragioneSociale;
+		this.codIntermediarioPsp = codIntermediarioPsp;
 	}
 	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public String getCodPsp() {
 		return codPsp;
-	}
-
-	public void setCodPsp(String codPsp) {
-		this.codPsp = codPsp;
 	}
 
 	public String getRagioneSociale() {
 		return ragioneSociale;
 	}
 
-	public void setRagioneSociale(String ragioneSociale) {
-		this.ragioneSociale = ragioneSociale;
-	}
-
-	public String getUrlInfo() {
-		return urlInfo;
-	}
-
-	public void setUrlInfo(String urlInfo) {
-		this.urlInfo = urlInfo;
-	}
-
-	public boolean isBolloGestito() {
-		return bolloGestito;
-	}
-
-	public void setBolloGestito(boolean bolloGestito) {
-		this.bolloGestito = bolloGestito;
-	}
-
-	public boolean isStornoGestito() {
-		return stornoGestito;
-	}
-
-	public void setStornoGestito(boolean stornoGestito) {
-		this.stornoGestito = stornoGestito;
-	}
-
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-	
-	public List<Canale> getCanali() {
-		return canali;
-	}
-
-	public void setCanali(List<Canale> canali) {
-		this.canali = canali;
-	}
-	
-	public String getCodFlusso() {
-		return codFlusso;
-	}
-
-	public void setCodFlusso(String codFlusso) {
-		this.codFlusso = codFlusso;
+	public String getCodIntermediarioPsp() {
+		return codIntermediarioPsp;
 	}
 
 }

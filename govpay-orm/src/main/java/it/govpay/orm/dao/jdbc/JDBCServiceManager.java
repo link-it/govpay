@@ -23,8 +23,6 @@ import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IACLServiceSearch;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IApplicazioneServiceSearch;
-import it.govpay.orm.dao.ICanaleService;
-import it.govpay.orm.dao.ICanaleServiceSearch;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IConnettoreServiceSearch;
 import it.govpay.orm.dao.IDominioService;
@@ -47,8 +45,6 @@ import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPagamentoServiceSearch;
 import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IPortaleServiceSearch;
-import it.govpay.orm.dao.IPspService;
-import it.govpay.orm.dao.IPspServiceSearch;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRPTServiceSearch;
 import it.govpay.orm.dao.IRRService;
@@ -232,70 +228,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IDominioService getDominioService() throws ServiceException,NotImplementedException{
 		return new JDBCDominioService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Psp type:Psp
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Psp}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Psp}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPspServiceSearch getPspServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCPspServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Psp}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Psp}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IPspService getPspService() throws ServiceException,NotImplementedException{
-		return new JDBCPspService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Canale type:Canale
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Canale}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Canale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ICanaleServiceSearch getCanaleServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCCanaleServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Canale}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Canale}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ICanaleService getCanaleService() throws ServiceException,NotImplementedException{
-		return new JDBCCanaleService(this);
 	}
 	
 	

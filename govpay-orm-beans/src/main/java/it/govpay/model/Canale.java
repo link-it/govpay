@@ -76,83 +76,25 @@ public class Canale extends BasicModel {
 		}
 	}
 	
-	private static final long serialVersionUID = 1L;
-	private Long id; 
-	private long idPsp; 
-	private String codCanale;
-	private String codIntermediario;
-	private TipoVersamento tipoVersamento;
-	private ModelloPagamento modelloPagamento;
-	private String disponibilita;
-	private String descrizione;
-	private String condizioni;
-	private String urlInfo;
-	private boolean abilitato;
+	public Canale(String codCanale, TipoVersamento tipoVersamento) {
+		this.codCanale = codCanale;
+		this.tipoVersamento = tipoVersamento;
+	}
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+	private static final long serialVersionUID = 1L;
+	private String codCanale;
+	private TipoVersamento tipoVersamento;
+	
 	public TipoVersamento getTipoVersamento() {
 		return tipoVersamento;
 	}
 	public void setTipoVersamento(TipoVersamento tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
-	public ModelloPagamento getModelloPagamento() {
-		return modelloPagamento;
-	}
-	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
-		this.modelloPagamento = modelloPagamento;
-	}
-	public String getDisponibilita() {
-		return disponibilita;
-	}
-	public void setDisponibilita(String disponibita) {
-		this.disponibilita = disponibita;
-	}
-	public String getDescrizione() {
-		return descrizione;
-	}
-	public void setDescrizione(String descrizione) {
-		this.descrizione = descrizione;
-	}
-	public String getCondizioni() {
-		return condizioni;
-	}
-	public void setCondizioni(String condizioni) {
-		this.condizioni = condizioni;
-	}
-	public String getUrlInfo() {
-		return urlInfo;
-	}
-	public void setUrlInfo(String urlInfo) {
-		this.urlInfo = urlInfo;
-	}
 	public String getCodCanale() {
 		return codCanale;
 	}
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
-	}
-	public String getCodIntermediario() {
-		return codIntermediario;
-	}
-	public void setCodIntermediario(String codIntermediario) {
-		this.codIntermediario = codIntermediario;
-	}
-	public boolean isAbilitato() {
-		return this.abilitato;
-	}
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-	public long getIdPsp() {
-		return idPsp;
-	}
-	public void setIdPsp(long idPsp) {
-		this.idPsp = idPsp;
 	}
 }

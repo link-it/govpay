@@ -31,10 +31,6 @@ public class ModelFactory {
 
 	public static DominioModel DOMINIO = new DominioModel();
 	
-	public static PspModel PSP = new PspModel();
-	
-	public static CanaleModel CANALE = new CanaleModel();
-	
 	public static UoModel UO = new UoModel();
 	
 	public static PortaleModel PORTALE = new PortaleModel();

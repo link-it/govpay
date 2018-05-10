@@ -28,7 +28,6 @@ import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.AvviaTransazioneDTO;
 import it.govpay.core.business.model.AvviaTransazioneDTOResponse;
-import it.govpay.core.business.model.SceltaWISP;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.Gp21Utils;
 import it.govpay.core.utils.GpContext;
@@ -36,8 +35,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Psp;
 import it.govpay.model.Iuv;
 import it.govpay.model.Portale;
 import it.govpay.model.Versionabile.Versione;
@@ -102,40 +99,13 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	
 	@Override
 	public GpChiediListaPspResponse gpChiediListaPsp(GpChiediListaPsp bodyrichiesta) {
-		log.debug("Richiesta operazione gpChiediListaPsp");
+		log.info("Richiesta operazione deprecata gpChiediListaPsp");
 		GpChiediListaPspResponse response = new GpChiediListaPspResponse();
 		GpContext ctx = GpThreadLocal.get();
-		BasicBD bd = null;
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			getPortaleAutenticato(bd);
-			ctx.log("ws.ricevutaRichiesta");
-			
-			it.govpay.core.business.Psp pspBusiness = new it.govpay.core.business.Psp(bd);
-			List<Psp> psps = pspBusiness.chiediListaPsp();
-			response.getPsp().addAll(Gp21Utils.toPsp(psps));
-			
-			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.log("ws.ricevutaRichiestaOk");
-		} catch (GovPayException e) {
-			response.setCodEsitoOperazione(e.getCodEsito());
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			e.log(log);
-			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
-		} catch (Exception e) {
-			log.error("Richiesta lista psp fallita", e);
-			GovPayException gpe = new GovPayException(e);
-			response.setCodEsitoOperazione(gpe.getCodEsito());
-			response.setDescrizioneEsitoOperazione(gpe.getMessage());
-			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
-		} finally {
-			if(ctx != null) {
-				ctx.setResult(response);
-				ctx.log();
-			}
-			if(bd != null) bd.closeConnection();
-		}
+		response.setCodEsitoOperazione(EsitoOperazione.OK);
 		response.setCodOperazione(ThreadContext.get("op"));
+		ctx.setResult(response);
+		ctx.log();
 		return response;
 	}
 	
@@ -159,27 +129,13 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");
 			
-			if(bodyrichiesta.getCanale() != null) {
-				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", bodyrichiesta.getCanale().getCodPsp()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", bodyrichiesta.getCanale().getCodCanale()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", bodyrichiesta.getCanale().getTipoVersamento().name()));
-			} else {
-				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", bodyrichiesta.getSceltaWisp().getCodDominio()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyPA", bodyrichiesta.getSceltaWisp().getCodKeyPA()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyWISP", bodyrichiesta.getSceltaWisp().getCodKeyWISP()));
-			}
-			
 			if(bodyrichiesta.getVersamentoOrVersamentoRef().size() > 1) {
 				ctx.getPagamentoCtx().setCarrello(true);
 				String codCarrello = RptUtils.buildUUID35();
 				ctx.getPagamentoCtx().setCodCarrello(codCarrello);
 				ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
 				ctx.setCorrelationId(codCarrello);
-				if(bodyrichiesta.getCanale() != null) {
-					ctx.log("pagamento.avviaTransazioneCarrello");
-				} else {
-					ctx.log("pagamento.avviaTransazioneCarrelloWISP");
-				}
+				ctx.log("pagamento.avviaTransazioneCarrello");
 					
 			} else {
 				
@@ -191,11 +147,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 					ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", versamento.getCodApplicazione()));
 					ctx.getContext().getRequest().addGenericProperty(new Property("codVersamentoEnte", versamento.getCodVersamentoEnte()));
 					ctx.setCorrelationId(versamento.getCodApplicazione() + versamento.getCodVersamentoEnte());
-					if(bodyrichiesta.getCanale() != null) {
-						ctx.log("pagamento.avviaTransazione");
-					} else {
-						ctx.log("pagamento.avviaTransazioneWISP");
-					}
+					ctx.log("pagamento.avviaTransazione");
 				} else {
 					it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
 					Iterator<JAXBElement<String>> iterator = versamento.getContent().iterator();
@@ -226,22 +178,14 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 						ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", codApplicazione));
 						ctx.getContext().getRequest().addGenericProperty(new Property("codVersamentoEnte", codVersamentoEnte));
 						ctx.setCorrelationId(codApplicazione + codVersamentoEnte);
-						if(bodyrichiesta.getCanale() != null) {
-							ctx.log("pagamento.avviaTransazioneRef");
-						} else {
-							ctx.log("pagamento.avviaTransazioneRefWISP");
-						}
+						ctx.log("pagamento.avviaTransazioneRef");
 					}
 					
 					if(codDominio != null && iuv != null) {
 						ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 						ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
 						ctx.setCorrelationId(codDominio + iuv);
-						if(bodyrichiesta.getCanale() != null) {
-							ctx.log("pagamento.avviaTransazioneRefIuv");
-						} else {
-							ctx.log("pagamento.avviaTransazioneRefIuvWISP");
-						}
+						ctx.log("pagamento.avviaTransazioneRefIuv");
 					}
 					
 					if(codApplicazione != null && bundlekey != null) {
@@ -251,86 +195,17 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 						ctx.getContext().getRequest().addGenericProperty(new Property("codUnivocoDebitore", codUnivocoDebitore != null ? codUnivocoDebitore : GpContext.NOT_SET));
 						
 						ctx.setCorrelationId(codApplicazione + bundlekey + (codUnivocoDebitore != null ? codUnivocoDebitore : "") + (codDominio != null ? codDominio : ""));
-						if(bodyrichiesta.getCanale() != null) {
-							ctx.log("pagamento.avviaTransazioneRefBundle");
-						} else {
-							ctx.log("pagamento.avviaTransazioneRefBundleWISP");
-						}
+						ctx.log("pagamento.avviaTransazioneRefBundle");
 					}
 				}
 			}
 			
-			
-			it.govpay.bd.model.Canale canale = null;
-			
-			if(bodyrichiesta.getCanale() == null) {
-				
-				it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
-				
-				Dominio dominio = null;
-				try {
-					dominio = AnagraficaManager.getDominio(bd, bodyrichiesta.getSceltaWisp().getCodDominio());
-				} catch (NotFoundException e) {
-					throw new GovPayException(EsitoOperazione.DOM_000, bodyrichiesta.getSceltaWisp().getCodDominio());
-				}
-				
-				SceltaWISP scelta = null;
-				
-				try {
-					scelta = wisp.chiediScelta(portaleAutenticato, dominio, bodyrichiesta.getSceltaWisp().getCodKeyPA(), bodyrichiesta.getSceltaWisp().getCodKeyWISP());
-				} catch (Exception e) {
-					ctx.log("pagamento.risoluzioneWispKo", e.getMessage());
-					throw e;
-				}
-				
-				if(scelta.isSceltaEffettuata() && !scelta.isPagaDopo()) {
-					if(scelta.getCodPsp().equals(Rpt.codPspWISP20))
-						canale = null;
-					else
-						try {
-							canale = AnagraficaManager.getCanale(bd,  scelta.getCodPsp(), scelta.getCodCanale(), it.govpay.model.Canale.TipoVersamento.toEnum(scelta.getTipoVersamento()));
-						} catch (NotFoundException e) {
-							throw new GovPayException(EsitoOperazione.WISP_002,  scelta.getCodPsp(), scelta.getCodCanale(), scelta.getTipoVersamento());
-						}
-				}
-				if(!scelta.isSceltaEffettuata()) {
-					ctx.log("pagamento.risoluzioneWispOkNoScelta");
-					throw new GovPayException(EsitoOperazione.WISP_003);
-				}
-				if(scelta.isPagaDopo()) {
-					ctx.log("pagamento.risoluzioneWispOkPagaDopo");
-					throw new GovPayException(EsitoOperazione.WISP_004);
-				}
-				
-				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", scelta.getCodPsp()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", scelta.getCodCanale()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", scelta.getTipoVersamento()));
-				
-				ctx.log("pagamento.risoluzioneWispOkCanale");
-			} else {
-				
-				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", bodyrichiesta.getCanale().getCodPsp()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", bodyrichiesta.getCanale().getCodCanale()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", bodyrichiesta.getCanale().getTipoVersamento().toString()));
-				
-				// WO WISP 2.0
-				if(!bodyrichiesta.getCanale().getCodPsp().equals(Rpt.codPspWISP20)) {
-					try {
-						it.govpay.model.Canale.TipoVersamento tipoVersamento = it.govpay.model.Canale.TipoVersamento.toEnum(bodyrichiesta.getCanale().getTipoVersamento().toString());
-						canale = AnagraficaManager.getCanale(bd, bodyrichiesta.getCanale().getCodPsp(), bodyrichiesta.getCanale().getCodCanale(), tipoVersamento);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.PSP_000, bodyrichiesta.getCanale().getCodPsp(), bodyrichiesta.getCanale().getCodCanale(), bodyrichiesta.getCanale().getTipoVersamento().toString());
-					}
-				}
-			}
-			
-			ctx.log("pagamento.identificazioneCanale");
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			
 			AvviaTransazioneDTO dto = new AvviaTransazioneDTO();
 			dto.setAggiornaSeEsisteB(bodyrichiesta.isAggiornaSeEsiste());
 			dto.setAutenticazione(bodyrichiesta.getAutenticazione().value());
-			dto.setCanale(canale);
+			dto.setCanale(it.govpay.bd.model.Canale.canaleUniversale);
 			dto.setIbanAddebito(bodyrichiesta.getIbanAddebito());
 			dto.setPortale(portaleAutenticato);
 			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());
@@ -428,64 +303,21 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 
 	@Override
 	public GpChiediSceltaWispResponse gpChiediSceltaWisp(GpChiediSceltaWisp bodyrichiesta) {
-		log.info("Richiesta operazione gpChiediSceltaWisp dal portale (" +  bodyrichiesta.getCodPortale() +")");
+		log.info("Richiesta operazione deprecata gpChiediSceltaWisp dal portale (" +  bodyrichiesta.getCodPortale() +")");
 		GpContext ctx = GpThreadLocal.get();
 		GpChiediSceltaWispResponse response = new GpChiediSceltaWispResponse();
-		BasicBD bd = null;
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			
-			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("ws.ricevutaRichiesta");
-			
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("ws.autorizzazione");
-			
-			it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
-			
-			Dominio dominio = null;
-			try {
-				dominio = AnagraficaManager.getDominio(bd, bodyrichiesta.getCodDominio());
-			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.DOM_000, bodyrichiesta.getCodDominio());
-			}
-			SceltaWISP scelta = wisp.chiediScelta(portaleAutenticato, dominio, bodyrichiesta.getCodKeyPA(), bodyrichiesta.getCodKeyWISP());
-			if(scelta.isSceltaEffettuata()) {
-				if(scelta.isPagaDopo()) {
-					response.setScelta(TipoSceltaWisp.PAGA_DOPO);
-				} else {
-					response.setScelta(TipoSceltaWisp.SI);
-					Canale canale = new Canale();
-					canale.setCodCanale(scelta.getCodCanale());
-					canale.setCodPsp(scelta.getCodPsp());
-					canale.setTipoVersamento(TipoVersamento.fromValue(scelta.getTipoVersamento()));
-					response.setCanale(canale);
-				}
-			} else {
-				response.setScelta(TipoSceltaWisp.NO);
-			}
-			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.log("ws.ricevutaRichiestaOk");
-			log.info("SceltaWISP recuperata (" + response.getScelta() + ")");
-		} catch (GovPayException e) {
-			response.setCodEsitoOperazione(e.getCodEsito());
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			e.log(log);
-			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
-		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			new GovPayException(e).log(log);
-			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
-			log.error("Richiesta di risoluzione wisp fallita", e);
-		} finally {
-			if(ctx != null) {
-				ctx.setResult(response);
-				ctx.log();
-			}
-			if(bd != null) bd.closeConnection();
-		}
+		response.setScelta(TipoSceltaWisp.SI);
+		Canale canale = new Canale();
+		canale.setCodCanale(it.govpay.bd.model.Canale.canaleUniversale.getCodCanale());
+		canale.setCodPsp(it.govpay.bd.model.Canale.canaleUniversale.getPsp().getCodPsp());
+		canale.setTipoVersamento(TipoVersamento.fromValue(it.govpay.bd.model.Canale.canaleUniversale.getTipoVersamento().getCodifica()));
+		response.setCanale(canale);
+		response.setCodEsitoOperazione(EsitoOperazione.OK);
+		response.setDescrizioneEsitoOperazione("Operazione completata con successo");
+		ctx.log("ws.ricevutaRichiestaOk");
 		response.setCodOperazione(ThreadContext.get("op"));
+		ctx.setResult(response);
+		ctx.log();
 		return response;
 	}
 

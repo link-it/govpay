@@ -43,7 +43,6 @@ import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
 import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
 import it.govpay.web.rs.dars.anagrafica.portali.Portali;
-import it.govpay.web.rs.dars.anagrafica.psp.Psp;
 import it.govpay.web.rs.dars.anagrafica.ruoli.Ruoli;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo;
 import it.govpay.web.rs.dars.caricamenti.tracciati.Tracciati;
@@ -61,8 +60,6 @@ import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Fr;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Transazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
-import it.govpay.web.rs.dars.statistiche.transazioni.DistribuzioneEsiti;
-import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 @Path("/dars/")
@@ -119,10 +116,6 @@ public class Menu extends BaseRsService {
 			// Preparazione Voci menu' sezione anagrafica
 
 			if(this.checkDirittiServizioOperatore(bd, Servizio.Anagrafica_PagoPa)){
-				Psp pspDars = new Psp();
-				URI pspURI = new URI(pspDars.getPathServizio());
-				vociMenuAnagrafica.add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), pspURI, VoceMenu.VOCE_ANAGRAFICA));
-
 				Intermediari intermediariDars = new Intermediari();
 				URI intermediariURI = new URI(intermediariDars.getPathServizio());
 				VoceMenu voceMenuIntermediari = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"),	intermediariURI, VoceMenu.VOCE_ANAGRAFICA);
@@ -206,14 +199,6 @@ public class Menu extends BaseRsService {
 				URI caricamentoTracciatiURI = new URI(caricamentoTracciatiDars.getPathServizio());
 				VoceMenu voceMenuCaricamentoTracciati = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(caricamentoTracciatiDars.getNomeServizio() + ".titolo"),	caricamentoTracciatiURI, VoceMenu.VOCE_OPERAZIONIMASSIVE);
 				vociMenuCaricamenti.add(voceMenuCaricamentoTracciati);
-			}
-
-			// Preparazione voci menu' statistiche
-			if(ConsoleProperties.getInstance().isAbilitaFunzionalitaStatistiche() && this.checkDirittiServizioOperatore(bd, Servizio.Statistiche)){
-				DistribuzioneEsiti statTransazioniDars = new DistribuzioneEsiti();
-				URI statTransazioniURI = new URI(statTransazioniDars.getPathServizio());
-				VoceMenu voceMenuStatTransazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(statTransazioniDars.getNomeServizio() + ".titolo"),	statTransazioniURI, VoceMenu.VOCE_STATISTICA);
-				vociMenuStatistiche.add(voceMenuStatTransazioni);
 			}
 
 			// Preparazione voci menu' Manutenzione

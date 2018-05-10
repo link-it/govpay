@@ -19,22 +19,12 @@
  */
 package it.govpay.bd.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Psp extends it.govpay.model.Psp {	
 	
 	private static final long serialVersionUID = 1L;
-	 
-	private transient List<Canale> listaCanali;
 	
-	public List<Canale> getCanalis() {
-		if(listaCanali == null) 
-			listaCanali = new ArrayList<Canale>();
-		return listaCanali;
+	public Psp(String codIntermediarioPsp, String codPsp, String ragioneSociale) {
+		super(codIntermediarioPsp, codPsp, ragioneSociale);
 	}
-
-	public void setCanalis(List<Canale> canali) {
-		this.listaCanali = canali;
-	}
+	 
 }

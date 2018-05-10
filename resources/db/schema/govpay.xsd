@@ -269,20 +269,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="id-psp">
-		<xsd:sequence>
-			<xsd:element name="codPsp" type="xsd:string"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:complexType name="id-canale">
-		<xsd:sequence>
-			<xsd:element name="idPsp" type="id-psp"/>
-			<xsd:element name="codCanale" type="xsd:string"/>
-			<xsd:element name="tipoVersamento" type="xsd:string"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
 	<xsd:complexType name="id-operatore">
 		<xsd:sequence>
 			<xsd:element name="principal" type="xsd:string"/>
@@ -541,92 +527,6 @@
 			
 			<xsd:element name="logo" type="xsd:base64Binary" minOccurs="0"/>
 
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:element name="Psp" type="Psp"/>
-	<xsd:complexType name="Psp">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true" id="id-psp"/>
-					<linkit:sql-table-mapping generate-sql="true" name="psp"
-						on-delete-cascade="false">
-						<linkit:sql-table-constraint foreign-key="fk_psp"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="codPsp"/>
-						</linkit:sql-table-unique>
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="codPsp" type="String35"/>
-			<xsd:element name="ragioneSociale" type="String70"/>
-			<xsd:element name="urlInfo" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="abilitato" type="xsd:boolean"/>
-			<xsd:element name="storno" type="xsd:boolean"/>
-			<xsd:element name="marcaBollo" type="xsd:boolean"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:element name="Canale" type="Canale"/>
-	<xsd:complexType name="Canale">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true" id="id-canale"/>
-					<linkit:sql-table-mapping generate-sql="true" name="canali"
-						on-delete-cascade="false">
-						<linkit:sql-table-constraint foreign-key="fk_can"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-column name="id_psp"/>
-							<linkit:sql-table-unique-field name="codCanale"/>
-							<linkit:sql-table-unique-field name="tipoVersamento"/>
-						</linkit:sql-table-unique>
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-
-			<xsd:element name="idPsp" type="id-psp">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Psp" object-type="Psp"
-								relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-
-			<xsd:element name="codCanale" type="String35"/>
-			<xsd:element name="codIntermediario" type="String35"/>
-			<xsd:element name="tipoVersamento" type="String4"/>
-			<xsd:element name="modelloPagamento" type="TwoDigitsDecimal"/>
-			<xsd:element name="disponibilita" type="String511" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="descrizione" type="String511" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="condizioni" type="String35" minOccurs="0"/>
-			<xsd:element name="urlInfo" type="xsd:string" minOccurs="0"/>
-
-			<xsd:element name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

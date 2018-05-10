@@ -380,6 +380,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				response.getFlussoRendicontazione().add(Gp23Utils.toFr(frModel, bd));
 			}
 			response.setCodEsito(EsitoOperazione.OK.toString());
+			response.setDescrizioneEsito("Operazione completata con successo");
 			response.setMittente(Mittente.GOV_PAY);
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {
@@ -446,6 +447,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			response.setFlussoRendicontazione(Gp23Utils.toFr(frModel, rends, bd));
 			response.setCodEsito(EsitoOperazione.OK.toString());
+			response.setDescrizioneEsito("Operazione completata con successo");
 			response.setMittente(Mittente.GOV_PAY);
 			ctx.log("gprnd.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {

@@ -36,7 +36,7 @@ import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
@@ -95,35 +95,15 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	
 	@Override
 	public GpChiediListaPspResponse gpChiediListaPsp(GpChiediListaPsp bodyrichiesta) {
-		log.debug("Richiesta operazione gpChiediListaPsp");
+		log.info("Richiesta operazione deprecata gpChiediListaPsp");
 		GpChiediListaPspResponse response = new GpChiediListaPspResponse();
 		GpContext ctx = GpThreadLocal.get();
-		BasicBD bd = null;
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			
-			getPortaleAutenticato(bd);
-			
-			ctx.log("ws.ricevutaRichiesta");
-			
-			it.govpay.core.business.Psp pspBusiness = new it.govpay.core.business.Psp(bd);
-			List<Psp> psps = pspBusiness.chiediListaPsp();
-			response.getPsp().addAll(Gp25Utils.toPsp(psps));
-			response.setCodEsito(EsitoOperazione.OK.toString());
-			response.setDescrizioneEsito("Operazione completata con successo");
-			response.setMittente(Mittente.GOV_PAY);
-			ctx.log("ws.ricevutaRichiestaOk");
-		} catch (GovPayException gpe) {
-			response = (GpChiediListaPspResponse) gpe.getWsResponse(response, "ws.ricevutaRichiestaKo", log);
-		} catch (Exception e) {
-			response = (GpChiediListaPspResponse) new GovPayException(e).getWsResponse(response, "ws.ricevutaRichiestaKo", log);
-		} finally {
-			if(ctx != null) {
-				ctx.setResult(response);
-				ctx.log();
-			}
-			if(bd != null) bd.closeConnection();
-		}
+		response.setCodEsito(EsitoOperazione.OK.toString());
+		response.setDescrizioneEsito("Operazione completata con successo");
+		response.setMittente(Mittente.GOV_PAY);
+		ctx.log("ws.ricevutaRichiestaOk");
+		ctx.setResult(response);
+		ctx.log();
 		response.setCodOperazione(ThreadContext.get("op"));
 		return response;
 	}
@@ -160,6 +140,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			AvviaTransazioneDTO dto = new AvviaTransazioneDTO();
 			dto.setAggiornaSeEsisteB(bodyrichiesta.isAggiornaSeEsiste());
 			dto.setAutenticazione(bodyrichiesta.getAutenticazione().value());
+			dto.setCanale(Canale.canaleUniversale);
 			dto.setIbanAddebito(bodyrichiesta.getIbanAddebito());
 			dto.setPortale(portaleAutenticato);
 			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());

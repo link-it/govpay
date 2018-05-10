@@ -66,7 +66,6 @@ import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
-import it.govpay.core.utils.RtUtils;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.comparator.EstrattoContoComparator;
@@ -918,7 +917,6 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo ai ruoli con diritto di lettura
 			this.darsService.checkDirittiServizioLettura(bd, this.funzionalita);
-			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd); 
@@ -989,7 +987,6 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			filter.getFilterSortList().add(fsw);
 			List<Pagamento> findAllPag = new ArrayList<Pagamento>();
 
-			int countIterazione = -1;
 			int offset = 0;
 
 			// esecuzione della ricerca di tutti i pagamenti paginata per problemi di performance, nel caso di esporta rt pdf c'e' il limit impostato e si fa solo un ciclo

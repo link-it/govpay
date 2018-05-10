@@ -42,6 +42,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -49,14 +50,13 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
-import it.govpay.web.rs.dars.anagrafica.psp.PspHandler;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -501,57 +501,26 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			if(fr != null){
+				
+				CtFlussoRiversamento ctFr;
+				try {
+					ctFr = JaxbUtils.toFR(fr.getXml());
+				} catch (Exception e1) {
+					throw new ConsoleException(e1);
+				}
 
 				// campi da visualizzare flusso, dominio, psp, trn, bic, data flusso, data regolamento, importo totale, sezione anomalie
-
-				if(StringUtils.isNotEmpty(fr.getCodFlusso())) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"), fr.getCodFlusso());
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"), ctFr.getIdentificativoFlusso());
+				try {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), fr.getCodDominio() + " - " + fr.getDominio(bd).getRagioneSociale());
+				} catch (Exception e) { 
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), ctFr.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco() + ((ctFr.getIstitutoRicevente().getDenominazioneRicevente() != null) ? " - " + ctFr.getIstitutoRicevente().getDenominazioneRicevente() : ""));
 				}
-
-				// dominio
-				Dominio dominio = null;
-				try{
-					dominio = fr.getDominio(bd);
-				}catch (Exception e) {
-					// dominio non censito 
-				}
-				if(dominio != null) {
-					Domini dominiDars = new Domini();
-					DominiHandler dominiDarsHandler =  (DominiHandler) dominiDars.getDarsHandler();
-					Elemento elemento = dominiDarsHandler.getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), elemento.getTitolo(),elemento.getUri());
-				} else {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), fr.getCodDominio());
-				}
-
-				Psp psp = null;
-				try{
-					psp =fr.getPsp(bd);
-				}catch (Exception e) {
-					// psp non censito 
-				}
-
-				if(psp != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
-				} else {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),fr.getCodPsp());
-				}
-
-				if(StringUtils.isNotEmpty(fr.getIur())) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.label"), fr.getIur());
-				}
-
-				if(StringUtils.isNotEmpty(fr.getCodBicRiversamento())) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicRiversamento.label"), fr.getCodBicRiversamento());
-				}
-
-				if(fr.getDataFlusso() != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFlusso.label"), this.sdf.format(fr.getDataFlusso()));
-				}
-				if(fr.getDataRegolamento() != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataRegolamento.label"), this.sdf.format(fr.getDataRegolamento()));
-				}
-
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"), ctFr.getIstitutoMittente().getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco() + ((ctFr.getIstitutoMittente().getDenominazioneMittente() != null) ? " - " + ctFr.getIstitutoRicevente().getDenominazioneRicevente() : ""));
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicRiversamento.label"), ctFr.getCodiceBicBancaDiRiversamento());
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.label"), ctFr.getIdentificativoUnivocoRegolamento());
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFlusso.label"), this.sdf.format(fr.getDataFlusso()));
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataRegolamento.label"), this.sdf.format(fr.getDataRegolamento()));
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"),
 						this.currencyUtils.getCurrencyAsEuro(fr.getImportoTotalePagamenti()));
 
@@ -632,6 +601,14 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 	@Override
 	public Map<String, Voce<String>> getVoci(Fr entry, BasicBD bd) throws ConsoleException { 
+		
+		CtFlussoRiversamento ctFr;
+		try {
+			ctFr = JaxbUtils.toFR(entry.getXml());
+		} catch (Exception e1) {
+			throw new ConsoleException(e1);
+		}
+		
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
 
 
@@ -643,12 +620,6 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"),
 							entry.getCodFlusso()));
-		}
-
-		if(StringUtils.isNotEmpty(entry.getIur())){
-			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id"),
-					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.label"),
-							entry.getIur()));
 		}
 
 		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numeroPagamenti.id"),
@@ -663,46 +634,20 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniAltroIntermediario.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniAltroIntermediario.label"),
 						entry.getNumAltroIntermediario()+""));
-
-
-		try{		
-			// voci disponibili logo1, logo2, id flusso, idDominio, psp, trn, numero pagamenti, numero pagamenti anomali , numero pagamenti altri intermediari
-			try{
-				Dominio dominio = entry.getDominio(bd);
-				if(dominio != null){
-					Domini dominiDars = new Domini();
-					DominiHandler dominiDarsHandler =  (DominiHandler) dominiDars.getDarsHandler();
-					String dominioTitolo = dominiDarsHandler.getTitolo(dominio, bd);
-					voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
-							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),
-									dominioTitolo));
-				}
-			} catch (NotFoundException e) {
-				// dominio non censito metto solo il coddominio
-				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
-						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),
-								entry.getCodDominio()));
-			}
-
-			try{
-				Psp psp = entry.getPsp(bd);
-				if(psp != null) {
-					it.govpay.web.rs.dars.anagrafica.psp.Psp _psp = new it.govpay.web.rs.dars.anagrafica.psp.Psp();
-					PspHandler pspHandler = (PspHandler) _psp.getDarsHandler();
-					voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.id"),
-							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),
-									pspHandler.getTitolo(psp, bd)));
-				}
-			} catch (NotFoundException e) {
-				// psp non censito metto solo il codice
-				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.id"),
-						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),
-								entry.getCodPsp()));
-			}
-
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
+		
+		try {
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),
+							entry.getCodDominio() + " - " + entry.getDominio(bd).getRagioneSociale()));
+		} catch (Exception e) {
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),
+							ctFr.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco() + ((ctFr.getIstitutoRicevente().getDenominazioneRicevente() != null) ? " - " + ctFr.getIstitutoRicevente().getDenominazioneRicevente() : "")));
 		}
+		
+		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),
+						ctFr.getIstitutoMittente().getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco() + ((ctFr.getIstitutoMittente().getDenominazioneMittente() != null) ? " - " + ctFr.getIstitutoRicevente().getDenominazioneRicevente() : "")));
 
 		return voci; 
 
@@ -753,12 +698,6 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.nessunElementoDaEsportare"));
 				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			} 
-
-//			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
-//				List<String> msg = new ArrayList<String>();
-//				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
-//				throw new ExportException(msg, EsitoOperazione.ERRORE);
-//			}
 
 			filter.setOffset(0);
 			filter.setLimit(limit);

@@ -20,6 +20,9 @@
 package it.govpay.core.utils.thread;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -63,7 +66,7 @@ public class InviaRptThread implements Runnable {
 			ThreadContext.put("cmd", "InviaRptThread");
 			ThreadContext.put("op", ctx.getTransactionId());
 			
-			ctx.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoInviaRPT);
+			ctx.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
 			
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
 			
@@ -72,8 +75,10 @@ public class InviaRptThread implements Runnable {
 			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
 			
 			ctx.log("pagamento.invioRptAttivata");
-				
-			Risposta risposta = RptUtils.inviaRPT(rpt, bd);
+			
+			List<Rpt> rpts = new ArrayList<Rpt>();
+			rpts.add(rpt);
+			Risposta risposta = RptUtils.inviaCarrelloRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpts, bd);
 
 			if(bd == null) {
 				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

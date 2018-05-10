@@ -19,10 +19,8 @@
  */
 package it.govpay.ejb;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.business.Psp;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -166,17 +164,6 @@ public class StartupEjb {
 			ctx.log();
 			throw new RuntimeException("Inizializzazione GovPay ${project.version} (build " + commit + ") fallita.", e);
 		}
-		
-		BasicBD bd = null;
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			new Psp(bd).aggiornaRegistro();
-		} catch (Exception e) {
-			log.error("Aggiornamento della lista dei PSP fallito",e);
-		} finally {
-			if(bd != null) bd.closeConnection();
-		}
-		
 		
 		it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 

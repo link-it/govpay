@@ -21,7 +21,6 @@ package it.govpay.web.rs.dars.monitoraggio.incassi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

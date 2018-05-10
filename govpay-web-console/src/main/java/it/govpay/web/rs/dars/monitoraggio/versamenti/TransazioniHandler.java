@@ -29,9 +29,7 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
@@ -45,11 +43,9 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Evento;
 import it.govpay.model.Rpt.EsitoPagamento;
-import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
-import it.govpay.web.rs.dars.anagrafica.psp.Canali;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -450,9 +446,8 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 				if(rpt.getTipoVersamento() != null) {
 					TipoVersamento tipoVersamento = rpt.getTipoVersamento();
 					if(tipoVersamento != null) {
-						Canali canaliDars = new Canali();
 						sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"),
-								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(canaliDars.getNomeServizio() + ".tipoVersamento."+tipoVersamento.name()));
+								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("canali.tipoVersamento."+tipoVersamento.name()));
 					}
 				}
 

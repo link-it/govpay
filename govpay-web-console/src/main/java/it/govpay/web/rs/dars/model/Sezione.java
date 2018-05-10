@@ -23,6 +23,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 
 public class Sezione {
 	private String etichetta;
@@ -46,8 +48,11 @@ public class Sezione {
 	}
 	
 	public void addVoce(String etichetta, String valore) {
-		this.addVoce(etichetta, valore, false);
-	}
+		if(StringUtils.isNotEmpty(valore))
+			this.addVoce(etichetta, valore, false);
+		else
+			this.addVoce(etichetta, "-", false);
+	}	
 	
 	public void addVoce(String etichetta, String valore, boolean avanzata) {
 		this.voci.add(new Voce<String>(etichetta, valore,avanzata));

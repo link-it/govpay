@@ -123,47 +123,8 @@ public class RptUtils {
 			return text;
 	}
 
-
-
-
-	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException {
-		if(bd != null) bd.closeConnection();
-		Evento evento = new Evento();
-		it.govpay.core.business.model.Risposta risposta = null;
-		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
-			NodoInviaRPT inviaRPT = new NodoInviaRPT();
-			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
-			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
-			inviaRPT.setIdentificativoPSP(rpt.getCodPsp());
-			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
-			inviaRPT.setRpt(rpt.getXmlRpt());
-			
-			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
-			inviaRPT.setTipoFirma("");
-			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
-			return risposta;
-		} finally {
-			// Se mi chiama InviaRptThread, BD e' null
-			boolean newCon = bd == null;
-			if(!newCon) 
-				bd.setupConnection(GpThreadLocal.get().getTransactionId());
-			else {
-				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			}
-			
-			try {
-				GiornaleEventi giornale = new GiornaleEventi(bd);
-				buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaRPT, bd);
-				giornale.registraEvento(evento);
-			} finally {
-				if(newCon) bd.closeConnection();
-			}
-		}
-	}
-
 	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, BasicBD bd) throws GovPayException, ClientException, ServiceException {
-		bd.closeConnection();
+		if(bd != null) bd.closeConnection();
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
@@ -187,13 +148,23 @@ public class RptUtils {
 			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaCarrelloRPT(intermediario, stazione, inviaCarrelloRpt, rpts.get(0).getCodCarrello())); 
 			return risposta;
 		} finally {
-			bd.setupConnection(GpThreadLocal.get().getTransactionId());
-
-			GiornaleEventi giornale = new GiornaleEventi(bd);
-			for(Rpt rpt : rpts) {
-				buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaCarrelloRPT, bd);
-				giornale.registraEvento(evento);
+			// Se mi chiama InviaRptThread, BD e' null
+			boolean newCon = bd == null;
+			if(!newCon) 
+				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+			else {
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			}
+			try {
+				GiornaleEventi giornale = new GiornaleEventi(bd);
+				for(Rpt rpt : rpts) {
+					buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaCarrelloRPT, bd);
+					giornale.registraEvento(evento);
+				}
+			} finally {
+				if(newCon) bd.closeConnection();
+			}
+			bd.setupConnection(GpThreadLocal.get().getTransactionId());
 		}
 	}
 	

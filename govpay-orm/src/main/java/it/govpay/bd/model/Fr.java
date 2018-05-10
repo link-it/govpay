@@ -36,7 +36,6 @@ public class Fr extends it.govpay.model.Fr {
 
 	// Business
 	private transient Dominio dominio;
-	private transient Psp psp;
 	private transient List<Rendicontazione> rendicontazioni;
 	
 	private transient long numOk;
@@ -71,16 +70,6 @@ public class Fr extends it.govpay.model.Fr {
 		this.dominio = dominio;
 	}
 
-	public Psp getPsp(BasicBD bd) throws ServiceException, NotFoundException {
-		if(psp == null){
-			psp = AnagraficaManager.getPsp(bd, this.getCodPsp());
-		}
-		return psp;
-	}
-	public void setPsp(Psp psp) {
-		this.psp = psp;
-	}
-	
 	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
 		if(rendicontazioni == null) {
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
