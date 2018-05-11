@@ -53,7 +53,7 @@ public class GatewayController extends BaseController {
 			aggiornaPagamentiPortaleDTO.setAction(action);
 			aggiornaPagamentiPortaleDTO.setParametriBody(parametriBody);
 			
-			this.log.info("Parametri ricevuti: \n" + aggiornaPagamentiPortaleDTO.toString()); 
+			this.log.trace("Parametri ricevuti: \n" + aggiornaPagamentiPortaleDTO.toString()); 
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();

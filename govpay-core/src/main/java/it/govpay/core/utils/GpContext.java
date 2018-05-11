@@ -27,8 +27,10 @@ import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.beans.proxy.Transaction;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
+import org.openspcoop2.utils.transport.http.HttpServletCredential;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.handler.IntegrationContext;
@@ -105,8 +107,9 @@ public class GpContext {
 			else 
 				client.setInterfaceName("<Unknown>");
 			
-			if(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal() != null)
-				client.setPrincipal(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal().getName());
+			Utenza user = CredentialUtils.getUser(new HttpServletCredential((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST), null));
+			if(user != null)
+				client.setPrincipal(user.getPrincipal());
 			
 			transaction.setClient(client);
 			
@@ -155,8 +158,10 @@ public class GpContext {
 			client.setInvocationEndpoint(request.getRequestURI());
 			
 			client.setInterfaceName(nomeServizio);
-			if(request.getUserPrincipal() != null)
-				client.setPrincipal(request.getUserPrincipal().getName());
+			
+			Utenza user = CredentialUtils.getUser(new HttpServletCredential(request, null));
+			if(user != null)
+				client.setPrincipal(user.getPrincipal());
 			
 			transaction.setClient(client);
 			

@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils;
 
 import java.util.Enumeration;
@@ -8,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.Utilities;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.transport.http.HttpServletCredential;
 import org.slf4j.Logger;
 
@@ -53,11 +73,19 @@ public class CredentialUtils {
 	
 	public static boolean checkSubject(String principalToCheck, String principalFromRequest) throws Exception{
 		boolean ok = true;
-		
-		principalFromRequest = Utilities.formatSubject(principalFromRequest);
-		principalToCheck = Utilities.formatSubject(principalToCheck);
-		
-		Hashtable<String, String> hashSubject = Utilities.getSubjectIntoHashtable(principalFromRequest);
+	
+		Hashtable<String, String> hashSubject = null;
+		try {
+			principalToCheck = Utilities.formatSubject(principalToCheck);
+		}catch(UtilsException e) {
+			throw new NotFoundException("L'utenza registrata non e' un subject valido");
+		}
+		try {
+			principalFromRequest = Utilities.formatSubject(principalFromRequest);
+			hashSubject = Utilities.getSubjectIntoHashtable(principalFromRequest);
+		}catch(UtilsException e) {
+			throw new NotFoundException("Utenza" + principalFromRequest + "non autorizzata");
+		}
 		Enumeration<String> keys = hashSubject.keys();
 		while(keys.hasMoreElements()){
 			String key = keys.nextElement();

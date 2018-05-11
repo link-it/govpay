@@ -246,9 +246,9 @@ public class Versamento extends BasicBD {
 		}
 	}
 
-	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref) throws ServiceException, GovPayException {
+	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref, Dominio dominio) throws ServiceException, GovPayException {
 		// conversione numeroAvviso in iuv
-		String iuv = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso());
+		String iuv = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),dominio.getStazione().getApplicationCode(),dominio.getSegregationCode());
 		return this.chiediVersamento(null, null, null, null, ref.getIdDominio(), iuv);	
 	}
 

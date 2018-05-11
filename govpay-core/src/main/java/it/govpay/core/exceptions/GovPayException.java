@@ -206,6 +206,8 @@ public class GovPayException extends Exception {
 		case APP_005: return "Applicazione non autorizzata per l'operazione richiesta";
 		case VER_024: return "Il versamento (IdA2A:" + params[0] +", Id:"+ params[1] +") ha un numero avviso ("+ params[2] +") diverso dall'originale ("+ params[3] +").";
 		case VER_025: return "Il versamento (IdA2A:" + params[0] + ", Id:" + params[1] + ") ha un numero avviso ("+params[4]+") gia' utilizzato dal versamento (IdA2A:" + params[2] + ", Id:" + params[3] + ").";
+		case VER_026: return "Lo IUV (" + params[0] + ") non e' conforme alle specifiche agid, application code (" + params[1] + ") non valido per la stazione (" + params[2] + ")";
+		case VER_027: return "Lo IUV (" + params[0] + ") non e' conforme alle specifiche agid, segregaton code (" + params[1] + ") non valido per il dominio (" + params[2] + ")";
 		}
 		
 		return "";
@@ -307,6 +309,8 @@ public class GovPayException extends Exception {
 		case APP_005: return "Richiesta non valida";
 		case VER_024: return "Richiesta non valida";
 		case VER_025: return "Richiesta non valida";
+		case VER_026: return "Richiesta non valida";
+		case VER_027: return "Richiesta non valida";
 		}
 		
 		return "";

@@ -109,7 +109,12 @@ public class OperatoriBD extends BasicBD {
 		try {
 			IExpression expr = this.getOperatoreService().newExpression();
 
-			Hashtable<String, String> hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			Hashtable<String, String> hashSubject = null;
+			try {
+			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			}catch(UtilsException e) {
+				throw new NotFoundException("Utenza" + principal + "non autorizzata");
+			}
 			Enumeration<String> keys = hashSubject.keys();
 			while(keys.hasMoreElements()){
 				String key = keys.nextElement();
@@ -119,7 +124,7 @@ public class OperatoriBD extends BasicBD {
 			
 			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
 			return getOperatore(operatoreVO);
-		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException | UtilsException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}

@@ -31,8 +31,9 @@ public class AvvisoPagamentoProperties {
 		return instance;
 	}
 
-	public static AvvisoPagamentoProperties newInstance(String govpayResourceDir) throws Exception {
-		instance = new AvvisoPagamentoProperties(govpayResourceDir);
+	public static synchronized AvvisoPagamentoProperties newInstance(String govpayResourceDir) throws Exception {
+		if(instance == null)
+			instance = new AvvisoPagamentoProperties(govpayResourceDir);
 		return instance;
 	}
 

@@ -23,7 +23,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.openapi.validator.OpenapiApiValidatorConfig;
-import org.openspcoop2.utils.openapi.validator.Test;
 import org.openspcoop2.utils.openapi.validator.Validator;
 import org.openspcoop2.utils.rest.ApiFactory;
 import org.openspcoop2.utils.rest.ApiFormats;
@@ -38,9 +37,11 @@ import it.govpay.rs.BaseRsService;
 public class BaseRsServiceV1 extends BaseRsService {
 	
 	public static Validator validator;
+	private static boolean validatorInitialized = false;
 
-	public static void initValidator(Logger log, byte[] swaggerBackOffice) {
-		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
+	public static synchronized void initValidator(Logger log, byte[] swaggerBackOffice) throws Exception{
+		log.info("Init modulo di validazione in corso...");
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && !validatorInitialized) {
 			try {
 				IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
 
@@ -50,11 +51,15 @@ public class BaseRsServiceV1 extends BaseRsService {
 				validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
 				OpenapiApiValidatorConfig config = new OpenapiApiValidatorConfig();
 				config.setJsonValidatorAPI(ApiName.FGE);
-				validator.init(LoggerWrapperFactory.getLogger(Test.class), api, config);
+				Logger logger = LoggerWrapperFactory.getLogger(BaseRsService.class);
+				validator.init(logger, api, config);
+				validatorInitialized = true;
 			} catch(Throwable e) {
 				log.error("Errore durante l'init del modulo di validazione: " + e.getMessage(), e);
+				throw e;
 			}
 		}
+		log.info("Init modulo di validazione completato.");
 	}
 	
 	public BaseRsServiceV1(String nomeServizio) throws ServiceException {
@@ -66,4 +71,7 @@ public class BaseRsServiceV1 extends BaseRsService {
 		return 1;
 	}
 
+	public static boolean isInitialized() {
+		return BaseRsServiceV1.validatorInitialized;
+	}
 }

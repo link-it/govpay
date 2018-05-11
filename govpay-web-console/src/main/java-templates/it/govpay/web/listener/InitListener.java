@@ -19,22 +19,30 @@
  */
 package it.govpay.web.listener;
 
-import java.io.File;
-import java.net.URI;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.UUID;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.logger.config.Log4jConfig;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.StartupUtils;
 
 public class InitListener implements ServletContextListener {
 
-	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
+	private static Logger log = null;
 	private static boolean initialized = false;
+	private String warName = "GovPay-GUI-Backoffice";
+	private String govpayVersion = "${project.version}";
+	private String buildVersion = "${git.commit.id}";
+	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_JSON;
+	private String dominioAnagraficaManager = null; // "it.govpay.cache.anagrafica.console";
 
 	public static boolean isInitialized() {
 		return InitListener.initialized;
@@ -42,63 +50,47 @@ public class InitListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		String commit = "${git.commit.id}";
-		if(commit.length() > 7) commit = commit.substring(0, 7);
-		try{
-			GovpayConfig gpConfig = null;
-			try {
-				gpConfig = GovpayConfig.newInstance(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
-				it.govpay.bd.GovpayConfig.newInstance4GovPay(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
-				it.govpay.bd.GovpayCustomConfig.newInstance(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
-			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay-Console ${project.version} (build " + commit + ") fallita: " + e, e);
-			}
+		// Commit id
+		String commit = (buildVersion.length() > 7) ? buildVersion.substring(0, 7) : buildVersion;
 		
-			// Gestione della configurazione di Log4J
-			URI log4j2Config = gpConfig.getLog4j2Config();
-			Log4jConfig log4jConfig = new Log4jConfig();
-			if(log4j2Config != null) {
-				log4jConfig.setLog4jConfigFile(new File(log4j2Config));
-			} else {
-				log4jConfig.setLog4jConfigURL(InitListener.class.getResource("/log4j2.xml"));
-			}
-			
-			try {
-				log = LoggerWrapperFactory.getLogger("boot");	
-				log.info("Inizializzazione GovPay-Console ${project.version} (build " + commit + ") in corso");
-				
-				if(log4j2Config != null) {
-					log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
-				} else {
-					log.info("Configurazione logger da classpath.");
-				}
-				gpConfig.readProperties();
-			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay-Console ${project.version} (build " + commit + ") fallita: " + e, e);
-			}
-		
-//			RicevutaPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
-//			AvvisoPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
-//			AnagraficaManager.newInstance();
-//			ConnectionManager.initialize();
-//			OperazioneFactory.init();
-		} catch(Exception e){
-			throw new RuntimeException("Inizializzazione di GovPay-Console ${project.version} (build " + commit + ") fallita: " + e, e);
-		}
-		log.info("Inizializzazione GovPay-Console ${project.version} (build " + commit + ") completata con successo.");
+		InputStream govpayPropertiesIS = InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE);
+		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
+		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
+		GpContext ctx = StartupUtils.startup(log, warName, govpayVersion, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
+		try {
+			log = LoggerWrapperFactory.getLogger("boot");	
+			InputStream govpaySchemaIS = InitListener.class.getResourceAsStream(GovpayConfig.GOVPAY_OPEN_API_FILE);
+			StartupUtils.startupServices(log, warName, govpayVersion, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance(), govpaySchemaIS);
+		} catch (RuntimeException e) {
+			log.error("Inizializzazione fallita", e);
+			ctx.log();
+			throw e;
+		} catch (Exception e) {
+			log.error("Inizializzazione fallita", e);
+			ctx.log();
+			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" fallita.", e);
+		} 
+
+		ctx.log();
+
+		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" completata con successo."); 
 		initialized = true;
-		
 	}
 
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		log.info("Shutdown Govpay-Console in corso...");
+		// Commit id
+		String commit = (buildVersion.length() > 7) ? buildVersion.substring(0, 7) : buildVersion;
+		MDC.put("cmd", "Shutdown");
+		MDC.put("op", UUID.randomUUID().toString() );
+		
+		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" in corso...");
 //		try {
 //			ConnectionManager.shutdown();
 //		} catch (Exception e) {
 //			LoggerWrapperFactory.getLogger(InitListener.class).warn("Errore nella de-registrazione JMX: " + e);
 //		}
-		log.info("Shutdown di Govpay-Console completato.");
+		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" completato.");
 	}
 }
