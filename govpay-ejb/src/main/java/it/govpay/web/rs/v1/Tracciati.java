@@ -39,8 +39,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
-import com.sun.istack.Nullable;
-
 import it.govpay.bd.BasicBD;
 import it.govpay.core.business.model.InserisciTracciatoDTO;
 import it.govpay.core.business.model.InserisciTracciatoDTOResponse;
@@ -152,9 +150,9 @@ public class Tracciati extends BaseRsServiceV1 {
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response cercaTracciati(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, 
-			@QueryParam(value="data_inizio") @Nullable Date inizio,
-			@QueryParam(value="data_fine") @Nullable Date fine,
-			@QueryParam(value="stato") @Nullable StatoTracciatoType stato,
+			@QueryParam(value="data_inizio") Date inizio,
+			@QueryParam(value="data_fine") Date fine,
+			@QueryParam(value="stato") StatoTracciatoType stato,
 			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value="limit") @DefaultValue(value="25") int limit) throws IOException {
 		String methodName = "cercaTracciati"; 
