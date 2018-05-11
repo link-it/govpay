@@ -42,8 +42,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import com.sun.istack.Nullable;
-
 import it.govpay.bd.BasicBD;
 import it.govpay.core.business.model.LeggiIncassoDTO;
 import it.govpay.core.business.model.LeggiIncassoDTOResponse;
@@ -126,8 +124,8 @@ public class Incassi extends BaseRsServiceV1 {
 	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response cercaIncassi(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
-			@QueryParam(value="data_inizio") @Nullable Date inizio,
-			@QueryParam(value="data_fine") @Nullable Date fine,
+			@QueryParam(value="data_inizio") Date inizio,
+			@QueryParam(value="data_fine") Date fine,
 			@QueryParam(value="offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value="limit") @DefaultValue(value="25") int limit) {
 		
