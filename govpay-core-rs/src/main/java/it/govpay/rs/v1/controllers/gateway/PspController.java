@@ -26,6 +26,7 @@ public class PspController  extends BaseController {
 	public Response getPsp(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders, String idSession, String esito) {
 		String methodName = "getPsp";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -34,6 +35,7 @@ public class PspController  extends BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			String principal = user != null ? user.getPrincipal() : null;
 			
 			RedirectDaPspDTO redirectDaPspDTO = new RedirectDaPspDTO();
@@ -48,10 +50,10 @@ public class PspController  extends BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, redirectDaPspDTOResponse, 200);
 			
 			this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectDaPspDTOResponse.getLocation() +"].");	
-			return Response.seeOther(new URI(redirectDaPspDTOResponse.getLocation())).build();
+			return this.handleResponseOk(Response.seeOther(new URI(redirectDaPspDTOResponse.getLocation())),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

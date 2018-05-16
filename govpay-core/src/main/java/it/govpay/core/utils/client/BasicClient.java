@@ -464,6 +464,10 @@ public class BasicClient {
 			
 			ctx.getContext().getRequest().setOutDate(new Date());
 			ctx.getContext().getRequest().setOutSize(Long.valueOf(ctx.getIntegrationCtx().getMsg().length));
+			
+			requestMsg.addHeader(new Property("HTTP-Method", httpMethod));
+			requestMsg.addHeader(new Property("RequestPath", url.toString()));
+			
 			ctx.log(requestMsg);
 			
 			if(httpMethod.equals("POST"))
@@ -482,6 +486,8 @@ public class BasicClient {
 		
 		Message responseMsg = new Message();
 		responseMsg.setType(MessageType.RESPONSE_IN);
+		responseMsg.addHeader(new Property("HTTP-Method", httpMethod));
+		responseMsg.addHeader(new Property("RequestPath", url.toString()));
 		
 		for(String key : connection.getHeaderFields().keySet()) {
 			if(connection.getHeaderFields().get(key) != null) {

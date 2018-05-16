@@ -46,6 +46,8 @@ public class GovpayConfig {
 
 	public static final String PROPERTIES_FILE = "/govpay.properties";
 	public static final String GOVPAY_OPEN_API_FILE = "/govpay.json";
+	public static final String MSG_DIAGNOSTICI_PROPERTIES_FILE = "/msgDiagnostici.properties";
+	public static final String LOG4J2_XML_FILE = "/log4j2.xml";
 
 	private static GovpayConfig instance;
 
@@ -83,6 +85,7 @@ public class GovpayConfig {
 	private String urlWISP = null;
 	
 	private boolean validazioneAPIRest;
+	private boolean dumpAPIRestGETResponse;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -103,6 +106,7 @@ public class GovpayConfig {
 		this.batchOn=true;
 		this.pddAuthEnable = true;
 		this.validazioneAPIRest = false;
+		this.dumpAPIRestGETResponse = false;
 
 		try {
 
@@ -299,6 +303,10 @@ public class GovpayConfig {
 			if(validazioneAPIRestString != null && Boolean.valueOf(validazioneAPIRestString))
 				this.validazioneAPIRest = true;
 			
+			String dumpAPIRestGETResponseMessageString = getProperty("it.govpay.rs.dumpGetResponse.enabled", props, false, log);
+			if(dumpAPIRestGETResponseMessageString != null && Boolean.valueOf(dumpAPIRestGETResponseMessageString))
+				this.dumpAPIRestGETResponse = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -451,5 +459,9 @@ public class GovpayConfig {
 	
 	public boolean isValidazioneAPIRestAbilitata() {
 		return this.validazioneAPIRest;
+	}
+
+	public boolean isDumpAPIRestGETResponse() {
+		return dumpAPIRestGETResponse;
 	}
 }

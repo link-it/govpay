@@ -135,8 +135,13 @@ public class ApplicazioniBD extends BasicBD {
 	public Applicazione getApplicazioneBySubject(String principal) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			IExpression expr = this.getApplicazioneService().newExpression();
-
-			Hashtable<String, String> hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			Hashtable<String, String> hashSubject = null;
+			try {
+			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			}catch(UtilsException e) {
+				throw new NotFoundException("Utenza" + principal + "non autorizzata");
+			}
+			
 			Enumeration<String> keys = hashSubject.keys();
 			while(keys.hasMoreElements()){
 				String key = keys.nextElement();
@@ -148,7 +153,7 @@ public class ApplicazioniBD extends BasicBD {
 			Applicazione applicazione = getApplicazione(applicazioneVO);
 
 			return applicazione;
-		} catch (NotImplementedException  | ExpressionNotImplementedException | ExpressionException | UtilsException e) { 
+		} catch (NotImplementedException  | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
 		}
 

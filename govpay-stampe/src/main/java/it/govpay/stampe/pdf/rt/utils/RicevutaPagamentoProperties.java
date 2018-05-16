@@ -31,8 +31,9 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 		return instance;
 	}
 
-	public static RicevutaPagamentoProperties newInstance(String govpayResourceDir) throws Exception {
-		instance = new RicevutaPagamentoProperties(govpayResourceDir);
+	public static synchronized RicevutaPagamentoProperties newInstance(String govpayResourceDir) throws Exception {
+		if(instance == null)
+			instance = new RicevutaPagamentoProperties(govpayResourceDir);
 		return instance;
 	}
 

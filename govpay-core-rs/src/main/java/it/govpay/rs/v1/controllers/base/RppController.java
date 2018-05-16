@@ -46,6 +46,7 @@ public class RppController extends BaseController {
 	public Response rppGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
 		String methodName = "rppGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -53,6 +54,7 @@ public class RppController extends BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 
 			// Parametri - > DTO Input
 
@@ -96,9 +98,9 @@ public class RppController extends BaseController {
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSON(campi)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -109,6 +111,7 @@ public class RppController extends BaseController {
 	public Response rppIdDominioIuvCcpRtGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -123,6 +126,7 @@ public class RppController extends BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 
 			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
 			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
@@ -134,31 +138,33 @@ public class RppController extends BaseController {
 
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 
-			if(accept.equalsIgnoreCase(MediaType.APPLICATION_OCTET_STREAM)) {
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 				this.log.info("Esecuzione " + methodName + " completata."); 
-				return Response.status(Status.OK).type(accept).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())).build();
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
 			} else {
 				CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt());
 
-				if(accept.equalsIgnoreCase("application/pdf")) {
+				if(accept.toLowerCase().contains("application/pdf")) {
 					ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
 					String auxDigit = ricevutaDTOResponse.getDominio().getAuxDigit() + "";
 					String applicationCode = String.format("%02d", ricevutaDTOResponse.getDominio().getStazione().getApplicationCode());
 					RicevutaPagamentoUtils.getPdfRicevutaPagamento(ricevutaDTOResponse.getDominio().getLogo(), ricevutaDTOResponse.getVersamento().getCausaleVersamento(), rt, null, auxDigit, applicationCode, baos1, this.log);
-					String rtPdfEntryName = "rt.pdf";
+					String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
 
 					byte[] b = baos1.toByteArray();
 
 					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.info("Esecuzione " + methodName + " completata."); 
-					return Response.status(Status.OK).type(accept).entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"").build();
+					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
 				} else {
-					return Response.status(Status.OK).type(accept).entity(rt).build();
+					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
+					this.log.info("Esecuzione " + methodName + " completata."); 
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(rt),transactionId).build();
 				}
 			}
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}    }
@@ -168,6 +174,7 @@ public class RppController extends BaseController {
 	public Response rppIdDominioIuvCcpRptGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -177,6 +184,7 @@ public class RppController extends BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 
 			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
 			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
@@ -189,9 +197,9 @@ public class RppController extends BaseController {
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 
 			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(ricevutaDTOResponse.getRpt().getXmlRpt());
-			return Response.status(Status.OK).entity(rpt).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(rpt),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		} 
@@ -202,6 +210,7 @@ public class RppController extends BaseController {
 	public Response rppIdDominioIuvCcpGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpGET";  
 		GpContext ctx = null;
+		String transactionId = null;		
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -210,6 +219,7 @@ public class RppController extends BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(idDominio);
@@ -229,9 +239,9 @@ public class RppController extends BaseController {
 			
 			response.setPendenza(pendenza);
 			
-			return Response.status(Status.OK).entity(response.toJSON(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

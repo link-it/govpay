@@ -41,7 +41,10 @@ import org.openspcoop2.utils.logger.beans.Message;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.proxy.Server;
 import org.openspcoop2.utils.logger.constants.MessageType;
+import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
+import it.govpay.core.rs.v1.costanti.Costanti;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 
@@ -157,7 +160,16 @@ public class MessageLoggingHandlerUtils {
 		}
 		
 		Map<String, List<String>> httpHeaders = null;
+		HttpRequestMethod requestMethod = HttpRequestMethod.valueOf(request.getMethod()); 
 		
+		String baseUri = uriInfo.getBaseUri().toString();
+		String requestUri = uriInfo.getRequestUri().toString();
+		int idxOfBaseUri = requestUri.indexOf(baseUri);
+		
+		String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
+		
+		msg.addHeader(new Property("HTTP-Method", requestMethod.toString()));
+		msg.addHeader(new Property("RequestPath", servicePathwithParameters));
 		if (outbound) {
 			ctx = GpThreadLocal.get();
 			//httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_RESPONSE_HEADERS);
@@ -176,6 +188,12 @@ public class MessageLoggingHandlerUtils {
 				}
 				ctx.getTransaction().getServer().setTransportCode(responseCode.intValue() + "");
 			}
+			
+			if((responseCode != null && responseCode.intValue() < 299) && HttpRequestMethod.GET.equals(requestMethod) && !GovpayConfig.getInstance().isDumpAPIRestGETResponse()) {
+				msg.setContent(null);
+			}
+			
+			msg.addHeader(new Property(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()));
 		} else {
 			try {
 				ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
@@ -191,6 +209,8 @@ public class MessageLoggingHandlerUtils {
 				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
 			ctx.getContext().getRequest().setInDate(new Date());
 			ctx.getContext().getRequest().setInSize(Long.valueOf(bytes.length));
+			
+
 		}
 		
 		if(httpHeaders != null) {

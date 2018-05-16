@@ -1,41 +1,29 @@
 package it.govpay.pendenze.api.listener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.Properties;
+import java.net.URL;
 import java.util.UUID;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.logger.LoggerFactory;
-import org.openspcoop2.utils.logger.beans.proxy.Operation;
-import org.openspcoop2.utils.logger.beans.proxy.Service;
-import org.openspcoop2.utils.logger.config.DatabaseConfig;
-import org.openspcoop2.utils.logger.config.DatabaseConfigDatasource;
-import org.openspcoop2.utils.logger.config.DiagnosticConfig;
-import org.openspcoop2.utils.logger.config.Log4jConfig;
-import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
-import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
+import it.govpay.core.utils.StartupUtils;
 
 public class InitListener implements ServletContextListener{
 
-	private static Logger log = LoggerWrapperFactory.getLogger("boot");	
+	private static Logger log = null;
 	private static boolean initialized = false;
+	private String warName = "GovPay-API-Pendenze";
+	private String govpayVersion = "${project.version}";
+	private String buildVersion = "${git.commit.id}";
+	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_JSON;
+	private String dominioAnagraficaManager = "it.govpay.cache.anagrafica.pendenze";
 
 	public static boolean isInitialized() {
 		return InitListener.initialized;
@@ -43,122 +31,43 @@ public class InitListener implements ServletContextListener{
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		GpContext ctx = null;
 		// Commit id
-		String commit = "${git.commit.id}";
-		if(commit.length() > 7) commit = commit.substring(0, 7);
-		try{
-			GovpayConfig gpConfig = null;
-			try {
-				gpConfig = GovpayConfig.newInstance(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
-				it.govpay.bd.GovpayConfig.newInstance4GovPay(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
-				it.govpay.bd.GovpayCustomConfig.newInstance(InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE));
-			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di Govpay-API-Pendenze fallita: " + e, e);
-			}
-			
-			
-			// Gestione della configurazione di Log4J
-			URI log4j2Config = gpConfig.getLog4j2Config();
-			Log4jConfig log4jConfig = new Log4jConfig();
-			if(log4j2Config != null) {
-				log4jConfig.setLog4jConfigFile(new File(log4j2Config));
-			} else {
-				log4jConfig.setLog4jConfigURL(InitListener.class.getResource("/log4j2.xml"));
-			}
-			
-			try {
-				log = LoggerWrapperFactory.getLogger("boot");	
-				log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
-				
-				if(log4j2Config != null) {
-					log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
-				} else {
-					log.info("Configurazione logger da classpath.");
-				}
-				gpConfig.readProperties();
-			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
-			}
-
-			// Configurazione del logger Diagnostici/Tracce/Dump
-			try {
-				DiagnosticConfig diagnosticConfig = new DiagnosticConfig();
-				InputStream is = InitListener.class.getResourceAsStream("/msgDiagnostici.properties");
-				Properties props = new Properties();
-				props.load(is);
-				diagnosticConfig.setDiagnosticConfigProperties(props);
-				diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
-
-				MultiLoggerConfig mConfig = new MultiLoggerConfig();
-				mConfig.setDiagnosticConfig(diagnosticConfig);
-				mConfig.setDiagnosticSeverityFilter(GovpayConfig.getInstance().getmLogLevel());
-				mConfig.setLog4jLoggerEnabled(GovpayConfig.getInstance().ismLogOnLog4j());
-				mConfig.setLog4jConfig(log4jConfig);	
-				mConfig.setDbLoggerEnabled(GovpayConfig.getInstance().ismLogOnDB());
-
-				if(GovpayConfig.getInstance().ismLogOnDB()) {
-					DatabaseConfig dbConfig = new DatabaseConfig();
-					DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
-					dbDSConfig.setJndiName(GovpayConfig.getInstance().getmLogDS());
-					dbConfig.setConfigDatasource(dbDSConfig);
-					dbConfig.setDatabaseType(GovpayConfig.getInstance().getmLogDBType());
-					dbConfig.setLogSql(GovpayConfig.getInstance().ismLogSql());
-					mConfig.setDatabaseConfig(dbConfig);
-				}
-				LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), mConfig);
-
-			} catch (Exception e) {
-				log.error("Errore durante la configurazione dei diagnostici", e);
-				throw new RuntimeException("Inizializzazione Govpay-API-Pendenze ${project.version} (build " + commit + ") fallita.", e);
-			}
-
-
-
-			try {
-				ctx = new GpContext();
-				MDC.put("cmd", "Inizializzazione");
-				MDC.put("op", ctx.getTransactionId());
-				Service service = new Service();
-				service.setName("Inizializzazione");
-				service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_JSON);
-				ctx.getTransaction().setService(service);
-				Operation opt = new Operation();
-				opt.setName("Init");
-				ctx.getTransaction().setOperation(opt);
-				GpThreadLocal.set(ctx);
-			} catch (Exception e) {
-				log.error("Errore durante predisposizione del contesto: " + e);
-				if(ctx != null) ctx.log();
-				throw new RuntimeException("Inizializzazione Govpay-API-Pendenze ${project.version} (build " + commit + ") fallita.", e);
-			}
-			
-			RicevutaPagamentoProperties.newInstance(gpConfig.getResourceDir());
-			AnagraficaManager.newInstance("it.govpay.cache.anagrafica.pendenze");
-			//			OperazioneFactory.init();
-			
-			// Inizializzazione del validatore JSON:
-			InputStream swaggerfile = InitListener.class.getResourceAsStream(GovpayConfig.GOVPAY_OPEN_API_FILE);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			IOUtils.copy(swaggerfile, baos);
-			BaseRsServiceV1.initValidator(log, baos.toByteArray());
-		} catch(Exception e){
-			throw new RuntimeException("Inizializzazione di GovPay-API-Pendenze fallita: " + e, e);
-		}
+		String commit = (buildVersion.length() > 7) ? buildVersion.substring(0, 7) : buildVersion;
+		
+		InputStream govpayPropertiesIS = InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE);
+		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
+		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
+		GpContext ctx = StartupUtils.startup(log, warName, govpayVersion, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
+		
+		try {
+			log = LoggerWrapperFactory.getLogger("boot");	
+			InputStream govpaySchemaIS = InitListener.class.getResourceAsStream(GovpayConfig.GOVPAY_OPEN_API_FILE);
+			StartupUtils.startupServices(log, warName, govpayVersion, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance(), govpaySchemaIS);
+		} catch (RuntimeException e) {
+			log.error("Inizializzazione fallita", e);
+			ctx.log();
+			throw e;
+		} catch (Exception e) {
+			log.error("Inizializzazione fallita", e);
+			ctx.log();
+			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" fallita.", e);
+		} 
 
 		ctx.log();
 
-		log.info("Inizializzazione Govpay-API-Pendenze ${project.version} (build " + commit + ") completata con successo.");
+		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" completata con successo."); 
 		initialized = true;
 	}
 
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
+		// Commit id
+		String commit = (buildVersion.length() > 7) ? buildVersion.substring(0, 7) : buildVersion;
 		MDC.put("cmd", "Shutdown");
 		MDC.put("op", UUID.randomUUID().toString() );
 		
-		log.info("Shutdown Govpay-API-Pendenze in corso...");
+		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" in corso...");
 		
 //		log.info("De-registrazione delle cache ...");
 //		AnagraficaManager.unregister();
@@ -172,6 +81,6 @@ public class InitListener implements ServletContextListener{
 //			log.warn("Errore nello shutdown del Connection Manager: " + e);
 //		}
 		
-		log.info("Shutdown di Govpay-API-Pendenze completato.");
+		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" completato.");
 	}
 }

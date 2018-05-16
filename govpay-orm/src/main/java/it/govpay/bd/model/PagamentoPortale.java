@@ -97,6 +97,7 @@ public class PagamentoPortale extends BasicModel {
 	private String codCanale = null;
 	
 	private Double importo = null; 
+	private String multiBeneficiario = null;
 
 	public String getCodApplicazione() {
 		return codApplicazione;
@@ -268,6 +269,12 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setImporto(Double importo) {
 		this.importo = importo;
+	}
+	public String getMultiBeneficiario() {
+		return multiBeneficiario;
+	}
+	public void setMultiBeneficiario(String multiBeneficiario) {
+		this.multiBeneficiario = multiBeneficiario;
 	}
 
 }

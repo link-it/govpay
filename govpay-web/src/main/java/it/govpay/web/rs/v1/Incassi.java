@@ -108,12 +108,10 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			IncassoExt incassoExt = new IncassoExt(richiestaIncassoDTOResponse.getIncasso(), bd);
 			
-			this.controller.logResponse(uriInfo, httpHeaders, methodName, incassoExt);
-
-			if(richiestaIncassoDTOResponse.isCreated())
-				return Response.status(Status.CREATED).entity(incassoExt).build();
-			else 
-				return Response.status(Status.OK).entity(incassoExt).build();
+			boolean created = richiestaIncassoDTOResponse.isCreated();
+			Status status = created ? Status.CREATED : Status.OK;
+			this.controller.logResponse(uriInfo, httpHeaders, methodName, incassoExt,status.getStatusCode());
+			return Response.status(status).entity(incassoExt).build();
 		} catch (NotAuthorizedException e) {
 			try {
 				this.controller.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
@@ -123,7 +121,7 @@ public class Incassi extends BaseRsServiceV1 {
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (IncassiException e) {
 			Errore errore = new Errore(e.getCode(),e.getMessage(),e.getDetails());
-			try { this.controller.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2.getMessage());}
+			try { this.controller.logResponse(uriInfo, httpHeaders, methodName, errore,422); } catch (Exception e2) { log.error(e2.getMessage());}
 			return Response.status(422).entity(errore).build();
 		} catch (Exception e) {
 			log.error("Errore interno durante il processo di incasso", e);

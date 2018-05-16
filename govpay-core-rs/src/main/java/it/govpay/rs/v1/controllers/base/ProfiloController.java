@@ -30,6 +30,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
     public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
     	String methodName = "profiloGET";  
 		GpContext ctx = null;
+		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
 		try{
@@ -37,6 +38,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
 
@@ -60,10 +62,10 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSONArray(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return Response.status(Status.OK).entity(response.toJSONArray(null)).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSONArray(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e);
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

@@ -30,7 +30,7 @@ public class NdpValidationUtils {
 	
 	public static void validaSemantica(it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDominio rr, it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDominio er, EsitoValidazione esito) {
 		valida(rr.getIdentificativoDominio(),er.getIdentificativoDominio(), esito, "IdentificativoDominio non corrisponde", true);
-		valida(rr.getIdentificativoStazioneRichiedente(),er.getIdentificativoStazioneRichiedente(), esito, "IdentificativoStazioneRichiedente non corrisponde", true);
+		valida(rr.getIdentificativoStazioneRichiedente(),er.getIdentificativoStazioneRichiedente(), esito, "IdentificativoStazioneRichiedente non corrisponde", false);
 	}
 
 	public static void validaSemantica(it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante rr, it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante er, EsitoValidazione esito) {
@@ -83,7 +83,7 @@ public class NdpValidationUtils {
 
 	public static void validaSemantica(CtDominio rpt, CtDominio rt, EsitoValidazione esito) {
 		valida(rpt.getIdentificativoDominio(),rt.getIdentificativoDominio(), esito, "IdentificativoDominio non corrisponde", true);
-		valida(rpt.getIdentificativoStazioneRichiedente(),rt.getIdentificativoStazioneRichiedente(), esito, "IdentificativoStazioneRichiedente non corrisponde", true);
+		valida(rpt.getIdentificativoStazioneRichiedente(),rt.getIdentificativoStazioneRichiedente(), esito, "IdentificativoStazioneRichiedente non corrisponde", false);
 	}
 
 	public static void validaSemantica(CtSoggettoVersante rpt, CtSoggettoVersante rt, EsitoValidazione esito) {

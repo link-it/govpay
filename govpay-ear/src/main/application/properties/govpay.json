@@ -3698,6 +3698,96 @@
           }
         }
       }
+    },
+    "/operazioni" : {
+      "get" : {
+        "summary" : "Lista delle operazioni disponibili",
+        "tags" : [ "Backoffice" ],
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "pagina",
+          "description" : "Numero di pagina dei risultati",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 1
+          }
+        }, {
+          "in" : "query",
+          "name" : "risultatiPerPagina",
+          "description" : "Numero massimo di risultati nella risposta",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 25,
+            "maximum" : 200
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Elenco delle operazioni disponibili",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "allOf" : [ {
+                    "$ref" : "#/components/schemas/listaPaginata"
+                  }, {
+                    "type" : "object",
+                    "required" : [ "risultati" ],
+                    "properties" : {
+                      "risultati" : {
+                        "type" : "array",
+                        "items" : {
+                          "$ref" : "#/components/schemas/operazioneIndex"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/operazioni/{idOperazione}" : {
+      "get" : {
+        "summary" : "Esecuzione di una operazione interne",
+        "tags" : [ "Backoffice" ],
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "idOperazione",
+          "description" : "Identificativo dell'operazione da eseguire",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Esito dell'esecuzione",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/operazione"
+                }
+              }
+            }
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/404"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500"
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -5953,6 +6043,49 @@
             "description" : "Testo da codificare nel bar-code dell'avviso"
           }
         }
+      },
+      "operazioneIndex" : {
+        "type" : "object",
+        "required" : [ "idOperazione", "descrizione", "location" ],
+        "properties" : {
+          "idOperazione" : {
+            "type" : "string",
+            "example" : "spedizioneNotifiche"
+          },
+          "descrizione" : {
+            "type" : "string",
+            "example" : "Avvia il processo di spedizione delle notifiche di pagamento"
+          },
+          "location" : {
+            "type" : "string",
+            "example" : "/operazione/spedizioneNotifiche"
+          }
+        }
+      },
+      "operazione" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/operazioneIndex"
+        }, {
+          "type" : "object",
+          "required" : [ "stato", "esito" ],
+          "properties" : {
+            "stato" : {
+              "type" : "number",
+              "enum" : [ 0, 1, 2 ],
+              "example" : 0
+            },
+            "esito" : {
+              "type" : "string",
+              "description" : "Descrizione dell'esito dell'esecuzione",
+              "example" : "Operazione completata con successo"
+            },
+            "dettaglio" : {
+              "type" : "string",
+              "example" : "Consegnate 12 notifiche"
+            }
+          }
+        } ]
       }
     }
   }
