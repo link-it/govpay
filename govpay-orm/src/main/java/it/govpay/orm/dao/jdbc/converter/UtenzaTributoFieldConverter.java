@@ -74,6 +74,20 @@ public class UtenzaTributoFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(UtenzaTributo.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal_originale";
+			}else{
+				return "principal_originale";
+			}
+		}
+		if(field.equals(UtenzaTributo.model().ID_UTENZA.ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".abilitato";
+			}else{
+				return "abilitato";
+			}
+		}
 		if(field.equals(UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -102,6 +116,12 @@ public class UtenzaTributoFieldConverter extends AbstractSQLFieldConverter {
 		// the full definition of the table containing the alias
 		
 		if(field.equals(UtenzaTributo.model().ID_UTENZA.PRINCIPAL)){
+			return this.toTable(UtenzaTributo.model().ID_UTENZA, returnAlias);
+		}
+		if(field.equals(UtenzaTributo.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
+			return this.toTable(UtenzaTributo.model().ID_UTENZA, returnAlias);
+		}
+		if(field.equals(UtenzaTributo.model().ID_UTENZA.ABILITATO)){
 			return this.toTable(UtenzaTributo.model().ID_UTENZA, returnAlias);
 		}
 		if(field.equals(UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
