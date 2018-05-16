@@ -69,6 +69,13 @@ public class Rpt extends BasicBD{
 	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Applicazione applicazione, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		try {
+			ctx.getPagamentoCtx().setCarrello(true);
+			String codCarrello = RptUtils.buildUUID35();
+			ctx.getPagamentoCtx().setCodCarrello(codCarrello);
+			ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
+			ctx.setCorrelationId(codCarrello);
+			ctx.log("pagamento.avviaTransazioneCarrelloWISP20");
+			
 			Date adesso = new Date();
 			boolean isBollo = false;
 			Stazione stazione = null;
@@ -83,7 +90,7 @@ public class Rpt extends BasicBD{
 
 					log.debug("Verifica autorizzazione applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
 
-					List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+					List<Diritti> diritti = new ArrayList<Diritti>(); 
 					diritti.add(Diritti.ESECUZIONE);
 					
 					if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti)) {
@@ -162,7 +169,7 @@ public class Rpt extends BasicBD{
 				// Aggiorno tutti i versamenti che mi sono stati passati
 
 				if(versamento.getId() == null) {
-					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste);
+					versamentiBusiness.caricaVersamento(versamento, versamento.getNumeroAvviso() == null, aggiornaSeEsiste);
 				}
 				it.govpay.model.Iuv iuv = null;
 				String ccp = null;
@@ -329,7 +336,8 @@ public class Rpt extends BasicBD{
 	}
 	
 	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, Exception e) throws ServiceException, GovPayException { 
-		setupConnection(GpThreadLocal.get().getTransactionId());
+		GpContext ctx = GpThreadLocal.get();
+		setupConnection(ctx.getTransactionId());
 		String sessionId = null;
 		NotificheBD notificheBD = new NotificheBD(this);
 		try {
@@ -363,6 +371,19 @@ public class Rpt extends BasicBD{
 			// Casi di rifiuto. Rendo l'errore
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
 		default:
+			
+			String codSessione = rpts.get(0).getCodSessione();
+			
+			if(codSessione != null) {
+				ctx.getContext().getResponse().addGenericProperty(new Property("codPspSession", codSessione));
+			}
+			
+			if(codSessione != null) {
+				ctx.log("pagamento.invioCarrelloRpt");
+			} else {
+				ctx.log("pagamento.invioCarrelloRptNoRedirect");
+			}
+			
 			log.info("RPT inviata correttamente al nodo");
 			return rpts;
 		}

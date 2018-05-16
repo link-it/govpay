@@ -138,27 +138,29 @@ public class RppController extends BaseController {
 
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 
-			if(accept.equalsIgnoreCase(MediaType.APPLICATION_OCTET_STREAM)) {
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 				this.log.info("Esecuzione " + methodName + " completata."); 
-				return this.handleResponseOk(Response.status(Status.OK).type(accept).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
 			} else {
 				CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt());
 
-				if(accept.equalsIgnoreCase("application/pdf")) {
+				if(accept.toLowerCase().contains("application/pdf")) {
 					ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
 					String auxDigit = ricevutaDTOResponse.getDominio().getAuxDigit() + "";
 					String applicationCode = String.format("%02d", ricevutaDTOResponse.getDominio().getStazione().getApplicationCode());
 					RicevutaPagamentoUtils.getPdfRicevutaPagamento(ricevutaDTOResponse.getDominio().getLogo(), ricevutaDTOResponse.getVersamento().getCausaleVersamento(), rt, null, auxDigit, applicationCode, baos1, this.log);
-					String rtPdfEntryName = "rt.pdf";
+					String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
 
 					byte[] b = baos1.toByteArray();
 
 					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.info("Esecuzione " + methodName + " completata."); 
-					return this.handleResponseOk(Response.status(Status.OK).type(accept).entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
+					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
 				} else {
-					return this.handleResponseOk(Response.status(Status.OK).type(accept).entity(rt),transactionId).build();
+					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
+					this.log.info("Esecuzione " + methodName + " completata."); 
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(rt),transactionId).build();
 				}
 			}
 		}catch (Exception e) {

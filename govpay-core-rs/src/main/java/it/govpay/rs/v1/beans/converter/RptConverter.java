@@ -17,7 +17,6 @@ public class RptConverter {
 	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		Rpp rsModel = new Rpp();
 		
-		rsModel.setCanale(UriBuilderUtils.getCanale(rpt.getCodPsp(), rpt.getCodCanale(), rpt.getTipoVersamento().getCodifica()));
 		rsModel.setCcp(rpt.getCcp());
 		rsModel.setDataRicevuta(rpt.getDataMsgRicevuta());
 		rsModel.setDataRichiesta(rpt.getDataMsgRichiesta());

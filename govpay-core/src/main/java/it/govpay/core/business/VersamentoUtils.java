@@ -35,7 +35,8 @@ import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
+import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Tributo;
@@ -102,7 +103,15 @@ public class VersamentoUtils {
 		model.setNumeroAvviso(versamento.getNumeroAvviso());	
 
 		if(versamento.getNumeroAvviso() != null) {
-			model.setIuvVersamento(it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso()));
+			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
+					dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
+			
+			// check sulla validita' dello iuv
+			Iuv iuvBD  = new Iuv(bd);
+			TipoIUV tipo = iuvBD.getTipoIUV(iuvFromNumeroAvviso);
+			iuvBD.checkIUV(dominio, iuvFromNumeroAvviso, tipo );
+			
+			model.setIuvVersamento(iuvFromNumeroAvviso);
 			
 //			if(versamento.getIuv().startsWith("0")) {
 //				model.setIuvVersamento(versamento.getIuv().substring(1));

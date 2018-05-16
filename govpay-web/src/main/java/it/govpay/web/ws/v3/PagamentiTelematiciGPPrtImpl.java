@@ -130,13 +130,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			applicazioneBusiness.autorizzaApplicazione(bodyrichiesta.getCodPortale(), applicazioneAutenticata, bd);
 			ctx.log("ws.autorizzazione");
 			
-			ctx.getPagamentoCtx().setCarrello(true);
-			String codCarrello = RptUtils.buildUUID35();
-			ctx.getPagamentoCtx().setCodCarrello(codCarrello);
-			ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
-			ctx.setCorrelationId(codCarrello);
-			ctx.log("pagamento.avviaTransazioneCarrelloWISP20");
-			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			
 			AvviaTransazioneDTO dto = new AvviaTransazioneDTO();
@@ -156,15 +149,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			response.setCodEsito(EsitoOperazione.OK.toString());
 			response.setDescrizioneEsito("Operazione completata con successo");
 			response.setMittente(Mittente.GOV_PAY);
-			if(response.getPspSessionId() != null) {
-				ctx.getContext().getResponse().addGenericProperty(new Property("codPspSession", response.getPspSessionId()));
-			}
-			
-			if(response.getPspSessionId() != null) {
-				ctx.log("pagamento.invioCarrelloRpt");
-			} else {
-				ctx.log("pagamento.invioCarrelloRptNoRedirect");
-			}
 			
 		} catch (GovPayException gpe) {
 			response = (GpAvviaTransazionePagamentoResponse) gpe.getWsResponse(response, "ws.ricevutaRichiestaKo", log);

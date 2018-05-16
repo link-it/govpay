@@ -101,17 +101,15 @@ public abstract class BaseController {
 		MDC.put("op", ctx.getTransactionId());
 		GpThreadLocal.set(ctx);
 	}
-	
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o) throws IOException, ResponseValidationException {
-		this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, o, null);
-	}
-	
 
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException, ResponseValidationException {
 		if(o != null && o instanceof JSONSerializable) {
 			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((JSONSerializable) o).toJSON(null).getBytes(), responseCode);
 		}
-		else {
+		else if(o != null && o instanceof String) {
+			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((String) o).getBytes(), responseCode);
+		}
+		else{
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(o);
 			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, json.getBytes(), responseCode);
@@ -174,40 +172,6 @@ public abstract class BaseController {
 		}
 	}
 
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws ResponseValidationException {
-		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
-		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
-//			try {
-//				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
-//				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
-//				httpEntity.setUrl(getServicePath(uriInfo).toString());
-//				httpEntity.setContent(new String(baos.toByteArray()));
-//				httpEntity.setContentType("application/json");
-//				this.validator.validate(httpEntity);
-//			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
-//				throw new NotAuthorizedException(e.getMessage());
-//			}
-		}
-	}
-	
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes) throws ResponseValidationException {
-		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true);
-		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
-//			try {
-//				TextHttpResponseEntity httpEntity = new TextHttpResponseEntity();
-//				httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
-//				httpEntity.setUrl(getServicePath(uriInfo).toString());
-//				httpEntity.setContent(new String(bytes));
-//				httpEntity.setContentType("application/json");
-//				this.validator.validate(httpEntity);
-//			} catch (ProcessingException | ValidatorException | URISyntaxException e) {
-//				throw new NotAuthorizedException(e.getMessage());
-//			}
-		}
-	}
-	
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) throws ResponseValidationException {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);

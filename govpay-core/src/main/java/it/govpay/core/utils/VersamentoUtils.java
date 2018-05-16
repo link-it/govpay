@@ -315,9 +315,23 @@ public class VersamentoUtils {
 			throw new VersamentoScadutoException(versamento.getDataScadenza());
 		}else {
 			if(versamento.getDataValidita() != null && versamento.getDataValidita().before(new Date())) {
-				if(versamento.getApplicazione(bd).getConnettoreVerifica() != null)
-					versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), versamento.getCodBundlekey(), versamento.getAnagraficaDebitore().getCodUnivoco(), versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd);
-				else // connettore verifica non definito, versamento non aggiornabile
+				GpContext ctx = GpThreadLocal.get();
+				String codVersamentoEnte = versamento.getCodVersamentoEnte();
+				String bundlekey = versamento.getCodBundlekey();
+				String debitore = versamento.getAnagraficaDebitore().getCodUnivoco();
+				String codDominio = versamento.getUo(bd).getDominio(bd).getCodDominio(); 
+				String iuv = null;
+				
+				String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
+				String bundlekeyD = bundlekey != null ? bundlekey : "-";
+				String debitoreD = debitore != null ? debitore : "-";
+				String dominioD = codDominio != null ? codDominio : "-";
+				String iuvD = iuv != null ? iuv : "-";
+				ctx.log("verifica.validita", versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+				
+				if(versamento.getApplicazione(bd).getConnettoreVerifica() != null) {
+					versamento = acquisisciVersamento(versamento.getApplicazione(bd), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, bd);
+				} else // connettore verifica non definito, versamento non aggiornabile
 					throw new VersamentoScadutoException(versamento.getDataScadenza());
 			} else {
 				// versamento valido
@@ -364,7 +378,7 @@ public class VersamentoUtils {
 		} 
 		
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-		versamentoBusiness.caricaVersamento(applicazione, versamento, false, true);
+		versamentoBusiness.caricaVersamento(applicazione, versamento, versamento.getNumeroAvviso() == null, true);
 		return versamento;
 	}
 	
@@ -532,7 +546,7 @@ public class VersamentoUtils {
 		return anagraficaCommons;
 	}
 	
-	public static String getIuvFromNumeroAvviso(String numeroAvviso) throws GovPayException {
+	public static String getIuvFromNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode) throws GovPayException {
 		if(numeroAvviso == null)
 			return null;
 		
@@ -545,15 +559,30 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
 		}
 		
-		if(numeroAvviso.startsWith("0")) // '0' + applicationCode(2) + ref(13) + check(2)
+			
+		if(numeroAvviso.startsWith("0")) { // '0' + applicationCode(2) + ref(13) + check(2)
+			// controllo che l'application code coincida con quello previsto
+			String appCodeS = numeroAvviso.substring(1, 3);
+			Integer appCode = Integer.parseInt(appCodeS);
+			
+			if(applicationCode != null && applicationCode.intValue() != appCode.intValue())
+				throw new GovPayException(EsitoOperazione.VER_026, numeroAvviso, appCodeS, codStazione);
+			
 			return numeroAvviso.substring(3);
-		else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
+		}else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
 			return numeroAvviso.substring(1);
 		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
 			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("3")) // '3' + segregationCode(2) +  ref(13) + check(2) 
+		else if(numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
+			// controllo che segregationCode coincida con quello previsto
+			String segCodeS = numeroAvviso.substring(1, 3);
+			Integer segCode = Integer.parseInt(segCodeS);
+			
+			if(segregationCode != null && segregationCode.intValue() != segCode.intValue())
+				throw new GovPayException(EsitoOperazione.VER_027, numeroAvviso, segCodeS, codDominio);
+			
 			return numeroAvviso.substring(1);
-		else 
+		}else 
 			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
 //		return numeroAvviso;
 	}

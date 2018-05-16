@@ -15,7 +15,6 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "iuv",
 "ccp",
 "pendenza",
-"canale",
 "modelloPagamento",
 "stato",
 "dettaglioStato",
@@ -38,9 +37,6 @@ public class Rpp extends JSONSerializable {
   
   @JsonProperty("pendenza")
   private Object pendenza = null;
-  
-  @JsonProperty("canale")
-  private String canale = null;
   
   @JsonProperty("modelloPagamento")
   private ModelloPagamento modelloPagamento = null;
@@ -128,22 +124,6 @@ public class Rpp extends JSONSerializable {
   }
   public void setPendenza(Object pendenza) {
     this.pendenza = pendenza;
-  }
-
-  /**
-   * Url al dettaglio del canale utilizzato
-   **/
-  public Rpp canale(String canale) {
-    this.canale = canale;
-    return this;
-  }
-
-  @JsonProperty("canale")
-  public String getCanale() {
-    return canale;
-  }
-  public void setCanale(String canale) {
-    this.canale = canale;
   }
 
   /**
@@ -319,7 +299,6 @@ public class Rpp extends JSONSerializable {
         Objects.equals(iuv, rpp.iuv) &&
         Objects.equals(ccp, rpp.ccp) &&
         Objects.equals(pendenza, rpp.pendenza) &&
-        Objects.equals(canale, rpp.canale) &&
         Objects.equals(modelloPagamento, rpp.modelloPagamento) &&
         Objects.equals(stato, rpp.stato) &&
         Objects.equals(dettaglioStato, rpp.dettaglioStato) &&
@@ -332,7 +311,7 @@ public class Rpp extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, ccp, pendenza, canale, modelloPagamento, stato, dettaglioStato, dataRichiesta, dataRicevuta, esito, rpt, rt);
+    return Objects.hash(idDominio, iuv, ccp, pendenza, modelloPagamento, stato, dettaglioStato, dataRichiesta, dataRicevuta, esito, rpt, rt);
   }
 
   public static Rpp parse(String json) {
@@ -353,7 +332,6 @@ public class Rpp extends JSONSerializable {
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    ccp: ").append(toIndentedString(ccp)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
-    sb.append("    canale: ").append(toIndentedString(canale)).append("\n");
     sb.append("    modelloPagamento: ").append(toIndentedString(modelloPagamento)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    dettaglioStato: ").append(toIndentedString(dettaglioStato)).append("\n");

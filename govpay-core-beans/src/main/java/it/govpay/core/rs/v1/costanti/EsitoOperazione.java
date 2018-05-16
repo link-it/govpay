@@ -543,7 +543,19 @@ public enum EsitoOperazione {
      * Non e' possibile inserire due versamenti con lo stesso numero avviso
      * 
      */
-    VER_025;
+    VER_025,
+    
+    /**
+     * Iuv da caricare non conforme alle specifiche AgID application code errato
+     * 
+     */
+    VER_026,
+    
+    /**
+     * Iuv da caricare non conforme alle specifiche AgID segregation code errato
+     * 
+     */
+    VER_027;
 	
 
     public String value() {
