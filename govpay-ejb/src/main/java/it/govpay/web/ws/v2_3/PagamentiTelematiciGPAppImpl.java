@@ -381,6 +381,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setCodEsito(EsitoOperazione.OK.toString());
 			response.setDescrizioneEsito("Operazione completata con successo");
 			response.setMittente(Mittente.GOV_PAY);
+			response.setDescrizioneEsito("Operazione completata con successo");
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {
 			response = (GpChiediListaFlussiRendicontazioneResponse) gpe.getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
