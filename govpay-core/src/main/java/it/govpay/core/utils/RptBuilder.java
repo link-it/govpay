@@ -313,7 +313,7 @@ public class RptBuilder {
 			else
 				marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
 			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
-			
+			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
 		}
 		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
 		datiSingoloVersamento.setCausaleVersamento(buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento()));

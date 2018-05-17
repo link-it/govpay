@@ -128,13 +128,15 @@ public class Versamento extends BasicBD {
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") aggiornato");
 			} catch (NotFoundException e) {
 				try {
-					// 	verifica univocita dell'avviso pagamento prima di inserire il nuovo versamento
-					it.govpay.bd.model.Versamento versamentoFromDominioNumeroAvviso = versamentiBD.getVersamentoFromDominioNumeroAvviso(versamento.getDominio(this).getCodDominio(), versamento.getNumeroAvviso());
+					// Versamento nuovo. Lo aggiungo.
+					
+					// 	verifica univocita dell'avviso pagamento prima di inserire il nuovo versamento. se il versamento ha il numero avviso
+					if(versamento.getNumeroAvviso() != null) {
+						it.govpay.bd.model.Versamento versamentoFromDominioNumeroAvviso = versamentiBD.getVersamentoFromDominioNumeroAvviso(versamento.getDominio(this).getCodDominio(), versamento.getNumeroAvviso());
 				
-					// due pendenze non possono avere lo stesso numero avviso
-					if(!versamentoFromDominioNumeroAvviso.getCodVersamentoEnte().equals(versamento.getCodVersamentoEnte()))
 						throw new GovPayException(EsitoOperazione.VER_025, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), 
 								versamentoFromDominioNumeroAvviso.getApplicazione(this).getCodApplicazione(), versamentoFromDominioNumeroAvviso.getCodVersamentoEnte(),versamento.getNumeroAvviso());
+					}
 					
 				}catch(NotFoundException e2) {
 					// ingore

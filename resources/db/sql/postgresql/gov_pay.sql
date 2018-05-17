@@ -334,7 +334,7 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR(35),
 	debitore_cellulare VARCHAR(35),
 	debitore_fax VARCHAR(35),
-	tassonomia_avviso VARCHAR(35) NOT NULL,
+	tassonomia_avviso VARCHAR(35),
 	tassonomia VARCHAR(35),
 	cod_lotto VARCHAR(35),
 	cod_versamento_lotto VARCHAR(35),

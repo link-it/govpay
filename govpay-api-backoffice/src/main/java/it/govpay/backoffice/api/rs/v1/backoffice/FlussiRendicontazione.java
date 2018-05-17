@@ -1,7 +1,5 @@
 package it.govpay.backoffice.api.rs.v1.backoffice;
 
-import java.util.Date;
-
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

@@ -1192,7 +1192,7 @@
 			<xsd:element name="debitoreTelefono" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreCellulare" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreFax" type="String35" minOccurs="0"/>
-			<xsd:element name="tassonomiaAvviso" type="String35"/>
+			<xsd:element name="tassonomiaAvviso" type="String35" minOccurs="0"/>
 			<xsd:element name="tassonomia" type="String35" minOccurs="0"/>
 			<xsd:element name="codLotto" type="String35" minOccurs="0"/>
 			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>

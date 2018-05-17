@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 
 import it.govpay.core.rs.v1.costanti.Costanti;

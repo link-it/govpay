@@ -46,8 +46,6 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -77,7 +75,6 @@ public class Rpt extends BasicBD{
 			ctx.log("pagamento.avviaTransazioneCarrelloWISP20");
 			
 			Date adesso = new Date();
-			boolean isBollo = false;
 			Stazione stazione = null;
 
 			for(Versamento versamentoModel : versamenti) {
@@ -102,7 +99,8 @@ public class Rpt extends BasicBD{
 
 				}
 
-				if(versamentoModel.isBolloTelematico()) isBollo = true;
+				if(versamentoModel.isBolloTelematico()) {
+				}
 
 				log.debug("Verifica autorizzazione pagamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
 				if(!versamentoModel.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
@@ -169,7 +167,7 @@ public class Rpt extends BasicBD{
 				// Aggiorno tutti i versamenti che mi sono stati passati
 
 				if(versamento.getId() == null) {
-					versamentiBusiness.caricaVersamento(versamento, versamento.getNumeroAvviso() == null, aggiornaSeEsiste);
+					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste);
 				}
 				it.govpay.model.Iuv iuv = null;
 				String ccp = null;

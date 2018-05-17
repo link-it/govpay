@@ -53,7 +53,6 @@ import it.govpay.core.utils.Gp25Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
-import it.govpay.core.utils.RptUtils;
 import it.govpay.model.Iuv;
 import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;

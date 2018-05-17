@@ -158,7 +158,7 @@ public class IbanAccredito extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(postale, ibanAccredito.postale) &&
         Objects.equals(mybank, ibanAccredito.mybank) &&
         Objects.equals(abilitato, ibanAccredito.abilitato) &&
-        Objects.equals(ibanAccredito, ibanAccredito.ibanAccredito);
+        Objects.equals(this.ibanAccredito, ibanAccredito.ibanAccredito);
   }
 
   @Override
