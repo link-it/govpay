@@ -157,6 +157,10 @@ public class RppController extends BaseController {
 					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.info("Esecuzione " + methodName + " completata."); 
 					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
+				} else if(accept.toLowerCase().contains("application/json")) {
+					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
+					this.log.info("Esecuzione " + methodName + " completata."); 
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
 				} else {
 					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 					this.log.info("Esecuzione " + methodName + " completata."); 
