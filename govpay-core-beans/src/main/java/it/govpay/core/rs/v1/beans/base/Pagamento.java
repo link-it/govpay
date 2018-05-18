@@ -20,7 +20,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 "stato",
 "pspRedirectUrl",
 "dataRichiestaPagamento",
-"datiAddebito",
+"contoAddebito",
 "dataEsecuzionePagamento",
 "credenzialiPagatore",
 "soggettoVersante",
@@ -55,8 +55,8 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
   
-  @JsonProperty("datiAddebito")
-  private Object datiAddebito = null;
+  @JsonProperty("contoAddebito")
+  private Object contoAddebito = null;
   
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
@@ -257,17 +257,17 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
    **/
-  public Pagamento datiAddebito(Object datiAddebito) {
-    this.datiAddebito = datiAddebito;
+  public Pagamento contoAddebito(Object contoAddebito) {
+    this.contoAddebito = contoAddebito;
     return this;
   }
 
-  @JsonProperty("datiAddebito")
-  public Object getDatiAddebito() {
-    return datiAddebito;
+  @JsonProperty("contoAddebito")
+  public Object getContoAddebito() {
+    return contoAddebito;
   }
-  public void setDatiAddebito(Object datiAddebito) {
-    this.datiAddebito = datiAddebito;
+  public void setContoAddebito(Object contoAddebito) {
+    this.contoAddebito = contoAddebito;
   }
 
   /**
@@ -398,7 +398,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(stato, pagamento.stato) &&
         Objects.equals(pspRedirectUrl, pagamento.pspRedirectUrl) &&
         Objects.equals(dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
-        Objects.equals(datiAddebito, pagamento.datiAddebito) &&
+        Objects.equals(contoAddebito, pagamento.contoAddebito) &&
         Objects.equals(dataEsecuzionePagamento, pagamento.dataEsecuzionePagamento) &&
         Objects.equals(credenzialiPagatore, pagamento.credenzialiPagatore) &&
         Objects.equals(soggettoVersante, pagamento.soggettoVersante) &&
@@ -410,7 +410,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idSessionePortale, idSessionePsp, nome, importo, stato, pspRedirectUrl, dataRichiestaPagamento, datiAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, canale, pendenze, rpp);
+    return Objects.hash(id, idSessionePortale, idSessionePsp, nome, importo, stato, pspRedirectUrl, dataRichiestaPagamento, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, canale, pendenze, rpp);
   }
 
   public static Pagamento parse(String json) {
@@ -435,7 +435,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
     sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
-    sb.append("    datiAddebito: ").append(toIndentedString(datiAddebito)).append("\n");
+    sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
     sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
     sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
     sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");

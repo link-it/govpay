@@ -158,8 +158,8 @@ public class PagamentiPortaleConverter {
 
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
 
-		if(jsonObjectPagamentiPortaleRequest.containsKey("datiAddebito")) {
-			rsModel.setDatiAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito"), DatiAddebito.class));
+		if(jsonObjectPagamentiPortaleRequest.containsKey("contoAddebito")) {
+			rsModel.setContoAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("contoAddebito"), DatiAddebito.class));
 		}
 
 		try {
