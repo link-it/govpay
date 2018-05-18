@@ -74,6 +74,20 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal_originale";
+			}else{
+				return "principal_originale";
+			}
+		}
+		if(field.equals(Operatore.model().ID_UTENZA.ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".abilitato";
+			}else{
+				return "abilitato";
+			}
+		}
 		if(field.equals(Operatore.model().NOME)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".nome";
@@ -95,6 +109,12 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 		// the full definition of the table containing the alias
 		
 		if(field.equals(Operatore.model().ID_UTENZA.PRINCIPAL)){
+			return this.toTable(Operatore.model().ID_UTENZA, returnAlias);
+		}
+		if(field.equals(Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
+			return this.toTable(Operatore.model().ID_UTENZA, returnAlias);
+		}
+		if(field.equals(Operatore.model().ID_UTENZA.ABILITATO)){
 			return this.toTable(Operatore.model().ID_UTENZA, returnAlias);
 		}
 		if(field.equals(Operatore.model().NOME)){
