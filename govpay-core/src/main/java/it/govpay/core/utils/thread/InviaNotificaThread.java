@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.pagamento.NotificheBD;
@@ -112,14 +113,14 @@ public class InviaNotificaThread implements Runnable {
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			ctx.setupPaClient(notifica.getApplicazione(bd).getCodApplicazione(), notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getConnettoreNotifica().getVersione());
+			Applicazione applicazione = notifica.getApplicazione(bd);
 					
 			MDC.put("op", ctx.getTransactionId());
 			
 			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
-			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null || notifica.getApplicazione(bd).getConnettoreNotifica().getUrl() == null) {
+			if(applicazione.getConnettoreNotifica() == null || applicazione.getConnettoreNotifica().getUrl() == null) {
 				ctx.log("notifica.annullata");
-				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]. Spedizione inibita.");
+				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
 				NotificheBD notificheBD = new NotificheBD(bd);
 				long tentativi = notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
@@ -127,9 +128,10 @@ public class InviaNotificaThread implements Runnable {
 				return;
 			}
 			
+			ctx.setupPaClient(applicazione.getCodApplicazione(), notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", applicazione.getConnettoreNotifica().getUrl(), applicazione.getConnettoreNotifica().getVersione());
 			ctx.log("notifica.spedizione");
 			
-			NotificaClient client = new NotificaClient(notifica.getApplicazione(bd));
+			NotificaClient client = new NotificaClient(applicazione);
 			client.invoke(notifica,bd);
 			notifica.setStato(StatoSpedizione.SPEDITO);
 			notifica.setDescrizioneStato(null);
