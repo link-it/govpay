@@ -208,7 +208,7 @@ public class Rpt extends BasicBD{
 				// Aggiorno tutti i versamenti che mi sono stati passati
 
 				if(versamento.getId() == null) {
-					versamentiBusiness.caricaVersamento(versamento, versamento.getNumeroAvviso() == null, aggiornaSeEsiste);
+					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste);
 				}
 				it.govpay.model.Iuv iuv = null;
 				String ccp = null;
