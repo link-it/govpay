@@ -1,0 +1,341 @@
+dominioPost:
+  type: object
+  required:
+   - ragioneSociale
+   - gln
+   - stazione
+   - abilitato
+  properties:
+    ragioneSociale:
+      type: string
+      description: Ragione sociale del beneficiario
+      example: Ente Creditore
+    indirizzo:
+      type: string
+      description: Indirizzo del beneficiario
+      example: Corso Italia
+    civico:
+      type: string
+      description: Numero civico del beneficiario
+      example: 1A
+    cap:
+      type: string
+      description: Codice avviamento postale del beneficiario
+      example: 00000
+    localita:
+      type: string
+      description: Località del beneficiario
+      example: Roma
+    provincia:
+      type: string
+      description: Provincia del beneficiario
+      example: Roma
+    nazione:
+      type: string
+      description: Nazione del beneficiario
+      example: IT
+    email:
+      type: string
+      description: Posta elettronica ordinaria del beneficiario
+      example: peo@creditore.it  
+    pec:
+      type: string
+      description: Posta elettronica certificata del beneficiario
+      example: pec@creditore.it  
+    tel:
+      type: string
+      description: Numero di telefono dell'help desk del beneficiario
+      example: 021234567890  
+    fax:
+      type: string
+      description: Numero di fax dell'help desk del beneficiario
+      example: 021234567890  
+    web:
+      type: string
+      description: Url del sito web
+      example: http://www.comune.it/
+    gln:
+      type: string
+      description: Global location number del beneficiario
+      example: 0011223344556
+    cbill:
+      type: string
+      description: codice cbill del beneficiario
+      example: 12345
+    iuvPrefix:
+      type: string
+      description: Prefisso negli IUV generati da GovPay
+      example: '%(yyyy)%(a)'
+    stazione:
+      type: string
+      description: Codice stazione PagoPA che intermedia il beneficiario
+      example: 01234567890_01
+    auxDigit:
+      type: string
+      description: Valore della prima cifra dei Numero Avviso generati da GovPay
+      example: 0
+    segregationCode:
+      type: string
+      description: Codice di segregazione utilizzato in caso di beneficiario pluri-intermediato (auxDigit = 3)
+      example: 88
+    logo:
+      type: string
+      description: Base64 del logo del beneficiario
+      example: /9j/4AA...base64...FFFFABRRRQB/9k=
+    abilitato:
+      type: boolean
+      description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
+      example: 'true'
+dominioIndex:
+  type: object
+  allOf:
+    - type: object
+      required:
+        - idDominio
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale del beneficiario
+          example: 01234567890
+    - $ref: '#/dominioPost'
+    - type: object
+      properties:
+        required:
+        - unitaOperative
+        - ibanAccredito
+        - entrate
+        unitaOperative:
+          type: string
+          description: Url alle unità operative censite per il dominio
+          example: /domini/01234567890/unitaOperative
+        ibanAccredito:
+          type: string
+          description: Iban di accredito censiti per il dominio beneficiario
+          example: /domini/01234567890/ibanAccredito
+        entrate:
+          type: string
+          description: Tipologie di entrata censite per il dominio beneficiario
+          example: /domini/01234567890/entrate               
+dominio:
+  type: object
+  allOf:
+    - type: object
+      required:
+        - idDominio
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale del beneficiario
+          example: 01234567890
+    - $ref: '#/dominioPost'
+    - type: object
+      properties:
+        unitaOperative:
+          type: array
+          items:
+            $ref: '#/unitaOperativa'
+        ibanAccredito:
+          type: array
+          items:
+            $ref: '#/ibanAccredito'
+        entrate:
+          type: array
+          items:
+            $ref: '#/entrata'           
+unitaOperativaPost:
+  type: object
+  required: 
+    - ragioneSociale
+  properties:
+    ragioneSociale:
+      type: string
+      description: Ragione sociale dell'unita
+      example: Ufficio due
+    indirizzo:
+      type: string
+      description: Indirizzo dell'unita
+      example: Borgo stretto
+    civico:
+      type: string
+      description: Numero civico dell'unita
+      example: 55bis
+    cap:
+      type: string
+      description: Codice avviamento postale dell'unita
+      example: 99999
+    localita:
+      type: string
+      description: Località dell'unita
+      example: Milano
+    provincia:
+      type: string
+      description: Provincia del beneficiario
+      example: Roma
+    nazione:
+      type: string
+      description: Nazione del beneficiario
+      example: IT
+    email:
+      type: string
+      description: Posta elettronica ordinaria del beneficiario
+      example: peo@creditore.it  
+    pec:
+      type: string
+      description: Posta elettronica certificata del beneficiario
+      example: pec@creditore.it  
+    tel:
+      type: string
+      description: Numero di telefono dell'help desk del beneficiario
+      example: 021234567890  
+    fax:
+      type: string
+      description: Numero di fax dell'help desk del beneficiario
+      example: 021234567890           
+    gln:
+      type: string
+      description: Global location number del beneficiario
+      example: 0011223344556
+    web:
+      type: string
+      description: Url del sito web
+      example: http://www.comune.it/
+    area:
+      type: string
+      description: Nome dell'area di competenza dell'unita' operativa
+      example: Affari generali e istituzionali  
+    abilitato:
+      type: boolean
+      description: Indica lo stato di abilitazione
+      example: true
+unitaOperativa:
+  type: object
+  allOf:
+    - type: object
+      required:
+       - idUnita
+      properties:
+        idUnita:
+          type: string
+          description: Codice fiscale dell'unita
+          example: 01234567890
+    - $ref: '#/unitaOperativaPost'
+ibanAccreditoPost:
+  type: object
+  properties:
+    bicAccredito:
+      type: string
+      example: DABAIE2D
+    postale:
+      type: boolean
+      description: indica se e' un c/c postale
+      example: false
+      default: false
+    mybank:
+      type: boolean
+      description: indica se e' un iban abilitato sul circuito mybank
+      example: false
+      default: false
+    abilitato:
+      type: boolean
+      description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
+      example: true
+      default: true
+ibanAccredito:
+  type: object
+  allOf:
+    - type: object
+      required:
+       - idUnita
+      properties:
+        ibanAccredito:
+          type: string
+          example: IT60X0542811101000000123456
+    - $ref: '#/ibanAccreditoPost'
+tipoEntrataPost:
+  type: object
+  required: 
+    - descrizione
+    - tipoContabilita
+    - codiceContabilita
+  properties:
+    descrizione:
+      type: string
+      example: Imposta municipale urbana
+    tipoContabilita:
+      description: Tipologia di codifica del capitolo di bilancio
+      type: string
+      enum:
+        - Entrata
+        - Speciale
+        - SIOPE
+        - Altro
+      example: SIOPE
+    codiceContabilita:
+      description: Codifica del capitolo di bilancio
+      type: string
+      example: 3321
+    codificaIUV:
+      type: string
+      description: Cifra identificativa negli IUV
+      example: 01
+tipoEntrata:
+  type: object
+  allOf:
+    - type: object
+      required:
+       - idEntrata
+      properties:
+        idEntrata:
+          type: string
+          example: IMU
+    - $ref: '#/tipoEntrataPost'
+entrataPost:
+  type: object
+  required: 
+    - ibanAccredito
+  properties:
+    ibanAccredito:
+      type: string
+      example: IT60X0542811101000000123456
+    ibanAppoggio:
+      type: string
+      example: IT60X0542811101000000123456
+    tipoContabilita:
+      description: Tipologia di codifica del capitolo di bilancio
+      type: string
+      enum:
+        - Entrata
+        - Speciale
+        - SIOPE
+        - Altro
+      example: SIOPE
+    codiceContabilita:
+      description: Codifica del capitolo di bilancio
+      type: string
+      example: 3321
+    codificaIUV:
+      type: string
+      description: Cifra identificativa negli IUV
+      example: 01
+    abilitato:
+      type: boolean
+      description: Indicazione l'entrata e' abilitata
+      example: true
+      default: true
+entrata:
+  type: object
+  allOf:
+    - type: object
+      required:
+       - idEntrata
+      properties:
+        idEntrata:
+          type: string
+          example: IMU
+    - $ref: '#/entrataPost'
+    - type: object
+      required:
+       - tipoEntrata
+      properties:
+        tipoEntrata:
+          $ref: '#/tipoEntrata'

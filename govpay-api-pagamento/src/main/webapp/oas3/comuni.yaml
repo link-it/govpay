@@ -1,0 +1,104 @@
+pagina:
+  in: query
+  name: pagina
+  description: Numero di pagina dei risultati
+  required: false
+  schema:
+    type: integer
+    default: 1
+risultatiPerPagina:    
+  in: query
+  name: risultatiPerPagina
+  description: Numero massimo di risultati nella risposta
+  required: false
+  schema:
+    type: integer
+    default: 25
+    maximum: 200
+campi:
+  name: campi
+  in: query
+  description: >-
+    csv dei campi da includere nella risposta (default tutti)
+  required: false
+  schema:
+    type: string
+    format: csv
+abilitato:
+  name: abilitato
+  in: query
+  description: Restrizione ai soli canali abilitati o disabilitati
+  required: false
+  schema:
+    type: boolean
+listaPaginata:
+  type: object
+  properties:
+    numRisultati:
+      type: number
+      format: integer
+      example: '100'
+    numPagine:
+      type: number
+      format: integer
+      example: '4'
+    risultatiPerPagina:
+      type: number
+      format: integer
+      example: '25'
+    pagina:
+      type: number
+      format: integer
+      example: '1'
+    prossimiRisultati:
+      type: string
+      format: integer
+      example: '/risorsa?pagina=2'    
+soggetto:
+  description: dati anagrafici di un versante o pagatore.
+  type: object
+  required:
+    - tipo
+    - identificativo
+  properties:
+    tipo:
+      description: >-
+        tipologia di soggetto, se persona fisica (F) o giuridica
+        (G)
+      type: string
+      enum:
+        - G
+        - F
+      example: F
+    identificativo:
+      description: codice fiscale o partita iva del soggetto
+      type: string
+      example: RSSMRA30A01H501I
+    anagrafica:
+      description: nome e cognome o altra ragione sociale del soggetto
+      type: string
+      example: Mario Rossi
+    indirizzo:
+      type: string
+      example: Piazza della Vittoria
+    civico:
+      type: string
+      example: 10/A
+    cap:
+      type: string
+      example: 0
+    localita:
+      type: string
+      example: Roma
+    provincia:
+      type: string
+      example: Roma
+    nazione:
+      type: string
+      example: IT
+    email:
+      type: string
+      example: mario.rossi@host.eu
+    cellulare:
+      type: string
+      example: 0039000123456789      
