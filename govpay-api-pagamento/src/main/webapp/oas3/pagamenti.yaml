@@ -1,5 +1,7 @@
 post_pagamento:
   summary: Avvio di un pagamento di pendenze
+  tags:
+    - Pagamenti  
   description: >-
     L'operazione consente di avviare una sessione di pagamento per una o più
     pendenze. Le pendenze presenti in posizione debitoria possono essere
@@ -60,6 +62,8 @@ post_pagamento:
       $ref: './errori.yaml#/responses/502'
 get_pagamenti:
   summary: Lista dei pagamenti
+  tags:
+    - Pagamenti  
   parameters:
     - $ref: './comuni.yaml#/pagina'
     - $ref: './comuni.yaml#/risultatiPerPagina'
@@ -121,8 +125,10 @@ get_pagamenti:
       $ref: './errori.yaml#/responses/500'
     '502':
       $ref: './errori.yaml#/responses/502'
-get_pagamento:      
+get_pagamento:
   summary: Dettaglio di un pagamento
+  tags:
+    - Pagamenti
   parameters:
     - in: path
       name: id
@@ -267,7 +273,7 @@ pagamentoIndex:
       description: >-
         Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
     stato:
-      $ref: '#/components/schemas/statoPagamento'
+      $ref: '#/statoPagamento'
     pspRedirectUrl:
       type: string
       example: 'https://www.psp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
@@ -307,7 +313,7 @@ pagamentoIndex:
         completare l'operazione (ad esempio un codice bilaterale
         utilizzabile una sola volta).
     soggettoVersante:
-      $ref: '#/components/schemas/soggetto'
+      $ref: './comuni.yaml#/soggetto'
     autenticazioneSoggetto:
       type: string
       enum:
