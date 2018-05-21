@@ -178,7 +178,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			String idSessione = pagamentoPortale.getIdSessione();
 
 			pagamentoPortale.setStato(STATO.IN_CORSO);
-			pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_IN_CORSO);
+			pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			pagamentiPortaleBD.insertPagamento(pagamentoPortale);
 
