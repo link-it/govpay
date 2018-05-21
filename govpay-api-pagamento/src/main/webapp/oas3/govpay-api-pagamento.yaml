@@ -10,7 +10,7 @@ info:
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
   - description: SwaggerHub API Auto Mocking
-    url: ${api-base-url}
+    url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/v1/
 tags:
   - name: Pagamenti
     description: Realizzazione e consultazione dei pagamenti delle pendenze
@@ -23,41 +23,49 @@ security:
 paths:
   '/domini':
     get:
+      description: Elenco degli Enti Creditori
       tags:
         - Domini
       $ref: './domini.yaml#/get_domini'
   '/domini/{idDominio}':
     get:
+      description: Lettura dell'anagrafica di un Ente Creditore
       tags:
         - Domini
       $ref: './domini.yaml#/get_dominio'
   '/domini/{idDominio}/unitaOperative':
     get:
+      description: Elenco delle Unità Operative di un Ente Creditore
       tags:
         - Domini
       $ref: './domini.yaml#/get_unitaoperative'
   '/domini/{idDominio}/unitaOperative/{idUnitaOperativa}':
     get:
+      description: Lettura dell'anagrafica di una Unità Operativa
       tags:
         - Domini
       $ref: './domini.yaml#/get_unitaoperativa'
-  '/domini/{idDominio}/ibanAccredito':
+  '/domini/{idDominio}/contiAccredito':
     get:
+      description: Elenco dei conti di accredito di un Ente Creditore
       tags:
         - Domini
       $ref: './domini.yaml#/get_ibans'
-  '/domini/{idDominio}/ibanAccredito/{ibanAccredito}':
+  '/domini/{idDominio}/contiAccredito/{iban}':
     get:
+      description: Lettura dei dati di dettaglio di un conto di accredito
       tags:
         - Domini
       $ref: './domini.yaml#/get_iban'
   '/domini/{idDominio}/entrate':
     get:
+      description: Elenco delle entrate di un Ente Creditore
       tags:
         - Domini
       $ref: './domini.yaml#/get_entrate'
   '/domini/{idDominio}/entrate/{idEntrata}':
     get:
+      description: Lettura dei dati di confiugrazione di una entrata
       tags:
         - Domini
       $ref: './domini.yaml#/get_entrata'

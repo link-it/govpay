@@ -166,7 +166,7 @@ get_ibans:
       schema:
         type: string
         format: csv
-        default: +ibanAccredito        
+        default: +contiAccredito        
     - name: idDominio
       in: path
       description: Identificativo del dominio
@@ -188,7 +188,7 @@ get_ibans:
                   risultati:
                     type: array
                     items:
-                      $ref: '#/ibanAccredito'
+                      $ref: '#/contiAccredito'
     '401':
       $ref: './errori.yaml#/responses/401'
     '403':
@@ -206,9 +206,9 @@ get_iban:
         type: string
       description: Codice fiscale del beneficiario
       required: true
-    - name: ibanAccredito
+    - name: iban
       in: path
-      description: Iban di accredito
+      description: Iban
       required: true
       schema:
         type: string
@@ -218,7 +218,7 @@ get_iban:
       content:
         application/json:
           schema:
-            $ref: '#/ibanAccredito'
+            $ref: '#/contiAccredito'
     '401':
       $ref: './errori.yaml#/responses/401'
     '403':
@@ -406,16 +406,16 @@ dominioIndex:
       properties:
         required:
         - unitaOperative
-        - ibanAccredito
+        - contiAccredito
         - entrate
         unitaOperative:
           type: string
           description: Url alle unità operative censite per il dominio
           example: /domini/01234567890/unitaOperative
-        ibanAccredito:
+        contiAccredito:
           type: string
-          description: Iban di accredito censiti per il dominio beneficiario
-          example: /domini/01234567890/ibanAccredito
+          description: Conti di accredito censiti per il dominio beneficiario
+          example: /domini/01234567890/contiAccredito
         entrate:
           type: string
           description: Tipologie di entrata censite per il dominio beneficiario
@@ -438,10 +438,10 @@ dominio:
           type: array
           items:
             $ref: '#/unitaOperativa'
-        ibanAccredito:
+        contiAccredito:
           type: array
           items:
-            $ref: '#/ibanAccredito'
+            $ref: '#/contiAccredito'
         entrate:
           type: array
           items:
@@ -523,10 +523,10 @@ unitaOperativa:
           description: Codice fiscale dell'unita
           example: 01234567890
     - $ref: '#/unitaOperativaPost'
-ibanAccreditoPost:
+contiAccreditoPost:
   type: object
   properties:
-    bicAccredito:
+    bic:
       type: string
       example: DABAIE2D
     postale:
@@ -544,17 +544,17 @@ ibanAccreditoPost:
       description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
       example: true
       default: true
-ibanAccredito:
+contiAccredito:
   type: object
   allOf:
     - type: object
       required:
        - idUnita
       properties:
-        ibanAccredito:
+        iban:
           type: string
           example: IT60X0542811101000000123456
-    - $ref: '#/ibanAccreditoPost'
+    - $ref: '#/contiAccreditoPost'
 tipoEntrataPost:
   type: object
   required: 
@@ -596,12 +596,12 @@ tipoEntrata:
 entrataPost:
   type: object
   required: 
-    - ibanAccredito
+    - contiAccredito
   properties:
-    ibanAccredito:
+    contoAccredito:
       type: string
       example: IT60X0542811101000000123456
-    ibanAppoggio:
+    contoAppoggio:
       type: string
       example: IT60X0542811101000000123456
     tipoContabilita:

@@ -297,7 +297,7 @@ pendenza:
         pagamenti:
           type: array
           items:
-            $ref: './pagamenti.yaml#/pagamento'        
+            $ref: './pagamenti.yaml#/pagamento'      
 vocePendenza:
   allOf:
     - type: object
