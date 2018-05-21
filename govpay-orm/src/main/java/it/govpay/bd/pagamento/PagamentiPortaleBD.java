@@ -83,13 +83,15 @@ public class PagamentiPortaleBD extends BasicBD{
 
 	private void insertPagPortVers(PagamentoPortale pagamentoPortale)
 			throws ServiceException, NotImplementedException {
-		for(IdVersamento idVersamento: pagamentoPortale.getIdVersamento()) {
-			PagamentoPortaleVersamento pagamentoPortaleVersamento = new PagamentoPortaleVersamento();
-			IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
-			idPagamentoPortale.setId(pagamentoPortale.getId());
-			pagamentoPortaleVersamento.setIdPagamentoPortale(idPagamentoPortale);
-			pagamentoPortaleVersamento.setIdVersamento(idVersamento);
-			this.getPagamentoPortaleVersamentoService().create(pagamentoPortaleVersamento);
+		if(pagamentoPortale.getIdVersamento() != null) {
+			for(IdVersamento idVersamento: pagamentoPortale.getIdVersamento()) {
+				PagamentoPortaleVersamento pagamentoPortaleVersamento = new PagamentoPortaleVersamento();
+				IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
+				idPagamentoPortale.setId(pagamentoPortale.getId());
+				pagamentoPortaleVersamento.setIdPagamentoPortale(idPagamentoPortale);
+				pagamentoPortaleVersamento.setIdVersamento(idVersamento);
+				this.getPagamentoPortaleVersamentoService().create(pagamentoPortaleVersamento);
+			}
 		}
 	}
 

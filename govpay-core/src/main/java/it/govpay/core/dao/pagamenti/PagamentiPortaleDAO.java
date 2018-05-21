@@ -119,12 +119,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+dominio.getCodDominio()+"].", EsitoOperazione.DOM_001, dominio.getCodDominio());
 				}
 
-				if(versamentoModel.getId() != null) {
-					IdVersamento idV = new IdVersamento();
-					idV.setCodVersamentoEnte(versamentoModel.getCodVersamentoEnte());
-					idV.setId(versamentoModel.getId());
-					idVersamento.add(idV);
-				}
 
 				if(i == 0) {
 					// 	2. Codice dominio della prima pendenza
@@ -183,7 +177,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			String idSessione = pagamentoPortale.getIdSessione();
 
+			pagamentoPortale.setStato(STATO.IN_CORSO);
+			pagamentoPortale.setCodiceStato(CODICE_STATO.SELEZIONE_WISP_IN_CORSO);
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD.insertPagamento(pagamentoPortale);
 
 			// procedo al pagamento
 			Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(pagamentiPortaleDTO.getVersante());
@@ -195,7 +192,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			stato = STATO.IN_CORSO;
 
 			try {
-				rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false);
+				rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), false, pagamentoPortale);
 
 				Rpt rpt = rpts.get(0);
 
@@ -239,6 +236,15 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				transazioneResponse = (GpAvviaTransazionePagamentoResponse) new GovPayException(e).getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
 				throw e;
 			}
+			
+			for(Versamento versamentoModel: versamenti) {
+				if(versamentoModel.getId() != null) {
+					IdVersamento idV = new IdVersamento();
+					idV.setCodVersamentoEnte(versamentoModel.getCodVersamentoEnte());
+					idV.setId(versamentoModel.getId());
+					idVersamento.add(idV);
+				}
+			}
 
 			pagamentoPortale.setIdSessionePsp(idSessionePsp);
 			pagamentoPortale.setPspRedirectUrl(pspRedirect);
@@ -249,7 +255,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setTipoVersamento(tipoVersamento);
 			pagamentoPortale.setCodCanale(codCanale); 
 
-			pagamentiPortaleBD.insertPagamento(pagamentoPortale);
+			pagamentiPortaleBD.updatePagamento(pagamentoPortale, true); //inserisce anche i versamenti
 
 			response.setRedirectUrl(redirectUrl);
 			response.setId(pagamentoPortale.getIdSessione());

@@ -15,7 +15,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 "urlRitorno",
 "pendenze",
 "tokenWISP",
-"datiAddebito",
+"contoAddebito",
 "dataEsecuzionePagamento",
 "credenzialiPagatore",
 "soggettoVersante",
@@ -33,8 +33,8 @@ public class PagamentoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("tokenWISP")
   private TokenWISP tokenWISP = null;
   
-  @JsonProperty("datiAddebito")
-  private DatiAddebito datiAddebito = null;
+  @JsonProperty("contoAddebito")
+  private DatiAddebito contoAddebito = null;
   
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
@@ -201,17 +201,17 @@ public class PagamentoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
    **/
-  public PagamentoPost datiAddebito(DatiAddebito datiAddebito) {
-    this.datiAddebito = datiAddebito;
+  public PagamentoPost contoAddebito(DatiAddebito contoAddebito) {
+    this.contoAddebito = contoAddebito;
     return this;
   }
 
-  @JsonProperty("datiAddebito")
-  public DatiAddebito getDatiAddebito() {
-    return datiAddebito;
+  @JsonProperty("contoAddebito")
+  public DatiAddebito getContoAddebito() {
+    return contoAddebito;
   }
-  public void setDatiAddebito(DatiAddebito datiAddebito) {
-    this.datiAddebito = datiAddebito;
+  public void setContoAddebito(DatiAddebito contoAddebito) {
+    this.contoAddebito = contoAddebito;
   }
 
   /**
@@ -329,7 +329,7 @@ public class PagamentoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.equals(urlRitorno, pagamentoPost.urlRitorno) &&
         Objects.equals(pendenze, pagamentoPost.pendenze) &&
         Objects.equals(tokenWISP, pagamentoPost.tokenWISP) &&
-        Objects.equals(datiAddebito, pagamentoPost.datiAddebito) &&
+        Objects.equals(contoAddebito, pagamentoPost.contoAddebito) &&
         Objects.equals(dataEsecuzionePagamento, pagamentoPost.dataEsecuzionePagamento) &&
         Objects.equals(credenzialiPagatore, pagamentoPost.credenzialiPagatore) &&
         Objects.equals(soggettoVersante, pagamentoPost.soggettoVersante) &&
@@ -339,7 +339,7 @@ public class PagamentoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(urlRitorno, pendenze, tokenWISP, datiAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua);
+    return Objects.hash(urlRitorno, pendenze, tokenWISP, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua);
   }
 
   public static PagamentoPost parse(String json) {
@@ -359,7 +359,7 @@ public class PagamentoPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
     sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
     sb.append("    tokenWISP: ").append(toIndentedString(tokenWISP)).append("\n");
-    sb.append("    datiAddebito: ").append(toIndentedString(datiAddebito)).append("\n");
+    sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
     sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
     sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
     sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");

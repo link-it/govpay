@@ -71,9 +71,9 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 		pagamentiPortaleDTO.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 
-		if(pagamentiPortaleRequest.getDatiAddebito() != null) {
-			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getDatiAddebito().getBicAddebito());
-			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getDatiAddebito().getIbanAddebito());
+		if(pagamentiPortaleRequest.getContoAddebito() != null) {
+			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getContoAddebito().getBicAddebito());
+			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getContoAddebito().getIbanAddebito());
 		}
 
 		if(pagamentiPortaleRequest.getTokenWISP() != null) {
@@ -158,8 +158,8 @@ public class PagamentiPortaleConverter {
 
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
 
-		if(jsonObjectPagamentiPortaleRequest.containsKey("datiAddebito")) {
-			rsModel.setDatiAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("datiAddebito"), DatiAddebito.class));
+		if(jsonObjectPagamentiPortaleRequest.containsKey("contoAddebito")) {
+			rsModel.setContoAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("contoAddebito"), DatiAddebito.class));
 		}
 
 		try {
