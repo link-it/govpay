@@ -1,4 +1,6 @@
 get_avviso:
+  tags:
+    - Pendenze
   summary: Avviso di pagamento
   description: Fornisce un avviso di pagamento o la pendenza ad esso associata
   parameters:

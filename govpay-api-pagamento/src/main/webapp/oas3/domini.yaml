@@ -1,4 +1,6 @@
 get_domini:
+  tags:
+    - Domini
   summary: Elenco dei domini beneficiari censiti
   parameters:
     - $ref: './comuni.yaml#/pagina'
@@ -44,6 +46,8 @@ get_domini:
     '500':
       $ref: './errori.yaml#/responses/500'
 get_dominio:
+  tags:
+    - Domini
   summary: Lettura dei dati di un dominio beneficiario
   parameters:
     - in: path
@@ -68,6 +72,8 @@ get_dominio:
     '500':
       $ref: './errori.yaml#/responses/500'
 get_unitaoperative:
+  tags:
+    - Domini
   summary: Elenco delle unità operative del beneficiario
   parameters:
     - $ref: './comuni.yaml#/pagina'
@@ -113,6 +119,8 @@ get_unitaoperative:
     '500':
       $ref: './errori.yaml#/responses/500'
 get_unitaoperativa:
+  tags:
+    - Domini
   summary: Lettura dei dati di una unità operativa
   parameters:
     - in: path
@@ -141,6 +149,8 @@ get_unitaoperativa:
     '500':
       $ref: './errori.yaml#/responses/500'
 get_ibans:
+  tags:
+    - Domini
   summary: Elenco degli iban di accredito del beneficiario
   parameters:
     - $ref: './comuni.yaml#/pagina'
@@ -186,6 +196,8 @@ get_ibans:
     '500':
       $ref: './errori.yaml#/responses/500'
 get_iban:
+  tags:
+    - Domini
   summary: Lettura dei dati di un iban di accredito
   parameters:
     - in: path
@@ -214,6 +226,8 @@ get_iban:
     '500':
       $ref: './errori.yaml#/responses/500'
 get_entrate:
+  tags:
+    - Domini
   summary: Elenco delle tipologie di entrata del dominio
   parameters:
     - $ref: './comuni.yaml#/pagina'
@@ -259,6 +273,8 @@ get_entrate:
     '500':
       $ref: './errori.yaml#/responses/500'
 get_entrata:
+  tags:
+    - Domini
   summary: Lettura dei dati di una entrata
   parameters:
     - in: path

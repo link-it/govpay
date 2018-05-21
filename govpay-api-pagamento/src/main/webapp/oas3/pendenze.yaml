@@ -1,4 +1,6 @@
 get_pendenze:
+  tags:
+    - Pendenze
   summary: Elenco delle pendenze
   description: Fornisce la lista delle pendenze filtrata ed ordinata.
   parameters:
@@ -71,6 +73,8 @@ get_pendenze:
     '500':
       $ref: './errori.yaml#/responses/500'
 get_pendenza:
+  tags:
+    - Pendenze
   summary: Dettaglio di una pendenza per identificativo
   description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
   parameters:
@@ -229,7 +233,7 @@ pendenzaIndex:
         segnalazioni:
           type: array
           items: 
-            $ref: '#/components/schemas/segnalazione'          
+            $ref: './comuni.yaml#/segnalazione'          
     - $ref: '#/pendenzaBase'   
     - type: object
       required:
