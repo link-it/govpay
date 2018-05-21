@@ -101,4 +101,14 @@ soggetto:
       example: mario.rossi@host.eu
     cellulare:
       type: string
-      example: 0039000123456789      
+      example: 0039000123456789    
+segnalazione:
+  type: object
+  required:
+    - codice
+    - descrizione
+  properties:
+    codice:
+      type: string
+    descrizione:
+      type: string        

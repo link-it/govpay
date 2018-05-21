@@ -1,3 +1,291 @@
+get_domini:
+  summary: Elenco dei domini beneficiari censiti
+  parameters:
+    - $ref: './comuni.yaml#/pagina'
+    - $ref: './comuni.yaml#/risultatiPerPagina'
+    - $ref: './comuni.yaml#/campi'
+    - $ref: './comuni.yaml#/abilitato'
+    - name: ordinamento
+      in: query
+      description: >-
+        csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+         * ragioneSociale
+      required: false
+      schema:
+        type: string
+        format: csv
+        default: +ragioneSociale
+    - name: idStazione
+      in: query
+      description: Restrizione ai soli domini associati alla stazione indicata
+      required: false
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Lista paginata dei domini ricercati
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: './comuni.yaml#/listaPaginata'
+              - type: object
+                required:
+                  - risultati
+                properties:
+                  risultati:
+                    type: array
+                    items:
+                      $ref: '#/dominioIndex' 
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403'
+    '500':
+      $ref: './errori.yaml#/responses/500'
+get_dominio:
+  summary: Lettura dei dati di un dominio beneficiario
+  parameters:
+    - in: path
+      name: idDominio
+      schema:
+        type: string
+      description: Codice fiscale del beneficiario
+      required: true
+  responses:
+    '200':
+      description: Dettaglio del dominio
+      content:
+        application/json:
+          schema:
+            $ref: '#/dominio'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403'
+    '404':
+      $ref: './errori.yaml#/responses/404'          
+    '500':
+      $ref: './errori.yaml#/responses/500'
+get_unitaoperative:
+  summary: Elenco delle unità operative del beneficiario
+  parameters:
+    - $ref: './comuni.yaml#/pagina'
+    - $ref: './comuni.yaml#/risultatiPerPagina'
+    - $ref: './comuni.yaml#/campi'
+    - $ref: './comuni.yaml#/abilitato'
+    - name: ordinamento
+      in: query
+      description: >-
+        csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+         * ragioneSociale
+      required: false
+      schema:
+        type: string
+        format: csv
+        default: +ragioneSociale        
+    - name: idDominio
+      in: path
+      description: Identificativo del dominio
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Lista paginata dei domini ricercati
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: './comuni.yaml#/listaPaginata'
+              - type: object
+                required:
+                  - risultati
+                properties:
+                  risultati:
+                    type: array
+                    items:
+                      $ref: '#/unitaOperativa'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403' 
+    '500':
+      $ref: './errori.yaml#/responses/500'
+get_unitaoperativa:
+  summary: Lettura dei dati di una unità operativa
+  parameters:
+    - in: path
+      name: idDominio
+      schema:
+        type: string
+      description: Codice fiscale del beneficiario
+      required: true
+    - name: idUnitaOperativa
+      in: path
+      description: Identificativo dell'unità operativa
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Dettaglio dell'unità operativa
+      content:
+        application/json:
+          schema:
+            $ref: '#/unitaOperativa'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403' 
+    '500':
+      $ref: './errori.yaml#/responses/500'
+get_ibans:
+  summary: Elenco degli iban di accredito del beneficiario
+  parameters:
+    - $ref: './comuni.yaml#/pagina'
+    - $ref: './comuni.yaml#/risultatiPerPagina'
+    - $ref: './comuni.yaml#/campi'
+    - $ref: './comuni.yaml#/abilitato'      
+    - name: ordinamento
+      in: query
+      description: >-
+        csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+         * ragioneSociale
+      required: false
+      schema:
+        type: string
+        format: csv
+        default: +ibanAccredito        
+    - name: idDominio
+      in: path
+      description: Identificativo del dominio
+      required: true
+      schema:
+        type: string      
+  responses:
+    '200':
+      description: Lista paginata dei domini ricercati
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: './comuni.yaml#/listaPaginata'
+              - type: object
+                required:
+                  - risultati
+                properties:
+                  risultati:
+                    type: array
+                    items:
+                      $ref: '#/ibanAccredito'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403' 
+    '500':
+      $ref: './errori.yaml#/responses/500'
+get_iban:
+  summary: Lettura dei dati di un iban di accredito
+  parameters:
+    - in: path
+      name: idDominio
+      schema:
+        type: string
+      description: Codice fiscale del beneficiario
+      required: true
+    - name: ibanAccredito
+      in: path
+      description: Iban di accredito
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Dettaglio dell'iban di accredito
+      content:
+        application/json:
+          schema:
+            $ref: '#/ibanAccredito'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403' 
+    '500':
+      $ref: './errori.yaml#/responses/500'
+get_entrate:
+  summary: Elenco delle tipologie di entrata del dominio
+  parameters:
+    - $ref: './comuni.yaml#/pagina'
+    - $ref: './comuni.yaml#/risultatiPerPagina'
+    - $ref: './comuni.yaml#/campi'
+    - $ref: './comuni.yaml#/abilitato' 
+    - name: ordinamento
+      in: query
+      description: >-
+        csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+         * idEntrata
+      required: false
+      schema:
+        type: string
+        format: csv
+        default: +idEntrata
+    - name: idDominio
+      in: path
+      description: Identificativo del dominio
+      required: true
+      schema:
+        type: string      
+  responses:
+    '200':
+      description: Lista paginata delle entrate ricercate
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: './comuni.yaml#/listaPaginata'
+              - type: object
+                required:
+                  - risultati
+                properties:
+                  risultati:
+                    type: array
+                    items:
+                      $ref: '#/entrata'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403' 
+    '500':
+      $ref: './errori.yaml#/responses/500'
+get_entrata:
+  summary: Lettura dei dati di una entrata
+  parameters:
+    - in: path
+      name: idDominio
+      schema:
+        type: string
+      description: Codice fiscale del beneficiario
+      required: true
+    - name: idEntrata
+      in: path
+      description: Identificativo della tipologia di entrata
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Dettaglio dell'entrata
+      content:
+        application/json:
+          schema:
+            $ref: '#/entrata'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403' 
+    '500':
+      $ref: './errori.yaml#/responses/500'
 dominioPost:
   type: object
   required:

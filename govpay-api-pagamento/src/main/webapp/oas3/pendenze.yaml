@@ -1,3 +1,106 @@
+get_pendenze:
+  summary: Elenco delle pendenze
+  description: Fornisce la lista delle pendenze filtrata ed ordinata.
+  parameters:
+    - $ref: './comuni.yaml#/pagina'
+    - $ref: './comuni.yaml#/risultatiPerPagina'
+    - $ref: './comuni.yaml#/campi'      
+    - name: ordinamento
+      in: query
+      description: >-
+        csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+         * dataCaricamento
+         * dataScadenza
+         * dataValidita
+         * stato
+      required: false
+      schema:
+        type: string
+        format: csv
+        default: +dataRichiestaPagamento
+    - name: idDominio
+      in: query
+      description: filtro per dominio creditore
+      required: false
+      schema:
+        type: string
+    - name: idA2A
+      in: query
+      description: filtro per gestionale
+      required: false
+      schema:
+        type: string
+    - name: idDebitore
+      in: query
+      description: filtro per codice fiscale o p. iva del soggetoto debitore
+      required: false
+      schema:
+        type: string
+    - name: stato
+      in: query
+      description: filtro sullo stato della pendenza
+      required: false
+      schema:
+        $ref: '#/statoPendenza'
+    - in: query
+      name: idPagamento
+      description: Identificativo del pagamento
+      required: false
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Elenco delle pendenze che rispettano i filtri di ricerca
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: './comuni.yaml#/listaPaginata'
+              - type: object
+                required:
+                  - risultati
+                properties:
+                  risultati:
+                    type: array
+                    items:
+                      $ref: '#/pendenzaIndex'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403'
+    '500':
+      $ref: './errori.yaml#/responses/500'
+get_pendenza:
+  summary: Dettaglio di una pendenza per identificativo
+  description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+  parameters:
+    - in: path
+      name: idA2A
+      description: Identificativo del gestionale
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: idPendenza
+      description: Identificativo della pendenza
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Informazioni dettagliate della pendenza
+      content:
+        application/json:
+          schema:
+            $ref: '#/pendenza'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403'
+    '404':
+      $ref: './errori.yaml#/responses/404'
+    '500':
+      $ref: './errori.yaml#/responses/500'
 pendenzaBase:
   type: object
   required:
@@ -55,7 +158,7 @@ pendenzaBase:
       description: Macro categoria della pendenza secondo la classificazione del creditore
       example: Sanzioni
     tassonomiaAvviso:
-      $ref: '#/tassonomiaAvviso'
+      $ref: './avvisi.yaml#/tassonomiaAvviso'
 pendenzaPut:
   type: object
   allOf:
@@ -88,7 +191,6 @@ pendenzaPost:
       required:
         - idA2A
         - idPendenza
-        - dominio
       properties:
         idA2A:
           type: string
@@ -119,11 +221,11 @@ pendenzaIndex:
           description: Identificativo della pendenza nel gestionale responsabile
           example: abcdef12345
         dominio:
-          $ref: './dominio.yaml#/dominioIndex'
+          $ref: './domini.yaml#/dominioIndex'
         unitaOperativa:
-          $ref: './dominio.yaml#/unitaOperativa'
+          $ref: './domini.yaml#/unitaOperativa'
         stato:
-          $ref: './statoPendenza'
+          $ref: '#/statoPendenza'
         segnalazioni:
           type: array
           items: 
@@ -162,9 +264,9 @@ pendenza:
           description: Identificativo della pendenza nel gestionale responsabile
           example: abcdef12345
         dominio:
-          $ref: './dominio.yaml#/dominioIndex'
+          $ref: './domini.yaml#/dominioIndex'
         unitaOperativa:
-          $ref: './dominio.yaml#/unitaOperativa'
+          $ref: './domini.yaml#/unitaOperativa'
         stato:
           $ref: '#/statoPendenza'
         segnalazioni:
@@ -271,25 +373,6 @@ vocePendenza:
             provinciaResidenza:
               description: Sigla automobilistica della provincia di residenza del soggetto pagatore
               type: string
-tassonomiaAvviso:
-  description: Macro categoria della pendenza Agid
-  type: string
-  enum:
-    - Cartelle esattoriali
-    - Diritti e concessioni
-    - Imposte e tasse
-    - IMU, TASI e altre tasse comunali
-    - Ingressi a mostre e musei
-    - Multe e sanzioni amministrative
-    - Previdenza e infortuni
-    - Servizi erogati dal comune
-    - Servizi erogati da altri enti
-    - Servizi scolastici
-    - Tassa automobilistica
-    - Ticket e prestazioni sanitarie
-    - Trasporti, mobilità e parcheggi
-  example: 
-    Ticket e prestazioni sanitarie
 statoPendenza:
   example: NON_ESEGUITO
   type: string

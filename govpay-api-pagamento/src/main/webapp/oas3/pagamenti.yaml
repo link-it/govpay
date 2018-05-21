@@ -1,3 +1,150 @@
+post_pagamento:
+  summary: Avvio di un pagamento di pendenze
+  description: >-
+    L'operazione consente di avviare una sessione di pagamento per una o più
+    pendenze. Le pendenze presenti in posizione debitoria possono essere
+    riferite tramite identificativo della pendenza del gestionale proprietario 
+    (_idA2A_ e _idPendenza_) oppure con l'identificativo avviso (_idDominio_ 
+    e _iuv_). Nel caso invece di pendenze note al portale, è possibile
+    fornire direttamente i dati della pendenza.
+  parameters:
+    - in: query
+      name: idSessionePortale
+      description: Identificativo della sessione di pagamento nel portale.
+      required: false
+      schema:
+        type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: '#/pagamentoPost'
+  responses:
+    '201':
+      description: Pagamento creato
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - id
+              - location
+              - redirect
+            properties:
+              id:
+                type: string
+                description: identificativo del pagamento
+                example: 12345
+              location:
+                type: string
+                description: Url del dettaglio del pagamento
+                example: /pagamenti/12345
+              redirect:
+                type: string
+                description: url a cui redirigere il navigatore per proseguire nel pagamento.
+                example: >-
+                  https://www.comune.it/pagopa/pap/bdd07392-d90d-11e7-9296-cec278b6b50a
+              idSession:
+                type: string
+                description: identificativo della sessione di pagamento per la riconciliazione in al ritorno dal psp.
+                example: bdd07392-d90d-11e7-9296-cec278b6b50a
+    '400':
+      $ref: './errori.yaml#/responses/400'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403'
+    '500':
+      $ref: './errori.yaml#/responses/500'
+    '502':
+      $ref: './errori.yaml#/responses/502'
+get_pagamenti:
+  summary: Lista dei pagamenti
+  parameters:
+    - $ref: './comuni.yaml#/pagina'
+    - $ref: './comuni.yaml#/risultatiPerPagina'
+    - $ref: './comuni.yaml#/campi'
+    - name: ordinamento
+      in: query
+      description: >-
+        csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+         * dataRichiestaPagamento
+         * stato
+      required: false
+      schema:
+        type: string
+        format: csv
+        default: +dataRichiestaPagamento
+    - in: query
+      name: stato
+      description: Filtro sullo stato del pagamento
+      required: false
+      schema:
+        $ref: 'pagamenti.yaml#/statoPagamento'
+    - in: query
+      name: versante
+      description: Filtro sul codice fiscale del versante
+      required: false
+      schema:
+        type: string
+        example: 'RSSMRA30A01H501I'
+    - in: query
+      name: idSessionePortale
+      description: Filtro sull'identificativo di sessione assegnato dal chiamante
+      required: false
+      schema:
+        type: string
+        example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+  responses:
+    '200':
+      description: Elenco dei pagamenti da portale
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: './comuni.yaml#/listaPaginata'
+              - type: object
+                required:
+                  - risultati
+                properties:
+                  risultati:
+                    type: array
+                    items:
+                      $ref: '#/pagamentoIndex'
+    '400':
+      $ref: './errori.yaml#/responses/400'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403'
+    '500':
+      $ref: './errori.yaml#/responses/500'
+    '502':
+      $ref: './errori.yaml#/responses/502'
+get_pagamento:      
+  summary: Dettaglio di un pagamento
+  parameters:
+    - in: path
+      name: id
+      description: Identificativo del pagamento
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Dettaglio del pagamento
+      content:
+        application/json:
+          schema:
+            $ref: '#/pagamento'
+    '401':
+      $ref: './errori.yaml#/responses/401'
+    '403':
+      $ref: './errori.yaml#/responses/403'
+    '404':
+      $ref: './errori.yaml#/responses/404'
+    '500':
+      $ref: './errori.yaml#/responses/500'      
 pagamentoPost: 
   type: object
   required:
@@ -275,11 +422,11 @@ pagamento:
     pendenze:
       type: array
       items: 
-        $ref: './pendenze.yaml#/pendenza'
+        $ref: './pendenze.yaml#/pendenzaIndex'
     rpp:
       type: array
       items: 
-        $ref: './rpp.yaml#/rpp'
+        $ref: './rpp.yaml#/rppIndex'
 statoPagamento:
   type: string
   example: ESEGUITO
