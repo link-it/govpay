@@ -163,7 +163,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idSession",pagamentiPortaleDTO.getIdSessione()));
 			pagamentoPortale.setDataRichiesta(new Date());
 			pagamentoPortale.setCodApplicazione(codApplicazione);
-			pagamentoPortale.setIdVersamento(idVersamento); 
 			pagamentoPortale.setWispIdDominio(codDominio);
 			pagamentoPortale.setNome(nome);
 			pagamentoPortale.setImporto(sommaImporti); 
@@ -246,6 +245,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				}
 			}
 
+			pagamentoPortale.setIdVersamento(idVersamento); 
 			pagamentoPortale.setIdSessionePsp(idSessionePsp);
 			pagamentoPortale.setPspRedirectUrl(pspRedirect);
 			pagamentoPortale.setCodiceStato(codiceStato);
