@@ -33,6 +33,33 @@ public class AclEngine {
 		return new NotAuthenticatedException(sb.toString());
 	}
 	
+	public static NotAuthorizedException toNotAuthorizedException(IAutorizzato user, List<Servizio> servizio, List<Diritti> listaDiritti ) {
+		StringBuilder sb = new StringBuilder();
+		
+		StringBuilder sbDiritti = new StringBuilder();
+		
+		for (Diritti diritti : listaDiritti) {
+			if(sbDiritti.length() >0) 
+				sbDiritti.append(", ");
+			
+			sbDiritti.append(diritti);
+		}
+
+		StringBuilder sbServizi = new StringBuilder();
+		
+		for (Diritti diritti : listaDiritti) {
+			if(sbServizi.length() >0) 
+				sbServizi.append(", ");
+			
+			sbServizi.append(diritti);
+		}
+		
+		sb.append("Utenza [").append(user != null ? user.getPrincipal() : "NON RICONOSCIUTA").append("] non possiede i Diritti [").append(sbDiritti.toString()).append("] necessari per i Servizi [").append(sbServizi).append("]");
+		
+		return new NotAuthorizedException(sb.toString());
+
+	}
+	
 	public static NotAuthorizedException toNotAuthorizedException(IAutorizzato user, Servizio servizio, List<Diritti> listaDiritti ) {
 		StringBuilder sb = new StringBuilder();
 		

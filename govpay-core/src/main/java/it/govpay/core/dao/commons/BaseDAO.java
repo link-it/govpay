@@ -80,6 +80,12 @@ public class BaseDAO {
 		this.autorizzaRichiesta(user, servizio, listaDiritti, bd);
 	}
 
+	public void autorizzaRichiesta(IAutorizzato user, List<Servizio> servizio, Diritti diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		listaDiritti.add(diritti);
+		this.autorizzaRichiesta(user, servizio, listaDiritti, bd);
+	}
+
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, List<Diritti> diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		BasicBD bd = null;
 
@@ -101,6 +107,22 @@ public class BaseDAO {
 
 		if(!authorized)
 			throw AclEngine.toNotAuthorizedException(user, servizio, diritti);
+	}
+
+	public void autorizzaRichiesta(IAutorizzato user, List<Servizio> servizi, List<Diritti> diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+		// 1. integro le informazioni dell'utente
+		this.populateUser(user, bd);
+
+		// 2. invocazione acl engine
+		boolean authorized = false;
+		for(Servizio servizio : servizi) {
+			authorized = AclEngine.isAuthorized(user, servizio, diritti);
+			if(authorized)
+				break;
+		}
+
+		if(!authorized)
+			throw AclEngine.toNotAuthorizedException(user, servizi, diritti);
 	}
 
 
