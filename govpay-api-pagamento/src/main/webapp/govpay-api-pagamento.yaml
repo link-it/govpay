@@ -1,0 +1,2343 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: GovPay - API Pagamento
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/v1/
+tags:
+  - name: Pagamenti
+    description: Realizzazione e consultazione dei pagamenti delle pendenze
+  - name: Pendenze
+    description: Consultazione delle posizioni debitorie
+  - name: Domini
+    description: Anagrafica degli Enti Creditori    
+  - name: Utenti
+    description: Anagrafica degli Utenti
+security:
+  - basicAuth: []    
+paths:
+  '/domini':
+    get:
+      tags:
+        - Domini
+      summary: Elenco dei domini beneficiari censiti
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - name: abilitato
+          in: query
+          description: Restrizione ai soli canali abilitati o disabilitati
+          required: false
+          schema:
+            type: boolean
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * ragioneSociale
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +ragioneSociale
+        - name: idStazione
+          in: query
+          description: Restrizione ai soli domini associati alla stazione indicata
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista paginata dei domini ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/dominioIndex' 
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  '/domini/{idDominio}':
+    get:
+      tags:
+        - Domini
+      summary: Lettura dei dati di un dominio beneficiario
+      parameters:
+        - in: path
+          name: idDominio
+          schema:
+            type: string
+          description: Codice fiscale del beneficiario
+          required: true
+      responses:
+        '200':
+          description: Dettaglio del dominio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dominio'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'          
+        '500':
+          $ref: '#/components/responses/500'
+  '/domini/{idDominio}/unitaOperative':
+    get:
+      tags:
+        - Domini
+      summary: Elenco delle unità operative del beneficiario
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - name: abilitato
+          in: query
+          description: Restrizione ai soli canali abilitati o disabilitati
+          required: false
+          schema:
+            type: boolean
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * ragioneSociale
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +ragioneSociale        
+        - name: idDominio
+          in: path
+          description: Identificativo del dominio
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista paginata dei domini ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/unitaOperativa'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/domini/{idDominio}/unitaOperative/{idUnitaOperativa}':
+    get:
+      tags:
+        - Domini
+      summary: Lettura dei dati di una unità operativa
+      parameters:
+        - in: path
+          name: idDominio
+          schema:
+            type: string
+          description: Codice fiscale del beneficiario
+          required: true
+        - name: idUnitaOperativa
+          in: path
+          description: Identificativo dell'unità operativa
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio dell'unità operativa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unitaOperativa'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'     
+  '/domini/{idDominio}/contiAccredito':
+    get:
+      tags:
+        - Domini
+      summary: Elenco degli iban di accredito del beneficiario
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - name: abilitato
+          in: query
+          description: Restrizione ai soli canali abilitati o disabilitati
+          required: false
+          schema:
+            type: boolean   
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * ragioneSociale
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +contiAccredito        
+        - name: idDominio
+          in: path
+          description: Identificativo del dominio
+          required: true
+          schema:
+            type: string      
+      responses:
+        '200':
+          description: Lista paginata dei domini ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/contiAccredito'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/domini/{idDominio}/contiAccredito/{iban}':
+    get:
+      tags:
+        - Domini
+      summary: Lettura dei dati di un iban di accredito
+      parameters:
+        - in: path
+          name: idDominio
+          schema:
+            type: string
+          description: Codice fiscale del beneficiario
+          required: true
+        - name: iban
+          in: path
+          description: Iban
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio dell'iban di accredito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/contiAccredito'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/domini/{idDominio}/entrate':
+    get:
+      tags:
+        - Domini
+      summary: Elenco delle tipologie di entrata del dominio
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - name: abilitato
+          in: query
+          description: Restrizione ai soli canali abilitati o disabilitati
+          required: false
+          schema:
+            type: boolean
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * idEntrata
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +idEntrata
+        - name: idDominio
+          in: path
+          description: Identificativo del dominio
+          required: true
+          schema:
+            type: string      
+      responses:
+        '200':
+          description: Lista paginata delle entrate ricercate
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/entrata'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/domini/{idDominio}/entrate/{idEntrata}':
+    get:
+      tags:
+        - Domini
+      summary: Lettura dei dati di una entrata
+      parameters:
+        - in: path
+          name: idDominio
+          schema:
+            type: string
+          description: Codice fiscale del beneficiario
+          required: true
+        - name: idEntrata
+          in: path
+          description: Identificativo della tipologia di entrata
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio dell'entrata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/entrata'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/pagamenti':
+    post:
+      summary: Avvio di un pagamento di pendenze
+      tags:
+        - Pagamenti  
+      description: >-
+        L'operazione consente di avviare una sessione di pagamento per una o più
+        pendenze. Le pendenze presenti in posizione debitoria possono essere
+        riferite tramite identificativo della pendenza del gestionale proprietario 
+        (_idA2A_ e _idPendenza_) oppure con l'identificativo avviso (_idDominio_ 
+        e _iuv_). Nel caso invece di pendenze note al portale, è possibile
+        fornire direttamente i dati della pendenza.
+      parameters:
+        - in: query
+          name: idSessionePortale
+          description: Identificativo della sessione di pagamento nel portale.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/pagamentoPost'
+      responses:
+        '201':
+          description: Pagamento creato
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - location
+                  - redirect
+                properties:
+                  id:
+                    type: string
+                    description: identificativo del pagamento
+                    example: 12345
+                  location:
+                    type: string
+                    description: Url del dettaglio del pagamento
+                    example: /pagamenti/12345
+                  redirect:
+                    type: string
+                    description: url a cui redirigere il navigatore per proseguire nel pagamento.
+                    example: >-
+                      https://www.comune.it/pagopa/pap/bdd07392-d90d-11e7-9296-cec278b6b50a
+                  idSession:
+                    type: string
+                    description: identificativo della sessione di pagamento per la riconciliazione in al ritorno dal psp.
+                    example: bdd07392-d90d-11e7-9296-cec278b6b50a
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '502':
+          $ref: '#/components/responses/502'
+    get:
+      summary: Lista dei pagamenti
+      tags:
+        - Pagamenti  
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * dataRichiestaPagamento
+             * stato
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +dataRichiestaPagamento
+        - in: query
+          name: stato
+          description: Filtro sullo stato del pagamento
+          required: false
+          schema:
+            $ref: 'pagamenti.yaml#/statoPagamento'
+        - in: query
+          name: versante
+          description: Filtro sul codice fiscale del versante
+          required: false
+          schema:
+            type: string
+            example: 'RSSMRA30A01H501I'
+        - in: query
+          name: idSessionePortale
+          description: Filtro sull'identificativo di sessione assegnato dal chiamante
+          required: false
+          schema:
+            type: string
+            example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+      responses:
+        '200':
+          description: Elenco dei pagamenti da portale
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/pagamentoIndex'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '502':
+          $ref: '#/components/responses/502'
+  '/pagamenti/{id}':
+    get:
+      summary: Dettaglio di un pagamento
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo del pagamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio del pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pagamento'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'      
+  '/pendenze':
+    get:
+      tags:
+        - Pendenze
+      summary: Elenco delle pendenze
+      description: Fornisce la lista delle pendenze filtrata ed ordinata.
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * dataCaricamento
+             * dataScadenza
+             * dataValidita
+             * stato
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +dataRichiestaPagamento
+        - name: idDominio
+          in: query
+          description: filtro per dominio creditore
+          required: false
+          schema:
+            type: string
+        - name: idA2A
+          in: query
+          description: filtro per gestionale
+          required: false
+          schema:
+            type: string
+        - name: idDebitore
+          in: query
+          description: filtro per codice fiscale o p. iva del soggetoto debitore
+          required: false
+          schema:
+            type: string
+        - name: stato
+          in: query
+          description: filtro sullo stato della pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoPendenza'
+        - in: query
+          name: idPagamento
+          description: Identificativo del pagamento
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco delle pendenze che rispettano i filtri di ricerca
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/pendenzaIndex'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'      
+  '/pendenze/{idA2A}/{idPendenza}':
+    get:
+      tags:
+        - Pendenze
+      summary: Dettaglio di una pendenza per identificativo
+      description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      parameters:
+        - in: path
+          name: idA2A
+          description: Identificativo del gestionale
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idPendenza
+          description: Identificativo della pendenza
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Informazioni dettagliate della pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pendenza'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/rpp':
+    get:  
+      summary: Lista delle richieste di pagamento pendenza
+      tags:
+        - Pagamenti
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * dataRichiesta
+             * esito
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +dataRichiesta
+        - in: query
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: ccp
+          description: codice contesto pagamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idA2A
+          description: Codice del gestionale proprietario della pendenza
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idPendenza
+          description: Identrificativo della pendenza nel gestionale proprietario
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: esito
+          description: esito della richiesta di pagamento
+          required: false
+          schema:
+            $ref: '#/components/schemas/esitoRpt'
+        - in: query
+          name: idPagamento
+          description: Identificativo del pagamento
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista delle richieste di pagamento pendenza che rispettano i criteri di ricerca
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/rppIndex'            
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  '/rpp/{idDominio}/{iuv}/{ccp}':
+    get:
+      summary: Dettaglio di una richiesta di pagamento pendenza
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Dettaglio della richiesta di pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpp'            
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'           
+  '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
+    get:
+      summary: Acquisizione della richiesta di pagamento pagopa
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Richiesta di pagamento
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: xml della richiesta di pagamento pagopa
+            application/json:
+              schema:
+                type: string
+                example: conversione json della richiesta di pagamento pagopa
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'                    
+  '/rpp/{idDominio}/{iuv}/{ccp}/rt':
+    get:
+      summary: Acquisizione della ricevuta di pagamento
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ricevuta di pagamento
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+                example: stampa della ricevuta
+            application/xml:
+              schema:
+                type: string
+                example: xml della ricevuta
+            application/json:
+              schema:
+                type: string
+                example: conversione json della ricevuta
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'             
+  '/avvisi/{idDominio}/{iuv}':
+    get:
+      tags:
+        - Pendenze
+      summary: Avviso di pagamento
+      description: Fornisce un avviso di pagamento o la pendenza ad esso associata
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo del versamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Avviso di pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/avviso'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/profilo':
+    get:
+      summary: Elenco delle acl associate all'utenza chiamante
+      tags:
+        - Utenti
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+      responses:
+        '200':
+          description: Elenco dei ruoli associati all'utenza chiamante
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/acl'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'    
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  responses:
+    '400':
+      description: Richiesta non correttamente formata
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: RICHIESTA
+            codice: 00001
+            descrizione: Messaggio di richiesta non valido
+            dettaglio: Codice Avviso non conforme alle specifiche pagoPA
+    '401':
+      description: Richiesta non autenticata
+    '403':
+      description: Richiesta non autorizzata
+    '404':
+      description: Risorsa inesistente
+    '500':
+      description: Servizio non disponibile
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: INTERNO
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+    '502':
+      description: Rilevato errore con la piattaforma PagoPA
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: PAGOPA
+            codice: PPT_CANALE_IRRAGGIUNGIBILE
+            descrizione: Errore di connessione verso il canale          
+  schemas:
+    faultBean:
+      type: object
+      required:
+        - categoria
+        - codice
+        - descrizione
+      properties:
+        categoria:
+          type: string
+          description: >-
+            Categoria dell'errore riscontrato:
+             * `AUTORIZZAZIONE` - Operazione non autorizzata
+             * `RICHIESTA` - Richiesta non valida
+             * `OPERAZIONE` - Operazione non eseguibile
+             * `PAGOPA` - Errore da PagoPA
+             * `INTERNO` - Errore interno
+          enum:
+            - AUTORIZZAZIONE
+            - RICHIESTA
+            - OPERAZIONE
+            - PAGOPA
+            - INTERNO
+        codice:
+          type: string
+          description: Codice di errore
+        descrizione:
+          type: string
+          description: Descrizione dell'errore
+        dettaglio:
+          type: string
+          description: Descrizione aggiuntiva  
+    listaPaginata:
+      type: object
+      properties:
+        numRisultati:
+          type: number
+          format: integer
+          example: '100'
+        numPagine:
+          type: number
+          format: integer
+          example: '4'
+        risultatiPerPagina:
+          type: number
+          format: integer
+          example: '25'
+        pagina:
+          type: number
+          format: integer
+          example: '1'
+        prossimiRisultati:
+          type: string
+          format: integer
+          example: '/risorsa?pagina=2'    
+    soggetto:
+      description: dati anagrafici di un versante o pagatore.
+      type: object
+      required:
+        - tipo
+        - identificativo
+      properties:
+        tipo:
+          description: >-
+            tipologia di soggetto, se persona fisica (F) o giuridica
+            (G)
+          type: string
+          enum:
+            - G
+            - F
+          example: F
+        identificativo:
+          description: codice fiscale o partita iva del soggetto
+          type: string
+          example: RSSMRA30A01H501I
+        anagrafica:
+          description: nome e cognome o altra ragione sociale del soggetto
+          type: string
+          example: Mario Rossi
+        indirizzo:
+          type: string
+          example: Piazza della Vittoria
+        civico:
+          type: string
+          example: 10/A
+        cap:
+          type: string
+          example: 0
+        localita:
+          type: string
+          example: Roma
+        provincia:
+          type: string
+          example: Roma
+        nazione:
+          type: string
+          example: IT
+        email:
+          type: string
+          example: mario.rossi@host.eu
+        cellulare:
+          type: string
+          example: 0039000123456789    
+    segnalazione:
+      type: object
+      required:
+        - codice
+        - descrizione
+      properties:
+        codice:
+          type: string
+        descrizione:
+          type: string        
+    avviso:
+      type: object
+      required:
+        - stato
+      properties:
+        stato:
+          description: Stato dell'avviso
+          example: Non pagato
+          type: string
+          enum:
+            - Pagato
+            - Non pagato
+            - Scaduto
+            - Annullato
+        importo:
+          type: number
+          description: Importo della pendenza associata all'avviso.
+          example: 10.01
+        idDominio:
+          type: string
+          description: Identificativo del creditore dell'avviso
+          example: 01234567890
+        numeroAvviso:
+          type: string
+          description: Numero identificativo dell'avviso di pagamento
+          example: 00100000000000012
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati dell'avviso, decorsa la quale l'importo può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza dell'avviso, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        descrizione:
+          type: string
+          description: Descrizione da inserire nell'avviso di pagamento
+          example: 'Sanzione CdS n. abc00000'
+        tassonomiaAvviso:
+          $ref: '#/components/schemas/tassonomiaAvviso'
+        qrcode:
+          type: string
+          description: Testo da codificare nel qr-code dell'avviso
+        barcode:
+          type: string
+          description: Testo da codificare nel bar-code dell'avviso   
+    tassonomiaAvviso:
+      description: Macro categoria della pendenza Agid
+      type: string
+      enum:
+        - Cartelle esattoriali
+        - Diritti e concessioni
+        - Imposte e tasse
+        - IMU, TASI e altre tasse comunali
+        - Ingressi a mostre e musei
+        - Multe e sanzioni amministrative
+        - Previdenza e infortuni
+        - Servizi erogati dal comune
+        - Servizi erogati da altri enti
+        - Servizi scolastici
+        - Tassa automobilistica
+        - Ticket e prestazioni sanitarie
+        - Trasporti, mobilità e parcheggi
+      example: 
+        Ticket e prestazioni sanitarie
+    dominioPost:
+      type: object
+      required:
+       - ragioneSociale
+       - gln
+       - stazione
+       - abilitato
+      properties:
+        ragioneSociale:
+          type: string
+          description: Ragione sociale del beneficiario
+          example: Ente Creditore
+        indirizzo:
+          type: string
+          description: Indirizzo del beneficiario
+          example: Corso Italia
+        civico:
+          type: string
+          description: Numero civico del beneficiario
+          example: 1A
+        cap:
+          type: string
+          description: Codice avviamento postale del beneficiario
+          example: 00000
+        localita:
+          type: string
+          description: Località del beneficiario
+          example: Roma
+        provincia:
+          type: string
+          description: Provincia del beneficiario
+          example: Roma
+        nazione:
+          type: string
+          description: Nazione del beneficiario
+          example: IT
+        email:
+          type: string
+          description: Posta elettronica ordinaria del beneficiario
+          example: peo@creditore.it  
+        pec:
+          type: string
+          description: Posta elettronica certificata del beneficiario
+          example: pec@creditore.it  
+        tel:
+          type: string
+          description: Numero di telefono dell'help desk del beneficiario
+          example: 021234567890  
+        fax:
+          type: string
+          description: Numero di fax dell'help desk del beneficiario
+          example: 021234567890  
+        web:
+          type: string
+          description: Url del sito web
+          example: http://www.comune.it/
+        gln:
+          type: string
+          description: Global location number del beneficiario
+          example: 0011223344556
+        cbill:
+          type: string
+          description: codice cbill del beneficiario
+          example: 12345
+        iuvPrefix:
+          type: string
+          description: Prefisso negli IUV generati da GovPay
+          example: '%(yyyy)%(a)'
+        stazione:
+          type: string
+          description: Codice stazione PagoPA che intermedia il beneficiario
+          example: 01234567890_01
+        auxDigit:
+          type: string
+          description: Valore della prima cifra dei Numero Avviso generati da GovPay
+          example: 0
+        segregationCode:
+          type: string
+          description: Codice di segregazione utilizzato in caso di beneficiario pluri-intermediato (auxDigit = 3)
+          example: 88
+        logo:
+          type: string
+          description: Base64 del logo del beneficiario
+          example: /9j/4AA...base64...FFFFABRRRQB/9k=
+        abilitato:
+          type: boolean
+          description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
+          example: 'true'
+    dominioIndex:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - idDominio
+          properties:
+            idDominio:
+              type: string
+              description: Codice fiscale del beneficiario
+              example: 01234567890
+        - $ref: '#/components/schemas/dominioPost'
+        - type: object
+          required:
+            - unitaOperative
+            - contiAccredito
+            - entrate
+          properties:
+            unitaOperative:
+              type: string
+              description: Url alle unità operative censite per il dominio
+              example: /domini/01234567890/unitaOperative
+            contiAccredito:
+              type: string
+              description: Conti di accredito censiti per il dominio beneficiario
+              example: /domini/01234567890/contiAccredito
+            entrate:
+              type: string
+              description: Tipologie di entrata censite per il dominio beneficiario
+              example: /domini/01234567890/entrate               
+    dominio:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - idDominio
+          properties:
+            idDominio:
+              type: string
+              description: Codice fiscale del beneficiario
+              example: 01234567890
+        - $ref: '#/components/schemas/dominioPost'
+        - type: object
+          properties:
+            unitaOperative:
+              type: array
+              items:
+                $ref: '#/components/schemas/unitaOperativa'
+            contiAccredito:
+              type: array
+              items:
+                $ref: '#/components/schemas/contiAccredito'
+            entrate:
+              type: array
+              items:
+                $ref: '#/components/schemas/entrata'           
+    unitaOperativaPost:
+      type: object
+      required: 
+        - ragioneSociale
+      properties:
+        ragioneSociale:
+          type: string
+          description: Ragione sociale dell'unita
+          example: Ufficio due
+        indirizzo:
+          type: string
+          description: Indirizzo dell'unita
+          example: Borgo stretto
+        civico:
+          type: string
+          description: Numero civico dell'unita
+          example: 55bis
+        cap:
+          type: string
+          description: Codice avviamento postale dell'unita
+          example: 99999
+        localita:
+          type: string
+          description: Località dell'unita
+          example: Milano
+        provincia:
+          type: string
+          description: Provincia del beneficiario
+          example: Roma
+        nazione:
+          type: string
+          description: Nazione del beneficiario
+          example: IT
+        email:
+          type: string
+          description: Posta elettronica ordinaria del beneficiario
+          example: peo@creditore.it  
+        pec:
+          type: string
+          description: Posta elettronica certificata del beneficiario
+          example: pec@creditore.it  
+        tel:
+          type: string
+          description: Numero di telefono dell'help desk del beneficiario
+          example: 021234567890  
+        fax:
+          type: string
+          description: Numero di fax dell'help desk del beneficiario
+          example: 021234567890           
+        gln:
+          type: string
+          description: Global location number del beneficiario
+          example: 0011223344556
+        web:
+          type: string
+          description: Url del sito web
+          example: http://www.comune.it/
+        area:
+          type: string
+          description: Nome dell'area di competenza dell'unita' operativa
+          example: Affari generali e istituzionali  
+        abilitato:
+          type: boolean
+          description: Indica lo stato di abilitazione
+          example: true
+    unitaOperativa:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idUnita
+          properties:
+            idUnita:
+              type: string
+              description: Codice fiscale dell'unita
+              example: 01234567890
+        - $ref: '#/components/schemas/unitaOperativaPost'
+    contiAccreditoPost:
+      type: object
+      properties:
+        bic:
+          type: string
+          example: DABAIE2D
+        postale:
+          type: boolean
+          description: indica se e' un c/c postale
+          example: false
+          default: false
+        mybank:
+          type: boolean
+          description: indica se e' un iban abilitato sul circuito mybank
+          example: false
+          default: false
+        abilitato:
+          type: boolean
+          description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
+          example: true
+          default: true
+    contiAccredito:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - iban
+          properties:
+            iban:
+              type: string
+              example: IT60X0542811101000000123456
+        - $ref: '#/components/schemas/contiAccreditoPost'
+    tipoEntrataPost:
+      type: object
+      required: 
+        - descrizione
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+        tipoContabilita:
+          description: Tipologia di codifica del capitolo di bilancio
+          type: string
+          enum:
+            - Entrata
+            - Speciale
+            - SIOPE
+            - Altro
+          example: SIOPE
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321
+        codificaIUV:
+          type: string
+          description: Cifra identificativa negli IUV
+          example: 01
+    tipoEntrata:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idEntrata
+          properties:
+            idEntrata:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoEntrataPost'
+    entrataPost:
+      type: object
+      required: 
+        - contoAccredito
+      properties:
+        contoAccredito:
+          type: string
+          example: IT60X0542811101000000123456
+        contoAppoggio:
+          type: string
+          example: IT60X0542811101000000123456
+        tipoContabilita:
+          description: Tipologia di codifica del capitolo di bilancio
+          type: string
+          enum:
+            - Entrata
+            - Speciale
+            - SIOPE
+            - Altro
+          example: SIOPE
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321
+        codificaIUV:
+          type: string
+          description: Cifra identificativa negli IUV
+          example: 01
+        abilitato:
+          type: boolean
+          description: Indicazione l'entrata e' abilitata
+          example: true
+          default: true
+    entrata:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idEntrata
+          properties:
+            idEntrata:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/entrataPost'
+        - type: object
+          required:
+           - tipoEntrata
+          properties:
+            tipoEntrata:
+              $ref: '#/components/schemas/tipoEntrata'
+    pagamentoPost: 
+      type: object
+      required:
+        - pendenze
+      properties:
+        pendenze:
+          type: array
+          description: pendenze o riferimenti alle pendenze oggetto del pagamento
+          items:
+            anyOf:
+              - type: object
+                required:
+                  - idA2A
+                  - idPendenza
+                properties:
+                  idA2A:
+                    type: string
+                    description: >-
+                      Identificativo del gestionale responsabile della
+                      pendenza
+                    example: A2A_12345
+                  idPendenza:
+                    type: string
+                    description: >-
+                      Identificativo della pendenza nel gestionale
+                      responsabile
+                    example: abcdef12345
+              - type: object
+                required:
+                  - idDominio
+                  - numeroAvviso
+                properties:
+                  idDominio:
+                    type: string
+                    description: Codice fiscale dell'ente creditore
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: >-
+                      Numero avviso della pendenza, assegnato se
+                      pagabile da psp
+                    example: 123456789012345678
+              - $ref: './pendenze.yaml#/pendenzaPost'
+        urlRitorno:
+          type: string
+          description: >-
+            url di ritorno al portale al termine della sessione di pagamento
+          example: >-
+            https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
+        contoAddebito:
+          type: object
+          description: >-
+            Dati necessari alla realizzazione dei pagamenti per Addebito
+            Diretto, se previsto dal profilo del versante.
+          required:
+            - ibanAddebito
+          properties:
+            ibanAddebito:
+              type: string
+              description: Iban di addebito del pagatore.
+              example: IT02L1234512345123456789012
+            bicAddebito:
+              type: string
+              description: Bic della banca di addebito del pagatore.
+              example: MYBICODE
+        dataEsecuzionePagamento:
+          type: string
+          format: date
+          example: '2018-12-31'
+          description: >-
+            data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
+        credenzialiPagatore:
+          type: string
+          description: >-
+            Eventuali credenziali richieste dal PSP necessarie per
+            completare l'operazione (ad esempio un codice bilaterale
+            utilizzabile una sola volta).
+        soggettoVersante:
+          $ref: '#/components/schemas/soggetto'
+        autenticazioneSoggetto:
+          type: string
+          enum:
+            - CNS
+            - USR
+            - OTH
+            - N/A
+          description: modalita' di autenticazione del soggetto versante
+        lingua:
+          type: string
+          description: Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
+          enum:
+            - IT
+            - EN
+            - FR
+            - DE
+            - SL
+          default: IT
+          example: IT  
+    pagamentoIndex:
+      type: object
+      required:
+        - id
+        - stato
+      properties:
+        id:
+          type: string
+          example: 'f9866575-e255-4d10-9845-57ba88bec136'
+          description: Identificativo del pagamento assegnato da GovPay
+        idSessionePortale:
+          type: string
+          example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+          description: Identificativo del pagamento assegnato dal portale chiamante
+        idSessionePsp:
+          type: string
+          example: '7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
+          description: Identificativo del pagamento assegnato dal psp utilizzato
+        importo:
+          type: number
+          description: >-
+            Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
+        stato:
+          $ref: '#/components/schemas/statoPagamento'
+        pspRedirectUrl:
+          type: string
+          example: 'https://www.psp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
+          description: Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
+        urlRitorno:
+          type: string
+          description: >-
+            url di ritorno al portale al termine della sessione di pagamento
+          example: >-
+            https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
+        contoAddebito:
+          type: object
+          description: >-
+            Dati necessari alla realizzazione dei pagamenti per Addebito
+            Diretto, se previsto dal profilo del versante.
+          required:
+            - ibanAddebito
+          properties:
+            ibanAddebito:
+              type: string
+              description: Iban di addebito del pagatore.
+              example: IT02L1234512345123456789012
+            bicAddebito:
+              type: string
+              description: Bic della banca di addebito del pagatore.
+              example: MYBICODE
+        dataEsecuzionePagamento:
+          type: string
+          format: date
+          example: '2018-12-31'
+          description: >-
+            data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
+        credenzialiPagatore:
+          type: string
+          description: >-
+            Eventuali credenziali richieste dal PSP necessarie per
+            completare l'operazione (ad esempio un codice bilaterale
+            utilizzabile una sola volta).
+        soggettoVersante:
+          $ref: '#/components/schemas/soggetto'
+        autenticazioneSoggetto:
+          type: string
+          enum:
+            - CNS
+            - USR
+            - OTH
+            - N/A
+          description: modalita' di autenticazione del soggetto versante
+        lingua:
+          type: string
+          description: Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
+          enum:
+            - IT
+            - EN
+            - FR
+            - DE
+            - SL
+          default: IT
+          example: IT                
+        pendenze:
+          type: string
+          description: Url per le pendenze oggetto del Pagamento
+          example: '/pendenze?idPagamento=f9866575-e255-4d10-9845-57ba88bec136'  
+        rpp:
+          type: string
+          description: Url per le richieste di pagamento oggetto del Pagamento
+          example: '/rpp?idPagamento=f9866575-e255-4d10-9845-57ba88bec136'
+    pagamento:
+      type: object
+      required:
+        - id
+        - stato
+      properties:
+        id:
+          type: string
+          example: 'f9866575-e255-4d10-9845-57ba88bec136'
+          description: Identificativo del pagamento assegnato da GovPay
+        idSessionePortale:
+          type: string
+          example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+          description: Identificativo del pagamento assegnato dal portale chiamante
+        idSessionePsp:
+          type: string
+          example: '7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
+          description: Identificativo del pagamento assegnato dal psp utilizzato
+        importo:
+          type: number
+          description: >-
+            Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
+        stato:
+          $ref: '#/components/schemas/statoPagamento'
+        pspRedirectUrl:
+          type: string
+          example: 'https://www.psp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
+          description: Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
+        urlRitorno:
+          type: string
+          description: >-
+            url di ritorno al portale al termine della sessione di pagamento
+          example: >-
+            https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
+        contoAddebito:
+          type: object
+          description: >-
+            Dati necessari alla realizzazione dei pagamenti per Addebito
+            Diretto, se previsto dal profilo del versante.
+          required:
+            - ibanAddebito
+          properties:
+            ibanAddebito:
+              type: string
+              description: Iban di addebito del pagatore.
+              example: IT02L1234512345123456789012
+            bicAddebito:
+              type: string
+              description: Bic della banca di addebito del pagatore.
+              example: MYBICODE
+        dataEsecuzionePagamento:
+          type: string
+          format: date
+          example: '2018-12-31'
+          description: >-
+            data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
+        credenzialiPagatore:
+          type: string
+          description: >-
+            Eventuali credenziali richieste dal PSP necessarie per
+            completare l'operazione (ad esempio un codice bilaterale
+            utilizzabile una sola volta).
+        soggettoVersante:
+          $ref: '#/components/schemas/soggetto'
+        autenticazioneSoggetto:
+          type: string
+          enum:
+            - CNS
+            - USR
+            - OTH
+            - N/A
+          description: modalita' di autenticazione del soggetto versante
+        lingua:
+          type: string
+          description: Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
+          enum:
+            - IT
+            - EN
+            - FR
+            - DE
+            - SL
+          default: IT
+          example: IT                
+        pendenze:
+          type: array
+          items: 
+            $ref: './pendenze.yaml#/pendenzaIndex'
+        rpp:
+          type: array
+          items: 
+            $ref: '#/components/schemas/rppIndex'
+    statoPagamento:
+      type: string
+      example: ESEGUITO
+      enum:
+        - IN_CORSO
+        - ESEGUITO
+        - NON_ESEGUITO
+        - ESEGUITO_PARZIALE
+        - ANNULLATO
+        - FALLITO
+      description: > 
+        Stato del pagamento
+         * IN_CORSO: Pagamento in corso
+         * ANNULLATO: Pagamento annullato dall'utente o scaduto per timeout
+         * FALLITO: Pagamento non perfezionato per errori della piattaforma
+         * ESEGUITO: Pagamento concluso con successo
+         * NON_ESEGUITO: Processo concluso senza il perfezionamento del pagamento
+         * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito
+    pendenzaBase:
+      type: object
+      required:
+        - soggettoPagatore
+        - importo
+        - causale
+      properties:
+        nome:
+          type: string
+          description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
+          example: 'Immatricolazione AA 2017/2018'
+        causale:
+          type: string
+          description: Descrizione da inserire nell'avviso di pagamento
+          example: 'Sanzione CdS n. abc00000'
+        soggettoPagatore:
+          $ref: '#/components/schemas/soggetto'
+        importo:
+          type: number
+          description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+          example: 10.01
+        numeroAvviso:
+          type: string
+          description: Identificativo univoco versamento, assegnato se pagabile da psp
+          example: 123456789012345678
+        dataCaricamento:
+          type: string
+          format: date
+          description: Data di emissione della pendenza
+          example: '2010-12-31'
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        annoRiferimento:
+          type: number
+          description: Anno di riferimento della pendenza
+          example: 2020
+        cartellaPagamento:
+          type: string
+          description: Identificativo della cartella di pagamento a cui afferisce la pendenza
+          example: ABC00000001
+        datiAllegati:
+          type: string
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
+        tassonomiaAvviso:
+          $ref: '#/components/schemas/tassonomiaAvviso'
+    pendenzaPut:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - idDominio
+          properties:
+            idDominio:
+              type: string
+              description: Identificativo del dominio creditore
+              example: 1234567890
+            idUnitaOperativa:
+              type: string
+              description: Identificativo dell'unita' operativa
+              example: UO33132
+        - $ref: '#/components/schemas/pendenzaBase'    
+        - type: object
+          required:
+            - voci
+          properties:   
+            voci:
+              type: array
+              minItems: 1
+              maxItems: 5
+              items:
+                $ref: '#/components/schemas/vocePendenza'
+    pendenzaPost:
+      allOf:
+        - type: object
+          required:
+            - idA2A
+            - idPendenza
+          properties:
+            idA2A:
+              type: string
+              description: Identificativo del gestionale responsabile della pendenza
+              example: A2A_12345
+            idPendenza:
+              type: string
+              description: Identificativo della pendenza nel gestionale responsabile
+              example: abcdef12345
+        - $ref: '#/components/schemas/pendenzaPut'        
+    pendenzaIndex:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - idA2A
+            - idPendenza
+            - dominio
+            - stato
+          properties:
+            idA2A:
+              type: string
+              description: Identificativo del gestionale responsabile della pendenza
+              example: A2A-12345
+            idPendenza:
+              type: string
+              description: Identificativo della pendenza nel gestionale responsabile
+              example: abcdef12345
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
+            unitaOperativa:
+              $ref: '#/components/schemas/unitaOperativa'
+            stato:
+              $ref: '#/components/schemas/statoPendenza'
+            segnalazioni:
+              type: array
+              items: 
+                $ref: '#/components/schemas/segnalazione'          
+        - $ref: '#/components/schemas/pendenzaBase'   
+        - type: object
+          required:
+            - rpp
+            - pagamenti
+          properties:
+            rpp:
+              type: string
+              description: Url per l'elenco delle rpp emesse per la pendenza
+              example: '/rpp?idPendenza=idA2A=A2A-12345&abcdef12345'
+            pagamenti:
+              type: string
+              description: Url per l'elenco dei pagamenti da portale comprensivi della pendenza
+              example: '/pagamenti?idA2A=A2A-12345&idPendenza=abcdef12345'  
+    pendenza:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - idA2A
+            - idPendenza
+            - dominio
+            - stato
+          properties:
+            idA2A:
+              type: string
+              description: Identificativo del gestionale responsabile della pendenza
+              example: A2A-12345
+            idPendenza:
+              type: string
+              description: Identificativo della pendenza nel gestionale responsabile
+              example: abcdef12345
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
+            unitaOperativa:
+              $ref: '#/components/schemas/unitaOperativa'
+            stato:
+              $ref: '#/components/schemas/statoPendenza'
+            segnalazioni:
+              type: array
+              items: 
+                $ref: '#/components/schemas/segnalazione'          
+        - $ref: '#/components/schemas/pendenzaBase'   
+        - type: object
+          required:
+            - voci
+            - rpp
+            - pagamenti
+          properties:
+            voci:
+              type: array
+              minItems: 1
+              maxItems: 5
+              items:
+                $ref: '#/components/schemas/vocePendenza'
+            rpp:
+              type: array
+              items:
+                $ref: '#/components/schemas/rpp'
+            pagamenti:
+              type: array
+              items:
+                $ref: './pagamenti.yaml#/pagamento'      
+    vocePendenza:
+      allOf:
+        - type: object
+          required:
+            - idVocePendenza
+            - importo
+            - descrizione
+          properties:
+            indice:
+              type: number
+              description: indice di voce all'interno della pendenza
+              example: 1
+            idVocePendenza:
+              type: string
+              description: Identificativo della voce di pedenza nel gestionale proprietario
+              example: abcdef12345_1
+            importo:
+              type: number
+              description: Importo della voce
+              example: 10.01
+            descrizione:
+              type: string
+              description: descrizione della voce di pagamento
+              example: Sanzione CdS n. abc00000
+            datiAllegati:
+              type: string
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        - oneOf:
+            - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+              type: object
+              required:
+                - codEntrata
+              properties:
+                codEntrata:
+                  type: string
+            - description: Definisce i dettagli di incasso.
+              type: object
+              required:
+                - ibanAccredito
+                - tipoContabilita
+                - codiceContabilita
+              properties:
+                ibanAccredito:
+                  type: string
+                  example: IT60X0542811101000000123456
+                ibanAppoggio:
+                  type: string
+                  example: IT60X0542811101000000123456
+                tipoContabilita:
+                  description: Tipologia di codifica del capitolo di bilancio
+                  type: string
+                  enum:
+                    - Entrata
+                    - Speciale
+                    - SIOPE
+                    - Altro
+                  example: SIOPE
+                codiceContabilita:
+                  description: Codifica del capitolo di bilancio
+                  type: string
+                  example: 3321
+            - description: Definisce i dati di un bollo telematico
+              type: object
+              required:
+                - tipoBollo
+                - hashDocumento
+                - provinciaResidenza
+              properties:
+                tipoBollo:
+                  description: Tipologia di Bollo digitale
+                  type: string
+                  enum:
+                    - Imposta di bollo
+                hashDocumento:
+                  description: Digest in base64 del documento informatico associato alla marca da bollo
+                  type: string
+                provinciaResidenza:
+                  description: Sigla automobilistica della provincia di residenza del soggetto pagatore
+                  type: string
+    statoPendenza:
+      example: NON_ESEGUITO
+      type: string
+      enum:
+        - ESEGUITA
+        - NON_ESEGUITA
+        - ESEGUITA_PARZIALE
+        - ANNULLATA
+        - SCADUTA
+      description: >-
+        Stato della pendenza: 
+         * ESEGUITA: Pagata
+         * NON_ESEGUITA: Da pagare
+         * ESEGUITA_PARZIALE: Pagata parzialmente
+         * ANNULLATA: Annullata
+         * SCADUTA: Scaduta
+    rppIndex:
+      type: object
+      required: 
+        - stato
+        - rpt
+      properties:
+        stato:
+          type: string
+          description: Stato della richiesta di pagamento sulla piattaforma PagoPA.
+          example: RT_ACCETTATA_PA
+        dettaglioStato:
+          type: string
+          description: >-
+            Dettaglio fornito dal Nodo dei Pagamenti sullo stato della
+            richiesta.
+        segnalazioni:
+          type: array
+          items: 
+            $ref: '#/components/schemas/segnalazione'
+        rpt:
+          type: object
+          description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
+        rt:
+          type: object
+          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"  
+        pendenza:
+          type: string
+          description: Url al dettaglio della pendenza
+          example: '/pendenze/A2A-12345/abcdef12345'
+    rpp:
+      type: object
+      required: 
+        - stato
+        - rpt
+      properties:
+        stato:
+          type: string
+          description: Stato della richiesta di pagamento sulla piattaforma PagoPA.
+          example: RT_ACCETTATA_PA
+        dettaglioStato:
+          type: string
+          description: >-
+            Dettaglio fornito dal Nodo dei Pagamenti sullo stato della
+            richiesta.
+        segnalazioni:
+          type: array
+          items: 
+            $ref: '#/components/schemas/segnalazione'
+        rpt:
+          type: object
+          description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
+        rt:
+          type: object
+          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"  
+        pendenza:
+          $ref: './pendenze.yaml#/pendenzaIndex'         
+    esitoRpt:
+      example: ESEGUITO
+      type: string
+      enum:
+        - IN_CORSO
+        - RIFIUTATO
+        - ESEGUITO
+        - NON_ESEGUITO
+        - ESEGUITO_PARZIALE
+        - DECORRENZA
+        - DECORENNZA_PARZIALE
+      description: > 
+        Esito della richiesta di pagamento:
+         * IN_CORSO: Pagamento in corso
+         * RIFIUTATO: Pagamento rifiutato
+         * ESEGUITO: Pagamento eseguito
+         * NON_ESEGUITO: Pagamento non eseguito
+         * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito
+         * DECORRENZA: Decorrenza termini
+         * DECORRENZA_PARZIALE: Decorrenza termini parziale
+    aclPost:
+      type: object
+      required:
+        - servizio
+        - autorizzazioni
+      properties:
+        ruolo:
+          type: string
+          description: ruolo a cui si applica l'acl
+          example: Operatore
+        principal:
+          type: string
+          description: principal a cui si applica l'acl
+          example: user001
+        servizio:
+          type: string
+          description: >- 
+            Servizio oggetto dell'autorizzazione
+             * Anagrafica PagoPA
+             * Anagrafica Creditore
+             * Anagrafica Applicazioni
+             * Anagrafica Ruoli
+             * Pendenze e Pagamenti
+             * Pendenze e Pagamenti propri 
+             * Rendicontazioni e Incassi
+             * Giornale degli Eventi
+             * Statistiche
+             * Configurazione e Manutenzione
+          enum:
+            - Anagrafica PagoPA
+            - Anagrafica Creditore
+            - Anagrafica Applicazioni
+            - Anagrafica Ruoli
+            - Pagamenti e Pendenze
+            - Rendicontazioni e Incassi
+            - Giornale degli Eventi
+            - Configurazione e manutenzione
+          example:
+            Pendenze e Pagamenti
+        autorizzazioni:
+          type: array
+          items:
+            type: string
+            enum:
+             - Lettura
+             - Scrittura
+             - Esecuzione
+          example:
+            - Lettura
+            - Scrittura
+    acl:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - id
+          properties:
+            id:
+              type: string
+              description: identificativo dell'acl
+              example: '1234'
+        - $ref: '#/components/schemas/aclPost'                                         
