@@ -1043,13 +1043,11 @@ paths:
             format: csv
       responses:
         '200':
-          description: Elenco dei ruoli associati all'utenza chiamante
+          description: Autorizzazioni dell'utenza chiamante
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/acl'
+                $ref: '#/components/schemas/profilo'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -2340,4 +2338,25 @@ components:
               type: string
               description: identificativo dell'acl
               example: '1234'
-        - $ref: '#/components/schemas/aclPost'                                         
+        - $ref: '#/components/schemas/aclPost'
+    profilo:
+      type: object
+      required: 
+        - domini
+        - entrate
+        - acl
+      properties:
+        domini:
+          type: array
+          description: domini su cui e' abilitato ad operare
+          items: 
+            $ref: '#/components/schemas/dominioIndex'
+        entrate:
+          type: array
+          description: entrate su cui e' abilitato ad operare
+          items: 
+            $ref: '#/components/schemas/tipoEntrata'
+        acl:
+          type: array
+          items:
+            $ref: '#/components/schemas/acl'
