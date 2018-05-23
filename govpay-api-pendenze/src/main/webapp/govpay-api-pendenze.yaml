@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: "1.0.0"
-  title: GovPay - API Pagamento
+  title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
     url: 'https://github.com/link-it/GovPay/'
@@ -11,604 +11,15 @@ info:
 servers:
   - url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/v1/
 tags:
-  - name: Pagamenti
-    description: Realizzazione e consultazione dei pagamenti delle pendenze
   - name: Pendenze
     description: Consultazione delle posizioni debitorie
-  - name: Domini
-    description: Anagrafica degli Enti Creditori    
+  - name: Pagamenti
+    description: Realizzazione e consultazione dei pagamenti delle pendenze
   - name: Utenti
     description: Anagrafica degli Utenti
 security:
   - basicAuth: []    
 paths:
-  '/domini':
-    get:
-      tags:
-        - Domini
-      summary: Elenco dei domini beneficiari censiti
-      parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli canali abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: ordinamento
-          in: query
-          description: >-
-            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
-             * ragioneSociale
-          required: false
-          schema:
-            type: string
-            format: csv
-            default: +ragioneSociale
-        - name: idStazione
-          in: query
-          description: Restrizione ai soli domini associati alla stazione indicata
-          required: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Lista paginata dei domini ricercati
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/listaPaginata'
-                  - type: object
-                    required:
-                      - risultati
-                    properties:
-                      risultati:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/dominioIndex' 
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
-  '/domini/{idDominio}':
-    get:
-      tags:
-        - Domini
-      summary: Lettura dei dati di un dominio beneficiario
-      parameters:
-        - in: path
-          name: idDominio
-          schema:
-            type: string
-          description: Codice fiscale del beneficiario
-          required: true
-      responses:
-        '200':
-          description: Dettaglio del dominio
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dominio'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'          
-        '500':
-          $ref: '#/components/responses/500'
-  '/domini/{idDominio}/unitaOperative':
-    get:
-      tags:
-        - Domini
-      summary: Elenco delle unità operative del beneficiario
-      parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli canali abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: ordinamento
-          in: query
-          description: >-
-            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
-             * ragioneSociale
-          required: false
-          schema:
-            type: string
-            format: csv
-            default: +ragioneSociale        
-        - name: idDominio
-          in: path
-          description: Identificativo del dominio
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Lista paginata dei domini ricercati
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/listaPaginata'
-                  - type: object
-                    required:
-                      - risultati
-                    properties:
-                      risultati:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/unitaOperativa'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
-  '/domini/{idDominio}/unitaOperative/{idUnitaOperativa}':
-    get:
-      tags:
-        - Domini
-      summary: Lettura dei dati di una unità operativa
-      parameters:
-        - in: path
-          name: idDominio
-          schema:
-            type: string
-          description: Codice fiscale del beneficiario
-          required: true
-        - name: idUnitaOperativa
-          in: path
-          description: Identificativo dell'unità operativa
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Dettaglio dell'unità operativa
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/unitaOperativa'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'     
-  '/domini/{idDominio}/contiAccredito':
-    get:
-      tags:
-        - Domini
-      summary: Elenco degli iban di accredito del beneficiario
-      parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli canali abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean   
-        - name: ordinamento
-          in: query
-          description: >-
-            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
-             * ragioneSociale
-          required: false
-          schema:
-            type: string
-            format: csv
-            default: +contiAccredito        
-        - name: idDominio
-          in: path
-          description: Identificativo del dominio
-          required: true
-          schema:
-            type: string      
-      responses:
-        '200':
-          description: Lista paginata dei domini ricercati
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/listaPaginata'
-                  - type: object
-                    required:
-                      - risultati
-                    properties:
-                      risultati:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/contiAccredito'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
-  '/domini/{idDominio}/contiAccredito/{iban}':
-    get:
-      tags:
-        - Domini
-      summary: Lettura dei dati di un iban di accredito
-      parameters:
-        - in: path
-          name: idDominio
-          schema:
-            type: string
-          description: Codice fiscale del beneficiario
-          required: true
-        - name: iban
-          in: path
-          description: Iban
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Dettaglio dell'iban di accredito
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/contiAccredito'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
-  '/domini/{idDominio}/entrate':
-    get:
-      tags:
-        - Domini
-      summary: Elenco delle tipologie di entrata del dominio
-      parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli canali abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: ordinamento
-          in: query
-          description: >-
-            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
-             * idEntrata
-          required: false
-          schema:
-            type: string
-            format: csv
-            default: +idEntrata
-        - name: idDominio
-          in: path
-          description: Identificativo del dominio
-          required: true
-          schema:
-            type: string      
-      responses:
-        '200':
-          description: Lista paginata delle entrate ricercate
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/listaPaginata'
-                  - type: object
-                    required:
-                      - risultati
-                    properties:
-                      risultati:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/entrata'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
-  '/domini/{idDominio}/entrate/{idEntrata}':
-    get:
-      tags:
-        - Domini
-      summary: Lettura dei dati di una entrata
-      parameters:
-        - in: path
-          name: idDominio
-          schema:
-            type: string
-          description: Codice fiscale del beneficiario
-          required: true
-        - name: idEntrata
-          in: path
-          description: Identificativo della tipologia di entrata
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Dettaglio dell'entrata
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/entrata'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
-  '/pagamenti':
-    post:
-      summary: Avvio di un pagamento di pendenze
-      tags:
-        - Pagamenti  
-      description: >-
-        L'operazione consente di avviare una sessione di pagamento per una o più
-        pendenze. Le pendenze presenti in posizione debitoria possono essere
-        riferite tramite identificativo della pendenza del gestionale proprietario 
-        (_idA2A_ e _idPendenza_) oppure con l'identificativo avviso (_idDominio_ 
-        e _iuv_). Nel caso invece di pendenze note al portale, è possibile
-        fornire direttamente i dati della pendenza.
-      parameters:
-        - in: query
-          name: idSessionePortale
-          description: Identificativo della sessione di pagamento nel portale.
-          required: false
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/pagamentoPost'
-      responses:
-        '201':
-          description: Pagamento creato
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - id
-                  - location
-                  - redirect
-                properties:
-                  id:
-                    type: string
-                    description: identificativo del pagamento
-                    example: 12345
-                  location:
-                    type: string
-                    description: Url del dettaglio del pagamento
-                    example: /pagamenti/12345
-                  redirect:
-                    type: string
-                    description: url a cui redirigere il navigatore per proseguire nel pagamento.
-                    example: >-
-                      https://www.comune.it/pagopa/pap/bdd07392-d90d-11e7-9296-cec278b6b50a
-                  idSession:
-                    type: string
-                    description: identificativo della sessione di pagamento per la riconciliazione in al ritorno dal psp.
-                    example: bdd07392-d90d-11e7-9296-cec278b6b50a
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
-        '502':
-          $ref: '#/components/responses/502'
-    get:
-      summary: Lista dei pagamenti
-      tags:
-        - Pagamenti  
-      parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: ordinamento
-          in: query
-          description: >-
-            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
-             * dataRichiestaPagamento
-             * stato
-          required: false
-          schema:
-            type: string
-            format: csv
-            default: +dataRichiestaPagamento
-        - in: query
-          name: stato
-          description: Filtro sullo stato del pagamento
-          required: false
-          schema:
-            $ref: '#/components/schemas/statoPagamento'
-        - in: query
-          name: versante
-          description: Filtro sul codice fiscale del versante
-          required: false
-          schema:
-            type: string
-            example: 'RSSMRA30A01H501I'
-        - in: query
-          name: idSessionePortale
-          description: Filtro sull'identificativo di sessione assegnato dal chiamante
-          required: false
-          schema:
-            type: string
-            example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
-      responses:
-        '200':
-          description: Elenco dei pagamenti da portale
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/listaPaginata'
-                  - type: object
-                    required:
-                      - risultati
-                    properties:
-                      risultati:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/pagamentoIndex'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
-        '502':
-          $ref: '#/components/responses/502'
-  '/pagamenti/{id}':
-    get:
-      summary: Dettaglio di un pagamento
-      tags:
-        - Pagamenti
-      parameters:
-        - in: path
-          name: id
-          description: Identificativo del pagamento
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Dettaglio del pagamento
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/pagamento'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'      
   '/pendenze':
     get:
       tags:
@@ -705,6 +116,104 @@ paths:
         '500':
           $ref: '#/components/responses/500'      
   '/pendenze/{idA2A}/{idPendenza}':
+    put:
+      tags:
+        - Pendenze
+      summary: Creazione o aggiornamento di una pendenza
+      description: >-
+        Per ciascuna pendenza viene richiesto un identificativo (_idPendenza_)
+        valido per il gestionale che ne effettua il caricamento (_idA2A_).
+        L'operazione è idempotente rispetto a questo identificativo e nel caso
+        venga eseguito il caricamento di una pendenza con un identificativo già
+        presente nell'archivio di GovPay, questa sarà gestita come un
+        aggiornamento. <br/> Ciascuna pendenza può
+        essere composta da più voci fino ad un massimo di cinque, ciascuna
+        avente un identificativo _idVocePendenza_ assegnato dal gestionale come
+        riferimento interno. 
+      parameters:
+        - in: path
+          name: idA2A
+          description: Identificativo del gestionale
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idPendenza
+          description: Identificativo della pendenza
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/pendenzaPut'
+      responses:
+        '200':
+          description: Pendenza aggiornata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/avviso'
+        '201':
+          description: Pendenza creata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/avviso'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      description: L'aggiornamento dello stato di una pendenza in `Annullata` può essere completato solo se la pendenza si trova in stato `Da pagare`. Viceversa il ripristino dello stato `Da pagare` può essere disposto solo in caso di pendenza `Annullata`. L'aggiornamento è consentito solo se di dispone di ACL per il servizio Pendenze di tipo scrittura. 
+      tags:
+        - Pendenze
+      summary: Annullamento o ripristino di una pendenza
+      parameters:
+        - in: path
+          name: idA2A
+          description: Identificativo del gestionale
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idPendenza
+          description: Identificativo della pendenza
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - stato
+              properties:
+                stato:
+                  $ref: '#/components/schemas/statoPendenza'
+                descrizioneStato:
+                  description: Causale del cambio di stato.
+                  example: Annullata
+                  type: string
+      responses:
+        '200':
+          description: Pendenza aggiornata con successo
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'      
+        '500':
+          $ref: '#/components/responses/500'
     get:
       tags:
         - Pendenze
@@ -974,44 +483,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'             
-  '/avvisi/{idDominio}/{iuv}':
-    get:
-      tags:
-        - Pendenze
-      summary: Avviso di pagamento
-      description: Fornisce un avviso di pagamento o la pendenza ad esso associata
-      parameters:
-        - in: path
-          name: idDominio
-          description: Identificativo del dominio dell'ente
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: iuv
-          description: Identificativo del versamento
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Avviso di pagamento
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/avviso'
-            application/pdf:
-              schema:
-                type: string
-                format: binary
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
   '/profilo':
     get:
       summary: Elenco delle acl associate all'utenza chiamante
@@ -1047,9 +518,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/acl'
+                $ref: '#/components/schemas/profilo'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -2340,4 +1809,25 @@ components:
               type: string
               description: identificativo dell'acl
               example: '1234'
-        - $ref: '#/components/schemas/aclPost'                                         
+        - $ref: '#/components/schemas/aclPost'    
+    profilo:
+      type: object
+      required: 
+        - domini
+        - entrate
+        - acl
+      properties:
+        domini:
+          type: array
+          description: domini su cui e' abilitato ad operare
+          items: 
+            $ref: '#/components/schemas/dominioIndex'
+        entrate:
+          type: array
+          description: entrate su cui e' abilitato ad operare
+          items: 
+            $ref: '#/components/schemas/tipoEntrata'
+        acl:
+          type: array
+          items:
+            $ref: '#/components/schemas/acl'
