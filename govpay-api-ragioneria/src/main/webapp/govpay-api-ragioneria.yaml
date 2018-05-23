@@ -1,0 +1,1433 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: GovPay - API Pagamento
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/v1/
+tags:
+  - name: Riconciliazioni
+    description: Movimenti in tesoreria riconciliati
+  - name: Rendicontazioni
+    description: Riversamenti rendicontati da pagoPA
+  - name: Riscossioni
+    description: Importi riscossi o stornati dagli istituti di pagamento
+  - name: Utenti
+    description: Anagrafica degli Utenti
+security:
+  - basicAuth: []    
+paths:
+  '/riscossioni':
+    get:
+      summary: Elenco degli importi riscossi o stornati
+      tags:
+        - Riscossioni
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * data
+             * stato
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +data
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - name: idDominio
+          in: query
+          description: filtro per codice fiscale creditore
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idA2A
+          description: Codice del gestionale proprietario della pendenza
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idPendenza
+          description: Identrificativo della pendenza nel gestionale proprietario
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: stato
+          description: filtro sullo stato della riscossione
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoRiscossione'
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di riscossione
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di riscossione
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: tipo
+          description: Tipologia della riscossione
+          required: false
+          schema:
+            $ref: '#/components/schemas/tipoRiscossione'
+      responses:
+        '201':
+          description: Dettaglio della riscossione
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/riscossioneIndex'   
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'        
+  '/riscossioni/{idDominio}/{iuv}/{iur}/{indice}':
+    get:
+      summary: Dettaglio di una riscossione
+      tags:
+        - Riscossioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iur
+          description: Identificativo univoco di riscossione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: indice
+          description: Identificativo univoco di riscossione
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+      responses:
+        '201':
+          description: Dettaglio della riscossione
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/riscossione'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/flussiRendicontazione':
+    get:
+      summary: Elenco dei flussi di rendicontazione acquisitie da PagoPa
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * data
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +data            
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di riscossione
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di riscossione
+          required: false
+          schema:
+            type: string
+            format: date            
+        - name: idDominio
+          in: query
+          description: filtro per dominio creditore
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista dei flussi rendicontazione
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/flussoRendicontazioneIndex'     
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/flussiRendicontazione/{idFlusso}':
+    get:
+      summary: Acquisizione di un flusso di rendicontazione
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Dettaglio della rendicontazione
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/flussoRendicontazione'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/incassi':
+    get:
+      summary: Elenco dei movimenti di cassa riconciliati
+      tags:
+        - Riconciliazioni
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+      responses:
+        '201':
+          description: Dettaglio dell'incasso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/incassoIndex'   
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  '/incassi/{idDominio}':
+    post:
+      summary: Registrazione di un movimento di cassa
+      tags:
+        - Riconciliazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del creditore
+          required: true
+          schema:
+            type: string           
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/incassoPost'
+      responses:
+        '201':
+          description: Incasso registrato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incassoIndex'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'          
+  '/incassi/{idDominio}/{idIncasso}':
+    get:
+      summary: Dettaglio di un movimento di cassa
+      tags:
+        - Riconciliazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del creditore
+          required: true
+          schema:
+            type: string      
+        - in: path
+          name: idIncasso
+          description: Identificativo dell'idFlusso o iuv, a seconda della modalita di riversamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Dettaglio dell'incasso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incasso'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'    
+  '/profilo':
+    get:
+      summary: Autorizzazioni associate all'utenza chiamante
+      tags:
+        - Utenti
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+      responses:
+        '200':
+          description: Elenco dei ruoli associati all'utenza chiamante
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/profilo'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'    
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  responses:
+    '400':
+      description: Richiesta non correttamente formata
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: RICHIESTA
+            codice: 00001
+            descrizione: Messaggio di richiesta non valido
+            dettaglio: Codice Avviso non conforme alle specifiche pagoPA
+    '401':
+      description: Richiesta non autenticata
+    '403':
+      description: Richiesta non autorizzata
+    '404':
+      description: Risorsa inesistente
+    '500':
+      description: Servizio non disponibile
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: INTERNO
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+    '502':
+      description: Rilevato errore con la piattaforma PagoPA
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: PAGOPA
+            codice: PPT_CANALE_IRRAGGIUNGIBILE
+            descrizione: Errore di connessione verso il canale          
+  schemas:
+    faultBean:
+      type: object
+      required:
+        - categoria
+        - codice
+        - descrizione
+      properties:
+        categoria:
+          type: string
+          description: >-
+            Categoria dell'errore riscontrato:
+             * `AUTORIZZAZIONE` - Operazione non autorizzata
+             * `RICHIESTA` - Richiesta non valida
+             * `OPERAZIONE` - Operazione non eseguibile
+             * `PAGOPA` - Errore da PagoPA
+             * `INTERNO` - Errore interno
+          enum:
+            - AUTORIZZAZIONE
+            - RICHIESTA
+            - OPERAZIONE
+            - PAGOPA
+            - INTERNO
+        codice:
+          type: string
+          description: Codice di errore
+        descrizione:
+          type: string
+          description: Descrizione dell'errore
+        dettaglio:
+          type: string
+          description: Descrizione aggiuntiva  
+    listaPaginata:
+      type: object
+      properties:
+        numRisultati:
+          type: number
+          format: integer
+          example: '100'
+        numPagine:
+          type: number
+          format: integer
+          example: '4'
+        risultatiPerPagina:
+          type: number
+          format: integer
+          example: '25'
+        pagina:
+          type: number
+          format: integer
+          example: '1'
+        prossimiRisultati:
+          type: string
+          format: integer
+          example: '/risorsa?pagina=2'    
+    soggetto:
+      description: dati anagrafici di un versante o pagatore.
+      type: object
+      required:
+        - tipo
+        - identificativo
+      properties:
+        tipo:
+          description: >-
+            tipologia di soggetto, se persona fisica (F) o giuridica
+            (G)
+          type: string
+          enum:
+            - G
+            - F
+          example: F
+        identificativo:
+          description: codice fiscale o partita iva del soggetto
+          type: string
+          example: RSSMRA30A01H501I
+        anagrafica:
+          description: nome e cognome o altra ragione sociale del soggetto
+          type: string
+          example: Mario Rossi
+        indirizzo:
+          type: string
+          example: Piazza della Vittoria
+        civico:
+          type: string
+          example: 10/A
+        cap:
+          type: string
+          example: 0
+        localita:
+          type: string
+          example: Roma
+        provincia:
+          type: string
+          example: Roma
+        nazione:
+          type: string
+          example: IT
+        email:
+          type: string
+          example: mario.rossi@host.eu
+        cellulare:
+          type: string
+          example: 0039000123456789    
+    segnalazione:
+      type: object
+      required:
+        - codice
+        - descrizione
+      properties:
+        codice:
+          type: string
+        descrizione:
+          type: string        
+    tassonomiaAvviso:
+      description: Macro categoria della pendenza Agid
+      type: string
+      enum:
+        - Cartelle esattoriali
+        - Diritti e concessioni
+        - Imposte e tasse
+        - IMU, TASI e altre tasse comunali
+        - Ingressi a mostre e musei
+        - Multe e sanzioni amministrative
+        - Previdenza e infortuni
+        - Servizi erogati dal comune
+        - Servizi erogati da altri enti
+        - Servizi scolastici
+        - Tassa automobilistica
+        - Ticket e prestazioni sanitarie
+        - Trasporti, mobilità e parcheggi
+      example: 
+        Ticket e prestazioni sanitarie
+    dominioPost:
+      type: object
+      required:
+       - ragioneSociale
+       - gln
+       - stazione
+       - abilitato
+      properties:
+        ragioneSociale:
+          type: string
+          description: Ragione sociale del beneficiario
+          example: Ente Creditore
+        indirizzo:
+          type: string
+          description: Indirizzo del beneficiario
+          example: Corso Italia
+        civico:
+          type: string
+          description: Numero civico del beneficiario
+          example: 1A
+        cap:
+          type: string
+          description: Codice avviamento postale del beneficiario
+          example: 00000
+        localita:
+          type: string
+          description: Località del beneficiario
+          example: Roma
+        provincia:
+          type: string
+          description: Provincia del beneficiario
+          example: Roma
+        nazione:
+          type: string
+          description: Nazione del beneficiario
+          example: IT
+        email:
+          type: string
+          description: Posta elettronica ordinaria del beneficiario
+          example: peo@creditore.it  
+        pec:
+          type: string
+          description: Posta elettronica certificata del beneficiario
+          example: pec@creditore.it  
+        tel:
+          type: string
+          description: Numero di telefono dell'help desk del beneficiario
+          example: 021234567890  
+        fax:
+          type: string
+          description: Numero di fax dell'help desk del beneficiario
+          example: 021234567890  
+        web:
+          type: string
+          description: Url del sito web
+          example: http://www.comune.it/
+        gln:
+          type: string
+          description: Global location number del beneficiario
+          example: 0011223344556
+        cbill:
+          type: string
+          description: codice cbill del beneficiario
+          example: 12345
+        iuvPrefix:
+          type: string
+          description: Prefisso negli IUV generati da GovPay
+          example: '%(yyyy)%(a)'
+        stazione:
+          type: string
+          description: Codice stazione PagoPA che intermedia il beneficiario
+          example: 01234567890_01
+        auxDigit:
+          type: string
+          description: Valore della prima cifra dei Numero Avviso generati da GovPay
+          example: 0
+        segregationCode:
+          type: string
+          description: Codice di segregazione utilizzato in caso di beneficiario pluri-intermediato (auxDigit = 3)
+          example: 88
+        logo:
+          type: string
+          description: Base64 del logo del beneficiario
+          example: /9j/4AA...base64...FFFFABRRRQB/9k=
+        abilitato:
+          type: boolean
+          description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
+          example: 'true'
+    dominioIndex:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - idDominio
+          properties:
+            idDominio:
+              type: string
+              description: Codice fiscale del beneficiario
+              example: 01234567890
+        - $ref: '#/components/schemas/dominioPost'
+    unitaOperativaPost:
+      type: object
+      required: 
+        - ragioneSociale
+      properties:
+        ragioneSociale:
+          type: string
+          description: Ragione sociale dell'unita
+          example: Ufficio due
+        indirizzo:
+          type: string
+          description: Indirizzo dell'unita
+          example: Borgo stretto
+        civico:
+          type: string
+          description: Numero civico dell'unita
+          example: 55bis
+        cap:
+          type: string
+          description: Codice avviamento postale dell'unita
+          example: 99999
+        localita:
+          type: string
+          description: Località dell'unita
+          example: Milano
+        provincia:
+          type: string
+          description: Provincia del beneficiario
+          example: Roma
+        nazione:
+          type: string
+          description: Nazione del beneficiario
+          example: IT
+        email:
+          type: string
+          description: Posta elettronica ordinaria del beneficiario
+          example: peo@creditore.it  
+        pec:
+          type: string
+          description: Posta elettronica certificata del beneficiario
+          example: pec@creditore.it  
+        tel:
+          type: string
+          description: Numero di telefono dell'help desk del beneficiario
+          example: 021234567890  
+        fax:
+          type: string
+          description: Numero di fax dell'help desk del beneficiario
+          example: 021234567890           
+        gln:
+          type: string
+          description: Global location number del beneficiario
+          example: 0011223344556
+        web:
+          type: string
+          description: Url del sito web
+          example: http://www.comune.it/
+        area:
+          type: string
+          description: Nome dell'area di competenza dell'unita' operativa
+          example: Affari generali e istituzionali  
+        abilitato:
+          type: boolean
+          description: Indica lo stato di abilitazione
+          example: true
+    unitaOperativa:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idUnita
+          properties:
+            idUnita:
+              type: string
+              description: Codice fiscale dell'unita
+              example: 01234567890
+        - $ref: '#/components/schemas/unitaOperativaPost'
+    tipoEntrataPost:
+      type: object
+      required: 
+        - descrizione
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+        tipoContabilita:
+          description: Tipologia di codifica del capitolo di bilancio
+          type: string
+          enum:
+            - Entrata
+            - Speciale
+            - SIOPE
+            - Altro
+          example: SIOPE
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321
+        codificaIUV:
+          type: string
+          description: Cifra identificativa negli IUV
+          example: 01
+    tipoEntrata:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idEntrata
+          properties:
+            idEntrata:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoEntrataPost'
+    pendenzaBase:
+      type: object
+      required:
+        - soggettoPagatore
+        - importo
+        - causale
+      properties:
+        nome:
+          type: string
+          description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
+          example: 'Immatricolazione AA 2017/2018'
+        causale:
+          type: string
+          description: Descrizione da inserire nell'avviso di pagamento
+          example: 'Sanzione CdS n. abc00000'
+        soggettoPagatore:
+          $ref: '#/components/schemas/soggetto'
+        importo:
+          type: number
+          description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+          example: 10.01
+        numeroAvviso:
+          type: string
+          description: Identificativo univoco versamento, assegnato se pagabile da psp
+          example: 123456789012345678
+        dataCaricamento:
+          type: string
+          format: date
+          description: Data di emissione della pendenza
+          example: '2010-12-31'
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        annoRiferimento:
+          type: number
+          description: Anno di riferimento della pendenza
+          example: 2020
+        cartellaPagamento:
+          type: string
+          description: Identificativo della cartella di pagamento a cui afferisce la pendenza
+          example: ABC00000001
+        datiAllegati:
+          type: string
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
+        tassonomiaAvviso:
+          $ref: '#/components/schemas/tassonomiaAvviso'
+    pendenzaIndex:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - idA2A
+            - idPendenza
+            - dominio
+            - stato
+          properties:
+            idA2A:
+              type: string
+              description: Identificativo del gestionale responsabile della pendenza
+              example: A2A-12345
+            idPendenza:
+              type: string
+              description: Identificativo della pendenza nel gestionale responsabile
+              example: abcdef12345
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
+            unitaOperativa:
+              $ref: '#/components/schemas/unitaOperativa'
+            stato:
+              $ref: '#/components/schemas/statoPendenza'
+            segnalazioni:
+              type: array
+              items: 
+                $ref: '#/components/schemas/segnalazione'          
+        - $ref: '#/components/schemas/pendenzaBase'   
+    vocePendenza:
+      allOf:
+        - type: object
+          required:
+            - idVocePendenza
+            - importo
+            - descrizione
+          properties:
+            indice:
+              type: number
+              description: indice di voce all'interno della pendenza
+              example: 1
+            idVocePendenza:
+              type: string
+              description: Identificativo della voce di pedenza nel gestionale proprietario
+              example: abcdef12345_1
+            importo:
+              type: number
+              description: Importo della voce
+              example: 10.01
+            descrizione:
+              type: string
+              description: descrizione della voce di pagamento
+              example: Sanzione CdS n. abc00000
+            datiAllegati:
+              type: string
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        - oneOf:
+            - description: Definisce i dettagli di incasso.
+              type: object
+              required:
+                - ibanAccredito
+                - tipoContabilita
+                - codiceContabilita
+              properties:
+                ibanAccredito:
+                  type: string
+                  example: IT60X0542811101000000123456
+                ibanAppoggio:
+                  type: string
+                  example: IT60X0542811101000000123456
+                tipoContabilita:
+                  description: Tipologia di codifica del capitolo di bilancio
+                  type: string
+                  enum:
+                    - Entrata
+                    - Speciale
+                    - SIOPE
+                    - Altro
+                  example: SIOPE
+                codiceContabilita:
+                  description: Codifica del capitolo di bilancio
+                  type: string
+                  example: 3321
+            - description: Definisce i dati di un bollo telematico
+              type: object
+              required:
+                - tipoBollo
+                - hashDocumento
+                - provinciaResidenza
+              properties:
+                tipoBollo:
+                  description: Tipologia di Bollo digitale
+                  type: string
+                  enum:
+                    - Imposta di bollo
+                hashDocumento:
+                  description: Digest in base64 del documento informatico associato alla marca da bollo
+                  type: string
+                provinciaResidenza:
+                  description: Sigla automobilistica della provincia di residenza del soggetto pagatore
+                  type: string
+    statoPendenza:
+      example: NON_ESEGUITO
+      type: string
+      enum:
+        - ESEGUITA
+        - NON_ESEGUITA
+        - ESEGUITA_PARZIALE
+        - ANNULLATA
+        - SCADUTA
+      description: >-
+        Stato della pendenza: 
+         * ESEGUITA: Pagata
+         * NON_ESEGUITA: Da pagare
+         * ESEGUITA_PARZIALE: Pagata parzialmente
+         * ANNULLATA: Annullata
+         * SCADUTA: Scaduta
+    rpp:
+      type: object
+      required: 
+        - stato
+        - rpt
+      properties:
+        stato:
+          type: string
+          description: Stato della richiesta di pagamento sulla piattaforma PagoPA.
+          example: RT_ACCETTATA_PA
+        dettaglioStato:
+          type: string
+          description: >-
+            Dettaglio fornito dal Nodo dei Pagamenti sullo stato della
+            richiesta.
+        segnalazioni:
+          type: array
+          items: 
+            $ref: '#/components/schemas/segnalazione'
+        rpt:
+          type: object
+          description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
+        rt:
+          type: object
+          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"  
+    riscossioneIndex:
+      type: object
+      required:
+        - dominio
+        - iuv
+        - iur
+        - indice
+        - vocePendenza
+        - pendenza
+        - stato
+        - tipo
+        - importo
+        - data
+      properties:
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
+        iuv:
+          type: string
+          description: Identificativo univoco di versamento
+          example: RF23567483937849450550875
+        iur:
+          type: string
+          description: Identificativo univoco di riscossione.
+          example: '1234acdc'
+        indice:
+          type: number
+          description: indice posizionale della voce pendenza riscossa
+          example: 1
+        pendenza:
+          type: string
+          description: Url della pendenza oggetto della riscossione
+          example: '/pendenze/idA2A/abcdef12345'
+        vocePendenza:
+          $ref: '#/components/schemas/vocePendenza'
+        rpp:
+          type: string
+          description: Url richiesta di pagamento che ha realizzato la riscossione. Se non valorizzato, si tratta di un pagamento senza RPT
+          example: '/rpp/01234567890/RF23567483937849450550875/n%2Fa'
+        stato:
+          $ref: '#/components/schemas/statoRiscossione'
+        tipo:
+          $ref: '#/components/schemas/tipoRiscossione'
+        importo:
+          type: number
+          description: >-
+            Importo riscosso. 
+          example: 10.01
+        data:
+          type: string
+          format: date
+          description: Data di esecuzione della riscossione
+          example: '2020-12-31'
+        commissioni:
+          type: number
+          description: Importo delle commissioni applicate al pagamento dal PSP
+          example: 1.5
+        allegato:
+          $ref: '#/components/schemas/allegato'
+        incasso:
+          type: string
+          description: Riferimento all'operazione di incasso
+          example: "/incassi/01234567890/2017-01-01ABI00000011234"
+    riscossione:
+      type: object
+      required:
+        - dominio
+        - iuv
+        - iur
+        - indice
+        - vocePendenza
+        - pendenza
+        - stato
+        - tipo
+        - importo
+        - data
+      properties:
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
+        iuv:
+          type: string
+          description: Identificativo univoco di versamento
+          example: RF23567483937849450550875
+        iur:
+          type: string
+          description: Identificativo univoco di riscossione.
+          example: '1234acdc'
+        indice:
+          type: number
+          description: indice posizionale della voce pendenza riscossa
+          example: 1
+        pendenza:          
+          $ref: '#/components/schemas/pendenzaIndex'        
+        vocePendenza:
+          $ref: '#/components/schemas/vocePendenza'
+        rpp:
+          $ref: '#/components/schemas/rpp'
+        stato:
+          $ref: '#/components/schemas/statoRiscossione'
+        tipo:
+          $ref: '#/components/schemas/tipoRiscossione'
+        importo:
+          type: number
+          description: >-
+            Importo riscosso. 
+          example: 10.01
+        data:
+          type: string
+          format: date
+          description: Data di esecuzione della riscossione
+          example: '2020-12-31'
+        commissioni:
+          type: number
+          description: Importo delle commissioni applicate al pagamento dal PSP
+          example: 1.5
+        allegato:
+          $ref: '#/components/schemas/allegato'
+        incasso:
+          $ref: '#/components/schemas/incassoIndex'   
+    allegato:
+      type: object
+      required:
+        - tipo
+        - testo
+      properties:
+        tipo:
+          description: Tipologia di allegato
+          type: string
+          enum:
+            - Esito pagamento
+            - Marca da bollo
+        testo:
+          description: allegato codificato in base64
+          type: string
+    statoRiscossione:
+      description: Stato della riscossione
+      example: RISCOSSA
+      type: string
+      enum:
+        - RISCOSSA
+        - INCASSATA
+    tipoRiscossione:
+      description: > 
+        Tipologia della voce riscossa
+         * ENTRATA: Entrata in tesoreria
+         * MBT: Marca da bollo telematica
+      type: string
+      enum:
+        - ENTRATA
+        - MBT       
+    flussoRendicontazioneIndex:
+      type: object
+      required:
+        - idFlusso
+        - dataFlusso
+        - trn
+        - dataRegolamento
+        - idPsp
+        - idDominio
+        - numeroPagamenti
+        - importoTotale
+      properties:
+        idFlusso:
+          type: string
+          description: identificativo del flusso di rendicontazione
+          example: 2017-11-21GovPAYPsp1-10:27:27.903
+        dataFlusso:
+          type: string
+          format: date
+          description: Data di emissione del flusso
+          example: '2020-12-31'
+        trn:
+          type: string
+          description: Identificativo dell'operazione di riversamento assegnato dal psp debitore
+          example: 'idriversamento123445'
+        dataRegolamento:
+          type: string
+          format: date
+          description: Data dell'operazione di riversamento fondi
+          example: '2020-12-31'        
+        istitutoMittente:
+          type: object
+          properties:
+            denominazione:
+              type: string
+              description: Nome dell'istituto che ha emesso la rendicontazione
+              example: 'Banco di Ponzi' 
+            tipoIdentificativo:
+              type: string
+              description: Tipo di identificativo dell'istituto mittente
+              enum:
+                - G
+                - A
+                - B
+              example: 'A' 
+            identificativo:
+              type: string
+              description: Identificativo dell'istituto mittente
+              example: 'ABI-12345' 
+        bicRiversamento:
+          type: string
+          description: Codice Bic della banca che ha generato il riversamento
+          example: 'BIC-12345' 
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
+        numeroPagamenti:
+          type: number
+          description: numero di pagamenti oggetto della rendicontazione
+        importoTotale:
+          type: number
+          description: somma degli importi rendicontati
+          format: double
+          example: 100.01
+        segnalazioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/segnalazione'
+    flussoRendicontazione:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/flussoRendicontazioneIndex'
+        - type: object
+          properties:
+            segnalazioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/segnalazione'
+            rendicontazioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/rendicontazione'
+    rendicontazione:
+      type: object
+      required:
+        - iuv
+        - iur
+        - indice
+        - importo
+        - esito
+        - data
+      properties:
+        iuv:
+          type: string
+          description: Identificativo univoco di versamento
+          example: 'RF23567483937849450550875'
+        iur:
+          type: string
+          description: Identificativo univoco di riscossione
+          example: '1234acdc'
+        indice:
+          type: number
+          description: Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.
+          example: 1          
+        importo:
+          type: number
+          description: Importo rendicontato. 
+          example: 10.01
+        esito:
+          type: number
+          description: >
+            Codice di esito dell'operazione rendicontata
+             * 0 = Pagamento eseguito
+             * 3 = Pagamento revocato
+             * 9 = Pagamento eseguito in assenza di RPT
+          example: 0
+        data:
+          type: string
+          format: date
+          description: Data di esito
+          example: '2018-12-31'
+        segnalazioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/segnalazione'
+        riscossione:
+          $ref: '#/components/schemas/riscossioneIndex'     
+    incassoPost:
+      type: object
+      required:
+        - causale
+        - importo
+      properties:
+        causale:
+          type: string
+          description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
+          example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
+        importo:
+          type: number
+          format: double
+          example: 100.01
+        dataValuta:
+          type: string
+          format: date
+          description: Data di valuta dell'incasso
+          example: '2020-12-31'
+        dataContabile:
+          type: string
+          format: date
+          description: Data di contabile dell'incasso
+          example: '2020-12-31'
+        ibanAccredito:
+          type: string
+          description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+          example: IT60X0542811101000000123456
+    incassoIndex:
+      allOf:
+        - type: object
+          required:
+            - idDominio
+            - idIncasso
+          properties:
+            idDominio:
+              type: string
+              description: Identificativo ente creditore
+              example: 01234567890
+            idIncasso:
+              type: string
+              description: Identificativo dell'incasso
+              example: '12345'
+        - $ref: '#/components/schemas/incassoPost'
+    incasso:
+      allOf:
+        - $ref: '#/components/schemas/incassoIndex'
+        - type: object
+          required:
+            - riscossioni
+          properties:
+            riscossioni:
+              type: array
+              items: 
+                $ref: '#/components/schemas/riscossione'                                    
+    aclPost:
+      type: object
+      required:
+        - servizio
+        - autorizzazioni
+      properties:
+        ruolo:
+          type: string
+          description: ruolo a cui si applica l'acl
+          example: Operatore
+        principal:
+          type: string
+          description: principal a cui si applica l'acl
+          example: user001
+        servizio:
+          type: string
+          description: >- 
+            Servizio oggetto dell'autorizzazione
+             * Anagrafica PagoPA
+             * Anagrafica Creditore
+             * Anagrafica Applicazioni
+             * Anagrafica Ruoli
+             * Pendenze e Pagamenti
+             * Pendenze e Pagamenti propri 
+             * Rendicontazioni e Incassi
+             * Giornale degli Eventi
+             * Statistiche
+             * Configurazione e Manutenzione
+          enum:
+            - Anagrafica PagoPA
+            - Anagrafica Creditore
+            - Anagrafica Applicazioni
+            - Anagrafica Ruoli
+            - Pagamenti e Pendenze
+            - Rendicontazioni e Incassi
+            - Giornale degli Eventi
+            - Configurazione e manutenzione
+          example:
+            Pendenze e Pagamenti
+        autorizzazioni:
+          type: array
+          items:
+            type: string
+            enum:
+             - Lettura
+             - Scrittura
+             - Esecuzione
+          example:
+            - Lettura
+            - Scrittura
+    acl:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - id
+          properties:
+            id:
+              type: string
+              description: identificativo dell'acl
+              example: '1234'
+        - $ref: '#/components/schemas/aclPost'    
+    profilo:
+      type: object
+      required: 
+        - domini
+        - entrate
+        - acl
+      properties:
+        domini:
+          type: array
+          description: domini su cui e' abilitato ad operare
+          items: 
+            $ref: '#/components/schemas/dominioIndex'
+        entrate:
+          type: array
+          description: entrate su cui e' abilitato ad operare
+          items: 
+            $ref: '#/components/schemas/tipoEntrata'
+        acl:
+          type: array
+          items:
+            $ref: '#/components/schemas/acl'        
