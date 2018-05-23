@@ -541,7 +541,7 @@ paths:
           description: Filtro sullo stato del pagamento
           required: false
           schema:
-            $ref: 'pagamenti.yaml#/statoPagamento'
+            $ref: '#/components/schemas/statoPagamento'
         - in: query
           name: versante
           description: Filtro sul codice fiscale del versante
@@ -1662,7 +1662,7 @@ components:
                       Numero avviso della pendenza, assegnato se
                       pagabile da psp
                     example: 123456789012345678
-              - $ref: './pendenze.yaml#/pendenzaPost'
+              - $ref: '#/components/schemas/pendenzaPost'
         urlRitorno:
           type: string
           description: >-
@@ -1895,7 +1895,7 @@ components:
         pendenze:
           type: array
           items: 
-            $ref: './pendenze.yaml#/pendenzaIndex'
+            $ref: '#/components/schemas/pendenzaIndex'
         rpp:
           type: array
           items: 
@@ -2107,7 +2107,7 @@ components:
             pagamenti:
               type: array
               items:
-                $ref: './pagamenti.yaml#/pagamento'      
+                $ref: '#/components/schemas/pagamento'      
     vocePendenza:
       allOf:
         - type: object
@@ -2258,7 +2258,7 @@ components:
           type: object
           description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"  
         pendenza:
-          $ref: './pendenze.yaml#/pendenzaIndex'         
+          $ref: '#/components/schemas/pendenzaIndex'         
     esitoRpt:
       example: ESEGUITO
       type: string
