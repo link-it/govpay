@@ -12,6 +12,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.PagamentoPortale.VersioneInterfacciaWISP;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.rs.v1.beans.DatiAddebito;
 import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.PagamentoPortale;
@@ -114,7 +115,7 @@ public class PagamentiPortaleConverter {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
 					listRefs.add(versamento);
 				} else {
-					throw new Exception("tipo pendenza non riconosciuto");
+					throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");
 				}
 			}
 

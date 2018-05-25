@@ -40,6 +40,7 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 import it.govpay.core.rs.v1.costanti.Costanti;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -236,8 +237,9 @@ public abstract class BaseController {
 		log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
-		respKo.setCodice("");
-		respKo.setDescrizione(e.getMessage());
+		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
+		respKo.setDescrizione("Errore interno");
+		respKo.setDettaglio(e.getMessage());
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.INTERNAL_SERVER_ERROR.getStatusCode());
 		}catch(Exception e1) {
