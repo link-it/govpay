@@ -40,15 +40,6 @@ public class Avvisi extends BaseRsServiceV1{
         return this.controller.avvisiIdDominioIuvGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv);
     }
 
-    @POST
-    @Path("/{idDominio}")
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
-    public Response avvisiIdDominioPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.avvisiIdDominioPOST(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
-    }
-
 }
 
 

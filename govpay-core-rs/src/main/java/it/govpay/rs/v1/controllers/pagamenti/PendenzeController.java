@@ -1,4 +1,4 @@
-package it.govpay.rs.v1.controllers.base;
+package it.govpay.rs.v1.controllers.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -23,20 +23,21 @@ import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.rs.v1.beans.Avviso;
-import it.govpay.core.rs.v1.beans.ListaPendenze;
-import it.govpay.core.rs.v1.beans.Pendenza;
-import it.govpay.core.rs.v1.beans.base.FaultBean;
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.core.rs.v1.beans.base.PendenzaPost;
-import it.govpay.core.rs.v1.beans.base.VocePendenza;
+import it.govpay.core.rs.v1.beans.pagamenti.Avviso;
+import it.govpay.core.rs.v1.beans.pagamenti.FaultBean;
+import it.govpay.core.rs.v1.beans.pagamenti.FaultBean.CategoriaEnum;
+import it.govpay.core.rs.v1.beans.pagamenti.ListaPendenzeIndex;
+import it.govpay.core.rs.v1.beans.pagamenti.Pendenza;
+import it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex;
+import it.govpay.core.rs.v1.beans.pagamenti.PendenzaPost;
+import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.converter.PendenzeConverter;
 import it.govpay.rs.v1.beans.pagamenti.converter.PagamentiPortaleConverter;
+import it.govpay.rs.v1.beans.pagamenti.converter.PendenzeConverter;
 import net.sf.json.JsonConfig;
 
 
@@ -48,10 +49,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
      }
      
      public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
-    	 return pendenzeIdA2AIdPendenzaGET(user, uriInfo, httpHeaders, idA2A, idPendenza, true);
-     }
-
-    public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean linkListe) {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -84,10 +81,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     }
     
     public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
-    	   return pendenzeGET(user, uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, true);
-    }
-
-    public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, boolean linkListe) {
     	GpContext ctx = null;
     	String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -132,13 +125,13 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Pendenza> results = new ArrayList<it.govpay.core.rs.v1.beans.Pendenza>();
+			List<it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex> results = new ArrayList<it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				Pendenza rsModel = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti(),true);
+				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti(),true);
 				results.add(rsModel);
 			}
 			
-			ListaPendenze response = new ListaPendenze(results, this.getServicePath(uriInfo),
+			ListaPendenzeIndex response = new ListaPendenzeIndex(results, this.getServicePath(uriInfo),
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
@@ -265,13 +258,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		} finally {
 			if(ctx != null) ctx.log();
 		}
-    }
-
-
-
-    public Response pendenzeIdDominioIuvGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
-    	//client
-        return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented [CLIENT]" ),null).build();
     }
 	
 }

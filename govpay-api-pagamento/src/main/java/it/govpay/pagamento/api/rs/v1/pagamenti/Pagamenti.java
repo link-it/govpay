@@ -17,7 +17,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.rs.v1.controllers.base.PagamentiController;
+import it.govpay.rs.v1.controllers.pagamenti.PagamentiController;
 
 
 @Path("/pagamenti")
@@ -38,9 +38,9 @@ public class Pagamenti extends BaseRsServiceV1{
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response pagamentiPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("versioneInterfacciaWISP") String versioneInterfacciaWISP){
+    public Response pagamentiPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale,versioneInterfacciaWISP);
+        return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale);
     }
 
     @GET

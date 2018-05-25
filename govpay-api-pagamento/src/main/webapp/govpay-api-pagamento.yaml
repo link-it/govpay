@@ -14,6 +14,7 @@ tags:
   - name: Pagamenti
     description: Realizzazione e consultazione dei pagamenti delle pendenze
   - name: Pendenze
+
     description: Consultazione delle posizioni debitorie
   - name: Domini
     description: Anagrafica degli Enti Creditori    
@@ -1618,6 +1619,22 @@ components:
           properties:
             tipoEntrata:
               $ref: '#/components/schemas/tipoEntrata'
+    contoAddebito:
+      type: object
+      description: >-
+        Dati necessari alla realizzazione dei pagamenti per Addebito
+        Diretto, se previsto dal profilo del versante.
+      required:
+        - ibanAddebito
+      properties:
+        ibanAddebito:
+          type: string
+          description: Iban di addebito del pagatore.
+          example: IT02L1234512345123456789012
+        bicAddebito:
+          type: string
+          description: Bic della banca di addebito del pagatore.
+          example: MYBICODE
     pagamentoPost: 
       type: object
       required:
@@ -1668,21 +1685,7 @@ components:
           example: >-
             https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
         contoAddebito:
-          type: object
-          description: >-
-            Dati necessari alla realizzazione dei pagamenti per Addebito
-            Diretto, se previsto dal profilo del versante.
-          required:
-            - ibanAddebito
-          properties:
-            ibanAddebito:
-              type: string
-              description: Iban di addebito del pagatore.
-              example: IT02L1234512345123456789012
-            bicAddebito:
-              type: string
-              description: Bic della banca di addebito del pagatore.
-              example: MYBICODE
+          $ref: '#/components/schemas/contoAddebito'
         dataEsecuzionePagamento:
           type: string
           format: date
@@ -1842,21 +1845,7 @@ components:
           example: >-
             https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
         contoAddebito:
-          type: object
-          description: >-
-            Dati necessari alla realizzazione dei pagamenti per Addebito
-            Diretto, se previsto dal profilo del versante.
-          required:
-            - ibanAddebito
-          properties:
-            ibanAddebito:
-              type: string
-              description: Iban di addebito del pagatore.
-              example: IT02L1234512345123456789012
-            bicAddebito:
-              type: string
-              description: Bic della banca di addebito del pagatore.
-              example: MYBICODE
+          $ref: '#/components/schemas/contoAddebito'
         dataEsecuzionePagamento:
           type: string
           format: date
@@ -2106,85 +2095,94 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/pagamento'      
+    vocePendenzaIncassoRef:
+      description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+      type: object
+      required:
+        - codEntrata
+      properties:
+        codEntrata:
+          type: string
+    vocePendenzaIncasso:
+      description: Definisce i dettagli di incasso.
+      type: object
+      required:
+        - ibanAccredito
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        ibanAccredito:
+          type: string
+          example: IT60X0542811101000000123456
+        ibanAppoggio:
+          type: string
+          example: IT60X0542811101000000123456
+        tipoContabilita:
+          description: Tipologia di codifica del capitolo di bilancio
+          type: string
+          enum:
+            - Entrata
+            - Speciale
+            - SIOPE
+            - Altro
+          example: SIOPE
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321
+    vocePendenzaBollo:
+      description: Definisce i dati di un bollo telematico
+      type: object
+      required:
+        - tipoBollo
+        - hashDocumento
+        - provinciaResidenza
+      properties:
+        tipoBollo:
+          description: Tipologia di Bollo digitale
+          type: string
+          enum:
+            - Imposta di bollo
+        hashDocumento:
+          description: Digest in base64 del documento informatico associato alla marca da bollo
+          type: string
+        provinciaResidenza:
+          description: Sigla automobilistica della provincia di residenza del soggetto pagatore
+          type: string
+    vocePendenzaBase:
+      type: object
+      required:
+        - idVocePendenza
+        - importo
+        - descrizione
+        - entrata
+      properties:
+        indice:
+          type: number
+          description: indice di voce all'interno della pendenza
+          example: 1
+        idVocePendenza:
+          type: string
+          description: Identificativo della voce di pedenza nel gestionale proprietario
+          example: abcdef12345_1
+        importo:
+          type: number
+          description: Importo della voce
+          example: 10.01
+        descrizione:
+          type: string
+          description: descrizione della voce di pagamento
+          example: Sanzione CdS n. abc00000
+        datiAllegati:
+          type: string
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
     vocePendenza:
       allOf:
-        - type: object
-          required:
-            - idVocePendenza
-            - importo
-            - descrizione
-          properties:
-            indice:
-              type: number
-              description: indice di voce all'interno della pendenza
-              example: 1
-            idVocePendenza:
-              type: string
-              description: Identificativo della voce di pedenza nel gestionale proprietario
-              example: abcdef12345_1
-            importo:
-              type: number
-              description: Importo della voce
-              example: 10.01
-            descrizione:
-              type: string
-              description: descrizione della voce di pagamento
-              example: Sanzione CdS n. abc00000
-            datiAllegati:
-              type: string
-              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        - $ref: '#/components/schemas/vocePendenzaBase'
         - oneOf:
-            - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
-              type: object
-              required:
-                - codEntrata
-              properties:
-                codEntrata:
-                  type: string
-            - description: Definisce i dettagli di incasso.
-              type: object
-              required:
-                - ibanAccredito
-                - tipoContabilita
-                - codiceContabilita
-              properties:
-                ibanAccredito:
-                  type: string
-                  example: IT60X0542811101000000123456
-                ibanAppoggio:
-                  type: string
-                  example: IT60X0542811101000000123456
-                tipoContabilita:
-                  description: Tipologia di codifica del capitolo di bilancio
-                  type: string
-                  enum:
-                    - Entrata
-                    - Speciale
-                    - SIOPE
-                    - Altro
-                  example: SIOPE
-                codiceContabilita:
-                  description: Codifica del capitolo di bilancio
-                  type: string
-                  example: 3321
-            - description: Definisce i dati di un bollo telematico
-              type: object
-              required:
-                - tipoBollo
-                - hashDocumento
-                - provinciaResidenza
-              properties:
-                tipoBollo:
-                  description: Tipologia di Bollo digitale
-                  type: string
-                  enum:
-                    - Imposta di bollo
-                hashDocumento:
-                  description: Digest in base64 del documento informatico associato alla marca da bollo
-                  type: string
-                provinciaResidenza:
-                  description: Sigla automobilistica della provincia di residenza del soggetto pagatore
-                  type: string
+          - $ref: '#/components/schemas/vocePendenzaIncassoRef'
+          - $ref: '#/components/schemas/vocePendenzaIncasso'
+          - $ref: '#/components/schemas/vocePendenzaBollo'
     statoPendenza:
       example: NON_ESEGUITO
       type: string
