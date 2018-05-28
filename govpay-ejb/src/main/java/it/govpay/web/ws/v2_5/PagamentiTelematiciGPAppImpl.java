@@ -32,7 +32,6 @@ import it.govpay.core.business.model.GeneraIuvDTO;
 import it.govpay.core.business.model.GeneraIuvDTOResponse;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.Gp21Utils;
 import it.govpay.core.utils.Gp23Utils;
 import it.govpay.core.utils.Gp25Utils;
 import it.govpay.core.utils.GpContext;
