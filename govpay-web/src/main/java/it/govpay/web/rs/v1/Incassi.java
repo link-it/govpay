@@ -44,7 +44,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;

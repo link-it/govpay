@@ -164,12 +164,31 @@ public class Incassi extends BasicBD {
 				}
 			}
 			
+			IncassiBD incassiBD = new IncassiBD(this);
+			
+			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
+			IncassoFilter incassoFilter = incassiBD.newFilter();
+			List<String> codDomini = new ArrayList<String>();
+			codDomini.add(richiestaIncasso.getCodDominio());
+			incassoFilter.setCodDomini(codDomini);
+			if(idf != null)
+				incassoFilter.setCausale(idf);
+			else
+				incassoFilter.setCausale(iuv);
+			List<Incasso> findAll = incassiBD.findAll(incassoFilter);
+			if(findAll.size() != 0) {
+				GpThreadLocal.get().log("incasso.causaleGiaIncassata", causale);
+				if(idf != null)
+					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Il flusso di rendicontazione [" + idf + "] indicato in causale risulta gia' incassato");
+				else
+					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Lo iuv [" + iuv + "] indicato in causale risulta gia' incassato");
+			}
+			
 			// OVERRIDE TRN NUOVA GESTIONE
 			richiestaIncasso.setTrn(iuv != null ? iuv : idf);
 			RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
 			
 			// Controllo se il TRN dell'incasso e' gia registrato
-			IncassiBD incassiBD = new IncassiBD(this);
 			try {
 				Incasso incasso = incassiBD.getIncasso(dominio.getCodDominio(), richiestaIncasso.getTrn());
 				
@@ -328,9 +347,9 @@ public class Incassi extends BasicBD {
 			}
 			
 			// Verifica importo pagato con l'incassato
-			if(totalePagato.compareTo(richiestaIncasso.getImporto()) != 0) {
+			if(totalePagato.doubleValue() != richiestaIncasso.getImporto().doubleValue()) {
 				GpThreadLocal.get().log("incasso.importoErrato", totalePagato.doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
-				throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo incassato [" + richiestaIncasso.getImporto() + "] non corriponde con la somma dei pagamenti [" + totalePagato.doubleValue() + "]");
+				throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo incassato [" + richiestaIncasso.getImporto() + "] non corriponde alla somma dei pagamenti [" + totalePagato.doubleValue() + "]");
 			}
 			
 			// Inserisco l'incasso e aggiorno lo stato dei pagamenti
