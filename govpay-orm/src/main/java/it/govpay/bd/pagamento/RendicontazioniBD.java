@@ -27,12 +27,9 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
-import it.govpay.orm.IdPagamento;
 import it.govpay.orm.IdRendicontazione;
 
 public class RendicontazioniBD extends BasicBD {
@@ -65,6 +62,7 @@ public class RendicontazioniBD extends BasicBD {
 			it.govpay.orm.Rendicontazione vo = RendicontazioneConverter.toVO(dto);
 			IdRendicontazione idRendicontazione = new IdRendicontazione();
 			idRendicontazione.setId(dto.getId());
+			idRendicontazione.setIdRendicontazione(dto.getId());
 			this.getRendicontazioneService().update(idRendicontazione, vo);
 			dto.setId(vo.getId());
 		} catch (NotImplementedException e) {

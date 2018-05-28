@@ -40,7 +40,6 @@ import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
-import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -57,15 +56,9 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.VersamentoAnnullatoException;
-import it.govpay.core.exceptions.VersamentoDuplicatoException;
-import it.govpay.core.exceptions.VersamentoScadutoException;
-import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
-import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
@@ -74,7 +67,6 @@ import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 
 public class Incassi extends BasicBD {
@@ -195,6 +187,25 @@ public class Incassi extends BasicBD {
 					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
 				}
 			}
+			
+			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
+			IncassoFilter incassoFilter = incassiBD.newFilter();
+			List<String> codDomini = new ArrayList<String>();
+			codDomini.add(richiestaIncasso.getCodDominio());
+			incassoFilter.setCodDomini(codDomini);
+			if(idf != null)
+				incassoFilter.setCausale(idf);
+			else
+				incassoFilter.setCausale(iuv);
+			List<Incasso> findAll = incassiBD.findAll(incassoFilter);
+			if(findAll.size() != 0) {
+				GpThreadLocal.get().log("incasso.causaleGiaIncassata", causale);
+				if(idf != null)
+					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Il flusso di rendicontazione [" + idf + "] indicato in causale risulta gia' incassato");
+				else
+					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Lo iuv [" + iuv + "] indicato in causale risulta gia' incassato");
+			}
+				
 
 			// Sto selezionando i pagamenti per impostarli come Incassati.
 			this.enableSelectForUpdate();
@@ -321,9 +332,9 @@ public class Incassi extends BasicBD {
 			}
 			
 			// Verifica importo pagato con l'incassato
-			if(totalePagato.compareTo(richiestaIncasso.getImporto()) != 0) {
+			if(totalePagato.doubleValue() != richiestaIncasso.getImporto().doubleValue()) {
 				GpThreadLocal.get().log("incasso.importoErrato", totalePagato.doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
-				throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo incassato [" + richiestaIncasso.getImporto() + "] non corriponde con la somma dei pagamenti [" + totalePagato.doubleValue() + "]");
+				throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo incassato [" + richiestaIncasso.getImporto() + "] non corriponde alla somma dei pagamenti [" + totalePagato.doubleValue() + "]");
 			}
 			
 			// Inserisco l'incasso e aggiorno lo stato dei pagamenti
