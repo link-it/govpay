@@ -35,8 +35,8 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.rs.v1.beans.converter.PendenzeConverter;
+import it.govpay.rs.v1.beans.pagamenti.converter.PagamentiPortaleConverter;
 import net.sf.json.JsonConfig;
 
 

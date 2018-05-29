@@ -204,7 +204,8 @@ public class Iuv extends BasicBD {
 	
 	public void checkIUV(Dominio dominio, String iuvProposto, TipoIUV tipo) throws GovPayException, ServiceException {
 		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode())) {
-			throw new GovPayException(EsitoOperazione.VER_017, iuvProposto);
+//			throw new GovPayException(EsitoOperazione.VER_017, iuvProposto);
+			GpThreadLocal.get().log("iuv.checkIUVNumericoWarn", dominio.getAuxDigit()+"", dominio.getStazione().getApplicationCode()+"",iuvProposto);
 		}
 	}
 	

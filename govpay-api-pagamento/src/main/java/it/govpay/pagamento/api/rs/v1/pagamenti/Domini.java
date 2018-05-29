@@ -15,7 +15,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.rs.v1.controllers.base.DominiController;
+import it.govpay.rs.v1.controllers.pagamenti.DominiController;
 
 
 @Path("/domini")
@@ -51,6 +51,15 @@ public class Domini extends BaseRsServiceV1{
     }
 
     @GET
+    @Path("/{idDominio}/contiAccredito")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioContiAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("ordinamento") String ordinamento){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioContiAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, campi, abilitato, ordinamento);
+    }
+
+    @GET
     @Path("/{idDominio}")
     
     @Produces({ "application/json" })
@@ -60,12 +69,39 @@ public class Domini extends BaseRsServiceV1{
     }
 
     @GET
+    @Path("/{idDominio}/entrate")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioEntrateGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("ordinamento") String ordinamento){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioEntrateGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
+
+    @GET
     @Path("/{idDominio}/unitaOperative")
     
     @Produces({ "application/json" })
     public Response dominiIdDominioUnitaOperativeGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.dominiIdDominioUnitaOperativeGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
+
+    @GET
+    @Path("/{idDominio}/entrate/{idEntrata}")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioEntrateIdEntrataGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idEntrata") String idEntrata){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioEntrateIdEntrataGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idEntrata);
+    }
+
+    @GET
+    @Path("/{idDominio}/contiAccredito/{iban}")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioContiAccreditoIbanGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iban") String iban){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioContiAccreditoIbanGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iban);
     }
 
 }

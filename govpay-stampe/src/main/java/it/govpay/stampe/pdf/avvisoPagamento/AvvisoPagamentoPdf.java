@@ -79,7 +79,7 @@ public class AvvisoPagamentoPdf {
 	}
 
 	public JRDataSource creaXmlDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException {
-		WriteToSerializerType serType = WriteToSerializerType.JAXB;
+		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		input.writeTo(os, serType);
 		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(os.toByteArray()),AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);

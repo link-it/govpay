@@ -1618,6 +1618,22 @@ components:
           properties:
             tipoEntrata:
               $ref: '#/components/schemas/tipoEntrata'
+    contoAddebito:
+      type: object
+      description: >-
+        Dati necessari alla realizzazione dei pagamenti per Addebito
+        Diretto, se previsto dal profilo del versante.
+      required:
+        - iban
+      properties:
+        iban:
+          type: string
+          description: Iban di addebito del pagatore.
+          example: IT02L1234512345123456789012
+        bic:
+          type: string
+          description: Bic della banca di addebito del pagatore.
+          example: MYBICODE
     pagamentoPost: 
       type: object
       required:
@@ -1668,21 +1684,7 @@ components:
           example: >-
             https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
         contoAddebito:
-          type: object
-          description: >-
-            Dati necessari alla realizzazione dei pagamenti per Addebito
-            Diretto, se previsto dal profilo del versante.
-          required:
-            - ibanAddebito
-          properties:
-            ibanAddebito:
-              type: string
-              description: Iban di addebito del pagatore.
-              example: IT02L1234512345123456789012
-            bicAddebito:
-              type: string
-              description: Bic della banca di addebito del pagatore.
-              example: MYBICODE
+          $ref: '#/components/schemas/contoAddebito'
         dataEsecuzionePagamento:
           type: string
           format: date
@@ -1726,6 +1728,15 @@ components:
           type: string
           example: 'f9866575-e255-4d10-9845-57ba88bec136'
           description: Identificativo del pagamento assegnato da GovPay
+        nome:
+          type: string
+          example: 'Immatricolazione AA 2017/2018 ed altre 3 pendenze'
+          description: Identificativo del pagamento assegnato da GovPay
+        dataRichiestaPagamento:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data di richiesta del pagamento
         idSessionePortale:
           type: string
           example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
@@ -1751,21 +1762,7 @@ components:
           example: >-
             https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
         contoAddebito:
-          type: object
-          description: >-
-            Dati necessari alla realizzazione dei pagamenti per Addebito
-            Diretto, se previsto dal profilo del versante.
-          required:
-            - ibanAddebito
-          properties:
-            ibanAddebito:
-              type: string
-              description: Iban di addebito del pagatore.
-              example: IT02L1234512345123456789012
-            bicAddebito:
-              type: string
-              description: Bic della banca di addebito del pagatore.
-              example: MYBICODE
+          $ref: '#/components/schemas/contoAddebito'
         dataEsecuzionePagamento:
           type: string
           format: date
@@ -1817,6 +1814,15 @@ components:
           type: string
           example: 'f9866575-e255-4d10-9845-57ba88bec136'
           description: Identificativo del pagamento assegnato da GovPay
+        nome:
+          type: string
+          example: 'Immatricolazione AA 2017/2018 ed altre 3 pendenze'
+          description: Identificativo del pagamento assegnato da GovPay
+        dataRichiestaPagamento:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data di richiesta del pagamento
         idSessionePortale:
           type: string
           example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
@@ -1842,21 +1848,7 @@ components:
           example: >-
             https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
         contoAddebito:
-          type: object
-          description: >-
-            Dati necessari alla realizzazione dei pagamenti per Addebito
-            Diretto, se previsto dal profilo del versante.
-          required:
-            - ibanAddebito
-          properties:
-            ibanAddebito:
-              type: string
-              description: Iban di addebito del pagatore.
-              example: IT02L1234512345123456789012
-            bicAddebito:
-              type: string
-              description: Bic della banca di addebito del pagatore.
-              example: MYBICODE
+          $ref: '#/components/schemas/contoAddebito'
         dataEsecuzionePagamento:
           type: string
           format: date
@@ -2158,10 +2150,10 @@ components:
                   description: Tipologia di codifica del capitolo di bilancio
                   type: string
                   enum:
-                    - Entrata
-                    - Speciale
+                    - CAPITOLO
+                    - SPECIALE
                     - SIOPE
-                    - Altro
+                    - ALTRO
                   example: SIOPE
                 codiceContabilita:
                   description: Codifica del capitolo di bilancio

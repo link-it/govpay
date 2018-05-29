@@ -33,7 +33,7 @@ public class JsonSerializer extends AbstractSerializer {
 
 	@Override
 	protected WriteToSerializerType getType(){
-		return WriteToSerializerType.JSON;
+		return WriteToSerializerType.JSON_JACKSON;
 	}
 		
 }

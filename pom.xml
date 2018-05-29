@@ -44,11 +44,6 @@
 		<openspcoop2.version>3.0.3-SNAPSHOT</openspcoop2.version>
 		<logger.version>2.6.2</logger.version>
 		<rel-to-parent>.</rel-to-parent>
-		<govpay-api-backoffice-auth>basic</govpay-api-backoffice-auth>
-		<govpay-api-pagamento-auth>basic</govpay-api-pagamento-auth>
-		<govpay-api-pendenze-auth>basic</govpay-api-pendenze-auth>
-		<govpay-api-ragioneria-auth>basic</govpay-api-ragioneria-auth>
-		<govpay-api-pagopa-auth>basic</govpay-api-pagopa-auth>
 	</properties>
 
 	<dependencyManagement>
@@ -69,12 +64,12 @@
 			</dependency>
 
 			<dependency>
-	            <groupId>it.govpay</groupId>
-	            <artifactId>govpay-core-rs</artifactId>
-	            <version>${project.version}</version>
-	            <type>jar</type>
-	            <scope>compile</scope>
-            </dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-core-rs</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
@@ -132,7 +127,7 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-wc</artifactId>
@@ -140,7 +135,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-api-pagamento</artifactId>
@@ -148,7 +143,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-api-pendenze</artifactId>
@@ -156,7 +151,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-api-gestione</artifactId>
@@ -164,7 +159,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-api-ragioneria</artifactId>
@@ -172,7 +167,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-api-backoffice</artifactId>
@@ -180,7 +175,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-web-console</artifactId>
@@ -194,35 +189,35 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>1.7.21</version>
 			</dependency>
-	
+
 			<dependency>
-			    <groupId>org.apache.logging.log4j</groupId>
-			    <artifactId>log4j-core</artifactId>
-			    <version>${logger.version}</version>
-			</dependency>
-				
-			<dependency>
-			    <groupId>org.apache.logging.log4j</groupId>
-			    <artifactId>log4j-api</artifactId>
-			    <version>${logger.version}</version>
-			</dependency>
-				
-			<dependency>
-			    <groupId>org.apache.logging.log4j</groupId>
-			    <artifactId>log4j-jcl</artifactId>
-			    <version>${logger.version}</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>${logger.version}</version>
 			</dependency>
 
 			<dependency>
-			    <groupId>org.apache.logging.log4j</groupId>
-			    <artifactId>log4j-slf4j-impl</artifactId>
-			    <version>${logger.version}</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>${logger.version}</version>
 			</dependency>
 
 			<dependency>
-			    <groupId>org.apache.logging.log4j</groupId>
-			    <artifactId>log4j-1.2-api</artifactId>
-			    <version>${logger.version}</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-jcl</artifactId>
+				<version>${logger.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>${logger.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-1.2-api</artifactId>
+				<version>${logger.version}</version>
 			</dependency>
 
 			<dependency>
@@ -287,57 +282,57 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-mapper-asl</artifactId>
 				<version>1.9.2</version>
 				<scope>provided</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-jackson-provider</artifactId>
 				<version>2.3.2.Final</version>
 				<scope>provided</scope>
 			</dependency>
-			
-							
-		<dependency>
-		    <groupId>io.swagger.core.v3</groupId>
-		    <artifactId>swagger-models</artifactId>
-		    <version>2.0.0-rc4</version>
-		</dependency>
-				
-		<dependency>
-		    <groupId>io.swagger.core.v3</groupId>
-		    <artifactId>swagger-core</artifactId>
-		    <version>2.0.0-rc4</version>
-		</dependency>
-				
-		<dependency>
-		    <groupId>io.swagger</groupId>
-		    <artifactId>swagger-parser</artifactId>
-		    <version>2.0.0-rc1</version>
-		</dependency>
-		<dependency>
-		    <groupId>io.swagger.parser.v3</groupId>
-		    <artifactId>swagger-parser-core</artifactId>
-		    <version>2.0.0-rc3</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>io.swagger.parser.v3</groupId>
-		    <artifactId>swagger-parser-v3</artifactId>
-		    <version>2.0.0-rc3</version>
-		</dependency>
 
-		<dependency>
-		    <groupId>com.github.fge</groupId>
-		    <artifactId>json-schema-validator</artifactId>
-		    <version>2.0.0</version>
-		</dependency>
-			
+
+			<dependency>
+				<groupId>io.swagger.core.v3</groupId>
+				<artifactId>swagger-models</artifactId>
+				<version>2.0.0-rc4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.swagger.core.v3</groupId>
+				<artifactId>swagger-core</artifactId>
+				<version>2.0.0-rc4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-parser</artifactId>
+				<version>2.0.0-rc1</version>
+			</dependency>
+			<dependency>
+				<groupId>io.swagger.parser.v3</groupId>
+				<artifactId>swagger-parser-core</artifactId>
+				<version>2.0.0-rc3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.swagger.parser.v3</groupId>
+				<artifactId>swagger-parser-v3</artifactId>
+				<version>2.0.0-rc3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.github.fge</groupId>
+				<artifactId>json-schema-validator</artifactId>
+				<version>2.2.6</version>
+			</dependency>
+
 
 		</dependencies>
 	</dependencyManagement>
@@ -352,6 +347,24 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>${rel-to-parent}/resources/filters/${env}.filter.properties</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>

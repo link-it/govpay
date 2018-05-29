@@ -12,6 +12,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.PagamentoPortale.VersioneInterfacciaWISP;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.rs.v1.beans.DatiAddebito;
 import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.PagamentoPortale;
@@ -54,12 +55,6 @@ public class PagamentiPortaleConverter {
 
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
 
-		try {
-			VersioneInterfacciaWISP interfacciaWISP = VersioneInterfacciaWISP.toEnum(versioneInterfacciaWISP);
-			pagamentiPortaleDTO.setVersioneInterfacciaWISP(interfacciaWISP != null ? interfacciaWISP : VersioneInterfacciaWISP.WISP_1_3);
-		}catch(Exception e ) {
-			pagamentiPortaleDTO.setVersioneInterfacciaWISP(VersioneInterfacciaWISP.WISP_1_3);
-		}
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
@@ -74,12 +69,6 @@ public class PagamentiPortaleConverter {
 		if(pagamentiPortaleRequest.getContoAddebito() != null) {
 			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getContoAddebito().getBicAddebito());
 			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getContoAddebito().getIbanAddebito());
-		}
-
-		if(pagamentiPortaleRequest.getTokenWISP() != null) {
-			pagamentiPortaleDTO.setIdDominio(pagamentiPortaleRequest.getTokenWISP().getIdDominio());
-			pagamentiPortaleDTO.setKeyPA(pagamentiPortaleRequest.getTokenWISP().getKeyPA());
-			pagamentiPortaleDTO.setKeyWISP(pagamentiPortaleRequest.getTokenWISP().getKeyWISP());
 		}
 
 		if(pagamentiPortaleRequest.getLingua() != null)
@@ -126,7 +115,7 @@ public class PagamentiPortaleConverter {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
 					listRefs.add(versamento);
 				} else {
-					throw new Exception("tipo pendenza non riconosciuto");
+					throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");
 				}
 			}
 

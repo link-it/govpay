@@ -121,15 +121,16 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 
 				if(i == 0) {
+					// la prima pendenza da il nome al pagamento, eventualmente si appende il numero di pendenze ulteriori
+					sbNomeVersamenti.append(versamentoModel.getCodVersamentoEnte());
+					if(pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() > 1) {
+						sbNomeVersamenti.append(" ed altre "+pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size()+" pendenze.");
+					}
+					
 					// 	2. Codice dominio della prima pendenza
 					codDominio = dominio.getCodDominio();
 					// 3. ente creditore
 				}
-
-				if(sbNomeVersamenti.length() >0)
-					sbNomeVersamenti.append("#");
-
-				sbNomeVersamenti.append(versamentoModel.getCodVersamentoEnte());
 
 				versamenti.add(versamentoModel);
 
