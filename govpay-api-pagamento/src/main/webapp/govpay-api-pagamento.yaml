@@ -2150,10 +2150,10 @@ components:
                   description: Tipologia di codifica del capitolo di bilancio
                   type: string
                   enum:
-                    - Entrata
-                    - Speciale
+                    - CAPITOLO
+                    - SPECIALE
                     - SIOPE
-                    - Altro
+                    - ALTRO
                   example: SIOPE
                 codiceContabilita:
                   description: Codifica del capitolo di bilancio

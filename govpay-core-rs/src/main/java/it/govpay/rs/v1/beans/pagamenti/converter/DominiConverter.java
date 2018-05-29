@@ -180,6 +180,7 @@ public class DominiConverter {
 		}
 		rsModel.setIuvPrefix(dominio.getIuvPrefix());
 		rsModel.setStazione(dominio.getStazione().getCodStazione());
+		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
 		rsModel.setAbilitato(dominio.isAbilitato());

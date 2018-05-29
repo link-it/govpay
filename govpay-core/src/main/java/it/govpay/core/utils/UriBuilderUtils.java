@@ -89,6 +89,10 @@ public class UriBuilderUtils {
 		return getFromDomini(idDominio).path("entrate").build().toString();
 	}
 
+	public static String getContiAccreditoByDominio(String idDominio) {
+		return getFromDomini(idDominio).path("contiAccredito").build().toString();
+	}
+
 	public static String getIbanAccreditoByDominio(String idDominio) {
 		return getFromDomini(idDominio).path("ibanAccredito").build().toString();
 	}

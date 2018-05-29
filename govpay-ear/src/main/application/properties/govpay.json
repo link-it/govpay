@@ -3884,7 +3884,7 @@
       },
       "intermediarioPost" : {
         "type" : "object",
-        "required" : [ "denominazione", "pagopaConnector" ],
+        "required" : [ "denominazione", "servizioPagoPa" ],
         "properties" : {
           "denominazione" : {
             "type" : "string",
