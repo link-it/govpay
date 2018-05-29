@@ -36,7 +36,8 @@ public class IncassiException extends BaseException {
 		ERRORE_SINTASSI("021408","Riscontrato errore di sintassi nella richiesta."),
 		DUPLICATO("021409","TRN gia' incassato."),
 		DOMINIO_INESISTENTE("021410","Dominio inesistente."),
-		IBAN_INESISTENTE("021411","Iban inesistente.");
+		CAUSALE_GIA_INCASSATA("021411","Riversamento gia' riconciliato."),
+		IBAN_INESISTENTE("021412","Iban inesistente.");
 		
 		private String faultSubCode;
 		private String description;

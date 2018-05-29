@@ -362,7 +362,7 @@ public class RtUtils extends NdpValidationUtils {
 			// Se gli importi corrispondono e lo stato era da pagare, il singoloVersamento e' eseguito. Altrimenti irregolare.
 			if(insert) {
 				if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
-					singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
+				    singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
 				else {
 					List<String> anomalie = new ArrayList<String>();
 					

@@ -628,7 +628,7 @@ public class JDBCIUVServiceSearchImpl implements IJDBCServiceSearchWithId<IUV, I
 	@Override
 	public long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException, Exception {
 	
-		sqlQueryObject.setSelectDistinct(true);
+		//sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
 		sqlQueryObject.addSelectField(this.getIUVFieldConverter().toTable(IUV.model())+".id");
 		Class<?> objectIdClass = Long.class;
