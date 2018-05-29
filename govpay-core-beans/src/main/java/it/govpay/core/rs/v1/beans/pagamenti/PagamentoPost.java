@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import it.govpay.core.utils.SimpleDateFormatUtils;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "pendenze",
 "urlRitorno",
@@ -349,6 +352,14 @@ public class PagamentoPost extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
+	}
+
 }
 
 

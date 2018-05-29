@@ -100,7 +100,8 @@ public class Versamento extends BasicBD {
 					Iuv iuvBusiness = new Iuv(this);
 					iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 					// imposto iuv calcolato
-					versamento.setIuvVersamento(iuv.getIuv()); 
+					versamento.setIuvVersamento(iuv.getIuv());
+					versamento.setIuvProposto(iuv.getIuv()); 
 					// calcolo il numero avviso
 					it.govpay.core.business.model.Iuv iuv2 = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
 					versamento.setNumeroAvviso(iuv2.getNumeroAvviso());

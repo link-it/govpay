@@ -1,7 +1,9 @@
 package it.govpay.core.business;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -14,6 +16,7 @@ import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
@@ -45,7 +48,6 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -74,7 +76,14 @@ public class Rpt extends BasicBD{
 			ctx.setCorrelationId(codCarrello);
 			ctx.log("pagamento.avviaTransazioneCarrelloWISP20");
 			
-			Date adesso = new Date();
+			GregorianCalendar cal = new GregorianCalendar();
+			cal.set(Calendar.HOUR_OF_DAY, 23);
+			cal.set(Calendar.MINUTE, 59);
+			cal.set(Calendar.SECOND, 59);
+			cal.set(Calendar.MILLISECOND, 999);
+			cal.add(Calendar.DATE, -1);
+			Date adesso = cal.getTime();
+		
 			Stazione stazione = null;
 
 			for(Versamento versamentoModel : versamenti) {

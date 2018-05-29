@@ -112,6 +112,7 @@ public class VersamentoUtils {
 			iuvBD.checkIUV(dominio, iuvFromNumeroAvviso, tipo );
 			
 			model.setIuvVersamento(iuvFromNumeroAvviso);
+			model.setIuvProposto(iuvFromNumeroAvviso); 
 			
 //			if(versamento.getIuv().startsWith("0")) {
 //				model.setIuvVersamento(versamento.getIuv().substring(1));
