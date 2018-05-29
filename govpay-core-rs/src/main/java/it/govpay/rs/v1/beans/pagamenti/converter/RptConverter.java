@@ -19,9 +19,6 @@ public class RptConverter {
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
 
-		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
-		
-//		rsModel.setSegnalazioni(segnalazioni); TODO
 		try {
 			rsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt()));
 			
@@ -45,7 +42,6 @@ public class RptConverter {
 
 		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
 		
-//		rsModel.setSegnalazioni(segnalazioni); TODO
 		try {
 			rsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt()));
 			

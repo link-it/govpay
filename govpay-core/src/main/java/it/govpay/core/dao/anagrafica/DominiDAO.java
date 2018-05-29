@@ -188,7 +188,12 @@ public class DominiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd); 
 
-			GetDominioDTOResponse response = new GetDominioDTOResponse(AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio()));
+			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
+			GetDominioDTOResponse response = new GetDominioDTOResponse(dominio);
+			response.setUo(dominio.getUnitaOperative(bd));
+			response.setIban(dominio.getIbanAccredito(bd));
+			response.setTributi(dominio.getTributi(bd));
+			
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException("Dominio " + getDominioDTO.getCodDominio() + " non censito in Anagrafica");

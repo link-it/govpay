@@ -14,6 +14,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.pagamenti.ContoAddebito;
 import it.govpay.core.rs.v1.beans.pagamenti.Pagamento;
+import it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaPost;
@@ -65,8 +66,8 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 
 		if(pagamentiPortaleRequest.getContoAddebito() != null) {
-			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getContoAddebito().getBicAddebito());
-			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getContoAddebito().getIbanAddebito());
+			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getContoAddebito().getBic());
+			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getContoAddebito().getIban());
 		}
 
 		if(pagamentiPortaleRequest.getLingua() != null)
@@ -143,11 +144,11 @@ public class PagamentiPortaleConverter {
 		rsModel.setId(pagamentoPortale.getIdSessione());
 		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());
 		rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
-//		rsModel.setNome(pagamentoPortale.getNome());
+		rsModel.setNome(pagamentoPortale.getNome());
 		rsModel.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 
-//		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
+		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
 
 		if(jsonObjectPagamentiPortaleRequest.containsKey("contoAddebito")) {
 			rsModel.setContoAddebito((ContoAddebito) ContoAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("contoAddebito"), ContoAddebito.class));
@@ -174,6 +175,57 @@ public class PagamentiPortaleConverter {
 		}
 		if(jsonObjectPagamentiPortaleRequest.containsKey("autenticazioneSoggetto")) {
 			rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.pagamenti.Pagamento.AutenticazioneSoggettoEnum.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto")));
+		}
+
+//		if(pagamentoPortale.getCodPsp() != null &&  pagamentoPortale.getCodCanale() != null && pagamentoPortale.getTipoVersamento() != null)
+//			rsModel.setCanale(UriBuilderUtils.getCanale(pagamentoPortale.getCodPsp(), pagamentoPortale.getCodCanale(), pagamentoPortale.getTipoVersamento()));
+//
+//		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
+//		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
+		if(pagamentoPortale.getImporto() != null) 
+			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+
+		return rsModel;
+	}
+	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
+		PagamentoIndex rsModel = new PagamentoIndex();
+
+		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( pagamentoPortale.getJsonRequest() );  
+
+		rsModel.setId(pagamentoPortale.getIdSessione());
+		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());
+		rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
+		rsModel.setNome(pagamentoPortale.getNome());
+		rsModel.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
+		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
+
+		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
+
+		if(jsonObjectPagamentiPortaleRequest.containsKey("contoAddebito")) {
+			rsModel.setContoAddebito((ContoAddebito) ContoAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("contoAddebito"), ContoAddebito.class));
+		}
+
+		try {
+			if(jsonObjectPagamentiPortaleRequest.containsKey("dataEsecuzionePagamento")) {
+				Object object = jsonObjectPagamentiPortaleRequest.get("dataEsecuzionePagamento");
+				if(object instanceof JSONNull) {
+
+				} else {
+					String dataEsecuzionePagamentoString = jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento");
+					rsModel.setDataEsecuzionePagamento(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataEsecuzionePagamentoString));
+				}
+			}
+		} catch (ParseException e) {
+			throw new ServiceException(e);
+		}
+		if(jsonObjectPagamentiPortaleRequest.containsKey("credenzialiPagatore")) {
+			rsModel.setCredenzialiPagatore(jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore"));
+		}
+		if(jsonObjectPagamentiPortaleRequest.containsKey("soggettoVersante")) {
+			rsModel.setSoggettoVersante(Soggetto.parse(jsonObjectPagamentiPortaleRequest.getString("soggettoVersante")));
+		}
+		if(jsonObjectPagamentiPortaleRequest.containsKey("autenticazioneSoggetto")) {
+			rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto")));
 		}
 
 //		if(pagamentoPortale.getCodPsp() != null &&  pagamentoPortale.getCodCanale() != null && pagamentoPortale.getTipoVersamento() != null)

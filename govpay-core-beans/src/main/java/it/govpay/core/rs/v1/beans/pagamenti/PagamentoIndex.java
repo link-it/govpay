@@ -7,6 +7,8 @@ import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "id",
+"nome",
+"dataRichiestaPagamento",
 "idSessionePortale",
 "idSessionePsp",
 "importo",
@@ -27,6 +29,12 @@ public class PagamentoIndex extends JSONSerializable {
   @JsonProperty("id")
   private String id = null;
   
+  @JsonProperty("nome")
+  private String nome = null;
+  
+  @JsonProperty("dataRichiestaPagamento")
+  private Date dataRichiestaPagamento = null;
+  
   @JsonProperty("idSessionePortale")
   private String idSessionePortale = null;
   
@@ -46,7 +54,7 @@ public class PagamentoIndex extends JSONSerializable {
   private String urlRitorno = null;
   
   @JsonProperty("contoAddebito")
-  private Object contoAddebito = null;
+  private ContoAddebito contoAddebito = null;
   
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
@@ -183,6 +191,38 @@ public class PagamentoIndex extends JSONSerializable {
   }
 
   /**
+   * Identificativo del pagamento assegnato da GovPay
+   **/
+  public PagamentoIndex nome(String nome) {
+    this.nome = nome;
+    return this;
+  }
+
+  @JsonProperty("nome")
+  public String getNome() {
+    return nome;
+  }
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  /**
+   * Data di richiesta del pagamento
+   **/
+  public PagamentoIndex dataRichiestaPagamento(Date dataRichiestaPagamento) {
+    this.dataRichiestaPagamento = dataRichiestaPagamento;
+    return this;
+  }
+
+  @JsonProperty("dataRichiestaPagamento")
+  public Date getDataRichiestaPagamento() {
+    return dataRichiestaPagamento;
+  }
+  public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
+    this.dataRichiestaPagamento = dataRichiestaPagamento;
+  }
+
+  /**
    * Identificativo del pagamento assegnato dal portale chiamante
    **/
   public PagamentoIndex idSessionePortale(String idSessionePortale) {
@@ -278,18 +318,17 @@ public class PagamentoIndex extends JSONSerializable {
   }
 
   /**
-   * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
    **/
-  public PagamentoIndex contoAddebito(Object contoAddebito) {
+  public PagamentoIndex contoAddebito(ContoAddebito contoAddebito) {
     this.contoAddebito = contoAddebito;
     return this;
   }
 
   @JsonProperty("contoAddebito")
-  public Object getContoAddebito() {
+  public ContoAddebito getContoAddebito() {
     return contoAddebito;
   }
-  public void setContoAddebito(Object contoAddebito) {
+  public void setContoAddebito(ContoAddebito contoAddebito) {
     this.contoAddebito = contoAddebito;
   }
 
@@ -414,6 +453,8 @@ public class PagamentoIndex extends JSONSerializable {
     }
     PagamentoIndex pagamentoIndex = (PagamentoIndex) o;
     return Objects.equals(id, pagamentoIndex.id) &&
+        Objects.equals(nome, pagamentoIndex.nome) &&
+        Objects.equals(dataRichiestaPagamento, pagamentoIndex.dataRichiestaPagamento) &&
         Objects.equals(idSessionePortale, pagamentoIndex.idSessionePortale) &&
         Objects.equals(idSessionePsp, pagamentoIndex.idSessionePsp) &&
         Objects.equals(importo, pagamentoIndex.importo) &&
@@ -432,7 +473,7 @@ public class PagamentoIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
   }
 
   public static PagamentoIndex parse(String json) {
@@ -450,6 +491,8 @@ public class PagamentoIndex extends JSONSerializable {
     sb.append("class PagamentoIndex {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
     sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
     sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");

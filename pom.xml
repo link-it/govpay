@@ -41,14 +41,14 @@
 	<properties>
 		<javaVersion>1.8</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.version>3.0.1</openspcoop2.version>
+		<openspcoop2.version>3.0.2</openspcoop2.version>
 		<logger.version>2.6.2</logger.version>
 		<rel-to-parent>.</rel-to-parent>
-		<govpay-api-backoffice-auth>basic</govpay-api-backoffice-auth>
-		<govpay-api-pagamento-auth>basic</govpay-api-pagamento-auth>
-		<govpay-api-pendenze-auth>basic</govpay-api-pendenze-auth>
-		<govpay-api-ragioneria-auth>basic</govpay-api-ragioneria-auth>
-		<govpay-api-pagopa-auth>basic</govpay-api-pagopa-auth>
+		<govpay-api-backoffice-auth>ssl</govpay-api-backoffice-auth>
+		<govpay-api-pagamento-auth>ssl</govpay-api-pagamento-auth>
+		<govpay-api-pendenze-auth>ssl</govpay-api-pendenze-auth>
+		<govpay-api-ragioneria-auth>ssl</govpay-api-ragioneria-auth>
+		<govpay-api-pagopa-auth>ssl</govpay-api-pagopa-auth>
 	</properties>
 
 	<dependencyManagement>
@@ -335,7 +335,7 @@
 		<dependency>
 		    <groupId>com.github.fge</groupId>
 		    <artifactId>json-schema-validator</artifactId>
-		    <version>2.0.0</version>
+		    <version>2.2.6</version>
 		</dependency>
 			
 

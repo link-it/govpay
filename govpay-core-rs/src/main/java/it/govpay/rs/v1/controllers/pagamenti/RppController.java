@@ -240,7 +240,7 @@ public class RppController extends BaseController {
 			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione());
 			
 			PendenzaIndex pendenza = PendenzeConverter.toRsModelIndex(leggiRptDTOResponse.getVersamento(), leggiRptDTOResponse.getUnitaOperativa(), leggiRptDTOResponse.getApplicazione(),
-					leggiRptDTOResponse.getDominio(), leggiRptDTOResponse.getLstSingoliVersamenti(),true);
+					leggiRptDTOResponse.getDominio());
 			
 			response.setPendenza(pendenza);
 			

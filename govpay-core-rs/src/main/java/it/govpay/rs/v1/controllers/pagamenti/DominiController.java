@@ -32,22 +32,19 @@ import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
-import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
-import it.govpay.core.rs.v1.beans.pagamenti.Entrata;
 import it.govpay.core.rs.v1.beans.pagamenti.ContiAccredito;
-import it.govpay.core.rs.v1.beans.pagamenti.ListaDomini;
+import it.govpay.core.rs.v1.beans.pagamenti.ContiAccreditoPost;
+import it.govpay.core.rs.v1.beans.pagamenti.DominioPost;
+import it.govpay.core.rs.v1.beans.pagamenti.Entrata;
+import it.govpay.core.rs.v1.beans.pagamenti.ListaDominiIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaEntrate;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaIbanAccredito;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaUnitaOperative;
 import it.govpay.core.rs.v1.beans.pagamenti.UnitaOperativa;
-import it.govpay.core.rs.v1.beans.pagamenti.DominioPost;
-import it.govpay.core.rs.v1.beans.pagamenti.EntrataPost;
-import it.govpay.core.rs.v1.beans.pagamenti.ContiAccreditoPost;
 import it.govpay.core.rs.v1.beans.pagamenti.UnitaOperativaPost;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -183,12 +180,12 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.pagamenti.Dominio> results = new ArrayList<it.govpay.core.rs.v1.beans.pagamenti.Dominio>();
+			List<it.govpay.core.rs.v1.beans.pagamenti.DominioIndex> results = new ArrayList<it.govpay.core.rs.v1.beans.pagamenti.DominioIndex>();
 			for(it.govpay.bd.model.Dominio dominio: listaDominiDTOResponse.getResults()) {
-				results.add(DominiConverter.toRsModel(dominio));
+				results.add(DominiConverter.toRsModelIndex(dominio));
 			}
 			
-			ListaDomini response = new ListaDomini(results, this.getServicePath(uriInfo),
+			ListaDominiIndex response = new ListaDominiIndex(results, this.getServicePath(uriInfo),
 					listaDominiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
@@ -232,7 +229,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			it.govpay.core.rs.v1.beans.pagamenti.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio());
+			it.govpay.core.rs.v1.beans.pagamenti.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio(), listaDominiDTOResponse.getUo(), listaDominiDTOResponse.getTributi(), listaDominiDTOResponse.getIban());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -475,44 +472,44 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioEntrateIdEntrataPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
-    	String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			jsonConfig.setClassMap(classMap);
-			EntrataPost entrataRequest= (EntrataPost) EntrataPost.parse(jsonRequest, EntrataPost.class, jsonConfig);
-			
-			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			PutEntrataDominioDTOResponse putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
-			
-			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
+//    public Response dominiIdDominioEntrateIdEntrataPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
+//    	String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
+//		GpContext ctx = null;
+//		String transactionId = null;
+//		ByteArrayOutputStream baos= null;
+//		this.log.info("Esecuzione " + methodName + " in corso..."); 
+//		try{
+//			baos = new ByteArrayOutputStream();
+//			// salvo il json ricevuto
+//			BaseRsService.copy(is, baos);
+//			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+//			
+//			ctx =  GpThreadLocal.get();
+//			transactionId = ctx.getTransactionId();
+//			
+//			String jsonRequest = baos.toString();
+//			JsonConfig jsonConfig = new JsonConfig();
+//			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+//			jsonConfig.setClassMap(classMap);
+//			EntrataPost entrataRequest= (EntrataPost) EntrataPost.parse(jsonRequest, EntrataPost.class, jsonConfig);
+//			
+//			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
+//			
+//			DominiDAO dominiDAO = new DominiDAO();
+//			
+//			PutEntrataDominioDTOResponse putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
+//			
+//			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+//			
+//			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+//			this.log.info("Esecuzione " + methodName + " completata."); 
+//			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
+//		}catch (Exception e) {
+//			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+//		} finally {
+//			if(ctx != null) ctx.log();
+//		}
+//    }
 
 
 

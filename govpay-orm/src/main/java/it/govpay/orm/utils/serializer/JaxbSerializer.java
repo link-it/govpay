@@ -39,7 +39,7 @@ public class JaxbSerializer extends AbstractSerializer {
 
 	@Override
 	protected WriteToSerializerType getType(){
-		return WriteToSerializerType.JAXB;
+		return WriteToSerializerType.XML_JAXB;
 	}
 	
 	

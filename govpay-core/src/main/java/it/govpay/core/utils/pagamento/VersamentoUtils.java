@@ -42,6 +42,7 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaPost;
+import it.govpay.core.rs.v1.beans.pagamenti.Segnalazione;
 import it.govpay.core.rs.v1.beans.pagamenti.Soggetto;
 import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza;
 import it.govpay.core.rs.v1.costanti.EsitoOperazione;
@@ -407,13 +408,29 @@ public class VersamentoUtils {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
-//		versamento.setIncasso(pendenza.getIncasso()); //TODO
-//		versamento.setAnomalie(pendenza.getAnomalie()); 
+		
+//		versamento.setAnomalie(marshall(pendenza.getSegnalazioni())); //TODO
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
 
 		return versamento;
+	}
+	
+	private static String marshall(List<Segnalazione> anomalie) {
+		if(anomalie == null || anomalie.size() == 0) return "";
+		StringBuffer sb = new StringBuffer();
+		
+		for(Segnalazione a : anomalie){
+			sb.append(a.getCodice());
+			sb.append("#");
+			sb.append(a.getDescrizione());
+			sb.append("|");
+		}
+		
+		// Elimino l'ultimo pipe
+		String txt = sb.toString();
+		return txt.substring(0, txt.length()-1);
 	}
 	
 	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(it.govpay.core.rs.v1.beans.base.PendenzaPost pendenza, String ida2a, String idPendenza) {
@@ -438,8 +455,7 @@ public class VersamentoUtils {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
-//		versamento.setIncasso(pendenza.getIncasso()); //TODO
-//		versamento.setAnomalie(pendenza.getAnomalie()); 
+//		versamento.setAnomalie(pendenza.getAnomalie());  //TODO
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenza.getVoci());

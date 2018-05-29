@@ -6,8 +6,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import it.govpay.core.rs.v1.serializer.CustomBigDecimalSerializer;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "id",
+"nome",
+"dataRichiestaPagamento",
 "idSessionePortale",
 "idSessionePsp",
 "importo",
@@ -27,6 +32,12 @@ public class Pagamento extends JSONSerializable {
   
   @JsonProperty("id")
   private String id = null;
+  
+  @JsonProperty("nome")
+  private String nome = null;
+  
+  @JsonProperty("dataRichiestaPagamento")
+  private Date dataRichiestaPagamento = null;
   
   @JsonProperty("idSessionePortale")
   private String idSessionePortale = null;
@@ -184,6 +195,38 @@ public class Pagamento extends JSONSerializable {
   }
 
   /**
+   * Identificativo del pagamento assegnato da GovPay
+   **/
+  public Pagamento nome(String nome) {
+    this.nome = nome;
+    return this;
+  }
+
+  @JsonProperty("nome")
+  public String getNome() {
+    return nome;
+  }
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  /**
+   * Data di richiesta del pagamento
+   **/
+  public Pagamento dataRichiestaPagamento(Date dataRichiestaPagamento) {
+    this.dataRichiestaPagamento = dataRichiestaPagamento;
+    return this;
+  }
+
+  @JsonProperty("dataRichiestaPagamento")
+  public Date getDataRichiestaPagamento() {
+    return dataRichiestaPagamento;
+  }
+  public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
+    this.dataRichiestaPagamento = dataRichiestaPagamento;
+  }
+
+  /**
    * Identificativo del pagamento assegnato dal portale chiamante
    **/
   public Pagamento idSessionePortale(String idSessionePortale) {
@@ -224,6 +267,7 @@ public class Pagamento extends JSONSerializable {
   }
 
   @JsonProperty("importo")
+  @JsonSerialize(using = CustomBigDecimalSerializer.class)
   public BigDecimal getImporto() {
     return importo;
   }
@@ -412,6 +456,8 @@ public class Pagamento extends JSONSerializable {
     }
     Pagamento pagamento = (Pagamento) o;
     return Objects.equals(id, pagamento.id) &&
+        Objects.equals(nome, pagamento.nome) &&
+        Objects.equals(dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
         Objects.equals(idSessionePortale, pagamento.idSessionePortale) &&
         Objects.equals(idSessionePsp, pagamento.idSessionePsp) &&
         Objects.equals(importo, pagamento.importo) &&
@@ -430,7 +476,7 @@ public class Pagamento extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
   }
 
   public static Pagamento parse(String json) {
@@ -448,6 +494,8 @@ public class Pagamento extends JSONSerializable {
     sb.append("class Pagamento {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
     sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
     sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");

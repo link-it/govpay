@@ -1,53 +1,52 @@
 package it.govpay.core.rs.v1.beans.pagamenti;
 
 import java.util.Objects;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
  **/@org.codehaus.jackson.annotate.JsonPropertyOrder({
-"ibanAddebito",
-"bicAddebito",
+"iban",
+"bic",
 })
 public class ContoAddebito extends JSONSerializable {
   
-  @JsonProperty("ibanAddebito")
-  private String ibanAddebito = null;
+  @JsonProperty("iban")
+  private String iban = null;
   
-  @JsonProperty("bicAddebito")
-  private String bicAddebito = null;
+  @JsonProperty("bic")
+  private String bic = null;
   
   /**
    * Iban di addebito del pagatore.
    **/
-  public ContoAddebito ibanAddebito(String ibanAddebito) {
-    this.ibanAddebito = ibanAddebito;
+  public ContoAddebito iban(String iban) {
+    this.iban = iban;
     return this;
   }
 
-  @JsonProperty("ibanAddebito")
-  public String getIbanAddebito() {
-    return ibanAddebito;
+  @JsonProperty("iban")
+  public String getIban() {
+    return iban;
   }
-  public void setIbanAddebito(String ibanAddebito) {
-    this.ibanAddebito = ibanAddebito;
+  public void setIban(String iban) {
+    this.iban = iban;
   }
 
   /**
    * Bic della banca di addebito del pagatore.
    **/
-  public ContoAddebito bicAddebito(String bicAddebito) {
-    this.bicAddebito = bicAddebito;
+  public ContoAddebito bic(String bic) {
+    this.bic = bic;
     return this;
   }
 
-  @JsonProperty("bicAddebito")
-  public String getBicAddebito() {
-    return bicAddebito;
+  @JsonProperty("bic")
+  public String getBic() {
+    return bic;
   }
-  public void setBicAddebito(String bicAddebito) {
-    this.bicAddebito = bicAddebito;
+  public void setBic(String bic) {
+    this.bic = bic;
   }
 
   @Override
@@ -59,13 +58,13 @@ public class ContoAddebito extends JSONSerializable {
       return false;
     }
     ContoAddebito contoAddebito = (ContoAddebito) o;
-    return Objects.equals(ibanAddebito, contoAddebito.ibanAddebito) &&
-        Objects.equals(bicAddebito, contoAddebito.bicAddebito);
+    return Objects.equals(iban, contoAddebito.iban) &&
+        Objects.equals(bic, contoAddebito.bic);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ibanAddebito, bicAddebito);
+    return Objects.hash(iban, bic);
   }
 
   public static ContoAddebito parse(String json) {
@@ -82,8 +81,8 @@ public class ContoAddebito extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContoAddebito {\n");
     
-    sb.append("    ibanAddebito: ").append(toIndentedString(ibanAddebito)).append("\n");
-    sb.append("    bicAddebito: ").append(toIndentedString(bicAddebito)).append("\n");
+    sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
+    sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
     sb.append("}");
     return sb.toString();
   }

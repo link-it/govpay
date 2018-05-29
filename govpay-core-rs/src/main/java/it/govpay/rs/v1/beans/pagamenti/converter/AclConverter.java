@@ -80,7 +80,6 @@ public class AclConverter {
 				rsModel.setServizio(ServizioEnum.RENDICONTAZIONI_E_INCASSI);
 				break;
 			case STATISTICHE:
-//				rsModel.setServizio(ServizioEnum.RENDICONTAZIONI_E_INCASSI); //TODO
 				break;
 			default:
 				break;
