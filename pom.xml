@@ -41,7 +41,7 @@
 	<properties>
 		<javaVersion>1.8</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.version>3.0.1</openspcoop2.version>
+		<openspcoop2.version>3.0.3-SNAPSHOT</openspcoop2.version>
 		<logger.version>2.6.2</logger.version>
 		<rel-to-parent>.</rel-to-parent>
 		<govpay-api-backoffice-auth>basic</govpay-api-backoffice-auth>
