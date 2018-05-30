@@ -33,7 +33,7 @@ import it.govpay.rs.v1.beans.converter.RiscossioniConverter;
 public class RiscossioniController extends it.govpay.rs.BaseController {
 
      public RiscossioniController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
      }
 
 

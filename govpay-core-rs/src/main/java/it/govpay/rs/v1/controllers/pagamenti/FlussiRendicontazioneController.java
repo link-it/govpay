@@ -30,7 +30,7 @@ import it.govpay.rs.v1.beans.converter.FlussiRendicontazioneConverter;
 public class FlussiRendicontazioneController extends BaseController {
 
      public FlussiRendicontazioneController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
      }
 
 

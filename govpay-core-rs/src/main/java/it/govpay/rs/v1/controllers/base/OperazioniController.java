@@ -26,7 +26,7 @@ import it.govpay.rs.v1.beans.converter.OperazioniConverter;
 public class OperazioniController extends it.govpay.rs.BaseController {
 
     public OperazioniController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
     }
     
     public Response operazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {

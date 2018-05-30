@@ -71,6 +71,7 @@ public abstract class BaseController {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
 		this.validate = validate;
+		this.name = name;
 	}
 	
 	public void setRequestResponse(HttpServletRequest request,HttpServletResponse response) {

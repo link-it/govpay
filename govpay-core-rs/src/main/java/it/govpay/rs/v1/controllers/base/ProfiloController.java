@@ -23,7 +23,7 @@ import it.govpay.rs.v1.beans.converter.AclConverter;
 public class ProfiloController extends it.govpay.rs.BaseController {
 
      public ProfiloController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
 

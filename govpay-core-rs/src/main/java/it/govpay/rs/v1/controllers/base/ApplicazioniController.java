@@ -39,7 +39,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 	public static final String AUTODETERMINAZIONE_TRIBUTI_LABEL= "Autodeterminazione delle Entrate";
 
      public ApplicazioniController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
 

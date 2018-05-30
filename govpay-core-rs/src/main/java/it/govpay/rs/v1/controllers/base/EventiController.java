@@ -27,7 +27,7 @@ import it.govpay.rs.v1.beans.converter.EventiConverter;
 public class EventiController extends it.govpay.rs.BaseController {
 
      public EventiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
 
