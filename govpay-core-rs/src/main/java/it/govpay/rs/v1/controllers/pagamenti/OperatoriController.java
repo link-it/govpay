@@ -37,7 +37,7 @@ import net.sf.json.JsonConfig;
 public class OperatoriController extends it.govpay.rs.BaseController {
 
      public OperatoriController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
      }
 
 

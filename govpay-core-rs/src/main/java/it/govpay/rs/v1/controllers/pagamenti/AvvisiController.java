@@ -13,7 +13,7 @@ import it.govpay.model.IAutorizzato;
 public class AvvisiController extends it.govpay.rs.BaseController {
 
      public AvvisiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
      }
 
 

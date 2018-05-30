@@ -62,7 +62,7 @@ import net.sf.json.JsonConfig;
 public class DominiController extends it.govpay.rs.BaseController {
 
      public DominiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
 

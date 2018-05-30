@@ -46,7 +46,7 @@ import net.sf.json.JsonConfig;
 public class IntermediariController extends it.govpay.rs.BaseController {
 
      public IntermediariController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
      }
 
 

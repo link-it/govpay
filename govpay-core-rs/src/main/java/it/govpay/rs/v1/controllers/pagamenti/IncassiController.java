@@ -34,7 +34,7 @@ import net.sf.json.JsonConfig;
 public class IncassiController extends it.govpay.rs.BaseController {
 	
 	public IncassiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
 	}
 
 
