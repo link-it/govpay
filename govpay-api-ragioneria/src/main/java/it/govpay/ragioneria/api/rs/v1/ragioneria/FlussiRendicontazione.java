@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -34,7 +35,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
     @GET
     @Path("/{idFlusso}")
     
-    @Produces({ "application/json" })
+    @Produces({ "application/json", MediaType.APPLICATION_XML })
     public Response flussiRendicontazioneIdFlussoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.flussiRendicontazioneIdFlussoGET(this.getUser(), uriInfo, httpHeaders,  idFlusso);

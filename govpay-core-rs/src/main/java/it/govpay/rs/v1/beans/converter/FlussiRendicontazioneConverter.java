@@ -85,8 +85,9 @@ public class FlussiRendicontazioneConverter {
 			}
 			rsModel.setSegnalazioni(segnalazioni);
 		}
-
-		rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null)));
+		
+		if(rendicontazione.getPagamento(null) != null)
+			rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null)));
 		return rsModel;
 	}
 }

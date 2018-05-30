@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -48,6 +49,11 @@ public class FlussiRendicontazioneController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			String accept = null;
+			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
+				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+			}
+			
 			// Parametri - > DTO Input
 			
 			LeggiRendicontazioneDTO leggiRendicontazioneDTO = new LeggiRendicontazioneDTO(user, idFlusso);
@@ -62,12 +68,17 @@ public class FlussiRendicontazioneController extends BaseController {
 					
 			
 			// CONVERT TO JSON DELLA RISPOSTA
-			
-			FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr()); 
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr()); 
+				this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+				this.log.info("Esecuzione " + methodName + " completata."); 
+				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)).type(MediaType.APPLICATION_JSON),transactionId).build();
+			} else {
+				byte[] response = leggiRendicontazioneDTOResponse.getFr().getXml();
+				this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
+				this.log.info("Esecuzione " + methodName + " completata."); 
+				return this.handleResponseOk(Response.status(Status.OK).entity(new String(response)).type(MediaType.APPLICATION_XML),transactionId).build();
+			}
 			
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);

@@ -72,7 +72,7 @@
 							<filtering>true</filtering>
 						</webResource>
 					</webResources>
-					<webXml>src/main/resources/web-${govpay-api-pagamento-auth}.xml</webXml>
+					<webXml>src/main/resources/web-${govpay-api-ragioneria-auth}.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 	                <archive>

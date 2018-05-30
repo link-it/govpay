@@ -114,8 +114,10 @@ public class RendicontazioniDAO extends BaseDAO{
 		if(rendicontazioni != null) {
 			for(Rendicontazione rend: rendicontazioni) {
 				Pagamento pagamento = rend.getPagamento(bd);
-				pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
-				pagamento.getRpt(bd);
+				if(pagamento != null) {
+					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+					pagamento.getRpt(bd);
+				}
 			}
 		}
 		return flussoRendicontazione;
