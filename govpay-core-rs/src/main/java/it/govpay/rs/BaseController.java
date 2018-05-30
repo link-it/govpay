@@ -275,7 +275,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
-		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
+		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(e.getFaultBean()!=null ? CategoriaEnum.PAGOPA:CategoriaEnum.OPERAZIONE);
 		respKo.setCodice(e.getCodEsito().toString());
@@ -293,7 +293,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
-		log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation(), e);
+		log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
 		if(transactionId != null)
 			return Response.seeOther(e.getURILocation()).header(this.transactionIdHeaderName, transactionId).build();
 		else
