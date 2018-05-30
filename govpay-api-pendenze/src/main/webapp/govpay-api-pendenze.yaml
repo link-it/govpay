@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/v1/
+  - url: ${it.govpay.apiurl}/govpay/backend/api/pendenze/rs/v1/
 tags:
   - name: Pendenze
     description: Consultazione delle posizioni debitorie
@@ -62,7 +62,7 @@ paths:
           schema:
             type: string
             format: csv
-            default: +dataRichiestaPagamento
+            default: +dataCaricamento
         - name: idDominio
           in: query
           description: filtro per dominio creditore
@@ -143,6 +143,13 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: stampaAvviso
+          description: Indica se nella risposta deve essere inclusa la stampa dell'avviso in standard AgID
+          required: false
+          schema:
+            type: boolean
+            default: false
       requestBody:
         content:
           application/json:
@@ -729,6 +736,10 @@ components:
         barcode:
           type: string
           description: Testo da codificare nel bar-code dell'avviso   
+        pdf:
+          type: string
+          format: base64
+          description: Stampa pdf dell'avviso
     tassonomiaAvviso:
       description: Macro categoria della pendenza Agid
       type: string
@@ -866,32 +877,6 @@ components:
               type: string
               description: Tipologie di entrata censite per il dominio beneficiario
               example: /domini/01234567890/entrate               
-    dominio:
-      type: object
-      allOf:
-        - type: object
-          required:
-            - idDominio
-          properties:
-            idDominio:
-              type: string
-              description: Codice fiscale del beneficiario
-              example: 01234567890
-        - $ref: '#/components/schemas/dominioPost'
-        - type: object
-          properties:
-            unitaOperative:
-              type: array
-              items:
-                $ref: '#/components/schemas/unitaOperativa'
-            contiAccredito:
-              type: array
-              items:
-                $ref: '#/components/schemas/contiAccredito'
-            entrate:
-              type: array
-              items:
-                $ref: '#/components/schemas/entrata'           
     unitaOperativaPost:
       type: object
       required: 
@@ -969,38 +954,6 @@ components:
               description: Codice fiscale dell'unita
               example: 01234567890
         - $ref: '#/components/schemas/unitaOperativaPost'
-    contiAccreditoPost:
-      type: object
-      properties:
-        bic:
-          type: string
-          example: DABAIE2D
-        postale:
-          type: boolean
-          description: indica se e' un c/c postale
-          example: false
-          default: false
-        mybank:
-          type: boolean
-          description: indica se e' un iban abilitato sul circuito mybank
-          example: false
-          default: false
-        abilitato:
-          type: boolean
-          description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
-          example: true
-          default: true
-    contiAccredito:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - iban
-          properties:
-            iban:
-              type: string
-              example: IT60X0542811101000000123456
-        - $ref: '#/components/schemas/contiAccreditoPost'
     tipoEntrataPost:
       type: object
       required: 
@@ -1039,354 +992,6 @@ components:
               type: string
               example: IMU
         - $ref: '#/components/schemas/tipoEntrataPost'
-    entrataPost:
-      type: object
-      required: 
-        - contoAccredito
-      properties:
-        contoAccredito:
-          type: string
-          example: IT60X0542811101000000123456
-        contoAppoggio:
-          type: string
-          example: IT60X0542811101000000123456
-        tipoContabilita:
-          description: Tipologia di codifica del capitolo di bilancio
-          type: string
-          enum:
-            - Entrata
-            - Speciale
-            - SIOPE
-            - Altro
-          example: SIOPE
-        codiceContabilita:
-          description: Codifica del capitolo di bilancio
-          type: string
-          example: 3321
-        codificaIUV:
-          type: string
-          description: Cifra identificativa negli IUV
-          example: 01
-        abilitato:
-          type: boolean
-          description: Indicazione l'entrata e' abilitata
-          example: true
-          default: true
-    entrata:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - idEntrata
-          properties:
-            idEntrata:
-              type: string
-              example: IMU
-        - $ref: '#/components/schemas/entrataPost'
-        - type: object
-          required:
-           - tipoEntrata
-          properties:
-            tipoEntrata:
-              $ref: '#/components/schemas/tipoEntrata'
-    pagamentoPost: 
-      type: object
-      required:
-        - pendenze
-      properties:
-        pendenze:
-          type: array
-          description: pendenze o riferimenti alle pendenze oggetto del pagamento
-          items:
-            anyOf:
-              - type: object
-                required:
-                  - idA2A
-                  - idPendenza
-                properties:
-                  idA2A:
-                    type: string
-                    description: >-
-                      Identificativo del gestionale responsabile della
-                      pendenza
-                    example: A2A_12345
-                  idPendenza:
-                    type: string
-                    description: >-
-                      Identificativo della pendenza nel gestionale
-                      responsabile
-                    example: abcdef12345
-              - type: object
-                required:
-                  - idDominio
-                  - numeroAvviso
-                properties:
-                  idDominio:
-                    type: string
-                    description: Codice fiscale dell'ente creditore
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: >-
-                      Numero avviso della pendenza, assegnato se
-                      pagabile da psp
-                    example: 123456789012345678
-              - $ref: '#/components/schemas/pendenzaPost'
-        urlRitorno:
-          type: string
-          description: >-
-            url di ritorno al portale al termine della sessione di pagamento
-          example: >-
-            https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
-        contoAddebito:
-          type: object
-          description: >-
-            Dati necessari alla realizzazione dei pagamenti per Addebito
-            Diretto, se previsto dal profilo del versante.
-          required:
-            - ibanAddebito
-          properties:
-            ibanAddebito:
-              type: string
-              description: Iban di addebito del pagatore.
-              example: IT02L1234512345123456789012
-            bicAddebito:
-              type: string
-              description: Bic della banca di addebito del pagatore.
-              example: MYBICODE
-        dataEsecuzionePagamento:
-          type: string
-          format: date
-          example: '2018-12-31'
-          description: >-
-            data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
-        credenzialiPagatore:
-          type: string
-          description: >-
-            Eventuali credenziali richieste dal PSP necessarie per
-            completare l'operazione (ad esempio un codice bilaterale
-            utilizzabile una sola volta).
-        soggettoVersante:
-          $ref: '#/components/schemas/soggetto'
-        autenticazioneSoggetto:
-          type: string
-          enum:
-            - CNS
-            - USR
-            - OTH
-            - N/A
-          description: modalita' di autenticazione del soggetto versante
-        lingua:
-          type: string
-          description: Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
-          enum:
-            - IT
-            - EN
-            - FR
-            - DE
-            - SL
-          default: IT
-          example: IT  
-    pagamentoIndex:
-      type: object
-      required:
-        - id
-        - stato
-      properties:
-        id:
-          type: string
-          example: 'f9866575-e255-4d10-9845-57ba88bec136'
-          description: Identificativo del pagamento assegnato da GovPay
-        idSessionePortale:
-          type: string
-          example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
-          description: Identificativo del pagamento assegnato dal portale chiamante
-        idSessionePsp:
-          type: string
-          example: '7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
-          description: Identificativo del pagamento assegnato dal psp utilizzato
-        importo:
-          type: number
-          description: >-
-            Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
-        stato:
-          $ref: '#/components/schemas/statoPagamento'
-        pspRedirectUrl:
-          type: string
-          example: 'https://www.psp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
-          description: Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
-        urlRitorno:
-          type: string
-          description: >-
-            url di ritorno al portale al termine della sessione di pagamento
-          example: >-
-            https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
-        contoAddebito:
-          type: object
-          description: >-
-            Dati necessari alla realizzazione dei pagamenti per Addebito
-            Diretto, se previsto dal profilo del versante.
-          required:
-            - ibanAddebito
-          properties:
-            ibanAddebito:
-              type: string
-              description: Iban di addebito del pagatore.
-              example: IT02L1234512345123456789012
-            bicAddebito:
-              type: string
-              description: Bic della banca di addebito del pagatore.
-              example: MYBICODE
-        dataEsecuzionePagamento:
-          type: string
-          format: date
-          example: '2018-12-31'
-          description: >-
-            data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
-        credenzialiPagatore:
-          type: string
-          description: >-
-            Eventuali credenziali richieste dal PSP necessarie per
-            completare l'operazione (ad esempio un codice bilaterale
-            utilizzabile una sola volta).
-        soggettoVersante:
-          $ref: '#/components/schemas/soggetto'
-        autenticazioneSoggetto:
-          type: string
-          enum:
-            - CNS
-            - USR
-            - OTH
-            - N/A
-          description: modalita' di autenticazione del soggetto versante
-        lingua:
-          type: string
-          description: Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
-          enum:
-            - IT
-            - EN
-            - FR
-            - DE
-            - SL
-          default: IT
-          example: IT                
-        pendenze:
-          type: string
-          description: Url per le pendenze oggetto del Pagamento
-          example: '/pendenze?idPagamento=f9866575-e255-4d10-9845-57ba88bec136'  
-        rpp:
-          type: string
-          description: Url per le richieste di pagamento oggetto del Pagamento
-          example: '/rpp?idPagamento=f9866575-e255-4d10-9845-57ba88bec136'
-    pagamento:
-      type: object
-      required:
-        - id
-        - stato
-      properties:
-        id:
-          type: string
-          example: 'f9866575-e255-4d10-9845-57ba88bec136'
-          description: Identificativo del pagamento assegnato da GovPay
-        idSessionePortale:
-          type: string
-          example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
-          description: Identificativo del pagamento assegnato dal portale chiamante
-        idSessionePsp:
-          type: string
-          example: '7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
-          description: Identificativo del pagamento assegnato dal psp utilizzato
-        importo:
-          type: number
-          description: >-
-            Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
-        stato:
-          $ref: '#/components/schemas/statoPagamento'
-        pspRedirectUrl:
-          type: string
-          example: 'https://www.psp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
-          description: Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
-        urlRitorno:
-          type: string
-          description: >-
-            url di ritorno al portale al termine della sessione di pagamento
-          example: >-
-            https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
-        contoAddebito:
-          type: object
-          description: >-
-            Dati necessari alla realizzazione dei pagamenti per Addebito
-            Diretto, se previsto dal profilo del versante.
-          required:
-            - ibanAddebito
-          properties:
-            ibanAddebito:
-              type: string
-              description: Iban di addebito del pagatore.
-              example: IT02L1234512345123456789012
-            bicAddebito:
-              type: string
-              description: Bic della banca di addebito del pagatore.
-              example: MYBICODE
-        dataEsecuzionePagamento:
-          type: string
-          format: date
-          example: '2018-12-31'
-          description: >-
-            data in cui si richiede che venga effettuato il pagamento, se diversa dalla data corrente.
-        credenzialiPagatore:
-          type: string
-          description: >-
-            Eventuali credenziali richieste dal PSP necessarie per
-            completare l'operazione (ad esempio un codice bilaterale
-            utilizzabile una sola volta).
-        soggettoVersante:
-          $ref: '#/components/schemas/soggetto'
-        autenticazioneSoggetto:
-          type: string
-          enum:
-            - CNS
-            - USR
-            - OTH
-            - N/A
-          description: modalita' di autenticazione del soggetto versante
-        lingua:
-          type: string
-          description: Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
-          enum:
-            - IT
-            - EN
-            - FR
-            - DE
-            - SL
-          default: IT
-          example: IT                
-        pendenze:
-          type: array
-          items: 
-            $ref: '#/components/schemas/pendenzaIndex'
-        rpp:
-          type: array
-          items: 
-            $ref: '#/components/schemas/rppIndex'
-    statoPagamento:
-      type: string
-      example: ESEGUITO
-      enum:
-        - IN_CORSO
-        - ESEGUITO
-        - NON_ESEGUITO
-        - ESEGUITO_PARZIALE
-        - ANNULLATO
-        - FALLITO
-      description: > 
-        Stato del pagamento
-         * IN_CORSO: Pagamento in corso
-         * ANNULLATO: Pagamento annullato dall'utente o scaduto per timeout
-         * FALLITO: Pagamento non perfezionato per errori della piattaforma
-         * ESEGUITO: Pagamento concluso con successo
-         * NON_ESEGUITO: Processo concluso senza il perfezionamento del pagamento
-         * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito
     pendenzaBase:
       type: object
       required:
@@ -1470,22 +1075,6 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/vocePendenza'
-    pendenzaPost:
-      allOf:
-        - type: object
-          required:
-            - idA2A
-            - idPendenza
-          properties:
-            idA2A:
-              type: string
-              description: Identificativo del gestionale responsabile della pendenza
-              example: A2A_12345
-            idPendenza:
-              type: string
-              description: Identificativo della pendenza nel gestionale responsabile
-              example: abcdef12345
-        - $ref: '#/components/schemas/pendenzaPut'        
     pendenzaIndex:
       type: object
       allOf:
@@ -1524,10 +1113,6 @@ components:
               type: string
               description: Url per l'elenco delle rpp emesse per la pendenza
               example: '/rpp?idPendenza=idA2A=A2A-12345&abcdef12345'
-            pagamenti:
-              type: string
-              description: Url per l'elenco dei pagamenti da portale comprensivi della pendenza
-              example: '/pagamenti?idA2A=A2A-12345&idPendenza=abcdef12345'  
     pendenza:
       type: object
       allOf:
@@ -1572,11 +1157,7 @@ components:
             rpp:
               type: array
               items:
-                $ref: '#/components/schemas/rpp'
-            pagamenti:
-              type: array
-              items:
-                $ref: '#/components/schemas/pagamento'      
+                $ref: '#/components/schemas/rppIndex'
     vocePendenza:
       allOf:
         - type: object
