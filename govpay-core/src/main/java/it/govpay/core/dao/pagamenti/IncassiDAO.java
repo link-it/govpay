@@ -18,6 +18,7 @@ import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.IncassoNonTrovatoException;
 import it.govpay.core.exceptions.IncassiException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
@@ -64,7 +65,7 @@ public class IncassiDAO extends BaseDAO{
 		}
 	}
 
-	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws IncassoNonTrovatoException, NotAuthorizedException, ServiceException{
+	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws IncassoNonTrovatoException, NotAuthorizedException, ServiceException, NotAuthenticatedException{
 
 		LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
 
@@ -72,6 +73,8 @@ public class IncassiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
+			
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			response = incassi.leggiIncasso(leggiIncassoDTO);
 			List<Pagamento> pagamenti = response.getIncasso().getPagamenti(bd);
@@ -104,9 +107,8 @@ public class IncassiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
+			this.autorizzaRichiesta(richiestaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.SCRITTURA);
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-
 			Applicazione applicazione = this.getApplicazioneFromUser(richiestaIncassoDTO.getUser(), bd); 
 			richiestaIncassoDTO.setApplicazione(applicazione);
 

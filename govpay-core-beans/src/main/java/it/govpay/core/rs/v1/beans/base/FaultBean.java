@@ -2,14 +2,15 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "categoria",
 "codice",
 "descrizione",
 "dettaglio",
 })
-public class FaultBean extends it.govpay.core.rs.v1.beans.JSONSerializable {
+public class FaultBean extends JSONSerializable {
   
     
   /**
@@ -23,10 +24,7 @@ public class FaultBean extends it.govpay.core.rs.v1.beans.JSONSerializable {
     AUTORIZZAZIONE("AUTORIZZAZIONE"),
     
             
-    SINTASSI("SINTASSI"),
-    
-    
-    SEMANTICA("SEMANTICA"),
+    RICHIESTA("RICHIESTA"),
     
             
     OPERAZIONE("OPERAZIONE"),
@@ -47,7 +45,7 @@ public class FaultBean extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
 
     @Override
-    @JsonValue
+    @org.codehaus.jackson.annotate.JsonValue
     public String toString() {
       return String.valueOf(value);
     }

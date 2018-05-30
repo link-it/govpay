@@ -17,6 +17,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.rs.v1.beans.FlussoRendicontazione;
 import it.govpay.core.rs.v1.beans.ListaFlussiRendicontazione;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -29,7 +30,7 @@ import it.govpay.rs.v1.beans.converter.FlussiRendicontazioneConverter;
 public class FlussiRendicontazioneController extends BaseController {
 
      public FlussiRendicontazioneController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
      }
 
 

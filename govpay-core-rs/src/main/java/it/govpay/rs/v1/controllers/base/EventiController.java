@@ -16,6 +16,7 @@ import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaEventi;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -26,7 +27,7 @@ import it.govpay.rs.v1.beans.converter.EventiConverter;
 public class EventiController extends it.govpay.rs.BaseController {
 
      public EventiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
      }
 
 

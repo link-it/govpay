@@ -17,6 +17,7 @@ import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaOperazioni;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -25,7 +26,7 @@ import it.govpay.rs.v1.beans.converter.OperazioniConverter;
 public class OperazioniController extends it.govpay.rs.BaseController {
 
     public OperazioniController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
     }
     
     public Response operazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {

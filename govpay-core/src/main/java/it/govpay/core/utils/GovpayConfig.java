@@ -45,7 +45,10 @@ public class GovpayConfig {
 	}
 
 	public static final String PROPERTIES_FILE = "/govpay.properties";
-	public static final String GOVPAY_OPEN_API_FILE = "/govpay.json";
+	public static final String GOVPAY_BACKOFFICE_OPEN_API_FILE = "/govpay.json";
+	public static final String GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME = "back_office";
+	public static final String GOVPAY_PAGAMENTI_OPEN_API_FILE = "/govpay-api-pagamento.yaml";
+	public static final String GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME = "pagamenti";
 	public static final String MSG_DIAGNOSTICI_PROPERTIES_FILE = "/msgDiagnostici.properties";
 	public static final String LOG4J2_XML_FILE = "/log4j2.xml";
 

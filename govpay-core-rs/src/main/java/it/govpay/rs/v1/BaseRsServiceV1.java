@@ -19,6 +19,9 @@
  */
 package it.govpay.rs.v1;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
@@ -36,30 +39,33 @@ import it.govpay.rs.BaseRsService;
 
 public class BaseRsServiceV1 extends BaseRsService {
 	
-	public static Validator validator;
-	private static boolean validatorInitialized = false;
+	public static Map<String, Validator> validatorMap;
 
-	public static synchronized void initValidator(Logger log, byte[] swaggerBackOffice) throws Exception{
-		log.info("Init modulo di validazione in corso...");
-		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && !validatorInitialized) {
-			try {
-				IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
+	public static synchronized void initValidator(Logger log, byte[] swaggerBackOffice, String name) throws Exception{
+		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
+			if(validatorMap == null)
+				validatorMap = new HashMap<String, Validator>();
+			
+			if(!validatorMap.containsKey(name)) {
+				try {
+					IApiReader apiReader = ApiFactory.newApiReader(ApiFormats.OPEN_API_3);
 
-				apiReader.init(log, swaggerBackOffice, new ApiReaderConfig());
-				Api api = apiReader.read();
-				
-				validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
-				OpenapiApiValidatorConfig config = new OpenapiApiValidatorConfig();
-				config.setJsonValidatorAPI(ApiName.FGE);
-				Logger logger = LoggerWrapperFactory.getLogger(BaseRsService.class);
-				validator.init(logger, api, config);
-				validatorInitialized = true;
-			} catch(Throwable e) {
-				log.error("Errore durante l'init del modulo di validazione: " + e.getMessage(), e);
-				throw e;
+					apiReader.init(log, swaggerBackOffice, new ApiReaderConfig());
+					Api api = apiReader.read();
+					
+					Validator validator = (Validator) ApiFactory.newApiValidator(ApiFormats.OPEN_API_3);
+					OpenapiApiValidatorConfig config = new OpenapiApiValidatorConfig();
+					config.setJsonValidatorAPI(ApiName.NETWORK_NT);
+					Logger logger = LoggerWrapperFactory.getLogger(BaseRsService.class);
+					validator.init(logger, api, config);
+					validatorMap.put(name, validator);
+					
+				} catch(Throwable e) {
+					log.error("Errore durante l'init del modulo di validazione: " + e.getMessage(), e);
+					throw e;
+				}
 			}
 		}
-		log.info("Init modulo di validazione completato.");
 	}
 	
 	public BaseRsServiceV1(String nomeServizio) throws ServiceException {
@@ -71,7 +77,4 @@ public class BaseRsServiceV1 extends BaseRsService {
 		return 1;
 	}
 
-	public static boolean isInitialized() {
-		return BaseRsServiceV1.validatorInitialized;
-	}
 }

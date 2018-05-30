@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.rs.v1.beans.ListaAcl;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl;
@@ -22,7 +23,7 @@ import it.govpay.rs.v1.beans.converter.AclConverter;
 public class ProfiloController extends it.govpay.rs.BaseController {
 
      public ProfiloController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
      }
 
 

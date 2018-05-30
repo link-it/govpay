@@ -25,6 +25,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaRpp;
 import it.govpay.core.rs.v1.beans.Pendenza;
 import it.govpay.core.rs.v1.beans.Rpp;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
@@ -40,7 +41,7 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 public class RppController extends BaseController {
 
 	public RppController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
 	}
 
 	public Response rppGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {

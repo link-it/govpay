@@ -2,6 +2,8 @@ package it.govpay.pendenze.api.listener;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletContextEvent;
@@ -38,11 +40,18 @@ public class InitListener implements ServletContextListener{
 		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
 		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
 		GpContext ctx = StartupUtils.startup(log, warName, govpayVersion, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
-		
+
 		try {
 			log = LoggerWrapperFactory.getLogger("boot");	
-			InputStream govpaySchemaIS = InitListener.class.getResourceAsStream(GovpayConfig.GOVPAY_OPEN_API_FILE);
-			StartupUtils.startupServices(log, warName, govpayVersion, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance(), govpaySchemaIS);
+			StartupUtils.startupServices(log, warName, govpayVersion, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
+			
+			Map<String, String> map = new HashMap<String, String>();
+			map.put(GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
+			map.put(GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+			
+			for(String k : map.keySet()) {
+				StartupUtils.initValidator(log, warName, govpayVersion, commit, ctx, k, InitListener.class.getResourceAsStream(map.get(k)));				
+			}
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);
 			ctx.log();

@@ -60,13 +60,14 @@ public abstract class BaseController {
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 	private boolean validate;
+	private String name;
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
 
-	public BaseController(String nomeServizio, Logger log) {
-		this(nomeServizio, log, true);
+	public BaseController(String nomeServizio, Logger log, String name) {
+		this(nomeServizio, log, name, true);
 	}
 
-	public BaseController(String nomeServizio, Logger log, boolean validate) {
+	public BaseController(String nomeServizio, Logger log, String name, boolean validate) {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
 		this.validate = validate;
@@ -166,7 +167,8 @@ public abstract class BaseController {
 				httpEntity.setContent(new String(baos));
 				httpEntity.setContentType(this.request.getContentType());
 			}
-			BaseRsServiceV1.validator.validate(httpEntity);
+			
+			BaseRsServiceV1.validatorMap.get(name).validate(httpEntity);
 		} catch (ProcessingException | ValidatorException | URISyntaxException e) {
 			this.log.error("Errore di validazione di richiesta: " + e.getMessage(), e);
 			throw new RequestValidationException(e.getMessage());
@@ -278,9 +280,10 @@ public abstract class BaseController {
 		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(e.getFaultBean()!=null ? CategoriaEnum.PAGOPA:CategoriaEnum.OPERAZIONE);
+		respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
 		respKo.setCodice(e.getCodEsito().toString());
-		respKo.setDescrizione(e.getMessage());
-		respKo.setDettaglio(e.getDescrizioneEsito());
+		respKo.setDettaglio(e.getMessage());
+		respKo.setDescrizione(e.getDescrizioneEsito());
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.INTERNAL_SERVER_ERROR.getStatusCode());
 		}catch(Exception e1) {

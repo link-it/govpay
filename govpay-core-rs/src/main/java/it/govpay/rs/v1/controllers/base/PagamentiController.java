@@ -28,6 +28,7 @@ import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.Pendenza;
 import it.govpay.core.rs.v1.beans.Rpp;
 import it.govpay.core.rs.v1.beans.base.PagamentoPost;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -42,7 +43,7 @@ import net.sf.json.JsonConfig;
 public class PagamentiController extends it.govpay.rs.BaseController {
 
      public PagamentiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
      }
 
 

@@ -77,10 +77,11 @@
 		    <groupId>io.swagger.parser.v3</groupId>
 		    <artifactId>swagger-parser-v3</artifactId>
 		</dependency>
-
+	
 		<dependency>
-		    <groupId>com.github.fge</groupId>
+		    <groupId>com.networknt</groupId>
 		    <artifactId>json-schema-validator</artifactId>
+		    <version>0.1.11</version>
 		</dependency>
 
 		

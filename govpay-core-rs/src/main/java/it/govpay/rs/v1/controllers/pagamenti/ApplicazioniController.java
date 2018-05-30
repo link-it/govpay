@@ -23,6 +23,7 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.rs.v1.beans.Applicazione;
 import it.govpay.core.rs.v1.beans.ListaApplicazioni;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -38,7 +39,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 	public static final String AUTODETERMINAZIONE_TRIBUTI_LABEL= "Autodeterminazione delle Entrate";
 
      public ApplicazioniController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
      }
 
 

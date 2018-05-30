@@ -21,6 +21,7 @@ import it.govpay.core.rs.v1.beans.ListaRiscossioni;
 import it.govpay.core.rs.v1.beans.Riscossione;
 import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
 import it.govpay.core.rs.v1.beans.base.TipoRiscossione;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -32,7 +33,7 @@ import it.govpay.rs.v1.beans.converter.RiscossioniConverter;
 public class RiscossioniController extends it.govpay.rs.BaseController {
 
      public RiscossioniController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
      }
 
 

@@ -21,6 +21,7 @@ import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.rs.v1.beans.Incasso;
 import it.govpay.core.rs.v1.beans.IncassoPost;
 import it.govpay.core.rs.v1.beans.ListaIncassiIndex;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -33,7 +34,7 @@ import net.sf.json.JsonConfig;
 public class IncassiController extends it.govpay.rs.BaseController {
 	
 	public IncassiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
 	}
 
 

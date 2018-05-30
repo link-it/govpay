@@ -26,6 +26,7 @@ import it.govpay.core.rs.v1.beans.pagamenti.ListaRppIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.Rpp;
 import it.govpay.core.rs.v1.beans.pagamenti.RppIndex;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
@@ -41,7 +42,7 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 public class RppController extends BaseController {
 
 	public RppController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
 	}
 
 	public Response rppGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {

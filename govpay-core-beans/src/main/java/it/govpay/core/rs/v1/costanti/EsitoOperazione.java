@@ -247,6 +247,11 @@ public enum EsitoOperazione {
      * 
      */
     PAG_011,
+    /**
+     * Pagamento con data validita decorsa
+     * 
+     */
+    PAG_012,
 
     /**
      * Portale inesistente

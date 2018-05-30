@@ -49,6 +49,7 @@ import it.govpay.core.rs.v1.beans.base.DominioPost;
 import it.govpay.core.rs.v1.beans.base.EntrataPost;
 import it.govpay.core.rs.v1.beans.base.IbanAccreditoPost;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativaPost;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -61,7 +62,7 @@ import net.sf.json.JsonConfig;
 public class DominiController extends it.govpay.rs.BaseController {
 
      public DominiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
      }
 
 

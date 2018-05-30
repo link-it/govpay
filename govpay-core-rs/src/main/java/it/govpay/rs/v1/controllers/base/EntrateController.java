@@ -22,6 +22,7 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaTipiEntrata;
 import it.govpay.core.rs.v1.beans.TipoEntrata;
 import it.govpay.core.rs.v1.beans.base.TipoEntrataPost;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -34,7 +35,7 @@ import net.sf.json.JsonConfig;
 public class EntrateController extends it.govpay.rs.BaseController {
 
      public EntrateController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
      }
 
 

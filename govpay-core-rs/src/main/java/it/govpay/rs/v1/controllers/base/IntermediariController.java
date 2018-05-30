@@ -32,6 +32,7 @@ import it.govpay.core.rs.v1.beans.ListaStazioni;
 import it.govpay.core.rs.v1.beans.Stazione;
 import it.govpay.core.rs.v1.beans.base.IntermediarioPost;
 import it.govpay.core.rs.v1.beans.base.StazionePost;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
@@ -45,7 +46,7 @@ import net.sf.json.JsonConfig;
 public class IntermediariController extends it.govpay.rs.BaseController {
 
      public IntermediariController(String nomeServizio,Logger log) {
-		super(nomeServizio,log);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
      }
 
 

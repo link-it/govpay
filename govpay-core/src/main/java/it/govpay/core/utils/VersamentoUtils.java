@@ -70,10 +70,7 @@ public class VersamentoUtils {
     public final static QName _VersamentoKeyBundlekey_QNAME = new QName("", "bundlekey");
     public final static QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
 
-	public static void validazioneSemantica(Versamento versamento, boolean generaIuv, BasicBD bd) throws GovPayException, ServiceException {
-		if(generaIuv && versamento.getSingoliVersamenti(bd).size() != 1) {
-			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte());
-		}
+    public static void validazioneSemantica(Versamento versamento, boolean generaIuv, BasicBD bd) throws GovPayException, ServiceException {
 		
 		BigDecimal somma = BigDecimal.ZERO;
 		List<String> codSingoliVersamenti = new ArrayList<String>();

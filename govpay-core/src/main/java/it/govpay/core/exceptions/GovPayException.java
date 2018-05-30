@@ -150,11 +150,12 @@ public class GovPayException extends Exception {
 		case PAG_004: return "Il tipo di pagamento Addebito Diretto richiede di specificare un Iban di Addebito";
 		case PAG_005: return "Il tipo di pagamento On-line Banking e-Payment (OBEP) consente il pagamento di versamenti con al piu' un singolo versamento";
 		case PAG_006: return "Il versamento e' in uno stato che non consente il pagamento";
-		case PAG_007: return "Il versamento e' scaduto";
+		case PAG_007: return "Richiesto pagamento di una pendenza [Applicazione:" + params[0] + " IdPendenza:"+ params[1] +" ] con data scadenza decorsa il "+ params[2]+".";
 		case PAG_008: return "Transazione di pagamento inesistente"; 
 		case PAG_009: return "Pagamento con Identificativo Univoco di Riscossione (" + params[0] + ") e' gia' stato stornato."; 
 		case PAG_010: return "Richiesta di storno inesistente."; 
 		case PAG_011: return "Nessun pagamento da stornare."; 
+		case PAG_012: return "Richiesto pagamento di una pendenza [Applicazione:" + params[0] + " IdPendenza:"+ params[1] +" ] con data validita' decorsa il "+ params[2]+".";
 		case PRT_000: return "Portale (" + params[0] + ") inesistente";	
 		case PRT_001: return "Portale (" + params[0] + ") disabilitato";
 		case PRT_002: return "Portale autenticato (" + params[0] + ") diverso dal chiamante (" + params[1] + ")";
@@ -184,7 +185,7 @@ public class GovPayException extends Exception {
 		case VER_011: return "La verifica del versamento ha dato esito PAA_PAGAMENTO_SCONOSCIUTO";
 		case VER_012: return "La verifica del versamento ha dato esito PAA_PAGAMENTO_DUPLICATO";
 		case VER_013: return "La verifica del versamento ha dato esito PAA_PAGAMENTO_ANNULLATO";
-		case VER_014: return "La verifica del versamento e' fallita";
+		case VER_014: return "La richiesta di verifica pendenza [Applicazione:" + params[0] + " IdPendenza:"+ params[1] +" ] per decorrenza della data validita' e' fallita: "+ params[2];
 		case VER_015: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") esistente e non aggiornabile se AggiornaSeEsiste impostato a false";
 		case VER_016: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' in uno stato che non consente la notifica di pagamento (" + params[2] + ")";
 		case VER_017: return "Lo IUV (" + params[0] + ") non e' conforme alle specifiche agid";
@@ -258,6 +259,7 @@ public class GovPayException extends Exception {
 		case PAG_009: return "Richiesta non valida"; 
 		case PAG_010: return "Richiesta non valida"; 
 		case PAG_011: return "Richiesta non valida"; 
+		case PAG_012: return "Richiesta non valida"; 
 		case PRT_000: return "Richiesta non valida";	
 		case PRT_001: return "Richiesta non valida";
 		case PRT_002: return "Richiesta non valida";
@@ -287,7 +289,7 @@ public class GovPayException extends Exception {
 		case VER_011: return "Richiesta non valida";
 		case VER_012: return "Richiesta non valida";
 		case VER_013: return "Richiesta non valida";
-		case VER_014: return "Richiesta non valida";
+		case VER_014: return "Impossibile aggiornare la pendenza scaduta.";
 		case VER_015: return "Richiesta non valida";
 		case VER_016: return "Richiesta non valida";
 		case VER_017: return "Richiesta non valida";
@@ -314,6 +316,23 @@ public class GovPayException extends Exception {
 		}
 		
 		return "";
+	}
+	
+	public enum CategoriaEnum {
+	    AUTORIZZAZIONE, RICHIESTA, OPERAZIONE, PAGOPA, INTERNO;
+	}
+	
+	public CategoriaEnum getCategoria() {
+		switch (codEsito) {
+		case INTERNAL: return CategoriaEnum.INTERNO;
+		case AUT_000: 	
+		case AUT_001: 
+		case AUT_002: return CategoriaEnum.AUTORIZZAZIONE;
+		case NDP_000: 
+		case NDP_001: return CategoriaEnum.PAGOPA; 
+		case VER_014: return CategoriaEnum.OPERAZIONE;
+		default: return CategoriaEnum.RICHIESTA;
+		}
 	}
 
 	public GpResponse getWsResponse(GpResponse response, String codMsgDiagnostico, Logger log) {
