@@ -17,6 +17,7 @@ import it.govpay.core.rs.v1.beans.pagamenti.Dominio;
 import it.govpay.core.rs.v1.beans.pagamenti.DominioIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.DominioPost;
 import it.govpay.core.rs.v1.beans.pagamenti.Entrata;
+import it.govpay.core.rs.v1.beans.pagamenti.TipoContabilita;
 import it.govpay.core.rs.v1.beans.pagamenti.UnitaOperativa;
 import it.govpay.core.rs.v1.beans.pagamenti.UnitaOperativaPost;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -24,43 +25,6 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.IAutorizzato;
 
 public class DominiConverter {
-	
-//	public static PutEntrataDominioDTO getPutEntrataDominioDTO(EntrataPost entrataRequest, String idDominio, String idEntrata, IAutorizzato user) {
-//		PutEntrataDominioDTO entrataDTO = new PutEntrataDominioDTO(user);
-//		
-//		it.govpay.bd.model.Tributo tributo = new it.govpay.bd.model.Tributo();
-//		
-//	    tributo.setAbilitato(entrataRequest.Abilitato());
-//		tributo.setCodContabilitaCustom(entrataRequest.getCodiceContabilita());
-//		tributo.setCodTributo(idEntrata);
-//		if(entrataRequest.getCodificaIUV()!=null)
-//			tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
-//		tributo.setDescrizione(entrataRequest.getDescrizione());
-//		if(entrataRequest.getTipoContabilita() != null) {
-//			switch (entrataRequest.getTipoContabilita()) {
-//			case ALTRO:
-//				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.ALTRO);
-//				break;
-//			case ENTRATA:
-//				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.CAPITOLO);
-//				break;
-//			case SIOPE:
-//				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.SIOPE);
-//				break;
-//			case SPECIALE:
-//				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.SPECIALE);
-//				break;
-//			}
-//		}
-//		
-//		entrataDTO.setIbanAccredito(entrataRequest.getContoAccredito());
-//	    entrataDTO.setIbanAppoggio(entrataRequest.getContoAppoggio());
-//		entrataDTO.setTributo(tributo);
-//		entrataDTO.setIdDominio(idDominio);
-//		entrataDTO.setIdTributo(idEntrata);
-//				
-//		return entrataDTO;		
-//	}
 	
 	public static PutIbanAccreditoDTO getPutIbanAccreditoDTO(ContiAccreditoPost ibanAccreditoPost, String idDominio, String idIbanAccredito, IAutorizzato user) {
 		PutIbanAccreditoDTO ibanAccreditoDTO = new PutIbanAccreditoDTO(user);
@@ -279,16 +243,16 @@ public class DominiConverter {
 		if(tributo.getTipoContabilita() != null) {
 			switch (tributo.getTipoContabilita()) {
 			case ALTRO:
-				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.ALTRO);
+				rsModel.tipoContabilita(TipoContabilita.ALTRO);
 				break;
 			case CAPITOLO:
-				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.ENTRATA);
+				rsModel.tipoContabilita(TipoContabilita.CAPITOLO);
 				break;
 			case SIOPE:
-				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.SIOPE);
+				rsModel.tipoContabilita(TipoContabilita.SIOPE);
 				break;
 			case SPECIALE:
-				rsModel.tipoContabilita(Entrata.TipoContabilitaEnum.SPECIALE);
+				rsModel.tipoContabilita(TipoContabilita.SPECIALE);
 				break;
 			}
 		}
