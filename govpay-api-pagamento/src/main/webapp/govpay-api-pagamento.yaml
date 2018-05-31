@@ -1648,6 +1648,7 @@ components:
                 required:
                   - idA2A
                   - idPendenza
+                additionalProperties: false
                 properties:
                   idA2A:
                     type: string
@@ -1665,6 +1666,7 @@ components:
                 required:
                   - idDominio
                   - numeroAvviso
+                additionalProperties: false
                 properties:
                   idDominio:
                     type: string
