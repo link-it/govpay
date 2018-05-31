@@ -68,16 +68,16 @@ public class FlussiRendicontazioneController extends BaseController {
 					
 			
 			// CONVERT TO JSON DELLA RISPOSTA
-			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
-				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr()); 
-				this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-				this.log.info("Esecuzione " + methodName + " completata."); 
-				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)).type(MediaType.APPLICATION_JSON),transactionId).build();
-			} else {
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
 				byte[] response = leggiRendicontazioneDTOResponse.getFr().getXml();
 				this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
 				this.log.info("Esecuzione " + methodName + " completata."); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(new String(response)).type(MediaType.APPLICATION_XML),transactionId).build();
+			} else {
+				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr()); 
+				this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+				this.log.info("Esecuzione " + methodName + " completata."); 
+				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)).type(MediaType.APPLICATION_JSON),transactionId).build();
 			}
 			
 		}catch (Exception e) {
