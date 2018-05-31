@@ -32,16 +32,16 @@ public class Entrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
     
         
             
-    ENTRATA("Entrata"),
+    ENTRATA("ENTRATA"),
     
             
-    SPECIALE("Speciale"),
+    SPECIALE("SPECIALE"),
     
             
     SIOPE("SIOPE"),
     
             
-    ALTRO("Altro");
+    ALTRO("ALTRO");
             
         
     

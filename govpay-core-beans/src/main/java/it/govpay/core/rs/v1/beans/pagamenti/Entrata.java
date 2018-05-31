@@ -30,16 +30,16 @@ public class Entrata extends JSONSerializable {
     
         
             
-    ENTRATA("Entrata"),
+    ENTRATA("ENTRATA"),
     
             
-    SPECIALE("Speciale"),
+    SPECIALE("SPECIALE"),
     
             
     SIOPE("SIOPE"),
     
             
-    ALTRO("Altro");
+    ALTRO("ALTRO");
             
         
     
