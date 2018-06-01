@@ -163,7 +163,6 @@ public class RptUtils {
 			} finally {
 				if(newCon) bd.closeConnection();
 			}
-			bd.setupConnection(GpThreadLocal.get().getTransactionId());
 		}
 	}
 	

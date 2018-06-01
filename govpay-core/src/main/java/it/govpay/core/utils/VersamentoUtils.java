@@ -311,7 +311,7 @@ public class VersamentoUtils {
 		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
 			throw new VersamentoScadutoException(versamento.getDataScadenza());
 		}else {
-			if(versamento.getDataValidita() != null && versamento.getDataValidita().before(new Date())) {
+			if(versamento.getDataValidita() != null && DateUtils.isDataScaduta(versamento.getDataValidita())) {
 				GpContext ctx = GpThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
