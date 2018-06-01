@@ -161,7 +161,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setIdSessione(pagamentiPortaleDTO.getIdSessione());
 			pagamentoPortale.setIdSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
 			pagamentoPortale.setJsonRequest(pagamentiPortaleDTO.getJsonRichiesta());
-			pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idSession",pagamentiPortaleDTO.getIdSessione()));
+			pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idPagamento",pagamentiPortaleDTO.getIdSessione()));
 			pagamentoPortale.setDataRichiesta(new Date());
 			pagamentoPortale.setCodApplicazione(codApplicazione);
 			pagamentoPortale.setWispIdDominio(codDominio);
@@ -174,8 +174,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(listaMultibeneficiari.size() == 1) {
 				pagamentoPortale.setMultiBeneficiario(listaMultibeneficiari.get(0)); 
 			}
-
-			String idSessione = pagamentoPortale.getIdSessione();
 
 			pagamentoPortale.setStato(STATO.IN_CORSO);
 			pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
@@ -209,13 +207,14 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					codiceStato = CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP;
 					stato = STATO.IN_CORSO;
 					idSessionePsp = rpt.getCodSessione();
-					redirectUrl = rpt.getPspRedirectURL();
-					idSessione = UrlUtils.getCodSessione(redirectUrl);
+					pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "idSession", idSessionePsp));
 					pspRedirect = rpt.getPspRedirectURL(); 
+					response.setRedirectUrl(pspRedirect);
+					response.setIdSessione(idSessionePsp); 
 				} else {
 					stato = STATO.IN_CORSO;
 					codiceStato = CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO;
-					redirectUrl = UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idSession",pagamentiPortaleDTO.getIdSessione());
+					response.setRedirectUrl(pagamentiPortaleDTO.getUrlRitorno());
 				}
 
 				transazioneResponse.setPspSessionId(idSessionePsp);
@@ -255,13 +254,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setCodPsp(codPsp);
 			pagamentoPortale.setTipoVersamento(tipoVersamento);
 			pagamentoPortale.setCodCanale(codCanale); 
-
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, true); //inserisce anche i versamenti
-
-			response.setRedirectUrl(redirectUrl);
 			response.setId(pagamentoPortale.getIdSessione());
-			response.setIdSessione(idSessione); 
-
 			return response;
 		}finally {
 			if(ctx != null) {

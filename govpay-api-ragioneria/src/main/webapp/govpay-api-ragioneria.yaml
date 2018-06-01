@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: "1.0.0"
-  title: GovPay - API Pagamento
+  title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
     url: 'https://github.com/link-it/GovPay/'
@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/v1/
+  - url: ${it.govpay.apiurl}/govpay/backend/api/ragioneria/rs/v1/
 tags:
   - name: Riconciliazioni
     description: Movimenti in tesoreria riconciliati
@@ -993,7 +993,7 @@ components:
          * ESEGUITA_PARZIALE: Pagata parzialmente
          * ANNULLATA: Annullata
          * SCADUTA: Scaduta
-    rpp:
+    rppIndex:
       type: object
       required: 
         - stato
@@ -1113,7 +1113,7 @@ components:
         vocePendenza:
           $ref: '#/components/schemas/vocePendenza'
         rpp:
-          $ref: '#/components/schemas/rpp'
+          $ref: '#/components/schemas/rppIndex'
         stato:
           $ref: '#/components/schemas/statoRiscossione'
         tipo:

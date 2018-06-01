@@ -164,7 +164,7 @@ public class VerificaClient extends BasicClient {
 				
 				String path = null;
 				
-				if(codVersamentoEnte != null) {
+				if(iuv == null) {
 					path = "/pendenze/" + codApplicazione + "/" + codVersamentoEnte;
 				} else {
 					path = "/avvisi/" + codDominio + "/" + iuv;

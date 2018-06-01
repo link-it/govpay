@@ -49,24 +49,22 @@ public class WebControllerDAO extends BaseDAO{
 				throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID sessione ["+aggiornaPagamentiPortaleDTO.getIdSessione()+"]");
 			}
 
+			String urlRitorno = pagamentoPortale.getUrlRitorno();
+			
 			switch (pagamentoPortale.getCodiceStato()) {
 			case PAGAMENTO_FALLITO:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito","FAIL"));
+				urlRitorno = UrlUtils.addParameter(urlRitorno, "esito","FAIL");
+				aggiornaPagamentiPortaleDTOResponse.setLocation(urlRitorno);
 				break;
 			case PAGAMENTO_ESEGUITO:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
-				break;
 			case PAGAMENTO_IN_ATTESA_DI_ESITO:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
+			case PAGAMENTO_NON_ESEGUITO:
+			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
+				urlRitorno = UrlUtils.addParameter(urlRitorno, "esito",pagamentoPortale.getPspEsito());
+				aggiornaPagamentiPortaleDTOResponse.setLocation(urlRitorno);
 				break;
 			case PAGAMENTO_IN_CORSO_AL_PSP:
 				aggiornaPagamentiPortaleDTOResponse.setLocation(pagamentoPortale.getPspRedirectUrl());
-				break;
-			case PAGAMENTO_NON_ESEGUITO:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
-				break;
-			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-				aggiornaPagamentiPortaleDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
 				break;
 			}
 		}finally {
@@ -101,13 +99,15 @@ public class WebControllerDAO extends BaseDAO{
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 				pagamentoPortale.setPspEsito(redirectDaPspDTO.getEsito()); 
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale); 
-				redirectDaPspDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
 				break;
 			default:
-				redirectDaPspDTOResponse.setLocation(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito()));
 				break;
-
 			}
+			String urlRitorno = pagamentoPortale.getUrlRitorno();
+			urlRitorno = UrlUtils.addParameter(urlRitorno, "idPagamento", pagamentoPortale.getIdSessione());
+			urlRitorno = UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito());
+			redirectDaPspDTOResponse.setLocation(urlRitorno);
+
 		}finally {
 			if(bd != null)
 				bd.closeConnection();
