@@ -34,7 +34,8 @@ public class IncassiException extends BaseException {
 		IMPORTO_ERRATO("021407","Importo errato."),
 		ERRORE_SINTASSI("021408","Riscontrato errore di sintassi nella richiesta."),
 		DUPLICATO("021409","TRN gia' incassato."),
-		DOMINIO_INESISTENTE("021410","Dominio inesistente.");
+		DOMINIO_INESISTENTE("021410","Dominio inesistente."),
+		CAUSALE_GIA_INCASSATA("021411","Riversamento gia' riconciliato.");
 		
 		
 		private String faultCode;

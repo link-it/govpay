@@ -595,6 +595,7 @@
 					<xsd:enumeration value="PAG_009"><xsd:annotation><xsd:documentation>Pagamento gia' stornato</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="PAG_010"><xsd:annotation><xsd:documentation>Richiesta di storno inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="PAG_011"><xsd:annotation><xsd:documentation>Nessun pagamento da stornare</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_012"><xsd:annotation><xsd:documentation>Richiesta di pagamento con indicazione del canale non supportata</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="PRT_000"><xsd:annotation><xsd:documentation>Portale inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="PRT_001"><xsd:annotation><xsd:documentation>Portale disabilitato</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="PRT_002"><xsd:annotation><xsd:documentation>Portale autenticato diverso dal chiamante</xsd:documentation></xsd:annotation></xsd:enumeration>

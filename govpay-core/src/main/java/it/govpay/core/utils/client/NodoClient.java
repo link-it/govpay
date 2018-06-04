@@ -28,6 +28,8 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazione;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazioneRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPTRisposta;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediSceltaWISP;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediSceltaWISPRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPT;
@@ -56,7 +58,7 @@ public class NodoClient extends BasicClient {
 	
 
 	public enum Azione {
-		nodoInviaCarrelloRPT, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione
+		nodoInviaCarrelloRPT, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione, nodoChiediSceltaWISP
 	}
 
 	private static ObjectFactory objectFactory;
@@ -165,6 +167,13 @@ public class NodoClient extends BasicClient {
 		return (NodoChiediFlussoRendicontazioneRisposta) response;
 	}
 
+	public NodoChiediSceltaWISPRisposta nodoChiediSceltaWISP(NodoChiediSceltaWISP nodoChiediSceltaWISP, String nomeSoggetto) throws GovPayException, ClientException {
+		this.stazione = nodoChiediSceltaWISP.getIdentificativoStazioneIntermediarioPA();
+		this.dominio = nodoChiediSceltaWISP.getIdentificativoDominio();
+		Risposta response = send(Azione.nodoChiediSceltaWISP.toString(), objectFactory.createNodoChiediSceltaWISP(nodoChiediSceltaWISP), null);
+		return (NodoChiediSceltaWISPRisposta) response;
+	}
+	
 	private void updateStato() {
 		boolean wasClosed = false;
 		boolean wasNull = false;

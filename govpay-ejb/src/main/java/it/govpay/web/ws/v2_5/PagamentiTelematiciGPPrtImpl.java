@@ -36,7 +36,6 @@ import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
@@ -140,7 +139,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			AvviaTransazioneDTO dto = new AvviaTransazioneDTO();
 			dto.setAggiornaSeEsisteB(bodyrichiesta.isAggiornaSeEsiste());
 			dto.setAutenticazione(bodyrichiesta.getAutenticazione().value());
-			dto.setCanale(Canale.canaleUniversale);
 			dto.setIbanAddebito(bodyrichiesta.getIbanAddebito());
 			dto.setPortale(portaleAutenticato);
 			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());
