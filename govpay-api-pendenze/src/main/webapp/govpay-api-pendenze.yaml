@@ -926,10 +926,6 @@ components:
           type: string
           description: Numero di fax dell'help desk del beneficiario
           example: 021234567890           
-        gln:
-          type: string
-          description: Global location number del beneficiario
-          example: 0011223344556
         web:
           type: string
           description: Url del sito web
