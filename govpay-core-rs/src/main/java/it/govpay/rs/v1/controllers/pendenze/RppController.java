@@ -1,4 +1,4 @@
-package it.govpay.rs.v1.controllers.base;
+package it.govpay.rs.v1.controllers.pendenze;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URLDecoder;
@@ -22,9 +22,10 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
-import it.govpay.core.rs.v1.beans.ListaRpp;
-import it.govpay.core.rs.v1.beans.Pendenza;
-import it.govpay.core.rs.v1.beans.Rpp;
+import it.govpay.core.rs.v1.beans.pendenze.ListaRpp;
+import it.govpay.core.rs.v1.beans.pendenze.PendenzaIndex;
+import it.govpay.core.rs.v1.beans.pendenze.Rpp;
+import it.govpay.core.rs.v1.beans.pendenze.RppIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -32,8 +33,8 @@ import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.rs.BaseController;
-import it.govpay.rs.v1.beans.converter.PendenzeConverter;
-import it.govpay.rs.v1.beans.converter.RptConverter;
+import it.govpay.rs.v1.beans.pendenze.converter.PendenzeConverter;
+import it.govpay.rs.v1.beans.pendenze.converter.RptConverter;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
 
@@ -91,9 +92,9 @@ public class RppController extends BaseController {
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA
-			List<Rpp> results = new ArrayList<Rpp>();
+			List<RppIndex> results = new ArrayList<RppIndex>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
-				results.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
+				results.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
 			}
 			ListaRpp response = new ListaRpp(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
@@ -239,8 +240,8 @@ public class RppController extends BaseController {
 
 			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione());
 			
-			Pendenza pendenza = PendenzeConverter.toRsModel(leggiRptDTOResponse.getVersamento(), leggiRptDTOResponse.getUnitaOperativa(), leggiRptDTOResponse.getApplicazione(),
-					leggiRptDTOResponse.getDominio(), leggiRptDTOResponse.getLstSingoliVersamenti(),true);
+			PendenzaIndex pendenza = PendenzeConverter.toRsIndexModel(leggiRptDTOResponse.getVersamento(), leggiRptDTOResponse.getUnitaOperativa(), leggiRptDTOResponse.getApplicazione(),
+					leggiRptDTOResponse.getDominio(), leggiRptDTOResponse.getLstSingoliVersamenti());
 			
 			response.setPendenza(pendenza);
 			

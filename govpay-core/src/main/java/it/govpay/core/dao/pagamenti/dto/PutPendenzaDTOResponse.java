@@ -10,6 +10,7 @@ public class PutPendenzaDTOResponse extends BasicCreateResponseDTO {
 	private Dominio dominio;
 	private String qrCode; 
 	private String barCode;
+	private String pdf;
 	
 	public Versamento getVersamento() {
 		return versamento;
@@ -34,6 +35,12 @@ public class PutPendenzaDTOResponse extends BasicCreateResponseDTO {
 	}
 	public void setBarCode(String barCode) {
 		this.barCode = barCode;
+	}
+	public String getPdf() {
+		return pdf;
+	}
+	public void setPdf(String pdf) {
+		this.pdf = pdf;
 	}
 
 }

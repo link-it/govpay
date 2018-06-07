@@ -1,7 +1,6 @@
 package it.govpay.rs.v1.beans.converter;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,25 +8,22 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.PagamentoPortale.VersioneInterfacciaWISP;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
-import it.govpay.core.rs.v1.beans.DatiAddebito;
 import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
-import it.govpay.core.rs.v1.beans.PagamentoPortale;
+import it.govpay.core.rs.v1.beans.base.ContoAddebito;
+import it.govpay.core.rs.v1.beans.base.Pagamento;
+import it.govpay.core.rs.v1.beans.base.PagamentoIndex;
 import it.govpay.core.rs.v1.beans.base.PagamentoPost;
 import it.govpay.core.rs.v1.beans.base.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
-import it.govpay.core.rs.v1.beans.base.Soggetto;
 import it.govpay.core.rs.v1.beans.base.StatoPagamento;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
-import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.IAutorizzato;
 import net.sf.json.JSONArray;
-import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -51,7 +47,7 @@ public class PagamentiPortaleConverter {
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, IAutorizzato user, String idSessione, String idSessionePortale, String versioneInterfacciaWISP) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, IAutorizzato user, String idSessione, String idSessionePortale) throws Exception {
 
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
 
@@ -68,64 +64,64 @@ public class PagamentiPortaleConverter {
 
 		if(pagamentiPortaleRequest.getContoAddebito() != null) {
 			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getContoAddebito().getBicAddebito());
-			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getContoAddebito().getIbanAddebito());
-		}
 
-		if(pagamentiPortaleRequest.getLingua() != null)
-			pagamentiPortaleDTO.setLingua(pagamentiPortaleRequest.getLingua().toString());
+			if(pagamentiPortaleRequest.getLingua() != null)
+				pagamentiPortaleDTO.setLingua(pagamentiPortaleRequest.getLingua().toString());
 
-		pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
+			pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
 
 
-		if(pagamentiPortaleRequest.getSoggettoVersante() != null);
-		pagamentiPortaleDTO.setVersante(VersamentoUtils.toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
+			if(pagamentiPortaleRequest.getSoggettoVersante() != null);
+			pagamentiPortaleDTO.setVersante(VersamentoUtils.toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
-		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRichiesta );  
-		JSONArray jsonArrayPendenze = jsonObjectPagamentiPortaleRequest.getJSONArray(PagamentiPortaleConverter.PENDENZE_KEY);
+			JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRichiesta );  
+			JSONArray jsonArrayPendenze = jsonObjectPagamentiPortaleRequest.getJSONArray(PagamentiPortaleConverter.PENDENZE_KEY);
 
-		if(pagamentiPortaleRequest.getPendenze() != null && pagamentiPortaleRequest.getPendenze().size() > 0 ) {
-			List<Object> listRefs = new ArrayList<Object>();
+			if(pagamentiPortaleRequest.getPendenze() != null && pagamentiPortaleRequest.getPendenze().size() > 0 ) {
+				List<Object> listRefs = new ArrayList<Object>();
 
-			JsonConfig jsonConfigPendenza = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			classMap.put("voci", VocePendenza.class);
-			jsonConfigPendenza.setClassMap(classMap);
+				JsonConfig jsonConfigPendenza = new JsonConfig();
+				Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+				classMap.put("voci", VocePendenza.class);
+				jsonConfigPendenza.setClassMap(classMap);
 
-			for (int i = 0; i < jsonArrayPendenze.size(); i++) {
+				for (int i = 0; i < jsonArrayPendenze.size(); i++) {
 
-				JSONObject jsonObjectPendenza = jsonArrayPendenze.getJSONObject(i);
-				
-				PendenzaPost pendenza = (PendenzaPost) PendenzaPost.parse(jsonObjectPendenza, PendenzaPost.class, jsonConfigPendenza );
+					JSONObject jsonObjectPendenza = jsonArrayPendenze.getJSONObject(i);
 
-				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+					PendenzaPost pendenza = (PendenzaPost) PendenzaPost.parse(jsonObjectPendenza, PendenzaPost.class, jsonConfigPendenza );
 
-					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
-					ref.setIdDominio(pendenza.getIdDominio());
-					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
-					listRefs.add(ref);
+					if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
-				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
+						PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
+						ref.setIdDominio(pendenza.getIdDominio());
+						ref.setNumeroAvviso(pendenza.getNumeroAvviso());
+						listRefs.add(ref);
 
-					PagamentiPortaleDTO.RefVersamentoPendenza ref = pagamentiPortaleDTO. new RefVersamentoPendenza();
-					ref.setIdA2A(pendenza.getIdA2A());
-					ref.setIdPendenza(pendenza.getIdPendenza());
-					listRefs.add(ref);
+					} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
 
-				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
-					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
-					listRefs.add(versamento);
-				} else {
-					throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");
+						PagamentiPortaleDTO.RefVersamentoPendenza ref = pagamentiPortaleDTO. new RefVersamentoPendenza();
+						ref.setIdA2A(pendenza.getIdA2A());
+						ref.setIdPendenza(pendenza.getIdPendenza());
+						listRefs.add(ref);
+
+					}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
+						it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
+						listRefs.add(versamento);
+					} else {
+						throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");
+					}
 				}
-			}
 
-			pagamentiPortaleDTO.setPendenzeOrPendenzeRef(listRefs);
+				pagamentiPortaleDTO.setPendenzeOrPendenzeRef(listRefs);
+			}
 		}
 
 		return pagamentiPortaleDTO;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) {
+
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(it.govpay.core.rs.v1.beans.base.PendenzaPost pendenza, String ida2a, String idPendenza) {
 		return VersamentoUtils.getVersamentoFromPendenza(pendenza, ida2a, idPendenza);
 	}
 
@@ -133,10 +129,14 @@ public class PagamentiPortaleConverter {
 		return VersamentoUtils.getVersamentoFromPendenza(pendenza);
 	}
 
-	public static PagamentoPortale toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
-		PagamentoPortale rsModel = new PagamentoPortale();
+	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
+		Pagamento rsModel = new Pagamento();
 
-		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( pagamentoPortale.getJsonRequest() );  
+		JsonConfig jsonConfig = new JsonConfig();
+		Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+		classMap.put("autenticazioneSoggetto", String.class);
+		jsonConfig.setClassMap(classMap);
+		PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class, jsonConfig);
 
 		rsModel.setId(pagamentoPortale.getIdSessione());
 		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());
@@ -144,44 +144,66 @@ public class PagamentiPortaleConverter {
 		rsModel.setNome(pagamentoPortale.getNome());
 		rsModel.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
+		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
+
+		if(pagamentiPortaleRequest.getContoAddebito()!=null) {
+			ContoAddebito contoAddebito = new ContoAddebito();
+			contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBicAddebito());
+			contoAddebito.setIban(pagamentiPortaleRequest.getContoAddebito().getIbanAddebito());
+			rsModel.setContoAddebito(contoAddebito);
+		}
+		rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
+		rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 
-		if(jsonObjectPagamentiPortaleRequest.containsKey("contoAddebito")) {
-			rsModel.setContoAddebito(DatiAddebito.parse(jsonObjectPagamentiPortaleRequest.getString("contoAddebito"), DatiAddebito.class));
-		}
+		rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
+		rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.base.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 
-		try {
-			if(jsonObjectPagamentiPortaleRequest.containsKey("dataEsecuzionePagamento")) {
-				Object object = jsonObjectPagamentiPortaleRequest.get("dataEsecuzionePagamento");
-				if(object instanceof JSONNull) {
-
-				} else {
-					String dataEsecuzionePagamentoString = jsonObjectPagamentiPortaleRequest.getString("dataEsecuzionePagamento");
-					rsModel.setDataEsecuzionePagamento(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataEsecuzionePagamentoString));
-				}
-			}
-		} catch (ParseException e) {
-			throw new ServiceException(e);
-		}
-		if(jsonObjectPagamentiPortaleRequest.containsKey("credenzialiPagatore")) {
-			rsModel.setCredenzialiPagatore(jsonObjectPagamentiPortaleRequest.getString("credenzialiPagatore"));
-		}
-		if(jsonObjectPagamentiPortaleRequest.containsKey("soggettoVersante")) {
-			rsModel.setSoggettoVersante(Soggetto.parse(jsonObjectPagamentiPortaleRequest.getString("soggettoVersante")));
-		}
-		if(jsonObjectPagamentiPortaleRequest.containsKey("autenticazioneSoggetto")) {
-			rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.base.Pagamento.AutenticazioneSoggettoEnum.fromValue(jsonObjectPagamentiPortaleRequest.getString("autenticazioneSoggetto")));
-		}
-
-		if(pagamentoPortale.getCodPsp() != null &&  pagamentoPortale.getCodCanale() != null && pagamentoPortale.getTipoVersamento() != null)
-			rsModel.setCanale(UriBuilderUtils.getCanale(pagamentoPortale.getCodPsp(), pagamentoPortale.getCodCanale(), pagamentoPortale.getTipoVersamento()));
-
-		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
-		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 		if(pagamentoPortale.getImporto() != null) 
 			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
 
 		return rsModel;
+	}
+	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
+		PagamentoIndex rsModel = new PagamentoIndex();
+
+		JsonConfig jsonConfig = new JsonConfig();
+		Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+		classMap.put("autenticazioneSoggetto", String.class);
+		jsonConfig.setClassMap(classMap);
+		PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class, jsonConfig);
+
+		rsModel.setId(pagamentoPortale.getIdSessione());
+		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());
+		rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
+		rsModel.setNome(pagamentoPortale.getNome());
+		rsModel.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
+		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
+		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
+
+		if(pagamentiPortaleRequest.getContoAddebito()!=null) {
+			ContoAddebito contoAddebito = new ContoAddebito();
+			contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBicAddebito());
+			contoAddebito.setIban(pagamentiPortaleRequest.getContoAddebito().getIbanAddebito());
+			rsModel.setContoAddebito(contoAddebito);
+		}
+
+		rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
+
+		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
+		rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
+
+		rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
+		rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.base.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
+
+		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
+		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
+
+		if(pagamentoPortale.getImporto() != null) 
+			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+
+		return rsModel;
+
 	}
 }

@@ -7,7 +7,7 @@ import it.govpay.model.IAutorizzato;
 public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	
 	private Versamento versamento;
-
+	private boolean stampaAvviso;
 	public PutPendenzaDTO(IAutorizzato user) {
 		super(user);
 	}
@@ -18,6 +18,14 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 
 	public void setVersamento(Versamento versamento) {
 		this.versamento = versamento;
+	}
+
+	public boolean isStampaAvviso() {
+		return stampaAvviso;
+	}
+
+	public void setStampaAvviso(boolean stampaAvviso) {
+		this.stampaAvviso = stampaAvviso;
 	}
 
 }

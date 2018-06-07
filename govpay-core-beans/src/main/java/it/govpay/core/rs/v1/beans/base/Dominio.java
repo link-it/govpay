@@ -1,5 +1,6 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -26,7 +27,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "abilitato",
 "idDominio",
 "unitaOperative",
-"ibanAccredito",
+"contiAccredito",
 "entrate",
 })
 public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
@@ -95,13 +96,13 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String idDominio = null;
   
   @JsonProperty("unitaOperative")
-  private String unitaOperative = null;
+  private List<UnitaOperativa> unitaOperative = null;
   
-  @JsonProperty("ibanAccredito")
-  private String ibanAccredito = null;
+  @JsonProperty("contiAccredito")
+  private List<ContiAccredito> contiAccredito = null;
   
   @JsonProperty("entrate")
-  private String entrate = null;
+  private List<Entrata> entrate = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -416,7 +417,7 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
+  public Boolean Abilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -442,48 +443,47 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Url alle unità operative censite per il dominio
    **/
-  public Dominio unitaOperative(String unitaOperative) {
+  public Dominio unitaOperative(List<UnitaOperativa> unitaOperative) {
     this.unitaOperative = unitaOperative;
     return this;
   }
 
   @JsonProperty("unitaOperative")
-  public String getUnitaOperative() {
+  public List<UnitaOperativa> getUnitaOperative() {
     return unitaOperative;
   }
-  public void setUnitaOperative(String unitaOperative) {
+  public void setUnitaOperative(List<UnitaOperativa> unitaOperative) {
     this.unitaOperative = unitaOperative;
   }
 
   /**
    * Iban di accredito censiti per il dominio beneficiario
    **/
-  public Dominio ibanAccredito(String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
+  public Dominio contiAccredito(List<ContiAccredito> contiAccredito) {
+    this.contiAccredito = contiAccredito;
     return this;
   }
 
-  @JsonProperty("ibanAccredito")
-  public String getIbanAccredito() {
-    return ibanAccredito;
+  @JsonProperty("contiAccredito")
+  public List<ContiAccredito> getContiAccredito() {
+    return contiAccredito;
   }
-  public void setIbanAccredito(String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
+  public void setContiAccredito(List<ContiAccredito> contiAccredito) {
+    this.contiAccredito = contiAccredito;
   }
 
   /**
-   * Tipologie di entrata censite per il dominio beneficiario
    **/
-  public Dominio entrate(String entrate) {
+  public Dominio entrate(List<Entrata> entrate) {
     this.entrate = entrate;
     return this;
   }
 
   @JsonProperty("entrate")
-  public String getEntrate() {
+  public List<Entrata> getEntrate() {
     return entrate;
   }
-  public void setEntrate(String entrate) {
+  public void setEntrate(List<Entrata> entrate) {
     this.entrate = entrate;
   }
 
@@ -518,13 +518,13 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(abilitato, dominio.abilitato) &&
         Objects.equals(idDominio, dominio.idDominio) &&
         Objects.equals(unitaOperative, dominio.unitaOperative) &&
-        Objects.equals(ibanAccredito, dominio.ibanAccredito) &&
+        Objects.equals(contiAccredito, dominio.contiAccredito) &&
         Objects.equals(entrate, dominio.entrate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, idDominio, unitaOperative, ibanAccredito, entrate);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, idDominio, unitaOperative, contiAccredito, entrate);
   }
 
   public static Dominio parse(String json) {
@@ -563,7 +563,7 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
-    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
+    sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");
     sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
     sb.append("}");
     return sb.toString();

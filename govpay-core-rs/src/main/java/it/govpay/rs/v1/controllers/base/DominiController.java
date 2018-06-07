@@ -38,16 +38,16 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
-import it.govpay.core.rs.v1.beans.Entrata;
-import it.govpay.core.rs.v1.beans.Iban;
+import it.govpay.core.rs.v1.beans.base.Entrata;
 import it.govpay.core.rs.v1.beans.ListaDomini;
 import it.govpay.core.rs.v1.beans.ListaEntrate;
 import it.govpay.core.rs.v1.beans.ListaIbanAccredito;
 import it.govpay.core.rs.v1.beans.ListaUnitaOperative;
-import it.govpay.core.rs.v1.beans.UnitaOperativa;
+import it.govpay.core.rs.v1.beans.base.UnitaOperativa;
+import it.govpay.core.rs.v1.beans.base.ContiAccredito;
 import it.govpay.core.rs.v1.beans.base.DominioPost;
 import it.govpay.core.rs.v1.beans.base.EntrataPost;
-import it.govpay.core.rs.v1.beans.base.IbanAccreditoPost;
+import it.govpay.core.rs.v1.beans.base.ContiAccreditoPost;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativaPost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -94,7 +94,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Iban response = DominiConverter.toIbanRsModel(getDominiIbanDTOResponse.getIbanAccredito());
+			ContiAccredito response = DominiConverter.toIbanRsModel(getDominiIbanDTOResponse.getIbanAccredito());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -184,9 +184,9 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Dominio> results = new ArrayList<it.govpay.core.rs.v1.beans.Dominio>();
+			List<it.govpay.core.rs.v1.beans.base.DominioIndex> results = new ArrayList<it.govpay.core.rs.v1.beans.base.DominioIndex>();
 			for(it.govpay.bd.model.Dominio dominio: listaDominiDTOResponse.getResults()) {
-				results.add(DominiConverter.toRsModel(dominio));
+				results.add(DominiConverter.toRsModelIndex(dominio));
 			}
 			
 			ListaDomini response = new ListaDomini(results, this.getServicePath(uriInfo),
@@ -233,7 +233,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			it.govpay.core.rs.v1.beans.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio());
+			it.govpay.core.rs.v1.beans.base.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio(), listaDominiDTOResponse.getUo(), listaDominiDTOResponse.getTributi(), listaDominiDTOResponse.getIban());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -278,7 +278,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Entrata> results = new ArrayList<it.govpay.core.rs.v1.beans.Entrata>();
+			List<it.govpay.core.rs.v1.beans.base.Entrata> results = new ArrayList<it.govpay.core.rs.v1.beans.base.Entrata>();
 			for(GetTributoDTOResponse tributo: listaDominiEntrateDTOResponse.getResults()) {
 				results.add(DominiConverter.toEntrataRsModel(tributo.getTributo(), tributo.getIbanAppoggio()));
 			}
@@ -331,7 +331,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.UnitaOperativa> results = new ArrayList<it.govpay.core.rs.v1.beans.UnitaOperativa>();
+			List<it.govpay.core.rs.v1.beans.base.UnitaOperativa> results = new ArrayList<it.govpay.core.rs.v1.beans.base.UnitaOperativa>();
 			for(it.govpay.bd.model.UnitaOperativa uo: listaDominiUoDTOResponse.getResults()) {
 				results.add(DominiConverter.toUnitaOperativaRsModel(uo));
 			}
@@ -413,7 +413,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			JsonConfig jsonConfig = new JsonConfig();
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 			jsonConfig.setClassMap(classMap);
-			IbanAccreditoPost ibanAccreditoRequest= (IbanAccreditoPost) IbanAccreditoPost.parse(jsonRequest, IbanAccreditoPost.class, jsonConfig);
+			ContiAccreditoPost ibanAccreditoRequest= (ContiAccreditoPost) ContiAccreditoPost.parse(jsonRequest, ContiAccreditoPost.class, jsonConfig);
 			
 			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, user);
 			
@@ -590,7 +590,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Iban> results = new ArrayList<it.govpay.core.rs.v1.beans.Iban>();
+			List<it.govpay.core.rs.v1.beans.base.ContiAccredito> results = new ArrayList<it.govpay.core.rs.v1.beans.base.ContiAccredito>();
 			for(it.govpay.bd.model.IbanAccredito ibanAccredito: listaDominiIbanDTOResponse.getResults()) {
 				results.add(DominiConverter.toIbanRsModel(ibanAccredito));
 			}

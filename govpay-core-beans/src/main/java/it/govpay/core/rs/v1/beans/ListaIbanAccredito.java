@@ -3,9 +3,11 @@ package it.govpay.core.rs.v1.beans;
 import java.net.URI;
 import java.util.List;
 
-public class ListaIbanAccredito extends Lista<Iban> {
+import it.govpay.core.rs.v1.beans.base.ContiAccredito;
 
-	public ListaIbanAccredito(List<Iban> risultati, URI requestUri, long count, long pagina, long limit) {
+public class ListaIbanAccredito extends Lista<ContiAccredito> {
+
+	public ListaIbanAccredito(List<ContiAccredito> risultati, URI requestUri, long count, long pagina, long limit) {
 		super(risultati, requestUri, count, pagina, limit);
 	}
 	

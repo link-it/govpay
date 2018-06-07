@@ -1,20 +1,26 @@
 package it.govpay.rs.v1.beans.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
-import it.govpay.core.rs.v1.beans.Dominio;
-import it.govpay.core.rs.v1.beans.Entrata;
-import it.govpay.core.rs.v1.beans.Iban;
-import it.govpay.core.rs.v1.beans.UnitaOperativa;
+import it.govpay.core.rs.v1.beans.base.ContiAccredito;
+import it.govpay.core.rs.v1.beans.base.ContiAccreditoPost;
+import it.govpay.core.rs.v1.beans.base.Dominio;
+import it.govpay.core.rs.v1.beans.base.DominioIndex;
 import it.govpay.core.rs.v1.beans.base.DominioPost;
+import it.govpay.core.rs.v1.beans.base.Entrata;
+import it.govpay.core.rs.v1.beans.base.Entrata.TipoContabilitaEnum;
 import it.govpay.core.rs.v1.beans.base.EntrataPost;
-import it.govpay.core.rs.v1.beans.base.IbanAccreditoPost;
+import it.govpay.core.rs.v1.beans.base.UnitaOperativa;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativaPost;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Anagrafica;
@@ -58,17 +64,16 @@ public class DominiConverter {
 				
 		return entrataDTO;		
 	}
-	
-	public static PutIbanAccreditoDTO getPutIbanAccreditoDTO(IbanAccreditoPost ibanAccreditoPost, String idDominio, String idIbanAccredito, IAutorizzato user) {
+	public static PutIbanAccreditoDTO getPutIbanAccreditoDTO(ContiAccreditoPost ibanAccreditoPost, String idDominio, String idIbanAccredito, IAutorizzato user) {
 		PutIbanAccreditoDTO ibanAccreditoDTO = new PutIbanAccreditoDTO(user);
 		
 		it.govpay.bd.model.IbanAccredito iban = new it.govpay.bd.model.IbanAccredito();
 		
-		iban.setAbilitato(ibanAccreditoPost.isAbilitato());
-		iban.setAttivatoObep(ibanAccreditoPost.isMybank());
-		iban.setCodBic(ibanAccreditoPost.getBicAccredito());
+		iban.setAbilitato(ibanAccreditoPost.Abilitato());
+		iban.setAttivatoObep(ibanAccreditoPost.Mybank());
+		iban.setCodBic(ibanAccreditoPost.getBic());
 		iban.setCodIban(idIbanAccredito);
-		iban.setPostale(ibanAccreditoPost.isPostale());
+		iban.setPostale(ibanAccreditoPost.Postale());
 		
 		ibanAccreditoDTO.setIban(iban);
 		ibanAccreditoDTO.setIdDominio(idDominio);
@@ -81,7 +86,7 @@ public class DominiConverter {
 		PutUnitaOperativaDTO uoDTO = new PutUnitaOperativaDTO(user);
 		
 		it.govpay.bd.model.UnitaOperativa uo = new it.govpay.bd.model.UnitaOperativa();
-		uo.setAbilitato(uoPost.isAbilitato());
+		uo.setAbilitato(uoPost.Abilitato());
 		Anagrafica anagrafica = new Anagrafica();
 		anagrafica.setCap(uoPost.getCap());
 		anagrafica.setCivico(uoPost.getCivico());
@@ -110,7 +115,7 @@ public class DominiConverter {
 		PutDominioDTO dominioDTO = new PutDominioDTO(user);
 		
 		it.govpay.bd.model.Dominio dominio = new it.govpay.bd.model.Dominio();
-		dominio.setAbilitato(dominioPost.isAbilitato());
+		dominio.setAbilitato(dominioPost.Abilitato());
 		Anagrafica anagrafica = new Anagrafica();
 		anagrafica.setCap(dominioPost.getCap());
 		anagrafica.setCivico(dominioPost.getCivico());
@@ -153,7 +158,39 @@ public class DominiConverter {
 	
 	
 	
-	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+	public static DominioIndex toRsModelIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+		DominioIndex rsModel = new DominioIndex();
+		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
+		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setRagioneSociale(dominio.getRagioneSociale());
+		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
+		rsModel.setCivico(dominio.getAnagrafica().getCivico());
+		rsModel.setCap(dominio.getAnagrafica().getCap());
+		rsModel.setLocalita(dominio.getAnagrafica().getLocalita());
+		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
+		rsModel.setNazione(dominio.getAnagrafica().getNazione());
+		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+		rsModel.setTel(dominio.getAnagrafica().getTelefono());
+		rsModel.setFax(dominio.getAnagrafica().getFax());
+		rsModel.setGln(dominio.getGln());
+		rsModel.setAuxDigit("" + dominio.getAuxDigit());
+		rsModel.setSegregationCode("" + dominio.getSegregationCode());
+		if(dominio.getLogo() != null) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(dominio.getLogo(), false)));
+			rsModel.setLogo(sb.toString());
+		}
+		rsModel.setIuvPrefix(dominio.getIuvPrefix());
+		rsModel.setStazione(dominio.getStazione().getCodStazione());
+		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
+		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
+		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
+		rsModel.setAbilitato(dominio.isAbilitato());
+		
+		return rsModel;
+	}
+	
+	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst, List<it.govpay.bd.model.Tributo> tributoLst, List<it.govpay.bd.model.IbanAccredito> ibanAccreditoLst) throws ServiceException {
 		Dominio rsModel = new Dominio();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
 		rsModel.setIdDominio(dominio.getCodDominio()); 
@@ -177,19 +214,43 @@ public class DominiConverter {
 		}
 		rsModel.setIuvPrefix(dominio.getIuvPrefix());
 		rsModel.setStazione(dominio.getStazione().getCodStazione());
-		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
-		rsModel.setIbanAccredito(UriBuilderUtils.getIbanAccreditoByDominio(dominio.getCodDominio()));
-		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
+		
+		if(uoLst != null) {
+			List<UnitaOperativa> unitaOperative = new ArrayList<UnitaOperativa>();
+			
+			for(it.govpay.bd.model.UnitaOperativa uo: uoLst) {
+				unitaOperative.add(toUnitaOperativaRsModel(uo));
+			}
+			rsModel.setUnitaOperative(unitaOperative);
+		}
+
+		if(ibanAccreditoLst != null) {
+			List<ContiAccredito> contiAccredito = new ArrayList<ContiAccredito>();
+			
+			for(it.govpay.bd.model.IbanAccredito iban: ibanAccreditoLst) {
+				contiAccredito.add(toIbanRsModel(iban));
+			}
+			rsModel.setContiAccredito(contiAccredito);
+		}
+
+		if(tributoLst != null) {
+			List<Entrata> entrate = new ArrayList<Entrata>();
+			
+			for(Tributo tributo: tributoLst) {
+				entrate.add(toEntrataRsModel(tributo, tributo.getIbanAccredito()));
+			}
+			rsModel.setEntrate(entrate);
+		}
 		rsModel.setAbilitato(dominio.isAbilitato());
 		
 		return rsModel;
 	}
 	
-	public static Iban toIbanRsModel(it.govpay.bd.model.IbanAccredito iban) throws ServiceException {
-		Iban rsModel = new Iban();
+	public static ContiAccredito toIbanRsModel(it.govpay.bd.model.IbanAccredito iban) throws ServiceException {
+		ContiAccredito rsModel = new ContiAccredito();
 		rsModel.abilitato(iban.isAbilitato())
-		.bicAccredito(iban.getCodBic())
-		.ibanAccredito(iban.getCodIban())
+		.bic(iban.getCodBic())
+		.iban(iban.getCodIban())
 		.mybank(iban.isAttivatoObep())
 		.postale(iban.isPostale());
 		
@@ -220,29 +281,29 @@ public class DominiConverter {
 		if(tributo.getTipoContabilita() != null) {
 			switch (tributo.getTipoContabilita()) {
 			case ALTRO:
-				rsModel.tipoContabilitaEnum(Entrata.TipoContabilitaEnum.ALTRO);
+				rsModel.tipoContabilitaEnum(TipoContabilitaEnum.ALTRO);
 				break;
 			case CAPITOLO:
-				rsModel.tipoContabilitaEnum(Entrata.TipoContabilitaEnum.ENTRATA);
+				rsModel.tipoContabilitaEnum(TipoContabilitaEnum.ENTRATA);
 				break;
 			case SIOPE:
-				rsModel.tipoContabilitaEnum(Entrata.TipoContabilitaEnum.SIOPE);
+				rsModel.tipoContabilitaEnum(TipoContabilitaEnum.SIOPE);
 				break;
 			case SPECIALE:
-				rsModel.tipoContabilitaEnum(Entrata.TipoContabilitaEnum.SPECIALE);
+				rsModel.tipoContabilitaEnum(TipoContabilitaEnum.SPECIALE);
 				break;
 			}
 		}
 		
-		if(ibanAccredito != null)
-			rsModel.ibanAccredito(ibanAccredito.getCodIban());
-
-		if(tributo.getIbanAccredito()!=null)
-			rsModel.ibanAppoggio(tributo.getIbanAccredito().getCodIban());
-
 		if(tributo.getCodTributoIuv()!=null)
 			rsModel.codificaIUV(tributo.getCodTributoIuv());
 		
 		return rsModel;
 	}
+
+//	public static PutEntrataDominioDTO getPutEntrataDominioDTO(EntrataPost entrataRequest, String idDominio,
+//			String idEntrata, IAutorizzato user) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 }

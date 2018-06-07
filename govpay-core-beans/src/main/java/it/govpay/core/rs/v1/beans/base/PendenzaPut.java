@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"idDominio",
-"idUnitaOperativa",
 "nome",
 "causale",
 "soggettoPagatore",
@@ -31,15 +29,11 @@ import java.util.List;
 "datiAllegati",
 "tassonomia",
 "tassonomiaAvviso",
+"idDominio",
+"idUnitaOperativa",
 "voci",
 })
 public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
-  
-  @JsonProperty("idDominio")
-  private String idDominio = null;
-  
-  @JsonProperty("idUnitaOperativa")
-  private String idUnitaOperativa = null;
   
   @JsonProperty("nome")
   private String nome = null;
@@ -80,41 +74,15 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
   
+  @JsonProperty("idDominio")
+  private String idDominio = null;
+  
+  @JsonProperty("idUnitaOperativa")
+  private String idUnitaOperativa = null;
+  
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<VocePendenza>();
   
-  /**
-   * Identificativo del dominio creditore
-   **/
-  public PendenzaPut idDominio(String idDominio) {
-    this.idDominio = idDominio;
-    return this;
-  }
-
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return idDominio;
-  }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
-  }
-
-  /**
-   * Identificativo dell'unita' operativa
-   **/
-  public PendenzaPut idUnitaOperativa(String idUnitaOperativa) {
-    this.idUnitaOperativa = idUnitaOperativa;
-    return this;
-  }
-
-  @JsonProperty("idUnitaOperativa")
-  public String getIdUnitaOperativa() {
-    return idUnitaOperativa;
-  }
-  public void setIdUnitaOperativa(String idUnitaOperativa) {
-    this.idUnitaOperativa = idUnitaOperativa;
-  }
-
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
    **/
@@ -275,7 +243,7 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
    **/
   public PendenzaPut datiAllegati(String datiAllegati) {
     this.datiAllegati = datiAllegati;
@@ -333,6 +301,38 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Identificativo del dominio creditore
+   **/
+  public PendenzaPut idDominio(String idDominio) {
+    this.idDominio = idDominio;
+    return this;
+  }
+
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
+  }
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
+  }
+
+  /**
+   * Identificativo dell'unita' operativa
+   **/
+  public PendenzaPut idUnitaOperativa(String idUnitaOperativa) {
+    this.idUnitaOperativa = idUnitaOperativa;
+    return this;
+  }
+
+  @JsonProperty("idUnitaOperativa")
+  public String getIdUnitaOperativa() {
+    return idUnitaOperativa;
+  }
+  public void setIdUnitaOperativa(String idUnitaOperativa) {
+    this.idUnitaOperativa = idUnitaOperativa;
+  }
+
+  /**
    **/
   public PendenzaPut voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -356,9 +356,7 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
       return false;
     }
     PendenzaPut pendenzaPut = (PendenzaPut) o;
-    return Objects.equals(idDominio, pendenzaPut.idDominio) &&
-        Objects.equals(idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
-        Objects.equals(nome, pendenzaPut.nome) &&
+    return Objects.equals(nome, pendenzaPut.nome) &&
         Objects.equals(causale, pendenzaPut.causale) &&
         Objects.equals(soggettoPagatore, pendenzaPut.soggettoPagatore) &&
         Objects.equals(importo, pendenzaPut.importo) &&
@@ -371,12 +369,14 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(datiAllegati, pendenzaPut.datiAllegati) &&
         Objects.equals(tassonomia, pendenzaPut.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenzaPut.tassonomiaAvviso) &&
+        Objects.equals(idDominio, pendenzaPut.idDominio) &&
+        Objects.equals(idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
         Objects.equals(voci, pendenzaPut.voci);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idDominio, idUnitaOperativa, voci);
   }
 
   public static PendenzaPut parse(String json) {
@@ -393,8 +393,6 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class PendenzaPut {\n");
     
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
@@ -408,6 +406,8 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("}");
     return sb.toString();

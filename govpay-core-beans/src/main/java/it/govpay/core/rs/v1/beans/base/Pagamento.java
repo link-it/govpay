@@ -2,6 +2,7 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -13,19 +14,20 @@ import it.govpay.core.rs.v1.serializer.CustomBigDecimalSerializer;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "id",
+"nome",
+"dataRichiestaPagamento",
 "idSessionePortale",
 "idSessionePsp",
-"nome",
 "importo",
 "stato",
 "pspRedirectUrl",
-"dataRichiestaPagamento",
+"urlRitorno",
 "contoAddebito",
 "dataEsecuzionePagamento",
 "credenzialiPagatore",
 "soggettoVersante",
 "autenticazioneSoggetto",
-"canale",
+"lingua",
 "pendenze",
 "rpp",
 })
@@ -34,14 +36,17 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("id")
   private String id = null;
   
+  @JsonProperty("nome")
+  private String nome = null;
+  
+  @JsonProperty("dataRichiestaPagamento")
+  private Date dataRichiestaPagamento = null;
+  
   @JsonProperty("idSessionePortale")
   private String idSessionePortale = null;
   
   @JsonProperty("idSessionePsp")
   private String idSessionePsp = null;
-  
-  @JsonProperty("nome")
-  private String nome = null;
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
@@ -52,11 +57,11 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("pspRedirectUrl")
   private String pspRedirectUrl = null;
   
-  @JsonProperty("dataRichiestaPagamento")
-  private Date dataRichiestaPagamento = null;
+  @JsonProperty("urlRitorno")
+  private String urlRitorno = null;
   
   @JsonProperty("contoAddebito")
-  private Object contoAddebito = null;
+  private ContoAddebito contoAddebito = null;
   
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
@@ -117,14 +122,64 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("autenticazioneSoggetto")
   private AutenticazioneSoggettoEnum autenticazioneSoggetto = null;
   
-  @JsonProperty("canale")
-  private String canale = null;
+    
+  /**
+   * Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
+   */
+  public enum LinguaEnum {
+    
+    
+        
+            
+    IT("IT"),
+    
+            
+    EN("EN"),
+    
+            
+    FR("FR"),
+    
+            
+    DE("DE"),
+    
+            
+    SL("SL");
+            
+        
+    
+
+    private String value;
+
+    LinguaEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @org.codehaus.jackson.annotate.JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static LinguaEnum fromValue(String text) {
+      for (LinguaEnum b : LinguaEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+    
+  @JsonProperty("lingua")
+  private LinguaEnum lingua = LinguaEnum.IT;
   
   @JsonProperty("pendenze")
-  private Object pendenze = null;
+  private List<PendenzaIndex> pendenze = null;
   
   @JsonProperty("rpp")
-  private Object rpp = null;
+  private List<RppIndex> rpp = null;
   
   /**
    * Identificativo del pagamento assegnato da GovPay
@@ -140,6 +195,38 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
   public void setId(String id) {
     this.id = id;
+  }
+
+  /**
+   * Identificativo del pagamento assegnato da GovPay
+   **/
+  public Pagamento nome(String nome) {
+    this.nome = nome;
+    return this;
+  }
+
+  @JsonProperty("nome")
+  public String getNome() {
+    return nome;
+  }
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  /**
+   * Data di richiesta del pagamento
+   **/
+  public Pagamento dataRichiestaPagamento(Date dataRichiestaPagamento) {
+    this.dataRichiestaPagamento = dataRichiestaPagamento;
+    return this;
+  }
+
+  @JsonProperty("dataRichiestaPagamento")
+  public Date getDataRichiestaPagamento() {
+    return dataRichiestaPagamento;
+  }
+  public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
+    this.dataRichiestaPagamento = dataRichiestaPagamento;
   }
 
   /**
@@ -172,22 +259,6 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
   public void setIdSessionePsp(String idSessionePsp) {
     this.idSessionePsp = idSessionePsp;
-  }
-
-  /**
-   * Nome del pagamento da visualizzare all'utente.
-   **/
-  public Pagamento nome(String nome) {
-    this.nome = nome;
-    return this;
-  }
-
-  @JsonProperty("nome")
-  public String getNome() {
-    return nome;
-  }
-  public void setNome(String nome) {
-    this.nome = nome;
   }
 
   /**
@@ -239,34 +310,34 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Data e ora di avvio del pagamento
+   * url di ritorno al portale al termine della sessione di pagamento
    **/
-  public Pagamento dataRichiestaPagamento(Date dataRichiestaPagamento) {
-    this.dataRichiestaPagamento = dataRichiestaPagamento;
+  public Pagamento urlRitorno(String urlRitorno) {
+    this.urlRitorno = urlRitorno;
     return this;
   }
 
-  @JsonProperty("dataRichiestaPagamento")
-  public Date getDataRichiestaPagamento() {
-    return dataRichiestaPagamento;
+  @JsonProperty("urlRitorno")
+  public String getUrlRitorno() {
+    return urlRitorno;
   }
-  public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
-    this.dataRichiestaPagamento = dataRichiestaPagamento;
+  public void setUrlRitorno(String urlRitorno) {
+    this.urlRitorno = urlRitorno;
   }
 
   /**
    * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
    **/
-  public Pagamento contoAddebito(Object contoAddebito) {
+  public Pagamento contoAddebito(ContoAddebito contoAddebito) {
     this.contoAddebito = contoAddebito;
     return this;
   }
 
   @JsonProperty("contoAddebito")
-  public Object getContoAddebito() {
+  public ContoAddebito getContoAddebito() {
     return contoAddebito;
   }
-  public void setContoAddebito(Object contoAddebito) {
+  public void setContoAddebito(ContoAddebito contoAddebito) {
     this.contoAddebito = contoAddebito;
   }
 
@@ -334,50 +405,50 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Url per il canale di pagamento utilizzato
+   * Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
    **/
-  public Pagamento canale(String canale) {
-    this.canale = canale;
+  public Pagamento lingua(LinguaEnum lingua) {
+    this.lingua = lingua;
     return this;
   }
 
-  @JsonProperty("canale")
-  public String getCanale() {
-    return canale;
+  @JsonProperty("lingua")
+  public LinguaEnum getLingua() {
+    return lingua;
   }
-  public void setCanale(String canale) {
-    this.canale = canale;
+  public void setLingua(LinguaEnum lingua) {
+    this.lingua = lingua;
   }
 
   /**
    * Url per le pendenze oggetto del Pagamento
    **/
-  public Pagamento pendenze(Object pendenze) {
+  public Pagamento pendenze(List<PendenzaIndex> pendenze) {
     this.pendenze = pendenze;
     return this;
   }
 
   @JsonProperty("pendenze")
-  public Object getPendenze() {
+  public List<PendenzaIndex> getPendenze() {
     return pendenze;
   }
-  public void setPendenze(Object pendenze) {
+  public void setPendenze(List<PendenzaIndex> pendenze) {
     this.pendenze = pendenze;
   }
 
   /**
    * Url per le richieste di pagamento oggetto del Pagamento
    **/
-  public Pagamento rpp(Object rpp) {
+  public Pagamento rpp(List<RppIndex> rpp) {
     this.rpp = rpp;
     return this;
   }
 
   @JsonProperty("rpp")
-  public Object getRpp() {
+  public List<RppIndex> getRpp() {
     return rpp;
   }
-  public void setRpp(Object rpp) {
+  public void setRpp(List<RppIndex> rpp) {
     this.rpp = rpp;
   }
 
@@ -391,26 +462,27 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
     Pagamento pagamento = (Pagamento) o;
     return Objects.equals(id, pagamento.id) &&
+        Objects.equals(nome, pagamento.nome) &&
+        Objects.equals(dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
         Objects.equals(idSessionePortale, pagamento.idSessionePortale) &&
         Objects.equals(idSessionePsp, pagamento.idSessionePsp) &&
-        Objects.equals(nome, pagamento.nome) &&
         Objects.equals(importo, pagamento.importo) &&
         Objects.equals(stato, pagamento.stato) &&
         Objects.equals(pspRedirectUrl, pagamento.pspRedirectUrl) &&
-        Objects.equals(dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
+        Objects.equals(urlRitorno, pagamento.urlRitorno) &&
         Objects.equals(contoAddebito, pagamento.contoAddebito) &&
         Objects.equals(dataEsecuzionePagamento, pagamento.dataEsecuzionePagamento) &&
         Objects.equals(credenzialiPagatore, pagamento.credenzialiPagatore) &&
         Objects.equals(soggettoVersante, pagamento.soggettoVersante) &&
         Objects.equals(autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
-        Objects.equals(canale, pagamento.canale) &&
+        Objects.equals(lingua, pagamento.lingua) &&
         Objects.equals(pendenze, pagamento.pendenze) &&
         Objects.equals(rpp, pagamento.rpp);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idSessionePortale, idSessionePsp, nome, importo, stato, pspRedirectUrl, dataRichiestaPagamento, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, canale, pendenze, rpp);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
   }
 
   public static Pagamento parse(String json) {
@@ -428,19 +500,20 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("class Pagamento {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
     sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
     sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
-    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
-    sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
+    sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
     sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
     sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
     sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
     sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
     sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
-    sb.append("    canale: ").append(toIndentedString(canale)).append("\n");
+    sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
     sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("}");

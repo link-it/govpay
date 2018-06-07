@@ -134,11 +134,11 @@ public class Entrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.tipoContabilita = tipoContabilita;
   }
 
-  public void setTipoContabilita(String modelloPagamento) throws Exception{
-	  if(modelloPagamento != null) {
-		  this.tipoContabilita = TipoContabilitaEnum.fromValue(modelloPagamento);
+  public void setTipoContabilita(String tipoContabilita) throws Exception{
+	  if(tipoContabilita != null) {
+		  this.tipoContabilita = TipoContabilitaEnum.fromValue(tipoContabilita);
 		  if(this.tipoContabilita == null)
-			  throw new Exception("valore ["+modelloPagamento+"] non ammesso per la property tipoContabilita");
+			  throw new Exception("valore ["+tipoContabilita+"] non ammesso per la property tipoContabilita");
 	  }
   }
   

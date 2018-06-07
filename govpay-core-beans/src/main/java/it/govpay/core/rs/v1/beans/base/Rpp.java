@@ -1,9 +1,8 @@
 package it.govpay.core.rs.v1.beans.base;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
@@ -11,35 +10,14 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"idDominio",
-"iuv",
-"ccp",
-"pendenza",
-"modelloPagamento",
 "stato",
 "dettaglioStato",
-"dataRichiesta",
-"dataRicevuta",
-"esito",
+"segnalazioni",
 "rpt",
 "rt",
+"pendenza",
 })
 public class Rpp extends JSONSerializable {
-  
-  @JsonProperty("idDominio")
-  private String idDominio = null;
-  
-  @JsonProperty("iuv")
-  private String iuv = null;
-  
-  @JsonProperty("ccp")
-  private String ccp = null;
-  
-  @JsonProperty("pendenza")
-  private Object pendenza = null;
-  
-  @JsonProperty("modelloPagamento")
-  private ModelloPagamento modelloPagamento = null;
   
   @JsonProperty("stato")
   private String stato = null;
@@ -47,14 +25,8 @@ public class Rpp extends JSONSerializable {
   @JsonProperty("dettaglioStato")
   private String dettaglioStato = null;
   
-  @JsonProperty("dataRichiesta")
-  private Date dataRichiesta = null;
-  
-  @JsonProperty("dataRicevuta")
-  private Date dataRicevuta = null;
-  
-  @JsonProperty("esito")
-  private EsitoRpt esito = null;
+  @JsonProperty("segnalazioni")
+  private List<Segnalazione> segnalazioni = null;
   
   @JsonProperty("rpt")
   private CtRichiestaPagamentoTelematico rpt = null;
@@ -62,101 +34,9 @@ public class Rpp extends JSONSerializable {
   @JsonProperty("rt")
   private CtRicevutaTelematica rt = null;
   
-  /**
-   * Identificativo ente creditore
-   **/
-  public Rpp idDominio(String idDominio) {
-    this.idDominio = idDominio;
-    return this;
-  }
-
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return idDominio;
-  }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
-  }
-
-  /**
-   * Identificativo univoco di versamento
-   **/
-  public Rpp iuv(String iuv) {
-    this.iuv = iuv;
-    return this;
-  }
-
-  @JsonProperty("iuv")
-  public String getIuv() {
-    return iuv;
-  }
-  public void setIuv(String iuv) {
-    this.iuv = iuv;
-  }
-
-  /**
-   * Codice contesto di pagamento
-   **/
-  public Rpp ccp(String ccp) {
-    this.ccp = ccp;
-    return this;
-  }
-
-  @JsonProperty("ccp")
-  public String getCcp() {
-    return ccp;
-  }
-  public void setCcp(String ccp) {
-    this.ccp = ccp;
-  }
-
-  /**
-   * Url al dettaglio della pendenza
-   **/
-  public Rpp pendenza(Object pendenza) {
-    this.pendenza = pendenza;
-    return this;
-  }
-
   @JsonProperty("pendenza")
-  public Object getPendenza() {
-    return pendenza;
-  }
-  public void setPendenza(Object pendenza) {
-    this.pendenza = pendenza;
-  }
-
-  /**
-   **/
-  public Rpp modelloPagamento(ModelloPagamento modelloPagamento) {
-    this.modelloPagamento = modelloPagamento;
-    return this;
-  }
-
-  @JsonIgnore
-  public ModelloPagamento getModelloPagamentoEnum() {
-	    return modelloPagamento;
-  }
-  public void setModelloPagamento(ModelloPagamento modelloPagamento) {
-    this.modelloPagamento = modelloPagamento;
-  }
+  private PendenzaIndex pendenza = null;
   
-  public void setModelloPagamento(String modelloPagamento) throws Exception{
-	  if(modelloPagamento != null) {
-		  this.modelloPagamento = ModelloPagamento.fromValue(modelloPagamento);
-		  if(this.modelloPagamento == null)
-			  throw new Exception("valore ["+modelloPagamento+"] non ammesso per la property modelloPagamento");
-	  }
-  }
-  
-  @JsonProperty("modelloPagamento")
-  public String getModelloPagamento() {
-	  if(modelloPagamento != null) {
-		  return modelloPagamento.toString();
-	  } else {
-		  return null;
-	  }
-}
 
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
@@ -191,68 +71,19 @@ public class Rpp extends JSONSerializable {
   }
 
   /**
-   * Data di emissione della richiesta di pagamento.
    **/
-  public Rpp dataRichiesta(Date dataRichiesta) {
-    this.dataRichiesta = dataRichiesta;
+  public Rpp segnalazioni(List<Segnalazione> segnalazioni) {
+    this.segnalazioni = segnalazioni;
     return this;
   }
 
-  @JsonProperty("dataRichiesta")
-  public Date getDataRichiesta() {
-    return dataRichiesta;
+  @JsonProperty("segnalazioni")
+  public List<Segnalazione> getSegnalazioni() {
+    return segnalazioni;
   }
-  public void setDataRichiesta(Date dataRichiesta) {
-    this.dataRichiesta = dataRichiesta;
+  public void setSegnalazioni(List<Segnalazione> segnalazioni) {
+    this.segnalazioni = segnalazioni;
   }
-
-  /**
-   * Data di ricezione della ricevuta telematica
-   **/
-  public Rpp dataRicevuta(Date dataRicevuta) {
-    this.dataRicevuta = dataRicevuta;
-    return this;
-  }
-
-  @JsonProperty("dataRicevuta")
-  public Date getDataRicevuta() {
-    return dataRicevuta;
-  }
-  public void setDataRicevuta(Date dataRicevuta) {
-    this.dataRicevuta = dataRicevuta;
-  }
-
-  /**
-   **/
-  public Rpp esito(EsitoRpt esito) {
-    this.esito = esito;
-    return this;
-  }
-
-  @JsonIgnore
-  public EsitoRpt getEsitoEnum() {
-    return esito;
-  }
-  public void setEsito(EsitoRpt esito) {
-    this.esito = esito;
-  }
-  
-  public void setEsito(String esito) throws Exception{
-	  if(esito != null) {
-		  this.esito = EsitoRpt.fromValue(esito);
-		  if(this.esito == null)
-			  throw new Exception("valore ["+esito+"] non ammesso per la property esito");
-	  }
-  }
-  
-  @JsonProperty("esito")
-  public String getEsito() {
-	  if(esito != null) {
-		  return esito.toString();
-	  } else {
-		  return null;
-	  }
-}
 
   /**
    * Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico
@@ -286,6 +117,21 @@ public class Rpp extends JSONSerializable {
     this.rt = rt;
   }
 
+  /**
+   **/
+  public Rpp pendenza(PendenzaIndex pendenza) {
+    this.pendenza = pendenza;
+    return this;
+  }
+
+  @JsonProperty("pendenza")
+  public PendenzaIndex getPendenza() {
+    return pendenza;
+  }
+  public void setPendenza(PendenzaIndex pendenza) {
+    this.pendenza = pendenza;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -295,23 +141,17 @@ public class Rpp extends JSONSerializable {
       return false;
     }
     Rpp rpp = (Rpp) o;
-    return Objects.equals(idDominio, rpp.idDominio) &&
-        Objects.equals(iuv, rpp.iuv) &&
-        Objects.equals(ccp, rpp.ccp) &&
-        Objects.equals(pendenza, rpp.pendenza) &&
-        Objects.equals(modelloPagamento, rpp.modelloPagamento) &&
-        Objects.equals(stato, rpp.stato) &&
+    return Objects.equals(stato, rpp.stato) &&
         Objects.equals(dettaglioStato, rpp.dettaglioStato) &&
-        Objects.equals(dataRichiesta, rpp.dataRichiesta) &&
-        Objects.equals(dataRicevuta, rpp.dataRicevuta) &&
-        Objects.equals(esito, rpp.esito) &&
+        Objects.equals(segnalazioni, rpp.segnalazioni) &&
         Objects.equals(rpt, rpp.rpt) &&
-        Objects.equals(rt, rpp.rt);
+        Objects.equals(rt, rpp.rt) &&
+        Objects.equals(pendenza, rpp.pendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, ccp, pendenza, modelloPagamento, stato, dettaglioStato, dataRichiesta, dataRicevuta, esito, rpt, rt);
+    return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
   }
 
   public static Rpp parse(String json) {
@@ -327,19 +167,13 @@ public class Rpp extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Rpp {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
-    sb.append("    ccp: ").append(toIndentedString(ccp)).append("\n");
-    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
-    sb.append("    modelloPagamento: ").append(toIndentedString(modelloPagamento)).append("\n");
+    
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    dettaglioStato: ").append(toIndentedString(dettaglioStato)).append("\n");
-    sb.append("    dataRichiesta: ").append(toIndentedString(dataRichiesta)).append("\n");
-    sb.append("    dataRicevuta: ").append(toIndentedString(dataRicevuta)).append("\n");
-    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
+    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
     sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
     sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
+    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();
   }

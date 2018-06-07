@@ -17,11 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"idA2A",
-"idPendenza",
-"dominio",
-"unitaOperativa",
-"stato",
 "nome",
 "causale",
 "soggettoPagatore",
@@ -35,26 +30,17 @@ import java.util.List;
 "datiAllegati",
 "tassonomia",
 "tassonomiaAvviso",
+"idA2A",
+"idPendenza",
+"dominio",
+"unitaOperativa",
+"stato",
+"segnalazioni",
 "voci",
 "rpp",
 "pagamenti",
 })
 public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
-  
-  @JsonProperty("idA2A")
-  private String idA2A = null;
-  
-  @JsonProperty("idPendenza")
-  private String idPendenza = null;
-  
-  @JsonProperty("dominio")
-  private Object dominio = null;
-  
-  @JsonProperty("unitaOperativa")
-  private String unitaOperativa = null;
-  
-  @JsonProperty("stato")
-  private StatoPendenza stato = null;
   
   @JsonProperty("nome")
   private String nome = null;
@@ -95,94 +81,33 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
   
+  @JsonProperty("idA2A")
+  private String idA2A = null;
+  
+  @JsonProperty("idPendenza")
+  private String idPendenza = null;
+  
+  @JsonProperty("dominio")
+  private DominioIndex dominio = null;
+  
+  @JsonProperty("unitaOperativa")
+  private UnitaOperativa unitaOperativa = null;
+  
+  @JsonProperty("stato")
+  private StatoPendenza stato = null;
+  
+  @JsonProperty("segnalazioni")
+  private List<Segnalazione> segnalazioni = null;
+  
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<VocePendenza>();
   
   @JsonProperty("rpp")
-  private String rpp = null;
+  private List<Rpp> rpp = new ArrayList<Rpp>();
   
   @JsonProperty("pagamenti")
-  private String pagamenti = null;
+  private List<Pagamento> pagamenti = new ArrayList<Pagamento>();
   
-  /**
-   * Identificativo del gestionale responsabile della pendenza
-   **/
-  public Pendenza idA2A(String idA2A) {
-    this.idA2A = idA2A;
-    return this;
-  }
-
-  @JsonProperty("idA2A")
-  public String getIdA2A() {
-    return idA2A;
-  }
-  public void setIdA2A(String idA2A) {
-    this.idA2A = idA2A;
-  }
-
-  /**
-   * Identificativo della pendenza nel gestionale responsabile
-   **/
-  public Pendenza idPendenza(String idPendenza) {
-    this.idPendenza = idPendenza;
-    return this;
-  }
-
-  @JsonProperty("idPendenza")
-  public String getIdPendenza() {
-    return idPendenza;
-  }
-  public void setIdPendenza(String idPendenza) {
-    this.idPendenza = idPendenza;
-  }
-
-  /**
-   * Url o definizione del dominio creditore
-   **/
-  public Pendenza dominio(Object dominio) {
-    this.dominio = dominio;
-    return this;
-  }
-
-  @JsonProperty("dominio")
-  public Object getDominio() {
-    return dominio;
-  }
-  public void setDominio(Object dominio) {
-    this.dominio = dominio;
-  }
-
-  /**
-   * Url per l'unita operativa creditrice
-   **/
-  public Pendenza unitaOperativa(String unitaOperativa) {
-    this.unitaOperativa = unitaOperativa;
-    return this;
-  }
-
-  @JsonProperty("unitaOperativa")
-  public String getUnitaOperativa() {
-    return unitaOperativa;
-  }
-  public void setUnitaOperativa(String unitaOperativa) {
-    this.unitaOperativa = unitaOperativa;
-  }
-
-  /**
-   **/
-  public Pendenza stato(StatoPendenza stato) {
-    this.stato = stato;
-    return this;
-  }
-
-  @JsonProperty("stato")
-  public StatoPendenza getStato() {
-    return stato;
-  }
-  public void setStato(StatoPendenza stato) {
-    this.stato = stato;
-  }
-
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
    **/
@@ -343,7 +268,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
    **/
   public Pendenza datiAllegati(String datiAllegati) {
     this.datiAllegati = datiAllegati;
@@ -401,6 +326,98 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Identificativo del gestionale responsabile della pendenza
+   **/
+  public Pendenza idA2A(String idA2A) {
+    this.idA2A = idA2A;
+    return this;
+  }
+
+  @JsonProperty("idA2A")
+  public String getIdA2A() {
+    return idA2A;
+  }
+  public void setIdA2A(String idA2A) {
+    this.idA2A = idA2A;
+  }
+
+  /**
+   * Identificativo della pendenza nel gestionale responsabile
+   **/
+  public Pendenza idPendenza(String idPendenza) {
+    this.idPendenza = idPendenza;
+    return this;
+  }
+
+  @JsonProperty("idPendenza")
+  public String getIdPendenza() {
+    return idPendenza;
+  }
+  public void setIdPendenza(String idPendenza) {
+    this.idPendenza = idPendenza;
+  }
+
+  /**
+   **/
+  public Pendenza dominio(DominioIndex dominio) {
+    this.dominio = dominio;
+    return this;
+  }
+
+  @JsonProperty("dominio")
+  public DominioIndex getDominio() {
+    return dominio;
+  }
+  public void setDominio(DominioIndex dominio) {
+    this.dominio = dominio;
+  }
+
+  /**
+   **/
+  public Pendenza unitaOperativa(UnitaOperativa unitaOperativa) {
+    this.unitaOperativa = unitaOperativa;
+    return this;
+  }
+
+  @JsonProperty("unitaOperativa")
+  public UnitaOperativa getUnitaOperativa() {
+    return unitaOperativa;
+  }
+  public void setUnitaOperativa(UnitaOperativa unitaOperativa) {
+    this.unitaOperativa = unitaOperativa;
+  }
+
+  /**
+   **/
+  public Pendenza stato(StatoPendenza stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoPendenza getStato() {
+    return stato;
+  }
+  public void setStato(StatoPendenza stato) {
+    this.stato = stato;
+  }
+
+  /**
+   **/
+  public Pendenza segnalazioni(List<Segnalazione> segnalazioni) {
+    this.segnalazioni = segnalazioni;
+    return this;
+  }
+
+  @JsonProperty("segnalazioni")
+  public List<Segnalazione> getSegnalazioni() {
+    return segnalazioni;
+  }
+  public void setSegnalazioni(List<Segnalazione> segnalazioni) {
+    this.segnalazioni = segnalazioni;
+  }
+
+  /**
    **/
   public Pendenza voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -416,34 +433,32 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Url per l'elenco delle rpp emesse per la pendenza
    **/
-  public Pendenza rpp(String rpp) {
+  public Pendenza rpp(List<Rpp> rpp) {
     this.rpp = rpp;
     return this;
   }
 
   @JsonProperty("rpp")
-  public String getRpp() {
+  public List<Rpp> getRpp() {
     return rpp;
   }
-  public void setRpp(String rpp) {
+  public void setRpp(List<Rpp> rpp) {
     this.rpp = rpp;
   }
 
   /**
-   * Url per l'elenco dei pagamenti da portale comprensivi della pendenza
    **/
-  public Pendenza pagamenti(String pagamenti) {
+  public Pendenza pagamenti(List<Pagamento> pagamenti) {
     this.pagamenti = pagamenti;
     return this;
   }
 
   @JsonProperty("pagamenti")
-  public String getPagamenti() {
+  public List<Pagamento> getPagamenti() {
     return pagamenti;
   }
-  public void setPagamenti(String pagamenti) {
+  public void setPagamenti(List<Pagamento> pagamenti) {
     this.pagamenti = pagamenti;
   }
 
@@ -456,12 +471,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
       return false;
     }
     Pendenza pendenza = (Pendenza) o;
-    return Objects.equals(idA2A, pendenza.idA2A) &&
-        Objects.equals(idPendenza, pendenza.idPendenza) &&
-        Objects.equals(dominio, pendenza.dominio) &&
-        Objects.equals(unitaOperativa, pendenza.unitaOperativa) &&
-        Objects.equals(stato, pendenza.stato) &&
-        Objects.equals(nome, pendenza.nome) &&
+    return Objects.equals(nome, pendenza.nome) &&
         Objects.equals(causale, pendenza.causale) &&
         Objects.equals(soggettoPagatore, pendenza.soggettoPagatore) &&
         Objects.equals(importo, pendenza.importo) &&
@@ -474,6 +484,12 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(datiAllegati, pendenza.datiAllegati) &&
         Objects.equals(tassonomia, pendenza.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenza.tassonomiaAvviso) &&
+        Objects.equals(idA2A, pendenza.idA2A) &&
+        Objects.equals(idPendenza, pendenza.idPendenza) &&
+        Objects.equals(dominio, pendenza.dominio) &&
+        Objects.equals(unitaOperativa, pendenza.unitaOperativa) &&
+        Objects.equals(stato, pendenza.stato) &&
+        Objects.equals(segnalazioni, pendenza.segnalazioni) &&
         Objects.equals(voci, pendenza.voci) &&
         Objects.equals(rpp, pendenza.rpp) &&
         Objects.equals(pagamenti, pendenza.pagamenti);
@@ -481,7 +497,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, dominio, unitaOperativa, stato, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, voci, rpp, pagamenti);
   }
 
   public static Pendenza parse(String json) {
@@ -498,11 +514,6 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Pendenza {\n");
     
-    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
-    sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
-    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
-    sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
@@ -516,6 +527,12 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
+    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
+    sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
+    sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");

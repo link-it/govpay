@@ -4,6 +4,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.rs.v1.beans.TipoEntrata;
+import it.govpay.core.rs.v1.beans.base.TipoContabilita;
 import it.govpay.core.rs.v1.beans.base.TipoEntrataPost;
 import it.govpay.model.IAutorizzato;
 
@@ -19,12 +20,12 @@ public class EntrateConverter {
 			tipoTributo.setCodTributoIuvDefault(entrataPost.getCodificaIUV().toString());
 		tipoTributo.setCodTributo(idEntrata);
 		tipoTributo.setDescrizione(entrataPost.getDescrizione());
-		if(entrataPost.getTipoContabilitaEnum() != null) {
-			switch (entrataPost.getTipoContabilitaEnum()) {
+		if(entrataPost.getTipoContabilita() != null) {
+			switch (entrataPost.getTipoContabilita()) {
 			case ALTRO:
 				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.ALTRO);
 				break;
-			case ENTRATA:
+			case CAPITOLO:
 				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.CAPITOLO);
 				break;
 			case SIOPE:
@@ -53,16 +54,16 @@ public class EntrateConverter {
 		if(tributo.getTipoContabilitaDefault() != null) {
 			switch (tributo.getTipoContabilitaDefault()) {
 			case ALTRO:
-				rsModel.tipoContabilitaEnum(TipoEntrata.TipoContabilitaEnum.ALTRO);
+				rsModel.tipoContabilita(TipoContabilita.ALTRO);
 				break;
 			case CAPITOLO:
-				rsModel.tipoContabilitaEnum(TipoEntrata.TipoContabilitaEnum.ENTRATA);
+				rsModel.tipoContabilita(TipoContabilita.CAPITOLO);
 				break;
 			case SIOPE:
-				rsModel.tipoContabilitaEnum(TipoEntrata.TipoContabilitaEnum.SIOPE);
+				rsModel.tipoContabilita(TipoContabilita.SIOPE);
 				break;
 			case SPECIALE:
-				rsModel.tipoContabilitaEnum(TipoEntrata.TipoContabilitaEnum.SPECIALE);
+				rsModel.tipoContabilita(TipoContabilita.SPECIALE);
 				break;
 			}
 		}

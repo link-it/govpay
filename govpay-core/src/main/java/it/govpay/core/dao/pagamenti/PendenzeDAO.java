@@ -1,6 +1,7 @@
 package it.govpay.core.dao.pagamenti;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -15,6 +16,8 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.business.model.Iuv;
+import it.govpay.core.business.model.PrintAvvisoDTO;
+import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -35,6 +38,8 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.avvisi.AvvisoPagamento;
+import it.govpay.model.avvisi.AvvisoPagamentoInput;
 
 public class PendenzeDAO extends BaseDAO{
 
@@ -234,8 +239,23 @@ public class PendenzeDAO extends BaseDAO{
 			
 			createOrUpdatePendenzaResponse.setBarCode(iuv.getBarCode() != null ? new String(iuv.getBarCode()) : null);
 			createOrUpdatePendenzaResponse.setQrCode(iuv.getQrCode() != null ? new String(iuv.getQrCode()) : null);
+			
+			if(putVersamentoDTO.isStampaAvviso()) {
+				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
+				AvvisoPagamento avvisoPagamento = new AvvisoPagamento();
+				avvisoPagamento.setCodDominio(chiediVersamento.getDominio(bd).getCodDominio());
+				avvisoPagamento.setIuv(iuv.getIuv());
+				PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
+				printAvvisoDTO.setAvviso(avvisoPagamento);
+				AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, chiediVersamento);
+				printAvvisoDTO.setInput(input); 
+				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
+				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
+			}
 
 		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} catch (Exception e) {
 			throw new GovPayException(e);
 		} finally {
 			if(bd != null)

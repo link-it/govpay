@@ -25,9 +25,9 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.rs.v1.beans.ListaPagamentiPortale;
 import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
-import it.govpay.core.rs.v1.beans.Pendenza;
-import it.govpay.core.rs.v1.beans.Rpp;
 import it.govpay.core.rs.v1.beans.base.PagamentoPost;
+import it.govpay.core.rs.v1.beans.base.PendenzaIndex;
+import it.govpay.core.rs.v1.beans.base.RppIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -71,7 +71,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			
 			String idSession = transactionId.replace("-", "");
-			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale,versioneInterfacciaWISP);
+			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
@@ -90,10 +90,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
     }
 
     public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
-    	return pagamentiIdGET(user, uriInfo, httpHeaders, id, false);
-    }
-    
-    public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id, boolean linkListe) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -108,25 +104,27 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
 			leggiPagamentoPortaleDTO.setIdSessione(id);
-			leggiPagamentoPortaleDTO.setRisolviLink(!linkListe); 
+			leggiPagamentoPortaleDTO.setRisolviLink(true);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.core.rs.v1.beans.PagamentoPortale response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
+			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
 			
-			if(!linkListe) {
-				List<Rpp> rpp = new ArrayList<Rpp>();
+			if(pagamentoPortaleDTOResponse.getListaRpp()!=null) {
+				List<RppIndex> rpp = new ArrayList<RppIndex>();
 				for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
-					rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
+					rpp.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
 				}
 				response.setRpp(rpp);
-				
-				List<it.govpay.core.rs.v1.beans.Pendenza> pendenze = new ArrayList<it.govpay.core.rs.v1.beans.Pendenza>();
+			}
+
+			if(pagamentoPortaleDTOResponse.getListaPendenze()!= null) {
+				List<PendenzaIndex> pendenze = new ArrayList<PendenzaIndex>();
 				for(LeggiPendenzaDTOResponse ricevutaDTOResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
-					Pendenza rsModel = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti(),true);
+					PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio());
 					pendenze.add(rsModel);
 				}
 				response.setPendenze(pendenze);
@@ -189,9 +187,9 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.PagamentoPortale> results = new ArrayList<it.govpay.core.rs.v1.beans.PagamentoPortale>();
+			List<it.govpay.core.rs.v1.beans.base.PagamentoIndex> results = new ArrayList<it.govpay.core.rs.v1.beans.base.PagamentoIndex>();
 			for(it.govpay.bd.model.PagamentoPortale pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
-				results.add(PagamentiPortaleConverter.toRsModel(pagamentoPortale));
+				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
 			}
 			
 			ListaPagamentiPortale response = new ListaPagamentiPortale(results, this.getServicePath(uriInfo),

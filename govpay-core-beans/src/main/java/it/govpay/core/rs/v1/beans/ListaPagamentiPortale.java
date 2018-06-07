@@ -7,9 +7,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
-public class ListaPagamentiPortale extends Lista<PagamentoPortale> {
+public class ListaPagamentiPortale extends Lista<it.govpay.core.rs.v1.beans.base.PagamentoIndex> {
 	
-	public ListaPagamentiPortale(List<PagamentoPortale> pagamentiPortale, URI requestUri, long count, long pagina, long limit) {
+	public ListaPagamentiPortale(List<it.govpay.core.rs.v1.beans.base.PagamentoIndex> pagamentiPortale, URI requestUri, long count, long pagina, long limit) {
 		super(pagamentiPortale, requestUri, count, pagina, limit);
 	}
 	

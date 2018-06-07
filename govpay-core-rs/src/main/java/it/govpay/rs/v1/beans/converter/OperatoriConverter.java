@@ -49,11 +49,7 @@ public class OperatoriConverter {
 		if(operatore.getUtenza().getDomini(null) != null) {
 			List<DominioIndex> idDomini = new ArrayList<DominioIndex>();
 			for (Dominio dominio : operatore.getUtenza().getDomini(null)) {
-				DominioIndex dI = new DominioIndex();
-				dI.setIdDominio(dominio.getCodDominio());
-				dI.setRagioneSociale(dominio.getRagioneSociale());
-				dI.setLocation(UriBuilderUtils.getDominio(dominio.getCodDominio()));
-				idDomini.add(dI);
+				idDomini.add(DominiConverter.toRsModelIndex(dominio));
 			}
 			rsModel.setDomini(idDomini);
 		}

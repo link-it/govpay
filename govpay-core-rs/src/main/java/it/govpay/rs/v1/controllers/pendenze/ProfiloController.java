@@ -1,4 +1,4 @@
-package it.govpay.rs.v1.controllers.base;
+package it.govpay.rs.v1.controllers.pendenze;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -12,13 +12,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.rs.v1.beans.ListaAcl;
+import it.govpay.core.rs.v1.beans.pendenze.ListaAcl;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.beans.converter.AclConverter;
+import it.govpay.rs.v1.beans.pendenze.converter.AclConverter;
 
 public class ProfiloController extends it.govpay.rs.BaseController {
 
@@ -28,7 +28,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 
 
 
-    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi) {
     	String methodName = "profiloGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -53,7 +53,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.ACL> results = new ArrayList<it.govpay.core.rs.v1.beans.ACL>();
+			List<it.govpay.core.rs.v1.beans.pendenze.Acl> results = new ArrayList<it.govpay.core.rs.v1.beans.pendenze.Acl>();
 			for(Acl acl: user.getAcls()) {
 				results.add(AclConverter.toRsModel(acl));
 			}
@@ -61,9 +61,9 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			ListaAcl response = new ListaAcl(results, this.getServicePath(uriInfo),
 					results.size(), 1, results.size());
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSONArray(null), 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSONArray(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSONArray(null)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSONArray(campi)),transactionId).build();
 			
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);

@@ -279,7 +279,7 @@ public class PendenzaPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
    **/
   public PendenzaPost datiAllegati(String datiAllegati) {
     this.datiAllegati = datiAllegati;
