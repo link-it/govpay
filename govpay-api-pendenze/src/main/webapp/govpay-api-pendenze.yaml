@@ -688,6 +688,8 @@ components:
           type: string
         descrizione:
           type: string        
+        dettaglio:
+          type: string     
     avviso:
       type: object
       required:
@@ -1375,25 +1377,17 @@ components:
           example:
             - Lettura
             - Scrittura
-    acl:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - id
-          properties:
-            id:
-              type: string
-              description: identificativo dell'acl
-              example: '1234'
-        - $ref: '#/components/schemas/aclPost'    
     profilo:
       type: object
       required: 
+        - nome
         - domini
         - entrate
         - acl
       properties:
+        nome:
+          type: string
+          description: Nome dell'utenza
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
@@ -1407,5 +1401,5 @@ components:
         acl:
           type: array
           items:
-            $ref: '#/components/schemas/acl'
+            $ref: '#/components/schemas/aclPost'
              

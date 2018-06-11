@@ -1225,9 +1225,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/aclPost'
+                $ref: '#/components/schemas/profilo'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -2250,7 +2248,34 @@ paths:
         '404':
           $ref: '#/components/responses/404'          
         '500':
-          $ref: '#/components/responses/500'    
+          $ref: '#/components/responses/500'   
+  '/operazioni/stato/{id}':
+    get:
+      summary: Stato di elaborazione di una operazione
+      tags:
+        - Operazioni
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo dell'istanza di operazione eseguita
+          required: true
+          schema:
+            type: string          
+      responses:
+        '201':
+          description: Stato di esecuzione
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/esitoOperazione' 
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'          
+        '500':
+          $ref: '#/components/responses/500'              
   '/ruoli':
     get:
       summary: Lista dei ruoli disponibili
@@ -3796,7 +3821,9 @@ components:
         codice:
           type: string
         descrizione:
-          type: string
+          type: string        
+        dettaglio:
+          type: string  
     incassoPost:
       type: object
       required:
@@ -4289,4 +4316,45 @@ components:
               description: identificativo del ruolo
               example: Amministratore
         - $ref: '#/components/schemas/ruoloPost'
-        
+    profilo:
+      type: object
+      required: 
+        - nome
+        - domini
+        - entrate
+        - acl
+      properties:
+        nome:
+          type: string
+          description: Nome dell'utenza
+        domini:
+          type: array
+          description: domini su cui e' abilitato ad operare
+          items: 
+            $ref: '#/components/schemas/dominioIndex'
+        entrate:
+          type: array
+          description: entrate su cui e' abilitato ad operare
+          items: 
+            $ref: '#/components/schemas/tipoEntrata'
+        acl:
+          type: array
+          items:
+            $ref: '#/components/schemas/aclPost'        
+    esitoOperazione:
+      type: object
+      required: 
+        - percentuale
+        - descrizione
+      properties:
+        percentuale:
+          type: number
+          description: Percentuale di avanzamento
+        descrizione:
+          type: string
+          description: testo descrittivo
+          items: 
+            $ref: '#/components/schemas/dominioIndex'
+        stato:
+          type: string
+          description: stato dell'operazione (OK/KO/WARN)
