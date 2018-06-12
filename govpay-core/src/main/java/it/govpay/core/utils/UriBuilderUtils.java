@@ -145,6 +145,10 @@ public class UriBuilderUtils {
 		return getBaseList("rpp");
 	}
 	
+	private static UriBuilder getListIncassi() {
+		return getBaseList("incassi");
+	}
+	
 	private static UriBuilder getListPendenze() {
 		return getBaseList("pendenze");
 	}
@@ -172,6 +176,15 @@ public class UriBuilderUtils {
 	 */
 	public static String getListDomini(String codStazione) {
 		return getListDomini().queryParam("idStazione", codStazione).build().toString();
+	}
+
+	/**
+	 * @param codApplicazione
+	 * @param codVersamentoEnte
+	 * @return
+	 */
+	public static String getIncassiByIdA2AIdPendenza(String idA2A, String idPendenza) {
+		return getListIncassi().path(idA2A).path(idPendenza).build().toString();
 	}
 	
 }

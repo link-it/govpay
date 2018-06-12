@@ -31,7 +31,7 @@ public class RiscossioniDAO extends BaseDAO{
 	public RiscossioniDAO() {
 	}
 
-	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
 		List<String> listaDominiFiltro = null;
 		BasicBD bd = null;
 
@@ -117,9 +117,13 @@ public class RiscossioniDAO extends BaseDAO{
 	}
 
 	private void populatePagamento(Pagamento pagamento, BasicBD bd)
-			throws ServiceException {
+			throws ServiceException, NotFoundException {
 		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
 		pagamento.getRpt(bd);
+		pagamento.getDominio(bd);
+		pagamento.getRendicontazioni(bd);
+		pagamento.getIncasso(bd);
 	}
 
 

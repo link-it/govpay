@@ -16,7 +16,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.rs.v1.costanti.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.rs.v1.controllers.base.FlussiRendicontazioneController;
+import it.govpay.rs.v1.controllers.ragioneria.FlussiRendicontazioneController;
 
 @Path("/flussiRendicontazione")
 
