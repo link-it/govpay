@@ -300,10 +300,4 @@ public class DominiConverter {
 		
 		return rsModel;
 	}
-
-//	public static PutEntrataDominioDTO getPutEntrataDominioDTO(EntrataPost entrataRequest, String idDominio,
-//			String idEntrata, IAutorizzato user) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 }

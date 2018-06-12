@@ -62,7 +62,7 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
   }
 
   @JsonProperty("generazioneIuvInterna")
-  public Boolean isGenerazioneIuvInterna() {
+  public Boolean GenerazioneIuvInterna() {
     return generazioneIuvInterna;
   }
   public void setGenerazioneIuvInterna(Boolean generazioneIuvInterna) {

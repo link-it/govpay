@@ -21,8 +21,8 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
-import it.govpay.core.rs.v1.beans.ListaOperatori;
-import it.govpay.core.rs.v1.beans.Operatore;
+import it.govpay.core.rs.v1.beans.base.ListaOperatori;
+import it.govpay.core.rs.v1.beans.base.Operatore;
 import it.govpay.core.rs.v1.beans.base.OperatorePost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -198,7 +198,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Operatore> results = new ArrayList<it.govpay.core.rs.v1.beans.Operatore>();
+			List<it.govpay.core.rs.v1.beans.base.Operatore> results = new ArrayList<it.govpay.core.rs.v1.beans.base.Operatore>();
 			for(it.govpay.bd.model.Operatore operatore: listaOperatoriDTOResponse.getResults()) {
 				results.add(OperatoriConverter.toRsModel(operatore));
 			}

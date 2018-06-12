@@ -118,7 +118,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			List<PendenzaIndex> results = new ArrayList<PendenzaIndex>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio());
+				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento());
 				results.add(rsModel);
 			}
 			

@@ -19,7 +19,7 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
   private String principalPagoPa = null;
   
   @JsonProperty("servizioPagoPa")
-  private Connector servizioPagoPa = null;
+  private ConnettorePagopa servizioPagoPa = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -58,16 +58,16 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
 
   /**
    **/
-  public IntermediarioPost servizioPagoPa(Connector servizioPagoPa) {
+  public IntermediarioPost servizioPagoPa(ConnettorePagopa servizioPagoPa) {
     this.servizioPagoPa = servizioPagoPa;
     return this;
   }
 
   @JsonProperty("servizioPagoPa")
-  public Connector getServizioPagoPa() {
+  public ConnettorePagopa getServizioPagoPa() {
     return servizioPagoPa;
   }
-  public void setServizioPagoPa(Connector servizioPagoPa) {
+  public void setServizioPagoPa(ConnettorePagopa servizioPagoPa) {
     this.servizioPagoPa = servizioPagoPa;
   }
 
@@ -80,7 +80,7 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
+  public Boolean Abilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

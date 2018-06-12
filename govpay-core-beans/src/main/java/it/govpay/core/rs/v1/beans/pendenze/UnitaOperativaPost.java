@@ -14,7 +14,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "pec",
 "tel",
 "fax",
-"gln",
 "web",
 "area",
 "abilitato",
@@ -53,9 +52,6 @@ public class UnitaOperativaPost extends JSONSerializable {
   
   @JsonProperty("fax")
   private String fax = null;
-  
-  @JsonProperty("gln")
-  private String gln = null;
   
   @JsonProperty("web")
   private String web = null;
@@ -243,22 +239,6 @@ public class UnitaOperativaPost extends JSONSerializable {
   }
 
   /**
-   * Global location number del beneficiario
-   **/
-  public UnitaOperativaPost gln(String gln) {
-    this.gln = gln;
-    return this;
-  }
-
-  @JsonProperty("gln")
-  public String getGln() {
-    return gln;
-  }
-  public void setGln(String gln) {
-    this.gln = gln;
-  }
-
-  /**
    * Url del sito web
    **/
   public UnitaOperativaPost web(String web) {
@@ -326,7 +306,6 @@ public class UnitaOperativaPost extends JSONSerializable {
         Objects.equals(pec, unitaOperativaPost.pec) &&
         Objects.equals(tel, unitaOperativaPost.tel) &&
         Objects.equals(fax, unitaOperativaPost.fax) &&
-        Objects.equals(gln, unitaOperativaPost.gln) &&
         Objects.equals(web, unitaOperativaPost.web) &&
         Objects.equals(area, unitaOperativaPost.area) &&
         Objects.equals(abilitato, unitaOperativaPost.abilitato);
@@ -334,7 +313,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, gln, web, area, abilitato);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, area, abilitato);
   }
 
   public static UnitaOperativaPost parse(String json) {
@@ -362,7 +341,6 @@ public class UnitaOperativaPost extends JSONSerializable {
     sb.append("    pec: ").append(toIndentedString(pec)).append("\n");
     sb.append("    tel: ").append(toIndentedString(tel)).append("\n");
     sb.append("    fax: ").append(toIndentedString(fax)).append("\n");
-    sb.append("    gln: ").append(toIndentedString(gln)).append("\n");
     sb.append("    web: ").append(toIndentedString(web)).append("\n");
     sb.append("    area: ").append(toIndentedString(area)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");

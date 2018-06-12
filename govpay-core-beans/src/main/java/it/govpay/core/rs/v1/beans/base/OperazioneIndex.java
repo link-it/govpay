@@ -4,36 +4,52 @@ import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"nome",
+"idOperazione",
+"descrizione",
 "location",
 })
 public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
-    
-  @JsonProperty("nome")
-  private String nome = null;
+  @JsonProperty("idOperazione")
+  private String idOperazione = null;
+  
+  @JsonProperty("descrizione")
+  private String descrizione = null;
   
   @JsonProperty("location")
   private String location = null;
   
   /**
-   * Location di errore
    **/
-  public OperazioneIndex nome(String nome) {
-    this.nome = nome;
+  public OperazioneIndex idOperazione(String idOperazione) {
+    this.idOperazione = idOperazione;
     return this;
   }
 
-  @JsonProperty("nome")
-  public String getNome() {
-    return nome;
+  @JsonProperty("idOperazione")
+  public String getIdOperazione() {
+    return idOperazione;
   }
-  public void setNome(String nome) {
-    this.nome = nome;
+  public void setIdOperazione(String idOperazione) {
+    this.idOperazione = idOperazione;
   }
 
   /**
-   * Location di errore
+   **/
+  public OperazioneIndex descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
+  /**
    **/
   public OperazioneIndex location(String location) {
     this.location = location;
@@ -56,14 +72,15 @@ public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    OperazioneIndex faultBean = (OperazioneIndex) o;
-    return Objects.equals(nome, faultBean.nome) &&
-        Objects.equals(location, faultBean.location) ;
+    OperazioneIndex operazioneIndex = (OperazioneIndex) o;
+    return Objects.equals(idOperazione, operazioneIndex.idOperazione) &&
+        Objects.equals(descrizione, operazioneIndex.descrizione) &&
+        Objects.equals(location, operazioneIndex.location);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, location);
+    return Objects.hash(idOperazione, descrizione, location);
   }
 
   public static OperazioneIndex parse(String json) {
@@ -72,15 +89,16 @@ public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable
 
   @Override
   public String getJsonIdFilter() {
-    return "faultBean";
+    return "operazioneIndex";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Operazione {\n");
+    sb.append("class OperazioneIndex {\n");
     
-    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    idOperazione: ").append(toIndentedString(idOperazione)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    location: ").append(toIndentedString(location)).append("\n");
     sb.append("}");
     return sb.toString();

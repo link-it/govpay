@@ -1,63 +1,97 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
-"nome",
-"stato",
+"idOperazione",
 "descrizione",
+"location",
+"stato",
+"esito",
 "dettaglio",
 })
 public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
-    
-  @JsonProperty("nome")
-  private String nome = null;
-  
-  @JsonProperty("stato")
-  private String stato = null;
+  @JsonProperty("idOperazione")
+  private String idOperazione = null;
   
   @JsonProperty("descrizione")
   private String descrizione = null;
+  
+  @JsonProperty("location")
+  private String location = null;
+  
+    
+  /**
+   * Gets or Sets stato
+   */
+  public enum StatoEnum {
+    
+    
+        
+            
+    _0("0"),
+    
+            
+    _1("1"),
+    
+            
+    _2("2");
+            
+        
+    
+
+    private String value;
+
+    StatoEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @org.codehaus.jackson.annotate.JsonValue
+    public String toString() {
+      return value;
+    }
+
+    public static StatoEnum fromValue(String text) {
+      for (StatoEnum b : StatoEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+    
+  @JsonProperty("stato")
+  private StatoEnum stato = null;
+  
+  @JsonProperty("esito")
+  private String esito = null;
   
   @JsonProperty("dettaglio")
   private String dettaglio = null;
   
   /**
-   * Nome Operazione
    **/
-  public Operazione nome(String nome) {
-    this.nome = nome;
+  public Operazione idOperazione(String idOperazione) {
+    this.idOperazione = idOperazione;
     return this;
   }
 
-  @JsonProperty("nome")
-  public String getNome() {
-    return nome;
+  @JsonProperty("idOperazione")
+  public String getIdOperazione() {
+    return idOperazione;
   }
-  public void setNome(String nome) {
-    this.nome = nome;
-  }
-
-  /**
-   * Stato Operazione
-   **/
-  public Operazione stato(String stato) {
-    this.stato = stato;
-    return this;
-  }
-
-  @JsonProperty("stato")
-  public String getStato() {
-    return stato;
-  }
-  public void setStato(String stato) {
-    this.stato = stato;
+  public void setIdOperazione(String idOperazione) {
+    this.idOperazione = idOperazione;
   }
 
   /**
-   * Descrizione Operazione
    **/
   public Operazione descrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -73,7 +107,52 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Descrizione aggiuntiva
+   **/
+  public Operazione location(String location) {
+    this.location = location;
+    return this;
+  }
+
+  @JsonProperty("location")
+  public String getLocation() {
+    return location;
+  }
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  /**
+   **/
+  public Operazione stato(StatoEnum stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoEnum getStato() {
+    return stato;
+  }
+  public void setStato(StatoEnum stato) {
+    this.stato = stato;
+  }
+
+  /**
+   * Descrizione dell'esito dell'esecuzione
+   **/
+  public Operazione esito(String esito) {
+    this.esito = esito;
+    return this;
+  }
+
+  @JsonProperty("esito")
+  public String getEsito() {
+    return esito;
+  }
+  public void setEsito(String esito) {
+    this.esito = esito;
+  }
+
+  /**
    **/
   public Operazione dettaglio(String dettaglio) {
     this.dettaglio = dettaglio;
@@ -96,16 +175,18 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Operazione faultBean = (Operazione) o;
-    return Objects.equals(nome, faultBean.nome) &&
-        Objects.equals(stato, faultBean.stato) &&
-        Objects.equals(descrizione, faultBean.descrizione) &&
-        Objects.equals(dettaglio, faultBean.dettaglio);
+    Operazione operazione = (Operazione) o;
+    return Objects.equals(idOperazione, operazione.idOperazione) &&
+        Objects.equals(descrizione, operazione.descrizione) &&
+        Objects.equals(location, operazione.location) &&
+        Objects.equals(stato, operazione.stato) &&
+        Objects.equals(esito, operazione.esito) &&
+        Objects.equals(dettaglio, operazione.dettaglio);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, stato, descrizione, dettaglio);
+    return Objects.hash(idOperazione, descrizione, location, stato, esito, dettaglio);
   }
 
   public static Operazione parse(String json) {
@@ -114,17 +195,19 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public String getJsonIdFilter() {
-    return "faultBean";
+    return "operazione";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Operazione {\n");
-    
-    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    idOperazione: ").append(toIndentedString(idOperazione)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    location: ").append(toIndentedString(location)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
     sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -26,11 +26,12 @@ import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
-import it.govpay.core.rs.v1.beans.Intermediario;
-import it.govpay.core.rs.v1.beans.ListaIntermediari;
-import it.govpay.core.rs.v1.beans.ListaStazioni;
-import it.govpay.core.rs.v1.beans.Stazione;
+import it.govpay.core.rs.v1.beans.base.Intermediario;
 import it.govpay.core.rs.v1.beans.base.IntermediarioPost;
+import it.govpay.core.rs.v1.beans.base.ListaIntermediari;
+import it.govpay.core.rs.v1.beans.base.ListaStazioni;
+import it.govpay.core.rs.v1.beans.base.Stazione;
+import it.govpay.core.rs.v1.beans.base.StazioneIndex;
 import it.govpay.core.rs.v1.beans.base.StazionePost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -165,7 +166,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Intermediario> results = new ArrayList<it.govpay.core.rs.v1.beans.Intermediario>();
+			List<Intermediario> results = new ArrayList<Intermediario>();
 			for(it.govpay.model.Intermediario intermediario: listaIntermediariDTOResponse.getResults()) {
 				results.add(IntermediariConverter.toRsModel(intermediario));
 			}
@@ -260,9 +261,9 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Stazione> results = new ArrayList<it.govpay.core.rs.v1.beans.Stazione>();
+			List<StazioneIndex> results = new ArrayList<StazioneIndex>();
 			for(it.govpay.bd.model.Stazione stazione: listaStazioniDTOResponse.getResults()) {
-				results.add(StazioniConverter.toRsModel(stazione));
+				results.add(StazioniConverter.toRsModelIndex(stazione));
 			}
 			
 			ListaStazioni response = new ListaStazioni(results, this.getServicePath(uriInfo),
@@ -308,7 +309,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Stazione response = StazioniConverter.toRsModel(getStazioneDTOResponse.getStazione());
+			Stazione response = StazioniConverter.toRsModel(getStazioneDTOResponse.getStazione(), null); //TODO domini list
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

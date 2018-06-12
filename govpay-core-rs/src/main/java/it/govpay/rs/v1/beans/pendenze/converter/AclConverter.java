@@ -2,16 +2,15 @@ package it.govpay.rs.v1.beans.pendenze.converter;
 
 import java.util.stream.Collectors;
 
-import it.govpay.core.rs.v1.beans.pendenze.Acl;
-import it.govpay.core.rs.v1.beans.pendenze.Acl.ServizioEnum;
+import it.govpay.core.rs.v1.beans.pendenze.AclPost;
+import it.govpay.core.rs.v1.beans.pendenze.AclPost.ServizioEnum;
 import it.govpay.model.Acl.Diritti;
 
 public class AclConverter {
 	
-	public static Acl toRsModel(it.govpay.model.Acl acl) {
-		Acl rsModel = new Acl();
+	public static AclPost toRsModel(it.govpay.model.Acl acl) {
+		AclPost rsModel = new AclPost();
 		rsModel.principal(acl.getPrincipal())
-		.id(acl.getId()+"")
 		.ruolo(acl.getRuolo());
 		
 		if(acl.getServizio() != null) {
@@ -49,11 +48,11 @@ public class AclConverter {
 		return rsModel;
 	}
 	
-    public static it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum toAutorizzazioneEnum(Diritti text) {
+    public static it.govpay.core.rs.v1.beans.base.AclPost.AutorizzazioniEnum toAutorizzazioneEnum(Diritti text) {
     	switch(text) {
-		case ESECUZIONE: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.ESECUZIONE;
-		case LETTURA: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.LETTURA;
-		case SCRITTURA: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.SCRITTURA;
+		case ESECUZIONE: return it.govpay.core.rs.v1.beans.base.AclPost.AutorizzazioniEnum.ESECUZIONE;
+		case LETTURA: return it.govpay.core.rs.v1.beans.base.AclPost.AutorizzazioniEnum.LETTURA;
+		case SCRITTURA: return it.govpay.core.rs.v1.beans.base.AclPost.AutorizzazioniEnum.SCRITTURA;
 		default:
 			break;}
     	return null;

@@ -1,6 +1,6 @@
 package it.govpay.rs.v1.beans.converter;
 
-import it.govpay.core.rs.v1.beans.Evento;
+import it.govpay.core.rs.v1.beans.base.Evento;
 import it.govpay.core.rs.v1.beans.base.Evento.CategoriaEventoEnum;
 
 public class EventiConverter {

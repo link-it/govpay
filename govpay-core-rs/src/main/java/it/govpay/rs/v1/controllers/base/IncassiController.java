@@ -18,9 +18,9 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
-import it.govpay.core.rs.v1.beans.Incasso;
-import it.govpay.core.rs.v1.beans.IncassoPost;
-import it.govpay.core.rs.v1.beans.ListaIncassiIndex;
+import it.govpay.core.rs.v1.beans.base.Incasso;
+import it.govpay.core.rs.v1.beans.base.IncassoPost;
+import it.govpay.core.rs.v1.beans.base.ListaIncassiIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -69,7 +69,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.IncassoIndex> listaIncassi = new ArrayList<it.govpay.core.rs.v1.beans.IncassoIndex>();
+			List<it.govpay.core.rs.v1.beans.base.IncassoIndex> listaIncassi = new ArrayList<it.govpay.core.rs.v1.beans.base.IncassoIndex>();
 			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getResults()) {
 				listaIncassi.add(IncassiConverter.toRsIndexModel(i));
 			}
@@ -124,42 +124,6 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
-		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-    public Response incassiIdDominioPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-    	String methodName = "incassiIdDominioPOST"; 
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			it.govpay.core.rs.v1.beans.IncassoPost incasso = (IncassoPost) it.govpay.core.rs.v1.beans.IncassoPost.parse(baos.toString(), it.govpay.core.rs.v1.beans.IncassoPost.class, new JsonConfig());
-			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
-			
-			IncassiDAO incassiDAO = new IncassiDAO();
-			
-			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.richiestaIncasso(richiestaIncassoDTO);
-			
-			Incasso incassoExt = IncassiConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
-			
-			Status responseStatus = richiestaIncassoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, incassoExt.toJSON(null), responseStatus.getStatusCode());
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(responseStatus).entity(incassoExt.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

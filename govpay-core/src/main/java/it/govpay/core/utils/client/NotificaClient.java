@@ -138,7 +138,7 @@ public class NotificaClient extends BasicClient {
 					Rpt rpt = notifica.getRpt(null);
 					path = "/pagamenti/" + rpt.getCodDominio() + "/"+ rpt.getIuv();
 					
-					it.govpay.core.rs.v1.beans.base.Notifica notificaRsModel = new it.govpay.core.rs.v1.beans.base.Notifica();
+					it.govpay.core.rs.v1.beans.client.Notifica notificaRsModel = new it.govpay.core.rs.v1.beans.client.Notifica();
 					notificaRsModel.setIdA2A(notifica.getApplicazione(bd).getCodApplicazione());
 					notificaRsModel.setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
 					// rpt

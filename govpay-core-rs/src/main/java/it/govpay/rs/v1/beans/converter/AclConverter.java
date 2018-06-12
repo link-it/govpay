@@ -7,9 +7,8 @@ import java.util.stream.Collectors;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
-import it.govpay.core.rs.v1.beans.ACL;
-import it.govpay.core.rs.v1.beans.base.Acl.ServizioEnum;
 import it.govpay.core.rs.v1.beans.base.AclPost;
+import it.govpay.core.rs.v1.beans.base.AclPost.ServizioEnum;
 import it.govpay.core.rs.v1.beans.base.AclPost.AutorizzazioniEnum;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
@@ -39,19 +38,14 @@ public class AclConverter {
 		}
 
 		acl.setListaDiritti(lst);
-		acl.setPrincipal(aclPost.getPrincipal());
-		acl.setRuolo(aclPost.getRuolo());
 		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
 		aclDTO.setAcl(acl);
 
 		return aclDTO;		
 	}
 	
-	public static ACL toRsModel(it.govpay.model.Acl acl) {
-		ACL rsModel = new ACL();
-		rsModel.principal(acl.getPrincipal())
-		.id(acl.getId()+"")
-		.ruolo(acl.getRuolo());
+	public static AclPost toRsModel(it.govpay.model.Acl acl) {
+		AclPost rsModel = new AclPost();
 		
 		if(acl.getServizio() != null) {
 			switch(acl.getServizio()) {
@@ -86,18 +80,8 @@ public class AclConverter {
 		}
 		
 		if(acl.getListaDiritti() != null)
-			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> toAutorizzazioneEnum(a)).collect(Collectors.toList()));
+			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList()));
 		
 		return rsModel;
 	}
-	
-    public static it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum toAutorizzazioneEnum(Diritti text) {
-    	switch(text) {
-		case ESECUZIONE: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.ESECUZIONE;
-		case LETTURA: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.LETTURA;
-		case SCRITTURA: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.SCRITTURA;
-		default:
-			break;}
-    	return null;
-    }
 }

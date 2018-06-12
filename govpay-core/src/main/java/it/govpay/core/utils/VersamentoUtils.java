@@ -41,9 +41,10 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
-import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.base.Soggetto;
 import it.govpay.core.rs.v1.beans.base.VocePendenza;
+import it.govpay.core.rs.v1.beans.client.PendenzaVerificata;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Acl.Diritti;
@@ -58,7 +59,6 @@ import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.Anagrafica;
-import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.servizi.commons.Versamento.SpezzoneCausaleStrutturata;
 
 public class VersamentoUtils {

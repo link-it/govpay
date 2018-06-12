@@ -20,8 +20,8 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
-import it.govpay.core.rs.v1.beans.Applicazione;
-import it.govpay.core.rs.v1.beans.ListaApplicazioni;
+import it.govpay.core.rs.v1.beans.base.Applicazione;
+import it.govpay.core.rs.v1.beans.base.ListaApplicazioni;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -159,7 +159,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Applicazione> results = new ArrayList<it.govpay.core.rs.v1.beans.Applicazione>();
+			List<it.govpay.core.rs.v1.beans.base.Applicazione> results = new ArrayList<it.govpay.core.rs.v1.beans.base.Applicazione>();
 			for(it.govpay.bd.model.Applicazione applicazione: listaApplicazioniDTOResponse.getResults()) {
 				results.add(ApplicazioniConverter.toRsModel(applicazione));
 			}

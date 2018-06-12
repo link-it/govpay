@@ -6,7 +6,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Pagamento;
-import it.govpay.core.rs.v1.beans.Riscossione;
+import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.core.rs.v1.beans.base.Allegato;
 import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
 import it.govpay.core.rs.v1.beans.base.TipoRiscossione;

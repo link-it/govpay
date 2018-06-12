@@ -9,11 +9,10 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.rs.v1.beans.Operatore;
 import it.govpay.core.rs.v1.beans.base.DominioIndex;
+import it.govpay.core.rs.v1.beans.base.Operatore;
 import it.govpay.core.rs.v1.beans.base.OperatorePost;
-import it.govpay.core.rs.v1.beans.base.TipoEntrataIndex;
-import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.core.rs.v1.beans.base.TipoEntrata;
 import it.govpay.model.IAutorizzato;
 
 public class OperatoriConverter {
@@ -23,7 +22,7 @@ public class OperatoriConverter {
 		
 		it.govpay.bd.model.Operatore operatore = new it.govpay.bd.model.Operatore();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
-		utenza.setAbilitato(operatoreRequest.isAbilitato());
+		utenza.setAbilitato(operatoreRequest.Abilitato());
 		utenza.setPrincipal(principal);
 		utenza.setPrincipalOriginale(principal); 
 		operatore.setUtenza(utenza);
@@ -55,12 +54,11 @@ public class OperatoriConverter {
 		}
 		
 		if(operatore.getUtenza().getTributi(null) != null) {
-			List<TipoEntrataIndex> idTributi = new ArrayList<TipoEntrataIndex>();
+			List<TipoEntrata> idTributi = new ArrayList<TipoEntrata>();
 			for (Tributo tributo : operatore.getUtenza().getTributi(null)) {
-				TipoEntrataIndex tEI = new TipoEntrataIndex();
+				TipoEntrata tEI = new TipoEntrata();
 				tEI.setIdEntrata(tributo.getCodTributo());
 				tEI.setDescrizione(tributo.getDescrizione());
-				tEI.setLocation(UriBuilderUtils.getEntrata(tributo.getCodTributo())); 
 				idTributi.add(tEI);
 			}
 			rsModel.setEntrate(idTributi);

@@ -29,7 +29,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private List<DominioIndex> domini = null;
   
   @JsonProperty("entrate")
-  private List<TipoEntrataIndex> entrate = null;
+  private List<TipoEntrata> entrate = null;
   
   @JsonProperty("servizioVerifica")
   private Connector servizioVerifica = null;
@@ -107,16 +107,16 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * entrate su cui e' abilitato ad operare
    **/
-  public Applicazione entrate(List<TipoEntrataIndex> entrate) {
+  public Applicazione entrate(List<TipoEntrata> entrate) {
     this.entrate = entrate;
     return this;
   }
 
   @JsonProperty("entrate")
-  public List<TipoEntrataIndex> getEntrate() {
+  public List<TipoEntrata> getEntrate() {
     return entrate;
   }
-  public void setEntrate(List<TipoEntrataIndex> entrate) {
+  public void setEntrate(List<TipoEntrata> entrate) {
     this.entrate = entrate;
   }
 
@@ -159,7 +159,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
+  public Boolean Abilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

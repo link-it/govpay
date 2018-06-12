@@ -15,7 +15,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
-import it.govpay.core.rs.v1.beans.ListaEventi;
+import it.govpay.core.rs.v1.beans.base.ListaEventi;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -64,7 +64,7 @@ public class EventiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.Evento> results = new ArrayList<it.govpay.core.rs.v1.beans.Evento>();
+			List<it.govpay.core.rs.v1.beans.base.Evento> results = new ArrayList<it.govpay.core.rs.v1.beans.base.Evento>();
 			for(it.govpay.model.Evento evento: listaEventiDTOResponse.getResults()) {
 				results.add(EventiConverter.toRsModel(evento));
 			}

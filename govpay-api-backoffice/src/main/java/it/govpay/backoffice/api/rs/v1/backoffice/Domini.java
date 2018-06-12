@@ -35,15 +35,6 @@ public class Domini extends BaseRsServiceV1{
 
 
     @GET
-    @Path("/{idDominio}/ibanAccredito/{ibanAccredito}")
-    
-    @Produces({ "application/json" })
-    public Response dominiIdDominioIbanAccreditoIbanAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.dominiIdDominioIbanAccreditoIbanAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito);
-    }
-
-    @GET
     @Path("/{idDominio}/unitaOperative/{idUnitaOperativa}")
     
     @Produces({ "application/json" })
@@ -59,6 +50,24 @@ public class Domini extends BaseRsServiceV1{
     public Response dominiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("idStazione") String idStazione){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.dominiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, idStazione);
+    }
+
+    @GET
+    @Path("/{idDominio}/contiAccredito")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioContiAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioContiAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
+
+    @GET
+    @Path("/{idDominio}/contiAccredito/{ibanAccredito}")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioContiAccreditoIbanAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioContiAccreditoIbanAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito);
     }
 
     @GET
@@ -98,12 +107,12 @@ public class Domini extends BaseRsServiceV1{
     }
 
     @PUT
-    @Path("/{idDominio}/ibanAccredito/{ibanAccredito}")
+    @Path("/{idDominio}/contiAccredito/{ibanAccredito}")
     @Consumes({ "application/json" })
     
-    public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito, java.io.InputStream is){
+    public Response dominiIdDominioContiAccreditoIbanAccreditoPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.dominiIdDominioIbanAccreditoIbanAccreditoPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito, is);
+        return this.controller.dominiIdDominioContiAccreditoIbanAccreditoPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito, is);
     }
 
     @PUT
@@ -131,15 +140,6 @@ public class Domini extends BaseRsServiceV1{
     public Response dominiIdDominioPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.dominiIdDominioPUT(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
-    }
-
-    @GET
-    @Path("/{idDominio}/ibanAccredito")
-    
-    @Produces({ "application/json" })
-    public Response dominiIdDominioIbanAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.dominiIdDominioIbanAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
 }

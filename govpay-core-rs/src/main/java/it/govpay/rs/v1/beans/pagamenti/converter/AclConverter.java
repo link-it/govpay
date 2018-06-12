@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
-//import it.govpay.core.rs.v1.beans.ACL;
 import it.govpay.core.rs.v1.beans.pagamenti.Acl.ServizioEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.AclPost;
 import it.govpay.core.rs.v1.beans.pagamenti.AclPost.AutorizzazioniEnum;
@@ -92,13 +91,4 @@ public class AclConverter {
 		return rsModel;
 	}
 	
-    public static it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum toAutorizzazioneEnum(Diritti text) {
-    	switch(text) {
-		case ESECUZIONE: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.ESECUZIONE;
-		case LETTURA: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.LETTURA;
-		case SCRITTURA: return it.govpay.core.rs.v1.beans.base.Acl.AutorizzazioniEnum.SCRITTURA;
-		default:
-			break;}
-    	return null;
-    }
 }

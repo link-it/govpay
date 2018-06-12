@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "codice",
 "descrizione",
+"dettaglio",
 })
 public class Segnalazione extends JSONSerializable {
   
@@ -13,6 +14,9 @@ public class Segnalazione extends JSONSerializable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
+  
+  @JsonProperty("dettaglio")
+  private String dettaglio = null;
   
   /**
    **/
@@ -44,6 +48,21 @@ public class Segnalazione extends JSONSerializable {
     this.descrizione = descrizione;
   }
 
+  /**
+   **/
+  public Segnalazione dettaglio(String dettaglio) {
+    this.dettaglio = dettaglio;
+    return this;
+  }
+
+  @JsonProperty("dettaglio")
+  public String getDettaglio() {
+    return dettaglio;
+  }
+  public void setDettaglio(String dettaglio) {
+    this.dettaglio = dettaglio;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -54,12 +73,13 @@ public class Segnalazione extends JSONSerializable {
     }
     Segnalazione segnalazione = (Segnalazione) o;
     return Objects.equals(codice, segnalazione.codice) &&
-        Objects.equals(descrizione, segnalazione.descrizione);
+        Objects.equals(descrizione, segnalazione.descrizione) &&
+        Objects.equals(dettaglio, segnalazione.dettaglio);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(codice, descrizione);
+    return Objects.hash(codice, descrizione, dettaglio);
   }
 
   public static Segnalazione parse(String json) {

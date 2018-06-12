@@ -8,9 +8,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Pagamento;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
-import it.govpay.core.rs.v1.beans.Incasso;
-import it.govpay.core.rs.v1.beans.IncassoPost;
-import it.govpay.core.rs.v1.beans.IncassoIndex;
+import it.govpay.core.rs.v1.beans.base.Incasso;
+import it.govpay.core.rs.v1.beans.base.IncassoPost;
+import it.govpay.core.rs.v1.beans.base.IncassoIndex;
 import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.model.IAutorizzato;
 

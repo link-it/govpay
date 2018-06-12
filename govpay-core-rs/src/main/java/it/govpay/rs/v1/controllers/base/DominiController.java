@@ -39,10 +39,10 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.rs.v1.beans.base.Entrata;
-import it.govpay.core.rs.v1.beans.ListaDomini;
-import it.govpay.core.rs.v1.beans.ListaEntrate;
-import it.govpay.core.rs.v1.beans.ListaIbanAccredito;
-import it.govpay.core.rs.v1.beans.ListaUnitaOperative;
+import it.govpay.core.rs.v1.beans.base.ListaDomini;
+import it.govpay.core.rs.v1.beans.base.ListaEntrate;
+import it.govpay.core.rs.v1.beans.base.ListaContiAccredito;
+import it.govpay.core.rs.v1.beans.base.ListaUnitaOperative;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativa;
 import it.govpay.core.rs.v1.beans.base.ContiAccredito;
 import it.govpay.core.rs.v1.beans.base.DominioPost;
@@ -67,7 +67,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioIbanAccreditoIbanAccreditoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
+    public Response dominiIdDominioContiAccreditoIbanAccreditoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
     	String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -394,8 +394,8 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
-    	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
+    public Response dominiIdDominioContiAccreditoIbanAccreditoPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
+    	String methodName = "dominiIdDominioContiAccreditoIbanAccreditoPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -558,7 +558,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response dominiIdDominioIbanAccreditoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response dominiIdDominioContiAccreditoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioIbanAccreditoGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -595,7 +595,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 				results.add(DominiConverter.toIbanRsModel(ibanAccredito));
 			}
 			
-			ListaIbanAccredito response = new ListaIbanAccredito(results, this.getServicePath(uriInfo),
+			ListaContiAccredito response = new ListaContiAccredito(results, this.getServicePath(uriInfo),
 					listaDominiIbanDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);

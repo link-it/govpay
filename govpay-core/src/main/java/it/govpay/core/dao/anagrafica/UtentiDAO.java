@@ -31,11 +31,13 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.DeleteOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
@@ -66,6 +68,26 @@ public class UtentiDAO extends BaseDAO{
 			if(bd != null)
 				bd.closeConnection();
 		}
+	}
+
+	public LeggiProfiloDTOResponse getProfilo(IAutorizzato user) throws NotAuthenticatedException, ServiceException, NotAuthorizedException {
+		BasicBD bd = null;
+		LeggiProfiloDTOResponse response = new LeggiProfiloDTOResponse();
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.populateUser(user, bd);
+			
+			response.setUtente(user);
+			
+			response.setDomini(((Utenza)user).getDomini(bd));
+			response.setTributi(((Utenza)user).getTributi(bd));
+			
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		
+		return response;
 	}
 
 	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws NotAuthenticatedException, ServiceException, OperatoreNonTrovatoException, NotAuthorizedException {

@@ -24,7 +24,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private List<DominioIndex> domini = new ArrayList<DominioIndex>();
   
   @JsonProperty("entrate")
-  private List<TipoEntrataIndex> entrate = new ArrayList<TipoEntrataIndex>();
+  private List<TipoEntrata> entrate = new ArrayList<TipoEntrata>();
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -80,16 +80,16 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * entrate su cui e' abilitato ad operare
    **/
-  public Operatore entrate(List<TipoEntrataIndex> entrate) {
+  public Operatore entrate(List<TipoEntrata> entrate) {
     this.entrate = entrate;
     return this;
   }
 
   @JsonProperty("entrate")
-  public List<TipoEntrataIndex> getEntrate() {
+  public List<TipoEntrata> getEntrate() {
     return entrate;
   }
-  public void setEntrate(List<TipoEntrataIndex> entrate) {
+  public void setEntrate(List<TipoEntrata> entrate) {
     this.entrate = entrate;
   }
 
@@ -102,7 +102,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
+  public Boolean Abilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

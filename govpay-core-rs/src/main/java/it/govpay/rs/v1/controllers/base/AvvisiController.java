@@ -79,13 +79,6 @@ public class AvvisiController extends it.govpay.rs.BaseController {
 //		}
     }
 
-
-
-    public Response avvisiIdDominioPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
-
-
 }
 
 

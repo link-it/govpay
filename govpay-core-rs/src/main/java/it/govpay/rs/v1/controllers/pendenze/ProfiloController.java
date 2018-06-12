@@ -53,7 +53,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.pendenze.Acl> results = new ArrayList<it.govpay.core.rs.v1.beans.pendenze.Acl>();
+			List<it.govpay.core.rs.v1.beans.pendenze.AclPost> results = new ArrayList<it.govpay.core.rs.v1.beans.pendenze.AclPost>();
 			for(Acl acl: user.getAcls()) {
 				results.add(AclConverter.toRsModel(acl));
 			}

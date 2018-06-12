@@ -2,7 +2,7 @@ package it.govpay.rs.v1.beans.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.core.rs.v1.beans.Connector;
+import it.govpay.core.rs.v1.beans.base.Connector;
 import it.govpay.core.rs.v1.beans.base.Connector.VersioneApiEnum;
 import it.govpay.core.rs.v1.beans.base.TipoAutenticazione.TipoEnum;
 import it.govpay.model.Connettore;
@@ -51,8 +51,8 @@ public class ConnettoriConverter {
 		return rsModel;
 	}
 	
-	public static it.govpay.core.rs.v1.beans.TipoAutenticazione toTipoAutenticazioneRsModel(it.govpay.model.Connettore connettore) {
-		it.govpay.core.rs.v1.beans.TipoAutenticazione rsModel = new it.govpay.core.rs.v1.beans.TipoAutenticazione();
+	public static it.govpay.core.rs.v1.beans.base.TipoAutenticazione toTipoAutenticazioneRsModel(it.govpay.model.Connettore connettore) {
+		it.govpay.core.rs.v1.beans.base.TipoAutenticazione rsModel = new it.govpay.core.rs.v1.beans.base.TipoAutenticazione();
 		
 		rsModel.username(connettore.getHttpUser())
 		.password(connettore.getHttpPassw())

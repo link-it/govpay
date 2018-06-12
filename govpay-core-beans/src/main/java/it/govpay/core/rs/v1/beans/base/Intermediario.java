@@ -1,5 +1,7 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -20,7 +22,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String principalPagoPa = null;
   
   @JsonProperty("servizioPagoPa")
-  private Connector servizioPagoPa = null;
+  private ConnettorePagopa servizioPagoPa = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -29,7 +31,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String idIntermediario = null;
   
   @JsonProperty("stazioni")
-  private String stazioni = null;
+  private List<StazioneIndex> stazioni = new ArrayList<StazioneIndex>();
   
   /**
    * Ragione sociale dell'intermediario PagoPA
@@ -65,16 +67,16 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Intermediario servizioPagoPa(Connector servizioPagoPa) {
+  public Intermediario servizioPagoPa(ConnettorePagopa servizioPagoPa) {
     this.servizioPagoPa = servizioPagoPa;
     return this;
   }
 
   @JsonProperty("servizioPagoPa")
-  public Connector getServizioPagoPa() {
+  public ConnettorePagopa getServizioPagoPa() {
     return servizioPagoPa;
   }
-  public void setServizioPagoPa(Connector servizioPagoPa) {
+  public void setServizioPagoPa(ConnettorePagopa servizioPagoPa) {
     this.servizioPagoPa = servizioPagoPa;
   }
 
@@ -87,7 +89,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
+  public Boolean Abilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -113,16 +115,16 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
   /**
    * Url alla lista delle stazioni dell'intermediario
    **/
-  public Intermediario stazioni(String stazioni) {
+  public Intermediario stazioni(List<StazioneIndex> stazioni) {
     this.stazioni = stazioni;
     return this;
   }
 
   @JsonProperty("stazioni")
-  public String getStazioni() {
+  public List<StazioneIndex> getStazioni() {
     return stazioni;
   }
-  public void setStazioni(String stazioni) {
+  public void setStazioni(List<StazioneIndex> stazioni) {
     this.stazioni = stazioni;
   }
 

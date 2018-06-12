@@ -1,5 +1,7 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -21,7 +23,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String idStazione = null;
   
   @JsonProperty("domini")
-  private String domini = null;
+  private List<DominioIndex> domini = new ArrayList<DominioIndex>();
   
   /**
    * Ragione sociale dell'intermediario PagoPA
@@ -48,7 +50,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
+  public Boolean Abilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -72,18 +74,17 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Url alla lista dei domini della stazione
    **/
-  public Stazione domini(String domini) {
+  public Stazione domini(List<DominioIndex> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public String getDomini() {
+  public List<DominioIndex> getDomini() {
     return domini;
   }
-  public void setDomini(String domini) {
+  public void setDomini(List<DominioIndex> domini) {
     this.domini = domini;
   }
 

@@ -40,7 +40,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.rs.v1.beans.base.PendenzaVerificata;
+import it.govpay.core.rs.v1.beans.client.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaPost;
 import it.govpay.core.rs.v1.beans.pagamenti.Segnalazione;
 import it.govpay.core.rs.v1.beans.pagamenti.Soggetto;

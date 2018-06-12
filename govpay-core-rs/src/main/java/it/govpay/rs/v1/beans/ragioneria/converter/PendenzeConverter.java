@@ -3,12 +3,10 @@ package it.govpay.rs.v1.beans.ragioneria.converter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.rs.v1.beans.ragioneria.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.StatoPendenza;
 import it.govpay.core.rs.v1.beans.ragioneria.TassonomiaAvviso;
@@ -17,8 +15,7 @@ import it.govpay.rs.v1.controllers.ragioneria.UnitaOperativaConverter;
 
 public class PendenzeConverter {
 	
-	public static PendenzaIndex toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
+	public static PendenzaIndex toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		PendenzaIndex rsModel = new PendenzaIndex();
 	
 	if(versamento.getCodAnnoTributario()!= null)
@@ -34,9 +31,9 @@ public class PendenzeConverter {
 	rsModel.setDataCaricamento(versamento.getDataCreazione());
 	rsModel.setDataScadenza(versamento.getDataScadenza());
 	rsModel.setDataValidita(versamento.getDataValidita());
-	rsModel.setDominio(DominiConverter.toRsIndexModel(dominio));
+	rsModel.setDominio(DominiConverter.toRsIndexModel(versamento.getDominio(null)));
 	
-	rsModel.setIdA2A(applicazione.getCodApplicazione());
+	rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 	rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 	rsModel.setImporto(versamento.getImportoTotale());
 	rsModel.setNome(versamento.getNome());
@@ -69,15 +66,12 @@ public class PendenzeConverter {
 	rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 	rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 	
-	if(unitaOperativa != null && !unitaOperativa.getCodUo().equals(Dominio.EC))
-		rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(unitaOperativa));
-	
-//	rsModel.setRpp(RptConverter.toRsModelIndex(rpt, versamento, applicazione)); //TODO
+	if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(Dominio.EC))
+		rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(versamento.getUo(null)));
 	
 	return rsModel;
 }
-	public static PendenzaIndex toRsIndexModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio) throws ServiceException {
+	public static PendenzaIndex toRsIndexModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 	PendenzaIndex rsModel = new PendenzaIndex();
 	
 	if(versamento.getCodAnnoTributario()!= null)
@@ -93,9 +87,9 @@ public class PendenzeConverter {
 	rsModel.setDataCaricamento(versamento.getDataCreazione());
 	rsModel.setDataScadenza(versamento.getDataScadenza());
 	rsModel.setDataValidita(versamento.getDataValidita());
-	rsModel.setDominio(DominiConverter.toRsIndexModel(dominio));
+	rsModel.setDominio(DominiConverter.toRsIndexModel(versamento.getDominio(null)));
 	
-	rsModel.setIdA2A(applicazione.getCodApplicazione());
+	rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 	rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 	rsModel.setImporto(versamento.getImportoTotale());
 	rsModel.setNome(versamento.getNome());
@@ -128,8 +122,8 @@ public class PendenzeConverter {
 	rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 	rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 	
-	if(unitaOperativa != null && !unitaOperativa.getCodUo().equals(Dominio.EC))
-		rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(unitaOperativa));
+	if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(Dominio.EC))
+		rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(versamento.getUo(null)));
 	
 	return rsModel;
 }

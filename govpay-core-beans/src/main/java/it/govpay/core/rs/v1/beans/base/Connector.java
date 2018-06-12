@@ -25,10 +25,10 @@ public class Connector extends it.govpay.core.rs.v1.beans.JSONSerializable {
     
         
             
-    REST_1_0("REST_1"),
+    REST_1("REST_1"),
     
-    
-    SOAP_2_5("SOAP_3");
+            
+    SOAP_3("SOAP_3");
             
         
     
@@ -105,7 +105,6 @@ public class Connector extends it.govpay.core.rs.v1.beans.JSONSerializable {
   public void setVersioneApi(VersioneApiEnum versioneApi) {
     this.versioneApi = versioneApi;
   }
-
 
   /**
    **/

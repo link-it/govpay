@@ -16,7 +16,7 @@ import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
-import it.govpay.core.rs.v1.beans.ListaOperazioni;
+import it.govpay.core.rs.v1.beans.base.ListaOperazioni;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -99,7 +99,7 @@ public class OperazioniController extends it.govpay.rs.BaseController {
 			
 			LeggiOperazioneDTOResponse leggiOperazioneDTOResponse = operazioniDAO.eseguiOperazione(leggiOperazioneDTO);
 			
-			it.govpay.core.rs.v1.beans.Operazione response = OperazioniConverter.toRsModel(leggiOperazioneDTOResponse);
+			it.govpay.core.rs.v1.beans.base.Operazione response = OperazioniConverter.toRsModel(leggiOperazioneDTOResponse);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
@@ -110,4 +110,9 @@ public class OperazioniController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
+
+    public Response operazioniStatoIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
 }

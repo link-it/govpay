@@ -161,19 +161,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
-//			String jsonRequest = baos.toString();
-//			JsonConfig jsonConfig = new JsonConfig();
-//			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-//			jsonConfig.setClassMap(classMap);
-//			PendenzaPost pendenzaPost= (PendenzaPost) PendenzaPost.parse(jsonRequest, PendenzaPost.class, jsonConfig);
-			
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			
 			PatchPendenzaDTO patchPendenzaDTO = new PatchPendenzaDTO(user);
 			patchPendenzaDTO.setIdA2a(idA2A);
 			patchPendenzaDTO.setIdPendenza(idPendenza);
-//			patchPendenzaDTO.setStato(stato);
-//			patchPendenzaDTO.setDescrizioneStato(descrizioneStato); //TODO model
 			
 			pendenzeDAO.cambioStato(patchPendenzaDTO);
 			

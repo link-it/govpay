@@ -23,7 +23,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
-import it.govpay.core.rs.v1.beans.PagamentiPortaleResponseOk;
+import it.govpay.core.rs.v1.beans.pagamenti.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaPagamentiIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex;
@@ -137,14 +137,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-
-    public Response pagamentiIdDominioIuvPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, java.io.InputStream is) {
-    	//client
-        return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented [CLIENT]" ),null).build();
-    }
-
-
-
     public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
@@ -157,7 +149,6 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
-//			String principal = this.getPrincipal();
 			
 			// Parametri - > DTO Input
 			

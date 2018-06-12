@@ -9,12 +9,11 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.rs.v1.beans.Applicazione;
+import it.govpay.core.rs.v1.beans.base.Applicazione;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
 import it.govpay.core.rs.v1.beans.base.CodificaAvvisi;
 import it.govpay.core.rs.v1.beans.base.DominioIndex;
-import it.govpay.core.rs.v1.beans.base.TipoEntrataIndex;
-import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.core.rs.v1.beans.base.TipoEntrata;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.rs.v1.controllers.base.ApplicazioniController;
@@ -25,7 +24,7 @@ public class ApplicazioniConverter {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
 		it.govpay.bd.model.Applicazione applicazione = new it.govpay.bd.model.Applicazione();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
-		utenza.setAbilitato(applicazionePost.isAbilitato());
+		utenza.setAbilitato(applicazionePost.Abilitato());
 		utenza.setPrincipal(applicazionePost.getPrincipal());
 		utenza.setPrincipalOriginale(applicazionePost.getPrincipal()); 
 		applicazione.setUtenza(utenza);
@@ -56,7 +55,7 @@ public class ApplicazioniConverter {
 		
 		applicazione.setCodApplicazioneIuv(applicazionePost.getCodificaAvvisi().getCodificaIuv());
 		applicazione.setRegExp(applicazionePost.getCodificaAvvisi().getRegExpIuv());
-		applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna());
+		applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().GenerazioneIuvInterna());
 		applicazione.setCodApplicazione(idA2A);
 		applicazione.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 		applicazione.setConnettoreNotifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioNotifica()));
@@ -89,22 +88,21 @@ public class ApplicazioniConverter {
 			rsModel.setDomini(idDomini);
 		}
 
-		List<TipoEntrataIndex> idTributi = new ArrayList<TipoEntrataIndex>();
+		List<TipoEntrata> idTributi = new ArrayList<TipoEntrata>();
 		List<Tributo> tributi = applicazione.getUtenza().getTributi(null);
 		if(tributi == null)
 			tributi = new ArrayList<Tributo>();
 		
 		if(applicazione.isTrusted() && tributi.size() == 0) {
-			TipoEntrataIndex tEI = new TipoEntrataIndex();
+			TipoEntrata tEI = new TipoEntrata();
 			tEI.setIdEntrata(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_VALUE);
 			tEI.setDescrizione(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_LABEL);
 			idTributi.add(tEI);
 		} else {
 			for (Tributo tributo : tributi) {
-				TipoEntrataIndex tEI = new TipoEntrataIndex();
+				TipoEntrata tEI = new TipoEntrata();
 				tEI.setIdEntrata(tributo.getCodTributo());
 				tEI.setDescrizione(tributo.getDescrizione());
-				tEI.setLocation(UriBuilderUtils.getEntrata(tributo.getCodTributo())); 
 				idTributi.add(tEI);
 			}
 		}

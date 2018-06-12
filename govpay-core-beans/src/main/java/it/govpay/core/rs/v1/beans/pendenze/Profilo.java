@@ -6,11 +6,15 @@ import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
+"nome",
 "domini",
 "entrate",
 "acl",
 })
 public class Profilo extends JSONSerializable {
+  
+  @JsonProperty("nome")
+  private String nome = null;
   
   @JsonProperty("domini")
   private List<DominioIndex> domini = new ArrayList<DominioIndex>();
@@ -19,8 +23,24 @@ public class Profilo extends JSONSerializable {
   private List<TipoEntrata> entrate = new ArrayList<TipoEntrata>();
   
   @JsonProperty("acl")
-  private List<Acl> acl = new ArrayList<Acl>();
+  private List<AclPost> acl = new ArrayList<AclPost>();
   
+  /**
+   * Nome dell'utenza
+   **/
+  public Profilo nome(String nome) {
+    this.nome = nome;
+    return this;
+  }
+
+  @JsonProperty("nome")
+  public String getNome() {
+    return nome;
+  }
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
   /**
    * domini su cui e' abilitato ad operare
    **/
@@ -55,16 +75,16 @@ public class Profilo extends JSONSerializable {
 
   /**
    **/
-  public Profilo acl(List<Acl> acl) {
+  public Profilo acl(List<AclPost> acl) {
     this.acl = acl;
     return this;
   }
 
   @JsonProperty("acl")
-  public List<Acl> getAcl() {
+  public List<AclPost> getAcl() {
     return acl;
   }
-  public void setAcl(List<Acl> acl) {
+  public void setAcl(List<AclPost> acl) {
     this.acl = acl;
   }
 
@@ -77,14 +97,15 @@ public class Profilo extends JSONSerializable {
       return false;
     }
     Profilo profilo = (Profilo) o;
-    return Objects.equals(domini, profilo.domini) &&
+    return Objects.equals(nome, profilo.nome) &&
+        Objects.equals(domini, profilo.domini) &&
         Objects.equals(entrate, profilo.entrate) &&
         Objects.equals(acl, profilo.acl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(domini, entrate, acl);
+    return Objects.hash(nome, domini, entrate, acl);
   }
 
   public static Profilo parse(String json) {
@@ -101,6 +122,7 @@ public class Profilo extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
     
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
     sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
