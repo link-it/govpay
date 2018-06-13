@@ -20,7 +20,7 @@ public class StazioniConverter {
 		
 		it.govpay.bd.model.Stazione stazione = new it.govpay.bd.model.Stazione();
 
-		stazione.setAbilitato(stazionePost.Abilitato());
+		stazione.setAbilitato(stazionePost.isAbilitato());
 		String applicationCodeS = idStazione.substring(idStazione.indexOf("_")+1);
 		stazione.setApplicationCode(Integer.parseInt(applicationCodeS)); 
 		stazione.setCodStazione(idStazione);
@@ -38,12 +38,13 @@ public class StazioniConverter {
 		.idStazione(stazione.getCodStazione())
 		.password(stazione.getPassword());
 
-		List<DominioIndex> domini = new ArrayList<>();
-		for(it.govpay.bd.model.Dominio dominio: dominiLst) {
-			domini.add(DominiConverter.toRsModelIndex(dominio));
+		if(dominiLst!=null) {
+			List<DominioIndex> domini = new ArrayList<>();
+			for(it.govpay.bd.model.Dominio dominio: dominiLst) {
+				domini.add(DominiConverter.toRsModelIndex(dominio));
+			}
+			rsModel.setDomini(domini);
 		}
-			
-		rsModel.setDomini(domini);
 		return rsModel;
 	}
 	

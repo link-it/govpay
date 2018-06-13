@@ -417,7 +417,7 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean isAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

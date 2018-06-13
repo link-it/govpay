@@ -299,7 +299,7 @@ public class UnitaOperativaPost extends JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean isAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

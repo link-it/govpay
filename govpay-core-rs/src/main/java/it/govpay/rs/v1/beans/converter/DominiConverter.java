@@ -69,11 +69,11 @@ public class DominiConverter {
 		
 		it.govpay.bd.model.IbanAccredito iban = new it.govpay.bd.model.IbanAccredito();
 		
-		iban.setAbilitato(ibanAccreditoPost.Abilitato());
-		iban.setAttivatoObep(ibanAccreditoPost.Mybank());
+		iban.setAbilitato(ibanAccreditoPost.isAbilitato());
+		iban.setAttivatoObep(ibanAccreditoPost.isMybank());
 		iban.setCodBic(ibanAccreditoPost.getBic());
 		iban.setCodIban(idIbanAccredito);
-		iban.setPostale(ibanAccreditoPost.Postale());
+		iban.setPostale(ibanAccreditoPost.isPostale());
 		
 		ibanAccreditoDTO.setIban(iban);
 		ibanAccreditoDTO.setIdDominio(idDominio);
@@ -86,7 +86,7 @@ public class DominiConverter {
 		PutUnitaOperativaDTO uoDTO = new PutUnitaOperativaDTO(user);
 		
 		it.govpay.bd.model.UnitaOperativa uo = new it.govpay.bd.model.UnitaOperativa();
-		uo.setAbilitato(uoPost.Abilitato());
+		uo.setAbilitato(uoPost.isAbilitato());
 		Anagrafica anagrafica = new Anagrafica();
 		anagrafica.setCap(uoPost.getCap());
 		anagrafica.setCivico(uoPost.getCivico());
@@ -115,7 +115,7 @@ public class DominiConverter {
 		PutDominioDTO dominioDTO = new PutDominioDTO(user);
 		
 		it.govpay.bd.model.Dominio dominio = new it.govpay.bd.model.Dominio();
-		dominio.setAbilitato(dominioPost.Abilitato());
+		dominio.setAbilitato(dominioPost.isAbilitato());
 		Anagrafica anagrafica = new Anagrafica();
 		anagrafica.setCap(dominioPost.getCap());
 		anagrafica.setCivico(dominioPost.getCivico());

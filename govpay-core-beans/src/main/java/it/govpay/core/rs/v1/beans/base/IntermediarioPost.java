@@ -80,7 +80,7 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean isAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

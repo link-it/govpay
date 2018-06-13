@@ -24,7 +24,7 @@ public class ApplicazioniConverter {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
 		it.govpay.bd.model.Applicazione applicazione = new it.govpay.bd.model.Applicazione();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
-		utenza.setAbilitato(applicazionePost.Abilitato());
+		utenza.setAbilitato(applicazionePost.isAbilitato());
 		utenza.setPrincipal(applicazionePost.getPrincipal());
 		utenza.setPrincipalOriginale(applicazionePost.getPrincipal()); 
 		applicazione.setUtenza(utenza);
@@ -55,7 +55,7 @@ public class ApplicazioniConverter {
 		
 		applicazione.setCodApplicazioneIuv(applicazionePost.getCodificaAvvisi().getCodificaIuv());
 		applicazione.setRegExp(applicazionePost.getCodificaAvvisi().getRegExpIuv());
-		applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().GenerazioneIuvInterna());
+		applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna());
 		applicazione.setCodApplicazione(idA2A);
 		applicazione.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 		applicazione.setConnettoreNotifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioNotifica()));

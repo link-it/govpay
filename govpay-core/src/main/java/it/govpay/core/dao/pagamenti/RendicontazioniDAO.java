@@ -31,7 +31,7 @@ public class RendicontazioniDAO extends BaseDAO{
 	public RendicontazioniDAO() {
 	}
 
-	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
 		List<String> listaDominiFiltro = null;
 		BasicBD bd = null;
 
@@ -68,7 +68,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 				for (Fr fr : findAll) {
 					LeggiRendicontazioneDTOResponse elem = new LeggiRendicontazioneDTOResponse();
-					//populateRendicontazione(fr, bd);
+					populateRendicontazione(fr, bd);
 					elem.setFr(fr);
 					resList.add(elem);
 				}
@@ -107,7 +107,7 @@ public class RendicontazioniDAO extends BaseDAO{
 	}
 
 	private Fr populateRendicontazione(Fr flussoRendicontazione, BasicBD bd)
-			throws ServiceException {
+			throws ServiceException, NotFoundException {
 
 		List<Rendicontazione> rendicontazioni = flussoRendicontazione.getRendicontazioni(bd);
 
@@ -116,10 +116,12 @@ public class RendicontazioniDAO extends BaseDAO{
 				Pagamento pagamento = rend.getPagamento(bd);
 				if(pagamento != null) {
 					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+					pagamento.getDominio(bd);
 					pagamento.getRpt(bd);
 				}
 			}
 		}
+		flussoRendicontazione.getDominio(bd);
 		return flussoRendicontazione;
 	}
 

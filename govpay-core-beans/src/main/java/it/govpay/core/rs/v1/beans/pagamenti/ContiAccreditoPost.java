@@ -46,7 +46,7 @@ public class ContiAccreditoPost extends JSONSerializable {
   }
 
   @JsonProperty("postale")
-  public Boolean Postale() {
+  public Boolean isPostale() {
     return postale;
   }
   public void setPostale(Boolean postale) {
@@ -62,7 +62,7 @@ public class ContiAccreditoPost extends JSONSerializable {
   }
 
   @JsonProperty("mybank")
-  public Boolean Mybank() {
+  public Boolean isMybank() {
     return mybank;
   }
   public void setMybank(Boolean mybank) {
@@ -78,7 +78,7 @@ public class ContiAccreditoPost extends JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean isAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

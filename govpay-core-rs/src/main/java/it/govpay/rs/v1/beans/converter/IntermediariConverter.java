@@ -13,7 +13,9 @@ public class IntermediariConverter {
 		PutIntermediarioDTO dominioDTO = new PutIntermediarioDTO(user);
 		
 		it.govpay.model.Intermediario intermediario = new it.govpay.model.Intermediario();
-		intermediario.setAbilitato(intermediarioPost.Abilitato());
+		if(intermediarioPost.isAbilitato()!=null)
+			intermediario.setAbilitato(intermediarioPost.isAbilitato());
+		
 		intermediario.setCodIntermediario(idIntermediario);
 		if(intermediarioPost.getServizioPagoPa() != null) {
 			intermediario.setConnettorePdd(ConnettorePagopaConverter.getConnettore(intermediarioPost.getServizioPagoPa()));

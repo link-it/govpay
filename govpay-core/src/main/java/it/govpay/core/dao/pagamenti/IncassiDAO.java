@@ -42,6 +42,7 @@ public class IncassiDAO extends BaseDAO{
 
 					if(pagamenti != null) {
 						for(Pagamento pagamento: pagamenti) {
+							pagamento.getDominio(bd);
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 							pagamento.getRpt(bd);
 						}
@@ -82,12 +83,14 @@ public class IncassiDAO extends BaseDAO{
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+					pagamento.getDominio(bd);
 					pagamento.getRpt(bd);
 				}
 			}
 
 			response.getIncasso().getApplicazione(bd);
 			response.getIncasso().getDominio(bd);
+			
 
 		}catch (NotAuthorizedException e) {
 			// TODO
@@ -118,6 +121,7 @@ public class IncassiDAO extends BaseDAO{
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+					pagamento.getDominio(bd);
 					pagamento.getRpt(bd);
 				}
 			}
