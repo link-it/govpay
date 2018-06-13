@@ -581,12 +581,19 @@ components:
         - codice
         - descrizione
       properties:
+        data:
+          type: string
+          format: date
+          example: '2018-12-31'
         codice:
           type: string
+          example: '0013'
         descrizione:
-          type: string        
+          type: string   
+          example: 'Pagamento rendicontato senza RPT'
         dettaglio:
-          type: string               
+          type: string
+          example: 'Acquisita rendicontazione senza RPT nel flusso ABC-1234-DEFG'                 
     tassonomiaAvviso:
       description: Macro categoria della pendenza Agid
       type: string
