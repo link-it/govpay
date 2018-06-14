@@ -1,12 +1,11 @@
 package it.govpay.rs.v1.beans.ragioneria.converter;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.rs.v1.beans.pagamenti.ContiAccredito;
 import it.govpay.core.rs.v1.beans.ragioneria.DominioIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.UnitaOperativa;
+import it.govpay.core.utils.UriBuilderUtils;
 
 public class DominiConverter {
 
@@ -30,9 +29,7 @@ public class DominiConverter {
 			rsModel.setSegregationCode("" + dominio.getSegregationCode());
 		
 		if(dominio.getLogo() != null) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(dominio.getLogo(), false)));
-			rsModel.setLogo(sb.toString());
+			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
 		rsModel.setIuvPrefix(dominio.getIuvPrefix());
 		rsModel.setStazione(dominio.getStazione().getCodStazione());

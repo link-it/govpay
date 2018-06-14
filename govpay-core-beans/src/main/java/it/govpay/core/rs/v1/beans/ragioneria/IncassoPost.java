@@ -3,6 +3,9 @@ package it.govpay.core.rs.v1.beans.ragioneria;
 import java.util.Objects;
 import java.util.Date;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import it.govpay.core.utils.SimpleDateFormatUtils;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "causale",
 "importo",
@@ -160,6 +163,15 @@ public class IncassoPost extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
+	}
+
 }
 
 

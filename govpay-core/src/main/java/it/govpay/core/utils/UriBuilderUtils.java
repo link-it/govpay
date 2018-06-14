@@ -40,6 +40,10 @@ public class UriBuilderUtils {
 	public static String getDominio(String codCominio) {
 		return getFromDomini(codCominio).build().toString();
 	}
+
+	public static String getLogoDominio(String codCominio) {
+		return getFromDomini(codCominio).path("logo").build().toString();
+	}
 	
 	public static String getEntrata(String codTipoTributo) {
 		return getFromEntrate(codTipoTributo).build().toString();
