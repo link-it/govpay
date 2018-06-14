@@ -15,19 +15,16 @@ import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.rs.v1.beans.base.ListaPagamentiPortale;
-import it.govpay.core.rs.v1.beans.base.PendenzaIndex;
-import it.govpay.core.rs.v1.beans.base.RppIndex;
+import it.govpay.core.rs.v1.beans.base.Rpp;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
-import it.govpay.rs.v1.beans.converter.PendenzeConverter;
 import it.govpay.rs.v1.beans.converter.RptConverter;
 
 
@@ -65,23 +62,13 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
 			
 			if(pagamentoPortaleDTOResponse.getListaRpp()!=null) {
-				List<RppIndex> rpp = new ArrayList<RppIndex>();
+				List<Rpp> rpp = new ArrayList<Rpp>();
 				for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
-					rpp.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
+					rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
 				}
 				response.setRpp(rpp);
 			}
 
-			if(pagamentoPortaleDTOResponse.getListaPendenze()!= null) {
-				List<PendenzaIndex> pendenze = new ArrayList<PendenzaIndex>();
-				for(LeggiPendenzaDTOResponse ricevutaDTOResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
-					PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento());
-					pendenze.add(rsModel);
-				}
-				response.setPendenze(pendenze);
-			}
-			
-			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
