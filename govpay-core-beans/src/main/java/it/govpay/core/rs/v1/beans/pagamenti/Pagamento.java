@@ -27,7 +27,6 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 "soggettoVersante",
 "autenticazioneSoggetto",
 "lingua",
-"pendenze",
 "rpp",
 })
 public class Pagamento extends JSONSerializable {
@@ -173,12 +172,8 @@ public class Pagamento extends JSONSerializable {
     
   @JsonProperty("lingua")
   private LinguaEnum lingua = LinguaEnum.IT;
-  
-  @JsonProperty("pendenze")
-  private List<PendenzaIndex> pendenze = null;
-  
   @JsonProperty("rpp")
-  private List<RppIndex> rpp = null;
+  private List<Rpp> rpp = null;
   
   /**
    * Identificativo del pagamento assegnato da GovPay
@@ -420,31 +415,16 @@ public class Pagamento extends JSONSerializable {
 
   /**
    **/
-  public Pagamento pendenze(List<PendenzaIndex> pendenze) {
-    this.pendenze = pendenze;
-    return this;
-  }
-
-  @JsonProperty("pendenze")
-  public List<PendenzaIndex> getPendenze() {
-    return pendenze;
-  }
-  public void setPendenze(List<PendenzaIndex> pendenze) {
-    this.pendenze = pendenze;
-  }
-
-  /**
-   **/
-  public Pagamento rpp(List<RppIndex> rpp) {
+  public Pagamento rpp(List<Rpp> rpp) {
     this.rpp = rpp;
     return this;
   }
 
   @JsonProperty("rpp")
-  public List<RppIndex> getRpp() {
+  public List<Rpp> getRpp() {
     return rpp;
   }
-  public void setRpp(List<RppIndex> rpp) {
+  public void setRpp(List<Rpp> rpp) {
     this.rpp = rpp;
   }
 
@@ -472,13 +452,12 @@ public class Pagamento extends JSONSerializable {
         Objects.equals(soggettoVersante, pagamento.soggettoVersante) &&
         Objects.equals(autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
         Objects.equals(lingua, pagamento.lingua) &&
-        Objects.equals(pendenze, pagamento.pendenze) &&
         Objects.equals(rpp, pagamento.rpp);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp);
   }
 
   public static Pagamento parse(String json) {
@@ -510,7 +489,6 @@ public class Pagamento extends JSONSerializable {
     sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
     sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
     sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
-    sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("}");
     return sb.toString();
