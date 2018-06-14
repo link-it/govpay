@@ -248,7 +248,7 @@ public class RptUtils {
 					GpThreadLocal.get().closeTransaction(transactionId);
 				}
 				if(risposta.getFault() != null) {
-					if(it.govpay.core.exceptions.NdpException.FaultNodo.valueOf(risposta.getFault().getFaultCode()).equals(it.govpay.core.exceptions.NdpException.FaultNodo.PPT_RPT_SCONOSCIUTA)) {
+					if(risposta.getFault().getFaultCode().equals(it.govpay.core.exceptions.NdpException.FaultNodo.PPT_RPT_SCONOSCIUTA.name())) {
 						log.info("RPT inesistente. Aggiorno lo stato in " + StatoRpt.RPT_ERRORE_INVIO_A_NODO + ".");
 						rpt.setStato(StatoRpt.RPT_ERRORE_INVIO_A_NODO);
 						rpt.setDescrizioneStato("Stato sul nodo: PPT_RPT_SCONOSCIUTA");

@@ -19,47 +19,11 @@
  */
 package it.govpay.core.exceptions;
 
-import it.govpay.model.NdpFaultCode;
-
 public class NdpException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	
-	public enum FaultPa implements NdpFaultCode {
-		PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO("L'importo del pagamento in attesa non è congruente con il dato indicato dal PSP"),
-		PAA_ER_DUPLICATA("La ER è già stata accettata."),
-		PAA_ERRORE_FORMATO_BUSTA_FIRMATA("Formato busta di firma errato o non corrispondente al tipoFirma."),
-		PAA_FIRMA_ERRATA("Errore di firma."),
-		PAA_FIRMA_INDISPONIBILE("Impossibile firmare."),
-		PAA_ID_DOMINIO_ERRATO("La PAA non corrisponde al Dominio indicato."),
-		PAA_ID_INTERMEDIARIO_ERRATO("Identificativo intermediario non corrispondente."),
-		PAA_PAGAMENTO_ANNULLATO("Pagamento in attesa risulta annullato all'Ente Creditore."),
-		PAA_PAGAMENTO_DUPLICATO("Pagamento in attesa risulta concluso all'Ente Creditore."),
-		PAA_PAGAMENTO_IN_CORSO("Pagamento in attesa risulta in corso all'Ente Creditore."),
-		PAA_PAGAMENTO_SCADUTO("Pagamento in attesa risulta scaduto all'Ente Creditore."),
-		PAA_PAGAMENTO_SCONOSCIUTO("Pagamento in attesa risulta sconosciuto all’Ente Creditore."),
-		PAA_RPT_SCONOSCIUTA("La RPT risulta sconosciuta."),
-		PAA_RT_DUPLICATA("La RT è già stata accettata."),
-		PAA_SEMANTICA("Errore semantico."),
-		PAA_SINTASSI_EXTRAXSD("Errore di sintassi extra XSD."),
-		PAA_SINTASSI_XSD("Errore di sintassi XSD."),
-		PAA_STAZIONE_INT_ERRATA("Stazione intermediario non corrispondente."),
-		PAA_SYSTEM_ERROR("Errore generico."),
-		PAA_TIPOFIRMA_SCONOSCIUTO("Il campo tipoFirma non corrisponde ad alcun valore previsto.");
-		
-		private String fault;
-		
-		private FaultPa(String faultString) {
-			this.fault = faultString;
-		}
-		
-		@Override
-		public String getFaultString() {
-			return fault;
-		}
-	}
-	
-	public enum FaultNodo implements NdpFaultCode {
+	public enum FaultNodo {
 		PPT_AUTENTICAZIONE,
 		PPT_AUTORIZZAZIONE,
 		PPT_CANALE_DISABILITATO,
@@ -99,42 +63,65 @@ public class NdpException extends Exception {
 		PPT_TIPOFIRMA_SCONOSCIUTO,
 		PPT_WISP_SESSIONE_SCONOSCIUTA,
 		PPT_WISP_TIMEOUT_RECUPERO_SCELTA;
-		@Override
+	}
+	
+	public enum FaultPa {
+		PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO("L'importo del pagamento in attesa non \u00E8 congruente con il dato indicato dal PSP"),
+		PAA_ER_DUPLICATA("La ER \u00E8 gi\u00E0 stata accettata."),
+		PAA_ERRORE_FORMATO_BUSTA_FIRMATA("Formato busta di firma errato o non corrispondente al tipoFirma."),
+		PAA_FIRMA_ERRATA("Errore di firma."),
+		PAA_FIRMA_INDISPONIBILE("Impossibile firmare."),
+		PAA_ID_DOMINIO_ERRATO("La PAA non corrisponde al Dominio indicato."),
+		PAA_ID_INTERMEDIARIO_ERRATO("Identificativo intermediario non corrispondente."),
+		PAA_PAGAMENTO_ANNULLATO("Pagamento in attesa risulta annullato all'Ente Creditore."),
+		PAA_PAGAMENTO_DUPLICATO("Pagamento in attesa risulta concluso all'Ente Creditore."),
+		PAA_PAGAMENTO_IN_CORSO("Pagamento in attesa risulta in corso all'Ente Creditore."),
+		PAA_PAGAMENTO_SCADUTO("Pagamento in attesa risulta scaduto all'Ente Creditore."),
+		PAA_PAGAMENTO_SCONOSCIUTO("Pagamento in attesa risulta sconosciuto all’Ente Creditore."),
+		PAA_RPT_SCONOSCIUTA("La RPT risulta sconosciuta."),
+		PAA_RT_DUPLICATA("La RT \u00E8 gi\u00E0 stata accettata."),
+		PAA_SEMANTICA("Errore semantico."),
+		PAA_SINTASSI_EXTRAXSD("Errore di sintassi extra XSD."),
+		PAA_SINTASSI_XSD("Errore di sintassi XSD."),
+		PAA_STAZIONE_INT_ERRATA("Stazione intermediario non corrispondente."),
+		PAA_SYSTEM_ERROR("Errore generico."),
+		PAA_TIPOFIRMA_SCONOSCIUTO("Il campo tipoFirma non corrisponde ad alcun valore previsto.");
+		
+		private String fault;
+		
+		private FaultPa(String faultString) {
+			this.fault = faultString;
+		}
+		
 		public String getFaultString() {
-			return null;
+			return fault;
 		}
 	}
 	
-	private NdpFaultCode fault;
+	private String faultCode;
+	private String faultString;
 	private String descrizione;
 	private String codDominio;
 	
-	public NdpException(NdpFaultCode fault, String codDominio, String descrizione) {
-		this.setFault(fault);
-		this.setDescrizione(descrizione);
+	public NdpException(FaultPa fault, String codDominio) {
+		this(fault.name(), fault.getFaultString(), null, codDominio, null);
+	}
+	public NdpException(FaultPa fault, String description, String codDominio) {
+		this(fault.name(), fault.getFaultString(), description, codDominio, null);
+	}
+	
+	public NdpException(FaultPa fault, String description, String codDominio, Exception e) {
+		this(fault.name(), fault.getFaultString(), description, codDominio, e);
+	}
+	
+	public NdpException(String faultCode, String faultString, String description, String codDominio, Exception e) {
+		super(e);
+		this.setFaultCode(faultCode);
+		this.setFaultString(faultString);
+		this.setDescrizione(description);
 		this.setCodDominio(codDominio);
 	}
 	
-	public NdpException(NdpFaultCode fault, String codDominio, String descrizione, Exception e) {
-		super(e);
-		this.setFault(fault);
-		this.setDescrizione(descrizione);
-		this.setCodDominio(codDominio);
-	}
-
-	public NdpException(NdpFaultCode fault, String codDominio) {
-		this.setFault(fault);
-		this.setCodDominio(codDominio);
-	}
-
-	public NdpFaultCode getFault() {
-		return fault;
-	}
-
-	public void setFault(NdpFaultCode fault) {
-		this.fault = fault;
-	}
-
 	public String getDescrizione() {
 		return descrizione;
 	}
@@ -149,6 +136,22 @@ public class NdpException extends Exception {
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+
+	public String getFaultCode() {
+		return faultCode;
+	}
+
+	public void setFaultCode(String faultCode) {
+		this.faultCode = faultCode;
+	}
+
+	public String getFaultString() {
+		return faultString;
+	}
+
+	public void setFaultString(String faultString) {
+		this.faultString = faultString;
 	}
 	
 	

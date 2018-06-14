@@ -316,7 +316,7 @@ public class RrUtils extends NdpValidationUtils {
 		}
 		
 		if(rr.getStato().equals(StatoRr.ER_ACCETTATA_PA)) {
-			throw new NdpException(FaultPa.PAA_ER_DUPLICATA, identificativoDominio);
+			throw new NdpException(FaultPa.PAA_ER_DUPLICATA, "Esito già acquisito in data " + rr.getDataMsgRevoca(), identificativoDominio);
 		}
 		
 		RtUtils.EsitoValidazione esito = null;

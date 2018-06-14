@@ -280,20 +280,29 @@ public abstract class BaseController {
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
 		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 		FaultBean respKo = new FaultBean();
-		respKo.setCategoria(e.getFaultBean()!=null ? CategoriaEnum.PAGOPA:CategoriaEnum.OPERAZIONE);
-		respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
-		respKo.setCodice(e.getCodEsito().toString());
-		respKo.setDettaglio(e.getMessage());
-		respKo.setDescrizione(e.getDescrizioneEsito());
+		int statusCode = 500;
+		if(e.getFaultBean()!=null) {
+			respKo.setCategoria(CategoriaEnum.PAGOPA);
+			respKo.setCodice(e.getFaultBean().getFaultCode());
+			respKo.setDescrizione(e.getFaultBean().getFaultString());
+			respKo.setDettaglio(e.getFaultBean().getDescription());
+			statusCode = 502;
+		} else {
+			respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
+			respKo.setCodice(e.getCodEsito().toString());
+			respKo.setDettaglio(e.getMessage());
+			respKo.setDescrizione(e.getDescrizioneEsito());
+		}
+		
 		try {
-			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), statusCode);
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
 		if(transactionId != null)
-			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
+			return Response.status(statusCode).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
 		else 
-			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode()).entity(respKo.toJSON(null)).build();
+			return Response.status(statusCode).entity(respKo.toJSON(null)).build();
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {

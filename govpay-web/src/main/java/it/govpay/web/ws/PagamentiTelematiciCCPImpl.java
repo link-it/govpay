@@ -226,7 +226,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 						
 						if(versamento.getStatoVersamento().equals(StatoVersamento.ANOMALO))
-							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato, ma si riscontrano anomalie negli importi. Per maggiori informazioni contattare il supporto clienti.");
+							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, "Il pagamento risulta gi\u00E0 effettuato, ma si riscontrano anomalie negli importi. Per maggiori informazioni contattare il supporto clienti.", codDominio);
 						
 						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
 							PagamentiBD pagamentiBD = new PagamentiBD(bd);
@@ -235,7 +235,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
 							else {
 								Pagamento pagamento = pagamenti.get(0);
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getDenominazioneAttestante() + " Iur:" + pagamento.getIur() + "]");
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getDenominazioneAttestante() + " Iur:" + pagamento.getIur() + "]", codDominio);
 							}
 						}
 					}
@@ -252,26 +252,26 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					ctx.log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, codDominio, e1.getMessage());
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio);
 			} catch (VersamentoAnnullatoException e1) {
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio, e1.getMessage());
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio);
 			} catch (VersamentoDuplicatoException e1) {
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, e1.getMessage());
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio);
 			} catch (VersamentoSconosciutoException e1) {
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 			} catch (ClientException e1) {
-				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1, e1);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1, codDominio, e1);
 			} catch (GovPayException e1) {
-				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante l'attivazione del versamento: " + e1, e1);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'attivazione del versamento: " + e1, codDominio, e1);
 			}
 			
 			// Verifico l'importo
 			if(bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento().compareTo(versamento.getImportoTotale()) != 0)
-				throw new NdpException(FaultPa.PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO, codDominio, "L'importo attivato [" + bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento() + "] non corrisponde all'importo del versamento [" + versamento.getImportoTotale() + "]");
+				throw new NdpException(FaultPa.PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO, "L'importo attivato [" + bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento() + "] non corrisponde all'importo del versamento [" + versamento.getImportoTotale() + "]", codDominio);
 			
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti(bd).size() != 1) {
-				throw new NdpException(FaultPa.PAA_SEMANTICA, codDominio, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
+				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
 			}
 
 			// Identificazione del Psp e del canale
@@ -624,36 +624,36 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	private <T> T buildRisposta(NdpException e, T risposta) {
 		if(risposta instanceof PaaAttivaRPTRisposta) {
-			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR)) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
 				log.error("Errore interno in Attiva RPT",e);
 			} else {
-				log.warn("Rifiutata Attiva RPT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata Attiva RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaaAttivaRPTRisposta r = (PaaAttivaRPTRisposta) risposta;
 			EsitoAttivaRPT esito = new EsitoAttivaRPT();
 			esito.setEsito("KO");
 			FaultBean fault = new FaultBean();
 			fault.setId(e.getCodDominio());
-			fault.setFaultCode(e.getFault().toString());
-			fault.setFaultString(e.getFault().getFaultString());
+			fault.setFaultCode(e.getFaultCode());
+			fault.setFaultString(e.getFaultString());
 			fault.setDescription(e.getDescrizione());
 			esito.setFault(fault);
 			r.setPaaAttivaRPTRisposta(esito);
 		}
 
 		if(risposta instanceof PaaVerificaRPTRisposta) {
-			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR)) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
 				log.error("Errore interno in Verifica RPT",e);
 			} else {
-				log.warn("Rifiutata Verifica RPT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata Verifica RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaaVerificaRPTRisposta r = (PaaVerificaRPTRisposta) risposta;
 			EsitoVerificaRPT esito = new EsitoVerificaRPT();
 			esito.setEsito("KO");
 			FaultBean fault = new FaultBean();
 			fault.setId(e.getCodDominio());
-			fault.setFaultCode(e.getFault().toString());
-			fault.setFaultString(e.getFault().getFaultString());
+			fault.setFaultCode(e.getFaultCode());
+			fault.setFaultString(e.getFaultString());
 			fault.setDescription(e.getDescrizione());
 			esito.setFault(fault);
 			r.setPaaVerificaRPTRisposta(esito);

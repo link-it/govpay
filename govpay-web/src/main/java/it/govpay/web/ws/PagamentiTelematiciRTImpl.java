@@ -364,36 +364,36 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 	private <T> T buildRisposta(NdpException e, T r) {
 		if(r instanceof PaaInviaRTRisposta) {
-			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR))
-				log.error("Rifiutata RT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) 
+				log.error("Rifiutata RT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
 			else
-				log.warn("Rifiutata RT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata RT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 
 			PaaInviaRTRisposta risposta = (PaaInviaRTRisposta) r;
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("KO");
 			FaultBean fault = new FaultBean();
 			fault.setId(e.getCodDominio());
-			fault.setFaultCode(e.getFault().toString());
+			fault.setFaultCode(e.getFaultCode());
+			fault.setFaultString(e.getFaultString());
 			fault.setDescription(e.getDescrizione());
-			fault.setFaultString(e.getFault().getFaultString());
 			esito.setFault(fault);
 			risposta.setPaaInviaRTRisposta(esito);
 		}
 
 		if(r instanceof TipoInviaEsitoStornoRisposta) {
-			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR))
-				log.error("Rifiutata ER con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) 
+				log.error("Rifiutata ER con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
 			else
-				log.warn("Rifiutata ER con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata ER con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 
 			TipoInviaEsitoStornoRisposta risposta = (TipoInviaEsitoStornoRisposta) r;
 			risposta.setEsito("KO");
 			FaultBean fault = new FaultBean();
 			fault.setId(e.getCodDominio());
-			fault.setFaultCode(e.getFault().toString());
+			fault.setFaultCode(e.getFaultCode());
+			fault.setFaultString(e.getFaultString());
 			fault.setDescription(e.getDescrizione());
-			fault.setFaultString(e.getFault().getFaultString());
 			risposta.setFault(fault);
 		}
 

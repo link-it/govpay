@@ -3153,10 +3153,6 @@ components:
             - SL
           default: IT
           example: IT                
-        pendenze:
-          type: string
-          description: Url per le pendenze oggetto del Pagamento
-          example: '/pendenze?idPagamento=f9866575-e255-4d10-9845-57ba88bec136'  
         rpp:
           type: string
           description: Url per le richieste di pagamento oggetto del Pagamento
@@ -3239,14 +3235,10 @@ components:
             - SL
           default: IT
           example: IT                
-        pendenze:
-          type: array
-          items: 
-            $ref: '#/components/schemas/pendenzaIndex'
         rpp:
           type: array
           items: 
-            $ref: '#/components/schemas/rppIndex'
+            $ref: '#/components/schemas/rpp'
     contoAddebito:
       type: object
       description: >-

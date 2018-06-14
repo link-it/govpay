@@ -259,8 +259,8 @@ public class Pagamento extends BasicBD {
 						try {
 							RptUtils.aggiornaRptDaNpD(client, rpt, this);
 						} catch (NdpException e) {
-							ctx.log("pendenti.rptAggiornataKo", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getFault().getFaultString());
-							log.warn("Errore durante l'aggiornamento della RPT: " + e.getFault().getFaultString());
+							ctx.log("pendenti.rptAggiornataKo", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getFaultString());
+							log.warn("Errore durante l'aggiornamento della RPT: " + e.getFaultString());
 							continue;
 						} catch (Exception e) {
 							ctx.log("pendenti.rptAggiornataFail", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getMessage());

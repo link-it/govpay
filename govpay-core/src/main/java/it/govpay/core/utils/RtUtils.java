@@ -221,7 +221,7 @@ public class RtUtils extends NdpValidationUtils {
 		}
 		
 		if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
-			throw new NdpException(FaultPa.PAA_RT_DUPLICATA, rpt.getCodDominio());
+			throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
 		}
 		
 		CtRicevutaTelematica ctRt = null;
