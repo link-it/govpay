@@ -1,14 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<groupId>it.govpay</groupId>
 		<artifactId>govpay</artifactId>
+		<groupId>it.govpay</groupId>
 		<version>3.1.0</version>
 	</parent>
 	<artifactId>govpay-web-console</artifactId>
 	<packaging>war</packaging>
 	<name>GovPay Cruscotto di Gestione</name>
+	
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
@@ -32,18 +35,13 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 	</dependencies>
+
 	<build>
 		<filters>
 			<filter>../resources/filters/${env}.filter.properties</filter>
 		</filters>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -60,11 +58,15 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
+				<version>3.2.1</version>
 				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webResources>
+						<webResource>
+							<directory>src/main/webapp</directory>
+						</webResource>
+					</webResources>
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-					<archive>
+	                <archive>
 	                    <manifest>
 	                        <addClasspath>true</addClasspath>
 	                        <classpathPrefix>lib/</classpathPrefix>
@@ -73,36 +75,8 @@
 							<Class-Path>properties/</Class-Path>
 						</manifestEntries>
 					</archive>
-					<webResources>
-<!-- 			            <resource> -->
-<!-- 			                <filtering>true</filtering> -->
-<!-- 			                <directory>src/main/webapp/scripts</directory> -->
-<!-- 			                <includes> -->
-<!-- 			                    <include>*.js</include> -->
-<!-- 			                </includes> -->
-<!-- 			                <targetPath>scripts</targetPath> -->
-<!-- 			            </resource> -->
-<!-- 			            <resource> -->
-<!-- 			                <filtering>true</filtering> -->
-<!-- 			                <directory>src/main/webapp/public</directory> -->
-<!-- 			                <includes> -->
-<!-- 			                    <include>*.html</include> -->
-<!-- 			                    <include>*.jsp</include> -->
-<!-- 			                </includes> -->
-<!-- 			                <targetPath>public</targetPath> -->
-<!-- 			            </resource> -->
-			            <resource>
-			                <filtering>true</filtering>
-			                <directory>src/main/webapp</directory>
-			                <includes>
-			                    <include>index.html</include>
-			                </includes>
-			                <targetPath>/</targetPath>
-			            </resource>
-			        </webResources>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 </project>
-

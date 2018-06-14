@@ -3044,14 +3044,7 @@ components:
           type: string
           example: IT60X0542811101000000123456
         tipoContabilita:
-          description: Tipologia di codifica del capitolo di bilancio
-          type: string
-          enum:
-            - Entrata
-            - Speciale
-            - SIOPE
-            - Altro
-          example: SIOPE
+          $ref: '#/components/schemas/tipoContabilita'
         codiceContabilita:
           description: Codifica del capitolo di bilancio
           type: string
@@ -3509,7 +3502,7 @@ components:
                   type: string
                   example: IT60X0542811101000000123456
                 tipoContabilita:
-                  $ref: '#/components/schemas/tipoEntrata'
+                  $ref: '#/components/schemas/tipoContabilita'
                 codiceContabilita:
                   description: Codifica del capitolo di bilancio
                   type: string

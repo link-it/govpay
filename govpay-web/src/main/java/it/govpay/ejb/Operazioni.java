@@ -69,39 +69,4 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.resetCacheAnagrafica();
 	}
 
-	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
-	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
-	public static String generazioneAvvisiPagamento(){
-		if(!GovpayConfig.getInstance().isBatchOn()) {
-			return "Batch non attivi";
-		}
-
-		if(!GovpayConfig.getInstance().isBatchAvvisiPagamento()) {
-			return "Generazione avvisi pagamento non attiva";
-		}
-
-		if(!it.govpay.core.business.Operazioni.getEseguiGenerazioneAvvisi()) {
-			return "";
-		}
-		String esito = it.govpay.core.business.Operazioni.generaAvvisi("Batch");
-
-		it.govpay.core.business.Operazioni.resetEseguiGenerazioneAvvisi();
-		return esito;
-	}
-
-	@Schedule(hour="*", minute="*/30", persistent=false)
-	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
-	public static String generazioneAvvisiPagamentoSchedule(){
-		if(!GovpayConfig.getInstance().isBatchOn()) {
-			return "Batch non attivi";
-		}
-
-		if(!GovpayConfig.getInstance().isBatchAvvisiPagamento()) {
-			return "Generazione avvisi pagamento non attiva";
-		}
-
-		String esito = it.govpay.core.business.Operazioni.generaAvvisi("Batch");
-
-		return esito;
-	}
 }
