@@ -467,4 +467,8 @@ public class GovpayConfig {
 	public boolean isDumpAPIRestGETResponse() {
 		return dumpAPIRestGETResponse;
 	}
+
+	public Integer getCacheLogo() {
+		return 2 * 60 * 60;
+	}
 }

@@ -25,6 +25,9 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
@@ -175,6 +178,25 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindDominiDTOResponse(dominiBD.count(filter), dominiBD.findAll(filter));
 
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+
+	public byte[] getLogo(GetDominioDTO getDominioDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
+			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
+			
+			return dominio.getLogo() != null ? Base64.decode(dominio.getLogo()) : new byte[] {};
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new DominioNonTrovatoException("Dominio " + getDominioDTO.getCodDominio() + " non censito in Anagrafica");
+		} catch (Base64DecodingException e) {
+			throw new ServiceException(e.getMessage(), e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();

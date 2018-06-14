@@ -23,55 +23,8 @@ public class Entrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio = null;
   
-    
-  /**
-   * Tipologia di codifica del capitolo di bilancio
-   */
-  public enum TipoContabilitaEnum {
-    
-    
-        
-            
-    ENTRATA("ENTRATA"),
-    
-            
-    SPECIALE("SPECIALE"),
-    
-            
-    SIOPE("SIOPE"),
-    
-            
-    ALTRO("ALTRO");
-            
-        
-    
-
-    private String value;
-
-    TipoContabilitaEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoContabilitaEnum fromValue(String text) {
-      for (TipoContabilitaEnum b : TipoContabilitaEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("tipoContabilita")
-  private TipoContabilitaEnum tipoContabilita = null;
+  private TipoContabilita tipoContabilita = null;
   
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
@@ -119,36 +72,18 @@ public class Entrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Tipologia di codifica del capitolo di bilancio
    **/
-  public Entrata tipoContabilitaEnum(TipoContabilitaEnum tipoContabilita) {
+  public Entrata tipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
     return this;
   }
 
-  @JsonIgnore
-  public TipoContabilitaEnum getTipoContabilitaEnum() {
+  @JsonProperty("tipoContabilita")
+  public TipoContabilita getTipoContabilita() {
     return tipoContabilita;
   }
-  public void setTipoContabilitaEnum(TipoContabilitaEnum tipoContabilita) {
+  public void setTipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
-  }
-
-  public void setTipoContabilita(String tipoContabilita) throws Exception{
-	  if(tipoContabilita != null) {
-		  this.tipoContabilita = TipoContabilitaEnum.fromValue(tipoContabilita);
-		  if(this.tipoContabilita == null)
-			  throw new Exception("valore ["+tipoContabilita+"] non ammesso per la property tipoContabilita");
-	  }
-  }
-  
-  @JsonProperty("tipoContabilita")
-  public String getTipoContabilita() {
-	  if(tipoContabilita != null) {
-		  return tipoContabilita.toString();
-	  } else {
-		  return null;
-	  }
   }
 
   /**

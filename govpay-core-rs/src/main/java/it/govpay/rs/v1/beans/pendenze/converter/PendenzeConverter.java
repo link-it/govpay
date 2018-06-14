@@ -19,6 +19,7 @@ import it.govpay.core.rs.v1.beans.pendenze.Avviso;
 import it.govpay.core.rs.v1.beans.pendenze.Avviso.StatoEnum;
 import it.govpay.core.rs.v1.beans.pendenze.StatoPendenza;
 import it.govpay.core.rs.v1.beans.pendenze.TassonomiaAvviso;
+import it.govpay.core.rs.v1.beans.pendenze.TipoContabilita;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {
@@ -174,7 +175,7 @@ public class PendenzeConverter {
 			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
 			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
 			if(singoloVersamento.getTipoContabilita() != null)
-				rsModel.setTipoContabilita(singoloVersamento.getTipoContabilita().getCodifica());
+				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
 		
 		

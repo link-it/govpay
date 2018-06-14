@@ -16,55 +16,8 @@ public class TipoEntrata extends JSONSerializable {
   @JsonProperty("descrizione")
   private String descrizione = null;
   
-    
-  /**
-   * Tipologia di codifica del capitolo di bilancio
-   */
-  public enum TipoContabilitaEnum {
-    
-    
-        
-            
-    ENTRATA("Entrata"),
-    
-            
-    SPECIALE("Speciale"),
-    
-            
-    SIOPE("SIOPE"),
-    
-            
-    ALTRO("Altro");
-            
-        
-    
-
-    private String value;
-
-    TipoContabilitaEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @org.codehaus.jackson.annotate.JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoContabilitaEnum fromValue(String text) {
-      for (TipoContabilitaEnum b : TipoContabilitaEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("tipoContabilita")
-  private TipoContabilitaEnum tipoContabilita = null;
+  private TipoContabilita tipoContabilita = null;
   
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
@@ -91,18 +44,17 @@ public class TipoEntrata extends JSONSerializable {
   }
 
   /**
-   * Tipologia di codifica del capitolo di bilancio
    **/
-  public TipoEntrata tipoContabilita(TipoContabilitaEnum tipoContabilita) {
+  public TipoEntrata tipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
     return this;
   }
 
   @JsonProperty("tipoContabilita")
-  public TipoContabilitaEnum getTipoContabilita() {
+  public TipoContabilita getTipoContabilita() {
     return tipoContabilita;
   }
-  public void setTipoContabilita(TipoContabilitaEnum tipoContabilita) {
+  public void setTipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
   }
 

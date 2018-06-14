@@ -18,8 +18,8 @@ import it.govpay.core.rs.v1.beans.base.Dominio;
 import it.govpay.core.rs.v1.beans.base.DominioIndex;
 import it.govpay.core.rs.v1.beans.base.DominioPost;
 import it.govpay.core.rs.v1.beans.base.Entrata;
-import it.govpay.core.rs.v1.beans.base.Entrata.TipoContabilitaEnum;
 import it.govpay.core.rs.v1.beans.base.EntrataPost;
+import it.govpay.core.rs.v1.beans.base.TipoContabilita;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativa;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativaPost;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -39,12 +39,12 @@ public class DominiConverter {
 		if(entrataRequest.getCodificaIUV()!=null)
 			tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
 //		tributo.setDescrizione(entrataRequest.getDescrizione()); //TODO
-		if(entrataRequest.getTipoContabilitaEnum() != null) {
-			switch (entrataRequest.getTipoContabilitaEnum()) {
+		if(entrataRequest.getTipoContabilita() != null) {
+			switch (entrataRequest.getTipoContabilita()) {
 			case ALTRO:
 				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.ALTRO);
 				break;
-			case ENTRATA:
+			case CAPITOLO:
 				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.CAPITOLO);
 				break;
 			case SIOPE:
@@ -281,16 +281,16 @@ public class DominiConverter {
 		if(tributo.getTipoContabilita() != null) {
 			switch (tributo.getTipoContabilita()) {
 			case ALTRO:
-				rsModel.tipoContabilitaEnum(TipoContabilitaEnum.ALTRO);
+				rsModel.tipoContabilita(TipoContabilita.ALTRO);
 				break;
 			case CAPITOLO:
-				rsModel.tipoContabilitaEnum(TipoContabilitaEnum.ENTRATA);
+				rsModel.tipoContabilita(TipoContabilita.CAPITOLO);
 				break;
 			case SIOPE:
-				rsModel.tipoContabilitaEnum(TipoContabilitaEnum.SIOPE);
+				rsModel.tipoContabilita(TipoContabilita.SIOPE);
 				break;
 			case SPECIALE:
-				rsModel.tipoContabilitaEnum(TipoContabilitaEnum.SPECIALE);
+				rsModel.tipoContabilita(TipoContabilita.SPECIALE);
 				break;
 			}
 		}

@@ -2,17 +2,20 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
+import eu.medsea.mimeutil.MimeUtil;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
@@ -38,16 +41,16 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
+import it.govpay.core.rs.v1.beans.base.ContiAccredito;
+import it.govpay.core.rs.v1.beans.base.ContiAccreditoPost;
+import it.govpay.core.rs.v1.beans.base.DominioPost;
 import it.govpay.core.rs.v1.beans.base.Entrata;
+import it.govpay.core.rs.v1.beans.base.EntrataPost;
+import it.govpay.core.rs.v1.beans.base.ListaContiAccredito;
 import it.govpay.core.rs.v1.beans.base.ListaDomini;
 import it.govpay.core.rs.v1.beans.base.ListaEntrate;
-import it.govpay.core.rs.v1.beans.base.ListaContiAccredito;
 import it.govpay.core.rs.v1.beans.base.ListaUnitaOperative;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativa;
-import it.govpay.core.rs.v1.beans.base.ContiAccredito;
-import it.govpay.core.rs.v1.beans.base.DominioPost;
-import it.govpay.core.rs.v1.beans.base.EntrataPost;
-import it.govpay.core.rs.v1.beans.base.ContiAccreditoPost;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativaPost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -601,6 +604,51 @@ public class DominiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
+			
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
+
+    public Response getLogo(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
+    	String methodName = "getLogo";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			// Parametri - > DTO Input
+			
+			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
+
+			// INIT DAO
+			
+			DominiDAO dominiDAO = new DominiDAO();
+			
+			// CHIAMATA AL DAO
+			
+			byte[] logo = dominiDAO.getLogo(getDominioDTO);
+			
+			MimeUtil.registerMimeDetector(eu.medsea.mimeutil.detector.MagicMimeMimeDetector.class.getName());
+			
+			Collection<?> mimeTypes = MimeUtil.getMimeTypes(logo);
+			
+			String mimeType = MimeUtil.getFirstMimeType(mimeTypes.toString()).toString();
+
+			this.logResponse(uriInfo, httpHeaders, methodName, logo, 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			ResponseBuilder entity = Response.status(Status.OK).entity(logo);
+			entity.header("CacheControl", "max-age: "+ GovpayConfig.getInstance().getCacheLogo().intValue());
+			entity.header("Content-Type", mimeType);
+			return this.handleResponseOk(entity,transactionId).build();
 			
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);

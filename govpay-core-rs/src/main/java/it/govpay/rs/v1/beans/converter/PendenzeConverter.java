@@ -10,14 +10,15 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.core.rs.v1.beans.base.Pendenza;
-import it.govpay.core.rs.v1.beans.base.VocePendenza;
-import it.govpay.core.rs.v1.beans.base.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.base.Avviso;
 import it.govpay.core.rs.v1.beans.base.Avviso.StatoEnum;
+import it.govpay.core.rs.v1.beans.base.Pendenza;
+import it.govpay.core.rs.v1.beans.base.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.base.Segnalazione;
 import it.govpay.core.rs.v1.beans.base.StatoPendenza;
 import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
+import it.govpay.core.rs.v1.beans.base.TipoContabilita;
+import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {
@@ -185,7 +186,7 @@ public class PendenzeConverter {
 			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
 			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
 			if(singoloVersamento.getTipoContabilita() != null)
-				rsModel.setTipoContabilita(singoloVersamento.getTipoContabilita().getCodifica());
+				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
 		
 		

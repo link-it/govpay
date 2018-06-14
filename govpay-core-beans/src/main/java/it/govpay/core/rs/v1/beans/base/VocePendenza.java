@@ -54,7 +54,7 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String ibanAccredito= null;
   
   @JsonProperty("tipoContabilita")
-  private String tipoContabilita= null;
+  private TipoContabilita tipoContabilita= null;
   
   /**
    * indice di voce all'interno della pendenza
@@ -214,16 +214,16 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.ibanAccredito = ibanAccredito;
   }
 
-  public VocePendenza tipoContabilita(String tipoContabilita) {
+  public VocePendenza tipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita= tipoContabilita;
     return this;
   }
 
   @JsonProperty("tipoContabilita")
-  public String getTipoContabilita() {
+  public TipoContabilita getTipoContabilita() {
     return tipoContabilita;
   }
-  public void setTipoContabilita(String tipoContabilita) {
+  public void setTipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
   }
   @Override
