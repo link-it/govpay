@@ -759,7 +759,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
 		// Recupero _incasso
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_incasso = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTrn(),Incasso.model().COD_DOMINIO.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodDominio(),Incasso.model().COD_DOMINIO.getFieldType()),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTrn(),Incasso.model().TRN.getFieldType()),
 		};
 		Long id_incasso = null;

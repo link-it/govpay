@@ -18,6 +18,7 @@ public class RptConverter {
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
+		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(versamento));
 
 		try {
 			rsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt()));

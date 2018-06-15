@@ -75,7 +75,7 @@ public class UtentiDAO extends BaseDAO{
 		LeggiProfiloDTOResponse response = new LeggiProfiloDTOResponse();
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.populateUser(user, bd);
+			response.setNome(this.populateUser(user, bd));
 			
 			response.setUtente(user);
 			

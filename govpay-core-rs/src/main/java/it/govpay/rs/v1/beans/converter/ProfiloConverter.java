@@ -43,7 +43,7 @@ public class ProfiloConverter {
 			}
 			profilo.setAcl(aclLst);
 		}
-		profilo.setNome(user.getPrincipal());
+		profilo.setNome(leggiProfilo.getNome());
 		if(leggiProfilo.getDomini()!=null) {
 			List<DominioIndex> dominiLst = new ArrayList<>();
 			for(Dominio dominio: leggiProfilo.getDomini()) {

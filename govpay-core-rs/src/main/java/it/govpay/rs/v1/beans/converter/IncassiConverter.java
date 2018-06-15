@@ -35,7 +35,7 @@ public class IncassiConverter {
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto().doubleValue());
-		rsModel.setIdIncasso(i.getId()+ "");
+		rsModel.setIdIncasso(i.getTrn());
 		rsModel.setIdDominio(i.getCodDominio());
 		
 		rsModel.setIbanAccredito(i.getIbanAccredito());
@@ -58,7 +58,7 @@ public class IncassiConverter {
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto().doubleValue());
-		rsModel.setIdIncasso(i.getId()+ "");
+		rsModel.setIdIncasso(i.getTrn());
 		rsModel.setIdDominio(i.getCodDominio());
 		
 		rsModel.setIbanAccredito(i.getIbanAccredito());

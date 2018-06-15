@@ -240,11 +240,6 @@ public class RppController extends BaseController {
 
 			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione());
 			
-			PendenzaIndex pendenza = PendenzeConverter.toRsModelIndex(leggiRptDTOResponse.getVersamento(), leggiRptDTOResponse.getUnitaOperativa(), leggiRptDTOResponse.getApplicazione(),
-					leggiRptDTOResponse.getDominio());
-			
-			response.setPendenza(pendenza);
-			
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);

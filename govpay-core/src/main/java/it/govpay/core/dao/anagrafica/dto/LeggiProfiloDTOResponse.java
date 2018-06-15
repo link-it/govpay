@@ -18,6 +18,7 @@ import it.govpay.model.IAutorizzato;
  */
 public class LeggiProfiloDTOResponse {
 
+	private String nome;
 	private IAutorizzato utente;
 	private List<Dominio> domini;
 	private List<Tributo> tributi;
@@ -38,5 +39,11 @@ public class LeggiProfiloDTOResponse {
 	}
 	public void setTributi(List<Tributo> tributi) {
 		this.tributi = tributi;
+	}
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 }
