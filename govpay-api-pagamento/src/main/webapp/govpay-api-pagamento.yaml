@@ -1092,11 +1092,25 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/faultBean'
+            type: object
+            allOf:
+              - $ref: '#/components/schemas/faultBean'
+              - type: object
+                properties:
+                  id:
+                    type: string
+                    example: 12345
+                    description: identificativo del pagamento creato
+                  location:
+                    type: string
+                    example: /pagamenti/12345
+                    description: Url del dettaglio del pagamento                  
           example:
             categoria: PAGOPA
             codice: PPT_CANALE_IRRAGGIUNGIBILE
-            descrizione: Errore di connessione verso il canale          
+            descrizione: Errore di connessione verso il canale     
+            id: '12345'
+            location: '/pagamenti/12345'     
   schemas:
     faultBean:
       type: object
