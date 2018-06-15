@@ -39,17 +39,19 @@ import it.govpay.model.IAutorizzato;
 
 public class BaseDAO {
 
-	public void populateUser(IAutorizzato user, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public String populateUser(IAutorizzato user, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		if(user == null || user.getPrincipal() == null)
 			throw AclEngine.toNotAuthenticatedException(user);
 
 		try {
 			Applicazione applicazione = getApplicazioneFromUser(user, bd);
 			user.merge(applicazione.getUtenza());
+			return applicazione.getPrincipal();
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {
 				Operatore operatore = getOperatoreFromUser(user, bd);
 				user.merge(operatore.getUtenza());
+				return operatore.getNome();
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
 				throw AclEngine.toNotAuthorizedException(user);					
 			}
