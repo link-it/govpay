@@ -1017,30 +1017,6 @@ paths:
       summary: Elenco delle acl associate all'utenza chiamante
       tags:
         - Utenti
-      parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
       responses:
         '200':
           description: Autorizzazioni dell'utenza chiamante
