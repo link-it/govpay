@@ -75,6 +75,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			this.commit();
 		} catch (ServiceException e) {
 			this.rollback();
+			throw e;
 		} finally {
 			this.setAutoCommit(oldAutocomit);
 		}

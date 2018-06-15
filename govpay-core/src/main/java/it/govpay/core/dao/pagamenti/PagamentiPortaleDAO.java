@@ -229,7 +229,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
-				pagamentiPortaleBD.insertPagamento(pagamentoPortale);
+				pagamentiPortaleBD.updatePagamento(pagamentoPortale);
 				throw e;
 			} catch (Exception e) {
 				transazioneResponse = (GpAvviaTransazionePagamentoResponse) new GovPayException(e).getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
