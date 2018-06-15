@@ -1092,19 +1092,7 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            allOf:
-              - $ref: '#/components/schemas/faultBean'
-              - type: object
-                properties:
-                  id:
-                    type: string
-                    example: 12345
-                    description: identificativo del pagamento creato
-                  location:
-                    type: string
-                    example: /pagamenti/12345
-                    description: Url del dettaglio del pagamento                  
+            $ref: '#/components/schemas/faultBeanEsteso'
           example:
             categoria: PAGOPA
             codice: PPT_CANALE_IRRAGGIUNGIBILE
@@ -1142,7 +1130,21 @@ components:
           description: Descrizione dell'errore
         dettaglio:
           type: string
-          description: Descrizione aggiuntiva  
+          description: Descrizione aggiuntiva 
+    faultBeanEsteso:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/faultBean'
+        - type: object
+          properties:
+            id:
+              type: string
+              example: 12345
+              description: identificativo del pagamento creato
+            location:
+              type: string
+              example: /pagamenti/12345
+              description: Url del dettaglio del pagamento       
     listaPaginata:
       type: object
       properties:
