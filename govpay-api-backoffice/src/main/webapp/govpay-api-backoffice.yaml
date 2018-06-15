@@ -2747,7 +2747,7 @@ components:
               - TASI  
         acl:
           type: array
-          description: lista delle acl attive sull'operatore
+          description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'
         servizioVerifica:
@@ -2804,6 +2804,11 @@ components:
           description: entrate su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/tipoEntrata'
+        acl:
+          type: array
+          description: lista delle acl attive sull'applicazione
+          items:
+            $ref: '#/components/schemas/aclPost'            
         servizioVerifica:
           $ref: '#/components/schemas/connector'   
         servizioNotifica:
@@ -2892,6 +2897,11 @@ components:
           description: entrate su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/tipoEntrata'
+        acl:
+          type: array
+          description: lista delle acl attive sull'applicazione
+          items:
+            $ref: '#/components/schemas/aclPost' 
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
