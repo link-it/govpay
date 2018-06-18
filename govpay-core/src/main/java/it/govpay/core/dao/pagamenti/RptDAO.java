@@ -151,6 +151,8 @@ public class RptDAO extends BaseDAO{
 			for (Rpt rpt : findAll) {
 				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
 				elem.setRpt(rpt);
+				rpt.getVersamento(bd).getDominio(bd);
+				rpt.getVersamento(bd).getUo(bd);
 				elem.setVersamento(rpt.getVersamento(bd));
 				elem.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
 				resList.add(elem);
