@@ -2,17 +2,20 @@ package it.govpay.rs.v1.controllers.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
+import eu.medsea.mimeutil.MimeUtil;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
@@ -104,6 +107,51 @@ public class DominiController extends it.govpay.rs.BaseController {
 		}
     }
 
+
+    public Response dominiIdDominioLogoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
+    	String methodName = "getLogo";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			// Parametri - > DTO Input
+			
+			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
+
+			// INIT DAO
+			
+			DominiDAO dominiDAO = new DominiDAO();
+			
+			// CHIAMATA AL DAO
+			
+			byte[] logo = dominiDAO.getLogo(getDominioDTO);
+			
+			MimeUtil.registerMimeDetector(eu.medsea.mimeutil.detector.MagicMimeMimeDetector.class.getName());
+			
+			Collection<?> mimeTypes = MimeUtil.getMimeTypes(logo);
+			
+			String mimeType = MimeUtil.getFirstMimeType(mimeTypes.toString()).toString();
+
+			this.logResponse(uriInfo, httpHeaders, methodName, logo, 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			ResponseBuilder entity = Response.status(Status.OK).entity(logo);
+			entity.header("CacheControl", "max-age: "+ GovpayConfig.getInstance().getCacheLogo().intValue());
+			entity.header("Content-Type", mimeType);
+			return this.handleResponseOk(entity,transactionId).build();
+			
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
 
 
     public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {

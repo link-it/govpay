@@ -103,6 +103,17 @@ public class Domini extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.dominiIdDominioContiAccreditoIbanGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iban);
     }
+    
+    @GET
+    @Path("/{idDominio}/logo")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioLogoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioLogoGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
+    }
+
+
 
 }
 
