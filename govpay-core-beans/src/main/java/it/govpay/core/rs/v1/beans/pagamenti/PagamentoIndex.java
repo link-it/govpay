@@ -24,6 +24,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 "soggettoVersante",
 "autenticazioneSoggetto",
 "lingua",
+"pendenze",
 "rpp",
 })
 public class PagamentoIndex extends JSONSerializable {
@@ -169,6 +170,9 @@ public class PagamentoIndex extends JSONSerializable {
     
   @JsonProperty("lingua")
   private LinguaEnum lingua = LinguaEnum.IT;
+  
+  @JsonProperty("pendenze")
+  private String pendenze = null;
   
   @JsonProperty("rpp")
   private String rpp = null;
@@ -411,6 +415,22 @@ public class PagamentoIndex extends JSONSerializable {
   }
 
   /**
+   * Url per le pendenze oggetto del Pagamento
+   **/
+  public PagamentoIndex pendenze(String pendenze) {
+    this.pendenze = pendenze;
+    return this;
+  }
+
+  @JsonProperty("pendenze")
+  public String getPendenze() {
+    return pendenze;
+  }
+  public void setPendenze(String pendenze) {
+    this.pendenze = pendenze;
+  }
+
+  /**
    * Url per le richieste di pagamento oggetto del Pagamento
    **/
   public PagamentoIndex rpp(String rpp) {
@@ -450,12 +470,13 @@ public class PagamentoIndex extends JSONSerializable {
         Objects.equals(soggettoVersante, pagamentoIndex.soggettoVersante) &&
         Objects.equals(autenticazioneSoggetto, pagamentoIndex.autenticazioneSoggetto) &&
         Objects.equals(lingua, pagamentoIndex.lingua) &&
+        Objects.equals(pendenze, pagamentoIndex.pendenze) &&
         Objects.equals(rpp, pagamentoIndex.rpp);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
   }
 
   public static PagamentoIndex parse(String json) {
@@ -487,6 +508,7 @@ public class PagamentoIndex extends JSONSerializable {
     sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
     sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
     sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
+    sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("}");
     return sb.toString();

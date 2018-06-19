@@ -10,6 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "codificaAvvisi",
 "domini",
 "entrate",
+"acl",
 "servizioVerifica",
 "servizioNotifica",
 "abilitato",
@@ -30,6 +31,9 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("entrate")
   private List<TipoEntrata> entrate = null;
+  
+  @JsonProperty("acl")
+  private List<AclPost> acl = null;
   
   @JsonProperty("servizioVerifica")
   private Connector servizioVerifica = null;
@@ -121,6 +125,22 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * lista delle acl attive sull'applicazione
+   **/
+  public Applicazione acl(List<AclPost> acl) {
+    this.acl = acl;
+    return this;
+  }
+
+  @JsonProperty("acl")
+  public List<AclPost> getAcl() {
+    return acl;
+  }
+  public void setAcl(List<AclPost> acl) {
+    this.acl = acl;
+  }
+
+  /**
    **/
   public Applicazione servizioVerifica(Connector servizioVerifica) {
     this.servizioVerifica = servizioVerifica;
@@ -180,6 +200,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(codificaAvvisi, applicazione.codificaAvvisi) &&
         Objects.equals(domini, applicazione.domini) &&
         Objects.equals(entrate, applicazione.entrate) &&
+        Objects.equals(acl, applicazione.acl) &&
         Objects.equals(servizioVerifica, applicazione.servizioVerifica) &&
         Objects.equals(servizioNotifica, applicazione.servizioNotifica) &&
         Objects.equals(abilitato, applicazione.abilitato);
@@ -187,7 +208,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, principal, codificaAvvisi, domini, entrate, servizioVerifica, servizioNotifica, abilitato);
+    return Objects.hash(idA2A, principal, codificaAvvisi, domini, entrate, acl, servizioVerifica, servizioNotifica, abilitato);
   }
 
   public static Applicazione parse(String json) {
@@ -209,6 +230,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
+    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
     sb.append("    servizioVerifica: ").append(toIndentedString(servizioVerifica)).append("\n");
     sb.append("    servizioNotifica: ").append(toIndentedString(servizioNotifica)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
