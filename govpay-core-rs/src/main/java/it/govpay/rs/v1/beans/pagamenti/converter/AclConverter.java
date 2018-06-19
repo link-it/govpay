@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
-import it.govpay.core.rs.v1.beans.pagamenti.Acl.ServizioEnum;
+import it.govpay.core.rs.v1.beans.pagamenti.AclPost.ServizioEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.AclPost;
 import it.govpay.core.rs.v1.beans.pagamenti.AclPost.AutorizzazioniEnum;
 import it.govpay.model.Acl;
@@ -46,10 +46,9 @@ public class AclConverter {
 		return aclDTO;		
 	}
 	
-	public static it.govpay.core.rs.v1.beans.pagamenti.Acl toRsModel(it.govpay.model.Acl acl) {
-		it.govpay.core.rs.v1.beans.pagamenti.Acl rsModel = new it.govpay.core.rs.v1.beans.pagamenti.Acl();
+	public static it.govpay.core.rs.v1.beans.pagamenti.AclPost toRsModel(it.govpay.model.Acl acl) {
+		it.govpay.core.rs.v1.beans.pagamenti.AclPost rsModel = new it.govpay.core.rs.v1.beans.pagamenti.AclPost();
 		rsModel.principal(acl.getPrincipal())
-		.id(acl.getId()+"")
 		.ruolo(acl.getRuolo());
 		
 		if(acl.getServizio() != null) {

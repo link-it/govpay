@@ -10,12 +10,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
+import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.rs.v1.beans.ragioneria.Profilo;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.beans.ragioneria.converter.ProfiliConverter;
+import it.govpay.rs.v1.beans.ragioneria.converter.ProfiloConverter;
 
 public class ProfiloController extends it.govpay.rs.BaseController {
 
@@ -25,45 +26,43 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 
 
 
-    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi) {
-    	String methodName = "profiloGET";  
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			// Parametri - > DTO Input
+     public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders) {
+     	String methodName = "profiloGET";  
+ 		GpContext ctx = null;
+ 		String transactionId = null;
+ 		ByteArrayOutputStream baos= null;
+ 		this.log.info("Esecuzione " + methodName + " in corso..."); 
+ 		try{
+ 			baos = new ByteArrayOutputStream();
+ 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+ 			
+ 			ctx =  GpThreadLocal.get();
+ 			transactionId = ctx.getTransactionId();
+ 			
+ 			// Parametri - > DTO Input
 
-			// INIT DAO
-			
-			UtentiDAO utentiDAO = new UtentiDAO();
-			
-			// CHIAMATA AL DAO
-			
-			utentiDAO.populateUser(user);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
+ 			// INIT DAO
+ 			
+ 			UtentiDAO utentiDAO = new UtentiDAO();
+ 			
+ 			// CHIAMATA AL DAO
+ 			
+ 			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(user);
+ 			
+ 			// CONVERT TO JSON DELLA RISPOSTA
 
-			Profilo response = ProfiliConverter.toRsModel(user);
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
-			
-		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
+ 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
+ 			this.logResponse(uriInfo, httpHeaders, methodName, profilo.toJSON(null), 200);
+ 			this.log.info("Esecuzione " + methodName + " completata."); 
+ 			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
+ 			
+ 		}catch (Exception e) {
+ 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+ 		} finally {
+ 			if(ctx != null) ctx.log();
+ 		}
+     }
 
 }
 

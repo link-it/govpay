@@ -1,8 +1,6 @@
 package it.govpay.rs.v1.controllers.pendenze;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -12,13 +10,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.rs.v1.beans.pendenze.ListaAcl;
+import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
+import it.govpay.core.rs.v1.beans.pendenze.Profilo;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.v1.beans.pendenze.converter.AclConverter;
+import it.govpay.rs.v1.beans.pendenze.converter.ProfiloConverter;
 
 public class ProfiloController extends it.govpay.rs.BaseController {
 
@@ -28,7 +26,7 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 
 
 
-    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi) {
+    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders) {
     	String methodName = "profiloGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -49,21 +47,15 @@ public class ProfiloController extends it.govpay.rs.BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			utentiDAO.populateUser(user);
+			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(user);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
-			
-			List<it.govpay.core.rs.v1.beans.pendenze.AclPost> results = new ArrayList<it.govpay.core.rs.v1.beans.pendenze.AclPost>();
-			for(Acl acl: user.getAcls()) {
-				results.add(AclConverter.toRsModel(acl));
-			}
 
-			ListaAcl response = new ListaAcl(results, this.getServicePath(uriInfo),
-					results.size(), 1, results.size());
+			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSONArray(campi), 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, profilo.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSONArray(campi)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);

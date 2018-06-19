@@ -27,7 +27,7 @@ public class ProfiloController extends BaseController {
  		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
      }
 
-    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders) {
     	String methodName = "profiloGET";  
 		GpContext ctx = null;
 		String transactionId = null;

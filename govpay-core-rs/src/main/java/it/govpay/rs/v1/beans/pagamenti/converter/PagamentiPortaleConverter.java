@@ -201,6 +201,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
 		rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 
+		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 
 		if(pagamentoPortale.getImporto() != null) 

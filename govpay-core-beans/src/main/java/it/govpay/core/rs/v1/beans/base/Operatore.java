@@ -10,6 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 "ragioneSociale",
 "domini",
 "entrate",
+"acl",
 "abilitato",
 })
 public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
@@ -25,6 +26,9 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("entrate")
   private List<TipoEntrata> entrate = new ArrayList<TipoEntrata>();
+  
+  @JsonProperty("acl")
+  private List<AclPost> acl = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -94,6 +98,22 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * lista delle acl attive sull'applicazione
+   **/
+  public Operatore acl(List<AclPost> acl) {
+    this.acl = acl;
+    return this;
+  }
+
+  @JsonProperty("acl")
+  public List<AclPost> getAcl() {
+    return acl;
+  }
+  public void setAcl(List<AclPost> acl) {
+    this.acl = acl;
+  }
+
+  /**
    * Indicazione se l'operatore è abilitato ad operare sulla piattaforma
    **/
   public Operatore abilitato(Boolean abilitato) {
@@ -122,12 +142,13 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(ragioneSociale, operatore.ragioneSociale) &&
         Objects.equals(domini, operatore.domini) &&
         Objects.equals(entrate, operatore.entrate) &&
+        Objects.equals(acl, operatore.acl) &&
         Objects.equals(abilitato, operatore.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(principal, ragioneSociale, domini, entrate, abilitato);
+    return Objects.hash(principal, ragioneSociale, domini, entrate, acl, abilitato);
   }
 
   public static Operatore parse(String json) {
@@ -148,6 +169,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
+    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("}");
     return sb.toString();

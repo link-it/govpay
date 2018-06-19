@@ -9,11 +9,13 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.Applicazione;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
 import it.govpay.core.rs.v1.beans.base.CodificaAvvisi;
 import it.govpay.core.rs.v1.beans.base.DominioIndex;
 import it.govpay.core.rs.v1.beans.base.TipoEntrata;
+import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.rs.v1.controllers.base.ApplicazioniController;
@@ -62,6 +64,7 @@ public class ApplicazioniConverter {
 		applicazione.setConnettoreVerifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioVerifica()));
 		applicazioneDTO.setApplicazione(applicazione);
 		applicazioneDTO.setIdApplicazione(idA2A);
+		
 		return applicazioneDTO;		
 	}
 
@@ -105,6 +108,16 @@ public class ApplicazioniConverter {
 				tEI.setDescrizione(tributo.getDescrizione());
 				idTributi.add(tEI);
 			}
+		}
+		
+		if(applicazione.getUtenza().getAcls()!=null) {
+			List<AclPost> aclList = new ArrayList<>();
+			
+			for(Acl acl: applicazione.getUtenza().getAcls()) {
+				aclList.add(AclConverter.toRsModel(acl));
+			}
+			
+			rsModel.setAcl(aclList);
 		}
 		
 		rsModel.setEntrate(idTributi);
