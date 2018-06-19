@@ -11,8 +11,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.json.JSONUtils;
 import org.slf4j.Logger;
 
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
@@ -23,7 +25,9 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.rs.v1.beans.pagamenti.FaultBean;
+import it.govpay.core.rs.v1.beans.pagamenti.FaultBeanEsteso;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaPagamentiIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost;
@@ -32,6 +36,7 @@ import it.govpay.core.rs.v1.beans.pagamenti.RppIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.pagamenti.converter.PagamentiPortaleConverter;
@@ -83,8 +88,18 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), Status.CREATED.getStatusCode());
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			Response response = handleException(uriInfo, httpHeaders, methodName, e,transactionId);
+			if(e instanceof GovPayException && (PagamentoPortale) ((GovPayException) e).getParam() != null) {
+				it.govpay.core.rs.v1.beans.base.FaultBean fb = (it.govpay.core.rs.v1.beans.base.FaultBean) it.govpay.core.rs.v1.beans.base.FaultBean.parse((String) response.getEntity(), it.govpay.core.rs.v1.beans.base.FaultBean.class);
+				FaultBeanEsteso fbe = new FaultBeanEsteso();
+				fbe.setCodice(fb.getCodice());
+				fbe.setDescrizione(fb.getDescrizione());
+				fbe.setDettaglio(fb.getDettaglio());
+				fbe.setId(((PagamentoPortale) ((GovPayException) e).getParam()).getIdSessione());
+				fbe.setLocation(UriBuilderUtils.getFromPagamenti(fbe.getId()));
+				return Response.fromResponse(response).entity(fbe.toJSON(null)).build();
+			}
 			return response;
 		} finally {
 			if(ctx != null) ctx.log();

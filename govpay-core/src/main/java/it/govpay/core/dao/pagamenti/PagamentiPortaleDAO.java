@@ -64,7 +64,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		Logger log = LoggerWrapperFactory.getLogger(WebControllerDAO.class);
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
-
+		
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 			DominiBD dominiBD = new DominiBD(bd);
@@ -238,6 +238,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
+				e.setParam(pagamentoPortale);
 				throw e;
 			} catch (Exception e) {
 				transazioneResponse = (GpAvviaTransazionePagamentoResponse) new GovPayException(e).getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);

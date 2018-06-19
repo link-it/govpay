@@ -35,6 +35,7 @@ public class GovPayException extends Exception {
 	private EsitoOperazione codEsito;
 	private String causa;
 	private FaultBean faultBean;
+	private Object param;
 	
 	
 	public GovPayException(FaultBean faultBean) {
@@ -370,6 +371,14 @@ public class GovPayException extends Exception {
 			response.setDettaglioEsito(faultBean.getDescription());
 		}
 		return response;
+	}
+
+	public Object getParam() {
+		return param;
+	}
+
+	public void setParam(Object param) {
+		this.param = param;
 	}
 
 }

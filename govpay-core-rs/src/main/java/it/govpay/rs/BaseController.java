@@ -244,7 +244,7 @@ public abstract class BaseController {
 		respKo.setDescrizione("Errore interno");
 		respKo.setDettaglio(e.getMessage());
 		try {
-			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo, Status.INTERNAL_SERVER_ERROR.getStatusCode());
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta", e1);
 		}
@@ -267,7 +267,7 @@ public abstract class BaseController {
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
 		try {
-			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), e.getTransportErrorCode());
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
@@ -296,7 +296,7 @@ public abstract class BaseController {
 		int statusCode = e.getStatusCode();
 		
 		try {
-			this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), statusCode);
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
