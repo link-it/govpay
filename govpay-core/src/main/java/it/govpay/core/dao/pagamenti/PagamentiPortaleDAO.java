@@ -18,7 +18,6 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
@@ -168,7 +167,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setWispIdDominio(codDominio);
 			pagamentoPortale.setNome(nome);
 			pagamentoPortale.setImporto(sommaImporti); 
-
+			
 			// gestione multibeneficiari
 			// se ho solo un dominio all'interno della lista allora vuol dire che i tutti pagamenti riferiscono lo stesso dominio
 			// lascio null se il numero di domini e' > 1
@@ -226,14 +225,35 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			}catch(GovPayException e) {
 				transazioneResponse = (GpAvviaTransazionePagamentoResponse) e.getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
-
+				for(Versamento versamentoModel: versamenti) {
+					if(versamentoModel.getId() != null) {
+						IdVersamento idV = new IdVersamento();
+						idV.setCodVersamentoEnte(versamentoModel.getCodVersamentoEnte());
+						idV.setId(versamentoModel.getId());
+						idVersamento.add(idV);
+					}
+				}
+				pagamentoPortale.setIdVersamento(idVersamento); 
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
-				pagamentiPortaleBD.updatePagamento(pagamentoPortale);
+				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
 				throw e;
 			} catch (Exception e) {
 				transazioneResponse = (GpAvviaTransazionePagamentoResponse) new GovPayException(e).getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
+				for(Versamento versamentoModel: versamenti) {
+					if(versamentoModel.getId() != null) {
+						IdVersamento idV = new IdVersamento();
+						idV.setCodVersamentoEnte(versamentoModel.getCodVersamentoEnte());
+						idV.setId(versamentoModel.getId());
+						idVersamento.add(idV);
+					}
+				}
+				pagamentoPortale.setIdVersamento(idVersamento); 
+				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
+				pagamentoPortale.setStato(STATO.FALLITO);
+				pagamentoPortale.setDescrizioneStato(e.getMessage());
+				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
 				throw e;
 			}
 			
@@ -245,7 +265,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					idVersamento.add(idV);
 				}
 			}
-
 			pagamentoPortale.setIdVersamento(idVersamento); 
 			pagamentoPortale.setIdSessionePsp(idSessionePsp);
 			pagamentoPortale.setPspRedirectUrl(pspRedirect);

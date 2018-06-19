@@ -22,6 +22,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.core.rs.v1.beans.pagamenti.FaultBean;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaPagamentiIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost;
@@ -80,12 +81,13 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e,transactionId);
+			Response response = handleException(uriInfo, httpHeaders, methodName, e,transactionId);
+			return response;
 		} finally {
 			if(ctx != null) ctx.log();
 		}
     }
-
+    
     public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;

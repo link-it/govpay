@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.servizi.v2_3.commons.GpResponse;
 import it.govpay.servizi.v2_3.commons.Mittente;
@@ -217,6 +218,34 @@ public class GovPayException extends Exception {
 		this.faultBean = faultBean;
 	}
 	
+	public String getCodEsitoV3() {
+		switch (codEsito) {
+		case NDP_000: return "PAA_NODO_INDISPONIBILE";
+		default:
+			return codEsito.name();
+		}
+	}
+	
+	public String getMessageV3() {
+		switch (codEsito) {
+		case NDP_000: 
+			if(super.getCause() != null && super.getCause() instanceof ClientException)
+				return super.getCause().getMessage();
+			else 
+				return super.getMessage();
+		default:
+			return getMessage();
+		}
+	}
+	
+	public int getStatusCode() {
+		switch (this.getCategoria()) {
+		case PAGOPA: return 502;
+		default:
+			return 500;
+		}
+	}
+	
 	
 	public String getDescrizioneEsito() {
 		switch (codEsito) {
@@ -232,7 +261,7 @@ public class GovPayException extends Exception {
 		case DOM_001: return "Richiesta non valida";
 		case DOM_002: return "Richiesta non valida";	
 		case DOM_003: return "Richiesta non valida";
-		case NDP_000: return "Errore di invocazione del Nodo dei Pagamenti";
+		case NDP_000: return "Servizi pagoPA non disponibili.";
 		case NDP_001: return "Richiesta rifiutata dal Nodo dei Pagamenti";
 		case PAG_000: return "Richiesta non valida";	
 		case PAG_001: return "Richiesta non valida";	
@@ -342,5 +371,5 @@ public class GovPayException extends Exception {
 		}
 		return response;
 	}
-	
+
 }

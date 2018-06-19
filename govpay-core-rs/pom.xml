@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -12,7 +11,7 @@
 	<artifactId>govpay-core-rs</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay CORE Rest</name>
-	
+
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
@@ -23,7 +22,7 @@
 			<artifactId>govpay-core</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -35,64 +34,82 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jboss.spec.javax.ws.rs</groupId>
 			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson-provider</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<scope>provided</scope>
 		</dependency>
-				
+
 		<dependency>
-		    <groupId>io.swagger.core.v3</groupId>
-		    <artifactId>swagger-models</artifactId>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-models</artifactId>
 		</dependency>
-				
+
 		<dependency>
-		    <groupId>io.swagger.core.v3</groupId>
-		    <artifactId>swagger-core</artifactId>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-core</artifactId>
 		</dependency>
-				
+
 		<dependency>
-		    <groupId>io.swagger</groupId>
-		    <artifactId>swagger-parser</artifactId>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-parser</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>io.swagger.parser.v3</groupId>
-		    <artifactId>swagger-parser-core</artifactId>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser-core</artifactId>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>io.swagger.parser.v3</groupId>
-		    <artifactId>swagger-parser-v3</artifactId>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser-v3</artifactId>
 		</dependency>
-	
+
 		<dependency>
-		    <groupId>com.networknt</groupId>
-		    <artifactId>json-schema-validator</artifactId>
-		    <version>0.1.11</version>
+			<groupId>com.networknt</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>0.1.11</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20171018</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jettison</groupId>
+			<artifactId>jettison</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+<dependency>
+    <groupId>xerces</groupId>
+    <artifactId>xercesImpl</artifactId>
+    <version>2.11.0</version>
+</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/eu.medsea.mimeutil/mime-util -->
 		<dependency>
-		    <groupId>eu.medsea.mimeutil</groupId>
-		    <artifactId>mime-util</artifactId>
-		    <version>2.1.1</version>
+			<groupId>eu.medsea.mimeutil</groupId>
+			<artifactId>mime-util</artifactId>
+			<version>2.1.1</version>
 		</dependency>
 
-		
-		
+
+
 	</dependencies>
 
 	<build>

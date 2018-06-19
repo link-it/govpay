@@ -1,13 +1,13 @@
 package it.govpay.rs.v1.beans.pagamenti.converter;
 
-import javax.xml.bind.JAXBException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.xml.sax.SAXException;
+import org.openspcoop2.utils.xml2json.Xml2JsonFactory;
 
 import it.govpay.core.rs.v1.beans.pagamenti.Rpp;
 import it.govpay.core.rs.v1.beans.pagamenti.RppIndex;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class RptConverter {
@@ -21,14 +21,20 @@ public class RptConverter {
 		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(versamento));
 
 		try {
-			rsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt()));
+			// Rimuovo il prefisso dagli elementi
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("http://www.digitpa.gov.it/schemas/2011/Pagamenti/", "");
+			
+			String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRpt()));
+			
+			// Rimuovo l'elemento radice RPT
+			rsModel.setRpt(s.substring(7, s.length() - 1));
 			
 			if(rpt.getXmlRt() != null) {
-				rsModel.setRt(JaxbUtils.toRT(rpt.getXmlRt()));
+				s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRt()));
+				rsModel.setRt(s.substring(6, s.length() - 1));
 			}
-		} catch(SAXException e) {
-			throw new ServiceException(e);
-		} catch (JAXBException e) {
+		} catch(Exception e) {
 			throw new ServiceException(e);
 		}
 		
@@ -44,14 +50,20 @@ public class RptConverter {
 		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
 		
 		try {
-			rsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt()));
+			// Rimuovo il prefisso dagli elementi
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("http://www.digitpa.gov.it/schemas/2011/Pagamenti/", "");
+			
+			String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRpt()));
+			
+			// Rimuovo l'elemento radice RPT
+			rsModel.setRpt(s.substring(7, s.length() - 1));
 			
 			if(rpt.getXmlRt() != null) {
-				rsModel.setRt(JaxbUtils.toRT(rpt.getXmlRt()));
+				s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRt()));
+				rsModel.setRt(s.substring(6, s.length() - 1));
 			}
-		} catch(SAXException e) {
-			throw new ServiceException(e);
-		} catch (JAXBException e) {
+		} catch(Exception e) {
 			throw new ServiceException(e);
 		}
 		

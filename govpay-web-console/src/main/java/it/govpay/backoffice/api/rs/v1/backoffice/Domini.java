@@ -56,7 +56,7 @@ public class Domini extends BaseRsServiceV1{
     @Path("/{idDominio}/contiAccredito")
     
     @Produces({ "application/json" })
-    public Response dominiIdDominioContiAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+    public Response dominiIdDominioContiAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.dominiIdDominioContiAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
@@ -77,6 +77,15 @@ public class Domini extends BaseRsServiceV1{
     public Response dominiIdDominioGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.dominiIdDominioGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
+    }
+
+    @GET
+    @Path("/{idDominio}/logo")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioLogoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioLogoGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
     }
 
     @GET

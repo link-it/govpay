@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonRawValue;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -29,10 +28,10 @@ public class Rpp extends JSONSerializable {
   private List<Segnalazione> segnalazioni = null;
   
   @JsonProperty("rpt")
-  private CtRichiestaPagamentoTelematico rpt = null;
+  private String rpt = null;
   
   @JsonProperty("rt")
-  private CtRicevutaTelematica rt = null;
+  private String rt = null;
   
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
@@ -88,32 +87,34 @@ public class Rpp extends JSONSerializable {
   /**
    * Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico
    **/
-  public Rpp rpt(CtRichiestaPagamentoTelematico rpt) {
+  public Rpp rpt(String rpt) {
     this.rpt = rpt;
     return this;
   }
 
   @JsonProperty("rpt")
-  public CtRichiestaPagamentoTelematico getRpt() {
+  @JsonRawValue
+  public String getRpt() {
     return rpt;
   }
-  public void setRpt(CtRichiestaPagamentoTelematico rpt) {
+  public void setRpt(String rpt) {
     this.rpt = rpt;
   }
 
   /**
    * Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica
    **/
-  public Rpp rt(CtRicevutaTelematica rt) {
+  public Rpp rt(String rt) {
     this.rt = rt;
     return this;
   }
 
   @JsonProperty("rt")
-  public CtRicevutaTelematica getRt() {
+  @JsonRawValue
+  public String getRt() {
     return rt;
   }
-  public void setRt(CtRicevutaTelematica rt) {
+  public void setRt(String rt) {
     this.rt = rt;
   }
 
