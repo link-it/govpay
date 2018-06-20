@@ -2,7 +2,9 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -16,6 +18,8 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
+import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
 import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.ListaAcl;
 import it.govpay.core.rs.v1.beans.base.ListaRuoli;
@@ -26,8 +30,12 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseController;
+import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.AclConverter;
 import it.govpay.rs.v1.beans.converter.RuoliConverter;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 
 
@@ -129,7 +137,51 @@ public class RuoliController extends BaseController {
 
 
     public Response ruoliIdRuoloPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo, java.io.InputStream is) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "ruoliIdRuoloPUT";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+			JSONObject jsonObjectListaAclRequest = JSONObject.fromObject( jsonRequest );  
+			JSONArray jsonArrayAcl = jsonObjectListaAclRequest.getJSONArray("acl");
+
+			List<AclPost> listaAcl = new ArrayList<>();
+
+			for (int i = 0; i < jsonArrayAcl.size(); i++) {
+				String jsonObjectAcl = jsonArrayAcl.getString(i);
+				JsonConfig jsonConfig = new JsonConfig();
+				Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
+				classMap.put("servizio", String.class);
+				jsonConfig.setClassMap(classMap);
+				listaAcl.add((AclPost) AclPost.parse(jsonObjectAcl, AclPost.class, jsonConfig));
+			}
+			
+			PutRuoloDTO putRuoloDTO = RuoliConverter.getPutRuoloDTO(listaAcl, idRuolo, user); 
+			
+			RuoliDAO applicazioniDAO = new RuoliDAO();
+			
+			PutRuoloDTOResponse putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putRuoloDTO);
+			
+			Status responseStatus = putApplicazioneDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 

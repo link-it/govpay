@@ -111,7 +111,8 @@ public class AclBD extends BasicBD {
 			
 			List<String> ruoli = new ArrayList<String>();
 			for(Object obj: select) {
-				ruoli.add((String) obj);
+				if(obj instanceof String)
+					ruoli.add((String) obj);
 			}
 			
 			return ruoli;
@@ -127,7 +128,7 @@ public class AclBD extends BasicBD {
 
 			
 			Object cntDistinct = this.getAclService().aggregate(filter.toExpression(), new FunctionField(ACL.model().RUOLO, Function.COUNT_DISTINCT, "cnt"));
-			return ((NonNegativeNumber) cntDistinct).longValue();
+			return Long.parseLong(((String) cntDistinct));
 			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

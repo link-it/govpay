@@ -2,21 +2,22 @@ package it.govpay.core.dao.pagamenti;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
-import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
+import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
@@ -34,7 +35,7 @@ public class RuoliDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiRuoliDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, leggiRuoliDTO.getRuolo(), null, bd);
+			this.autorizzaRichiesta(leggiRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA, leggiRuoliDTO.getRuolo(), null, bd);
 
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();
@@ -57,14 +58,7 @@ public class RuoliDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			List<String> listaDominiFiltro;
-			this.autorizzaRichiesta(listaRuoliDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
-	
-			// Autorizzazione sui domini
-			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaRuoliDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
-			if(listaDominiFiltro == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+listaRuoliDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
-			}
+			this.autorizzaRichiesta(listaRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA, bd);
 	
 			AclBD rptBD = new AclBD(bd);
 			AclFilter filter = rptBD.newFilter();
@@ -82,6 +76,38 @@ public class RuoliDAO extends BaseDAO{
 	
 			return new ListaRuoliDTOResponse(count, resList);
 			
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+
+	}
+
+	public PutRuoloDTOResponse createOrUpdate(PutRuoloDTO listaRuoliDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(listaRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA, bd);
+	
+			AclBD aclBD = new AclBD(bd);
+	
+			for(Acl acl: listaRuoliDTO.getAcls()) {
+				acl.setRuolo(listaRuoliDTO.getIdRuolo());
+				
+				if(aclBD.existsAcl(acl.getRuolo(), null, acl.getServizio())) {
+					aclBD.updateAcl(acl);
+				} else {
+					aclBD.insertAcl(acl);
+				}
+			}
+			
+			return new PutRuoloDTOResponse();
+
+			
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
