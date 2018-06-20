@@ -85,6 +85,7 @@ public class PagamentiPortaleConverter {
 			JsonConfig jsonConfigPendenza = new JsonConfig();
 			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 			classMap.put("voci", VocePendenza.class);
+			classMap.put("importo", String.class);
 			jsonConfigPendenza.setClassMap(classMap);
 
 			for (int i = 0; i < jsonArrayPendenze.size(); i++) {

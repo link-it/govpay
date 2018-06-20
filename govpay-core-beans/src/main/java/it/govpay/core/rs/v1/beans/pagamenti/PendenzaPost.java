@@ -8,7 +8,9 @@ import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import it.govpay.core.rs.v1.serializer.CustomBigDecimalSerializer;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "idDominio",
@@ -174,12 +176,15 @@ public class PendenzaPost extends JSONSerializable {
   }
 
   @JsonProperty("importo")
-  public BigDecimal getImporto() {
+  @JsonSerialize(using = CustomBigDecimalSerializer.class)
+public BigDecimal getImporto() {
     return importo;
   }
+
   public void setImporto(BigDecimal importo) {
-    this.importo = importo;
+	    this.importo = importo;
   }
+
 
   /**
    * Identificativo univoco versamento, assegnato se pagabile da psp

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import it.govpay.core.rs.v1.serializer.CustomBigDecimalSerializer;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "indice",
 "idVocePendenza",
@@ -97,6 +100,7 @@ public class VocePendenza extends JSONSerializable {
   }
 
   @JsonProperty("importo")
+  @JsonSerialize(using = CustomBigDecimalSerializer.class)
   public BigDecimal getImporto() {
     return importo;
   }
