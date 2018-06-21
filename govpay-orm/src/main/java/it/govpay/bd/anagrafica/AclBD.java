@@ -22,6 +22,10 @@ package it.govpay.bd.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.Function;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -32,6 +36,7 @@ import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.orm.ACL;
 import it.govpay.orm.IdAcl;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.jdbc.JDBCACLServiceSearch;
@@ -94,6 +99,42 @@ public class AclBD extends BasicBD {
 			}
 			return dtoList;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public List<String> findAllRuoli(AclFilter filter) throws ServiceException {
+		try {
+
+			
+			List<Object> select = this.getAclService().select(filter.toPaginatedExpression(), true, ACL.model().RUOLO);
+			
+			List<String> ruoli = new ArrayList<String>();
+			for(Object obj: select) {
+				if(obj instanceof String)
+					ruoli.add((String) obj);
+			}
+			
+			return ruoli;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public long countRuoli(AclFilter filter) throws ServiceException {
+		try {
+
+			
+			Object cntDistinct = this.getAclService().aggregate(filter.toExpression(), new FunctionField(ACL.model().RUOLO, Function.COUNT_DISTINCT, "cnt"));
+			return Long.parseLong(((String) cntDistinct));
+			
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
