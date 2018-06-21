@@ -2296,7 +2296,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ruolo'   
+                          $ref: '#/components/schemas/ruoloIndex'   
   '/ruoli/{idRuolo}':
     put:
       tags:
@@ -4170,7 +4170,10 @@ components:
         idStazione:
           type: string
           example: '99999999999_01'
-        parametri:
+        parametriRichiesta:
+          type: string
+          example: ''
+        parametriRisposta:
           type: string
           example: ''
         dataOraRichiesta:
@@ -4289,7 +4292,18 @@ components:
         acl:
           type: array
           items:
-            $ref: '#/components/schemas/aclPost'    
+            $ref: '#/components/schemas/aclPost'   
+    ruoloIndex:
+      type: object
+      allOf: 
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              description: identificativo del ruolo
+              example: Amministratore
     ruolo:
       type: object
       allOf: 
