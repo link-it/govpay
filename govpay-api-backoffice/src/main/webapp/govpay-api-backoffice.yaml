@@ -17,6 +17,8 @@ tags:
     description: Anagrafica delle applicazioni integrate
   - name: Operatori
     description: Anagrafica degli Operatori    
+  - name: Ruoli
+    description: Ruoli autorizzativi previsti in GovPay     
   - name: Pagamenti
     description: Pagamenti gestiti dalla piattaforma
   - name: Pendenze
@@ -27,6 +29,14 @@ tags:
     description: Riversamenti rendicontati da pagoPA
   - name: Riscossioni
     description: Importi riscossi o stornati dagli istituti di pagamento
+  - name: Giornale degli Eventi
+    description: Consultazione del Giornale degli Eventi    
+  - name: Operazioni
+    description: Operazioni per l'esecuzioni di servizi batch
+  - name: Enumerazioni
+    description: Valori usabili nelle enumerazioni dinamiche
+  - name: Utenti
+    description: Operazioni per l'utente autenticato
 security:
   - basicAuth: []    
 paths:
@@ -2147,6 +2157,18 @@ paths:
           required: false
           schema:
             type: string
+        - name: idA2A
+          in: query
+          description: filtro per applicazione
+          required: false
+          schema:
+            type: string
+        - name: idPendenza
+          in: query
+          description: filtro per identificativo pendenza
+          required: false
+          schema:
+            type: string            
       responses:
         '201':
           description: Elenco degli eventi
