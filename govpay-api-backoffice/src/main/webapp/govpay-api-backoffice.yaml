@@ -2352,7 +2352,39 @@ paths:
         '404':
           $ref: '#/components/responses/404'          
         '500':
-          $ref: '#/components/responses/500'              
+          $ref: '#/components/responses/500'        
+  '/enumerazioni/versioneConnettore':
+    get:
+      tags:
+        - Enumerazioni
+      summary: Lista delle versioni supportate per il connettore
+      responses:
+        '200':
+          description: Dettaglio di un ruolo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string   
+        '500':
+          $ref: '#/components/responses/500'  
+  '/enumerazioni/serviziACL':
+    get:
+      tags:
+        - Enumerazioni
+      summary: Lista delle tipologie di servizio delle ACL
+      responses:
+        '200':
+          description: Lista dei servizi su cui attivare ACL
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string   
+        '500':
+          $ref: '#/components/responses/500'           
 components:
   responses:
     '400':
