@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import it.govpay.core.rs.v1.beans.Lista;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
 public class ListaEntrate extends Lista<Entrata> {

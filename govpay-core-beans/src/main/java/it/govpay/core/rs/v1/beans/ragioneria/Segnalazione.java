@@ -1,7 +1,10 @@
 package it.govpay.core.rs.v1.beans.ragioneria;
 
 import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "codice",
 "descrizione",

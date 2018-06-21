@@ -1,8 +1,10 @@
 package it.govpay.core.rs.v1.beans.pagamenti;
 
 import java.util.Objects;
-import it.govpay.core.rs.v1.beans.pagamenti.DominioPost;
+
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "ragioneSociale",
 "indirizzo",

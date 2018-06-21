@@ -1,7 +1,10 @@
 package it.govpay.core.rs.v1.beans.pagamenti;
 
 import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 
 /**
  * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
