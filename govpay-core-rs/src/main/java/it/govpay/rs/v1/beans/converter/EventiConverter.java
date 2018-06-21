@@ -19,6 +19,10 @@ public class EventiConverter {
 				break;
 			}
 		}
+		
+		rsModel.setEsito(evento.getEsito());
+		rsModel.setDataOraRichiesta(evento.getDataRichiesta());
+		rsModel.setDataOraRisposta(evento.getDataRisposta());
 		rsModel.setCcp(evento.getCcp());
 		rsModel.setComponente(evento.getComponente());
 		rsModel.setIdCanale(evento.getCodCanale());
@@ -28,7 +32,7 @@ public class EventiConverter {
 		rsModel.setIdPsp(evento.getCodPsp());
 		rsModel.setIdStazione(evento.getCodStazione());
 		rsModel.setIuv(evento.getIuv());
-//		rsModel.setSottoTipoEvento(evento.getSottotipoEvento());
+
 		if(evento.getTipoEvento() != null) {
 			rsModel.setTipoEvento(evento.getTipoEvento().name());
 		}

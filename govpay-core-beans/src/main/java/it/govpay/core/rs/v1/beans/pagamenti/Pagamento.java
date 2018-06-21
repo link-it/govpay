@@ -9,6 +9,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.serializer.CustomBigDecimalSerializer;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({

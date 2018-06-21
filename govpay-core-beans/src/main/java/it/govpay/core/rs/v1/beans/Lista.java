@@ -1,4 +1,4 @@
-package it.govpay.core.rs.v1.beans.ragioneria;
+package it.govpay.core.rs.v1.beans;
 
 import java.net.URI;
 import java.net.URISyntaxException;

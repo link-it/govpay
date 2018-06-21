@@ -3,6 +3,8 @@ package it.govpay.core.rs.v1.beans.pendenze;
 import java.net.URI;
 import java.util.List;
 
+import it.govpay.core.rs.v1.beans.Lista;
+
 
 public class ListaAcl extends Lista<AclPost> {
 	

@@ -1,8 +1,10 @@
 package it.govpay.core.rs.v1.beans.pendenze;
 
 import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 
 /**
  * dati anagrafici di un versante o pagatore.

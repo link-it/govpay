@@ -1,8 +1,11 @@
 package it.govpay.core.rs.v1.beans.pendenze;
 
-import java.util.Objects;
 import java.math.BigDecimal;
+import java.util.Objects;
+
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "indice",
 "idVocePendenza",
