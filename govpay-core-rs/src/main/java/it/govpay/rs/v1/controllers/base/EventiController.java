@@ -32,7 +32,7 @@ public class EventiController extends it.govpay.rs.BaseController {
 
 
 
-    public Response eventiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv) {
+    public Response eventiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String idA2A, String idPendenza) {
     	String methodName = "eventiGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -53,10 +53,12 @@ public class EventiController extends it.govpay.rs.BaseController {
 			listaEventiDTO.setLimit(risultatiPerPagina);
 			listaEventiDTO.setIdDominio(idDominio);
 			listaEventiDTO.setIuv(iuv);
+			listaEventiDTO.setIdA2A(idA2A);
+			listaEventiDTO.setIdPendenza(idPendenza);
 			
 			// INIT DAO
 			
-			EventiDAO pspDAO = new EventiDAO(BasicBD.newInstance(ctx.getTransactionId()));
+			EventiDAO pspDAO = new EventiDAO();
 			
 			// CHIAMATA AL DAO
 			

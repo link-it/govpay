@@ -24,6 +24,7 @@ import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.ListaAcl;
 import it.govpay.core.rs.v1.beans.base.ListaRuoli;
 import it.govpay.core.rs.v1.beans.base.Ruolo;
+import it.govpay.core.rs.v1.beans.base.RuoloIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -73,9 +74,9 @@ public class RuoliController extends BaseController {
 			ListaRuoliDTOResponse listaRptDTOResponse = rptDAO.listaRuoli(listaRptDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA
-			List<Ruolo> results = new ArrayList<Ruolo>();
+			List<RuoloIndex> results = new ArrayList<RuoloIndex>();
 			for(String leggiRuoloDtoResponse: listaRptDTOResponse.getResults()) {
-				results.add(RuoliConverter.toRsModel(leggiRuoloDtoResponse));
+				results.add(RuoliConverter.toRsModelIndex(leggiRuoloDtoResponse));
 			}
 			ListaRuoli response = new ListaRuoli(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
@@ -122,7 +123,8 @@ public class RuoliController extends BaseController {
 			for(Acl leggiRuoloDtoResponse: listaRptDTOResponse.getResults()) {
 				results.add(AclConverter.toRsModel(leggiRuoloDtoResponse));
 			}
-			ListaAcl response = new ListaAcl(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), 1, results.size());
+			ListaAcl response = new ListaAcl();
+			response.setAcl(results);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 

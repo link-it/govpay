@@ -20,8 +20,6 @@
 					<linkit:sql>
 						<linkit:sql-script generate="true">
 							<linkit:sql-table-list>
-								<linkit:sql-table object-name="Psp" object-type="Psp"/>
-								<linkit:sql-table object-name="Canale" object-type="Canale"/>
 								<linkit:sql-table object-name="Intermediario"
 									object-type="Intermediario"/>
 								<linkit:sql-table object-name="Stazione" object-type="Stazione"/>
@@ -1258,6 +1256,17 @@
 
 			<xsd:element name="data1" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="data2" type="xsd:dateTime" minOccurs="0"/>
+			
+			<xsd:element name="idVersamento" type="id-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Versamento" object-type="Versamento"
+								relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 
 		</xsd:sequence>
 	</xsd:complexType>

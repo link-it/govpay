@@ -18,7 +18,7 @@ public abstract class Versionabile extends BasicModel {
 		
 		private String api;
 		private String label;
-		private static String[] labels = {"SOAP_3","REST_1"};
+		public static String[] labels = {"SOAP v3","REST v1"};
 		
 		Versione(String api, String label){
 			this.label = label;
@@ -33,7 +33,7 @@ public abstract class Versionabile extends BasicModel {
 		}
 		
 		public String getApiLabel(){
-			return this.getApi() + "_" + this.getLabel();
+			return this.getApi() + " v" + this.getLabel();
 		}
 		
 		public int getVersione() {
@@ -53,7 +53,7 @@ public abstract class Versionabile extends BasicModel {
 		}
 
 		public static Versione toEnum(String versione) throws ServiceException {
-			return toEnum(versione.split("_")[0],versione.split("_")[1]);
+			return toEnum(versione.split(" v")[0],versione.split(" v")[1]);
 		}
 		
 		public static Versione toEnum(String api, String label) throws ServiceException {

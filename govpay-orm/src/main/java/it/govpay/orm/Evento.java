@@ -53,6 +53,7 @@ import java.io.Serializable;
  * 			&lt;element name="esito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="data1" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="data2" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -84,7 +85,8 @@ import java.io.Serializable;
   	"parametri2",
   	"esito",
   	"data1",
-  	"data2"
+  	"data2",
+  	"idVersamento"
   }
 )
 
@@ -252,6 +254,14 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.data2 = data2;
   }
 
+  public IdVersamento getIdVersamento() {
+    return this.idVersamento;
+  }
+
+  public void setIdVersamento(IdVersamento idVersamento) {
+    this.idVersamento = idVersamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -344,5 +354,8 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="data2",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date data2;
+
+  @XmlElement(name="idVersamento",required=true,nillable=false)
+  protected IdVersamento idVersamento;
 
 }

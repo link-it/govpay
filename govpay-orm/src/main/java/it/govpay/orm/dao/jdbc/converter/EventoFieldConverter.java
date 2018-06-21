@@ -193,6 +193,69 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "data_2";
 			}
 		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_ente";
+			}else{
+				return "cod_versamento_ente";
+			}
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_identificativo";
+			}else{
+				return "debitore_identificativo";
+			}
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_anagrafica";
+			}else{
+				return "debitore_anagrafica";
+			}
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_lotto";
+			}else{
+				return "cod_versamento_lotto";
+			}
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_anno_tributario";
+			}else{
+				return "cod_anno_tributario";
+			}
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_versamento";
+			}else{
+				return "stato_versamento";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -260,6 +323,33 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().DATA_2)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
+			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
+			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -275,6 +365,12 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Evento.model())){
 			return "eventi";
+		}
+		if(model.equals(Evento.model().ID_VERSAMENTO)){
+			return "versamenti";
+		}
+		if(model.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
+			return "versamenti";
 		}
 
 

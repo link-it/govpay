@@ -20,6 +20,8 @@ public class EventiConverter {
 			}
 		}
 		
+		rsModel.setParametriRichiesta(evento.getAltriParametriRichiesta());
+		rsModel.setParametriRisposta(evento.getAltriParametriRisposta());
 		rsModel.setEsito(evento.getEsito());
 		rsModel.setDataOraRichiesta(evento.getDataRichiesta());
 		rsModel.setDataOraRisposta(evento.getDataRisposta());

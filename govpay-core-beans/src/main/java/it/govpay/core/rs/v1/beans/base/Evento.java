@@ -17,7 +17,8 @@ import java.util.Date;
 "identificativoErogatore",
 "idCanale",
 "idStazione",
-"parametri",
+"parametriRichiesta",
+"parametriRisposta",
 "dataOraRichiesta",
 "dataOraRisposta",
 "esito",
@@ -101,8 +102,11 @@ public class Evento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("idStazione")
   private String idStazione = null;
   
-  @JsonProperty("parametri")
-  private String parametri = null;
+  @JsonProperty("parametriRichiesta")
+  private String parametriRichiesta = null;
+  
+  @JsonProperty("parametriRisposta")
+  private String parametriRisposta = null;
   
   @JsonProperty("dataOraRichiesta")
   private Date dataOraRichiesta = null;
@@ -301,17 +305,32 @@ public class Evento extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   /**
    **/
-  public Evento parametri(String parametri) {
-    this.parametri = parametri;
+  public Evento parametriRichiesta(String parametriRichiesta) {
+    this.parametriRichiesta = parametriRichiesta;
     return this;
   }
 
-  @JsonProperty("parametri")
-  public String getParametri() {
-    return parametri;
+  @JsonProperty("parametriRichiesta")
+  public String getParametriRichiesta() {
+    return parametriRichiesta;
   }
-  public void setParametri(String parametri) {
-    this.parametri = parametri;
+  public void setParametriRichiesta(String parametriRichiesta) {
+    this.parametriRichiesta = parametriRichiesta;
+  }
+
+  /**
+   **/
+  public Evento parametriRisposta(String parametriRisposta) {
+    this.parametriRisposta = parametriRisposta;
+    return this;
+  }
+
+  @JsonProperty("parametriRisposta")
+  public String getParametriRisposta() {
+    return parametriRisposta;
+  }
+  public void setParametriRisposta(String parametriRisposta) {
+    this.parametriRisposta = parametriRisposta;
   }
 
   /**
@@ -382,7 +401,8 @@ public class Evento extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(identificativoErogatore, evento.identificativoErogatore) &&
         Objects.equals(idCanale, evento.idCanale) &&
         Objects.equals(idStazione, evento.idStazione) &&
-        Objects.equals(parametri, evento.parametri) &&
+        Objects.equals(parametriRichiesta, evento.parametriRichiesta) &&
+        Objects.equals(parametriRisposta, evento.parametriRisposta) &&
         Objects.equals(dataOraRichiesta, evento.dataOraRichiesta) &&
         Objects.equals(dataOraRisposta, evento.dataOraRisposta) &&
         Objects.equals(esito, evento.esito);
@@ -390,7 +410,7 @@ public class Evento extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, ccp, idPsp, tipoVersamento, componente, categoriaEvento, tipoEvento, identificativoFruitore, identificativoErogatore, idCanale, idStazione, parametri, dataOraRichiesta, dataOraRisposta, esito);
+    return Objects.hash(idDominio, iuv, ccp, idPsp, tipoVersamento, componente, categoriaEvento, tipoEvento, identificativoFruitore, identificativoErogatore, idCanale, idStazione, parametriRichiesta, parametriRisposta, dataOraRichiesta, dataOraRisposta, esito);
   }
 
   public static Evento parse(String json) {
@@ -419,7 +439,8 @@ public class Evento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    identificativoErogatore: ").append(toIndentedString(identificativoErogatore)).append("\n");
     sb.append("    idCanale: ").append(toIndentedString(idCanale)).append("\n");
     sb.append("    idStazione: ").append(toIndentedString(idStazione)).append("\n");
-    sb.append("    parametri: ").append(toIndentedString(parametri)).append("\n");
+    sb.append("    parametriRichiesta: ").append(toIndentedString(parametriRichiesta)).append("\n");
+    sb.append("    parametriRisposta: ").append(toIndentedString(parametriRisposta)).append("\n");
     sb.append("    dataOraRichiesta: ").append(toIndentedString(dataOraRichiesta)).append("\n");
     sb.append("    dataOraRisposta: ").append(toIndentedString(dataOraRisposta)).append("\n");
     sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
