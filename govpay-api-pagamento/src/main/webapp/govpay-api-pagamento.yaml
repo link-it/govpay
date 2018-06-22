@@ -2094,6 +2094,7 @@ components:
             - idVocePendenza
             - importo
             - descrizione
+            - stato
           properties:
             indice:
               type: number
@@ -2111,6 +2112,13 @@ components:
               type: string
               description: descrizione della voce di pagamento
               example: Sanzione CdS n. abc00000
+            stato:
+              type: string
+              description: Stato della voce di pagamento
+              enum:
+                - Eseguito 
+                - Non eseguito
+                - Anomalo
             datiAllegati:
               type: string
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.

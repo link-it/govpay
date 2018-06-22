@@ -121,7 +121,11 @@ public class RendicontazioniDAO extends BaseDAO{
 				}
 			}
 		}
-		flussoRendicontazione.getDominio(bd);
+		try {
+			flussoRendicontazione.getDominio(bd);
+		} catch (NotFoundException e) {
+			
+		}
 		return flussoRendicontazione;
 	}
 
