@@ -6,57 +6,20 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
 
+import it.govpay.core.rs.v1.beans.JSONSerializable;
+
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "url",
 "versioneApi",
 "auth",
 })
-public class Connector extends it.govpay.core.rs.v1.beans.JSONSerializable {
+public class Connector extends JSONSerializable {
   
   @JsonProperty("url")
   private String url = null;
   
-    
-  /**
-   * Versione delle API di integrazione utilizzate
-   */
-  public enum VersioneApiEnum {
-    
-    
-        
-            
-    REST_1("REST v1"),
-    SOAP_3("SOAP v3");
-            
-        
-    
-
-    private String value;
-
-    VersioneApiEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static VersioneApiEnum fromValue(String text) {
-      for (VersioneApiEnum b : VersioneApiEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("versioneApi")
-  private VersioneApiEnum versioneApi = null;
+  private String versioneApi = null;
   
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
@@ -78,29 +41,18 @@ public class Connector extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
-   * Versione delle API di integrazione utilizzate
+   * Versione delle API di integrazione utilizzate. Elenco disponibile in /enumerazioni/versioneConnettore
    **/
-  public Connector versioneApi(VersioneApiEnum versioneApi) {
+  public Connector versioneApi(String versioneApi) {
     this.versioneApi = versioneApi;
     return this;
   }
 
   @JsonProperty("versioneApi")
   public String getVersioneApi() {
-	  if(versioneApi != null)
-		  return versioneApi.toString();
-	  return null;
+    return versioneApi;
   }
   public void setVersioneApi(String versioneApi) {
-	  if(versioneApi != null)
-		  this.versioneApi =VersioneApiEnum.fromValue(versioneApi);
-  }
-  
-  @JsonIgnore
-  public VersioneApiEnum getVersioneApiEnum() {
-	    return versioneApi;
-  }
-  public void setVersioneApi(VersioneApiEnum versioneApi) {
     this.versioneApi = versioneApi;
   }
 

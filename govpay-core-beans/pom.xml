@@ -49,6 +49,11 @@
             <version>4.3.5</version>
         </dependency>
 		
+		<dependency>
+			<groupId>org.openspcoop2</groupId>
+			<artifactId>openspcoop2_utils</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

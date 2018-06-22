@@ -15,9 +15,8 @@ import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import it.govpay.core.rs.v1.beans.base.Connector.VersioneApiEnum;
-import it.govpay.core.rs.v1.beans.pagamenti.Acl;
-import it.govpay.core.rs.v1.beans.pagamenti.Acl.ServizioEnum;
+import it.govpay.core.rs.v1.beans.base.VersioneApiEnum;
+import it.govpay.core.rs.v1.beans.base.ServizioEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -50,7 +49,7 @@ public class EnumerazioniController extends BaseController {
 
 			List<String> results = new ArrayList<String>();
 			
-			for(ServizioEnum serv: Acl.ServizioEnum.values()) {
+			for(ServizioEnum serv: ServizioEnum.values()) {
 				results.add(serv.toString());
 			}
 

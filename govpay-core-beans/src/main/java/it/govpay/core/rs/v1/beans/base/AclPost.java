@@ -11,71 +11,10 @@ import java.util.List;
 "autorizzazioni",
 })
 public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
- 
-    
-  /**
-   * Servizio oggetto dell'autorizzazione  * Anagrafica PagoPA  * Anagrafica Creditore  * Anagrafica Applicazioni  * Anagrafica Ruoli  * Pendenze e Pagamenti  * Pendenze e Pagamenti propri   * Rendicontazioni e Incassi  * Giornale degli Eventi  * Statistiche  * Configurazione e Manutenzione
-   */
-  public enum ServizioEnum {
-    
-    
-        
-            
-    ANAGRAFICA_PAGOPA("Anagrafica PagoPA"),
-    
-            
-    ANAGRAFICA_CREDITORE("Anagrafica Creditore"),
-    
-            
-    ANAGRAFICA_APPLICAZIONI("Anagrafica Applicazioni"),
-    
-            
-    ANAGRAFICA_RUOLI("Anagrafica Ruoli"),
-    
-            
-    PAGAMENTI_E_PENDENZE("Pagamenti e Pendenze"),
-    
-            
-    RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
-    
-            
-    GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
-    
-            
-    CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
-            
-        
-    
-
-    private String value;
-
-    ServizioEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static ServizioEnum fromValue(String text) {
-      for (ServizioEnum b : ServizioEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  @JsonProperty("servizio")
-  private ServizioEnum servizio = null;
   
-    
-      /**
+  @JsonProperty("servizio")
+  private String servizio = null;
+    /**
    * Gets or Sets autorizzazioni
    */
   public enum AutorizzazioniEnum {
@@ -121,49 +60,34 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private List<String> autorizzazioni = new ArrayList<String>();
   
   /**
-   * Servizio oggetto dell'autorizzazione  * Anagrafica PagoPA  * Anagrafica Creditore  * Anagrafica Applicazioni  * Anagrafica Ruoli  * Pendenze e Pagamenti  * Pendenze e Pagamenti propri   * Rendicontazioni e Incassi  * Giornale degli Eventi  * Statistiche  * Configurazione e Manutenzione
+   * Servizio oggetto dell'autorizzazione. Elenco disponibile in /enumerazioni/serviziACL.
    **/
-  public AclPost servizio(ServizioEnum servizio) {
+  public AclPost servizio(String servizio) {
     this.servizio = servizio;
     return this;
   }
 
-  public void setServizio(ServizioEnum servizio) {
-    this.servizio = servizio;
-  }
-
-  public AclPost servizio(String servizio) {
-	    this.setServizio(servizio);
-	    return this;
-	  }
-
   @JsonProperty("servizio")
   public String getServizio() {
-	  if(servizio !=null)
-		  return servizio.toString();
-	  return null;
+    return servizio;
   }
   public void setServizio(String servizio) {
-	  if(servizio !=null)
-		  this.servizio = ServizioEnum.fromValue(servizio);
+    this.servizio = servizio;
   }
 
   /**
    **/
   public AclPost autorizzazioni(List<String> autorizzazioni) {
-    this.setAutorizzazioni(autorizzazioni);
+    this.autorizzazioni = autorizzazioni;
     return this;
   }
 
   @JsonProperty("autorizzazioni")
   public List<String> getAutorizzazioni() {
-	  if(autorizzazioni != null)
-		  return autorizzazioni;
-	  else return null;
+    return autorizzazioni;
   }
   public void setAutorizzazioni(List<String> autorizzazioni) {
-	  if(autorizzazioni != null)
-		  this.autorizzazioni = autorizzazioni;
+    this.autorizzazioni = autorizzazioni;
   }
 
   @Override

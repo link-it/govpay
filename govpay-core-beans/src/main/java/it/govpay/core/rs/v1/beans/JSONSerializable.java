@@ -11,12 +11,16 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
+import org.openspcoop2.utils.json.JSONUtils;
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import net.sf.json.util.JSONUtils;
 
 @JsonFilter(value="risultati")  
 public abstract class JSONSerializable {
@@ -69,30 +73,31 @@ public abstract class JSONSerializable {
 		} catch(IOException e) {
 			return "";
 		}
+		
 	}
 	
-	public static Object parse(String json, Class<?> clazz) {
-		JSONObject jsonObject = JSONObject.fromObject( json );  
-		JsonConfig jsonConfig = new JsonConfig();
-		jsonConfig.setRootClass(clazz);
-		JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(SimpleDateFormatUtils.datePatterns.toArray(new String[1])) , true);
+	
+	public static <T> T parse(String jsonString, Class<T> t)  {
+		try {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			
+			@SuppressWarnings("unchecked")
+			T object = (T) deserializer.getObject(jsonString, t);
+			return object;
+		} catch(org.openspcoop2.utils.serialization.IOException e) {
+			return null;
+		}
+	}
 
-		return JSONObject.toBean( jsonObject, jsonConfig );
-	}
-	
 	public static Object parse(String json, Class<?> clazz, JsonConfig jsonConfig) {
-		JSONObject jsonObject = JSONObject.fromObject( json );  
-		jsonConfig.setRootClass(clazz);
-		JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(SimpleDateFormatUtils.datePatterns.toArray(new String[1])) , true);
-
-		return JSONObject.toBean( jsonObject, jsonConfig );
+		return parse(json, clazz);
 	}
 	
 	public static Object parse(JSONObject jsonObject, Class<?> clazz, JsonConfig jsonConfig) {
-		jsonConfig.setRootClass(clazz);
-		JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(SimpleDateFormatUtils.datePatterns.toArray(new String[1])) , true);
-
-		return JSONObject.toBean( jsonObject, jsonConfig );
+		
+		return parse(jsonObject.toString(), clazz);
 	}
 
 

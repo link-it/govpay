@@ -3,12 +3,12 @@ package it.govpay.rs.v1.beans.converter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.rs.v1.beans.base.Connector;
-import it.govpay.core.rs.v1.beans.base.Connector.VersioneApiEnum;
 import it.govpay.core.rs.v1.beans.base.TipoAutenticazione.TipoEnum;
+import it.govpay.core.rs.v1.beans.base.VersioneApiEnum;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
-import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.Versionabile;
 
 public class ConnettoriConverter {
 	
@@ -35,7 +35,7 @@ public class ConnettoriConverter {
 		
 		connettore.setUrl(connector.getUrl());
 		if(connector.getVersioneApi() != null)
-			connettore.setVersione(Versione.toEnum(connector.getVersioneApi().toString()));
+			connettore.setVersione(Versionabile.Versione.toEnum(VersioneApiEnum.fromValue(connector.getVersioneApi()).toNameString()));
 		
 		return connettore;
 	}
@@ -46,7 +46,7 @@ public class ConnettoriConverter {
 			rsModel.setAuth(toTipoAutenticazioneRsModel(connettore));
 		rsModel.setUrl(connettore.getUrl());
 		if(connettore.getVersione() != null)
-			rsModel.setVersioneApi(VersioneApiEnum.fromValue(connettore.getVersione().getApiLabel()));
+			rsModel.setVersioneApi(VersioneApiEnum.fromName(connettore.getVersione().getApiLabel()).toString());
 		
 		return rsModel;
 	}

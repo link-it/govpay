@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.JsonJacksonSerializer;
 import org.openspcoop2.utils.xml2json.Xml2JsonFactory;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.JaxbUtils;
@@ -45,11 +46,20 @@ public class ConverterUtils {
 	public static String getRtJson(Rpt rpt) throws ServiceException {
 		if(rpt.getXmlRt() == null)
 			return null;
+		
+		
 		try {
-			String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRt()));
-			return s.substring(6, s.length() - 1);
+			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			serializer.writeObject(ctRt, baos);		
+			return baos.toString();
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			try {
+				String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRt()));
+				return s.substring(6, s.length() - 1);
+			} catch (Exception ee) {
+				throw new ServiceException(ee);
+			}
 		}
 	}
 
