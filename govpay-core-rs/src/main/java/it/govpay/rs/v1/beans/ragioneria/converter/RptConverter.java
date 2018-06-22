@@ -13,9 +13,7 @@ public class RptConverter {
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
-		if(rpt.getXmlRt() != null) {
-			rsModel.setRpt(ConverterUtils.getRtJson(rpt));
-		}
+		rsModel.setRt(ConverterUtils.getRtJson(rpt));
 
 		return rsModel;
 	}

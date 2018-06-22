@@ -14,8 +14,10 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "trn",
 "dataRegolamento",
 "idPsp",
+"ragioneSocialePsp",
 "bicRiversamento",
 "idDominio",
+"ragioneSocialeDominio",
 "numeroPagamenti",
 "importoTotale",
 "segnalazioni",
@@ -37,11 +39,17 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   @JsonProperty("idPsp")
   private String idPsp = null;
   
+  @JsonProperty("ragioneSocialePsp")
+  private String ragioneSocialePsp = null;
+  
   @JsonProperty("bicRiversamento")
   private String bicRiversamento = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
+  
+  @JsonProperty("ragioneSocialeDominio")
+  private String ragioneSocialeDominio = null;
   
   @JsonProperty("numeroPagamenti")
   private BigDecimal numeroPagamenti = null;
@@ -131,6 +139,22 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   public void setIdPsp(String idPsp) {
     this.idPsp = idPsp;
   }
+  
+  /**
+   * Ragione sociale del psp che ha emesso la rendicontazione
+   **/
+  public FlussoRendicontazioneIndex ragioneSocialePsp(String ragioneSocialePsp) {
+    this.ragioneSocialePsp = ragioneSocialePsp;
+    return this;
+  }
+
+  @JsonProperty("ragioneSocialePsp")
+  public String getRagioneSocialePsp() {
+    return ragioneSocialePsp;
+  }
+  public void setRagioneSocialePsp(String ragioneSocialePsp) {
+    this.ragioneSocialePsp = ragioneSocialePsp;
+  }
 
   /**
    * Codice Bic della banca che ha generato il riversamento
@@ -164,6 +188,22 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     this.idDominio = idDominio;
   }
 
+  /**
+   * Ragione sociale del domino creditore del riversamento
+   **/
+  public FlussoRendicontazioneIndex ragioneSocialeDominio(String ragioneSocialeDominio) {
+    this.ragioneSocialeDominio = ragioneSocialeDominio;
+    return this;
+  }
+
+  @JsonProperty("ragioneSocialeDominio")
+  public String getRagioneSocialeDominio() {
+    return ragioneSocialeDominio;
+  }
+  public void setRagioneSocialeDominio(String ragioneSocialeDominio) {
+    this.ragioneSocialeDominio = ragioneSocialeDominio;
+  }
+  
   /**
    * numero di pagamenti oggetto della rendicontazione
    **/
@@ -225,8 +265,10 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
         Objects.equals(trn, flussoRendicontazioneIndex.trn) &&
         Objects.equals(dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
         Objects.equals(idPsp, flussoRendicontazioneIndex.idPsp) &&
+        Objects.equals(ragioneSocialePsp, flussoRendicontazioneIndex.ragioneSocialePsp) &&
         Objects.equals(bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
         Objects.equals(idDominio, flussoRendicontazioneIndex.idDominio) &&
+        Objects.equals(ragioneSocialeDominio, flussoRendicontazioneIndex.ragioneSocialeDominio) &&
         Objects.equals(numeroPagamenti, flussoRendicontazioneIndex.numeroPagamenti) &&
         Objects.equals(importoTotale, flussoRendicontazioneIndex.importoTotale) &&
         Objects.equals(segnalazioni, flussoRendicontazioneIndex.segnalazioni);
@@ -234,7 +276,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, segnalazioni);
+    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, ragioneSocialePsp, bicRiversamento, idDominio, ragioneSocialeDominio, numeroPagamenti, importoTotale, segnalazioni);
   }
 
   public static FlussoRendicontazioneIndex parse(String json) {
@@ -256,8 +298,10 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
     sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
+    sb.append("    ragioneSocialePsp: ").append(toIndentedString(ragioneSocialePsp)).append("\n");
     sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    ragioneSocialeDominio: ").append(toIndentedString(ragioneSocialeDominio)).append("\n");
     sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
     sb.append("    importoTotale: ").append(toIndentedString(importoTotale)).append("\n");
     sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");

@@ -11,7 +11,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;

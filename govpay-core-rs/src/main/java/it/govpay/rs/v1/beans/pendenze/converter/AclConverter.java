@@ -39,6 +39,8 @@ public class AclConverter {
 			case RENDICONTAZIONI_E_INCASSI:
 				rsModel.setServizio(ServizioEnum.RENDICONTAZIONI_E_INCASSI);
 				break;
+			case STATISTICHE:
+				break;
 			}
 		}
 		

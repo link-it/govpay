@@ -6,10 +6,12 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.core.rs.v1.beans.base.FlussoRendicontazione;
 import it.govpay.core.rs.v1.beans.base.FlussoRendicontazioneIndex;
 import it.govpay.core.rs.v1.beans.base.Segnalazione;
+import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Fr.Anomalia;
 
 public class FlussiRendicontazioneConverter {
@@ -32,6 +34,14 @@ public class FlussiRendicontazioneConverter {
 				segnalazioni.add(new Segnalazione().codice(anomalia.getCodice()).descrizione(anomalia.getDescrizione()));
 			}
 			rsModel.setSegnalazioni(segnalazioni);
+		}
+		
+		try {
+			CtFlussoRiversamento ctFlussoRiversamento = JaxbUtils.toFR(fr.getXml());
+			rsModel.setRagioneSocialeDominio(ctFlussoRiversamento.getIstitutoRicevente().getDenominazioneRicevente());
+			rsModel.setRagioneSocialePsp(ctFlussoRiversamento.getIstitutoMittente().getDenominazioneMittente());
+		} catch (Exception e) {
+			
 		}
 
 		List<it.govpay.core.rs.v1.beans.base.Rendicontazione> rendicontazioniLst = new ArrayList<>();
@@ -62,6 +72,13 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 
+		try {
+			CtFlussoRiversamento ctFlussoRiversamento = JaxbUtils.toFR(fr.getXml());
+			rsModel.setRagioneSocialeDominio(ctFlussoRiversamento.getIstitutoRicevente().getDenominazioneRicevente());
+			rsModel.setRagioneSocialePsp(ctFlussoRiversamento.getIstitutoMittente().getDenominazioneMittente());
+		} catch (Exception e) {
+			
+		}
 
 		return rsModel;
 	}

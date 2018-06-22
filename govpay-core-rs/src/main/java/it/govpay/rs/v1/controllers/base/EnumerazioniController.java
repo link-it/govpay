@@ -2,7 +2,6 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -16,13 +15,13 @@ import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import it.govpay.core.rs.v1.beans.base.Connector.VersioneApiEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.Acl;
 import it.govpay.core.rs.v1.beans.pagamenti.Acl.ServizioEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Versionabile;
 import it.govpay.rs.BaseController;
 
 
@@ -80,9 +79,15 @@ public class EnumerazioniController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
-			List<String> results = Arrays.asList(Versionabile.Versione.labels);
+			List<String> results = new ArrayList<String>();
+			
+			for(VersioneApiEnum serv: VersioneApiEnum.values()) {
+				results.add(serv.toString());
+			}
 
 			this.logResponse(uriInfo, httpHeaders, methodName, toJsonArray(results), 200);
+			
+			
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {

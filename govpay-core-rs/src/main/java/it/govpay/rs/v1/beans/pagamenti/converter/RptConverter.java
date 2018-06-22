@@ -17,10 +17,7 @@ public class RptConverter {
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
 		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(versamento));
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
-		
-		if(rpt.getXmlRt() != null) {
-			rsModel.setRpt(ConverterUtils.getRtJson(rpt));
-		}
+		rsModel.setRt(ConverterUtils.getRtJson(rpt));
 		
 		return rsModel;
 	}
@@ -32,10 +29,7 @@ public class RptConverter {
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
 		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
-		
-		if(rpt.getXmlRt() != null) {
-			rsModel.setRpt(ConverterUtils.getRtJson(rpt));
-		}
+		rsModel.setRt(ConverterUtils.getRtJson(rpt));
 		
 		return rsModel;
 	}

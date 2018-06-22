@@ -23,7 +23,6 @@ import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
 import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.ListaAcl;
 import it.govpay.core.rs.v1.beans.base.ListaRuoli;
-import it.govpay.core.rs.v1.beans.base.Ruolo;
 import it.govpay.core.rs.v1.beans.base.RuoloIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;

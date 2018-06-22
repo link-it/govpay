@@ -3766,6 +3766,10 @@ components:
           type: string
           description: Identificativo del psp che ha emesso la rendicontazione
           example: 'ABI-12345' 
+        ragioneSocialePsp:
+          type: string
+          description: Nome del PSP che ha emesso il flusso
+          example: 'Banco di Ponzi' 
         bicRiversamento:
           type: string
           description: Codice Bic della banca che ha generato il riversamento
@@ -3774,6 +3778,10 @@ components:
           type: string
           description: Identificativo del dominio creditore del riversamento
           example: 'BIC-12345' 
+        ragioneSocialeDominio:
+          type: string
+          description: Nome del Dominio destinatario del flusso
+          example: 'Ente Creditore'           
         numeroPagamenti:
           type: number
           description: numero di pagamenti oggetto della rendicontazione
@@ -3969,11 +3977,8 @@ components:
           description: Dati di integrazione ad un servizio web
         versioneApi:
           type: string
-          description: Versione delle API di integrazione utilizzate
-          example: 'REST_1'
-          enum:
-            - REST_1
-            - SOAP_3
+          description: Versione delle API di integrazione utilizzate. Elenco disponibile in /enumerazioni/versioneConnettore
+          example: 'REST v1'
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
     connettorePagopa:
@@ -4136,28 +4141,8 @@ components:
       properties:
         servizio:
           type: string
-          description: >- 
-            Servizio oggetto dell'autorizzazione
-             * Anagrafica PagoPA
-             * Anagrafica Creditore
-             * Anagrafica Applicazioni
-             * Anagrafica Ruoli
-             * Pendenze e Pagamenti
-             * Pendenze e Pagamenti propri 
-             * Rendicontazioni e Incassi
-             * Giornale degli Eventi
-             * Statistiche
-             * Configurazione e Manutenzione
-          enum:
-            - Anagrafica PagoPA
-            - Anagrafica Creditore
-            - Anagrafica Applicazioni
-            - Anagrafica Ruoli
-            - Pagamenti e Pendenze
-            - Rendicontazioni e Incassi
-            - Giornale degli Eventi
-            - Statistiche
-            - Configurazione e manutenzione
+          description: 
+            Servizio oggetto dell'autorizzazione. Elenco disponibile in /enumerazioni/serviziACL.
           example:
             Pendenze e Pagamenti
         autorizzazioni:
