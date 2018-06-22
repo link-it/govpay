@@ -11,6 +11,8 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 
 	private String idDominio;
 	private String iuv;
+	private String idA2A;
+	private String idPendenza;
 	
 	public String getIdDominio() {
 		return idDominio;
@@ -23,5 +25,17 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+	public String getIdA2A() {
+		return idA2A;
+	}
+	public void setIdA2A(String idA2A) {
+		this.idA2A = idA2A;
+	}
+	public String getIdPendenza() {
+		return idPendenza;
+	}
+	public void setIdPendenza(String idPendenza) {
+		this.idPendenza = idPendenza;
 	}
 }

@@ -19,16 +19,11 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.Evento;
-import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.EventoFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -50,6 +45,12 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
+
+import it.govpay.orm.Evento;
+import it.govpay.orm.RPT;
+import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.EventoFetch;
 
 /**     
  * JDBCEventoServiceSearchImpl
@@ -484,6 +485,18 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
+		if(expression.inUseModel(Evento.model().ID_VERSAMENTO,false)){
+			String tableNameEventi = this.getFieldConverter().toAliasTable(Evento.model());
+			String tableNameRpt = "rpt";
+			String tableNameVersamenti = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO);
+			sqlQueryObject.addFromTable(tableNameRpt);
+			sqlQueryObject.addWhereCondition(tableNameEventi+".cod_dominio="+tableNameRpt+".cod_dominio");
+			sqlQueryObject.addWhereCondition(tableNameEventi+".iuv="+tableNameRpt+".iuv");
+			sqlQueryObject.addWhereCondition(tableNameEventi+".ccp="+tableNameRpt+".ccp");
+			sqlQueryObject.addWhereCondition(tableNameRpt+".id_versamento="+tableNameVersamenti+".id");
+			
+			
+		}
 	
 	}
 	

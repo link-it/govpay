@@ -128,9 +128,6 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return this;
   }
 
-  public ServizioEnum getServizioEnum() {
-    return servizio;
-  }
   public void setServizio(ServizioEnum servizio) {
     this.servizio = servizio;
   }

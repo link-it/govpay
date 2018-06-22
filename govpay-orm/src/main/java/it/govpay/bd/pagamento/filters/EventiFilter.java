@@ -23,6 +23,8 @@ public class EventiFilter extends AbstractFilter{
 	private String codDominio= null;
 	private String iuv;
 	private String ccp;
+	private Long idApplicazione;
+	private String codVersamentoEnte;
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idEventi= null;
@@ -42,7 +44,8 @@ public class EventiFilter extends AbstractFilter{
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = newExpression();
-			
+			EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+
 			boolean addAnd = false;
 			
 			if(this.codDominio != null){
@@ -75,9 +78,25 @@ public class EventiFilter extends AbstractFilter{
 				addAnd = true;
 			}
 			
+			if(this.idApplicazione != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				CustomField idApplicazioneField = new CustomField("id_applicazione",  Long.class, "id_applicazione",  eventoFieldConverter.toTable(Evento.model().ID_VERSAMENTO));
+				newExpression.equals(idApplicazioneField, this.idApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.codVersamentoEnte!= null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE, this.codVersamentoEnte);
+				addAnd = true;
+			}
+			
 			
 			if(this.idEventi != null && !this.idEventi.isEmpty()){
-				EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField idEventoField = new CustomField("id",  Long.class, "id",  eventoFieldConverter.toTable(Evento.model()));
 				newExpression.in(idEventoField, this.idEventi);
 				addAnd = true;
@@ -139,6 +158,22 @@ public class EventiFilter extends AbstractFilter{
 
 	public void setIdEventi(List<Long> idEventi) {
 		this.idEventi = idEventi;
+	}
+
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+
+	public Long getIdApplicazione() {
+		return idApplicazione;
+	}
+
+	public void setIdApplicazione(Long idApplicazione) {
+		this.idApplicazione = idApplicazione;
 	}
 
 	

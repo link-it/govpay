@@ -59,6 +59,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.ESITO = new Field("esito",java.lang.String.class,"Evento",Evento.class);
 		this.DATA_1 = new Field("data1",java.util.Date.class,"Evento",Evento.class);
 		this.DATA_2 = new Field("data2",java.util.Date.class,"Evento",Evento.class);
+		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"Evento",Evento.class));
 	
 	}
 	
@@ -84,6 +85,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.ESITO = new ComplexField(father,"esito",java.lang.String.class,"Evento",Evento.class);
 		this.DATA_1 = new ComplexField(father,"data1",java.util.Date.class,"Evento",Evento.class);
 		this.DATA_2 = new ComplexField(father,"data2",java.util.Date.class,"Evento",Evento.class);
+		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"Evento",Evento.class));
 	
 	}
 	
@@ -124,6 +126,8 @@ public class EventoModel extends AbstractModel<Evento> {
 	public IField DATA_1 = null;
 	 
 	public IField DATA_2 = null;
+	 
+	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
 	 
 
 	@Override
