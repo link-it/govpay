@@ -3,7 +3,6 @@ package it.govpay.core.rs.v1.beans.base;
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import it.govpay.core.rs.v1.beans.base.Connector;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
 "denominazione",
 "principalPagoPa",

@@ -42,9 +42,6 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
     
             
-    STATISTICHE("Statistiche"),
-    
-            
     CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
             
         

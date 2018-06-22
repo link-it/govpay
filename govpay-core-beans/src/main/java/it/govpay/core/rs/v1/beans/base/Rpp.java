@@ -28,9 +28,11 @@ public class Rpp extends JSONSerializable {
   private List<Segnalazione> segnalazioni = null;
   
   @JsonProperty("rpt")
+  @JsonRawValue
   private String rpt = null;
   
   @JsonProperty("rt")
+  @JsonRawValue
   private String rt = null;
   
   @JsonProperty("pendenza")

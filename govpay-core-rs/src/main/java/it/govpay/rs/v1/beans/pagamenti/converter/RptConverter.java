@@ -1,14 +1,11 @@
 package it.govpay.rs.v1.beans.pagamenti.converter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.xml2json.Xml2JsonFactory;
 
 import it.govpay.core.rs.v1.beans.pagamenti.Rpp;
 import it.govpay.core.rs.v1.beans.pagamenti.RppIndex;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.rs.v1.beans.ConverterUtils;
 
 public class RptConverter {
 
@@ -19,23 +16,10 @@ public class RptConverter {
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
 		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(versamento));
-
-		try {
-			// Rimuovo il prefisso dagli elementi
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("http://www.digitpa.gov.it/schemas/2011/Pagamenti/", "");
-			
-			String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRpt()));
-			
-			// Rimuovo l'elemento radice RPT
-			rsModel.setRpt(s.substring(7, s.length() - 1));
-			
-			if(rpt.getXmlRt() != null) {
-				s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRt()));
-				rsModel.setRt(s.substring(6, s.length() - 1));
-			}
-		} catch(Exception e) {
-			throw new ServiceException(e);
+		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
+		
+		if(rpt.getXmlRt() != null) {
+			rsModel.setRpt(ConverterUtils.getRtJson(rpt));
 		}
 		
 		return rsModel;
@@ -46,25 +30,11 @@ public class RptConverter {
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
-
 		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
+		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
 		
-		try {
-			// Rimuovo il prefisso dagli elementi
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("http://www.digitpa.gov.it/schemas/2011/Pagamenti/", "");
-			
-			String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRpt()));
-			
-			// Rimuovo l'elemento radice RPT
-			rsModel.setRpt(s.substring(7, s.length() - 1));
-			
-			if(rpt.getXmlRt() != null) {
-				s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRt()));
-				rsModel.setRt(s.substring(6, s.length() - 1));
-			}
-		} catch(Exception e) {
-			throw new ServiceException(e);
+		if(rpt.getXmlRt() != null) {
+			rsModel.setRpt(ConverterUtils.getRtJson(rpt));
 		}
 		
 		return rsModel;

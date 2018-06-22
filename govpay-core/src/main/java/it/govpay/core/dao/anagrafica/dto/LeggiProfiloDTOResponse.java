@@ -7,7 +7,6 @@ import java.util.List;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
-import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
 
 /**

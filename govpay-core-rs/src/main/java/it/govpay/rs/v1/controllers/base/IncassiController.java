@@ -16,18 +16,13 @@ import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
-import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.rs.v1.beans.base.Incasso;
-import it.govpay.core.rs.v1.beans.base.IncassoPost;
 import it.govpay.core.rs.v1.beans.base.ListaIncassiIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.IncassiConverter;
-import net.sf.json.JsonConfig;
 
 
 

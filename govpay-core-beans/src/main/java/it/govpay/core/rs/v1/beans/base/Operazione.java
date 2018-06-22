@@ -1,6 +1,5 @@
 package it.govpay.core.rs.v1.beans.base;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;

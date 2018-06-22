@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonRawValue;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -26,10 +27,12 @@ public class Rpp extends JSONSerializable {
   private List<Segnalazione> segnalazioni = null;
   
   @JsonProperty("rpt")
-  private Object rpt = null;
+  @JsonRawValue
+  private String rpt = null;
   
   @JsonProperty("rt")
-  private Object rt = null;
+  @JsonRawValue
+  private String rt = null;
   
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
@@ -84,32 +87,32 @@ public class Rpp extends JSONSerializable {
   /**
    * Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico
    **/
-  public Rpp rpt(Object rpt) {
+  public Rpp rpt(String rpt) {
     this.rpt = rpt;
     return this;
   }
 
   @JsonProperty("rpt")
-  public Object getRpt() {
+  public String getRpt() {
     return rpt;
   }
-  public void setRpt(Object rpt) {
+  public void setRpt(String rpt) {
     this.rpt = rpt;
   }
 
   /**
    * Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica
    **/
-  public Rpp rt(Object rt) {
+  public Rpp rt(String rt) {
     this.rt = rt;
     return this;
   }
 
   @JsonProperty("rt")
-  public Object getRt() {
+  public String getRt() {
     return rt;
   }
-  public void setRt(Object rt) {
+  public void setRt(String rt) {
     this.rt = rt;
   }
 

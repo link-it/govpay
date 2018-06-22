@@ -3,8 +3,6 @@ package it.govpay.rs.v1.beans.pagamenti.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Tributo;

@@ -7,7 +7,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Pagamento;
-import it.govpay.core.business.VersamentoUtils;
 import it.govpay.core.rs.v1.beans.ragioneria.Allegato;
 import it.govpay.core.rs.v1.beans.ragioneria.Allegato.TipoEnum;
 import it.govpay.core.utils.UriBuilderUtils;

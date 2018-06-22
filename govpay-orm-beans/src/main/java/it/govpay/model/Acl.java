@@ -83,7 +83,6 @@ public class Acl extends BasicModel {
 	    PAGAMENTI_E_PENDENZE("Pagamenti e Pendenze"),
 	    RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
 	    GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
-	    STATISTICHE("Statistiche"),
 	    CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
 
 		private String codifica;

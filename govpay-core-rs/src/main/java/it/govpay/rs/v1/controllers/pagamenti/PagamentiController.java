@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.utils.json.JSONUtils;
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.PagamentoPortale;
@@ -26,7 +25,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.rs.v1.beans.pagamenti.FaultBean;
 import it.govpay.core.rs.v1.beans.pagamenti.FaultBeanEsteso;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaPagamentiIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentiPortaleResponseOk;

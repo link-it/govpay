@@ -23,7 +23,6 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaRppIndex;
-import it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.Rpp;
 import it.govpay.core.rs.v1.beans.pagamenti.RppIndex;
 import it.govpay.core.utils.GovpayConfig;
@@ -33,7 +32,6 @@ import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.rs.BaseController;
-import it.govpay.rs.v1.beans.pagamenti.converter.PendenzeConverter;
 import it.govpay.rs.v1.beans.pagamenti.converter.RptConverter;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
