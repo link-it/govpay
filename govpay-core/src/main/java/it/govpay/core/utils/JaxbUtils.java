@@ -171,17 +171,25 @@ public class JaxbUtils {
 	}
     
 	public static CtRichiestaPagamentoTelematico toRPT(byte[] rpt) throws JAXBException, SAXException {
+		return toRPT(rpt, true);
+	}
+	
+	public static CtRichiestaPagamentoTelematico toRPT(byte[] rpt, boolean validate) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		jaxbUnmarshaller.setSchema(RPT_RT_schema);
+		if(validate) jaxbUnmarshaller.setSchema(RPT_RT_schema);
 	    JAXBElement<CtRichiestaPagamentoTelematico> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rpt)), CtRichiestaPagamentoTelematico.class);
 		return root.getValue();
 	}
 	
 	public static CtRicevutaTelematica toRT(byte[] rt) throws JAXBException, SAXException {
+		return toRT(rt, true);
+	}
+	
+	public static CtRicevutaTelematica toRT(byte[] rt, boolean validate) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		jaxbUnmarshaller.setSchema(RPT_RT_schema);
+		if(validate) jaxbUnmarshaller.setSchema(RPT_RT_schema);
 		JAXBElement<CtRicevutaTelematica> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rt)), CtRicevutaTelematica.class);
 		return root.getValue();
 	}
