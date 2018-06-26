@@ -19,6 +19,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.rs.v1.beans.ragioneria.Incasso;
+import it.govpay.core.rs.v1.beans.ragioneria.IncassoIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.IncassoPost;
 import it.govpay.core.rs.v1.beans.ragioneria.ListaIncassiIndex;
 import it.govpay.core.utils.GovpayConfig;
@@ -153,7 +154,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.richiestaIncasso(richiestaIncassoDTO);
 			
-			Incasso incassoExt = IncassiConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
+			IncassoIndex incassoExt = IncassiConverter.toRsIndexModel(richiestaIncassoDTOResponse.getIncasso());
 			
 			Status responseStatus = richiestaIncassoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
