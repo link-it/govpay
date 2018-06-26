@@ -77,8 +77,9 @@ public class AclConverter {
 			case STATISTICHE:
 				break;
 			}
-			
-			rsModel.setServizio(serv.toString());
+
+			if(serv!=null)
+				rsModel.setServizio(serv.toString());
 		}
 		
 		if(acl.getListaDiritti() != null)
