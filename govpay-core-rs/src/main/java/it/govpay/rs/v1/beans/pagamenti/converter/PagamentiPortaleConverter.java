@@ -23,8 +23,6 @@ import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.pagamento.VersamentoUtils;
 import it.govpay.model.IAutorizzato;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 public class PagamentiPortaleConverter {
@@ -76,23 +74,11 @@ public class PagamentiPortaleConverter {
 		if(pagamentiPortaleRequest.getSoggettoVersante() != null);
 		pagamentiPortaleDTO.setVersante(VersamentoUtils.toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
-		JSONObject jsonObjectPagamentiPortaleRequest = JSONObject.fromObject( jsonRichiesta );  
-		JSONArray jsonArrayPendenze = jsonObjectPagamentiPortaleRequest.getJSONArray(PagamentiPortaleConverter.PENDENZE_KEY);
-
 		if(pagamentiPortaleRequest.getPendenze() != null && pagamentiPortaleRequest.getPendenze().size() > 0 ) {
 			List<Object> listRefs = new ArrayList<Object>();
 
-			JsonConfig jsonConfigPendenza = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			classMap.put("voci", VocePendenza.class);
-			classMap.put("importo", String.class);
-			jsonConfigPendenza.setClassMap(classMap);
-
-			for (int i = 0; i < jsonArrayPendenze.size(); i++) {
-
-				JSONObject jsonObjectPendenza = jsonArrayPendenze.getJSONObject(i);
-				
-				PendenzaPost pendenza = (PendenzaPost) PendenzaPost.parse(jsonObjectPendenza, PendenzaPost.class, jsonConfigPendenza );
+			int i =0;
+			for (PendenzaPost pendenza: pagamentiPortaleRequest.getPendenze()) {
 
 				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
@@ -114,6 +100,7 @@ public class PagamentiPortaleConverter {
 				} else {
 					throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");
 				}
+				i++;
 			}
 
 			pagamentiPortaleDTO.setPendenzeOrPendenzeRef(listRefs);

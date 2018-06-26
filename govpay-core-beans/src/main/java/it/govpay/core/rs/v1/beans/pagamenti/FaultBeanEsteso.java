@@ -6,6 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
+"categoria",
 "codice",
 "descrizione",
 "dettaglio",
@@ -14,6 +15,58 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 })
 public class FaultBeanEsteso extends JSONSerializable {
   
+	  /**
+	   * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
+	   */
+	  public enum CategoriaEnum {
+	    
+	    
+	        
+	            
+	    AUTORIZZAZIONE("AUTORIZZAZIONE"),
+	    
+	            
+	    RICHIESTA("RICHIESTA"),
+	    
+	            
+	    OPERAZIONE("OPERAZIONE"),
+	    
+	            
+	    PAGOPA("PAGOPA"),
+	    
+	            
+	    INTERNO("INTERNO");
+	            
+	        
+	    
+
+	    private String value;
+
+	    CategoriaEnum(String value) {
+	      this.value = value;
+	    }
+
+	    @Override
+	    @org.codehaus.jackson.annotate.JsonValue
+	    public String toString() {
+	      return String.valueOf(value);
+	    }
+
+	    public static CategoriaEnum fromValue(String text) {
+	      for (CategoriaEnum b : CategoriaEnum.values()) {
+	        if (String.valueOf(b.value).equals(text)) {
+	          return b;
+	        }
+	      }
+	      return null;
+	    }
+	  }
+
+	    
+	    
+	  @JsonProperty("categoria")
+	  private CategoriaEnum categoria = null;
+	  
   @JsonProperty("codice")
   private String codice = null;
   
@@ -29,6 +82,22 @@ public class FaultBeanEsteso extends JSONSerializable {
   @JsonProperty("location")
   private String location = null;
   
+  /**
+   * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
+   **/
+  public FaultBeanEsteso categoria(CategoriaEnum categoria) {
+    this.categoria = categoria;
+    return this;
+  }
+
+  @JsonProperty("categoria")
+  public CategoriaEnum getCategoria() {
+    return categoria;
+  }
+  public void setCategoria(CategoriaEnum categoria) {
+    this.categoria = categoria;
+  }
+
   /**
    * Codice di errore
    **/

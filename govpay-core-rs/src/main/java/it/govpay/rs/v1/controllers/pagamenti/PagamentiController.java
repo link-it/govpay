@@ -26,6 +26,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.rs.v1.beans.pagamenti.FaultBeanEsteso;
+import it.govpay.core.rs.v1.beans.pagamenti.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaPagamentiIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost;
@@ -92,6 +93,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 				it.govpay.core.rs.v1.beans.base.FaultBean fb = (it.govpay.core.rs.v1.beans.base.FaultBean) it.govpay.core.rs.v1.beans.base.FaultBean.parse((String) response.getEntity(), it.govpay.core.rs.v1.beans.base.FaultBean.class);
 				FaultBeanEsteso fbe = new FaultBeanEsteso();
 				fbe.setCodice(fb.getCodice());
+				fbe.setCategoria(CategoriaEnum.fromValue(fb.getCategoria().toString()));
 				fbe.setDescrizione(fb.getDescrizione());
 				fbe.setDettaglio(fb.getDettaglio());
 				fbe.setId(((PagamentoPortale) ((GovPayException) e).getParam()).getIdSessione());
