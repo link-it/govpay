@@ -170,9 +170,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
 			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
-			
-			if(stato != null)
-				listaPagamentiPortaleDTO.setStato(STATO.valueOf(stato));
+			listaPagamentiPortaleDTO.setStato(stato);
 			
 			if(versante != null)
 				listaPagamentiPortaleDTO.setVersante(versante);

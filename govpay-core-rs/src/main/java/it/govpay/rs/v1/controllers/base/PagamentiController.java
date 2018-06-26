@@ -64,7 +64,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			if(pagamentoPortaleDTOResponse.getListaRpp()!=null) {
 				List<Rpp> rpp = new ArrayList<Rpp>();
 				for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
-					rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
+					rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt()));
 				}
 				response.setRpp(rpp);
 			}
@@ -98,9 +98,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
 			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
-			
-			if(stato != null)
-				listaPagamentiPortaleDTO.setStato(STATO.valueOf(stato));
+			listaPagamentiPortaleDTO.setStato(stato);
 			
 			if(versante != null)
 				listaPagamentiPortaleDTO.setVersante(versante);

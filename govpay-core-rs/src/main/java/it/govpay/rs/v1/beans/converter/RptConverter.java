@@ -10,24 +10,24 @@ import it.govpay.rs.v1.beans.ConverterUtils;
 public class RptConverter {
 
 
-	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt) throws ServiceException {
 		Rpp rsModel = new Rpp();
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
-		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(versamento));
+		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(rpt.getVersamento(null)));
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
 		rsModel.setRt(ConverterUtils.getRtJson(rpt));
 
 		return rsModel;
 	}
 
-	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt) throws ServiceException {
 		RppIndex rsModel = new RppIndex();
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
-		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
+		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(rpt.getVersamento(null).getApplicazione(null).getCodApplicazione(), rpt.getVersamento(null).getCodVersamentoEnte()));
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
 		rsModel.setRt(ConverterUtils.getRtJson(rpt));
 		

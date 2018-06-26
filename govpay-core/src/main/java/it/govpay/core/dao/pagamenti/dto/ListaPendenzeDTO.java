@@ -6,7 +6,6 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Versamento;
 
 public class ListaPendenzeDTO extends BasicFindRequestDTO{
@@ -21,7 +20,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	}
 	private Date dataA;
 	private Date dataDa;
-	private StatoVersamento stato;
+	private String stato;
 	private String idDominio;
 	private String idPagamento;
 	private String idDebitore;
@@ -39,10 +38,10 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
-	public StatoVersamento getStato() {
+	public String getStato() {
 		return stato;
 	}
-	public void setStato(StatoVersamento stato) {
+	public void setStato(String stato) {
 		this.stato = stato;
 	}
 	public String getIdDominio() {

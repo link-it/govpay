@@ -351,7 +351,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
 			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
 			filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
-			filter.setStato(listaPagamentiPortaleDTO.getStato());
+			if(listaPagamentiPortaleDTO.getStato()!=null) {
+				try {
+					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
+				} catch(Exception e) {
+					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<PagamentoPortale>());
+				}
+			}
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 

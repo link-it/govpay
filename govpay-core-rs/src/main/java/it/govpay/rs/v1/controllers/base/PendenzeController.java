@@ -27,7 +27,6 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.PendenzeConverter;
 
@@ -90,9 +89,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
-			
-			if(stato != null)
-				listaPendenzeDTO.setStato(StatoVersamento.valueOf(stato));
+			listaPendenzeDTO.setStato(stato);
 			
 			if(idDominio != null)
 				listaPendenzeDTO.setIdDominio(idDominio);

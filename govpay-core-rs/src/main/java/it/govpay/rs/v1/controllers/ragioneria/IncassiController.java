@@ -154,7 +154,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.richiestaIncasso(richiestaIncassoDTO);
 			
-			IncassoIndex incassoExt = IncassiConverter.toRsIndexModel(richiestaIncassoDTOResponse.getIncasso());
+			Incasso incassoExt = IncassiConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
 			
 			Status responseStatus = richiestaIncassoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			

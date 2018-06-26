@@ -31,6 +31,7 @@ import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.base.StatoPendenza;
 import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
@@ -76,7 +77,32 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setLimit(listaPendenzaDTO.getLimit());
 		filter.setDataInizio(listaPendenzaDTO.getDataDa());
 		filter.setDataFine(listaPendenzaDTO.getDataA());
-		filter.setStatoVersamento(listaPendenzaDTO.getStato());
+		if(listaPendenzaDTO.getStato()!=null) {
+			try {
+				StatoVersamento statoVersamento = null;
+				StatoPendenza statoPendenza = StatoPendenza.valueOf(listaPendenzaDTO.getStato());
+				
+				//TODO mapping...piu' stati?
+				switch(statoPendenza) {
+				case ANNULLATA: statoVersamento = StatoVersamento.ANNULLATO;
+					break;
+				case ESEGUITA: statoVersamento = StatoVersamento.ESEGUITO;
+					break;
+				case ESEGUITA_PARZIALE: statoVersamento = StatoVersamento.PARZIALMENTE_ESEGUITO;
+					break;
+				case NON_ESEGUITA: statoVersamento = StatoVersamento.NON_ESEGUITO;
+					break;
+				case SCADUTA:
+					break;
+				default:
+					break;
+				
+				}
+				filter.setStatoVersamento(statoVersamento);
+			} catch(Exception e) {
+				return new ListaPendenzeDTOResponse(0, new ArrayList<LeggiPendenzaDTOResponse>());
+			}
+		}
 		filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
 		filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
 		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());

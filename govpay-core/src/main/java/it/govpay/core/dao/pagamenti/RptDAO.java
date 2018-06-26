@@ -49,7 +49,7 @@ public class RptDAO extends BaseDAO{
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento(bd));
 			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-			response.setDominio(rpt.getDominio(bd));
+			response.setDominio(rpt.getVersamento(bd).getDominio(bd));
 			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
 			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento(bd).getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);

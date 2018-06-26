@@ -42,7 +42,7 @@ public class ConnettoriConverter {
 
 	public static Connector toRsModel(it.govpay.model.Connettore connettore) throws ServiceException {
 		Connector rsModel = new Connector();
-		if(!connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
+		if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
 			rsModel.setAuth(toTipoAutenticazioneRsModel(connettore));
 		rsModel.setUrl(connettore.getUrl());
 		if(connettore.getVersione() != null)

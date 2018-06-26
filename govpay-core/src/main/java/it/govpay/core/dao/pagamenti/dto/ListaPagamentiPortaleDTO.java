@@ -19,7 +19,7 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	}
 	private Date dataA;
 	private Date dataDa;
-	private STATO stato;
+	private String stato;
 	private String versante;
 	public Date getDataA() {
 		return dataA;
@@ -33,10 +33,10 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
-	public STATO getStato() {
+	public String getStato() {
 		return stato;
 	}
-	public void setStato(STATO stato) {
+	public void setStato(String stato) {
 		this.stato = stato;
 	}
 	public String getVersante() {

@@ -94,7 +94,7 @@ public class RppController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			List<RppIndex> results = new ArrayList<RppIndex>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
-				results.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
+				results.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt()));
 			}
 			ListaRpp response = new ListaRpp(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
@@ -238,7 +238,7 @@ public class RppController extends BaseController {
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
 
-			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione());
+			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt());
 			
 			PendenzaIndex pendenza = PendenzeConverter.toRsModelIndex(leggiRptDTOResponse.getVersamento());
 			

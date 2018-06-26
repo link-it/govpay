@@ -80,8 +80,13 @@ public class ApplicazioniConverter {
 		
 		rsModel.setIdA2A(applicazione.getCodApplicazione());
 		rsModel.setPrincipal(applicazione.getUtenza().getPrincipalOriginale());
-		rsModel.setServizioNotifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreNotifica()));
-		rsModel.setServizioVerifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreVerifica()));
+		
+		if(applicazione.getConnettoreNotifica()!=null)
+			rsModel.setServizioNotifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreNotifica()));
+		
+		if(applicazione.getConnettoreVerifica()!=null)
+			rsModel.setServizioVerifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreVerifica()));
+		
 		
 		if(applicazione.getUtenza().getDomini(null) != null) {
 			List<DominioIndex> idDomini = new ArrayList<DominioIndex>();
