@@ -1286,6 +1286,26 @@ paths:
           schema:
             type: string
             example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+        - in: query
+          name: ack
+          description: Filtro sui pagamenti che hanno ricevuto un ack o meno
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Elenco dei pagamenti da portale
@@ -1324,6 +1344,40 @@ paths:
           required: true
           schema:
             type: string
+      responses:
+        '200':
+          description: Dettaglio del pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pagamento'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/pagamenti/{id}/ack':
+    put:
+      summary: Esegue l'ack di un pagamento
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo del pagamento
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: string
+              description: Nota a margine dell'ack
       responses:
         '200':
           description: Dettaglio del pagamento
@@ -3205,6 +3259,13 @@ components:
           type: string
           description: Url per le richieste di pagamento oggetto del Pagamento
           example: '/rpp?idPagamento=f9866575-e255-4d10-9845-57ba88bec136'
+        ack:
+          type: boolean
+          description: indicazione se il pagamento ha ricevuto un ack
+        note:
+          type: array
+          items:
+            $ref: '#/components/schemas/nota'
     pagamento:
       type: object
       required:
@@ -3287,6 +3348,13 @@ components:
           type: array
           items: 
             $ref: '#/components/schemas/rpp'
+        ack:
+          type: boolean
+          description: indicazione se il pagamento ha ricevuto un ack
+        note:
+          type: array
+          items:
+            $ref: '#/components/schemas/nota'
     contoAddebito:
       type: object
       description: >-
@@ -4171,6 +4239,28 @@ components:
           example:
             - Lettura
             - Scrittura
+    nota:
+      type: object
+      required:
+        - autore
+        - data
+        - testo
+      properties:
+        autore:
+          type: string
+          description: 
+            Username dell'operatore che ha inserito la nota
+          example:
+            aaa12345
+        data:
+          type: string
+          format: date-time
+          description: Data emissione della nota
+          example: '2017-07-21T17:32:28Z'
+        testo:
+          type: string
+          description: Testo della nota
+          example: 'Ack pagamento'
     evento:
       type: object
       required:
