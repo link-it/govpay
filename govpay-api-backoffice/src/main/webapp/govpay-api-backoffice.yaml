@@ -1359,9 +1359,9 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  '/pagamenti/{id}/ack':
+  '/pagamenti/{id}/verificato':
     put:
-      summary: Esegue l'ack di un pagamento
+      summary: Imposta un pagamento in errore o in corso come verificato
       tags:
         - Pagamenti
       parameters:
@@ -3210,6 +3210,12 @@ components:
             Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
         stato:
           $ref: '#/components/schemas/statoPagamento'
+        modello:
+          type: string
+          description: Modello di pagamento
+          enum:
+            - Pagamento ad iniziativa Ente
+            - Pagamento ad iniziativa PSP
         pspRedirectUrl:
           type: string
           example: 'https://www.psp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
@@ -3259,9 +3265,9 @@ components:
           type: string
           description: Url per le richieste di pagamento oggetto del Pagamento
           example: '/rpp?idPagamento=f9866575-e255-4d10-9845-57ba88bec136'
-        ack:
+        verificato:
           type: boolean
-          description: indicazione se il pagamento ha ricevuto un ack
+          description: indicazione se eventuali anomalie sono state verificate da un operatore
         note:
           type: array
           items:
