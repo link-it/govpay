@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
 
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.IAutorizzato;
 import it.govpay.orm.PagamentoPortale;
@@ -21,6 +20,7 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	private Date dataDa;
 	private String stato;
 	private String versante;
+	private Boolean verificato;
 	public Date getDataA() {
 		return dataA;
 	}
@@ -44,5 +44,11 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	}
 	public void setVersante(String versante) {
 		this.versante = versante;
+	}
+	public Boolean getVerificato() {
+		return verificato;
+	}
+	public void setVerificato(Boolean verificato) {
+		this.verificato = verificato;
 	}
 }

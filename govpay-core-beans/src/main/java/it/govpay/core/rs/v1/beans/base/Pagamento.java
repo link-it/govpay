@@ -29,6 +29,8 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 "autenticazioneSoggetto",
 "lingua",
 "rpp",
+"verificato",
+"note",
 })
 public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
@@ -176,6 +178,12 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("rpp")
   private List<Rpp> rpp = null;
+  
+  @JsonProperty("verificato")
+  private Boolean verificato = null;
+  
+  @JsonProperty("note")
+  private List<Nota> note = null;
   
   /**
    * Identificativo del pagamento assegnato da GovPay
@@ -431,6 +439,37 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.rpp = rpp;
   }
 
+  /**
+   * indicazione se eventuali anomalie sono state verificate da un operatore
+   **/
+  public Pagamento verificato(Boolean verificato) {
+    this.verificato = verificato;
+    return this;
+  }
+
+  @JsonProperty("verificato")
+  public Boolean Verificato() {
+    return verificato;
+  }
+  public void setVerificato(Boolean verificato) {
+    this.verificato = verificato;
+  }
+
+  /**
+   **/
+  public Pagamento note(List<Nota> note) {
+    this.note = note;
+    return this;
+  }
+
+  @JsonProperty("note")
+  public List<Nota> getNote() {
+    return note;
+  }
+  public void setNote(List<Nota> note) {
+    this.note = note;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -455,12 +494,14 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(soggettoVersante, pagamento.soggettoVersante) &&
         Objects.equals(autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
         Objects.equals(lingua, pagamento.lingua) &&
-        Objects.equals(rpp, pagamento.rpp);
+        Objects.equals(rpp, pagamento.rpp) &&
+        Objects.equals(verificato, pagamento.verificato) &&
+        Objects.equals(note, pagamento.note);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, note);
   }
 
   public static Pagamento parse(String json) {
@@ -493,6 +534,8 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
     sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
+    sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
+    sb.append("    note: ").append(toIndentedString(note)).append("\n");
     sb.append("}");
     return sb.toString();
   }

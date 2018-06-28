@@ -228,6 +228,27 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "multi_beneficiario";
 			}
 		}
+		if(field.equals(PagamentoPortale.model().ACK)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ack";
+			}else{
+				return "ack";
+			}
+		}
+		if(field.equals(PagamentoPortale.model().NOTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".note";
+			}else{
+				return "note";
+			}
+		}
+		if(field.equals(PagamentoPortale.model().TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -308,6 +329,15 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().MULTI_BENEFICIARIO)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().ACK)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().NOTE)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().TIPO)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 

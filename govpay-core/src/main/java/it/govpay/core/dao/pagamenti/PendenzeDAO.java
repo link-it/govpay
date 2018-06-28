@@ -92,7 +92,7 @@ public class PendenzeDAO extends BaseDAO{
 					break;
 				case NON_ESEGUITA: statoVersamento = StatoVersamento.NON_ESEGUITO;
 					break;
-				case SCADUTA:
+				case SCADUTA: statoVersamento = StatoVersamento.NON_ESEGUITO; //TODO aggiungere data scadenza < ora
 					break;
 				default:
 					break;

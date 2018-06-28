@@ -610,6 +610,9 @@ CREATE TABLE pagamenti_portale
 	cod_psp VARCHAR2(35 CHAR),
 	tipo_versamento VARCHAR2(4 CHAR),
 	multi_beneficiario VARCHAR2(35 CHAR),
+	ack NUMBER NOT NULL,
+	note CLOB,
+	tipo NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints

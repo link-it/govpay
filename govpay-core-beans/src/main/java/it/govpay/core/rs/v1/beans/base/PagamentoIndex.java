@@ -2,6 +2,7 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -15,6 +16,7 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "idSessionePsp",
 "importo",
 "stato",
+"modello",
 "pspRedirectUrl",
 "urlRitorno",
 "contoAddebito",
@@ -24,6 +26,8 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "autenticazioneSoggetto",
 "lingua",
 "rpp",
+"verificato",
+"note",
 })
 public class PagamentoIndex extends JSONSerializable {
   
@@ -47,6 +51,50 @@ public class PagamentoIndex extends JSONSerializable {
   
   @JsonProperty("stato")
   private StatoPagamento stato = null;
+  
+    
+  /**
+   * Modello di pagamento
+   */
+  public enum ModelloEnum {
+    
+    
+        
+            
+    ENTE("Pagamento ad iniziativa Ente"),
+    
+            
+    PSP("Pagamento ad iniziativa PSP");
+            
+        
+    
+
+    private String value;
+
+    ModelloEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @org.codehaus.jackson.annotate.JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static ModelloEnum fromValue(String text) {
+      for (ModelloEnum b : ModelloEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+    
+  @JsonProperty("modello")
+  private ModelloEnum modello = null;
   
   @JsonProperty("pspRedirectUrl")
   private String pspRedirectUrl = null;
@@ -172,6 +220,12 @@ public class PagamentoIndex extends JSONSerializable {
   @JsonProperty("rpp")
   private String rpp = null;
   
+  @JsonProperty("verificato")
+  private Boolean verificato = null;
+  
+  @JsonProperty("note")
+  private List<Nota> note = null;
+  
   /**
    * Identificativo del pagamento assegnato da GovPay
    **/
@@ -281,6 +335,22 @@ public class PagamentoIndex extends JSONSerializable {
   }
   public void setStato(StatoPagamento stato) {
     this.stato = stato;
+  }
+
+  /**
+   * Modello di pagamento
+   **/
+  public PagamentoIndex modello(ModelloEnum modello) {
+    this.modello = modello;
+    return this;
+  }
+
+  @JsonProperty("modello")
+  public ModelloEnum getModello() {
+    return modello;
+  }
+  public void setModello(ModelloEnum modello) {
+    this.modello = modello;
   }
 
   /**
@@ -425,6 +495,37 @@ public class PagamentoIndex extends JSONSerializable {
     this.rpp = rpp;
   }
 
+  /**
+   * indicazione se eventuali anomalie sono state verificate da un operatore
+   **/
+  public PagamentoIndex verificato(Boolean verificato) {
+    this.verificato = verificato;
+    return this;
+  }
+
+  @JsonProperty("verificato")
+  public Boolean Verificato() {
+    return verificato;
+  }
+  public void setVerificato(Boolean verificato) {
+    this.verificato = verificato;
+  }
+
+  /**
+   **/
+  public PagamentoIndex note(List<Nota> note) {
+    this.note = note;
+    return this;
+  }
+
+  @JsonProperty("note")
+  public List<Nota> getNote() {
+    return note;
+  }
+  public void setNote(List<Nota> note) {
+    this.note = note;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -441,6 +542,7 @@ public class PagamentoIndex extends JSONSerializable {
         Objects.equals(idSessionePsp, pagamentoIndex.idSessionePsp) &&
         Objects.equals(importo, pagamentoIndex.importo) &&
         Objects.equals(stato, pagamentoIndex.stato) &&
+        Objects.equals(modello, pagamentoIndex.modello) &&
         Objects.equals(pspRedirectUrl, pagamentoIndex.pspRedirectUrl) &&
         Objects.equals(urlRitorno, pagamentoIndex.urlRitorno) &&
         Objects.equals(contoAddebito, pagamentoIndex.contoAddebito) &&
@@ -449,12 +551,14 @@ public class PagamentoIndex extends JSONSerializable {
         Objects.equals(soggettoVersante, pagamentoIndex.soggettoVersante) &&
         Objects.equals(autenticazioneSoggetto, pagamentoIndex.autenticazioneSoggetto) &&
         Objects.equals(lingua, pagamentoIndex.lingua) &&
-        Objects.equals(rpp, pagamentoIndex.rpp);
+        Objects.equals(rpp, pagamentoIndex.rpp) &&
+        Objects.equals(verificato, pagamentoIndex.verificato) &&
+        Objects.equals(note, pagamentoIndex.note);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, modello, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, note);
   }
 
   public static PagamentoIndex parse(String json) {
@@ -478,6 +582,7 @@ public class PagamentoIndex extends JSONSerializable {
     sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    modello: ").append(toIndentedString(modello)).append("\n");
     sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
     sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
     sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
@@ -487,6 +592,8 @@ public class PagamentoIndex extends JSONSerializable {
     sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
     sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
+    sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
+    sb.append("    note: ").append(toIndentedString(note)).append("\n");
     sb.append("}");
     return sb.toString();
   }

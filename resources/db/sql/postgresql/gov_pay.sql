@@ -428,6 +428,9 @@ CREATE TABLE pagamenti_portale
 	cod_psp VARCHAR(35),
 	tipo_versamento VARCHAR(4),
 	multi_beneficiario VARCHAR(35),
+	ack BOOLEAN NOT NULL,
+	note TEXT,
+	tipo INT NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti_portale') NOT NULL,
 	-- unique constraints

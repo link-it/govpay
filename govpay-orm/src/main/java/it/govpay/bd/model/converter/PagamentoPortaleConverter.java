@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -66,11 +67,19 @@ public class PagamentoPortaleConverter {
 		dto.setNome(vo.getNome());
 		dto.setImporto(vo.getImporto());
 		dto.setMultiBeneficiario(vo.getMultiBeneficiario()); 
+		dto.setAck(vo.getAck());
+		dto.setTipo(vo.getTipo());
+		if(vo.getNote()!=null)
+			try {
+				dto.setNote(vo.getNote());
+			} catch(IOException e) {
+				throw new ServiceException(e);
+			}
 
 		return dto;
 	}
 
-	public static it.govpay.orm.PagamentoPortale toVO(PagamentoPortale dto) {
+	public static it.govpay.orm.PagamentoPortale toVO(PagamentoPortale dto) throws ServiceException {
 		it.govpay.orm.PagamentoPortale vo = new it.govpay.orm.PagamentoPortale();
 
 		vo.setId(dto.getId());
@@ -98,6 +107,15 @@ public class PagamentoPortaleConverter {
 		vo.setNome(dto.getNome());
 		vo.setImporto(dto.getImporto());
 		vo.setMultiBeneficiario(dto.getMultiBeneficiario()); 
+		vo.setAck(dto.isAck());
+		vo.setTipo(dto.getTipo());
+		
+		if(dto.getNote()!=null && !dto.getNote().isEmpty())
+			try {
+				vo.setNote(dto.getNoteString());
+			} catch(IOException e) {
+				throw new ServiceException(e);
+			}
 		return vo;
 	}
 

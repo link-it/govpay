@@ -14,6 +14,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
@@ -36,10 +37,12 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PatchDTO;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
@@ -177,6 +180,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			pagamentoPortale.setStato(STATO.IN_CORSO);
 			pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
+			pagamentoPortale.setTipo(1); //Pagamento iniziativa ente
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			pagamentiPortaleBD.insertPagamento(pagamentoPortale);
 
@@ -351,6 +355,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
 			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
 			filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
+			filter.setAck(listaPagamentiPortaleDTO.getVerificato());
 			if(listaPagamentiPortaleDTO.getStato()!=null) {
 				try {
 					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
@@ -371,6 +376,124 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			} else {
 				return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<PagamentoPortale>());
 			}
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+
+//	public LeggiPagamentoPortaleDTOResponse inserisciNota(VerificaPagamentoPortaleDTO verificaPagamentoDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+//		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
+//		
+//		BasicBD bd = null;
+//
+//		try {
+//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+//			this.autorizzaRichiesta(verificaPagamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
+//
+//			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+//			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(verificaPagamentoDTO.getIdSessione());
+//
+//			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
+//				versamento.getDominio(bd);
+//				versamento.getSingoliVersamenti(bd);
+//			}
+//			if(pagamentoPortale.getMultiBeneficiario() != null) {
+//				// controllo che il dominio sia autorizzato
+//				this.autorizzaRichiesta(verificaPagamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
+//			}
+//			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
+//
+//			PendenzeDAO pendenzeDao = new PendenzeDAO();
+//			ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(verificaPagamentoDTO.getUser());
+//			listaPendenzaDTO.setIdPagamento(verificaPagamentoDTO.getIdSessione());
+//			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
+//			leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
+//
+//			RptDAO rptDao = new RptDAO(); 
+//			ListaRptDTO listaRptDTO = new ListaRptDTO(verificaPagamentoDTO.getUser());
+//			listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
+//			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
+//			leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
+//
+//			
+//			
+//			
+//			return leggiPagamentoPortaleDTOResponse;
+//		}catch(NotFoundException e) {
+//			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+verificaPagamentoDTO.getIdSessione()+"]");
+//		}finally {
+//			if(bd != null)
+//				bd.closeConnection();
+//		}
+//	}
+
+	public LeggiPagamentoPortaleDTOResponse patch(PatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
+		
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
+
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(patchDTO.getIdSessione());
+
+			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
+				versamento.getDominio(bd);
+				versamento.getSingoliVersamenti(bd);
+			}
+			if(pagamentoPortale.getMultiBeneficiario() != null) {
+				// controllo che il dominio sia autorizzato
+				this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
+			}
+			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
+
+			PendenzeDAO pendenzeDao = new PendenzeDAO();
+			ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(patchDTO.getUser());
+			listaPendenzaDTO.setIdPagamento(patchDTO.getIdSessione());
+			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
+			leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
+
+			RptDAO rptDao = new RptDAO(); 
+			ListaRptDTO listaRptDTO = new ListaRptDTO(patchDTO.getUser());
+			listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
+			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
+			leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
+
+			for(PatchOp op: patchDTO.getOp()) {
+				
+				if("note".equals(op.getPath())) {
+					switch(op.getOp()) {
+					case ADD: Nota nota = new Nota();
+						nota.setAutore(patchDTO.getUser().getPrincipal());
+						nota.setData(new Date());
+						nota.setTesto((String)op.getValue());
+						pagamentoPortale.getNote().add(nota);
+						break;
+					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
+					}
+				} else if("verificato".equals(op.getPath())) {
+					switch(op.getOp()) {
+					case REPLACE: 
+						pagamentoPortale.setAck((Boolean)op.getValue()); 
+						break;
+					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
+					}
+					
+				} else {
+					throw new ServiceException("Path '"+op.getPath()+"' non valido");
+				}
+			}
+			
+			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false);
+			
+			
+			
+			return leggiPagamentoPortaleDTOResponse;
+		}catch(NotFoundException e) {
+			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+patchDTO.getIdSessione()+"]");
 		}finally {
 			if(bd != null)
 				bd.closeConnection();

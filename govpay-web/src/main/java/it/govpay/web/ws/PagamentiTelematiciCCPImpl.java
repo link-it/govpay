@@ -297,6 +297,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (NotFoundException e2) {
 				// L'RPT non esiste, procedo
 				rptBD.insertRpt(rpt);
+				
+				//TODO bussu
 				RptUtils.inviaRPTAsync(rpt, bd);
 			}
 

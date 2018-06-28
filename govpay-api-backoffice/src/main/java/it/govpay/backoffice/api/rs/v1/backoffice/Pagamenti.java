@@ -1,7 +1,12 @@
 package it.govpay.backoffice.api.rs.v1.backoffice;
 
+import java.util.Date;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -41,13 +46,22 @@ public class Pagamenti extends BaseRsServiceV1{
         return this.controller.pagamentiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
+    @PATCH
+    @Path("/{id}")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    public Response pagamentiIdPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("id") String id){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pagamentiIdPATCH(this.getUser(), uriInfo, httpHeaders, is,  id);
+    }
+
     @GET
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response pagamentiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("stato") String stato, @QueryParam("versante") String versante, @QueryParam("idSessionePortale") String idSessionePortale){
+    public Response pagamentiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("stato") String stato, @QueryParam("versante") String versante, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("verificato") Boolean verificato, @QueryParam("dataDa") Date dataDa, @QueryParam("dataA") Date dataA){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.pagamentiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, stato, versante, idSessionePortale);
+        return this.controller.pagamentiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, stato, versante, idSessionePortale, verificato, dataDa, dataA);
     }
 
 }

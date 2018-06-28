@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -126,6 +127,30 @@ public class PagamentiPortaleBD extends BasicBD{
 		}
 	}
 
+	public void aggiornaNote(PagamentoPortale pagamento, String note) throws ServiceException {
+		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
+		try {
+			UpdateField noteField = new UpdateField(it.govpay.orm.PagamentoPortale.model().NOTE, note);
+			this.getPagamentoPortaleService().updateFields(this.getPagamentoPortaleService().convertToId(vo), noteField);
+		} catch (NotFoundException e) {
+			throw new ServiceException();
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		}
+	}
+
+	public void ack(PagamentoPortale pagamento) throws ServiceException {
+		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
+		try {
+			UpdateField ackField = new UpdateField(it.govpay.orm.PagamentoPortale.model().ACK, true);
+			this.getPagamentoPortaleService().updateFields(this.getPagamentoPortaleService().convertToId(vo), ackField);
+		} catch (NotFoundException e) {
+			throw new ServiceException();
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		}
+	}
+
 	public void updatePagamento(PagamentoPortale pagamento) throws ServiceException {
 		this.updatePagamento(pagamento, false);
 	}
@@ -153,7 +178,6 @@ public class PagamentiPortaleBD extends BasicBD{
 		} finally {
 			this.setAutoCommit(oldAutocomit);
 		}
-
 	}
 
 	/**

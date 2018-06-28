@@ -2,6 +2,7 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -11,21 +12,21 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PatchDTO;
 import it.govpay.core.rs.v1.beans.base.ListaPagamentiPortale;
-import it.govpay.core.rs.v1.beans.base.Rpp;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
+import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
-import it.govpay.rs.v1.beans.converter.RptConverter;
 
 
 
@@ -49,7 +50,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
-			
+
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
 			leggiPagamentoPortaleDTO.setIdSessione(id);
 			leggiPagamentoPortaleDTO.setRisolviLink(true);
@@ -58,17 +59,8 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			
-			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
+			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleDTOResponse);
 			
-			if(pagamentoPortaleDTOResponse.getListaRpp()!=null) {
-				List<Rpp> rpp = new ArrayList<Rpp>();
-				for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
-					rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt()));
-				}
-				response.setRpp(rpp);
-			}
-
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
@@ -79,7 +71,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale) {
+    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, Date dataDa, Date dataA) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -99,6 +91,10 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setStato(stato);
+			listaPagamentiPortaleDTO.setDataDa(dataDa);
+			listaPagamentiPortaleDTO.setDataA(dataA);
+			listaPagamentiPortaleDTO.setDataA(dataA);
+			listaPagamentiPortaleDTO.setVerificato(verificato);
 			
 			if(versante != null)
 				listaPagamentiPortaleDTO.setVersante(versante);
@@ -126,6 +122,55 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
+
+    public Response pagamentiIdPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String id) {
+    	String methodName = "pagamentiIdPATCH";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+
+			PatchDTO verificaPagamentoDTO = new PatchDTO(user);
+			verificaPagamentoDTO.setIdSessione(id);
+			
+			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+			List<PatchOp> lstOp = new ArrayList<>();
+			for(java.util.LinkedHashMap<?,?> map: lst) {
+				PatchOp op = new PatchOp();
+				op.setOp(OpEnum.fromValue((String) map.get("op")));
+				op.setPath((String) map.get("path"));
+				op.setValue(map.get("value"));
+				lstOp.add(op);
+			}
+			verificaPagamentoDTO.setOp(lstOp );
+
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+			
+			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.patch(verificaPagamentoDTO);
+			
+			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleDTOResponse);
+			
+
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

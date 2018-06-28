@@ -426,6 +426,9 @@ CREATE TABLE pagamenti_portale
 	cod_psp VARCHAR(35),
 	tipo_versamento VARCHAR(4),
 	multi_beneficiario VARCHAR(35),
+	ack BOOLEAN NOT NULL,
+	note LONGTEXT,
+	tipo INT NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- unique constraints

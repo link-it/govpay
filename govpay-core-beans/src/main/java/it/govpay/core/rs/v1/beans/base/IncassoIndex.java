@@ -2,6 +2,9 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import it.govpay.core.utils.SimpleDateFormatUtils;
 
 import java.util.Date;
 @org.codehaus.jackson.annotate.JsonPropertyOrder({
@@ -169,6 +172,13 @@ public class IncassoIndex extends it.govpay.core.rs.v1.beans.JSONSerializable {
   public int hashCode() {
     return Objects.hash(causale, importo, dataValuta, dataContabile, ibanAccredito, idDominio, idIncasso);
   }
+
+	@Override
+	public String toJSON(String fields) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		return super.toJSON(fields,mapper);
+	}
 
   public static IncassoIndex parse(String json) {
     return (IncassoIndex) parse(json, IncassoIndex.class);

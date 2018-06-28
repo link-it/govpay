@@ -100,6 +100,12 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_versamento", PagamentoPortale.model().TIPO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setMultiBeneficiario", PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "multi_beneficiario", PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType()));
+				setParameter(object, "setAck", PagamentoPortale.model().ACK.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ack", PagamentoPortale.model().ACK.getFieldType()));
+				setParameter(object, "setNote", PagamentoPortale.model().NOTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "note", PagamentoPortale.model().NOTE.getFieldType()));
+				setParameter(object, "setTipo", PagamentoPortale.model().TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo", PagamentoPortale.model().TIPO.getFieldType()));
 				return object;
 			}
 			
@@ -168,6 +174,12 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoVersamento"));
 				setParameter(object, "setMultiBeneficiario", PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType(),
 					this.getObjectFromMap(map,"multiBeneficiario"));
+				setParameter(object, "setAck", PagamentoPortale.model().ACK.getFieldType(),
+					this.getObjectFromMap(map,"ack"));
+				setParameter(object, "setNote", PagamentoPortale.model().NOTE.getFieldType(),
+					this.getObjectFromMap(map,"note"));
+				setParameter(object, "setTipo", PagamentoPortale.model().TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipo"));
 				return object;
 			}
 			

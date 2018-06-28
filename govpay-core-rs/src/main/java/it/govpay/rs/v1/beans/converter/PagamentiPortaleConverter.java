@@ -1,15 +1,21 @@
 package it.govpay.rs.v1.beans.converter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.rs.v1.beans.base.ContoAddebito;
+import it.govpay.core.rs.v1.beans.base.Nota;
 import it.govpay.core.rs.v1.beans.base.Pagamento;
 import it.govpay.core.rs.v1.beans.base.PagamentoIndex;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
+import it.govpay.core.rs.v1.beans.base.Rpp;
 import it.govpay.core.rs.v1.beans.base.StatoPagamento;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -35,7 +41,8 @@ public class PagamentiPortaleConverter {
 		return VersamentoUtils.getVersamentoFromPendenza(pendenza);
 	}
 
-	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
+	public static Pagamento toRsModel(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException {
+		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
 		Pagamento rsModel = new Pagamento();
 
 		JsonConfig jsonConfig = new JsonConfig();
@@ -68,6 +75,24 @@ public class PagamentiPortaleConverter {
 
 		if(pagamentoPortale.getImporto() != null) 
 			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+		
+		if(dto.getListaRpp()!=null) {
+			List<Rpp> rpp = new ArrayList<Rpp>();
+			for(LeggiRptDTOResponse leggiRptDtoResponse: dto.getListaRpp()) {
+				rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt()));
+			}
+			rsModel.setRpp(rpp);
+		}
+		
+		if(pagamentoPortale.getNote()!=null && !pagamentoPortale.getNote().isEmpty()) {
+			List<Nota> note = new ArrayList<>();
+			for(it.govpay.bd.model.Nota nota: pagamentoPortale.getNote()) {
+				note.add(NoteConverter.toRsModel(nota));
+			}
+			rsModel.setNote(note);
+		}
+		
+		rsModel.setVerificato(pagamentoPortale.isAck());
 
 		return rsModel;
 	}

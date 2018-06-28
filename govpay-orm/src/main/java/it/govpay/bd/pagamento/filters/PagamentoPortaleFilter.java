@@ -42,7 +42,8 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private STATO stato;
 	private String versante;
 	private List<String> codDomini;
-
+	private Boolean ack;
+	
 	public enum SortFields {
 		DATA
 	}
@@ -95,6 +96,10 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				newExpression.isNotNull(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO);
 			
 				addAnd = true;
+			}
+			
+			if(this.ack!=null) {
+				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ACK, this.ack);
 			}
 			
 			return newExpression;
@@ -169,6 +174,14 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public void setCodDomini(List<String> codDomini) {
 		this.codDomini = codDomini;
+	}
+
+	public Boolean getAck() {
+		return ack;
+	}
+
+	public void setAck(Boolean ack) {
+		this.ack = ack;
 	}
 
 }

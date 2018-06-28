@@ -6,10 +6,17 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.IOException;
+import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.BasicModel;
 import it.govpay.orm.IdVersamento;
 
@@ -94,6 +101,11 @@ public class PagamentoPortale extends BasicModel {
 	private Double importo = null; 
 	private String multiBeneficiario = null;
 
+	private int tipo;
+	private boolean ack;
+	private List<Nota> note;
+	
+	
 	public String getCodApplicazione() {
 		return codApplicazione;
 	}
@@ -270,6 +282,43 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setMultiBeneficiario(String multiBeneficiario) {
 		this.multiBeneficiario = multiBeneficiario;
+	}
+	public boolean isAck() {
+		return ack;
+	}
+	public void setAck(boolean ack) {
+		this.ack = ack;
+	}
+	public List<Nota> getNote() {
+		if(note == null) note = new ArrayList<>();
+		return note;
+	}
+
+	public String getNoteString() throws IOException {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormat());
+		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+		ListaNote listaNote = new ListaNote();
+		listaNote.setLista(this.note);
+		return serializer.getObject(listaNote);
+	}
+
+	public void setNote(String note) throws IOException {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormat());
+		IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+		ListaNote listaNote = (ListaNote) deserializer.getObject(note, ListaNote.class);
+		this.note = listaNote.getLista();
+	}
+
+	public void setNote(List<Nota> note) {
+		this.note = note;
+	}
+	public int getTipo() {
+		return tipo;
+	}
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 
 }

@@ -1742,6 +1742,17 @@
 			<xsd:element name="codPsp" type="String35" minOccurs="0"/>
 			<xsd:element name="tipoVersamento" type="String4" minOccurs="0"/>
 			<xsd:element name="multiBeneficiario" type="String35" minOccurs="0"/>
+			<xsd:element name="ack" type="xsd:boolean" />
+			<xsd:element name="note" type="String4000" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="tipo" type="xsd:int" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

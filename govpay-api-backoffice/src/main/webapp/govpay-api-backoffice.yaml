@@ -1287,8 +1287,8 @@ paths:
             type: string
             example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
         - in: query
-          name: ack
-          description: Filtro sui pagamenti che hanno ricevuto un ack o meno
+          name: verificato
+          description: Filtro sui pagamenti verificati o meno
           required: false
           schema:
             type: boolean
@@ -1359,9 +1359,8 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  '/pagamenti/{id}/verificato':
-    put:
-      summary: Imposta un pagamento in errore o in corso come verificato
+    patch:
+      summary: Aggiorna selettivamente campi di un pagamento
       tags:
         - Pagamenti
       parameters:
@@ -1372,12 +1371,14 @@ paths:
           schema:
             type: string
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
-              type: string
-              description: Nota a margine dell'ack
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
       responses:
         '200':
           description: Dettaglio del pagamento
@@ -3354,9 +3355,9 @@ components:
           type: array
           items: 
             $ref: '#/components/schemas/rpp'
-        ack:
+        verificato:
           type: boolean
-          description: indicazione se il pagamento ha ricevuto un ack
+          description: indicazione se eventuali anomalie sono state verificate da un operatore
         note:
           type: array
           items:
@@ -4266,7 +4267,7 @@ components:
         testo:
           type: string
           description: Testo della nota
-          example: 'Ack pagamento'
+          example: 'Verifica pagamento'
     evento:
       type: object
       required:
@@ -4508,3 +4509,26 @@ components:
         stato:
           type: string
           description: stato dell'operazione (OK/KO/WARN)
+    patchOp:
+      type: object
+      required: 
+        - op
+        - path
+        - value
+      properties:
+        op:
+          type: string
+          enum:
+            - ADD
+            - DELETE
+            - REPLACE
+          description: Operazione da eseguire
+          example: "ADD"
+        path:
+          type: string
+          description: path dell'oggetto dell'operazione
+          example: "domini"
+        value:
+          type: object
+          description: valore del'oggetto dell'operazione
+          example: "01234567890"
