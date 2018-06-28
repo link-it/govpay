@@ -13,6 +13,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.rs.v1.beans.base.ContoAddebito;
 import it.govpay.core.rs.v1.beans.base.Nota;
 import it.govpay.core.rs.v1.beans.base.Pagamento;
+import it.govpay.core.rs.v1.beans.base.Pagamento.ModelloEnum;
 import it.govpay.core.rs.v1.beans.base.PagamentoIndex;
 import it.govpay.core.rs.v1.beans.base.PendenzaPost;
 import it.govpay.core.rs.v1.beans.base.Rpp;
@@ -94,6 +95,12 @@ public class PagamentiPortaleConverter {
 		
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
+		if(pagamentoPortale.getTipo() == 1) {
+			rsModel.setModello(ModelloEnum.ENTE);	
+		} else if(pagamentoPortale.getTipo() == 3) {
+			rsModel.setModello(ModelloEnum.PSP);
+		}
+		
 		return rsModel;
 	}
 	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
@@ -132,6 +139,22 @@ public class PagamentiPortaleConverter {
 
 		if(pagamentoPortale.getImporto() != null) 
 			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+
+		if(pagamentoPortale.getNote()!=null && !pagamentoPortale.getNote().isEmpty()) {
+			List<Nota> note = new ArrayList<>();
+			for(it.govpay.bd.model.Nota nota: pagamentoPortale.getNote()) {
+				note.add(NoteConverter.toRsModel(nota));
+			}
+			rsModel.setNote(note);
+		}
+
+		rsModel.setVerificato(pagamentoPortale.isAck());
+
+		if(pagamentoPortale.getTipo() == 1) {
+			rsModel.setModello(it.govpay.core.rs.v1.beans.base.PagamentoIndex.ModelloEnum.ENTE);	
+		} else if(pagamentoPortale.getTipo() == 3) {
+			rsModel.setModello(it.govpay.core.rs.v1.beans.base.PagamentoIndex.ModelloEnum.PSP);
+		}
 
 		return rsModel;
 

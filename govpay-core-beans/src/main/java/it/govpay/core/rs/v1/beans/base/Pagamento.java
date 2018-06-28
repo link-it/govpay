@@ -19,6 +19,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 "idSessionePortale",
 "idSessionePsp",
 "importo",
+"modello",
 "stato",
 "pspRedirectUrl",
 "urlRitorno",
@@ -51,6 +52,50 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
+  
+    
+  /**
+   * Modello di pagamento
+   */
+  public enum ModelloEnum {
+    
+    
+        
+            
+    ENTE("Pagamento ad iniziativa Ente"),
+    
+            
+    PSP("Pagamento ad iniziativa PSP");
+            
+        
+    
+
+    private String value;
+
+    ModelloEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @org.codehaus.jackson.annotate.JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static ModelloEnum fromValue(String text) {
+      for (ModelloEnum b : ModelloEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+    
+  @JsonProperty("modello")
+  private ModelloEnum modello = null;
   
   @JsonProperty("stato")
   private StatoPagamento stato = null;
@@ -283,6 +328,22 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Modello di pagamento
+   **/
+  public Pagamento modello(ModelloEnum modello) {
+    this.modello = modello;
+    return this;
+  }
+
+  @JsonProperty("modello")
+  public ModelloEnum getModello() {
+    return modello;
+  }
+  public void setModello(ModelloEnum modello) {
+    this.modello = modello;
+  }
+
+  /**
    **/
   public Pagamento stato(StatoPagamento stato) {
     this.stato = stato;
@@ -485,6 +546,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(idSessionePortale, pagamento.idSessionePortale) &&
         Objects.equals(idSessionePsp, pagamento.idSessionePsp) &&
         Objects.equals(importo, pagamento.importo) &&
+        Objects.equals(modello, pagamento.modello) &&
         Objects.equals(stato, pagamento.stato) &&
         Objects.equals(pspRedirectUrl, pagamento.pspRedirectUrl) &&
         Objects.equals(urlRitorno, pagamento.urlRitorno) &&
@@ -501,7 +563,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, note);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, modello, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, note);
   }
 
   public static Pagamento parse(String json) {
@@ -524,6 +586,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
     sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    modello: ").append(toIndentedString(modello)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
     sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");

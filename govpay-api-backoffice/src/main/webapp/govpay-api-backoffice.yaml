@@ -3304,6 +3304,12 @@ components:
           type: number
           description: >-
             Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
+        modello:
+          type: string
+          description: Modello di pagamento
+          enum:
+            - Pagamento ad iniziativa Ente
+            - Pagamento ad iniziativa PSP
         stato:
           $ref: '#/components/schemas/statoPagamento'
         pspRedirectUrl:
