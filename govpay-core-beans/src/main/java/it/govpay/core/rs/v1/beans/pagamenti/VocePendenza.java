@@ -13,6 +13,7 @@ import it.govpay.core.rs.v1.serializer.CustomBigDecimalSerializer;
 "idVocePendenza",
 "importo",
 "descrizione",
+"stato",
 "datiAllegati",
 "hashDocumento",
 "tipoBollo",
@@ -35,6 +36,53 @@ public class VocePendenza extends JSONSerializable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
+  
+    
+  /**
+   * Stato della voce di pagamento
+   */
+  public enum StatoEnum {
+    
+    
+        
+            
+    ESEGUITO("Eseguito"),
+    
+            
+    NON_ESEGUITO("Non eseguito"),
+    
+            
+    ANOMALO("Anomalo");
+            
+        
+    
+
+    private String value;
+
+    StatoEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @org.codehaus.jackson.annotate.JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static StatoEnum fromValue(String text) {
+      for (StatoEnum b : StatoEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+    
+  @JsonProperty("stato")
+  private StatoEnum stato = null;
   
   @JsonProperty("datiAllegati")
   private String datiAllegati = null;
@@ -123,6 +171,22 @@ public class VocePendenza extends JSONSerializable {
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
+  }
+
+  /**
+   * Stato della voce di pagamento
+   **/
+  public VocePendenza stato(StatoEnum stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoEnum getStato() {
+    return stato;
+  }
+  public void setStato(StatoEnum stato) {
+    this.stato = stato;
   }
 
   /**
@@ -244,6 +308,7 @@ public class VocePendenza extends JSONSerializable {
         Objects.equals(idVocePendenza, vocePendenza.idVocePendenza) &&
         Objects.equals(importo, vocePendenza.importo) &&
         Objects.equals(descrizione, vocePendenza.descrizione) &&
+        Objects.equals(stato, vocePendenza.stato) &&
         Objects.equals(datiAllegati, vocePendenza.datiAllegati) &&
         Objects.equals(hashDocumento, vocePendenza.hashDocumento) &&
         Objects.equals(tipoBollo, vocePendenza.tipoBollo) &&
@@ -255,7 +320,7 @@ public class VocePendenza extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, datiAllegati, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, ibanAccredito, tipoContabilita);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, datiAllegati, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, ibanAccredito, tipoContabilita);
   }
 
   public static VocePendenza parse(String json) {
@@ -276,6 +341,7 @@ public class VocePendenza extends JSONSerializable {
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
     sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");

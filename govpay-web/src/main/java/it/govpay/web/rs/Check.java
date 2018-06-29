@@ -73,7 +73,7 @@ import it.govpay.web.rs.sonde.SommarioSonda;
 public class Check {
 
 	@GET
-	@Path("/sonda")
+	@Path("/sonde")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonde() {
 		BasicBD bd = null;
@@ -129,7 +129,7 @@ public class Check {
 	}
 	
 	@GET
-	@Path("/sonda/{nome}")
+	@Path("/sonde/{nome}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonda(@PathParam(value = "nome") String nome) {
 		BasicBD bd = null;

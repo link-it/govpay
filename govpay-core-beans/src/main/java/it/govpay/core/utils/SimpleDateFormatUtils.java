@@ -26,6 +26,13 @@ public class SimpleDateFormatUtils {
 		sdf.setLenient(false);
 		return sdf;
 	}
+	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM = "yyyy-MM-dd'T'HH:mm";
+	public static SimpleDateFormat newSimpleDateFormatDataOreMinuti() {
+		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM);
+		sdf.setTimeZone(TimeZone.getTimeZone("CET"));
+		sdf.setLenient(false);
+		return sdf;
+	}
 
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD = "yyyy-MM-dd";
 	public static SimpleDateFormat newSimpleDateFormatSoloData() {

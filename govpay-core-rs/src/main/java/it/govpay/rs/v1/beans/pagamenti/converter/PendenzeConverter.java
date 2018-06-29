@@ -174,6 +174,16 @@ public class PendenzeConverter {
 		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 		rsModel.setIndice(new BigDecimal(indice));
 		
+		switch(singoloVersamento.getStatoSingoloVersamento()) {
+		case ANOMALO: rsModel.setStato(VocePendenza.StatoEnum.ANOMALO);
+			break;
+		case ESEGUITO:rsModel.setStato(VocePendenza.StatoEnum.ESEGUITO);
+			break;
+		case NON_ESEGUITO:rsModel.setStato(VocePendenza.StatoEnum.NON_ESEGUITO);
+			break;
+		default:
+			break;}
+
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());

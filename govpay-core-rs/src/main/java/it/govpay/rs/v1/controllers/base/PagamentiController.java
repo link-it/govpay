@@ -1,8 +1,8 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -24,6 +24,7 @@ import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
@@ -71,7 +72,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, Date dataDa, Date dataA) {
+    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -91,9 +92,14 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setStato(stato);
-			listaPagamentiPortaleDTO.setDataDa(dataDa);
-			listaPagamentiPortaleDTO.setDataA(dataA);
-			listaPagamentiPortaleDTO.setDataA(dataA);
+			
+			SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti();
+			if(dataDa!=null)
+				listaPagamentiPortaleDTO.setDataDa(sdf.parse(dataDa));
+			
+			if(dataA!=null)
+				listaPagamentiPortaleDTO.setDataA(sdf.parse(dataA));
+			
 			listaPagamentiPortaleDTO.setVerificato(verificato);
 			
 			if(versante != null)

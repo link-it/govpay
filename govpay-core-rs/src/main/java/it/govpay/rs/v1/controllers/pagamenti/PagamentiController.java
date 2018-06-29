@@ -189,6 +189,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			List<it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex> results = new ArrayList<it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex>();
 			for(it.govpay.bd.model.PagamentoPortale pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
+				log.debug("leggo il pagamento ["+pagamentoPortale.getIdSessione()+"]");
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
 			}
 			
