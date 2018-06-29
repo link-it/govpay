@@ -182,13 +182,8 @@ public class UriBuilderUtils {
 		return getListDomini().queryParam("idStazione", codStazione).build().toString();
 	}
 
-	/**
-	 * @param codApplicazione
-	 * @param codVersamentoEnte
-	 * @return
-	 */
-	public static String getIncassiByIdA2AIdPendenza(String idA2A, String idPendenza) {
-		return getListIncassi().path(idA2A).path(idPendenza).build().toString();
+	public static String getIncassiByIdDominioIdIncasso(String idDominio, String idIncasso) {
+		return getListIncassi().path(idDominio).path(idIncasso).build().toString();
 	}
 	
 }

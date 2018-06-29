@@ -85,6 +85,7 @@ public class IncassiDAO extends BaseDAO{
 					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 					pagamento.getDominio(bd);
 					pagamento.getRpt(bd);
+					pagamento.getIncasso(bd);
 				}
 			}
 

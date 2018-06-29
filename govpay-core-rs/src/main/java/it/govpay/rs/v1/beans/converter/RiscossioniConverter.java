@@ -54,6 +54,10 @@ public class RiscossioniConverter {
 			if(input.getTipoAllegato() != null)
 				allegato.setTipo(TipoEnum.fromValue(input.getTipoAllegato().toString()));
 			rsModel.setAllegato(allegato);
+			
+			if(input.getIncasso(null)!=null)
+				rsModel.setIncasso(UriBuilderUtils.getIncassiByIdDominioIdIncasso(input.getCodDominio(), input.getIncasso(null).getTrn()));
+			
 		} catch(ServiceException e) {}
 
 		return rsModel;

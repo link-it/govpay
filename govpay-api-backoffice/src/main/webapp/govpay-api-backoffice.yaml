@@ -1066,6 +1066,41 @@ paths:
           $ref: '#/components/responses/403' 
         '500':
           $ref: '#/components/responses/500'
+    patch:
+      summary: Aggiorna selettivamente campi di un Applicazione
+      tags:
+        - Applicazioni
+      parameters:
+        - in: path
+          name: idA2A
+          description: Identificativo dell'applicazione
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
+      responses:
+        '200':
+          description: Dettaglio dell'applicazione
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/applicazione'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/operatori':
     get:
       tags:
@@ -1208,6 +1243,41 @@ paths:
           $ref: '#/components/responses/403' 
         '500':
           $ref: '#/components/responses/500'    
+    patch:
+      summary: Aggiorna selettivamente campi di un Operatore
+      tags:
+        - Operatori
+      parameters:
+        - in: path
+          name: principal
+          description: Identificativo dell'operatore
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
+      responses:
+        '200':
+          description: Dettaglio dell'operatore
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/operatore'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/profilo':
     get:
       summary: Elenco delle acl associate all'utenza chiamante
@@ -2430,6 +2500,41 @@ paths:
           $ref: '#/components/responses/404'          
         '500':
           $ref: '#/components/responses/500'        
+    patch:
+      summary: Aggiorna selettivamente campi di un Ruolo
+      tags:
+        - Ruoli
+      parameters:
+        - in: path
+          name: idRuolo
+          description: Identificativo del ruolo
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
+      responses:
+        '200':
+          description: Dettaglio del ruolo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ruolo'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/enumerazioni/versioneConnettore':
     get:
       tags:

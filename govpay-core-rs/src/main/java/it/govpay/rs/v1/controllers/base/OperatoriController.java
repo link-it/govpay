@@ -165,6 +165,12 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 
 
 
+    public Response operatoriPrincipalPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
+
     public Response operatoriGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "operatoriGET";  
 		GpContext ctx = null;

@@ -20,15 +20,21 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
+import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
 import it.govpay.core.rs.v1.beans.base.Applicazione;
-import it.govpay.core.rs.v1.beans.base.ListaApplicazioni;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
+import it.govpay.core.rs.v1.beans.base.ListaApplicazioni;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.ApplicazioniConverter;
+import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
 import net.sf.json.JsonConfig;
 
 
@@ -84,6 +90,55 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 		}
     }
 
+
+    public Response applicazioniIdA2APATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
+    	String methodName = "applicazioniIdA2APATCH";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+
+			PagamentoPatchDTO verificaPagamentoDTO = new PagamentoPatchDTO(user);
+			verificaPagamentoDTO.setIdSessione(idA2A);
+			
+			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+			List<PatchOp> lstOp = new ArrayList<>();
+			for(java.util.LinkedHashMap<?,?> map: lst) {
+				PatchOp op = new PatchOp();
+				op.setOp(OpEnum.fromValue((String) map.get("op")));
+				op.setPath((String) map.get("path"));
+				op.setValue(map.get("value"));
+				lstOp.add(op);
+			}
+			verificaPagamentoDTO.setOp(lstOp );
+
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+			
+			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.patch(verificaPagamentoDTO);
+			
+			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleDTOResponse);
+			
+
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
 
 
     public Response applicazioniIdA2APUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {

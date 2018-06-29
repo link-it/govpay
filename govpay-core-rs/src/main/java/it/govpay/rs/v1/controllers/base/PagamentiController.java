@@ -17,7 +17,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.PatchDTO;
+import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
 import it.govpay.core.rs.v1.beans.base.ListaPagamentiPortale;
 import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
@@ -146,7 +146,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			String jsonRequest = baos.toString();
 
-			PatchDTO verificaPagamentoDTO = new PatchDTO(user);
+			PagamentoPatchDTO verificaPagamentoDTO = new PagamentoPatchDTO(user);
 			verificaPagamentoDTO.setIdSessione(id);
 			
 			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
