@@ -62,7 +62,7 @@ public class TipoAutenticazioneBasic extends it.govpay.core.rs.v1.beans.JSONSeri
     return Objects.hash(username, password);
   }
 
-  public static TipoAutenticazioneBasic parse(String json) {
+  public static TipoAutenticazioneBasic parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (TipoAutenticazioneBasic) parse(json, TipoAutenticazioneBasic.class);
   }
 

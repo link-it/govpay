@@ -316,7 +316,7 @@ public class UnitaOperativaPost extends it.govpay.core.rs.v1.beans.JSONSerializa
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, area, abilitato);
   }
 
-  public static UnitaOperativaPost parse(String json) {
+  public static UnitaOperativaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (UnitaOperativaPost) parse(json, UnitaOperativaPost.class);
   }
 

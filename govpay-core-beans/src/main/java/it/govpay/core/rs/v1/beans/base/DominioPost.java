@@ -442,7 +442,7 @@ public class DominioPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato);
   }
 
-  public static DominioPost parse(String json) {
+  public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (DominioPost) parse(json, DominioPost.class);
   }
 

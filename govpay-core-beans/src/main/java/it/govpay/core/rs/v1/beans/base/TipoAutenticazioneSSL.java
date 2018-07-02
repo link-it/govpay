@@ -168,7 +168,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
     return Objects.hash(tipo, ksLocation, ksPassword, tsLocation, tsPassword);
   }
 
-  public static TipoAutenticazioneSSL parse(String json) {
+  public static TipoAutenticazioneSSL parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (TipoAutenticazioneSSL) parse(json, TipoAutenticazioneSSL.class);
   }
 

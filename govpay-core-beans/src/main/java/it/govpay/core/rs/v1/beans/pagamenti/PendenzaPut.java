@@ -364,7 +364,7 @@ public class PendenzaPut extends JSONSerializable {
     return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idDominio, idUnitaOperativa, voci);
   }
 
-  public static PendenzaPut parse(String json) {
+  public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (PendenzaPut) parse(json, PendenzaPut.class);
   }
 

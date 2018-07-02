@@ -23,7 +23,10 @@ public class FaultBean extends JSONSerializable {
             
     AUTORIZZAZIONE("AUTORIZZAZIONE"),
     
-            
+    
+    UNMARSHALL("UNMARSHALL"),
+
+    
     RICHIESTA("RICHIESTA"),
     
             
@@ -158,7 +161,7 @@ public class FaultBean extends JSONSerializable {
     return Objects.hash(categoria, codice, descrizione, dettaglio);
   }
 
-  public static FaultBean parse(String json) {
+  public static FaultBean parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (FaultBean) parse(json, FaultBean.class);
   }
 

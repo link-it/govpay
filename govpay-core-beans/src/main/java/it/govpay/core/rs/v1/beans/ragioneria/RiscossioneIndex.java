@@ -316,7 +316,7 @@ public class RiscossioneIndex extends JSONSerializable {
     return Objects.hash(dominio, iuv, iur, indice, pendenza, vocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
-  public static RiscossioneIndex parse(String json) {
+  public static RiscossioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (RiscossioneIndex) parse(json, RiscossioneIndex.class);
   }
 

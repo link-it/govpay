@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -20,6 +21,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 "autenticazioneSoggetto",
 "lingua",
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PagamentoPost extends JSONSerializable {
   
   @JsonProperty("pendenze")
@@ -241,8 +243,12 @@ public class PagamentoPost extends JSONSerializable {
    * modalita' di autenticazione del soggetto versante
    **/
   public PagamentoPost autenticazioneSoggettoEnum(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
-    this.autenticazioneSoggetto = autenticazioneSoggetto;
-    return this;
+	    this.autenticazioneSoggetto = autenticazioneSoggetto;
+	    return this;
+	  }
+
+  public void setAutenticazioneSoggettoEnum(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
+	    this.autenticazioneSoggetto = autenticazioneSoggetto;
   }
 
   public AutenticazioneSoggettoEnum getAutenticazioneSoggettoEnum() {
@@ -317,7 +323,7 @@ public class PagamentoPost extends JSONSerializable {
     return Objects.hash(pendenze, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua);
   }
 
-  public static PagamentoPost parse(String json) {
+  public static PagamentoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (PagamentoPost) parse(json, PagamentoPost.class);
   }
 

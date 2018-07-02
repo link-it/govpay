@@ -211,7 +211,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(idA2A, principal, codificaAvvisi, domini, entrate, acl, servizioVerifica, servizioNotifica, abilitato);
   }
 
-  public static Applicazione parse(String json) {
+  public static Applicazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Applicazione) parse(json, Applicazione.class);
   }
 

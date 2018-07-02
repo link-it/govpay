@@ -292,7 +292,7 @@ public class Soggetto extends JSONSerializable {
     return Objects.hash(tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare);
   }
 
-  public static Soggetto parse(String json) {
+  public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Soggetto) parse(json, Soggetto.class);
   }
 

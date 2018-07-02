@@ -11,14 +11,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
-import org.openspcoop2.utils.json.JSONUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -77,25 +76,26 @@ public abstract class JSONSerializable {
 	}
 	
 	
-	public static <T> T parse(String jsonString, Class<T> t)  {
+	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException  {
 		try {
 			SerializationConfig serializationConfig = new SerializationConfig();
 			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+			serializationConfig.setIgnoreNullValues(true);
 			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			
 			@SuppressWarnings("unchecked")
 			T object = (T) deserializer.getObject(jsonString, t);
 			return object;
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
-			return null;
+			throw new ServiceException("Errore nella deserializzazione dei dati - " + t.getSimpleName());
 		}
 	}
 
-	public static Object parse(String json, Class<?> clazz, JsonConfig jsonConfig) {
+	public static Object parse(String json, Class<?> clazz, JsonConfig jsonConfig) throws ServiceException {
 		return parse(json, clazz);
 	}
 	
-	public static Object parse(JSONObject jsonObject, Class<?> clazz, JsonConfig jsonConfig) {
+	public static Object parse(JSONObject jsonObject, Class<?> clazz, JsonConfig jsonConfig) throws ServiceException {
 		
 		return parse(jsonObject.toString(), clazz);
 	}

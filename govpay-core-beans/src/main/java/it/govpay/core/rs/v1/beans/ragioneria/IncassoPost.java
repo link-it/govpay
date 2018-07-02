@@ -132,7 +132,7 @@ public class IncassoPost extends JSONSerializable {
     return Objects.hash(causale, importo, dataValuta, dataContabile, ibanAccredito);
   }
 
-  public static IncassoPost parse(String json) {
+  public static IncassoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (IncassoPost) parse(json, IncassoPost.class);
   }
 

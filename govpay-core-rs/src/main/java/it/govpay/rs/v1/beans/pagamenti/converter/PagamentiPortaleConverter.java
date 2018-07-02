@@ -19,7 +19,6 @@ import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaPost;
 import it.govpay.core.rs.v1.beans.pagamenti.StatoPagamento;
-import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.pagamento.VersamentoUtils;
 import it.govpay.model.IAutorizzato;
@@ -128,7 +127,9 @@ public class PagamentiPortaleConverter {
 		Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 		classMap.put("autenticazioneSoggetto", String.class);
 		jsonConfig.setClassMap(classMap);
-		PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class, jsonConfig);
+		PagamentoPost pagamentiPortaleRequest = null;
+		if(pagamentoPortale.getJsonRequest()!=null)
+			pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class, jsonConfig);
 
 		rsModel.setId(pagamentoPortale.getIdSessione());
 		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());
@@ -138,19 +139,22 @@ public class PagamentiPortaleConverter {
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 
-		if(pagamentiPortaleRequest.getContoAddebito()!=null) {
-			ContoAddebito contoAddebito = new ContoAddebito();
-			contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBic());
-			contoAddebito.setIban(pagamentiPortaleRequest.getContoAddebito().getIban());
-			rsModel.setContoAddebito(contoAddebito);
+		if(pagamentiPortaleRequest!=null) {
+			if(pagamentiPortaleRequest.getContoAddebito()!=null) {
+				ContoAddebito contoAddebito = new ContoAddebito();
+				contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBic());
+				contoAddebito.setIban(pagamentiPortaleRequest.getContoAddebito().getIban());
+				rsModel.setContoAddebito(contoAddebito);
+			}
+			rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
+
+			rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
+			
+			rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
+			rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.pagamenti.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 		}
-		rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
-		rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
-		
-		rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
-		rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.pagamenti.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 
 		if(pagamentoPortale.getImporto() != null) 
 			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
@@ -164,7 +168,10 @@ public class PagamentiPortaleConverter {
 		Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 		classMap.put("autenticazioneSoggetto", String.class);
 		jsonConfig.setClassMap(classMap);
-		PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class, jsonConfig);
+		PagamentoPost pagamentiPortaleRequest = null;
+		
+		if(pagamentoPortale.getJsonRequest()!=null)
+			pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class, jsonConfig);
 
 		rsModel.setId(pagamentoPortale.getIdSessione());
 		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());
@@ -174,21 +181,22 @@ public class PagamentiPortaleConverter {
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 
-		if(pagamentiPortaleRequest.getContoAddebito()!=null) {
-			ContoAddebito contoAddebito = new ContoAddebito();
-			contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBic());
-			contoAddebito.setIban(pagamentiPortaleRequest.getContoAddebito().getIban());
-			rsModel.setContoAddebito(contoAddebito);
+		if(pagamentiPortaleRequest != null) {
+			if(pagamentiPortaleRequest.getContoAddebito()!=null) {
+				ContoAddebito contoAddebito = new ContoAddebito();
+				contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBic());
+				contoAddebito.setIban(pagamentiPortaleRequest.getContoAddebito().getIban());
+				rsModel.setContoAddebito(contoAddebito);
+			}
+
+			rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
+			rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
+			
+			rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
+			rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 		}
 
-		rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
-
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
-		rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
-		
-		rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
-		rsModel.setAutenticazioneSoggetto(it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
-
 		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 

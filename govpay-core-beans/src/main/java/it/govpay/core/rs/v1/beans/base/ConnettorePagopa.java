@@ -66,7 +66,7 @@ public class ConnettorePagopa extends JSONSerializable {
     return Objects.hash(url, auth);
   }
 
-  public static ConnettorePagopa parse(String json) {
+  public static ConnettorePagopa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (ConnettorePagopa) parse(json, ConnettorePagopa.class);
   }
 

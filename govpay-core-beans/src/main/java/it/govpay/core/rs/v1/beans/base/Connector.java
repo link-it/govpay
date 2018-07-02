@@ -90,7 +90,7 @@ public class Connector extends JSONSerializable {
     return Objects.hash(url, versioneApi, auth);
   }
 
-  public static Connector parse(String json) {
+  public static Connector parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Connector) parse(json, Connector.class);
   }
 

@@ -85,7 +85,7 @@ public class Segnalazione extends JSONSerializable {
     return Objects.hash(codice, descrizione, dettaglio);
   }
 
-  public static Segnalazione parse(String json) {
+  public static Segnalazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Segnalazione) parse(json, Segnalazione.class);
   }
 

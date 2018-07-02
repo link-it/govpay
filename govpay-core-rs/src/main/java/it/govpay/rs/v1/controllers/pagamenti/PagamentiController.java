@@ -14,7 +14,6 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.PagamentoPortale;
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
@@ -90,15 +89,19 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		} catch (Exception e) {
 			Response response = handleException(uriInfo, httpHeaders, methodName, e,transactionId);
 			if(e instanceof GovPayException && (PagamentoPortale) ((GovPayException) e).getParam() != null) {
-				it.govpay.core.rs.v1.beans.base.FaultBean fb = (it.govpay.core.rs.v1.beans.base.FaultBean) it.govpay.core.rs.v1.beans.base.FaultBean.parse((String) response.getEntity(), it.govpay.core.rs.v1.beans.base.FaultBean.class);
-				FaultBeanEsteso fbe = new FaultBeanEsteso();
-				fbe.setCodice(fb.getCodice());
-				fbe.setCategoria(CategoriaEnum.fromValue(fb.getCategoria().toString()));
-				fbe.setDescrizione(fb.getDescrizione());
-				fbe.setDettaglio(fb.getDettaglio());
-				fbe.setId(((PagamentoPortale) ((GovPayException) e).getParam()).getIdSessione());
-				fbe.setLocation(UriBuilderUtils.getFromPagamenti(fbe.getId()));
-				return Response.fromResponse(response).entity(fbe.toJSON(null)).build();
+				try {
+					it.govpay.core.rs.v1.beans.base.FaultBean fb = (it.govpay.core.rs.v1.beans.base.FaultBean) it.govpay.core.rs.v1.beans.base.FaultBean.parse((String) response.getEntity(), it.govpay.core.rs.v1.beans.base.FaultBean.class);
+					FaultBeanEsteso fbe = new FaultBeanEsteso();
+					fbe.setCodice(fb.getCodice());
+					fbe.setCategoria(CategoriaEnum.fromValue(fb.getCategoria().toString()));
+					fbe.setDescrizione(fb.getDescrizione());
+					fbe.setDettaglio(fb.getDettaglio());
+					fbe.setId(((PagamentoPortale) ((GovPayException) e).getParam()).getIdSessione());
+					fbe.setLocation(UriBuilderUtils.getFromPagamenti(fbe.getId()));
+					return Response.fromResponse(response).entity(fbe.toJSON(null)).build();
+				} catch (Exception e1) {
+					return Response.fromResponse(response).build();
+				}
 			}
 			return response;
 		} finally {
@@ -189,7 +192,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			List<it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex> results = new ArrayList<it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex>();
 			for(it.govpay.bd.model.PagamentoPortale pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
-				log.debug("leggo il pagamento ["+pagamentoPortale.getIdSessione()+"]");
+				log.info("get Pagamenti portale: " + pagamentoPortale.getIdSessione());
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
 			}
 			

@@ -108,7 +108,7 @@ public class ContiAccreditoPost extends JSONSerializable {
     return Objects.hash(bic, postale, mybank, abilitato);
   }
 
-  public static ContiAccreditoPost parse(String json) {
+  public static ContiAccreditoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (ContiAccreditoPost) parse(json, ContiAccreditoPost.class);
   }
 

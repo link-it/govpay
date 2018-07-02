@@ -83,7 +83,7 @@ public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable
     return Objects.hash(idOperazione, descrizione, location);
   }
 
-  public static OperazioneIndex parse(String json) {
+  public static OperazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (OperazioneIndex) parse(json, OperazioneIndex.class);
   }
 

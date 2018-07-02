@@ -88,7 +88,7 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
     return Objects.hash(codificaIuv, regExpIuv, generazioneIuvInterna);
   }
 
-  public static CodificaAvvisi parse(String json) {
+  public static CodificaAvvisi parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (CodificaAvvisi) parse(json, CodificaAvvisi.class);
   }
 

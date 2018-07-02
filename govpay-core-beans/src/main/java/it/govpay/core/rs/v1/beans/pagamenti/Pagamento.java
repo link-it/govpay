@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -31,6 +32,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 "pendenze",
 "rpp",
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Pagamento extends JSONSerializable {
   
   @JsonProperty("id")
@@ -482,7 +484,7 @@ public class Pagamento extends JSONSerializable {
     return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
   }
 
-  public static Pagamento parse(String json) {
+  public static Pagamento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Pagamento) parse(json, Pagamento.class);
   }
 

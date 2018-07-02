@@ -304,7 +304,7 @@ public class Avviso extends JSONSerializable {
     return Objects.hash(stato, importo, idDominio, numeroAvviso, dataValidita, dataScadenza, descrizione, tassonomiaAvviso, qrcode, barcode, pdf);
   }
 
-  public static Avviso parse(String json) {
+  public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Avviso) parse(json, Avviso.class);
   }
 

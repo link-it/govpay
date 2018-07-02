@@ -313,7 +313,7 @@ public class Riscossione extends JSONSerializable {
     return Objects.hash(dominio, iuv, iur, indice, pendenza, vocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
-  public static Riscossione parse(String json) {
+  public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Riscossione) parse(json, Riscossione.class);
   }
 

@@ -54,6 +54,11 @@
 			<artifactId>openspcoop2_utils</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.openspcoop2</groupId>
+			<artifactId>openspcoop2_generic-project</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

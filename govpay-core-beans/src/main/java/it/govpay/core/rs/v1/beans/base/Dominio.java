@@ -527,7 +527,7 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, idDominio, unitaOperative, contiAccredito, entrate);
   }
 
-  public static Dominio parse(String json) {
+  public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Dominio) parse(json, Dominio.class);
   }
 

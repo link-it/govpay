@@ -566,7 +566,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, modello, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, note);
   }
 
-  public static Pagamento parse(String json) {
+  public static Pagamento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Pagamento) parse(json, Pagamento.class);
   }
 

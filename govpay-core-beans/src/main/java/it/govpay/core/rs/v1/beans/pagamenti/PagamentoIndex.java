@@ -480,7 +480,7 @@ public class PagamentoIndex extends JSONSerializable {
     return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
   }
 
-  public static PagamentoIndex parse(String json) {
+  public static PagamentoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (PagamentoIndex) parse(json, PagamentoIndex.class);
   }
 

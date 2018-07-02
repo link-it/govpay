@@ -91,7 +91,7 @@ public class EsitoOperazione extends JSONSerializable {
     return Objects.hash(percentuale, descrizione, stato);
   }
 
-  public static EsitoOperazione parse(String json) {
+  public static EsitoOperazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (EsitoOperazione) parse(json, EsitoOperazione.class);
   }
 

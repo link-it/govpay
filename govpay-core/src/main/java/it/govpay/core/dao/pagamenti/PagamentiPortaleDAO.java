@@ -1,5 +1,6 @@
 package it.govpay.core.dao.pagamenti;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,7 +126,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 				if(i == 0) {
 					// la prima pendenza da il nome al pagamento, eventualmente si appende il numero di pendenze ulteriori
-					sbNomeVersamenti.append(versamentoModel.getCodVersamentoEnte());
+					if(versamentoModel.getNome()!=null) {
+						sbNomeVersamenti.append(versamentoModel.getNome());
+					} else {
+						try {
+							sbNomeVersamenti.append(versamentoModel.getCausaleVersamento().getSimple());
+						} catch (UnsupportedEncodingException e) {}						
+					}
 					if(pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() > 1) {
 						sbNomeVersamenti.append(" ed altre "+pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size()+" pendenze.");
 					}

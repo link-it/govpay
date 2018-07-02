@@ -255,7 +255,7 @@ public class FlussoRendicontazione extends JSONSerializable {
     return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, istitutoMittente, bicRiversamento, dominio, numeroPagamenti, importoTotale, segnalazioni, rendicontazioni);
   }
 
-  public static FlussoRendicontazione parse(String json) {
+  public static FlussoRendicontazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (FlussoRendicontazione) parse(json, FlussoRendicontazione.class);
   }
 

@@ -46,7 +46,7 @@ public class RuoloIndex extends JSONSerializable {
     return Objects.hash(id);
   }
 
-  public static RuoloIndex parse(String json) {
+  public static RuoloIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (RuoloIndex) parse(json, RuoloIndex.class);
   }
 

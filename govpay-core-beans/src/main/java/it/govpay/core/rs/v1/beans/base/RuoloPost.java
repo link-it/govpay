@@ -47,7 +47,7 @@ public class RuoloPost extends JSONSerializable {
     return Objects.hash(acl);
   }
 
-  public static RuoloPost parse(String json) {
+  public static RuoloPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (RuoloPost) parse(json, RuoloPost.class);
   }
 

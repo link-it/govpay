@@ -88,7 +88,7 @@ public class IntermediarioIndex extends JSONSerializable {
     return Objects.hash(idIntermediario, denominazione, abilitato);
   }
 
-  public static IntermediarioIndex parse(String json) {
+  public static IntermediarioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (IntermediarioIndex) parse(json, IntermediarioIndex.class);
   }
 

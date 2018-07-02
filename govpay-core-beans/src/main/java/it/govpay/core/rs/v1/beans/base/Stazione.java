@@ -108,7 +108,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(password, abilitato, idStazione, domini);
   }
 
-  public static Stazione parse(String json) {
+  public static Stazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Stazione) parse(json, Stazione.class);
   }
 

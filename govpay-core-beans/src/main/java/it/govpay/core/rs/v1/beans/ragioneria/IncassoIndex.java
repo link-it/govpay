@@ -172,7 +172,7 @@ public class IncassoIndex extends JSONSerializable {
     return Objects.hash(causale, importo, dataValuta, dataContabile, ibanAccredito, idDominio, idIncasso);
   }
 
-  public static IncassoIndex parse(String json) {
+  public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (IncassoIndex) parse(json, IncassoIndex.class);
   }
 

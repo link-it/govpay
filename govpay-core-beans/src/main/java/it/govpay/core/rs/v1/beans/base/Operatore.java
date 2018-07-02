@@ -151,7 +151,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(principal, ragioneSociale, domini, entrate, acl, abilitato);
   }
 
-  public static Operatore parse(String json) {
+  public static Operatore parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Operatore) parse(json, Operatore.class);
   }
 

@@ -500,7 +500,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, voci, rpp, pagamenti);
   }
 
-  public static Pendenza parse(String json) {
+  public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Pendenza) parse(json, Pendenza.class);
   }
 

@@ -108,7 +108,7 @@ public class Allegato extends JSONSerializable {
     return Objects.hash(tipo, testo);
   }
 
-  public static Allegato parse(String json) {
+  public static Allegato parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Allegato) parse(json, Allegato.class);
   }
 

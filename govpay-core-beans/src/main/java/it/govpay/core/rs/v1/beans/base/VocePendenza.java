@@ -318,7 +318,7 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, datiAllegati, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, ibanAccredito, tipoContabilita);
   }
 
-  public static VocePendenza parse(String json) {
+  public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (VocePendenza) parse(json, VocePendenza.class);
   }
 

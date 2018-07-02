@@ -157,7 +157,7 @@ public class Rpp extends JSONSerializable {
     return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
   }
 
-  public static Rpp parse(String json) {
+  public static Rpp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Rpp) parse(json, Rpp.class);
   }
 

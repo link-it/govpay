@@ -427,7 +427,7 @@ public BigDecimal getImporto() {
     return Objects.hash(idDominio, idUnitaOperativa, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, idA2A, idPendenza);
   }
 
-  public static PendenzaPost parse(String json) {
+  public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (PendenzaPost) parse(json, PendenzaPost.class);
   }
 

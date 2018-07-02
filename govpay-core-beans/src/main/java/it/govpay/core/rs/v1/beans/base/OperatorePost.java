@@ -129,7 +129,7 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(ragioneSociale, domini, entrate, acl, abilitato);
   }
 
-  public static OperatorePost parse(String json) {
+  public static OperatorePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (OperatorePost) parse(json, OperatorePost.class);
   }
 

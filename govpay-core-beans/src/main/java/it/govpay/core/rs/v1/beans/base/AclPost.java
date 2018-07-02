@@ -108,7 +108,7 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(servizio, autorizzazioni);
   }
 
-  public static AclPost parse(String json) {
+  public static AclPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (AclPost) parse(json, AclPost.class);
   }
 

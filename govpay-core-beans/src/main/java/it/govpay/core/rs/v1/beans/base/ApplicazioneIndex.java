@@ -88,7 +88,7 @@ public class ApplicazioneIndex extends JSONSerializable {
     return Objects.hash(idA2A, principal, abilitato);
   }
 
-  public static ApplicazioneIndex parse(String json) {
+  public static ApplicazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (ApplicazioneIndex) parse(json, ApplicazioneIndex.class);
   }
 

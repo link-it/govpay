@@ -413,7 +413,7 @@ public class Evento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(idDominio, iuv, ccp, idPsp, tipoVersamento, componente, categoriaEvento, tipoEvento, identificativoFruitore, identificativoErogatore, idCanale, idStazione, parametriRichiesta, parametriRisposta, dataOraRichiesta, dataOraRisposta, esito);
   }
 
-  public static Evento parse(String json) {
+  public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Evento) parse(json, Evento.class);
   }
 

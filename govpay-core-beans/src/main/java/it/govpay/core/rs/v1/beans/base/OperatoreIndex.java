@@ -88,7 +88,7 @@ public class OperatoreIndex extends JSONSerializable {
     return Objects.hash(principal, ragioneSociale, abilitato);
   }
 
-  public static OperatoreIndex parse(String json) {
+  public static OperatoreIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (OperatoreIndex) parse(json, OperatoreIndex.class);
   }
 

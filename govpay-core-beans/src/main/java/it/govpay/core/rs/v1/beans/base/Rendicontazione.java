@@ -194,7 +194,7 @@ public class Rendicontazione extends JSONSerializable {
     return Objects.hash(iuv, iur, indice, importo, esito, data, segnalazioni, riscossione);
   }
 
-  public static Rendicontazione parse(String json) {
+  public static Rendicontazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Rendicontazione) parse(json, Rendicontazione.class);
   }
 

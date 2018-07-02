@@ -109,7 +109,7 @@ public class StazioneIndex extends JSONSerializable {
     return Objects.hash(password, abilitato, idStazione, domini);
   }
 
-  public static StazioneIndex parse(String json) {
+  public static StazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (StazioneIndex) parse(json, StazioneIndex.class);
   }
 

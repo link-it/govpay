@@ -70,7 +70,7 @@ public class ContoAddebito extends JSONSerializable {
     return Objects.hash(iban, bic);
   }
 
-  public static ContoAddebito parse(String json) {
+  public static ContoAddebito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (ContoAddebito) parse(json, ContoAddebito.class);
   }
 

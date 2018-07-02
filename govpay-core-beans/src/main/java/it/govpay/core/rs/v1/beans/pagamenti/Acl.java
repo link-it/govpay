@@ -231,7 +231,7 @@ public class Acl extends JSONSerializable {
     return Objects.hash(ruolo, principal, servizio, autorizzazioni, id);
   }
 
-  public static Acl parse(String json) {
+  public static Acl parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Acl) parse(json, Acl.class);
   }
 

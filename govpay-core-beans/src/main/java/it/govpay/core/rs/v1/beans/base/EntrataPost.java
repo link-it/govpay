@@ -146,7 +146,7 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, codificaIUV, abilitato);
   }
 
-  public static EntrataPost parse(String json) {
+  public static EntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (EntrataPost) parse(json, EntrataPost.class);
   }
 

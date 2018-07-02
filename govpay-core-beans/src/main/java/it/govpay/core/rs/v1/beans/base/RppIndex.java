@@ -157,7 +157,7 @@ public class RppIndex extends JSONSerializable {
     return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
   }
 
-  public static RppIndex parse(String json) {
+  public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (RppIndex) parse(json, RppIndex.class);
   }
 

@@ -135,7 +135,7 @@ public class Notifica extends JSONSerializable {
     return Objects.hash(idA2A, idPendenza, rpt, rt, riscossioni);
   }
 
-  public static Notifica parse(String json) {
+  public static Notifica parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Notifica) parse(json, Notifica.class);
   }
 

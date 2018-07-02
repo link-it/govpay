@@ -7,3 +7,4 @@ ALTER TABLE pagamenti_portale ADD COLUMN tipo INT;
 UPDATE pagamenti_portale set tipo=1;
 ALTER TABLE pagamenti_portale ALTER COLUMN tipo SET NOT NULL;
 
+ALTER TABLE pagamenti_portale ALTER COLUMN url_ritorno DROP NOT NULL; 

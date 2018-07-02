@@ -180,7 +180,7 @@ public class IncassoIndex extends it.govpay.core.rs.v1.beans.JSONSerializable {
 		return super.toJSON(fields,mapper);
 	}
 
-  public static IncassoIndex parse(String json) {
+  public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (IncassoIndex) parse(json, IncassoIndex.class);
   }
 

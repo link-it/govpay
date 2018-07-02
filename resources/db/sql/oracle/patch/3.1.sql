@@ -8,3 +8,5 @@ ALTER TABLE pagamenti_portale ADD tipo NUMBER;
 update pagamenti_portale set tipo = 1;
 
 ALTER TABLE pagamenti_portale MODIFY (tipo NOT NULL);
+
+ALTER TABLE pagamenti_portale MODIFY (url_ritorno NULL);

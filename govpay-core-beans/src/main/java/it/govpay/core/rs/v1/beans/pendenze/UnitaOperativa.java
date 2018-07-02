@@ -340,7 +340,7 @@ public class UnitaOperativa extends JSONSerializable {
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, area, abilitato, idUnita);
   }
 
-  public static UnitaOperativa parse(String json) {
+  public static UnitaOperativa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (UnitaOperativa) parse(json, UnitaOperativa.class);
   }
 

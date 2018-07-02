@@ -106,7 +106,7 @@ public class TipoEntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable
     return Objects.hash(descrizione, tipoContabilita, codiceContabilita, codificaIUV);
   }
 
-  public static TipoEntrataPost parse(String json) {
+  public static TipoEntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (TipoEntrataPost) parse(json, TipoEntrataPost.class);
   }
 

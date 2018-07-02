@@ -188,7 +188,7 @@ public class Entrata extends JSONSerializable {
     return Objects.hash(contoAccredito, contoAppoggio, tipoContabilita, codiceContabilita, codificaIUV, abilitato, idEntrata, tipoEntrata);
   }
 
-  public static Entrata parse(String json) {
+  public static Entrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Entrata) parse(json, Entrata.class);
   }
 

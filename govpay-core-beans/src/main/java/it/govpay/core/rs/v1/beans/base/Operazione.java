@@ -188,7 +188,7 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(idOperazione, descrizione, location, stato, esito, dettaglio);
   }
 
-  public static Operazione parse(String json) {
+  public static Operazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Operazione) parse(json, Operazione.class);
   }
 

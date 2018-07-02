@@ -19,7 +19,9 @@
  */
 package it.govpay.web.ws;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,11 +56,15 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.Applicazione;
@@ -89,6 +95,7 @@ import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.orm.IdVersamento;
 
 
 @WebService(serviceName = "PagamentiTelematiciCCPservice",
@@ -298,7 +305,44 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				// L'RPT non esiste, procedo
 				rptBD.insertRpt(rpt);
 				
-				//TODO bussu
+				PagamentoPortale p = new PagamentoPortale();
+				p.setCodApplicazione(AnagraficaManager.getApplicazione(bd, rpt.getVersamento(bd).getIdApplicazione()).getCodApplicazione());
+				p.setCodCanale(rpt.getCodCanale());
+				p.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
+				p.setCodPsp(rpt.getCodPsp());
+				p.setDataRichiesta(rpt.getDataMsgRichiesta());
+				p.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
+
+				List<IdVersamento> idVersamentoList = new ArrayList<IdVersamento>();
+
+				IdVersamento idVersamento = new IdVersamento();
+				idVersamento.setCodVersamentoEnte(rpt.getVersamento(bd).getCodVersamentoEnte());
+				idVersamento.setId(rpt.getVersamento(bd).getId());
+				
+				idVersamentoList.add(idVersamento);
+				p.setIdVersamento(idVersamentoList);
+				
+				p.setImporto(rpt.getVersamento(bd).getImportoTotale().doubleValue());
+				p.setMultiBeneficiario(rpt.getCodDominio());
+				
+				if(rpt.getVersamento(bd).getNome()!=null) {
+					p.setNome(rpt.getVersamento(bd).getNome());
+				} else {
+					try {
+						p.setNome(rpt.getVersamento(bd).getCausaleVersamento().getSimple());
+					} catch(UnsupportedEncodingException e) {}
+				}
+
+				p.setStato(STATO.IN_CORSO);
+				p.setTipo(3);
+				
+				if(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante() != null)
+					p.setVersanteIdentificativo(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante().getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
+
+				PagamentiPortaleBD ppbd = new PagamentiPortaleBD(bd);
+				
+				ppbd.insertPagamento(p);
+
 				RptUtils.inviaRPTAsync(rpt, bd);
 			}
 

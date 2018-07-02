@@ -189,7 +189,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
     return Objects.hash(principal, codificaAvvisi, domini, entrate, acl, servizioVerifica, servizioNotifica, abilitato);
   }
 
-  public static ApplicazionePost parse(String json) {
+  public static ApplicazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (ApplicazionePost) parse(json, ApplicazionePost.class);
   }
 

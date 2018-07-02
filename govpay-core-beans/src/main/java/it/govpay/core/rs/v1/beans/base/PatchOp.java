@@ -132,7 +132,7 @@ public class PatchOp extends JSONSerializable {
     return Objects.hash(op, path, value);
   }
 
-  public static PatchOp parse(String json) {
+  public static PatchOp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (PatchOp) parse(json, PatchOp.class);
   }
 

@@ -442,7 +442,7 @@ public class PendenzaIndex extends JSONSerializable {
     return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, rpp);
   }
 
-  public static PendenzaIndex parse(String json) {
+  public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (PendenzaIndex) parse(json, PendenzaIndex.class);
   }
 

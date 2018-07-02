@@ -194,7 +194,7 @@ public class Incasso extends JSONSerializable {
     return Objects.hash(idDominio, idIncasso, causale, importo, dataValuta, dataContabile, ibanAccredito, riscossioni);
   }
 
-  public static Incasso parse(String json) {
+  public static Incasso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Incasso) parse(json, Incasso.class);
   }
 

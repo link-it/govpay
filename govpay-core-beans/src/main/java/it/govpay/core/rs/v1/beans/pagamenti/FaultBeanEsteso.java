@@ -199,7 +199,7 @@ public class FaultBeanEsteso extends JSONSerializable {
     return Objects.hash(codice, descrizione, dettaglio, id, location);
   }
 
-  public static FaultBeanEsteso parse(String json) {
+  public static FaultBeanEsteso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (FaultBeanEsteso) parse(json, FaultBeanEsteso.class);
   }
 

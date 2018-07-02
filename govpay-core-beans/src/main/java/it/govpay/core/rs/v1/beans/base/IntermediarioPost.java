@@ -106,7 +106,7 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
     return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, abilitato);
   }
 
-  public static IntermediarioPost parse(String json) {
+  public static IntermediarioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (IntermediarioPost) parse(json, IntermediarioPost.class);
   }
 

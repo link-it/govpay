@@ -318,7 +318,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
-  public static Riscossione parse(String json) {
+  public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Riscossione) parse(json, Riscossione.class);
   }
 

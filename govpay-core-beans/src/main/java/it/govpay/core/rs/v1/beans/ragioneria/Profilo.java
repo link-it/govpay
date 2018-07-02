@@ -110,7 +110,7 @@ public class Profilo extends JSONSerializable {
     return Objects.hash(nome, domini, entrate, acl);
   }
 
-  public static Profilo parse(String json) {
+  public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (Profilo) parse(json, Profilo.class);
   }
 

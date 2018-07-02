@@ -422,7 +422,7 @@ CREATE TABLE pagamenti_portale
 	wisp_html LONGTEXT,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_richiesta TIMESTAMP(3) DEFAULT 0,
-	url_ritorno VARCHAR(1024) NOT NULL,
+	url_ritorno VARCHAR(1024),
 	cod_psp VARCHAR(35),
 	tipo_versamento VARCHAR(4),
 	multi_beneficiario VARCHAR(35),

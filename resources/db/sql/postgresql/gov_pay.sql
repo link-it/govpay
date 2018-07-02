@@ -424,7 +424,7 @@ CREATE TABLE pagamenti_portale
 	wisp_key_wisp VARCHAR(255),
 	wisp_html TEXT,
 	data_richiesta TIMESTAMP,
-	url_ritorno VARCHAR(1024) NOT NULL,
+	url_ritorno VARCHAR(1024),
 	cod_psp VARCHAR(35),
 	tipo_versamento VARCHAR(4),
 	multi_beneficiario VARCHAR(35),

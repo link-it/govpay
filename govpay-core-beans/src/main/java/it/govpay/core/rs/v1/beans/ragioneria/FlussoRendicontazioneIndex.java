@@ -235,7 +235,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, istitutoMittente, bicRiversamento, dominio, numeroPagamenti, importoTotale, segnalazioni);
   }
 
-  public static FlussoRendicontazioneIndex parse(String json) {
+  public static FlussoRendicontazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (FlussoRendicontazioneIndex) parse(json, FlussoRendicontazioneIndex.class);
   }
 

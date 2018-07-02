@@ -461,7 +461,7 @@ public class PendenzaVerificata extends it.govpay.core.rs.v1.beans.JSONSerializa
     return Objects.hash(idDominio, idUnitaOperativa, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, idA2A, idPendenza, stato, descrizioneStato);
   }
 
-  public static PendenzaVerificata parse(String json) {
+  public static PendenzaVerificata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
     return (PendenzaVerificata) parse(json, PendenzaVerificata.class);
   }
 
