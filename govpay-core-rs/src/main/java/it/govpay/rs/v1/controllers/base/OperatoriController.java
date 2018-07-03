@@ -21,9 +21,12 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.rs.v1.beans.base.ListaOperatori;
 import it.govpay.core.rs.v1.beans.base.Operatore;
 import it.govpay.core.rs.v1.beans.base.OperatorePost;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -166,7 +169,52 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 
 
     public Response operatoriPrincipalPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "operatoriPrincipalPATCH";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+
+			OperatorePatchDTO verificaPagamentoDTO = new OperatorePatchDTO(user);
+			verificaPagamentoDTO.setIdOperatore(principal);
+			
+			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+			List<PatchOp> lstOp = new ArrayList<>();
+			for(java.util.LinkedHashMap<?,?> map: lst) {
+				PatchOp op = new PatchOp();
+				op.setOp(OpEnum.fromValue((String) map.get("op")));
+				op.setPath((String) map.get("path"));
+				op.setValue(map.get("value"));
+				lstOp.add(op);
+			}
+			verificaPagamentoDTO.setOp(lstOp );
+
+			UtentiDAO utentiDAO = new UtentiDAO();
+			
+			LeggiOperatoreDTOResponse pagamentoPortaleDTOResponse = utentiDAO.patch(verificaPagamentoDTO);
+			
+			Operatore response = OperatoriConverter.toRsModel(pagamentoPortaleDTOResponse.getOperatore());
+			
+
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 

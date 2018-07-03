@@ -14,15 +14,19 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.pagamenti.RuoliDAO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.RuoloPatchDTO;
 import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.ListaAcl;
 import it.govpay.core.rs.v1.beans.base.ListaRuoli;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.rs.v1.beans.base.RuoloIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -32,6 +36,7 @@ import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseController;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.AclConverter;
+import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.rs.v1.beans.converter.RuoliConverter;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -137,7 +142,53 @@ public class RuoliController extends BaseController {
 
 
     public Response ruoliIdRuoloPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+//    	String methodName = "ruoliIdRuoloPATCH";  
+//		GpContext ctx = null;
+//		String transactionId = null;
+//		ByteArrayOutputStream baos= null;
+//		this.log.info("Esecuzione " + methodName + " in corso..."); 
+//		try{
+//			baos = new ByteArrayOutputStream();
+//			// salvo il json ricevuto
+//			BaseRsService.copy(is, baos);
+//			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+//			
+//			ctx =  GpThreadLocal.get();
+//			transactionId = ctx.getTransactionId();
+//			
+//			String jsonRequest = baos.toString();
+//
+//			RuoloPatchDTO ruoloPatchDTO = new RuoloPatchDTO(user);
+//			ruoloPatchDTO.setIdRuolo(idRuolo);
+//			
+//			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+//			List<PatchOp> lstOp = new ArrayList<>();
+//			for(java.util.LinkedHashMap<?,?> map: lst) {
+//				PatchOp op = new PatchOp();
+//				op.setOp(OpEnum.fromValue((String) map.get("op")));
+//				op.setPath((String) map.get("path"));
+//				op.setValue(map.get("value"));
+//				lstOp.add(op);
+//			}
+//			ruoloPatchDTO.setOp(lstOp );
+//
+//			RuoliDAO ruoliDAO = new RuoliDAO();
+//			
+//			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = ruoliDAO.patch(ruoloPatchDTO);
+//			
+//			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleDTOResponse);
+//			
+//
+//			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+//			this.log.info("Esecuzione " + methodName + " completata."); 
+//			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+//			
+//		}catch (Exception e) {
+//			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+//		} finally {
+//			if(ctx != null) ctx.log();
+//		}
+    	return null;
     }
 
 

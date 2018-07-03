@@ -44,8 +44,11 @@ import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
+import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -216,6 +219,42 @@ public class UtentiDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 	}
+	
+
+	public LeggiOperatoreDTOResponse patch(OperatorePatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			
+			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
+
+			OperatoriBD operatoriBD = new OperatoriBD(bd);
+			Operatore operatore = operatoriBD.getOperatore(patchDTO.getIdOperatore());
+			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
+			response.setOperatore(operatore);
+
+			LeggiOperatoreDTOResponse getOperatoreDTOResponse = new LeggiOperatoreDTOResponse();
+			
+			getOperatoreDTOResponse.setOperatore(operatore);
+
+			for(PatchOp op: patchDTO.getOp()) {
+				UtenzaPatchUtils.patchUtenza(op, getOperatoreDTOResponse.getOperatore().getUtenza(), bd);
+			}
+			
+			operatoriBD.updateOperatore(getOperatoreDTOResponse.getOperatore());
+			
+			
+			return getOperatoreDTOResponse;
+		}catch(NotFoundException e) {
+			throw new PagamentoPortaleNonTrovatoException("Non esiste un operatore associato al principal ["+patchDTO.getIdOperatore()+"]");
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		
+	}
+
 
 }
 

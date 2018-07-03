@@ -20,9 +20,7 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
-import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
+import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.rs.v1.beans.base.Applicazione;
 import it.govpay.core.rs.v1.beans.base.ApplicazionePost;
 import it.govpay.core.rs.v1.beans.base.ListaApplicazioni;
@@ -34,7 +32,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.ApplicazioniConverter;
-import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
 import net.sf.json.JsonConfig;
 
 
@@ -108,8 +105,8 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			String jsonRequest = baos.toString();
 
-			PagamentoPatchDTO verificaPagamentoDTO = new PagamentoPatchDTO(user);
-			verificaPagamentoDTO.setIdSessione(idA2A);
+			ApplicazionePatchDTO verificaPagamentoDTO = new ApplicazionePatchDTO(user);
+			verificaPagamentoDTO.setCodApplicazione(idA2A);
 			
 			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
 			List<PatchOp> lstOp = new ArrayList<>();
@@ -122,11 +119,11 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			}
 			verificaPagamentoDTO.setOp(lstOp );
 
-			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
 			
-			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.patch(verificaPagamentoDTO);
+			GetApplicazioneDTOResponse pagamentoPortaleDTOResponse = applicazioniDAO.patch(verificaPagamentoDTO);
 			
-			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleDTOResponse);
+			Applicazione response = ApplicazioniConverter.toRsModel(pagamentoPortaleDTOResponse.getApplicazione());
 			
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
