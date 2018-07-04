@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs;
+package it.govpay.backoffice.api.rs.v1.backoffice;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -51,6 +51,11 @@ import org.openspcoop2.utils.sonde.impl.SondaCoda;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.backoffice.api.rs.v1.backoffice.sonde.CheckSonda;
+import it.govpay.backoffice.api.rs.v1.backoffice.sonde.DettaglioSonda;
+import it.govpay.backoffice.api.rs.v1.backoffice.sonde.ElencoSonde;
+import it.govpay.backoffice.api.rs.v1.backoffice.sonde.SommarioSonda;
+import it.govpay.backoffice.api.rs.v1.backoffice.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
@@ -63,11 +68,6 @@ import it.govpay.core.business.Operazioni;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.web.rs.sonde.CheckSonda;
-import it.govpay.web.rs.sonde.DettaglioSonda;
-import it.govpay.web.rs.sonde.DettaglioSonda.TipoSonda;
-import it.govpay.web.rs.sonde.ElencoSonde;
-import it.govpay.web.rs.sonde.SommarioSonda;
 
 @Path("/check")
 public class Check {
@@ -121,8 +121,6 @@ public class Check {
 				NotificheBD notBD = new NotificheBD(bd);
 				num = notBD.countNotificheInAttesa();
 			} 
-//			Properties properties = new Properties();
-//			((SondaCoda)sonda).aggiornaStatoSonda(num, properties, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
 		return sonda;

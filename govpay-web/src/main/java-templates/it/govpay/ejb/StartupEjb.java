@@ -74,7 +74,6 @@ public class StartupEjb {
 			for(String k : map.keySet()) {
 				StartupUtils.initValidator(log, warName, govpayVersion, commit, ctx, k, StartupEjb.class.getResourceAsStream(map.get(k)));				
 			}
-			JmxOperazioni.register();
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);
 			shutdown();
@@ -105,22 +104,12 @@ public class StartupEjb {
 		AnagraficaManager.unregister();
 		log.info("De-registrazione delle cache completato");
 		
-		
 		log.info("Shutdown pool thread notifiche ...");
 		try {
 			ThreadExecutorManager.shutdown();
 			log.info("Shutdown pool thread notifiche completato.");
 		} catch (Exception e) {
 			log.warn("Shutdown pool thread notifiche fallito:" + e);
-		}
-		
-		
-		log.info("De-registrazione risorse JMX ...");
-		try {
-			JmxOperazioni.unregister();
-			log.info("De-registrazione risorse JMX completato.");
-		} catch (Exception e) {
-			log.warn("Errore nella de-registrazione JMX: " + e);
 		}
 		
 		log.info("Shutdown del Connection Manager ...");

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.govpay.web.rs.sonde;
+package it.govpay.backoffice.api.rs.v1.backoffice.sonde;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +42,6 @@ public class CheckSonda {
 
 	public static List<CheckSonda> getListaCheckSonda() {
 		List<CheckSonda> check = new ArrayList<CheckSonda>();
-		CheckSonda sondaUpdatePsp = new CheckSonda();
-		sondaUpdatePsp.setName(it.govpay.core.business.Operazioni.psp);
-		check.add(sondaUpdatePsp);
 		CheckSonda sondaUpdateRnd = new CheckSonda();
 		sondaUpdateRnd.setName(it.govpay.core.business.Operazioni.rnd);
 		check.add(sondaUpdateRnd);

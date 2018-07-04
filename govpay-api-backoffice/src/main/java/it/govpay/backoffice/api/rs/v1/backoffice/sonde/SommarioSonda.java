@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.govpay.web.rs.sonde;
+package it.govpay.backoffice.api.rs.v1.backoffice.sonde;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

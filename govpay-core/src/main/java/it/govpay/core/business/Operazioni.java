@@ -55,7 +55,6 @@ public class Operazioni{
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
 	public static final String rnd = "update-rnd";
-	public static final String psp = "update-psp";
 	public static final String pnd = "update-pnd";
 	public static final String ntfy = "update-ntfy";
 	public static final String check_ntfy = "check-ntfy";

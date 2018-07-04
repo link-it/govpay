@@ -4,6 +4,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -51,6 +52,15 @@ public class Operatori extends BaseRsServiceV1{
     public Response operatoriPrincipalDELETE(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.operatoriPrincipalDELETE(this.getUser(), uriInfo, httpHeaders,  principal);
+    }
+
+    @PATCH
+    @Path("/{principal}")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    public Response operatoriPrincipalPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("principal") String principal){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.operatoriPrincipalPATCH(this.getUser(), uriInfo, httpHeaders, is,  principal);
     }
 
     @GET
