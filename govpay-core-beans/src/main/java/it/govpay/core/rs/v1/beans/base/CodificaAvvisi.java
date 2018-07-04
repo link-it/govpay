@@ -1,11 +1,11 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * informazioni sulla codifica e decodifica degli iuv
- **/@org.codehaus.jackson.annotate.JsonPropertyOrder({
+ **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "codificaIuv",
 "regExpIuv",
 "generazioneIuvInterna",

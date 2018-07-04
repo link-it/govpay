@@ -20,9 +20,7 @@
 package it.govpay.core.utils.client;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.UnmarshalException;
@@ -41,7 +39,6 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.rs.v1.beans.client.PendenzaVerificata;
 import it.govpay.core.rs.v1.beans.client.StatoPendenzaVerificata;
 import it.govpay.core.rs.v1.costanti.EsitoOperazione;
@@ -54,7 +51,6 @@ import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.pa.ObjectFactory;
 import it.govpay.servizi.pa.PaVerificaVersamento;
 import it.govpay.servizi.pa.PaVerificaVersamentoResponse;
-import net.sf.json.JsonConfig;
 
 public class VerificaClient extends BasicClient {
 
@@ -175,11 +171,7 @@ public class VerificaClient extends BasicClient {
 				try {
 					try {
 						jsonResponse = new String(getJson(path, headerProperties));
-						JsonConfig jsonConfig = new JsonConfig();
-						Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-						classMap.put("voci", VocePendenza.class);
-						jsonConfig.setClassMap(classMap);
-						pendenzaVerificata = (PendenzaVerificata) PendenzaVerificata.parse(jsonResponse, PendenzaVerificata.class, jsonConfig ); 
+						pendenzaVerificata = (PendenzaVerificata) PendenzaVerificata.parse(jsonResponse, PendenzaVerificata.class); 
 					}catch(ClientException e) {
 						ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Errore nella deserializzazione del messaggio di risposta (" + e.getMessage() + ")");
 						throw e;

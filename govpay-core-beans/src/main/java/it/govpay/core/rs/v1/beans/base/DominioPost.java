@@ -1,8 +1,10 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+@JsonPropertyOrder({
 "ragioneSociale",
 "indirizzo",
 "civico",

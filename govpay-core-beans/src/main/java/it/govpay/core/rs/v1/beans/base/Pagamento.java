@@ -5,14 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
-import it.govpay.core.rs.v1.serializer.CustomBigDecimalSerializer;
-import it.govpay.core.utils.SimpleDateFormatUtils;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "nome",
 "dataRichiestaPagamento",
@@ -77,7 +72,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
 
     @Override
-    @org.codehaus.jackson.annotate.JsonValue
+    @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
       return String.valueOf(value);
     }
@@ -201,7 +196,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
 
     @Override
-    @org.codehaus.jackson.annotate.JsonValue
+    @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
       return String.valueOf(value);
     }
@@ -319,7 +314,6 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   @JsonProperty("importo")
-  @JsonSerialize(using = CustomBigDecimalSerializer.class)
   public BigDecimal getImporto() {
     return importo;
   }
@@ -613,14 +607,6 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
-  
-	@Override
-	public String toJSON(String fields) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
-		return super.toJSON(fields,mapper);
-	}
 }
 
 

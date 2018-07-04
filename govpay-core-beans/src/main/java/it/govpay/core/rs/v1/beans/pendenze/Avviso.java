@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
 "importo",
 "idDominio",
@@ -52,7 +52,7 @@ public class Avviso extends JSONSerializable {
     }
 
     @Override
-    @org.codehaus.jackson.annotate.JsonValue
+    @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
       return String.valueOf(value);
     }

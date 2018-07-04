@@ -2,9 +2,7 @@ package it.govpay.rs.v1.controllers.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -40,7 +38,6 @@ import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.pagamenti.converter.PagamentiPortaleConverter;
 import it.govpay.rs.v1.beans.pagamenti.converter.PendenzeConverter;
 import it.govpay.rs.v1.beans.pagamenti.converter.RptConverter;
-import net.sf.json.JsonConfig;
 
 
 
@@ -67,11 +64,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			classMap.put("autenticazioneSoggetto", String.class);
-			jsonConfig.setClassMap(classMap);
-			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class, jsonConfig);
+			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class);
 			
 			
 			String idSession = transactionId.replace("-", "");

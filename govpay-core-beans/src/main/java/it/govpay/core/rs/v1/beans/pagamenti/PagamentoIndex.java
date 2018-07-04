@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-import it.govpay.core.utils.SimpleDateFormatUtils;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "nome",
 "dataRichiestaPagamento",
@@ -99,7 +97,7 @@ public class PagamentoIndex extends JSONSerializable {
     }
 
     @Override
-    @org.codehaus.jackson.annotate.JsonValue
+    @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
       return String.valueOf(value);
     }
@@ -152,7 +150,7 @@ public class PagamentoIndex extends JSONSerializable {
     }
 
     @Override
-    @org.codehaus.jackson.annotate.JsonValue
+    @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
       return String.valueOf(value);
     }
@@ -524,14 +522,7 @@ public class PagamentoIndex extends JSONSerializable {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
-  }
-  
-	@Override
-	public String toJSON(String fields) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
-		return super.toJSON(fields,mapper);
-	}
+}
 
 }
 

@@ -150,6 +150,13 @@ paths:
           schema:
             type: boolean
             default: false
+        - in: query
+          name: avvisaturaDigitale
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          required: false
+          schema:
+            type: boolean
+            default: false
       requestBody:
         content:
           application/json:
@@ -1388,4 +1395,3 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/aclPost'
-             

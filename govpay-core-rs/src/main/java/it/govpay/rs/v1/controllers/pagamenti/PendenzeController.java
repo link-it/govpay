@@ -2,9 +2,7 @@ package it.govpay.rs.v1.controllers.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -30,7 +28,6 @@ import it.govpay.core.rs.v1.beans.pagamenti.ListaPendenzeIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.Pendenza;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaPost;
-import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -38,7 +35,6 @@ import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.pagamenti.converter.PagamentiPortaleConverter;
 import it.govpay.rs.v1.beans.pagamenti.converter.PendenzeConverter;
-import net.sf.json.JsonConfig;
 
 
 
@@ -210,11 +206,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			classMap.put("voci", VocePendenza.class);
-			jsonConfig.setClassMap(classMap);
-			PendenzaPost pendenzaPost= (PendenzaPost) PendenzaPost.parse(jsonRequest, PendenzaPost.class, jsonConfig);
+			PendenzaPost pendenzaPost= (PendenzaPost) PendenzaPost.parse(jsonRequest, PendenzaPost.class);
 			
 			Versamento versamento = PagamentiPortaleConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza); 
 			

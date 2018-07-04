@@ -2,9 +2,7 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -32,7 +30,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.ApplicazioniConverter;
-import net.sf.json.JsonConfig;
 
 
 
@@ -154,10 +151,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			jsonConfig.setClassMap(classMap);
-			ApplicazionePost applicazioneRequest= (ApplicazionePost) ApplicazionePost.parse(jsonRequest, ApplicazionePost.class, jsonConfig);
+			ApplicazionePost applicazioneRequest= (ApplicazionePost) ApplicazionePost.parse(jsonRequest, ApplicazionePost.class);
 			
 			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 
 			

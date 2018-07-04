@@ -47,11 +47,11 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
+		<!-- dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<scope>provided</scope>
-		</dependency>
+		</dependency-->
 		
 		<dependency>
 			<groupId>io.swagger.core.v3</groupId>

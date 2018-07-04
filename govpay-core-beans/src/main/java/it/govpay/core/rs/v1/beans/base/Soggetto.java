@@ -1,12 +1,12 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * dati anagrafici di un versante o pagatore.
- **/@org.codehaus.jackson.annotate.JsonPropertyOrder({
+ **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "identificativo",
 "anagrafica",

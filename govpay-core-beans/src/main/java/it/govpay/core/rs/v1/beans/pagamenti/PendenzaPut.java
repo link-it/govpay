@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-import it.govpay.core.utils.SimpleDateFormatUtils;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "causale",
 "soggettoPagatore",
@@ -408,13 +406,6 @@ public class PendenzaPut extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
-	@Override
-	public String toJSON(String fields) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
-		return super.toJSON(fields,mapper);
-	}
 
 }
 

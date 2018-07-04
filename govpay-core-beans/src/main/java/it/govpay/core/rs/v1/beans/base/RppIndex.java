@@ -3,11 +3,11 @@ package it.govpay.core.rs.v1.beans.base;
 import java.util.List;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonRawValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
 "dettaglioStato",
 "segnalazioni",
