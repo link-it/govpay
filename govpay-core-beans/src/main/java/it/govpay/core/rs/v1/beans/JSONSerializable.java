@@ -22,7 +22,7 @@ public abstract class JSONSerializable {
 	public String toJSON(String fields) {
 		SerializationConfig serializationConfig = new SerializationConfig();
 		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
-		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormat());
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 		return toJSON(fields, serializationConfig);
 	}
 	

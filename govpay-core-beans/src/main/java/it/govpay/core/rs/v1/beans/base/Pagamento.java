@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -36,6 +37,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("nome")
   private String nome = null;
   
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm")
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
   
