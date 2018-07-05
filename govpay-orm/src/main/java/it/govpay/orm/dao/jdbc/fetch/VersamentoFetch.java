@@ -19,16 +19,16 @@
  */
 package it.govpay.orm.dao.jdbc.fetch;
 
+import java.sql.ResultSet;
+import java.util.Map;
+
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
-
-import java.sql.ResultSet;
-import java.util.Map;
-
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
+import org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType;
 
 import it.govpay.orm.Versamento;
 
@@ -127,7 +127,11 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 				setParameter(object, "setAvvisatura", Versamento.model().AVVISATURA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "avvisatura", Versamento.model().AVVISATURA.getFieldType()));
 				setParameter(object, "setTipoPagamento", Versamento.model().TIPO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_pagamento", Versamento.model().TIPO_PAGAMENTO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+					jdbcParameterUtilities.readParameter(rs, "tipo_pagamento", Versamento.model().TIPO_PAGAMENTO.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setDaAvvisare", Versamento.model().DA_AVVISARE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "da_avvisare", Versamento.model().DA_AVVISARE.getFieldType()));
+				setParameter(object, "setCodAvvisatura", Versamento.model().COD_AVVISATURA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_avvisatura", Versamento.model().COD_AVVISATURA.getFieldType()));
 				return object;
 			}
 			
@@ -224,6 +228,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"avvisatura"));
 				setParameter(object, "setTipoPagamento", Versamento.model().TIPO_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"tipoPagamento"));
+				setParameter(object, "setDaAvvisare", Versamento.model().DA_AVVISARE.getFieldType(),
+					this.getObjectFromMap(map,"daAvvisare"));
+				setParameter(object, "setCodAvvisatura", Versamento.model().COD_AVVISATURA.getFieldType(),
+					this.getObjectFromMap(map,"codAvvisatura"));
 				return object;
 			}
 			

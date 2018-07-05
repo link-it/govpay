@@ -4,6 +4,7 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR2(35 CHAR) NOT NULL,
 	cod_connettore_pdd VARCHAR2(35 CHAR) NOT NULL,
+	cod_connettore_ftp VARCHAR2(35 CHAR),
 	denominazione VARCHAR2(255 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
@@ -465,6 +466,40 @@ end;
 
 
 
+CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE tracciati
+(
+	tipo VARCHAR2(10 CHAR) NOT NULL,
+	stato VARCHAR2(10 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(256 CHAR),
+	data_caricamento TIMESTAMP NOT NULL,
+	data_completamento TIMESTAMP NOT NULL,
+	bean_dati CLOB,
+	file_name_richiesta VARCHAR2(256 CHAR),
+	raw_richiesta BLOB NOT NULL,
+	file_name_esito VARCHAR2(256 CHAR),
+	raw_esito BLOB NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_tracciati
+BEFORE
+insert on tracciati
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_tracciati.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE versamenti
@@ -494,7 +529,7 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR2(35 CHAR),
 	debitore_cellulare VARCHAR2(35 CHAR),
 	debitore_fax VARCHAR2(35 CHAR),
-	tassonomia_avviso VARCHAR2(35 CHAR) NOT NULL,
+	tassonomia_avviso VARCHAR2(35 CHAR),
 	tassonomia VARCHAR2(35 CHAR),
 	cod_lotto VARCHAR2(35 CHAR),
 	cod_versamento_lotto VARCHAR2(35 CHAR),
@@ -507,17 +542,21 @@ CREATE TABLE versamenti
 	numero_avviso VARCHAR2(35 CHAR),
 	avvisatura VARCHAR2(1 CHAR),
 	tipo_pagamento NUMBER,
+	da_avvisare NUMBER NOT NULL,
+	cod_avvisatura VARCHAR2(20 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	id_uo NUMBER,
 	id_applicazione NUMBER NOT NULL,
+	id_tracciato NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
@@ -709,25 +748,15 @@ CREATE TABLE rpt
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
-<<<<<<< HEAD
 	id_pagamento_portale NUMBER,
-	id_canale NUMBER NOT NULL,
 	id_applicazione NUMBER,
-=======
-	id_portale NUMBER,
->>>>>>> 2.5.x
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-<<<<<<< HEAD
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
 	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-=======
-	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
->>>>>>> 2.5.x
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 
@@ -1109,39 +1138,32 @@ end;
 
 
 
-CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_esiti_avvisatura MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE tracciati
+CREATE TABLE esiti_avvisatura
 (
-	data_caricamento TIMESTAMP NOT NULL,
-	data_ultimo_aggiornamento TIMESTAMP NOT NULL,
-	stato VARCHAR2(16 CHAR) NOT NULL,
-	linea_elaborazione NUMBER NOT NULL,
-	descrizione_stato VARCHAR2(1024 CHAR),
-	num_linee_totali NUMBER NOT NULL,
-	num_operazioni_ok NUMBER NOT NULL,
-	num_operazioni_ko NUMBER NOT NULL,
-	nome_file VARCHAR2(255 CHAR) NOT NULL,
-	raw_data_richiesta BLOB NOT NULL,
-	raw_data_risposta BLOB,
-	tipo_tracciato VARCHAR2(16 CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	identificativo_avvisatura VARCHAR2(20 CHAR) NOT NULL,
+	tipo_canale NUMBER NOT NULL,
+	cod_canale VARCHAR2(35 CHAR),
+	data TIMESTAMP NOT NULL,
+	cod_esito NUMBER NOT NULL,
+	descrizione_esito VARCHAR2(140 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_operatore NUMBER,
-	id_applicazione NUMBER,
+	id_tracciato NUMBER NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
 );
 
-CREATE TRIGGER trg_tracciati
+CREATE TRIGGER trg_esiti_avvisatura
 BEFORE
-insert on tracciati
+insert on esiti_avvisatura
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_tracciati.nextval INTO :new.id
+      SELECT seq_esiti_avvisatura.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;

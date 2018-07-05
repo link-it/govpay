@@ -190,7 +190,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 
 
-    public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso) {
+    public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale) {
     	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -216,6 +216,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
+			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
 			
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
 				

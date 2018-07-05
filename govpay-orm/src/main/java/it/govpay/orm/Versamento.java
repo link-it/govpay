@@ -64,7 +64,7 @@ import java.io.Serializable;
  * 			&lt;element name="debitoreTelefono" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreCellulare" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreFax" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tassonomiaAvviso" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tassonomiaAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tassonomia" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -77,6 +77,9 @@ import java.io.Serializable;
  * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="avvisatura" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoPagamento" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="daAvvisare" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codAvvisatura" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idTracciatoAvvisatura" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -132,7 +135,10 @@ import java.io.Serializable;
   	"iuvVersamento",
   	"numeroAvviso",
   	"avvisatura",
-  	"tipoPagamento"
+  	"tipoPagamento",
+  	"daAvvisare",
+  	"codAvvisatura",
+  	"idTracciatoAvvisatura"
   }
 )
 
@@ -496,6 +502,34 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.tipoPagamento = tipoPagamento;
   }
 
+  public boolean isDaAvvisare() {
+    return this.daAvvisare;
+  }
+
+  public boolean getDaAvvisare() {
+    return this.daAvvisare;
+  }
+
+  public void setDaAvvisare(boolean daAvvisare) {
+    this.daAvvisare = daAvvisare;
+  }
+
+  public java.lang.String getCodAvvisatura() {
+    return this.codAvvisatura;
+  }
+
+  public void setCodAvvisatura(java.lang.String codAvvisatura) {
+    this.codAvvisatura = codAvvisatura;
+  }
+
+  public IdTracciato getIdTracciatoAvvisatura() {
+    return this.idTracciatoAvvisatura;
+  }
+
+  public void setIdTracciatoAvvisatura(IdTracciato idTracciatoAvvisatura) {
+    this.idTracciatoAvvisatura = idTracciatoAvvisatura;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -631,7 +665,7 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   protected java.lang.String debitoreFax;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="tassonomiaAvviso",required=true,nillable=false)
+  @XmlElement(name="tassonomiaAvviso",required=false,nillable=false)
   protected java.lang.String tassonomiaAvviso;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
@@ -681,5 +715,16 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="tipoPagamento",required=false,nillable=false)
   protected java.lang.Integer tipoPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="daAvvisare",required=true,nillable=false)
+  protected boolean daAvvisare;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codAvvisatura",required=false,nillable=false)
+  protected java.lang.String codAvvisatura;
+
+  @XmlElement(name="idTracciatoAvvisatura",required=false,nillable=false)
+  protected IdTracciato idTracciatoAvvisatura;
 
 }

@@ -146,7 +146,7 @@ public class BasicBD {
 	
 	private Connection connection;
 	private boolean isClosed;
-	private static Logger log;
+	protected static Logger log;
 	private Long idOperatore;
 	
 	BasicBD father;

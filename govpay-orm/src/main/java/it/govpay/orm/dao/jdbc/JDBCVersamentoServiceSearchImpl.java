@@ -19,18 +19,11 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdVersamento;
-import it.govpay.orm.Versamento;
-import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.VersamentoFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -52,6 +45,13 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
+
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdVersamento;
+import it.govpay.orm.Versamento;
+import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.VersamentoFetch;
 
 /**     
  * JDBCVersamentoServiceSearchImpl
@@ -200,11 +200,13 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().NUMERO_AVVISO);
 			fields.add(Versamento.model().AVVISATURA);
 			fields.add(Versamento.model().TIPO_PAGAMENTO);
-
+			fields.add(Versamento.model().DA_AVVISARE);
+			fields.add(Versamento.model().COD_AVVISATURA);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getVersamentoFieldConverter().toTable(Versamento.model())));
+			fields.add(new CustomField("id_tracciato", Long.class, "id_tracciato", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -212,6 +214,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 				Long idApplicazione = (Long)map.remove("id_applicazione");
 				Long idDominio = (Long)map.remove("id_dominio");
 				Object idUoObject = map.remove("id_uo");
+				Object idTracciatoObject = map.remove("id_tracciato");
 
 				Versamento versamento = (Versamento)this.getVersamentoFetch().fetch(jdbcProperties.getDatabase(), Versamento.model(), map);
 
@@ -243,6 +246,18 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 					}
 					id_versamento_ente.setId(idUo);
 					versamento.setIdUo(id_versamento_ente);
+				}
+
+				if(idTracciatoObject instanceof Long) {
+					Long idTracciato = (Long) idTracciatoObject;
+					it.govpay.orm.IdTracciato id_versamento_ente = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_versamento_ente = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findId(idTracciato, false);
+					}else{
+						id_versamento_ente = new it.govpay.orm.IdTracciato();
+					}
+					id_versamento_ente.setId(idTracciato);
+					versamento.setIdTracciatoAvvisatura(id_versamento_ente);
 				}
 
 				list.add(versamento);

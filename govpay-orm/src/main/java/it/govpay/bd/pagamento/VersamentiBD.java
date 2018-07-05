@@ -32,6 +32,9 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
+import org.openspcoop2.utils.id.serial.InfoStatistics;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.exception.VersamentoException;
@@ -40,6 +43,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
@@ -367,4 +371,40 @@ public class VersamentiBD extends BasicBD {
 				throw new ServiceException(e);
 		}
 	}
+	
+	
+	public String getNextAvvisatura(String codDominio) throws ServiceException {
+		InfoStatistics infoStat = null;
+		BasicBD bd = null;
+		try {
+			infoStat = new InfoStatistics();
+			org.openspcoop2.utils.id.serial.IDSerialGenerator serialGenerator = new org.openspcoop2.utils.id.serial.IDSerialGenerator(infoStat);
+			org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter params = new org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter("GovPay");
+			params.setTipo(IDSerialGeneratorType.NUMERIC);
+			params.setWrap(false);
+			params.setInformazioneAssociataAlProgressivo(codDominio+"_AVV"); // il progressivo sarà relativo a questa informazione
+
+			java.sql.Connection con = null; 
+
+			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
+			if(!isAutoCommit()) {
+				bd = BasicBD.newInstance(this.getIdTransaction());
+				con = bd.getConnection();
+			} else {
+				con = getConnection();
+			}
+
+			return ""+serialGenerator.buildIDAsNumber(params, con, this.getJdbcProperties().getDatabase(), log);
+		} catch (UtilsException e) {
+			log.error("Numero di errori 'access serializable': "+infoStat.getErrorSerializableAccess());
+			for (int i=0; i<infoStat.getExceptionOccurs().size(); i++) {
+				Throwable t = infoStat.getExceptionOccurs().get(i);
+				log.error("Errore-"+(i+1)+" (occurs:"+infoStat.getNumber(t)+"): "+t.getMessage());
+			}
+			throw new ServiceException(e);
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+	}
+
 }

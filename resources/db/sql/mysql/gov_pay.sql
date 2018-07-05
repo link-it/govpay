@@ -2,6 +2,7 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL,
 	cod_connettore_pdd VARCHAR(35) NOT NULL,
+	cod_connettore_ftp VARCHAR(35),
 	denominazione VARCHAR(255) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
@@ -300,6 +301,29 @@ CREATE TABLE acl
 
 
 
+CREATE TABLE tracciati
+(
+	tipo VARCHAR(10) NOT NULL,
+	stato VARCHAR(10) NOT NULL,
+	descrizione_stato VARCHAR(256),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_completamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	bean_dati LONGTEXT,
+	file_name_richiesta VARCHAR(256),
+	raw_richiesta MEDIUMBLOB NOT NULL,
+	file_name_esito VARCHAR(256),
+	raw_esito MEDIUMBLOB NOT NULL,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+
+
+
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL,
@@ -331,7 +355,7 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR(35),
 	debitore_cellulare VARCHAR(35),
 	debitore_fax VARCHAR(35),
-	tassonomia_avviso VARCHAR(35) NOT NULL,
+	tassonomia_avviso VARCHAR(35),
 	tassonomia VARCHAR(35),
 	cod_lotto VARCHAR(35),
 	cod_versamento_lotto VARCHAR(35),
@@ -344,17 +368,21 @@ CREATE TABLE versamenti
 	numero_avviso VARCHAR(35),
 	avvisatura VARCHAR(1),
 	tipo_pagamento INT,
+	da_avvisare BOOLEAN NOT NULL,
+	cod_avvisatura VARCHAR(20),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,
 	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
+	id_tracciato BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -490,6 +518,13 @@ CREATE TABLE rpt
 	cod_esito_pagamento INT,
 	importo_totale_pagato DOUBLE,
 	xml_rt MEDIUMBLOB,
+	cod_canale VARCHAR(35),
+	cod_psp VARCHAR(35),
+	cod_intermediario_psp VARCHAR(35),
+	tipo_versamento VARCHAR(4),
+	tipo_identificativo_attestante VARCHAR(1),
+	identificativo_attestante VARCHAR(35),
+	denominazione_attestante VARCHAR(70),
 	cod_stazione VARCHAR(35) NOT NULL,
 	cod_transazione_rpt VARCHAR(36),
 	cod_transazione_rt VARCHAR(36),
@@ -501,7 +536,6 @@ CREATE TABLE rpt
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
-	id_canale BIGINT NOT NULL,
 	id_applicazione BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
@@ -509,7 +543,6 @@ CREATE TABLE rpt
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_rpt_id_canale FOREIGN KEY (id_canale) REFERENCES canali(id),
 	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
@@ -795,30 +828,22 @@ CREATE INDEX index_batch_1 ON batch (cod_batch);
 
 
 
-CREATE TABLE tracciati
+CREATE TABLE esiti_avvisatura
 (
+	cod_dominio VARCHAR(35) NOT NULL,
+	identificativo_avvisatura VARCHAR(20) NOT NULL,
+	tipo_canale INT NOT NULL,
+	cod_canale VARCHAR(35),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT 0,
-	stato VARCHAR(255) NOT NULL,
-	linea_elaborazione BIGINT NOT NULL,
-	descrizione_stato VARCHAR(1024),
-	num_linee_totali BIGINT NOT NULL,
-	num_operazioni_ok BIGINT NOT NULL,
-	num_operazioni_ko BIGINT NOT NULL,
-	nome_file VARCHAR(255) NOT NULL,
-	raw_data_richiesta MEDIUMBLOB NOT NULL,
-	raw_data_risposta MEDIUMBLOB,
-	tipo_tracciato VARCHAR(255) NOT NULL,
+	data TIMESTAMP(3) NOT NULL DEFAULT 0,
+	cod_esito INT NOT NULL,
+	descrizione_esito VARCHAR(140) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_operatore BIGINT,
-	id_applicazione BIGINT,
+	id_tracciato BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
