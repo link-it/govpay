@@ -1,13 +1,13 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.rs.v1.beans.base.Allegato;
 import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
 import it.govpay.core.rs.v1.beans.base.TipoRiscossione;
 import java.math.BigDecimal;
 import java.util.Date;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "iuv",
 "iur",

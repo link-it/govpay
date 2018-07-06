@@ -2,9 +2,7 @@ package it.govpay.rs.v1.beans.pagamenti.converter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -22,7 +20,6 @@ import it.govpay.core.rs.v1.beans.pagamenti.StatoPagamento;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.pagamento.VersamentoUtils;
 import it.govpay.model.IAutorizzato;
-import net.sf.json.JsonConfig;
 
 public class PagamentiPortaleConverter {
 
@@ -123,13 +120,9 @@ public class PagamentiPortaleConverter {
 	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
 		Pagamento rsModel = new Pagamento();
 
-		JsonConfig jsonConfig = new JsonConfig();
-		Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-		classMap.put("autenticazioneSoggetto", String.class);
-		jsonConfig.setClassMap(classMap);
 		PagamentoPost pagamentiPortaleRequest = null;
 		if(pagamentoPortale.getJsonRequest()!=null)
-			pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class, jsonConfig);
+			pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
 
 		rsModel.setId(pagamentoPortale.getIdSessione());
 		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());
@@ -157,21 +150,17 @@ public class PagamentiPortaleConverter {
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
 
 		if(pagamentoPortale.getImporto() != null) 
-			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+			rsModel.setImporto(BigDecimal.valueOf(pagamentoPortale.getImporto())); 
 
 		return rsModel;
 	}
 	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
 		PagamentoIndex rsModel = new PagamentoIndex();
 		
-		JsonConfig jsonConfig = new JsonConfig();
-		Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-		classMap.put("autenticazioneSoggetto", String.class);
-		jsonConfig.setClassMap(classMap);
 		PagamentoPost pagamentiPortaleRequest = null;
 		
 		if(pagamentoPortale.getJsonRequest()!=null)
-			pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class, jsonConfig);
+			pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
 
 		rsModel.setId(pagamentoPortale.getIdSessione());
 		rsModel.setIdSessionePortale(pagamentoPortale.getIdSessionePortale());
@@ -201,7 +190,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 
 		if(pagamentoPortale.getImporto() != null) 
-			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+			rsModel.setImporto(BigDecimal.valueOf(pagamentoPortale.getImporto())); 
 
 		return rsModel;
 

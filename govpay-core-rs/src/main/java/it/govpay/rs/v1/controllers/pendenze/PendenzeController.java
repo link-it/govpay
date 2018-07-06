@@ -2,9 +2,7 @@ package it.govpay.rs.v1.controllers.pendenze;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -30,7 +28,6 @@ import it.govpay.core.rs.v1.beans.pendenze.ListaPendenze;
 import it.govpay.core.rs.v1.beans.pendenze.Pendenza;
 import it.govpay.core.rs.v1.beans.pendenze.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.pendenze.PendenzaPut;
-import it.govpay.core.rs.v1.beans.pendenze.VocePendenza;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -38,7 +35,6 @@ import it.govpay.core.utils.pendenze.VersamentoUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.pendenze.converter.PendenzeConverter;
-import net.sf.json.JsonConfig;
 
 
 
@@ -194,7 +190,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 
 
-    public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso) {
+    public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale) {
     	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -210,11 +206,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			classMap.put("voci", VocePendenza.class);
-			jsonConfig.setClassMap(classMap);
-			PendenzaPut pendenzaPost= (PendenzaPut) PendenzaPut.parse(jsonRequest, PendenzaPut.class, jsonConfig);
+			PendenzaPut pendenzaPost= (PendenzaPut) PendenzaPut.parse(jsonRequest, PendenzaPut.class);
 			
 			Versamento versamento = VersamentoUtils.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza);
 			
@@ -224,6 +216,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
+			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
 			
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
 				

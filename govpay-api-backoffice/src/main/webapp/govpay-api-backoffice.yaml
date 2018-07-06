@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/v1/
+  - url: http://localhost:8080/govpay/backend/api/backoffice/rs/v1/
 tags:
   - name: Enti Creditori
     description: Anagrafica degli Enti Creditori  
@@ -2677,10 +2677,41 @@ components:
           description: Principal autenticato le richieste ricevute da PagoPA
         servizioPagoPa:
           $ref: '#/components/schemas/connettorePagopa'   
+        servizioFtp:
+          $ref: '#/components/schemas/servizioFtp'   
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
           example: true
+    servizioFtp:
+      type: object
+      required: 
+        - ftp_lettura
+        - ftp_scrittura
+      properties:
+        ftp_lettura:
+          $ref: '#/components/schemas/connettoreFtp'   
+        ftp_scrittura:
+          $ref: '#/components/schemas/connettoreFtp'   
+    connettoreFtp:
+      type: object
+      required: 
+        - serverurl
+        - username
+        - password
+      properties:
+        serverurl:
+          type: string
+          description: url del server sftp
+          example: ftp.pagopa.it
+        username:
+          type: string
+          description: nome dell'utenza ftp
+          example: intermediario.userftp
+        password:
+          type: string
+          description: password dell'utenza ftp
+          example: password.ftp
     intermediario:
       type: object
       allOf:

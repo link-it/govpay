@@ -78,21 +78,6 @@
     <value name="idAnagrafica" field="idAnagrafica" usage="required"/>
     <value name="codUnivoco" field="codUnivoco" usage="optional"/>
   </mapping>
-  <mapping name="idPsp" class="it.govpay.orm.IdPsp" abstract="false">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codPsp" field="codPsp" usage="required"/>
-  </mapping>
-
-  <mapping type-name="_IdPsp_Type" class="it.govpay.orm.IdPsp" abstract="true">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codPsp" field="codPsp" usage="required"/>
-  </mapping>
-  <mapping name="idCanale" class="it.govpay.orm.IdCanale">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idPsp" field="idPsp" usage="required" map-as="_IdPsp_Type"/>
-    <value name="codCanale" field="codCanale" usage="required"/>
-    <value name="tipoVersamento" field="tipoVersamento" usage="required"/>
-  </mapping>
   <mapping name="idOperatore" class="it.govpay.orm.IdOperatore" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
@@ -121,6 +106,10 @@
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <value name="idFlusso" field="idFlusso" usage="required"/>
   </mapping>
+  <mapping name="id-esito-avvisatura" class="it.govpay.orm.IdEsitoAvvisatura">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="identificativoAvvisatura" field="identificativoAvvisatura" usage="required"/>
+  </mapping>
   <mapping name="idApplicazione" class="it.govpay.orm.IdApplicazione" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codApplicazione" field="codApplicazione" usage="required"/>
@@ -130,7 +119,12 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codApplicazione" field="codApplicazione" usage="required"/>
   </mapping>
-  <mapping name="idTracciato" class="it.govpay.orm.IdTracciato">
+  <mapping name="idTracciato" class="it.govpay.orm.IdTracciato" abstract="false">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idTracciato" field="idTracciato" usage="required"/>
+  </mapping>
+
+  <mapping type-name="_IdTracciato_Type" class="it.govpay.orm.IdTracciato" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idTracciato" field="idTracciato" usage="required"/>
   </mapping>
@@ -295,28 +289,6 @@
     <value name="logo" field="logo" usage="optional"/>
     <value name="cbill" field="cbill" usage="optional"/>
   </mapping>
-  <mapping name="Psp" class="it.govpay.orm.Psp">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codPsp" field="codPsp" usage="required"/>
-    <value name="ragioneSociale" field="ragioneSociale" usage="required"/>
-    <value name="urlInfo" field="urlInfo" usage="optional"/>
-    <value name="abilitato" field="abilitato" usage="required"/>
-    <value name="storno" field="storno" usage="required"/>
-    <value name="marcaBollo" field="marcaBollo" usage="required"/>
-  </mapping>
-  <mapping name="Canale" class="it.govpay.orm.Canale">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idPsp" field="idPsp" usage="required" map-as="_IdPsp_Type"/>
-    <value name="codCanale" field="codCanale" usage="required"/>
-    <value name="codIntermediario" field="codIntermediario" usage="required"/>
-    <value name="tipoVersamento" field="tipoVersamento" usage="required"/>
-    <value name="modelloPagamento" field="modelloPagamento" usage="required"/>
-    <value name="disponibilita" field="disponibilita" usage="optional"/>
-    <value name="descrizione" field="descrizione" usage="optional"/>
-    <value name="condizioni" field="condizioni" usage="optional"/>
-    <value name="urlInfo" field="urlInfo" usage="optional"/>
-    <value name="abilitato" field="abilitato" usage="required"/>
-  </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codUo" field="codUo" usage="required"/>
@@ -345,6 +317,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codIntermediario" field="codIntermediario" usage="required"/>
     <value name="codConnettorePdd" field="codConnettorePdd" usage="required"/>
+    <value name="codConnettoreFtp" field="codConnettoreFtp" usage="optional"/>
     <value name="denominazione" field="denominazione" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
   </mapping>
@@ -479,7 +452,7 @@
     <value name="debitoreTelefono" field="debitoreTelefono" usage="optional"/>
     <value name="debitoreCellulare" field="debitoreCellulare" usage="optional"/>
     <value name="debitoreFax" field="debitoreFax" usage="optional"/>
-    <value name="tassonomiaAvviso" field="tassonomiaAvviso" usage="required"/>
+    <value name="tassonomiaAvviso" field="tassonomiaAvviso" usage="optional"/>
     <value name="tassonomia" field="tassonomia" usage="optional"/>
     <value name="codLotto" field="codLotto" usage="optional"/>
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
@@ -492,6 +465,9 @@
     <value name="numeroAvviso" field="numeroAvviso" usage="optional"/>
     <value name="avvisatura" field="avvisatura" usage="optional"/>
     <value name="tipoPagamento" field="tipoPagamento" usage="optional"/>
+    <value name="daAvvisare" field="daAvvisare" usage="required"/>
+    <value name="codAvvisatura" field="codAvvisatura" usage="optional"/>
+    <structure name="idTracciatoAvvisatura" field="idTracciatoAvvisatura" usage="optional" map-as="_IdTracciato_Type"/>
   </mapping>
   <mapping name="Evento" class="it.govpay.orm.Evento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -513,6 +489,7 @@
     <value name="esito" field="esito" usage="optional"/>
     <value name="data1" field="data1" usage="optional"/>
     <value name="data2" field="data2" usage="optional"/>
+    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
   </mapping>
   <mapping name="SingoloVersamento" class="it.govpay.orm.SingoloVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -536,7 +513,6 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
     <structure name="idPagamentoPortale" field="idPagamentoPortale" usage="optional" map-as="_IdPagamentoPortale_Type"/>
-    <structure field="idCanale" usage="required" map-as="it.govpay.orm.IdCanale"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="codCarrello" field="codCarrello" usage="optional"/>
     <value name="iuv" field="iuv" usage="required"/>
@@ -552,13 +528,19 @@
     <value name="xmlRPT" field="xmlRPT" usage="required"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
     <value name="callbackURL" field="callbackURL" usage="optional"/>
-    <value name="modelloPagamento" field="modelloPagamento" usage="required"/>
+    <value name="modelloPagamento" field="modelloPagamento" usage="optional"/>
     <value name="codMsgRicevuta" field="codMsgRicevuta" usage="optional"/>
     <value name="dataMsgRicevuta" field="dataMsgRicevuta" usage="optional"/>
-    <value name="firmaRicevuta" field="firmaRicevuta" usage="required"/>
     <value name="codEsitoPagamento" field="codEsitoPagamento" usage="optional"/>
     <value name="importoTotalePagato" field="importoTotalePagato" usage="optional"/>
     <value name="xmlRT" field="xmlRT" usage="optional"/>
+    <value name="codCanale" field="codCanale" usage="optional"/>
+    <value name="codPsp" field="codPsp" usage="optional"/>
+    <value name="codIntermediarioPsp" field="codIntermediarioPsp" usage="optional"/>
+    <value name="tipoVersamento" field="tipoVersamento" usage="optional"/>
+    <value name="tipoIdentificativoAttestante" field="tipoIdentificativoAttestante" usage="optional"/>
+    <value name="identificativoAttestante" field="identificativoAttestante" usage="optional"/>
+    <value name="denominazioneAttestante" field="denominazioneAttestante" usage="optional"/>
     <value name="codStazione" field="codStazione" usage="required"/>
     <value name="codTransazioneRPT" field="codTransazioneRPT" usage="optional"/>
     <value name="codTransazioneRT" field="codTransazioneRT" usage="optional"/>
@@ -624,9 +606,13 @@
     <value name="wispKeyWisp" field="wispKeyWisp" usage="optional"/>
     <value name="wispHtml" field="wispHtml" usage="optional"/>
     <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
-    <value name="urlRitorno" field="urlRitorno" usage="required"/>
+    <value name="urlRitorno" field="urlRitorno" usage="optional"/>
     <value name="codPsp" field="codPsp" usage="optional"/>
     <value name="tipoVersamento" field="tipoVersamento" usage="optional"/>
+    <value name="multiBeneficiario" field="multiBeneficiario" usage="optional"/>
+    <value name="ack" field="ack" usage="required"/>
+    <value name="note" field="note" usage="optional"/>
+    <value name="tipo" field="tipo" usage="required"/>
   </mapping>
   <mapping name="Pagamento" class="it.govpay.orm.Pagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -721,7 +707,7 @@
   </mapping>
   <mapping name="operazione" class="it.govpay.orm.Operazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure field="idTracciato" usage="required" map-as="it.govpay.orm.IdTracciato"/>
+    <structure name="idTracciato" field="idTracciato" usage="required" map-as="_IdTracciato_Type"/>
     <value name="tipoOperazione" field="tipoOperazione" usage="required"/>
     <value name="lineaElaborazione" field="lineaElaborazione" usage="required"/>
     <value name="stato" field="stato" usage="required"/>
@@ -736,20 +722,27 @@
   </mapping>
   <mapping name="Tracciato" class="it.govpay.orm.Tracciato">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idOperatore" field="idOperatore" usage="optional" map-as="_IdOperatore_Type"/>
-    <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
-    <value name="dataCaricamento" field="dataCaricamento" usage="required"/>
-    <value name="dataUltimoAggiornamento" field="dataUltimoAggiornamento" usage="required"/>
+    <value name="tipo" field="tipo" usage="required"/>
     <value name="stato" field="stato" usage="required"/>
-    <value name="lineaElaborazione" field="lineaElaborazione" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
-    <value name="numLineeTotali" field="numLineeTotali" usage="required"/>
-    <value name="numOperazioniOk" field="numOperazioniOk" usage="required"/>
-    <value name="numOperazioniKo" field="numOperazioniKo" usage="required"/>
-    <value name="nomeFile" field="nomeFile" usage="required"/>
-    <value name="rawDataRichiesta" field="rawDataRichiesta" usage="required"/>
-    <value name="rawDataRisposta" field="rawDataRisposta" usage="optional"/>
-    <value name="tipoTracciato" field="tipoTracciato" usage="required"/>
+    <value name="dataCaricamento" field="dataCaricamento" usage="required"/>
+    <value name="dataCompletamento" field="dataCompletamento" usage="required"/>
+    <value name="beanDati" field="beanDati" usage="optional"/>
+    <value name="fileNameRichiesta" field="fileNameRichiesta" usage="optional"/>
+    <value name="rawRichiesta" field="rawRichiesta" usage="required"/>
+    <value name="fileNameEsito" field="fileNameEsito" usage="optional"/>
+    <value name="rawEsito" field="rawEsito" usage="required"/>
+  </mapping>
+  <mapping name="EsitoAvvisatura" class="it.govpay.orm.EsitoAvvisatura">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
+    <value name="identificativoAvvisatura" field="identificativoAvvisatura" usage="required"/>
+    <value name="tipoCanale" field="tipoCanale" usage="required"/>
+    <value name="codCanale" field="codCanale" usage="optional"/>
+    <value name="data" field="data" usage="required"/>
+    <value name="codEsito" field="codEsito" usage="required"/>
+    <value name="descrizioneEsito" field="descrizioneEsito" usage="required"/>
+    <structure name="idTracciato" field="idTracciato" usage="required" map-as="_IdTracciato_Type"/>
   </mapping>
   <mapping name="Avviso" class="it.govpay.orm.Avviso">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

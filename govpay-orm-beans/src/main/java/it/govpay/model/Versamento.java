@@ -76,6 +76,9 @@ public class Versamento extends BasicModel {
 	private String numeroAvviso;
 	private String avvisatura;
 	private Integer tipoPagamento;
+	private boolean daAvvisare;
+	private String codAvvisatura;
+	private Long idTracciatoAvvisatura;
 	
 	public String getIuvVersamento() {
 		return iuvVersamento;
@@ -504,6 +507,30 @@ public class Versamento extends BasicModel {
 
 	public void setAnomalie(String anomalie) {
 		this.anomalie = anomalie;
+	}
+
+	public boolean isDaAvvisare() {
+		return daAvvisare;
+	}
+
+	public void setDaAvvisare(boolean daAvvisare) {
+		this.daAvvisare = daAvvisare;
+	}
+
+	public String getCodAvvisatura() {
+		return codAvvisatura;
+	}
+
+	public void setCodAvvisatura(String codAvvisatura) {
+		this.codAvvisatura = codAvvisatura;
+	}
+
+	public Long getIdTracciatoAvvisatura() {
+		return idTracciatoAvvisatura;
+	}
+
+	public void setIdTracciatoAvvisatura(Long idTracciatoAvvisatura) {
+		this.idTracciatoAvvisatura = idTracciatoAvvisatura;
 	}
 	
 }

@@ -3,10 +3,10 @@ package it.govpay.core.rs.v1.beans.ragioneria;
 import java.util.Date;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "causale",
 "importo",
 "dataValuta",

@@ -83,6 +83,9 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.NUMERO_AVVISO = new Field("numeroAvviso",java.lang.String.class,"Versamento",Versamento.class);
 		this.AVVISATURA = new Field("avvisatura",java.lang.String.class,"Versamento",Versamento.class);
 		this.TIPO_PAGAMENTO = new Field("tipoPagamento",java.lang.Integer.class,"Versamento",Versamento.class);
+		this.DA_AVVISARE = new Field("daAvvisare",boolean.class,"Versamento",Versamento.class);
+		this.COD_AVVISATURA = new Field("codAvvisatura",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"Versamento",Versamento.class));
 	
 	}
 	
@@ -132,6 +135,9 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.NUMERO_AVVISO = new ComplexField(father,"numeroAvviso",java.lang.String.class,"Versamento",Versamento.class);
 		this.AVVISATURA = new ComplexField(father,"avvisatura",java.lang.String.class,"Versamento",Versamento.class);
 		this.TIPO_PAGAMENTO = new ComplexField(father,"tipoPagamento",java.lang.Integer.class,"Versamento",Versamento.class);
+		this.DA_AVVISARE = new ComplexField(father,"daAvvisare",boolean.class,"Versamento",Versamento.class);
+		this.COD_AVVISATURA = new ComplexField(father,"codAvvisatura",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"Versamento",Versamento.class));
 	
 	}
 	
@@ -220,6 +226,12 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField AVVISATURA = null;
 	 
 	public IField TIPO_PAGAMENTO = null;
+	 
+	public IField DA_AVVISARE = null;
+	 
+	public IField COD_AVVISATURA = null;
+	 
+	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO_AVVISATURA = null;
 	 
 
 	@Override

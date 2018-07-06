@@ -368,6 +368,27 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo_pagamento";
 			}
 		}
+		if(field.equals(Versamento.model().DA_AVVISARE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".da_avvisare";
+			}else{
+				return "da_avvisare";
+			}
+		}
+		if(field.equals(Versamento.model().COD_AVVISATURA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_avvisatura";
+			}else{
+				return "cod_avvisatura";
+			}
+		}
+		if(field.equals(Versamento.model().ID_TRACCIATO_AVVISATURA.ID_TRACCIATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_tracciato";
+			}else{
+				return "id_tracciato";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -510,6 +531,15 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().TIPO_PAGAMENTO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
+		if(field.equals(Versamento.model().DA_AVVISARE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().COD_AVVISATURA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().ID_TRACCIATO_AVVISATURA.ID_TRACCIATO)){
+			return this.toTable(Versamento.model().ID_TRACCIATO_AVVISATURA, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -543,6 +573,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Versamento.model().IUV)){
 			return "iuv";
+		}
+		if(model.equals(Versamento.model().ID_TRACCIATO_AVVISATURA)){
+			return "tracciati";
 		}
 
 

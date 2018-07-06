@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
 "importo",
 "idDominio",

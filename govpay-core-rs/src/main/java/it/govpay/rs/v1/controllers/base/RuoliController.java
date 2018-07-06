@@ -2,31 +2,36 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.JSONUtils;
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.IOException;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 import org.slf4j.Logger;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import it.govpay.core.dao.pagamenti.RuoliDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.RuoloPatchDTO;
 import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.ListaAcl;
 import it.govpay.core.rs.v1.beans.base.ListaRuoli;
-import it.govpay.core.rs.v1.beans.base.PatchOp;
-import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.rs.v1.beans.base.RuoloIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -36,11 +41,7 @@ import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseController;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.AclConverter;
-import it.govpay.rs.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.rs.v1.beans.converter.RuoliConverter;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 
 
@@ -208,20 +209,9 @@ public class RuoliController extends BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JSONObject jsonObjectListaAclRequest = JSONObject.fromObject( jsonRequest );  
-			JSONArray jsonArrayAcl = jsonObjectListaAclRequest.getJSONArray("acl");
 
-			List<AclPost> listaAcl = new ArrayList<>();
+			List<AclPost> listaAcl = deserialize(jsonRequest, AclPost.class); 
 
-			for (int i = 0; i < jsonArrayAcl.size(); i++) {
-				String jsonObjectAcl = jsonArrayAcl.getString(i);
-				JsonConfig jsonConfig = new JsonConfig();
-				Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-				classMap.put("servizio", String.class);
-				jsonConfig.setClassMap(classMap);
-				listaAcl.add((AclPost) AclPost.parse(jsonObjectAcl, AclPost.class, jsonConfig));
-			}
-			
 			PutRuoloDTO putRuoloDTO = RuoliConverter.getPutRuoloDTO(listaAcl, idRuolo, user); 
 			
 			RuoliDAO applicazioniDAO = new RuoliDAO();
@@ -239,6 +229,23 @@ public class RuoliController extends BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
+
+	@SuppressWarnings("unchecked")
+	private static <T> List<T> deserialize(String json, Class<T> t) throws UtilsException, IOException {
+
+		IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, new SerializationConfig());
+
+		JSONUtils jsonUtils = JSONUtils.getInstance();
+		JsonNode asNode = jsonUtils.getAsNode(json);
+		ArrayNode array = (ArrayNode) asNode;
+		Iterator<JsonNode> iterator = array.iterator();
+		
+		List<T> lst= new ArrayList<>();
+		while(iterator.hasNext()) {
+			lst.add((T)deserializer.getObject(jsonUtils.toString(iterator.next()), t));
+		}
+		return lst;
+	}
 
 
 }

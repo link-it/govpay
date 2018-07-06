@@ -32,6 +32,7 @@ import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdTracciato;
 import it.govpay.orm.IdUo;
 
 public class VersamentoConverter {
@@ -112,6 +113,10 @@ public class VersamentoConverter {
 				dto.setIuvProposto(dto.getIuvVersamento());
 			}
 			
+			dto.setDaAvvisare(vo.isDaAvvisare());
+			dto.setCodAvvisatura(vo.getCodAvvisatura());
+			if(vo.getIdTracciatoAvvisatura()!=null)
+				dto.setIdTracciatoAvvisatura(vo.getIdTracciatoAvvisatura().getId());
 			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
@@ -185,6 +190,15 @@ public class VersamentoConverter {
 			vo.setNumeroAvviso(dto.getNumeroAvviso());
 			vo.setAvvisatura(dto.getAvvisatura());
 			vo.setTipoPagamento(dto.getTipoPagamento());
+
+			vo.setDaAvvisare(dto.isDaAvvisare());
+			vo.setCodAvvisatura(dto.getCodAvvisatura());
+			if(dto.getIdTracciatoAvvisatura()!=null) {
+				IdTracciato idTracciato = new IdTracciato();
+				idTracciato.setId(dto.getIdTracciatoAvvisatura());
+				idTracciato.setIdTracciato(dto.getIdTracciatoAvvisatura());
+				vo.setIdTracciatoAvvisatura(idTracciato);
+			}
 
 			return vo;
 		} catch (UnsupportedEncodingException e) {

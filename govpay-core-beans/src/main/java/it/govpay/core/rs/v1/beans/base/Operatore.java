@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+import com.fasterxml.jackson.annotation.JsonProperty;
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "principal",
 "ragioneSociale",
 "domini",

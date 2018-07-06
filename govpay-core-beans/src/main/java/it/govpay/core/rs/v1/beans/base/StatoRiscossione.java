@@ -1,6 +1,6 @@
 package it.govpay.core.rs.v1.beans.base;
 
-import org.codehaus.jackson.annotate.JsonValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Stato della riscossione

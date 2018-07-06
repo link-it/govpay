@@ -3,9 +3,7 @@ package it.govpay.rs.v1.controllers.pagamenti;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -55,7 +53,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.pagamenti.converter.DominiConverter;
-import net.sf.json.JsonConfig;
 
 
 
@@ -455,10 +452,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			jsonConfig.setClassMap(classMap);
-			ContiAccreditoPost ibanAccreditoRequest= (ContiAccreditoPost) ContiAccreditoPost.parse(jsonRequest, ContiAccreditoPost.class, jsonConfig);
+			ContiAccreditoPost ibanAccreditoRequest= (ContiAccreditoPost) ContiAccreditoPost.parse(jsonRequest, ContiAccreditoPost.class);
 			
 			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, user);
 			
@@ -496,10 +490,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			jsonConfig.setClassMap(classMap);
-			UnitaOperativaPost unitaOperativaRequest= (UnitaOperativaPost) UnitaOperativaPost.parse(jsonRequest, UnitaOperativaPost.class, jsonConfig);
+			UnitaOperativaPost unitaOperativaRequest= (UnitaOperativaPost) UnitaOperativaPost.parse(jsonRequest, UnitaOperativaPost.class);
 			
 			PutUnitaOperativaDTO putUnitaOperativaDTO = DominiConverter.getPutUnitaOperativaDTO(unitaOperativaRequest, idDominio, idUnitaOperativa, user);
 			
@@ -578,10 +569,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			jsonConfig.setClassMap(classMap);
-			DominioPost dominioRequest= (DominioPost) DominioPost.parse(jsonRequest, DominioPost.class, jsonConfig);
+			DominioPost dominioRequest= (DominioPost) DominioPost.parse(jsonRequest, DominioPost.class);
 			
 			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
 			

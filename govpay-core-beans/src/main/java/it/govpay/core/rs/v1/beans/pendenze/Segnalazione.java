@@ -2,10 +2,10 @@ package it.govpay.core.rs.v1.beans.pendenze;
 
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "codice",
 "descrizione",
 "dettaglio",

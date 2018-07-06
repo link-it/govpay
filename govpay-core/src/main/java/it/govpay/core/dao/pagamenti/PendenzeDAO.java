@@ -248,11 +248,17 @@ public class PendenzeDAO extends BaseDAO{
 			
 			
 			createOrUpdatePendenzaResponse.setCreated(false);
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+
 			try {
-				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, putVersamentoDTO.getVersamento().getCodApplicazione()).getId(), putVersamentoDTO.getVersamento().getCodVersamentoEnte());
 			}catch(NotFoundException e) {
 				createOrUpdatePendenzaResponse.setCreated(true);
+			}
+			
+			if(putVersamentoDTO.isAvvisaturaDigitale()) {
+				chiediVersamento.setDaAvvisare(true);
+				chiediVersamento.setCodAvvisatura(versamentiBD.getNextAvvisatura(putVersamentoDTO.getVersamento().getCodDominio()));
 			}
 			
 			versamentoBusiness.caricaVersamento(chiediVersamento, chiediVersamento.getNumeroAvviso() == null, true);

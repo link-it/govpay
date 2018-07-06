@@ -34,8 +34,10 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
+import it.govpay.bd.model.converter.ConnettoreSftpConverter;
 import it.govpay.bd.model.converter.IntermediarioConverter;
 import it.govpay.model.Connettore;
+import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
 import it.govpay.orm.IdIntermediario;
 import it.govpay.orm.dao.jdbc.JDBCIntermediarioServiceSearch;
@@ -111,6 +113,14 @@ public class IntermediariBD extends BasicBD {
 			Connettore connettorePdd = ConnettoreConverter.toDTO(connettori);
 			intermediario.setConnettorePdd(connettorePdd);
 		}
+		if(intermediarioVO.getCodConnettoreFtp() != null) {
+			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreFtp());
+
+			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
+			ConnettoreSftp connettorePdd = ConnettoreSftpConverter.toDTO(connettori);
+			intermediario.setConnettoreSftp(connettorePdd);
+		}
 		return intermediario;
 
 	}
@@ -158,6 +168,20 @@ public class IntermediariBD extends BasicBD {
 				}
 			}
 
+			if(intermediario.getConnettoreSftp() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
+
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettoreSftp().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+
 			emitAudit(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -196,6 +220,21 @@ public class IntermediariBD extends BasicBD {
 					this.getConnettoreService().create(connettore);
 				}
 			}
+			
+			if(intermediario.getConnettoreSftp() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
+
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettoreSftp().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+
 			emitAudit(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

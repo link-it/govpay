@@ -3,8 +3,8 @@ package it.govpay.core.rs.v1.beans.base;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+import com.fasterxml.jackson.annotation.JsonProperty;
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "indice",
 "idVocePendenza",
 "importo",
@@ -60,7 +60,7 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
 
     @Override
-    @org.codehaus.jackson.annotate.JsonValue
+    @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
       return String.valueOf(value);
     }

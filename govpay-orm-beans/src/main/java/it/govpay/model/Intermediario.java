@@ -26,6 +26,7 @@ public class Intermediario extends BasicModel{
 	private String codIntermediario;
 	private String denominazione;
     private Connettore connettorePdd;
+    private ConnettoreSftp connettoreSftp;
     private boolean abilitato;
     
     public Intermediario() {}
@@ -77,6 +78,14 @@ public class Intermediario extends BasicModel{
 				abilitato == intermediario.isAbilitato();
 		
 		return equal;
+	}
+
+	public ConnettoreSftp getConnettoreSftp() {
+		return connettoreSftp;
+	}
+
+	public void setConnettoreSftp(ConnettoreSftp connettoreSftp) {
+		this.connettoreSftp = connettoreSftp;
 	}
 
 }

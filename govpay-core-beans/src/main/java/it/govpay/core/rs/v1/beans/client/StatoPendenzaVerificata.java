@@ -1,6 +1,6 @@
 package it.govpay.core.rs.v1.beans.client;
 
-import org.codehaus.jackson.annotate.JsonValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Stato della pendenza:   * NON_ESEGUITA: Pendenza da pagare  * ANNULLATA: Pendenza annullata  * SCADUTA: Termini per il pagamento decorsi  * DUPLICATA: Pendenza gia&#x27; pagata  * SCONOSCIUTA: Pendenza non trovata

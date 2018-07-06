@@ -24,7 +24,6 @@ import java.sql.Connection;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 import org.slf4j.Logger;
-
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdTracciato;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
@@ -70,75 +69,33 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
-		// Object _operatore
-		Long id_operatore = null;
-		it.govpay.orm.IdOperatore idLogic_operatore = null;
-		idLogic_operatore = tracciato.getIdOperatore();
-		if(idLogic_operatore!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findTableId(idLogic_operatore, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_operatore = idLogic_operatore.getId();
-				if(id_operatore==null || id_operatore<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _applicazione
-		Long id_applicazione = null;
-		it.govpay.orm.IdApplicazione idLogic_applicazione = null;
-		idLogic_applicazione = tracciato.getIdApplicazione();
-		if(idLogic_applicazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_applicazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_applicazione = idLogic_applicazione.getId();
-				if(id_applicazione==null || id_applicazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object tracciato
 		sqlQueryObjectInsert.addInsertTable(this.getTracciatoFieldConverter().toTable(Tracciato.model()));
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_CARICAMENTO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().STATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().LINEA_ELABORAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DESCRIZIONE_STATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NUM_LINEE_TOTALI,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NUM_OPERAZIONI_OK,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NUM_OPERAZIONI_KO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NOME_FILE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RICHIESTA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RISPOSTA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO_TRACCIATO,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_operatore","?");
-		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_CARICAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_COMPLETAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().BEAN_DATI,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().FILE_NAME_RICHIESTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_RICHIESTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().FILE_NAME_ESITO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_ESITO,false),"?");
 
 		// Insert tracciato
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getTracciatoFetch().getKeyGeneratorObject(Tracciato.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getDataCaricamento(),Tracciato.model().DATA_CARICAMENTO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getDataUltimoAggiornamento(),Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getTipo(),Tracciato.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getStato(),Tracciato.model().STATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getLineaElaborazione(),Tracciato.model().LINEA_ELABORAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getDescrizioneStato(),Tracciato.model().DESCRIZIONE_STATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNumLineeTotali(),Tracciato.model().NUM_LINEE_TOTALI.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNumOperazioniOk(),Tracciato.model().NUM_OPERAZIONI_OK.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNumOperazioniKo(),Tracciato.model().NUM_OPERAZIONI_KO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNomeFile(),Tracciato.model().NOME_FILE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawDataRichiesta(),Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawDataRisposta(),Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getTipoTracciato(),Tracciato.model().TIPO_TRACCIATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getDataCaricamento(),Tracciato.model().DATA_CARICAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getDataCompletamento(),Tracciato.model().DATA_COMPLETAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getBeanDati(),Tracciato.model().BEAN_DATI.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getFileNameRichiesta(),Tracciato.model().FILE_NAME_RICHIESTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawRichiesta(),Tracciato.model().RAW_RICHIESTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getFileNameEsito(),Tracciato.model().FILE_NAME_ESITO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawEsito(),Tracciato.model().RAW_ESITO.getFieldType())
 		);
 		tracciato.setId(id);
 
@@ -186,82 +143,32 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
-		// Object _tracciato_operatore
-		Long id_tracciato_operatore = null;
-		it.govpay.orm.IdOperatore idLogic_tracciato_operatore = null;
-		idLogic_tracciato_operatore = tracciato.getIdOperatore();
-		if(idLogic_tracciato_operatore!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_tracciato_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findTableId(idLogic_tracciato_operatore, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_tracciato_operatore = idLogic_tracciato_operatore.getId();
-				if(id_tracciato_operatore==null || id_tracciato_operatore<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _tracciato_applicazione
-		Long id_tracciato_applicazione = null;
-		it.govpay.orm.IdApplicazione idLogic_tracciato_applicazione = null;
-		idLogic_tracciato_applicazione = tracciato.getIdApplicazione();
-		if(idLogic_tracciato_applicazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_tracciato_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_tracciato_applicazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_tracciato_applicazione = idLogic_tracciato_applicazione.getId();
-				if(id_tracciato_applicazione==null || id_tracciato_applicazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object tracciato
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getTracciatoFieldConverter().toTable(Tracciato.model()));
 		boolean isUpdate_tracciato = true;
 		java.util.List<JDBCObject> lstObjects_tracciato = new java.util.ArrayList<JDBCObject>();
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_CARICAMENTO,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getDataCaricamento(), Tracciato.model().DATA_CARICAMENTO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getDataUltimoAggiornamento(), Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getTipo(), Tracciato.model().TIPO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().STATO,false), "?");
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getStato(), Tracciato.model().STATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().LINEA_ELABORAZIONE,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getLineaElaborazione(), Tracciato.model().LINEA_ELABORAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DESCRIZIONE_STATO,false), "?");
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getDescrizioneStato(), Tracciato.model().DESCRIZIONE_STATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NUM_LINEE_TOTALI,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getNumLineeTotali(), Tracciato.model().NUM_LINEE_TOTALI.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NUM_OPERAZIONI_OK,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getNumOperazioniOk(), Tracciato.model().NUM_OPERAZIONI_OK.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NUM_OPERAZIONI_KO,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getNumOperazioniKo(), Tracciato.model().NUM_OPERAZIONI_KO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NOME_FILE,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getNomeFile(), Tracciato.model().NOME_FILE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RICHIESTA,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawDataRichiesta(), Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RISPOSTA,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawDataRisposta(), Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO_TRACCIATO,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getTipoTracciato(), Tracciato.model().TIPO_TRACCIATO.getFieldType()));
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_tracciato.add(new JDBCObject(id_tracciato_operatore, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_tracciato.add(new JDBCObject(id_tracciato_applicazione, Long.class));
-		}
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_CARICAMENTO,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getDataCaricamento(), Tracciato.model().DATA_CARICAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_COMPLETAMENTO,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getDataCompletamento(), Tracciato.model().DATA_COMPLETAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().BEAN_DATI,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getBeanDati(), Tracciato.model().BEAN_DATI.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().FILE_NAME_RICHIESTA,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getFileNameRichiesta(), Tracciato.model().FILE_NAME_RICHIESTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_RICHIESTA,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawRichiesta(), Tracciato.model().RAW_RICHIESTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().FILE_NAME_ESITO,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getFileNameEsito(), Tracciato.model().FILE_NAME_ESITO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_ESITO,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawEsito(), Tracciato.model().RAW_ESITO.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_tracciato.add(new JDBCObject(tableId, Long.class));
 

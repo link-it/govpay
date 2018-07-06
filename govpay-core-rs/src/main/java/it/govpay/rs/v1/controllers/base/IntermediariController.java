@@ -2,9 +2,7 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -40,7 +38,6 @@ import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.IntermediariConverter;
 import it.govpay.rs.v1.beans.converter.StazioniConverter;
-import net.sf.json.JsonConfig;
 
 
 
@@ -109,10 +106,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			jsonConfig.setClassMap(classMap);
-			StazionePost inrtermediarioRequest= (StazionePost) StazionePost.parse(jsonRequest, StazionePost.class, jsonConfig);
+			StazionePost inrtermediarioRequest= (StazionePost) StazionePost.parse(jsonRequest, StazionePost.class);
 			
 			PutStazioneDTO putIntermediarioDTO = StazioniConverter.getPutStazioneDTO(inrtermediarioRequest, idIntermediario, idStazione, user);
 			
@@ -203,10 +197,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			jsonConfig.setClassMap(classMap);
-			IntermediarioPost inrtermediarioRequest= (IntermediarioPost) IntermediarioPost.parse(jsonRequest, IntermediarioPost.class, jsonConfig);
+			IntermediarioPost inrtermediarioRequest= (IntermediarioPost) IntermediarioPost.parse(jsonRequest, IntermediarioPost.class);
 			
 			PutIntermediarioDTO putIntermediarioDTO = IntermediariConverter.getPutIntermediarioDTO(inrtermediarioRequest, idIntermediario, user);
 			

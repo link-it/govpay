@@ -19,8 +19,6 @@
  */
 package it.govpay.rs;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,7 +48,6 @@ import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
-import net.sf.json.JSONObject;
 
 public abstract class BaseRsService {
 	
@@ -131,28 +128,28 @@ public abstract class BaseRsService {
 		return res;
 	}
 
-	public static Response getBadRequestResponse(String msg){
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("esito", "KO");
-		jsonObject.put("descrizione", msg);
-
-		ByteArrayInputStream bais = new ByteArrayInputStream(jsonObject.toString().getBytes());
-		try{
-			BaseRsService.copy(bais, baos);
-
-			baos.flush();
-			baos.close();
-		}catch(Exception e){}
-
-
-		Response res =	Response.status(Response.Status.BAD_REQUEST)
-				.header("Access-Control-Allow-Origin", "*")
-				.entity(baos.toString())
-				.build();
-
-		return res;
-	}
+//	public static Response getBadRequestResponse(String msg){
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		JSONObject jsonObject = new JSONObject();
+//		jsonObject.put("esito", "KO");
+//		jsonObject.put("descrizione", msg);
+//
+//		ByteArrayInputStream bais = new ByteArrayInputStream(jsonObject.toString().getBytes());
+//		try{
+//			BaseRsService.copy(bais, baos);
+//
+//			baos.flush();
+//			baos.close();
+//		}catch(Exception e){}
+//
+//
+//		Response res =	Response.status(Response.Status.BAD_REQUEST)
+//				.header("Access-Control-Allow-Origin", "*")
+//				.entity(baos.toString())
+//				.build();
+//
+//		return res;
+//	}
 
 	public void invalidateSession(Logger log){
 		if(log!= null)

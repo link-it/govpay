@@ -1,6 +1,6 @@
 package it.govpay.core.rs.v1.beans.base;
 
-import org.codehaus.jackson.annotate.JsonValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Stato del pagamento  * IN_CORSO: Pagamento in corso  * ANNULLATO: Pagamento annullato dall&#x27;utente o scaduto per timeout  * FALLITO: Pagamento non perfezionato per errori della piattaforma  * ESEGUITO: Pagamento concluso con successo  * NON_ESEGUITO: Processo concluso senza il perfezionamento del pagamento  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito 

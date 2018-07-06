@@ -8,6 +8,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	
 	private Versamento versamento;
 	private boolean stampaAvviso;
+	private boolean avvisaturaDigitale;
 	public PutPendenzaDTO(IAutorizzato user) {
 		super(user);
 	}
@@ -26,6 +27,14 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 
 	public void setStampaAvviso(boolean stampaAvviso) {
 		this.stampaAvviso = stampaAvviso;
+	}
+
+	public boolean isAvvisaturaDigitale() {
+		return avvisaturaDigitale;
+	}
+
+	public void setAvvisaturaDigitale(boolean avvisaturaDigitale) {
+		this.avvisaturaDigitale = avvisaturaDigitale;
 	}
 
 }

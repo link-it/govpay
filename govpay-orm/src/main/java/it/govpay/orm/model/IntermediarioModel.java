@@ -43,6 +43,7 @@ public class IntermediarioModel extends AbstractModel<Intermediario> {
 	
 		this.COD_INTERMEDIARIO = new Field("codIntermediario",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.COD_CONNETTORE_PDD = new Field("codConnettorePdd",java.lang.String.class,"Intermediario",Intermediario.class);
+		this.COD_CONNETTORE_FTP = new Field("codConnettoreFtp",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.DENOMINAZIONE = new Field("denominazione",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Intermediario",Intermediario.class);
 	
@@ -54,6 +55,7 @@ public class IntermediarioModel extends AbstractModel<Intermediario> {
 	
 		this.COD_INTERMEDIARIO = new ComplexField(father,"codIntermediario",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.COD_CONNETTORE_PDD = new ComplexField(father,"codConnettorePdd",java.lang.String.class,"Intermediario",Intermediario.class);
+		this.COD_CONNETTORE_FTP = new ComplexField(father,"codConnettoreFtp",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.DENOMINAZIONE = new ComplexField(father,"denominazione",java.lang.String.class,"Intermediario",Intermediario.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Intermediario",Intermediario.class);
 	
@@ -64,6 +66,8 @@ public class IntermediarioModel extends AbstractModel<Intermediario> {
 	public IField COD_INTERMEDIARIO = null;
 	 
 	public IField COD_CONNETTORE_PDD = null;
+	 
+	public IField COD_CONNETTORE_FTP = null;
 	 
 	public IField DENOMINAZIONE = null;
 	 

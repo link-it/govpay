@@ -37,6 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codIntermediario" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettorePdd" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreFtp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -55,6 +56,7 @@ import java.io.Serializable;
   propOrder = {
   	"codIntermediario",
   	"codConnettorePdd",
+  	"codConnettoreFtp",
   	"denominazione",
   	"abilitato"
   }
@@ -94,6 +96,14 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
 
   public void setCodConnettorePdd(java.lang.String codConnettorePdd) {
     this.codConnettorePdd = codConnettorePdd;
+  }
+
+  public java.lang.String getCodConnettoreFtp() {
+    return this.codConnettoreFtp;
+  }
+
+  public void setCodConnettoreFtp(java.lang.String codConnettoreFtp) {
+    this.codConnettoreFtp = codConnettoreFtp;
   }
 
   public java.lang.String getDenominazione() {
@@ -142,6 +152,10 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettorePdd",required=true,nillable=false)
   protected java.lang.String codConnettorePdd;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreFtp",required=false,nillable=false)
+  protected java.lang.String codConnettoreFtp;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="denominazione",required=true,nillable=false)

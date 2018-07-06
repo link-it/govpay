@@ -1,8 +1,6 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -28,7 +26,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.EntrateConverter;
-import net.sf.json.JsonConfig;
 
 
 
@@ -56,11 +53,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			JsonConfig jsonConfig = new JsonConfig();
-			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-			classMap.put("tipoContabilita", String.class);
-			jsonConfig.setClassMap(classMap);
-			TipoEntrataPost entrataRequest= (TipoEntrataPost) TipoEntrataPost.parse(jsonRequest, TipoEntrataPost.class, jsonConfig);
+			TipoEntrataPost entrataRequest= (TipoEntrataPost) TipoEntrataPost.parse(jsonRequest, TipoEntrataPost.class);
 			
 			PutEntrataDTO putIntermediarioDTO = EntrateConverter.getPutEntrataDTO(entrataRequest, idEntrata, user);
 			

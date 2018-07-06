@@ -4,6 +4,7 @@ CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL,
 	cod_connettore_pdd VARCHAR(35) NOT NULL,
+	cod_connettore_ftp VARCHAR(35),
 	denominazione VARCHAR(255) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
@@ -305,6 +306,29 @@ CREATE TABLE acl
 
 
 
+CREATE SEQUENCE seq_tracciati start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE tracciati
+(
+	tipo VARCHAR(10) NOT NULL,
+	stato VARCHAR(10) NOT NULL,
+	descrizione_stato VARCHAR(256),
+	data_caricamento TIMESTAMP NOT NULL,
+	data_completamento TIMESTAMP NOT NULL,
+	bean_dati TEXT,
+	file_name_richiesta VARCHAR(256),
+	raw_richiesta BYTEA NOT NULL,
+	file_name_esito VARCHAR(256),
+	raw_esito BYTEA NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_versamenti start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE versamenti
@@ -347,17 +371,21 @@ CREATE TABLE versamenti
 	numero_avviso VARCHAR(35),
 	avvisatura VARCHAR(1),
 	tipo_pagamento INT,
+	da_avvisare BOOLEAN NOT NULL,
+	cod_avvisatura VARCHAR(20),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
+	id_tracciato BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
@@ -782,30 +810,23 @@ CREATE TABLE batch
 
 
 
-CREATE SEQUENCE seq_tracciati start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+CREATE SEQUENCE seq_esiti_avvisatura start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
-CREATE TABLE tracciati
+CREATE TABLE esiti_avvisatura
 (
-	data_caricamento TIMESTAMP NOT NULL,
-	data_ultimo_aggiornamento TIMESTAMP NOT NULL,
-	stato VARCHAR(16) NOT NULL,
-	linea_elaborazione BIGINT NOT NULL,
-	descrizione_stato VARCHAR(1024),
-	num_linee_totali BIGINT NOT NULL,
-	num_operazioni_ok BIGINT NOT NULL,
-	num_operazioni_ko BIGINT NOT NULL,
-	nome_file VARCHAR(255) NOT NULL,
-	raw_data_richiesta BYTEA NOT NULL,
-	raw_data_risposta BYTEA,
-	tipo_tracciato VARCHAR(16) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL,
+	identificativo_avvisatura VARCHAR(20) NOT NULL,
+	tipo_canale INT NOT NULL,
+	cod_canale VARCHAR(35),
+	data TIMESTAMP NOT NULL,
+	cod_esito INT NOT NULL,
+	descrizione_esito VARCHAR(140) NOT NULL,
 	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
-	id_operatore BIGINT,
-	id_applicazione BIGINT,
+	id BIGINT DEFAULT nextval('seq_esiti_avvisatura') NOT NULL,
+	id_tracciato BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
 );
 
 

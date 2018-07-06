@@ -96,7 +96,8 @@ import it.govpay.orm.dao.IUtenzaTributoService;
 import it.govpay.orm.dao.IUtenzaTributoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
-
+import it.govpay.orm.dao.IEsitoAvvisaturaServiceSearch;
+import it.govpay.orm.dao.IEsitoAvvisaturaService;
 /**     
  * Manager that allows you to obtain the services of research and management of objects
  *
@@ -1217,6 +1218,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public ITracciatoService getTracciatoService() throws ServiceException,NotImplementedException{
 		return new JDBCTracciatoService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:EsitoAvvisatura type:EsitoAvvisatura
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IEsitoAvvisaturaServiceSearch getEsitoAvvisaturaServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCEsitoAvvisaturaServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IEsitoAvvisaturaService getEsitoAvvisaturaService() throws ServiceException,NotImplementedException{
+		return new JDBCEsitoAvvisaturaService(this);
 	}
 	
 	

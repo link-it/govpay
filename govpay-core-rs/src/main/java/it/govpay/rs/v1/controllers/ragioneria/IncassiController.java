@@ -19,7 +19,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.rs.v1.beans.ragioneria.Incasso;
-import it.govpay.core.rs.v1.beans.ragioneria.IncassoIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.IncassoPost;
 import it.govpay.core.rs.v1.beans.ragioneria.ListaIncassiIndex;
 import it.govpay.core.utils.GovpayConfig;
@@ -28,7 +27,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.ragioneria.converter.IncassiConverter;
-import net.sf.json.JsonConfig;
 
 
 
@@ -147,7 +145,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
-			it.govpay.core.rs.v1.beans.ragioneria.IncassoPost incasso = (IncassoPost) it.govpay.core.rs.v1.beans.ragioneria.IncassoPost.parse(baos.toString(), it.govpay.core.rs.v1.beans.ragioneria.IncassoPost.class, new JsonConfig());
+			it.govpay.core.rs.v1.beans.ragioneria.IncassoPost incasso = (IncassoPost) it.govpay.core.rs.v1.beans.ragioneria.IncassoPost.parse(baos.toString(), it.govpay.core.rs.v1.beans.ragioneria.IncassoPost.class);
 			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();

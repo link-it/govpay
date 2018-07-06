@@ -23,15 +23,18 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.IOException;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.IAutorizzato;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 public class Incasso {
 	
-	private static JsonConfig jsonConfig = new JsonConfig();
 	
 	private String dominio;
 	private String trn;
@@ -40,11 +43,6 @@ public class Incasso {
 	private Date data_valuta;
 	private Date data_contabile;
 	private String dispositivo;
-	
-	static {
-		jsonConfig.setRootClass(Incasso.class);
-	}
-	
 	public Incasso() {
 
 	}
@@ -59,11 +57,21 @@ public class Incasso {
 		this.trn = i.getTrn();
 	}
 	
-	public static Incasso parse(String json) {
-		JSONObject jsonObject = JSONObject.fromObject( json );  
-		return (Incasso) JSONObject.toBean( jsonObject, jsonConfig );
+	public static Incasso parse(String jsonString) throws ServiceException  {
+		try {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+			serializationConfig.setIgnoreNullValues(true);
+			
+			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			
+			Incasso object = (Incasso) deserializer.getObject(jsonString, Incasso.class);
+			return object;
+		} catch(IOException e) {
+			throw new ServiceException(e);
+		}
 	}
-	
+
 	public String getTrn() {
 		return trn;
 	}

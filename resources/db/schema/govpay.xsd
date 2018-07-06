@@ -35,6 +35,7 @@
 								<linkit:sql-table object-name="Operatore" object-type="Operatore"/>
 								<linkit:sql-table object-name="Connettore" object-type="Connettore"/>
 								<linkit:sql-table object-name="ACL" object-type="ACL"/>
+								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
 									object-type="SingoloVersamento"/>
@@ -51,7 +52,7 @@
 									object-type="Rendicontazione"/>
 								<linkit:sql-table object-name="Evento" object-type="Evento"/>
 								<linkit:sql-table object-name="Batch" object-type="Batch"/>
-								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
+								<linkit:sql-table object-name="EsitoAvvisatura" object-type="EsitoAvvisatura"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
 								<linkit:sql-table object-name="Avviso" object-type="Avviso"/>
@@ -317,6 +318,12 @@
 		<xsd:sequence>
 			<xsd:element name="idDominio" type="id-dominio"/>
 			<xsd:element name="idFlusso" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-esito-avvisatura">
+		<xsd:sequence>
+			<xsd:element name="identificativoAvvisatura" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

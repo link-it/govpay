@@ -2,10 +2,10 @@ package it.govpay.core.rs.v1.beans.ragioneria;
 
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-@org.codehaus.jackson.annotate.JsonPropertyOrder({
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "testo",
 })
@@ -35,7 +35,7 @@ public class Allegato extends JSONSerializable {
     }
 
     @Override
-    @org.codehaus.jackson.annotate.JsonValue
+    @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
       return String.valueOf(value);
     }

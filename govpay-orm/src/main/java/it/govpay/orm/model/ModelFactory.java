@@ -93,6 +93,8 @@ public class ModelFactory {
 	
 	public static TracciatoModel TRACCIATO = new TracciatoModel();
 	
+	public static EsitoAvvisaturaModel ESITO_AVVISATURA = new EsitoAvvisaturaModel();
+	
 	public static AvvisoModel AVVISO = new AvvisoModel();
 	
 
