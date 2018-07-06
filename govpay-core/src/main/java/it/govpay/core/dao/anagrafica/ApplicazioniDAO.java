@@ -20,14 +20,17 @@
 package it.govpay.core.dao.anagrafica;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
@@ -36,9 +39,13 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
 import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
+import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 
@@ -60,7 +67,6 @@ public class ApplicazioniDAO extends BaseDAO{
 				filter = applicazioniBD.newFilter(false);
 				filter.setSearchAbilitato(listaApplicazioniDTO.getAbilitato());
 			}
-//			filter.setListaIdApplicazioni(applicazioni.stream().collect(Collectors.toList()));
 			filter.setOffset(listaApplicazioniDTO.getOffset());
 			filter.setLimit(listaApplicazioniDTO.getLimit());
 			filter.getFilterSortList().addAll(listaApplicazioniDTO.getFieldSortList());
@@ -140,5 +146,33 @@ public class ApplicazioniDAO extends BaseDAO{
 		return applicazioneDTOResponse;
 	}
 
+	public GetApplicazioneDTOResponse patch(ApplicazionePatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+
+			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_APPLICAZIONI, Diritti.SCRITTURA,bd);
+
+			GetApplicazioneDTOResponse getApplicazioneDTOResponse = new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(bd, patchDTO.getCodApplicazione()));
+
+			for(PatchOp op: patchDTO.getOp()) {
+				UtenzaPatchUtils.patchUtenza(op, getApplicazioneDTOResponse.getApplicazione().getUtenza(), bd);
+			}
+			
+			applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
+			
+			
+			return getApplicazioneDTOResponse;
+		}catch(NotFoundException e) {
+			throw new PagamentoPortaleNonTrovatoException("Non esiste un'applicazione associata all'ID ["+patchDTO.getCodApplicazione()+"]");
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		
+	}
+	
 	
 }

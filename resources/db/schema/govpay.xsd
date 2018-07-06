@@ -132,10 +132,16 @@
 			<xsd:maxLength value="4"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-
+	
 	<xsd:simpleType name="String1">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="String20">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="20"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -622,6 +628,7 @@
 		<xsd:sequence>
 			<xsd:element name="codIntermediario" type="String35"/>
 			<xsd:element name="codConnettorePdd" type="String35"/>
+			<xsd:element name="codConnettoreFtp" type="String35" minOccurs="0"/>
 			<xsd:element name="denominazione" type="xsd:string"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
@@ -1219,6 +1226,19 @@
 			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
 			<xsd:element name="avvisatura" type="String1" minOccurs="0"/>
 			<xsd:element name="tipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
+			
+			<xsd:element name="daAvvisare" type="xsd:boolean"/>
+			<xsd:element name="codAvvisatura" type="String20" minOccurs="0"/>
+			<xsd:element name="idTracciatoAvvisatura" type="id-tracciato" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Tracciato"
+								object-type="Tracciato" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2175,38 +2195,58 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idOperatore" type="id-operatore" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Operatore"
-								object-type="Operatore" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Applicazione"
-								object-type="Applicazione" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
+			<xsd:element name="tipo" type="String10"/>
+			<xsd:element name="stato" type="String10"/>
+			<xsd:element name="descrizioneStato" type="String256" minOccurs="0"/>
 			<xsd:element name="dataCaricamento" type="xsd:dateTime"/>
-			<xsd:element name="dataUltimoAggiornamento" type="xsd:dateTime"/>
-			<xsd:element name="stato" type="String16"/>
-			<xsd:element name="lineaElaborazione" type="xsd:long"/>
-			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
-			<xsd:element name="numLineeTotali" type="xsd:long"/>
-			<xsd:element name="numOperazioniOk" type="xsd:long"/>
-			<xsd:element name="numOperazioniKo" type="xsd:long"/>
-			<xsd:element name="nomeFile" type="xsd:string"/>
-			<xsd:element name="rawDataRichiesta" type="xsd:base64Binary"/>
-			<xsd:element name="rawDataRisposta" type="xsd:base64Binary" minOccurs="0"/>
-			<xsd:element name="tipoTracciato" type="String16"/>
+			<xsd:element name="dataCompletamento" type="xsd:dateTime"/>
+			<xsd:element name="beanDati"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="fileNameRichiesta" type="String256" minOccurs="0"/>
+			<xsd:element name="rawRichiesta" type="xsd:base64Binary"/>
+			<xsd:element name="fileNameEsito" type="String256" minOccurs="0"/>
+			<xsd:element name="rawEsito" type="xsd:base64Binary"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="EsitoAvvisatura" type="EsitoAvvisatura" />
+	<xsd:complexType name="EsitoAvvisatura">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-esito-avvisatura"/>
+					<linkit:sql-table-mapping generate-sql="true"
+						name="esiti_avvisatura" on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_sta"/>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="codDominio" type="String35"/>
+			<xsd:element name="identificativoAvvisatura" type="String20"/>
+			<xsd:element name="tipoCanale" type="xsd:integer"/>
+			<xsd:element name="codCanale" type="String35" minOccurs="0"/>
+			<xsd:element name="data" type="xsd:dateTime"/>
+			<xsd:element name="codEsito" type="xsd:integer"/>
+			<xsd:element name="descrizioneEsito" type="String140"/>
+			<xsd:element name="idTracciato" type="id-tracciato" minOccurs="1">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Tracciato"
+								object-type="Tracciato" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
