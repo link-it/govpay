@@ -4,16 +4,18 @@ import java.math.BigDecimal;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.model.Pagamento;
-import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.core.rs.v1.beans.base.Allegato;
+import it.govpay.core.rs.v1.beans.base.Allegato.TipoEnum;
+import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
 import it.govpay.core.rs.v1.beans.base.TipoRiscossione;
-import it.govpay.core.rs.v1.beans.base.Allegato.TipoEnum;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
+import it.govpay.rs.BaseRsService;
 
 public class RiscossioniConverter {
 	
@@ -58,7 +60,9 @@ public class RiscossioniConverter {
 			if(input.getIncasso(null)!=null)
 				rsModel.setIncasso(UriBuilderUtils.getIncassiByIdDominioIdIncasso(input.getCodDominio(), input.getIncasso(null).getTrn()));
 			
-		} catch(ServiceException e) {}
+		} catch(ServiceException e) {
+			LoggerWrapperFactory.getLogger(BaseRsService.class).error("Errore nella conversione del pagamento: " + e.getMessage(), e);
+		}
 
 		return rsModel;
 	}

@@ -44,7 +44,11 @@ public class IncassiDAO extends BaseDAO{
 						for(Pagamento pagamento: pagamenti) {
 							pagamento.getDominio(bd);
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+							pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
+							pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
+							pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
 							pagamento.getRpt(bd);
+							pagamento.getIncasso(bd);
 						}
 					}
 
@@ -83,6 +87,9 @@ public class IncassiDAO extends BaseDAO{
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+					pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
+					pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
+					pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
 					pagamento.getDominio(bd);
 					pagamento.getRpt(bd);
 					pagamento.getIncasso(bd);
@@ -122,8 +129,12 @@ public class IncassiDAO extends BaseDAO{
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+					pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
+					pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
+					pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
 					pagamento.getDominio(bd);
 					pagamento.getRpt(bd);
+					pagamento.getIncasso(bd);
 				}
 			}
 

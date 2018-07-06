@@ -60,6 +60,7 @@ public class Operazioni{
 	public static final String ntfy = "update-ntfy";
 	public static final String check_ntfy = "check-ntfy";
 	public static final String batch_generazione_avvisi = "generazione-avvisi";
+	public static final String batch_avvisatura_digitale = "avvisatura-digitale";
 
 
 	private static boolean eseguiGenerazioneAvvisi;
@@ -355,6 +356,96 @@ public class Operazioni{
 			if(bd != null && !wasConnected) bd.closeConnection();
 		}
 	}
+
+//    public static String avvisaturaDigitale(String serviceName){
+//		BasicBD bd = null;
+//		GpContext ctx = null;
+//		try {
+//			ctx = new GpContext();
+//			MDC.put("cmd", "AvvisaturaDigitale");
+//			MDC.put("op", ctx.getTransactionId());
+//			Service service = new Service();
+//			service.setName(serviceName);
+//			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
+//			ctx.getTransaction().setService(service);
+//			Operation opt = new Operation();
+//			opt.setName("AvvisaturaDigitale");
+//			ctx.getTransaction().setOperation(opt);
+//			GpThreadLocal.set(ctx);
+//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+//
+//	        // Scandisco tutte le stazioni censite
+//	        List<Stazione> stazioni;
+//	        try {
+//	            stazioni = new StazioniBD().getStazioni();
+//	            for(Stazione stazione : stazioni) {
+//	
+//	                // Accedo al server sftp e cerco nuovi flussi di rendicontazione
+//	                log.info("Accedo al servizio SFTP per la stazione " + stazione.getId_stazione());
+//	                JSch jsch = new JSch();
+//	                Session session = null;
+//	                try {
+//	                    session = jsch.getSession(stazione.getSftp_in_user(), stazione.getSftp_in_host(), 22);
+//	                    session.setConfig("StrictHostKeyChecking", "no");
+//	                    session.setPassword(stazione.getSftp_in_pass());
+//	                    session.connect();
+//	
+//	                    Channel channel = session.openChannel("sftp");
+//	                    channel.connect();
+//	                    ChannelSftp sftpChannel = (ChannelSftp) channel;
+//	
+//	                   
+//	                    // Cerco file che finiscono per _AV.zip
+//	                    log.info("Cerco tracciati di Avvisatura digitale...");
+//	                    Vector<ChannelSftp.LsEntry> entryList = sftpChannel.ls(stazione.getId_intermediario() + "*_AV.zip");
+//	                    log.info("Trovati " + entryList.size() + " tracciati.");
+//	                    for(ChannelSftp.LsEntry entry : entryList) {
+//	                        int esito = 0;
+//	                       
+//	                        ZipInputStream zis = new ZipInputStream(sftpChannel.get(entry.getFilename()));
+//	                        // Nello zip mi aspetto che ci sia un solo file XML
+//	                        // Se non c'e' niente o non si apre, do errore
+//	                        try {
+//	                            ZipEntry zipentry = zis.getNextEntry();
+//	                        } catch (IOException e1) {
+//	                            esito = 1;
+//	                            e1.printStackTrace();
+//	                        }
+//	                       
+//	                        // Dal primo file che trovo, leggo la lista degli avvisi
+//	                        try {
+//	                            ListaAvvisiDigitali listaAvvisiDigitali = NdpUtils.toListaAvvisiDigitali(zis);
+//	                        } catch (JAXBException | SAXException e) {
+//	                            esito = 3;
+//	                            e.printStackTrace();
+//	                        }
+//	                       
+//	                        // TODO
+//	                    }
+//	                    sftpChannel.exit();
+//	                    session.disconnect();
+//	                } catch (JSchException e) {
+//	                    e.printStackTrace();
+//	                } catch (SftpException e) {
+//	                    e.printStackTrace();
+//	                }
+//	            }
+//	        } catch (SQLException e2) {
+//	            // TODO Auto-generated catch block
+//	            e2.printStackTrace();
+//	        }
+//	        return "Avvisatura digitale ok";
+//		} catch (Exception e) {
+//			log.error("Avvisatura digitale Fallita", e);
+//			aggiornaSondaKO(batch_avvisatura_digitale, e, bd);
+//			return "Avvisatura digitale#" + e.getMessage();
+//		} finally {
+//			BatchManager.stopEsecuzione(bd, batch_avvisatura_digitale);
+//			if(bd != null) bd.closeConnection();
+//			if(ctx != null) ctx.log();
+//		}
+//    	return null;
+//	    }
 
 
 
