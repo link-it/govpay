@@ -177,6 +177,10 @@ public class VersamentiBD extends BasicBD {
 			if(isAutoCommit())
 				throw new ServiceException("L'operazione insertVersamento deve essere completata in transazione singola");
 
+			String nextAvvisatura = this.getNextAvvisatura(versamento.getUo(this).getDominio(this).getCodDominio());
+			log.info("CodAvvisatura:" + nextAvvisatura);
+			versamento.setCodAvvisatura(nextAvvisatura);
+
 			it.govpay.orm.Versamento vo = VersamentoConverter.toVO(versamento);
 			this.getVersamentoService().create(vo);
 			versamento.setId(vo.getId());

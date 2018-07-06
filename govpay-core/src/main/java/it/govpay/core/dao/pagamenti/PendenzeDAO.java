@@ -258,7 +258,6 @@ public class PendenzeDAO extends BaseDAO{
 			
 			if(putVersamentoDTO.isAvvisaturaDigitale()) {
 				chiediVersamento.setDaAvvisare(true);
-				chiediVersamento.setCodAvvisatura(versamentiBD.getNextAvvisatura(putVersamentoDTO.getVersamento().getCodDominio()));
 			}
 			
 			versamentoBusiness.caricaVersamento(chiediVersamento, chiediVersamento.getNumeroAvviso() == null, true);

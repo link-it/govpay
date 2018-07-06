@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.model.Pagamento;
 import it.govpay.core.rs.v1.beans.ragioneria.Allegato;
@@ -16,6 +17,7 @@ import it.govpay.core.rs.v1.beans.ragioneria.StatoRiscossione;
 import it.govpay.core.rs.v1.beans.ragioneria.TipoRiscossione;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
+import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.ragioneria.converter.PendenzeConverter;
 import it.govpay.rs.v1.beans.ragioneria.converter.RptConverter;
 
@@ -67,7 +69,9 @@ public class RiscossioniConverter {
 			if(input.getIncasso(null) != null)
 				rsModel.setIncasso(IncassiConverter.toRsIndexModel(input.getIncasso(null)));
 
-		} catch(ServiceException e) {}
+		} catch(ServiceException e) {
+			LoggerWrapperFactory.getLogger(BaseRsService.class).error("Errore nella conversione del pagamento: " + e.getMessage(), e);
+		}
 
 		return rsModel;
 	}

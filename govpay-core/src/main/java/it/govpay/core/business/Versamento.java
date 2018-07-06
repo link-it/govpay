@@ -113,6 +113,10 @@ public class Versamento extends BasicBD {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte());
 				// Versamento presente. Verifico e aggiorno
 				
+				versamento.setCodAvvisatura(versamentoLetto.getCodAvvisatura());
+				versamento.setDaAvvisare(versamentoLetto.isDaAvvisare());
+
+				
 				if(!aggiornaSeEsiste)
 					throw new GovPayException(EsitoOperazione.VER_015, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				
