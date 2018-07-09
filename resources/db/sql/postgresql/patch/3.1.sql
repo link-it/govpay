@@ -9,8 +9,10 @@ ALTER TABLE pagamenti_portale ALTER COLUMN tipo SET NOT NULL;
 
 ALTER TABLE pagamenti_portale ALTER COLUMN url_ritorno DROP NOT NULL;
 
---drop table tracciati
---drop sequence seq_tracciati
+DROP TABLE operazioni;
+DROP SEQUENCE seq_operazioni;
+DROP TABLE tracciati;  
+DROP SEQUENCE seq_tracciati;
 CREATE SEQUENCE seq_tracciati start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE tracciati
