@@ -30,74 +30,73 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.anagrafica.AuditBD;
 import it.govpay.model.BasicModel;
-
-import it.govpay.orm.dao.IIntermediarioService;
-import it.govpay.orm.dao.IDBIntermediarioService;
-import it.govpay.orm.dao.IStazioneService;
-import it.govpay.orm.dao.IDBStazioneService;
-import it.govpay.orm.dao.IDominioService;
-import it.govpay.orm.dao.IDBDominioService;
-import it.govpay.orm.dao.IIbanAccreditoService;
-import it.govpay.orm.dao.IDBIbanAccreditoService;
-import it.govpay.orm.dao.ITipoTributoService;
-import it.govpay.orm.dao.IDBTipoTributoService;
-import it.govpay.orm.dao.ITributoService;
-import it.govpay.orm.dao.IDBTributoService;
-import it.govpay.orm.dao.IUtenzaService;
-import it.govpay.orm.dao.IDBUtenzaService;
-import it.govpay.orm.dao.IUtenzaDominioService;
-import it.govpay.orm.dao.IDBUtenzaDominioService;
-import it.govpay.orm.dao.IUtenzaTributoService;
-import it.govpay.orm.dao.IDBUtenzaTributoService;
-import it.govpay.orm.dao.IApplicazioneService;
-import it.govpay.orm.dao.IDBApplicazioneService;
-import it.govpay.orm.dao.IUoService;
-import it.govpay.orm.dao.IDBUoService;
-import it.govpay.orm.dao.IOperatoreService;
-import it.govpay.orm.dao.IDBOperatoreService;
-import it.govpay.orm.dao.IConnettoreService;
-import it.govpay.orm.dao.IDBConnettoreService;
 import it.govpay.orm.dao.IACLService;
-import it.govpay.orm.dao.IDBACLService;
-import it.govpay.orm.dao.IVersamentoService;
-import it.govpay.orm.dao.IDBVersamentoService;
-import it.govpay.orm.dao.ISingoloVersamentoService;
-import it.govpay.orm.dao.IDBSingoloVersamentoService;
-import it.govpay.orm.dao.IPagamentoPortaleService;
-import it.govpay.orm.dao.IDBPagamentoPortaleService;
-import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
-import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
-import it.govpay.orm.dao.IRPTService;
-import it.govpay.orm.dao.IDBRPTService;
-import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IDBRRService;
-import it.govpay.orm.dao.INotificaService;
-import it.govpay.orm.dao.IDBNotificaService;
-import it.govpay.orm.dao.IIUVService;
-import it.govpay.orm.dao.IDBIUVService;
-import it.govpay.orm.dao.IFRService;
-import it.govpay.orm.dao.IDBFRService;
-import it.govpay.orm.dao.IIncassoService;
-import it.govpay.orm.dao.IDBIncassoService;
-import it.govpay.orm.dao.IPagamentoService;
-import it.govpay.orm.dao.IDBPagamentoService;
-import it.govpay.orm.dao.IRendicontazioneService;
-import it.govpay.orm.dao.IDBRendicontazioneService;
-import it.govpay.orm.dao.IEventoService;
-import it.govpay.orm.dao.IDBEventoService;
-import it.govpay.orm.dao.IBatchService;
-import it.govpay.orm.dao.IDBBatchService;
-import it.govpay.orm.dao.ITracciatoService;
-import it.govpay.orm.dao.IDBTracciatoService;
-import it.govpay.orm.dao.IOperazioneService;
-import it.govpay.orm.dao.IDBOperazioneService;
+import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IAuditService;
-import it.govpay.orm.dao.IDBAuditService;
 import it.govpay.orm.dao.IAvvisoService;
+import it.govpay.orm.dao.IBatchService;
+import it.govpay.orm.dao.IConnettoreService;
+import it.govpay.orm.dao.IDBACLService;
+import it.govpay.orm.dao.IDBApplicazioneService;
+import it.govpay.orm.dao.IDBAuditService;
 import it.govpay.orm.dao.IDBAvvisoService;
-
+import it.govpay.orm.dao.IDBBatchService;
+import it.govpay.orm.dao.IDBConnettoreService;
+import it.govpay.orm.dao.IDBDominioService;
+import it.govpay.orm.dao.IDBEsitoAvvisaturaService;
+import it.govpay.orm.dao.IDBEventoService;
+import it.govpay.orm.dao.IDBFRService;
+import it.govpay.orm.dao.IDBIUVService;
+import it.govpay.orm.dao.IDBIbanAccreditoService;
+import it.govpay.orm.dao.IDBIncassoService;
+import it.govpay.orm.dao.IDBIntermediarioService;
+import it.govpay.orm.dao.IDBNotificaService;
+import it.govpay.orm.dao.IDBOperatoreService;
+import it.govpay.orm.dao.IDBOperazioneService;
+import it.govpay.orm.dao.IDBPagamentoPortaleService;
+import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
+import it.govpay.orm.dao.IDBPagamentoService;
+import it.govpay.orm.dao.IDBRPTService;
+import it.govpay.orm.dao.IDBRRService;
+import it.govpay.orm.dao.IDBRendicontazioneService;
+import it.govpay.orm.dao.IDBSingoloVersamentoService;
+import it.govpay.orm.dao.IDBStazioneService;
+import it.govpay.orm.dao.IDBTipoTributoService;
+import it.govpay.orm.dao.IDBTracciatoService;
+import it.govpay.orm.dao.IDBTributoService;
+import it.govpay.orm.dao.IDBUoService;
+import it.govpay.orm.dao.IDBUtenzaDominioService;
+import it.govpay.orm.dao.IDBUtenzaService;
+import it.govpay.orm.dao.IDBUtenzaTributoService;
+import it.govpay.orm.dao.IDBVersamentoService;
+import it.govpay.orm.dao.IDominioService;
+import it.govpay.orm.dao.IEsitoAvvisaturaService;
+import it.govpay.orm.dao.IEventoService;
+import it.govpay.orm.dao.IFRService;
+import it.govpay.orm.dao.IIUVService;
+import it.govpay.orm.dao.IIbanAccreditoService;
+import it.govpay.orm.dao.IIncassoService;
+import it.govpay.orm.dao.IIntermediarioService;
+import it.govpay.orm.dao.INotificaService;
+import it.govpay.orm.dao.IOperatoreService;
+import it.govpay.orm.dao.IOperazioneService;
+import it.govpay.orm.dao.IPagamentoPortaleService;
+import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
+import it.govpay.orm.dao.IPagamentoService;
+import it.govpay.orm.dao.IRPTService;
+import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
-
+import it.govpay.orm.dao.IRendicontazioneService;
+import it.govpay.orm.dao.ISingoloVersamentoService;
+import it.govpay.orm.dao.IStazioneService;
+import it.govpay.orm.dao.ITipoTributoService;
+import it.govpay.orm.dao.ITracciatoService;
+import it.govpay.orm.dao.ITributoService;
+import it.govpay.orm.dao.IUoService;
+import it.govpay.orm.dao.IUtenzaDominioService;
+import it.govpay.orm.dao.IUtenzaService;
+import it.govpay.orm.dao.IUtenzaTributoService;
+import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 public class BasicBD {
@@ -134,6 +133,7 @@ public class BasicBD {
 	private IEventoService eventoService;
 	private IBatchService batchService;
 	private ITracciatoService tracciatoService;
+	private IEsitoAvvisaturaService esitoAvvisaturaService;
 	private IOperazioneService operazioneService;
 	private IAuditService auditService;
 	private IAvvisoService avvisoService;
@@ -213,6 +213,7 @@ public class BasicBD {
 				this.eventoService = this.serviceManager.getEventoService();
 				this.batchService = this.serviceManager.getBatchService();
 				this.tracciatoService = this.serviceManager.getTracciatoService();
+				this.esitoAvvisaturaService = this.serviceManager.getEsitoAvvisaturaService();
 				this.operazioneService = this.serviceManager.getOperazioneService();
 				this.auditService = this.serviceManager.getAuditService();
 				this.avvisoService = this.serviceManager.getAvvisoService();
@@ -261,6 +262,7 @@ public class BasicBD {
 			((IDBEventoService)this.eventoService).enableSelectForUpdate();
 			((IDBBatchService)this.batchService).enableSelectForUpdate();
 			((IDBTracciatoService)this.tracciatoService).enableSelectForUpdate();
+			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).enableSelectForUpdate();
 			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
 			((IDBAuditService)this.auditService).enableSelectForUpdate();
 			((IDBAvvisoService)this.avvisoService).enableSelectForUpdate();
@@ -305,6 +307,7 @@ public class BasicBD {
 			((IDBEventoService)this.eventoService).disableSelectForUpdate();
 			((IDBBatchService)this.batchService).disableSelectForUpdate();
 			((IDBTracciatoService)this.tracciatoService).disableSelectForUpdate();
+			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).disableSelectForUpdate();
 			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
 			((IDBAuditService)this.auditService).disableSelectForUpdate();
 			((IDBAvvisoService)this.avvisoService).disableSelectForUpdate();
@@ -524,6 +527,13 @@ public class BasicBD {
 			return father.getTracciatoService();
 		}
 		return this.tracciatoService;
+	}
+	
+	public IEsitoAvvisaturaService getEsitoAvvisaturaService() {
+		if(father != null) {
+			return father.getEsitoAvvisaturaService();
+		}
+		return this.esitoAvvisaturaService;
 	}
 	
 	public IOperazioneService getOperazioneService() {

@@ -21,6 +21,10 @@ package it.govpay.orm.dao;
 
 import it.govpay.orm.Versamento;
 import org.openspcoop2.generic_project.dao.IServiceWithId;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.orm.IdVersamento;
 
 /**     
@@ -33,5 +37,5 @@ import it.govpay.orm.IdVersamento;
  */
 
 public interface IVersamentoService extends IServiceWithId<Versamento, IdVersamento> {
-
+	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException;
 }

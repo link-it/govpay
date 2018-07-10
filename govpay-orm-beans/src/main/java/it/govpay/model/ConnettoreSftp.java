@@ -22,41 +22,79 @@ package it.govpay.model;
 public class ConnettoreSftp extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
-	public static final String P_URL_NAME = "URL";
-	public static final String P_USER_NAME = "USER";
-	public static final String P_PASS_NAME = "PASS";
+	public static final String P_URL_NAME_IN = "URL_IN";
+	public static final String P_USER_NAME_IN = "USER_IN";
+	public static final String P_PASS_NAME_IN = "PASS_IN";
+
+	public static final String P_URL_NAME_OUT = "URL_OUT";
+	public static final String P_USER_NAME_OUT = "USER_OUT";
+	public static final String P_PASS_NAME_OUT = "PASS_OUT";
 	
 	private String idConnettore;
-	private String httpUser;
-	private String httpPassw;
-	private String url;
+	private String httpUserIn;
+	private String httpPasswIn;
+	private String urlIn;
+	private String httpUserOut;
+	private String httpPasswOut;
+	private String urlOut;
 	
 	public ConnettoreSftp() {
 	}
-		
+
 	public String getIdConnettore() {
 		return idConnettore;
 	}
+
 	public void setIdConnettore(String idConnettore) {
 		this.idConnettore = idConnettore;
 	}
-	public String getHttpUser() {
-		return httpUser;
+
+	public String getHttpUserIn() {
+		return httpUserIn;
 	}
-	public void setHttpUser(String httpUser) {
-		this.httpUser = httpUser;
+
+	public void setHttpUserIn(String httpUserIn) {
+		this.httpUserIn = httpUserIn;
 	}
-	public String getHttpPassw() {
-		return httpPassw;
+
+	public String getHttpPasswIn() {
+		return httpPasswIn;
 	}
-	public void setHttpPassw(String httpPassw) {
-		this.httpPassw = httpPassw;
+
+	public void setHttpPasswIn(String httpPasswIn) {
+		this.httpPasswIn = httpPasswIn;
 	}
-	public String getUrl() {
-		return url;
+
+	public String getUrlIn() {
+		return urlIn;
 	}
-	public void setUrl(String url) {
-		this.url = url;
+
+	public void setUrlIn(String urlIn) {
+		this.urlIn = urlIn;
+	}
+
+	public String getHttpUserOut() {
+		return httpUserOut;
+	}
+
+	public void setHttpUserOut(String httpUserOut) {
+		this.httpUserOut = httpUserOut;
+	}
+
+	public String getHttpPasswOut() {
+		return httpPasswOut;
+	}
+
+	public void setHttpPasswOut(String httpPasswOut) {
+		this.httpPasswOut = httpPasswOut;
+	}
+
+	public String getUrlOut() {
+		return urlOut;
+	}
+
+	public void setUrlOut(String urlOut) {
+		this.urlOut = urlOut;
 	}
 
 }

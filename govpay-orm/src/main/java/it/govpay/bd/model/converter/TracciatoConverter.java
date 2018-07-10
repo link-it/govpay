@@ -1,13 +1,16 @@
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Tracciato;
+import it.govpay.model.Tracciato;
+import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 
 public class TracciatoConverter {
 
 	public static Tracciato toDTO(it.govpay.orm.Tracciato vo) {
 		Tracciato dto = new Tracciato();
-		dto.setTipo(vo.getTipo());
-		dto.setStato(vo.getStato());
+		dto.setId(vo.getId());
+		dto.setTipo(TIPO_TRACCIATO.valueOf(vo.getTipo()));
+		dto.setStato(STATO_ELABORAZIONE.valueOf(vo.getStato()));
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setDataCaricamento(vo.getDataCaricamento());
 		dto.setDataCompletamento(vo.getDataCompletamento());
@@ -24,8 +27,8 @@ public class TracciatoConverter {
 		it.govpay.orm.Tracciato vo = new it.govpay.orm.Tracciato();
 		vo.setId(dto.getId());
 
-		vo.setTipo(dto.getTipo());
-		vo.setStato(dto.getStato());
+		vo.setTipo(dto.getTipo().name());
+		vo.setStato(dto.getStato().name());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setDataCaricamento(dto.getDataCaricamento());
 		vo.setDataCompletamento(dto.getDataCompletamento());

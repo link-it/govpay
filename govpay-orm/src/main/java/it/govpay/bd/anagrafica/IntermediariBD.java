@@ -118,8 +118,8 @@ public class IntermediariBD extends BasicBD {
 			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreFtp());
 
 			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
-			ConnettoreSftp connettorePdd = ConnettoreSftpConverter.toDTO(connettori);
-			intermediario.setConnettoreSftp(connettorePdd);
+			ConnettoreSftp connettoreSftp = ConnettoreSftpConverter.toDTO(connettori);
+			intermediario.setConnettoreSftp(connettoreSftp);
 		}
 		return intermediario;
 

@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import it.govpay.core.rs.v1.beans.base.VersioneApiEnum;
 import it.govpay.core.rs.v1.beans.base.ServizioEnum;
+import it.govpay.core.rs.v1.beans.base.VersioneApiEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;

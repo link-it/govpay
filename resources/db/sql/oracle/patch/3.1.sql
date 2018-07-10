@@ -20,7 +20,7 @@ CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 CREATE TABLE tracciati
 (
         tipo VARCHAR2(10 CHAR) NOT NULL,
-        stato VARCHAR2(10 CHAR) NOT NULL,
+        stato VARCHAR2(12 CHAR) NOT NULL,
         descrizione_stato VARCHAR2(256 CHAR),
         data_caricamento TIMESTAMP NOT NULL,
         data_completamento TIMESTAMP NOT NULL,

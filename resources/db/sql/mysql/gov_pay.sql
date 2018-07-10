@@ -304,17 +304,17 @@ CREATE TABLE acl
 CREATE TABLE tracciati
 (
 	tipo VARCHAR(10) NOT NULL,
-	stato VARCHAR(10) NOT NULL,
+	stato VARCHAR(12) NOT NULL,
 	descrizione_stato VARCHAR(256),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_completamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_completamento TIMESTAMP(3) DEFAULT 0,
 	bean_dati LONGTEXT,
 	file_name_richiesta VARCHAR(256),
-	raw_richiesta MEDIUMBLOB NOT NULL,
+	raw_richiesta MEDIUMBLOB,
 	file_name_esito VARCHAR(256),
-	raw_esito MEDIUMBLOB NOT NULL,
+	raw_esito MEDIUMBLOB,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- fk/pk keys constraints

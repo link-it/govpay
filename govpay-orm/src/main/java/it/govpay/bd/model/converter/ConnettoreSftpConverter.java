@@ -34,16 +34,28 @@ public class ConnettoreSftpConverter {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){
 
 				dto.setIdConnettore(connettore.getCodConnettore());
-				if(ConnettoreSftp.P_USER_NAME.equals(connettore.getCodProprieta())) {
-					dto.setHttpUser(connettore.getValore());
+				if(ConnettoreSftp.P_USER_NAME_IN.equals(connettore.getCodProprieta())) {
+					dto.setHttpUserIn(connettore.getValore());
 				}
 
-				if(ConnettoreSftp.P_PASS_NAME.equals(connettore.getCodProprieta())) {
-					dto.setHttpPassw(connettore.getValore());
+				if(ConnettoreSftp.P_PASS_NAME_IN.equals(connettore.getCodProprieta())) {
+					dto.setHttpPasswIn(connettore.getValore());
 				}
 
-				if(ConnettoreSftp.P_URL_NAME.equals(connettore.getCodProprieta())) {
-					dto.setUrl(connettore.getValore());
+				if(ConnettoreSftp.P_URL_NAME_IN.equals(connettore.getCodProprieta())) {
+					dto.setUrlIn(connettore.getValore());
+				}
+				
+				if(ConnettoreSftp.P_USER_NAME_OUT.equals(connettore.getCodProprieta())) {
+					dto.setHttpUserOut(connettore.getValore());
+				}
+
+				if(ConnettoreSftp.P_PASS_NAME_OUT.equals(connettore.getCodProprieta())) {
+					dto.setHttpPasswOut(connettore.getValore());
+				}
+
+				if(ConnettoreSftp.P_URL_NAME_OUT.equals(connettore.getCodProprieta())) {
+					dto.setUrlOut(connettore.getValore());
 				}
 
 			}
@@ -54,27 +66,55 @@ public class ConnettoreSftpConverter {
 	public static List<it.govpay.orm.Connettore> toVOList(ConnettoreSftp connettore) {
 		List<it.govpay.orm.Connettore> voList = new ArrayList<it.govpay.orm.Connettore>();
 		
-		if(connettore.getHttpUser() != null && !connettore.getHttpUser().trim().isEmpty()) {
+		if(connettore.getHttpUserIn() != null && !connettore.getHttpUserIn().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreSftp.P_USER_NAME);
-			vo.setValore(connettore.getHttpUser());
+			vo.setCodProprieta(ConnettoreSftp.P_USER_NAME_IN);
+				
+			vo.setValore(connettore.getHttpUserIn());
 			voList.add(vo);
 		}
 
-		if(connettore.getHttpPassw() != null && !connettore.getHttpPassw().trim().isEmpty()) {
+		if(connettore.getHttpPasswIn() != null && !connettore.getHttpPasswIn().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreSftp.P_PASS_NAME);
-			vo.setValore(connettore.getHttpPassw());
+			vo.setCodProprieta(ConnettoreSftp.P_PASS_NAME_IN);
+			vo.setValore(connettore.getHttpPasswIn());
 			voList.add(vo);
 		}
 
-		if(connettore.getUrl() != null && !connettore.getUrl().trim().isEmpty()) {
+		if(connettore.getUrlIn() != null && !connettore.getUrlIn().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreSftp.P_URL_NAME);
-			vo.setValore(connettore.getUrl());
+			
+			vo.setCodProprieta(ConnettoreSftp.P_URL_NAME_IN);
+			vo.setValore(connettore.getUrlIn());
+			voList.add(vo);
+		}
+
+		if(connettore.getHttpUserOut() != null && !connettore.getHttpUserOut().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreSftp.P_USER_NAME_OUT);
+			vo.setValore(connettore.getHttpUserOut());
+			voList.add(vo);
+		}
+
+		if(connettore.getHttpPasswOut() != null && !connettore.getHttpPasswOut().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreSftp.P_PASS_NAME_OUT);
+
+			vo.setValore(connettore.getHttpPasswOut());
+			voList.add(vo);
+		}
+
+		if(connettore.getUrlOut() != null && !connettore.getUrlOut().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			
+			vo.setCodProprieta(ConnettoreSftp.P_URL_NAME_OUT);
+			vo.setValore(connettore.getUrlOut());
 			voList.add(vo);
 		}
 

@@ -19,16 +19,28 @@
  */
 package it.govpay.core.business;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 import org.openspcoop2.utils.sonde.Sonda;
 import org.openspcoop2.utils.sonde.SondaException;
 import org.openspcoop2.utils.sonde.SondaFactory;
@@ -36,18 +48,40 @@ import org.openspcoop2.utils.sonde.impl.SondaBatch;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+
+import gov.telematici.pagamenti.ws.CtEsitoPresaInCarico;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.bd.pagamento.TracciatiBD;
+import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.TracciatoFilter;
+import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.bd.pagamento.util.CountPerDominio;
+import it.govpay.core.beans.tracciati.Avvisatura;
 import it.govpay.core.business.model.ListaAvvisiDTO;
 import it.govpay.core.business.model.ListaAvvisiDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.ConnettoreSftp;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Tracciato;
+import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 import it.govpay.model.avvisi.AvvisoPagamentoInput;
 
@@ -55,11 +89,13 @@ public class Operazioni{
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
 	public static final String rnd = "update-rnd";
+	public static final String psp = "update-psp";
 	public static final String pnd = "update-pnd";
 	public static final String ntfy = "update-ntfy";
 	public static final String check_ntfy = "check-ntfy";
 	public static final String batch_generazione_avvisi = "generazione-avvisi";
 	public static final String batch_avvisatura_digitale = "avvisatura-digitale";
+	public static final String batch_esito_avvisatura_digitale = "esito-avvisatura-digitale";
 
 
 	private static boolean eseguiGenerazioneAvvisi;
@@ -324,8 +360,8 @@ public class Operazioni{
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
-//			Properties properties = new Properties();
-//			((SondaBatch)sonda).aggiornaStatoSonda(true, properties, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+			//			Properties properties = new Properties();
+			//			((SondaBatch)sonda).aggiornaStatoSonda(true, properties, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
 			((SondaBatch)sonda).aggiornaStatoSonda(true,  new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
 			log.warn("Errore nell'aggiornamento della sonda OK", t);
@@ -346,8 +382,8 @@ public class Operazioni{
 			Connection con = bd.getConnection();
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
-//			Properties properties = new Properties();
-//			((SondaBatch)sonda).aggiornaStatoSonda(false, properties, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
+			//			Properties properties = new Properties();
+			//			((SondaBatch)sonda).aggiornaStatoSonda(false, properties, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
 			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
 			log.warn("Errore nell'aggiornamento della sonda KO", t);
@@ -356,97 +392,338 @@ public class Operazioni{
 		}
 	}
 
-//    public static String avvisaturaDigitale(String serviceName){
-//		BasicBD bd = null;
-//		GpContext ctx = null;
-//		try {
-//			ctx = new GpContext();
-//			MDC.put("cmd", "AvvisaturaDigitale");
-//			MDC.put("op", ctx.getTransactionId());
-//			Service service = new Service();
-//			service.setName(serviceName);
-//			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-//			ctx.getTransaction().setService(service);
-//			Operation opt = new Operation();
-//			opt.setName("AvvisaturaDigitale");
-//			ctx.getTransaction().setOperation(opt);
-//			GpThreadLocal.set(ctx);
-//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-//
-//	        // Scandisco tutte le stazioni censite
-//	        List<Stazione> stazioni;
-//	        try {
-//	            stazioni = new StazioniBD().getStazioni();
-//	            for(Stazione stazione : stazioni) {
-//	
-//	                // Accedo al server sftp e cerco nuovi flussi di rendicontazione
-//	                log.info("Accedo al servizio SFTP per la stazione " + stazione.getId_stazione());
-//	                JSch jsch = new JSch();
-//	                Session session = null;
-//	                try {
-//	                    session = jsch.getSession(stazione.getSftp_in_user(), stazione.getSftp_in_host(), 22);
-//	                    session.setConfig("StrictHostKeyChecking", "no");
-//	                    session.setPassword(stazione.getSftp_in_pass());
-//	                    session.connect();
-//	
-//	                    Channel channel = session.openChannel("sftp");
-//	                    channel.connect();
-//	                    ChannelSftp sftpChannel = (ChannelSftp) channel;
-//	
-//	                   
-//	                    // Cerco file che finiscono per _AV.zip
-//	                    log.info("Cerco tracciati di Avvisatura digitale...");
-//	                    Vector<ChannelSftp.LsEntry> entryList = sftpChannel.ls(stazione.getId_intermediario() + "*_AV.zip");
-//	                    log.info("Trovati " + entryList.size() + " tracciati.");
-//	                    for(ChannelSftp.LsEntry entry : entryList) {
-//	                        int esito = 0;
-//	                       
-//	                        ZipInputStream zis = new ZipInputStream(sftpChannel.get(entry.getFilename()));
-//	                        // Nello zip mi aspetto che ci sia un solo file XML
-//	                        // Se non c'e' niente o non si apre, do errore
-//	                        try {
-//	                            ZipEntry zipentry = zis.getNextEntry();
-//	                        } catch (IOException e1) {
-//	                            esito = 1;
-//	                            e1.printStackTrace();
-//	                        }
-//	                       
-//	                        // Dal primo file che trovo, leggo la lista degli avvisi
-//	                        try {
-//	                            ListaAvvisiDigitali listaAvvisiDigitali = NdpUtils.toListaAvvisiDigitali(zis);
-//	                        } catch (JAXBException | SAXException e) {
-//	                            esito = 3;
-//	                            e.printStackTrace();
-//	                        }
-//	                       
-//	                        // TODO
-//	                    }
-//	                    sftpChannel.exit();
-//	                    session.disconnect();
-//	                } catch (JSchException e) {
-//	                    e.printStackTrace();
-//	                } catch (SftpException e) {
-//	                    e.printStackTrace();
-//	                }
-//	            }
-//	        } catch (SQLException e2) {
-//	            // TODO Auto-generated catch block
-//	            e2.printStackTrace();
-//	        }
-//	        return "Avvisatura digitale ok";
-//		} catch (Exception e) {
-//			log.error("Avvisatura digitale Fallita", e);
-//			aggiornaSondaKO(batch_avvisatura_digitale, e, bd);
-//			return "Avvisatura digitale#" + e.getMessage();
-//		} finally {
-//			BatchManager.stopEsecuzione(bd, batch_avvisatura_digitale);
-//			if(bd != null) bd.closeConnection();
-//			if(ctx != null) ctx.log();
-//		}
-//    	return null;
-//	    }
+	public static String esitoAvvisaturaDigitale(String serviceName){
+		BasicBD bd = null;
+		GpContext ctx = null;
+		try {
+
+			log.info("Batch avvisatura digitale");
+
+			ctx = new GpContext();
+			MDC.put("cmd", "AvvisaturaDigitale");
+			MDC.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName(serviceName);
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
+			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("AvvisaturaDigitale");
+			ctx.getTransaction().setOperation(opt);
+			GpThreadLocal.set(ctx);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
+
+			SerializationConfig config = new SerializationConfig();
+			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+			config.setIgnoreNullValues(true);
+
+			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
+			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 
 
 
+			boolean wasAutoCommit = bd.isAutoCommit();
+			if(wasAutoCommit)
+				bd.setAutoCommit(false);
 
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			TracciatiBD tracciatiBD = new TracciatiBD(bd);
+			TracciatoFilter filter = tracciatiBD.newFilter();
+			filter.setTipo(TIPO_TRACCIATO.AV);
+			filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+			List<Tracciato> tracciati = tracciatiBD.findAll(filter);	
+			return null;
+		} catch (Exception e) {
+			log.error("Avvisatura digitale Fallita", e);
+			//			aggiornaSondaKO(batch_avvisatura_digitale, e, bd);
+			return "Avvisatura digitale#" + e.getMessage();
+		} finally {
+			BatchManager.stopEsecuzione(bd, batch_avvisatura_digitale);
+			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
+		}
+
+	}
+
+		public static String avvisaturaDigitale(String serviceName){
+			BasicBD bd = null;
+			GpContext ctx = null;
+			try {
+
+				log.info("Batch avvisatura digitale");
+
+				ctx = new GpContext();
+				MDC.put("cmd", "AvvisaturaDigitale");
+				MDC.put("op", ctx.getTransactionId());
+				Service service = new Service();
+				service.setName(serviceName);
+				service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
+				ctx.getTransaction().setService(service);
+				Operation opt = new Operation();
+				opt.setName("AvvisaturaDigitale");
+				ctx.getTransaction().setOperation(opt);
+				GpThreadLocal.set(ctx);
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
+
+				SerializationConfig config = new SerializationConfig();
+				config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+				config.setIgnoreNullValues(true);
+
+				IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
+				ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
+
+
+
+				boolean wasAutoCommit = bd.isAutoCommit();
+				if(wasAutoCommit)
+					bd.setAutoCommit(false);
+
+				VersamentiBD versamentiBD = new VersamentiBD(bd);
+				TracciatiBD tracciatiBD = new TracciatiBD(bd);
+				TracciatoFilter filter = tracciatiBD.newFilter();
+				filter.setTipo(TIPO_TRACCIATO.AV);
+				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
+
+			for(Tracciato tracciato: tracciati) {
+
+
+				Avvisatura avvisatura = (Avvisatura) deserializer.getObject(tracciato.getBeanDati(), Avvisatura.class);
+
+				Intermediario intermediario = AnagraficaManager.getIntermediario(bd, avvisatura.getIntermediario());
+
+				if("IN_SPEDIZIONE".equals(avvisatura.getStepElaborazione()) || "ERRORE_SPEDIZIONE".equals(avvisatura.getStepElaborazione())) {
+					try {
+						// Accedo al server sftp e cerco nuovi flussi di rendicontazione
+						log.info("Accedo al servizio SFTP per l'intermediario " + intermediario.getCodIntermediario());
+						JSch jsch = new JSch();
+						Session session = null;
+						ConnettoreSftp connettore = intermediario.getConnettoreSftp();
+						if(connettore == null)
+							throw new Exception("Connettore SFTP in uscita non definito per l'intermediario "+intermediario.getCodIntermediario());
+
+						session = jsch.getSession(connettore.getHttpUserOut(), connettore.getUrlOut(), 22);
+						session.setConfig("StrictHostKeyChecking", "no");
+						session.setPassword(connettore.getHttpPasswOut());
+						session.connect();
+
+						Channel channel = session.openChannel("sftp");
+						channel.connect();
+						ChannelSftp sftpChannel = (ChannelSftp) channel;
+
+
+						// Cerco file che finiscono per _AV.zip
+						log.info("Scrittura tracciato "+tracciato.getFileNameRichiesta()+" di Avvisatura digitale...");
+
+						OutputStream outputStreamFileRichiesta = sftpChannel.put(tracciato.getFileNameRichiesta());
+						ZipOutputStream zipOutputStreamFileRichiesta = new ZipOutputStream(outputStreamFileRichiesta);
+
+						VersamentoFilter versamentiFilter = versamentiBD.newFilter();
+						versamentiFilter.setIdTracciato(tracciato.getId());
+						versamentiFilter.setOffset(0);
+						versamentiFilter.setLimit(GovpayConfig.getInstance().getSizePaginaNumeroVersamentiAvvisaturaDigitale());
+
+
+						long count = versamentiBD.count(versamentiFilter);
+						List<it.govpay.bd.model.Versamento> lstVersamenti = versamentiBD.findAll(versamentiFilter);
+
+						zipOutputStreamFileRichiesta.putNextEntry(new ZipEntry(tracciato.getFileNameRichiesta().replaceAll("zip", "xml")));
+						AvvisaturaUtils.scriviHeaderTracciatoAvvisatura(zipOutputStreamFileRichiesta);
+						while(lstVersamenti!=null && !lstVersamenti.isEmpty()) {
+
+							for(it.govpay.bd.model.Versamento versamento: lstVersamenti) {
+
+								//leggo le info annidate //TODO refactor codice
+								versamento.getDominio(bd);
+
+								List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+								for(SingoloVersamento singoloVersamento: singoliVersamenti) {
+									singoloVersamento.getIbanAccredito(bd);
+									singoloVersamento.getIbanAppoggio(bd);
+								}
+								AvvisaturaUtils.scriviVersamentoTracciatoAvvisatura(zipOutputStreamFileRichiesta, versamento);
+							}
+
+
+							avvisatura.setStepElaborazione("IN_SPEDIZIONE");
+							avvisatura.setDataUltimoAggiornamento(new Date());
+							avvisatura.setPercentualeStep(Math.round((versamentiFilter.getOffset() / count) * 100.0f));
+
+							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+							bd.commit();
+
+							versamentiFilter.setOffset(versamentiFilter.getOffset() + lstVersamenti.size());
+							lstVersamenti = versamentiBD.findAll(versamentiFilter);
+
+						}
+
+						AvvisaturaUtils.scriviTailTracciatoAvvisatura(zipOutputStreamFileRichiesta);
+
+
+						zipOutputStreamFileRichiesta.flush();
+						zipOutputStreamFileRichiesta.close();
+
+						sftpChannel.exit();
+						session.disconnect();
+
+
+						log.info("Scrittura tracciato "+tracciato.getFileNameRichiesta()+" di Avvisatura digitale completata");
+
+						avvisatura.setStepElaborazione("SPEDITO");
+						avvisatura.setDataUltimoAggiornamento(new Date());
+						avvisatura.setPercentualeStep(0);
+
+						tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+						bd.commit();
+					} catch(Exception e) {
+						log.error("Errore durante la scrittura del file '"+tracciato.getFileNameRichiesta()+"':"+ e.getMessage(),e);
+						avvisatura.setStepElaborazione("ERRORE_SPEDIZIONE");
+						avvisatura.setDataUltimoAggiornamento(new Date());
+						avvisatura.setDescrizioneStepElaborazione(e.getMessage());
+						avvisatura.setPercentualeStep(0);
+
+						tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+						bd.commit();
+					}
+				} else if("SPEDITO".equals(avvisatura.getStepElaborazione())) {
+
+					ZipInputStream zis = null;
+					try {
+						// Accedo al server sftp e cerco nuovi flussi di rendicontazione
+						log.info("Accedo al servizio SFTP per l'intermediario " + intermediario.getCodIntermediario());
+						JSch jsch = new JSch();
+						Session session = null;
+						ConnettoreSftp connettore = intermediario.getConnettoreSftp();
+
+						if(connettore == null)
+							throw new Exception("Connettore SFTP in ingresso non definito per l'intermediario "+intermediario.getCodIntermediario());
+
+						session = jsch.getSession(connettore.getHttpUserIn(), connettore.getUrlIn(), 22);
+						session.setConfig("StrictHostKeyChecking", "no");
+						session.setPassword(connettore.getHttpPasswIn());
+						session.connect();
+
+						Channel channel = session.openChannel("sftp");
+						channel.connect();
+						ChannelSftp sftpChannel = (ChannelSftp) channel;
+						InputStream inputStream = sftpChannel.get(tracciato.getFileNameEsito());
+						if(inputStream != null) {
+							zis = new ZipInputStream(inputStream);
+
+							ZipEntry zipEntry = null;
+							try {
+								zipEntry = zis.getNextEntry();
+							} catch (IOException e) {
+								log.warn("Archivio " + tracciato.getFileNameEsito() + " vuoto");
+								throw e;
+							}
+
+							CtEsitoPresaInCarico esitoPresaInCaricoAvvisoDigitale = AvvisaturaUtils.leggiEsitoPresaInCaricoAvvisoDigitale(zis);
+
+							avvisatura.setStepElaborazione("ACKATO");
+							avvisatura.setDescrizioneStepElaborazione(null);
+							avvisatura.setPercentualeStep(0);
+							avvisatura.setCodiceEsitoPresaInCarico(esitoPresaInCaricoAvvisoDigitale.getCodiceEsitoPresaInCarico().intValue());
+							avvisatura.setDescrizioneEsitoPresaInCarico(esitoPresaInCaricoAvvisoDigitale.getDescrizioneEsitoPresaInCarico());
+							avvisatura.setDataUltimoAggiornamento(new Date());
+
+							tracciato.setStato(avvisatura.getCodiceEsitoPresaInCarico() != 0 ? STATO_ELABORAZIONE.SCARTATO: STATO_ELABORAZIONE.COMPLETATO);
+							tracciato.setDataCompletamento(new Date());
+							tracciato.setBeanDati(serializer.getObject(avvisatura));
+
+							tracciatiBD.update(tracciato);
+							bd.commit();
+						} else { //non ho trovato il file di ack
+							avvisatura.setDataUltimoAggiornamento(new Date());
+							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+							bd.commit();
+						}
+					} catch(Exception e) {
+						log.error("Errore durante la lettura del file di ack'"+tracciato.getFileNameEsito()+"':"+ e.getMessage(),e);
+						avvisatura.setDescrizioneStepElaborazione(e.getMessage());
+						avvisatura.setDataUltimoAggiornamento(new Date());
+						tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+						bd.commit();
+					} finally {
+						try {if(zis !=null) zis.close();} catch(IOException e) {}
+					}
+
+				}
+
+			}
+
+			if(!wasAutoCommit)
+				bd.setAutoCommit(wasAutoCommit);
+
+
+
+			SimpleDateFormat sdfYYYYMMDD = new SimpleDateFormat("YYYYMMdd"); 
+			VersamentoFilter versamentiFilter = versamentiBD.newFilter();
+			versamentiFilter.setDaAvvisare(true);
+			versamentiFilter.setTracciatoNull(true);
+			List<CountPerDominio> countGroupByIdDominio = versamentiBD.countGroupByIdDominio(versamentiFilter);
+
+			wasAutoCommit = bd.isAutoCommit();
+			if(wasAutoCommit)
+				bd.setAutoCommit(false);
+			for(CountPerDominio countPerDominio: countGroupByIdDominio) {
+
+				Dominio dominio = AnagraficaManager.getDominio(bd, countPerDominio.getIdDominio());
+				Intermediario intermediario = dominio.getStazione().getIntermediario(bd);
+
+				long countVersamentiTracciati = 0;
+				String filenameFormat = intermediario.getCodIntermediario() + "_" + dominio.getCodDominio() + "_" + sdfYYYYMMDD.format(new Date());
+				TracciatoFilter tracciatiFilter = tracciatiBD.newFilter();
+				tracciatiFilter.setFilenameRichiestaLike(filenameFormat);
+				tracciatiFilter.setTipo(TIPO_TRACCIATO.AV);
+				long countTracciatiPerDominioPergiorno = tracciatiBD.count(tracciatiFilter);
+
+				while(countVersamentiTracciati < countPerDominio.getCount()) {
+					long countVersamentiNextTracciato = Math.min(countPerDominio.getCount()-countVersamentiTracciati, GovpayConfig.getInstance().getSizePaginaNumeroVersamentiAvvisaturaDigitale());
+
+					Tracciato tracciato = new Tracciato();
+					//populate tracciato
+					tracciato.setTipo(TIPO_TRACCIATO.AV);
+					tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+					tracciato.setDataCaricamento(new Date());
+					Avvisatura avvisatura = new Avvisatura();
+					avvisatura.setIntermediario(intermediario.getCodIntermediario());
+					avvisatura.setNumeroAvvisi(countVersamentiNextTracciato);
+					avvisatura.setStepElaborazione("IN_SPEDIZIONE");
+					avvisatura.setDataUltimoAggiornamento(new Date());
+					avvisatura.setPercentualeStep(0);
+					tracciato.setBeanDati(serializer.getObject(avvisatura));
+					tracciato.setFileNameRichiesta(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + ".zip");
+					tracciato.setFileNameEsito(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + "_ACK.zip");
+
+					tracciatiBD.insertTracciato(tracciato);
+					versamentiBD.updateConLimit(countPerDominio.getIdDominio(), tracciato.getId(), countVersamentiNextTracciato);
+					bd.commit();
+
+					countVersamentiTracciati += countVersamentiNextTracciato;
+					countTracciatiPerDominioPergiorno++;
+				}
+
+			}
+
+			log.info("Batch avvisatura digitale terminato");
+
+			aggiornaSondaOK(batch_avvisatura_digitale, bd);
+
+			if(!wasAutoCommit)
+				bd.setAutoCommit(wasAutoCommit);
+
+			return "Avvisatura digitale ok";
+
+		} catch (Exception e) {
+			log.error("Avvisatura digitale Fallita", e);
+			//			aggiornaSondaKO(batch_avvisatura_digitale, e, bd);
+			return "Avvisatura digitale#" + e.getMessage();
+		} finally {
+			BatchManager.stopEsecuzione(bd, batch_avvisatura_digitale);
+			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
+		}
+	}
 }

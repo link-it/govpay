@@ -40,6 +40,130 @@ tags:
 security:
   - basicAuth: []    
 paths:
+  '/tracciati':
+    get:
+      tags:
+        - Pendenze
+      summary: Elenco dei tracciati
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+      responses:
+        '200':
+          description: Lista paginata dei tracciati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/tracciato'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'  
+  '/tracciati/{id}':
+    get:
+      tags:
+        - Pendenze
+      summary: Dettaglio di un tracciato
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tracciato ricercato
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/tracciato'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '404':
+          $ref: '#/components/responses/404'          
+        '500':
+          $ref: '#/components/responses/500'  
+  '/tracciati/{id}/richiesta':
+    get:
+      tags:
+        - Pendenze
+      summary: Messaggio di richiesta di un tracciato
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Messaggio di richiesta di un tracciato
+          content:
+            application/octet-stream:
+              schema:
+               type: object
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '404':
+          $ref: '#/components/responses/404'          
+        '500':
+          $ref: '#/components/responses/500'  
+  '/tracciati/{id}/risposta':
+    get:
+      tags:
+        - Pendenze
+      summary: Messaggio di risposta di un tracciato
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Messaggio di risposta di un tracciato
+          content:
+            application/octet-stream:
+              schema:
+               type: object
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '404':
+          $ref: '#/components/responses/404'          
+        '500':
+          $ref: '#/components/responses/500'  
   '/intermediari':
     get:
       tags:
@@ -4388,6 +4512,56 @@ components:
           example:
             - Lettura
             - Scrittura
+    tracciato:
+      type: object
+      required:
+        - tipo
+        - stato
+        - dataCaricamento
+      properties:
+        tipo:
+          type: string
+          description: 
+            Tipo di tracciato
+          example:
+            AV
+        stato:
+          type: string
+          description: 
+            Stato del tracciato
+          example:
+            ELABORAZIONE
+        descrizioneStato:
+          type: string
+          description: 
+            Descrizione dello stato del tracciato
+          example:
+            Errore di connessione al server SFTP
+        dataCaricamento:
+          type: string
+          format: date-time
+          description: Data di caricamento del tracciato
+          example: '2018-12-31T12:50:00'
+        dataCompletamento:
+          type: string
+          format: date-time
+          description: Data di completamento del caricamento del tracciato
+          example: '2018-12-31T12:50:00'
+        beanDati:
+          type: object
+          description: Dati applicativi del tracciato
+        filenameRichiesta:
+          type: string
+          description: 
+            Nome del file di richiesta del tracciato
+          example:
+            80002870923_02315520920_20180710_00_AV.zip
+        filenameEsito:
+          type: string
+          description: 
+            Nome del file di esito del tracciato
+          example:
+            80002870923_02315520920_20180710_00_AV_ACK.zip
     nota:
       type: object
       required:

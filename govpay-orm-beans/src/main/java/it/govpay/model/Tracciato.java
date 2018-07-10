@@ -9,18 +9,6 @@ public class Tracciato extends BasicModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public String getTipo() {
-		return tipo;
-	}
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-	public String getStato() {
-		return stato;
-	}
-	public void setStato(String stato) {
-		this.stato = stato;
-	}
 	public String getDescrizioneStato() {
 		return descrizioneStato;
 	}
@@ -69,8 +57,34 @@ public class Tracciato extends BasicModel {
 	public void setRawEsito(byte[] rawEsito) {
 		this.rawEsito = rawEsito;
 	}
-	private String tipo;
-	private String stato;
+	
+	public TIPO_TRACCIATO getTipo() {
+		return tipo;
+	}
+	public void setTipo(TIPO_TRACCIATO tipo) {
+		this.tipo = tipo;
+	}
+
+	public STATO_ELABORAZIONE getStato() {
+		return stato;
+	}
+	public void setStato(STATO_ELABORAZIONE stato) {
+		this.stato = stato;
+	}
+
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public enum STATO_ELABORAZIONE {ELABORAZIONE, COMPLETATO, SCARTATO}
+	
+	public enum TIPO_TRACCIATO {AV, AV_ESITO}
+	
+	private TIPO_TRACCIATO tipo;
+	private STATO_ELABORAZIONE stato;
 	private String descrizioneStato;
 	private Date dataCaricamento;
 	private Date dataCompletamento;
@@ -79,5 +93,6 @@ public class Tracciato extends BasicModel {
 	private byte[] rawRichiesta;
 	private String fileNameEsito;
 	private byte[] rawEsito;
+	private Long id;
 
 }

@@ -56,6 +56,9 @@ public class VersamentoFilter extends AbstractFilter {
 	private Date dataFine;
 	private String codApplicazione = null;
 	private String codDominio = null;
+	private Long idTracciato; 
+	private Boolean tracciatoNull; 
+	private Boolean daAvvisare; 
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -92,7 +95,7 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.codPagamentoPortale != null) {
 				newExpressionOr.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
 			}
-
+			
 //			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
 //				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
 //					IExpression orExpr = this.newExpression();
@@ -132,6 +135,9 @@ public class VersamentoFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
+			
+			VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+
 			// Filtro sullo stato pagamenti
 			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
 				newExpression.in(Versamento.model().STATO_VERSAMENTO, toString(this.statiVersamento));
@@ -156,7 +162,6 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
 				if(addAnd)
 					newExpression.and();
-				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
 				newExpression.in(cf, this.idVersamento);
 				addAnd = true;
@@ -177,7 +182,6 @@ public class VersamentoFilter extends AbstractFilter {
 				idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
-				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
 				newExpression.in(cf, this.idDomini);
 				addAnd = true;
@@ -201,7 +205,6 @@ public class VersamentoFilter extends AbstractFilter {
 					IExpression orExpr = this.newExpression();
 					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
 					
-					VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
 					
 					for (int i = 0; i < this.codVersamentoEnte.size(); i++) {
@@ -241,6 +244,25 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.codPagamentoPortale != null) {
 				newExpression.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
 			}
+
+			if(this.idTracciato != null) {
+				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(Versamento.model()));
+				newExpression.equals(cf, this.idTracciato);
+			}
+			
+			if(this.tracciatoNull!=null) {
+				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(Versamento.model()));
+				if(this.tracciatoNull) {
+					newExpression.isNull(cf);
+				} else {
+					newExpression.isNotNull(cf);	
+				}
+			}
+			
+			if(daAvvisare!=null) {
+				newExpression.equals(Versamento.model().DA_AVVISARE, this.daAvvisare);
+			}
+
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -416,6 +438,30 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+
+	public Long getIdTracciato() {
+		return idTracciato;
+	}
+
+	public void setIdTracciato(Long idTracciato) {
+		this.idTracciato = idTracciato;
+	}
+
+	public Boolean getTracciatoNull() {
+		return tracciatoNull;
+	}
+
+	public void setTracciatoNull(Boolean tracciatoNull) {
+		this.tracciatoNull = tracciatoNull;
+	}
+
+	public Boolean getDaAvvisare() {
+		return daAvvisare;
+	}
+
+	public void setDaAvvisare(Boolean daAvvisare) {
+		this.daAvvisare = daAvvisare;
 	}
 
 	

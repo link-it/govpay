@@ -20,9 +20,13 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.Function;
+import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -42,8 +46,9 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
+import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
@@ -263,6 +268,51 @@ public class VersamentiBD extends BasicBD {
 		try {
 			return this.getVersamentoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public List<CountPerDominio> countGroupByIdDominio(VersamentoFilter filter) throws ServiceException {
+		try {
+			VersamentoFieldConverter converter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Versamento.model()));
+			FunctionField field = new FunctionField(cf, Function.COUNT, "cnt");
+			List<CountPerDominio> countPerDominioLst = new ArrayList<>();
+			IExpression expression = filter.toExpression();
+			expression.addGroupBy(cf);
+			try {
+				List<Map<String,Object>> groupBy = this.getVersamentoService().groupBy(expression, field);
+				for(Map<String,Object> cnt: groupBy) {
+					CountPerDominio countPerDominio = new CountPerDominio();
+					countPerDominio.setCount((Long) cnt.get("cnt")); 
+					countPerDominio.setIdDominio((Long) cnt.get("id_dominio")); 
+					countPerDominioLst.add(countPerDominio);
+				}
+			}catch(NotFoundException e) {}
+			
+			return countPerDominioLst;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public int updateConLimit(long idDominio, long idTracciato, long limit) throws ServiceException {
+		try {
+			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			lstReturnType.add(Long.class);
+			String nativeUpdate = NativeQueries.getInstance().getUpdateVersamentiPerDominioConLimit();
+			log.info("NATIVE: "+ nativeUpdate);
+			
+			Object[] fields = Arrays.asList(idTracciato, idDominio, true, limit).toArray();
+			return this.getVersamentoService().nativeUpdate(nativeUpdate, fields);
+
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}

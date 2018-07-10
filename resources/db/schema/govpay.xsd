@@ -127,6 +127,12 @@
 			<xsd:maxLength value="10"/>
 		</xsd:restriction>
 	</xsd:simpleType>
+	
+	<xsd:simpleType name="String12">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="12"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 
 	<xsd:simpleType name="String4">
 		<xsd:restriction base="xsd:string">
@@ -2203,10 +2209,10 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="tipo" type="String10"/>
-			<xsd:element name="stato" type="String10"/>
+			<xsd:element name="stato" type="String12"/>
 			<xsd:element name="descrizioneStato" type="String256" minOccurs="0"/>
 			<xsd:element name="dataCaricamento" type="xsd:dateTime"/>
-			<xsd:element name="dataCompletamento" type="xsd:dateTime"/>
+			<xsd:element name="dataCompletamento" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="beanDati"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -2217,9 +2223,9 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="fileNameRichiesta" type="String256" minOccurs="0"/>
-			<xsd:element name="rawRichiesta" type="xsd:base64Binary"/>
+			<xsd:element name="rawRichiesta" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="fileNameEsito" type="String256" minOccurs="0"/>
-			<xsd:element name="rawEsito" type="xsd:base64Binary"/>
+			<xsd:element name="rawEsito" type="xsd:base64Binary" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

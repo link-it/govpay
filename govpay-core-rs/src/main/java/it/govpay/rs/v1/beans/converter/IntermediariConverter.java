@@ -24,6 +24,9 @@ public class IntermediariConverter {
 		}
 		intermediario.setDenominazione(intermediarioPost.getDenominazione());
 		
+		if(intermediarioPost.getServizioFtp()!=null) {
+			intermediario.setConnettoreSftp(ConnettoreSftpConverter.getConnettore(intermediarioPost.getServizioFtp(), idIntermediario));
+		}
 		
 		dominioDTO.setIntermediario(intermediario);
 		dominioDTO.setIdIntermediario(idIntermediario);
@@ -38,7 +41,9 @@ public class IntermediariConverter {
 		.idIntermediario(i.getCodIntermediario())
 		.principalPagoPa(i.getConnettorePdd().getPrincipal())
 		.servizioPagoPa(ConnettorePagopaConverter.toRsModel(i.getConnettorePdd()));
-//		.stazioni(StazioniConverter.toRsModel(stazione, domini)); //TODO
+		
+		if(i.getConnettoreSftp()!=null)
+			rsModel.setServizioFtp(ConnettoreSftpConverter.toRsModel(i.getConnettoreSftp()));
 		
 		return rsModel;
 	}

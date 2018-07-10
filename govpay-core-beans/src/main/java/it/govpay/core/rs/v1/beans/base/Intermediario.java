@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "denominazione",
 "principalPagoPa",
 "servizioPagoPa",
+"servizioFtp",
 "abilitato",
 "idIntermediario",
 "stazioni",
@@ -23,6 +24,9 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("servizioPagoPa")
   private ConnettorePagopa servizioPagoPa = null;
+  
+  @JsonProperty("servizioFtp")
+  private ServizioFtp servizioFtp = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -78,6 +82,21 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
   public void setServizioPagoPa(ConnettorePagopa servizioPagoPa) {
     this.servizioPagoPa = servizioPagoPa;
+  }
+
+  /**
+   **/
+  public Intermediario servizioFtp(ServizioFtp servizioFtp) {
+    this.servizioFtp = servizioFtp;
+    return this;
+  }
+
+  @JsonProperty("servizioFtp")
+  public ServizioFtp getServizioFtp() {
+    return servizioFtp;
+  }
+  public void setServizioFtp(ServizioFtp servizioFtp) {
+    this.servizioFtp = servizioFtp;
   }
 
   /**
@@ -140,6 +159,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.equals(denominazione, intermediario.denominazione) &&
         Objects.equals(principalPagoPa, intermediario.principalPagoPa) &&
         Objects.equals(servizioPagoPa, intermediario.servizioPagoPa) &&
+        Objects.equals(servizioFtp, intermediario.servizioFtp) &&
         Objects.equals(abilitato, intermediario.abilitato) &&
         Objects.equals(idIntermediario, intermediario.idIntermediario) &&
         Objects.equals(stazioni, intermediario.stazioni);
@@ -147,7 +167,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, abilitato, idIntermediario, stazioni);
+    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, abilitato, idIntermediario, stazioni);
   }
 
   public static Intermediario parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
@@ -167,6 +187,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    denominazione: ").append(toIndentedString(denominazione)).append("\n");
     sb.append("    principalPagoPa: ").append(toIndentedString(principalPagoPa)).append("\n");
     sb.append("    servizioPagoPa: ").append(toIndentedString(servizioPagoPa)).append("\n");
+    sb.append("    servizioFtp: ").append(toIndentedString(servizioFtp)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    idIntermediario: ").append(toIndentedString(idIntermediario)).append("\n");
     sb.append("    stazioni: ").append(toIndentedString(stazioni)).append("\n");

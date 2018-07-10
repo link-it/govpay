@@ -72,6 +72,7 @@ import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -477,7 +478,7 @@ public class DominiDAO extends BaseDAO{
 	}
 
 	public PutEntrataDominioDTOResponse createOrUpdateEntrataDominio(PutEntrataDominioDTO putEntrataDominioDTO) throws ServiceException, 
-	DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{ 
+	DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, RequestValidationException{ 
 		PutEntrataDominioDTOResponse putIbanAccreditoDTOResponse = new PutEntrataDominioDTOResponse();
 		BasicBD bd = null;
 
@@ -508,7 +509,7 @@ public class DominiDAO extends BaseDAO{
 							putEntrataDominioDTO.getIbanAccredito()).getId()); 
 				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new IbanAccreditoNonTrovatoException(e.getMessage());
+				throw new RequestValidationException("Iban accredito ["+putEntrataDominioDTO.getIbanAccredito()+"] non censito");
 			}
 
 			// Iban Accredito postale
@@ -518,7 +519,7 @@ public class DominiDAO extends BaseDAO{
 							putEntrataDominioDTO.getIbanAppoggio()).getId()); 
 				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new IbanAccreditoNonTrovatoException(e.getMessage());
+				throw new RequestValidationException("Iban appoggio ["+putEntrataDominioDTO.getIbanAppoggio()+"] non censito");
 			}
 
 

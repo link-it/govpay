@@ -75,6 +75,7 @@ public class Intermediario extends BasicModel{
 				equals(codIntermediario, intermediario.getCodIntermediario()) &&
 				equals(denominazione, intermediario.getDenominazione()) &&
 				equals(connettorePdd, intermediario.getConnettorePdd()) &&
+				equals(connettoreSftp, intermediario.getConnettoreSftp()) &&
 				abilitato == intermediario.isAbilitato();
 		
 		return equal;

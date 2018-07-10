@@ -13,7 +13,7 @@ ALTER TABLE intermediari ADD COLUMN cod_connettore_ftp VARCHAR(35);
 CREATE TABLE tracciati
 (
 	tipo VARCHAR(10) NOT NULL,
-	stato VARCHAR(10) NOT NULL,
+	stato VARCHAR(122) NOT NULL,
 	descrizione_stato VARCHAR(256),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0,

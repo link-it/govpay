@@ -154,5 +154,11 @@ public class MysqlNativeQueries extends NativeQueries {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public String getUpdateVersamentiPerDominioConLimit() {
+		return "UPDATE versamenti set id_tracciato = ? where id in (select id from versamenti where id_dominio = ? and da_avvisare = ? and id_tracciato IS null order by id asc LIMIT 0, ?)";
+	}
+
 
 }

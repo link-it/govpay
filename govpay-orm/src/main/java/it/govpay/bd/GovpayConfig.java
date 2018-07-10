@@ -64,7 +64,8 @@ public class GovpayConfig {
 	private String resourceDir;
 	private CustomIuv defaultCustomIuvGenerator;
 	private List<String> pspPostali;
-	
+	private Integer sizePaginaNumeroVersamentiAvvisaturaDigitale;
+	private Integer limiteNumeroVersamentiAvvisaturaDigitale;
 	
 
 	public GovpayConfig(InputStream propertyFile, String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
@@ -134,6 +135,22 @@ public class GovpayConfig {
 		} catch(Throwable t) {
 			log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
 			this.pspPostali = new ArrayList<String>();
+		}
+		
+		String sizePaginaNumeroVersamentiPerAvvisoString = getProperty("it.govpay.batch.avvisaturaDigitale.sizePaginaNumeroVersamenti", props, false);
+		try {
+			this.sizePaginaNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(sizePaginaNumeroVersamentiPerAvvisoString);
+		} catch(Throwable t) {
+			log.info("Proprieta \"it.govpay.batch.avvisaturaDigitale.sizePaginaNumeroVersamenti\" impostata com valore di default (100)");
+			this.sizePaginaNumeroVersamentiAvvisaturaDigitale = 100;
+		}
+		
+		String limiteNumeroVersamentiPerAvvisoString = getProperty("it.govpay.batch.avvisaturaDigitale.limiteNumeroVersamenti", props, false);
+		try {
+			this.limiteNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(limiteNumeroVersamentiPerAvvisoString);
+		} catch(Throwable t) {
+			log.info("Proprieta \"it.govpay.batch.avvisaturaDigitale.limiteNumeroVersamenti\" impostata com valore di default (100000)");
+			this.limiteNumeroVersamentiAvvisaturaDigitale = 100000;
 		}
 
 	}
@@ -217,5 +234,13 @@ public class GovpayConfig {
 
 	public List<String> getPspPostali() {
 		return pspPostali;
+	}
+
+	public Integer getSizePaginaNumeroVersamentiAvvisaturaDigitale() {
+		return sizePaginaNumeroVersamentiAvvisaturaDigitale;
+	}
+
+	public Integer getLimiteNumeroVersamentiAvvisaturaDigitale() {
+		return limiteNumeroVersamentiAvvisaturaDigitale;
 	}
 }

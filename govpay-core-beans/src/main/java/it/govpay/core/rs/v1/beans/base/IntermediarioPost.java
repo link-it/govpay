@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "denominazione",
 "principalPagoPa",
 "servizioPagoPa",
+"servizioFtp",
 "abilitato",
 })
 public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
@@ -19,6 +20,9 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
   
   @JsonProperty("servizioPagoPa")
   private ConnettorePagopa servizioPagoPa = null;
+  
+  @JsonProperty("servizioFtp")
+  private ServizioFtp servizioFtp = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -71,6 +75,21 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
   }
 
   /**
+   **/
+  public IntermediarioPost servizioFtp(ServizioFtp servizioFtp) {
+    this.servizioFtp = servizioFtp;
+    return this;
+  }
+
+  @JsonProperty("servizioFtp")
+  public ServizioFtp getServizioFtp() {
+    return servizioFtp;
+  }
+  public void setServizioFtp(ServizioFtp servizioFtp) {
+    this.servizioFtp = servizioFtp;
+  }
+
+  /**
    * Indica lo stato di abilitazione
    **/
   public IntermediarioPost abilitato(Boolean abilitato) {
@@ -98,12 +117,13 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
     return Objects.equals(denominazione, intermediarioPost.denominazione) &&
         Objects.equals(principalPagoPa, intermediarioPost.principalPagoPa) &&
         Objects.equals(servizioPagoPa, intermediarioPost.servizioPagoPa) &&
+        Objects.equals(servizioFtp, intermediarioPost.servizioFtp) &&
         Objects.equals(abilitato, intermediarioPost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, abilitato);
+    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, abilitato);
   }
 
   public static IntermediarioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
@@ -123,6 +143,7 @@ public class IntermediarioPost extends it.govpay.core.rs.v1.beans.JSONSerializab
     sb.append("    denominazione: ").append(toIndentedString(denominazione)).append("\n");
     sb.append("    principalPagoPa: ").append(toIndentedString(principalPagoPa)).append("\n");
     sb.append("    servizioPagoPa: ").append(toIndentedString(servizioPagoPa)).append("\n");
+    sb.append("    servizioFtp: ").append(toIndentedString(servizioFtp)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("}");
     return sb.toString();

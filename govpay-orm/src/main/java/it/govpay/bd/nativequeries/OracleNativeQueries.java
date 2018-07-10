@@ -247,5 +247,10 @@ public class OracleNativeQueries extends NativeQueries {
 		
 		return valori.toArray(new Object[]{});
 	}
-	
+
+	@Override
+	public String getUpdateVersamentiPerDominioConLimit() {
+		return "UPDATE versamenti set id_tracciato = ? where id in (select id FROM (select id, ROW_NUMBER() OVER ( ORDER BY id) AS rowNumber from versamenti where id_dominio = ? and da_avvisare = ? and id_tracciato IS null) WHERE ( rowNumber > 0 AND rowNumber <= ? ))";
+	}
+
 }

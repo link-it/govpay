@@ -66,7 +66,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Path("/{idA2A}/{idPendenza}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response pendenzeIdA2AIdPendenzaPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam(value="avvisaturaDigitale") @DefaultValue(value="false")  Boolean avvisaturaDigitale){
+    public Response pendenzeIdA2AIdPendenzaPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is, @QueryParam("stampaAvviso") @DefaultValue(value="false") Boolean stampaAvviso, @QueryParam(value="avvisaturaDigitale") @DefaultValue(value="false")  Boolean avvisaturaDigitale){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.pendenzeIdA2AIdPendenzaPUT(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is, stampaAvviso, avvisaturaDigitale);
     }
