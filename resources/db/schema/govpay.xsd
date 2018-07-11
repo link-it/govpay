@@ -2208,6 +2208,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
+			<xsd:element name="codDominio" type="String35"/>
 			<xsd:element name="tipo" type="String10"/>
 			<xsd:element name="stato" type="String12"/>
 			<xsd:element name="descrizioneStato" type="String256" minOccurs="0"/>

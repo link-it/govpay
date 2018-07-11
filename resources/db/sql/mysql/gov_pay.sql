@@ -303,6 +303,7 @@ CREATE TABLE acl
 
 CREATE TABLE tracciati
 (
+	cod_dominio VARCHAR(35) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
 	stato VARCHAR(12) NOT NULL,
 	descrizione_stato VARCHAR(256),

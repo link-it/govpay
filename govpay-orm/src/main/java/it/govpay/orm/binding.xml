@@ -722,16 +722,17 @@
   </mapping>
   <mapping name="Tracciato" class="it.govpay.orm.Tracciato">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
     <value name="tipo" field="tipo" usage="required"/>
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="dataCaricamento" field="dataCaricamento" usage="required"/>
-    <value name="dataCompletamento" field="dataCompletamento" usage="required"/>
+    <value name="dataCompletamento" field="dataCompletamento" usage="optional"/>
     <value name="beanDati" field="beanDati" usage="optional"/>
     <value name="fileNameRichiesta" field="fileNameRichiesta" usage="optional"/>
-    <value name="rawRichiesta" field="rawRichiesta" usage="required"/>
+    <value name="rawRichiesta" field="rawRichiesta" usage="optional"/>
     <value name="fileNameEsito" field="fileNameEsito" usage="optional"/>
-    <value name="rawEsito" field="rawEsito" usage="required"/>
+    <value name="rawEsito" field="rawEsito" usage="optional"/>
   </mapping>
   <mapping name="EsitoAvvisatura" class="it.govpay.orm.EsitoAvvisatura">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

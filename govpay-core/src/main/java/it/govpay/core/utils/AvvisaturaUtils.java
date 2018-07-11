@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -51,6 +52,7 @@ import gov.telematici.pagamenti.ws.StTipoIdentificativoUnivocoPersFG;
 import gov.telematici.pagamenti.ws.StTipoOperazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
 import it.govpay.model.Anagrafica.TIPO;
 
 public class AvvisaturaUtils {
@@ -68,7 +70,42 @@ public class AvvisaturaUtils {
 		avviso.setIdentificativoDominio(versamento.getDominio(null).getCodDominio());
 		avviso.setAnagraficaBeneficiario(versamento.getDominio(null).getRagioneSociale());
 		avviso.setIdentificativoMessaggioRichiesta(versamento.getCodAvvisatura());
-		avviso.setTassonomiaAvviso("00");//TODO versamento.getTassonomiaAvviso());
+		TassonomiaAvviso tassonomia = TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso());
+		
+		String tassonomiaString = null;
+		switch(tassonomia) {
+		case CARTELLE_ESATTORIALI: tassonomiaString = "00"; 
+			break;
+		case DIRITTI_E_CONCESSIONI: tassonomiaString = "01";
+			break;
+		case IMPOSTE_E_TASSE: tassonomiaString = "02";
+			break;
+		case IMU_TASI_E_ALTRE_TASSE_COMUNALI: tassonomiaString = "03";
+			break;
+		case INGRESSI_A_MOSTRE_E_MUSEI: tassonomiaString = "04";
+			break;
+		case MULTE_E_SANZIONI_AMMINISTRATIVE: tassonomiaString = "05";
+			break;
+		case PREVIDENZA_E_INFORTUNI: tassonomiaString = "06";
+			break;
+		case SERVIZI_EROGATI_DAL_COMUNE: tassonomiaString = "07";
+			break;
+		case SERVIZI_EROGATI_DA_ALTRI_ENTI: tassonomiaString = "08";
+			break;
+		case SERVIZI_SCOLASTICI: tassonomiaString = "09";
+			break;
+		case TASSA_AUTOMOBILISTICA: tassonomiaString = "10";
+			break;
+		case TICKET_E_PRESTAZIONI_SANITARIE: tassonomiaString = "11";
+			break;
+		case TRASPORTI_MOBILIT_E_PARCHEGGI: tassonomiaString = "12";
+			break;
+		default:
+			break;
+		
+		}
+		
+		avviso.setTassonomiaAvviso(tassonomiaString);
 		avviso.setCodiceAvviso(versamento.getNumeroAvviso());
 		
 		CtSoggettoPagatore soggettoPagatore = new CtSoggettoPagatore();
@@ -76,27 +113,39 @@ public class AvvisaturaUtils {
 		
 		CtIdentificativoUnivocoPersonaFG identificativoUnivocoPersonaFG = new CtIdentificativoUnivocoPersonaFG();
 		identificativoUnivocoPersonaFG.setCodiceIdentificativoUnivoco(versamento.getAnagraficaDebitore().getCodUnivoco());
+
 		if(versamento.getAnagraficaDebitore().getTipo()!=null) {
 			StTipoIdentificativoUnivocoPersFG tipoIdentificativo = versamento.getAnagraficaDebitore().getTipo().equals(TIPO.F) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G;
 			identificativoUnivocoPersonaFG.setTipoIdentificativoUnivoco(tipoIdentificativo);
 		} else {
-			identificativoUnivocoPersonaFG.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F); //TODO non puo' essere null
+			identificativoUnivocoPersonaFG.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F); //TODO default
 		}
 		
 		soggettoPagatore.setIdentificativoUnivocoPagatore(identificativoUnivocoPersonaFG);
 		
 		avviso.setSoggettoPagatore(soggettoPagatore);
 		
+		GregorianCalendar gregorianCalendar = new GregorianCalendar();
+		
+		gregorianCalendar.set(Calendar.YEAR, 9999);
+		gregorianCalendar.set(Calendar.MONTH, 12);
+		gregorianCalendar.set(Calendar.DAY_OF_MONTH, 31);
+		gregorianCalendar.set(Calendar.HOUR, 23);
+		gregorianCalendar.set(Calendar.MINUTE, 59);
+		gregorianCalendar.set(Calendar.SECOND, 59);
+		
+		Date defaultDate = gregorianCalendar.getTime();
+		
 		if(versamento.getDataValidita()!=null) {
 			avviso.setDataScadenzaPagamento(toXmlGregorianCalendar(versamento.getDataValidita()));
 		} else {
-			avviso.setDataScadenzaPagamento(toXmlGregorianCalendar(new Date())); //TODO default?
+			avviso.setDataScadenzaPagamento(toXmlGregorianCalendar(defaultDate));
 		}
 		
 		if(versamento.getDataScadenza()!=null) {
-			avviso.setDataScadenzaAvviso(toXmlGregorianCalendar(versamento.getDataScadenza())); //TODO sono scambiate le due date?
+			avviso.setDataScadenzaAvviso(toXmlGregorianCalendar(versamento.getDataScadenza()));
 		} else {
-			avviso.setDataScadenzaAvviso(toXmlGregorianCalendar(new Date())); //TODO default?
+			avviso.setDataScadenzaAvviso(toXmlGregorianCalendar(defaultDate));
 		}
 		
 		avviso.setImportoAvviso(versamento.getImportoTotale());
@@ -117,7 +166,11 @@ public class AvvisaturaUtils {
 			avviso.getDatiSingoloVersamento().add(datiSingoloVersamento);
 		}
 		
-		avviso.setTipoPagamento("0");//TODO versamento.getTipoPagamento() + "");
+		if(versamento.getTipoPagamento()!=null)
+			avviso.setTipoPagamento(versamento.getTipoPagamento() + "");
+		else 
+			avviso.setTipoPagamento("1"); //default pagamento non contestuale
+		
 		avviso.setTipoOperazione(StTipoOperazione.fromValue(versamento.getAvvisatura()));
 		
 		init();

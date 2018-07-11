@@ -310,6 +310,7 @@ CREATE SEQUENCE seq_tracciati start 1 increment 1 maxvalue 9223372036854775807 m
 
 CREATE TABLE tracciati
 (
+	cod_dominio VARCHAR(35) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
 	stato VARCHAR(12) NOT NULL,
 	descrizione_stato VARCHAR(256),

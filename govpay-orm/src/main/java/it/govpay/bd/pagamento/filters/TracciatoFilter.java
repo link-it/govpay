@@ -19,6 +19,9 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -32,10 +35,10 @@ import it.govpay.orm.Tracciato;
 
 public class TracciatoFilter extends AbstractFilter {
 
-	// Viene utilizzato in or sui campi IDTracciato e NomeSpc
 	private String filenameRichiestaLike;
-	private it.govpay.model.Tracciato.TIPO_TRACCIATO tipo;
+	private List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo;
 	private it.govpay.model.Tracciato.STATO_ELABORAZIONE stato;
+	private List<String> domini;
 
 	public String getFilenameRichiestaLike() {
 		return filenameRichiestaLike;
@@ -64,10 +67,10 @@ public class TracciatoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.tipo != null){
+			if(this.tipo != null && !this.tipo.isEmpty()){
 				if(addAnd)
 					exp.and();
-				exp.equals(Tracciato.model().TIPO, this.tipo.toString());
+				exp.in(Tracciato.model().TIPO, this.tipo.stream().map(t -> t.toString()).collect(Collectors.toList()));
 				addAnd = true;
 			}
 			
@@ -78,7 +81,15 @@ public class TracciatoFilter extends AbstractFilter {
 				
 				addAnd = true;
 			}
-			
+
+			if(this.domini != null && !this.domini.isEmpty()){
+				if(addAnd)
+					exp.and();
+				
+				exp.in(Tracciato.model().COD_DOMINIO, this.domini); 
+				addAnd = true;
+			}
+
 			return exp;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -89,20 +100,28 @@ public class TracciatoFilter extends AbstractFilter {
 		}
 	}
 
-	public it.govpay.model.Tracciato.TIPO_TRACCIATO getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(it.govpay.model.Tracciato.TIPO_TRACCIATO tipo) {
-		this.tipo = tipo;
-	}
-
 	public it.govpay.model.Tracciato.STATO_ELABORAZIONE getStato() {
 		return stato;
 	}
 
 	public void setStato(it.govpay.model.Tracciato.STATO_ELABORAZIONE stato) {
 		this.stato = stato;
+	}
+
+	public List<String> getDomini() {
+		return domini;
+	}
+
+	public void setDomini(List<String> domini) {
+		this.domini = domini;
+	}
+
+	public List<it.govpay.model.Tracciato.TIPO_TRACCIATO> getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo) {
+		this.tipo = tipo;
 	}
 
 

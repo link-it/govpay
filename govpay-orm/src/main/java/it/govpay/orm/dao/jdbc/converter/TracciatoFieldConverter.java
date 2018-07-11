@@ -67,6 +67,13 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
+		if(field.equals(Tracciato.model().COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 		if(field.equals(Tracciato.model().TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo";
@@ -150,6 +157,9 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
+		if(field.equals(Tracciato.model().COD_DOMINIO)){
+			return this.toTable(Tracciato.model(), returnAlias);
+		}
 		if(field.equals(Tracciato.model().TIPO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}

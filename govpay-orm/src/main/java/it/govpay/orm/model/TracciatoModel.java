@@ -41,6 +41,7 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 	
 		super();
 	
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.TIPO = new Field("tipo",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"Tracciato",Tracciato.class);
@@ -58,6 +59,7 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 	
 		super(father);
 	
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"Tracciato",Tracciato.class);
@@ -73,6 +75,8 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 	
 	
 
+	public IField COD_DOMINIO = null;
+	 
 	public IField TIPO = null;
 	 
 	public IField STATO = null;

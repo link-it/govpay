@@ -17,6 +17,7 @@ CREATE SEQUENCE seq_tracciati start 1 increment 1 maxvalue 9223372036854775807 m
 
 CREATE TABLE tracciati
 (
+	cod_dominio VARCHAR(35) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
 	stato VARCHAR(12) NOT NULL,
 	descrizione_stato VARCHAR(256),
@@ -54,3 +55,5 @@ CREATE TABLE esiti_avvisatura
 	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
 );
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);

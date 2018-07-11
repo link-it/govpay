@@ -1,5 +1,6 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
@@ -11,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 @JsonPropertyOrder({
+"id",
+"codDominio",
 "tipo",
 "stato",
 "descrizioneStato",
@@ -21,6 +24,12 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "filenameEsito",
 })
 public class Tracciato extends JSONSerializable {
+  
+  @JsonProperty("id")
+  private BigDecimal id = null;
+  
+  @JsonProperty("codDominio")
+  private String codDominio = null;
   
   @JsonProperty("tipo")
   private String tipo = null;
@@ -47,6 +56,38 @@ public class Tracciato extends JSONSerializable {
   @JsonProperty("filenameEsito")
   private String filenameEsito = null;
   
+  /**
+   * Identificativo numerico del tracciato
+   **/
+  public Tracciato id(BigDecimal id) {
+    this.id = id;
+    return this;
+  }
+
+  @JsonProperty("id")
+  public BigDecimal getId() {
+    return id;
+  }
+  public void setId(BigDecimal id) {
+    this.id = id;
+  }
+
+  /**
+   * Dominio creatore al tracciato
+   **/
+  public Tracciato codDominio(String codDominio) {
+    this.codDominio = codDominio;
+    return this;
+  }
+
+  @JsonProperty("codDominio")
+  public String getCodDominio() {
+    return codDominio;
+  }
+  public void setCodDominio(String codDominio) {
+    this.codDominio = codDominio;
+  }
+
   /**
    * Tipo di tracciato
    **/
@@ -185,7 +226,9 @@ public class Tracciato extends JSONSerializable {
       return false;
     }
     Tracciato tracciato = (Tracciato) o;
-    return Objects.equals(tipo, tracciato.tipo) &&
+    return Objects.equals(id, tracciato.id) &&
+        Objects.equals(codDominio, tracciato.codDominio) &&
+        Objects.equals(tipo, tracciato.tipo) &&
         Objects.equals(stato, tracciato.stato) &&
         Objects.equals(descrizioneStato, tracciato.descrizioneStato) &&
         Objects.equals(dataCaricamento, tracciato.dataCaricamento) &&
@@ -197,7 +240,7 @@ public class Tracciato extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, stato, descrizioneStato, dataCaricamento, dataCompletamento, beanDati, filenameRichiesta, filenameEsito);
+    return Objects.hash(id, codDominio, tipo, stato, descrizioneStato, dataCaricamento, dataCompletamento, beanDati, filenameRichiesta, filenameEsito);
   }
 
   public static Tracciato parse(String json) throws ServiceException {
@@ -214,6 +257,8 @@ public class Tracciato extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Tracciato {\n");
     
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    codDominio: ").append(toIndentedString(codDominio)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");

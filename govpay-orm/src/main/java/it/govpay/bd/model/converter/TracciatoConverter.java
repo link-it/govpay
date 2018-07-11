@@ -9,6 +9,7 @@ public class TracciatoConverter {
 	public static Tracciato toDTO(it.govpay.orm.Tracciato vo) {
 		Tracciato dto = new Tracciato();
 		dto.setId(vo.getId());
+		dto.setCodDominio(vo.getCodDominio());
 		dto.setTipo(TIPO_TRACCIATO.valueOf(vo.getTipo()));
 		dto.setStato(STATO_ELABORAZIONE.valueOf(vo.getStato()));
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
@@ -27,6 +28,7 @@ public class TracciatoConverter {
 		it.govpay.orm.Tracciato vo = new it.govpay.orm.Tracciato();
 		vo.setId(dto.getId());
 
+		vo.setCodDominio(dto.getCodDominio());
 		vo.setTipo(dto.getTipo().name());
 		vo.setStato(dto.getStato().name());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());

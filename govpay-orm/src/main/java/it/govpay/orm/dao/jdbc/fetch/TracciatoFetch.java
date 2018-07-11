@@ -54,6 +54,8 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 				Tracciato object = new Tracciato();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setCodDominio", Tracciato.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Tracciato.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo", Tracciato.model().TIPO.getFieldType()));
 				setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),
@@ -96,6 +98,8 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 				Tracciato object = new Tracciato();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
+				setParameter(object, "setCodDominio", Tracciato.model().COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"codDominio"));
 				setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
 					this.getObjectFromMap(map,"tipo"));
 				setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),

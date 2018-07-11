@@ -4515,10 +4515,24 @@ components:
     tracciato:
       type: object
       required:
+        - id
+        - codDominio
         - tipo
         - stato
         - dataCaricamento
       properties:
+        id:
+          type: number
+          description: 
+            Identificativo numerico del tracciato
+          example:
+            123456
+        codDominio:
+          type: string
+          description: 
+            Dominio creatore al tracciato
+          example:
+            AV
         tipo:
           type: string
           description: 

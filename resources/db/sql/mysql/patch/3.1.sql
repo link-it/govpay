@@ -12,6 +12,7 @@ ALTER TABLE pagamenti_portale MODIFY COLUMN url_ritorno VARCHAR(1024) NULL;
 ALTER TABLE intermediari ADD COLUMN cod_connettore_ftp VARCHAR(35);
 CREATE TABLE tracciati
 (
+	cod_dominio VARCHAR(35) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
 	stato VARCHAR(122) NOT NULL,
 	descrizione_stato VARCHAR(256),
@@ -51,3 +52,5 @@ CREATE TABLE esiti_avvisatura
 	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
 );
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);

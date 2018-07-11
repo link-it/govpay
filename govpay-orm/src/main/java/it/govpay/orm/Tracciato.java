@@ -35,16 +35,17 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Tracciato">
  * 		&lt;sequence>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataCaricamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataCompletamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataCompletamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="beanDati" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="fileNameRichiesta" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="rawRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="rawRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="fileNameEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="rawEsito" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="rawEsito" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -59,6 +60,7 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Tracciato", 
   propOrder = {
+  	"codDominio",
   	"tipo",
   	"stato",
   	"descrizioneStato",
@@ -90,6 +92,14 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
 		this.id=id;
 	else
 		this.id=new Long(-1);
+  }
+
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
+  }
+
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
   }
 
   public java.lang.String getTipo() {
@@ -192,6 +202,10 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=true,nillable=false)
+  protected java.lang.String codDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=true,nillable=false)
   protected java.lang.String tipo;
 
@@ -210,7 +224,7 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataCompletamento",required=true,nillable=false,type=java.lang.String.class)
+  @XmlElement(name="dataCompletamento",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataCompletamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
@@ -222,7 +236,7 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   protected java.lang.String fileNameRichiesta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="rawRichiesta",required=true,nillable=false)
+  @XmlElement(name="rawRichiesta",required=false,nillable=false)
   protected byte[] rawRichiesta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
@@ -230,7 +244,7 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   protected java.lang.String fileNameEsito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="rawEsito",required=true,nillable=false)
+  @XmlElement(name="rawEsito",required=false,nillable=false)
   protected byte[] rawEsito;
 
 }

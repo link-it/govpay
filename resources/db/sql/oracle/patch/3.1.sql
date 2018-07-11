@@ -19,6 +19,7 @@ CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE tracciati
 (
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
         tipo VARCHAR2(10 CHAR) NOT NULL,
         stato VARCHAR2(12 CHAR) NOT NULL,
         descrizione_stato VARCHAR2(256 CHAR),
@@ -85,4 +86,4 @@ begin
 end;
 /
 
-
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);

@@ -79,6 +79,13 @@ public class Tracciato extends BasicModel {
 		this.id = id;
 	}
 
+	public String getCodDominio() {
+		return codDominio;
+	}
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
 	public enum STATO_ELABORAZIONE {ELABORAZIONE, COMPLETATO, SCARTATO}
 	
 	public enum TIPO_TRACCIATO {AV, AV_ESITO}
@@ -86,6 +93,7 @@ public class Tracciato extends BasicModel {
 	private TIPO_TRACCIATO tipo;
 	private STATO_ELABORAZIONE stato;
 	private String descrizioneStato;
+	private String codDominio;
 	private Date dataCaricamento;
 	private Date dataCompletamento;
 	private String beanDati;
