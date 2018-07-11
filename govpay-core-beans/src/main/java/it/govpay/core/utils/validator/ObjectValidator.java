@@ -25,4 +25,11 @@ public class ObjectValidator {
 		}
 		return this;
 	}
+
+	public ObjectValidator isNull() throws ValidationException {
+		if(fieldValue != null) {
+			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		}
+		return this;
+	}
 }

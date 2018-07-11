@@ -27,6 +27,13 @@ public class DateValidator {
 		return this;
 	}
 	
+	public DateValidator isNull() throws ValidationException {
+		if(fieldValue == null) {
+			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		}
+		return this;
+	}
+	
 	public DateValidator after(LocalDate date) throws ValidationException {
 		if(fieldValue != null && fieldValue.isBefore(date)) {
 			throw new ValidationException("Il campo " + fieldName + " deve avere una data successiva a " + formatter.format(date) + ".");

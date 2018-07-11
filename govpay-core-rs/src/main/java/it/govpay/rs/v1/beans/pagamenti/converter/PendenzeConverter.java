@@ -12,6 +12,8 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.rs.v1.beans.pagamenti.Avviso;
 import it.govpay.core.rs.v1.beans.pagamenti.Avviso.StatoEnum;
+import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza.TipoBolloEnum;
+import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza.TipoContabilitaEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.Pendenza;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.Segnalazione;
@@ -187,15 +189,15 @@ public class PendenzeConverter {
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
-			rsModel.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+			rsModel.setTipoBollo(TipoBolloEnum.valueOf(singoloVersamento.getTipoBollo().getCodifica()));
 			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 		} else if(singoloVersamento.getTributo(null) != null && singoloVersamento.getTributo(null).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
 			rsModel.setCodEntrata(singoloVersamento.getTributo(null).getCodTributo());
 		} else { // Definisce i dettagli di incasso della singola entrata.
 			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
 			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
-			if(singoloVersamento.getTipoContabilita() != null)
-				rsModel.setTipoContabilita(singoloVersamento.getTipoContabilita().getCodifica());
+			rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(null).getCodIban());
+			rsModel.setTipoContabilita(TipoContabilitaEnum.fromValue(singoloVersamento.getTipoContabilita().name()));
 		}
 		
 		

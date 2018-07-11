@@ -23,6 +23,13 @@ public class BigDecimalValidator {
 		return this;
 	}
 	
+	public BigDecimalValidator isNull() throws ValidationException {
+		if(fieldValue != null) {
+			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		}
+		return this;
+	}
+	
 	public BigDecimalValidator max(BigDecimal max) throws ValidationException {
 		if(fieldValue != null && fieldValue.compareTo(max) > 0) {
 			throw new ValidationException("Il campo " + fieldName + " deve essere inferiore a " + StringFormatter.format("%.2f", max) + ".");

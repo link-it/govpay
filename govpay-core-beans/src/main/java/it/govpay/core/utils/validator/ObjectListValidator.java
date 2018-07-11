@@ -21,6 +21,13 @@ public class ObjectListValidator {
 		return this;
 	}
 	
+	public ObjectListValidator isNull() throws ValidationException {
+		if(fieldValue != null) {
+			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		}
+		return this;
+	}
+	
 	public ObjectListValidator minItems(long min) throws ValidationException {
 		if(fieldValue.size() < min) {
 			throw new ValidationException("Il campo " + fieldName + " deve avere almeno " + min + " elementi.");
