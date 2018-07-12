@@ -179,6 +179,7 @@ public class Operazioni{
 				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
 				if(notifiche.size() == 0) {
 					BatchManager.stopEsecuzione(bd, ntfy);
+					aggiornaSondaOK(ntfy, bd);
 					return "Nessuna notifica da inviare.";
 				}
 
