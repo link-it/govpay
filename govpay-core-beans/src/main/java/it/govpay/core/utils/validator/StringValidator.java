@@ -17,7 +17,7 @@ public class StringValidator {
 
 	public StringValidator notNull() throws ValidationException {
 		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " non pu\u0048 essere vuoto.");
+			throw new ValidationException("Il campo " + fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}
@@ -31,31 +31,33 @@ public class StringValidator {
 
 	public StringValidator minLength(int length) throws ValidationException {
 		if(fieldValue != null && fieldValue.length() < length) {
-			throw new ValidationException("La lunghezza del campo " + fieldName + " non pu\u0048 essere inferiore a " + length + " caratteri.");
+			throw new ValidationException("Il valore [" + fieldValue + "] del campo " + fieldName + " non rispetta la lungezza minima di" + length + " caratteri.");
+
 		}
 		return this;
 	}
 
 	public StringValidator maxLength(int length) throws ValidationException {
 		if(fieldValue != null && fieldValue.length() > length) {
-			throw new ValidationException("La lunghezza del campo " + fieldName + " non pu\u0048 essere superiore a " + length + " caratteri.");
+			throw new ValidationException("Il valore [" + fieldValue + "] del campo " + fieldName + " non rispetta la lungezza massima di" + length + " caratteri.");
+
 		}
 		return this;
 	}
 	
 	public StringValidator length(int length) throws ValidationException {
 		if(fieldValue != null && fieldValue.length() != length) {
-			throw new ValidationException("La lunghezza del campo " + fieldName + " deve essere uguale a " + length + " caratteri.");
+			throw new ValidationException("Il valore [" + fieldValue + "] del campo " + fieldName + " non rispetta la lunghezza di" + length + " caratteri.");
 		}
 		return this;
 	}
 
 	public StringValidator pattern(String pattern) throws ValidationException {
 		if(fieldValue != null) {
-			Pattern p = Pattern.compile("pattern");
+			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(fieldValue);
 			if(!m.matches())
-				throw new ValidationException("Il valore del campo " + fieldName + " non rispetta il pattern richiesto: " + pattern + "");
+				throw new ValidationException("Il valore [" + fieldValue + "] del campo " + fieldName + " non rispetta il pattern richiesto: " + pattern + "");
 		}
 		return this;
 	}

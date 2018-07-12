@@ -196,7 +196,8 @@ public class PendenzeConverter {
 		} else { // Definisce i dettagli di incasso della singola entrata.
 			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
 			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
-			rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(null).getCodIban());
+			if(singoloVersamento.getIbanAppoggio(null) != null)
+				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(null).getCodIban());
 			rsModel.setTipoContabilita(TipoContabilitaEnum.fromValue(singoloVersamento.getTipoContabilita().name()));
 		}
 		

@@ -14,7 +14,7 @@ public class EnumValidator {
 
 	public EnumValidator notNull() throws ValidationException {
 		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " non pu\u0048 essere vuoto.");
+			throw new ValidationException("Il campo " + fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}

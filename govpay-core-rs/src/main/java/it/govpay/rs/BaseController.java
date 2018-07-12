@@ -315,8 +315,8 @@ public abstract class BaseController {
 		log.warn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
-			respKo.setCodice("VALIDAZIONE SINTATTICA");
-			respKo.setDescrizione("Rilevato errore di sintassi nella richiesta");
+			respKo.setCodice("SINTASSI");
+			respKo.setDescrizione("Richiesta non valida");
 			respKo.setDettaglio(e.getMessage());
 		
 		int statusCode = 400;

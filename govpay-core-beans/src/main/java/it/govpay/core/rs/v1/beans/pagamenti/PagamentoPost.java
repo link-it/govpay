@@ -94,7 +94,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 
 	@JsonProperty("autenticazioneSoggetto")
-	private AutenticazioneSoggettoEnum autenticazioneSoggetto = null;
+	private AutenticazioneSoggettoEnum autenticazioneSoggetto = AutenticazioneSoggettoEnum.N_A;
 
 
 	/**

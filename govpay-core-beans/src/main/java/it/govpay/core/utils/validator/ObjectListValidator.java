@@ -16,7 +16,7 @@ public class ObjectListValidator {
 
 	public ObjectListValidator notNull() throws ValidationException {
 		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " non pu\u0048 essere vuoto.");
+			throw new ValidationException("Il campo " + fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}
@@ -37,7 +37,7 @@ public class ObjectListValidator {
 	
 	public ObjectListValidator maxItems(long max) throws ValidationException {
 		if(fieldValue.size() > max) {
-			throw new ValidationException("Il campo " + fieldName + " deve avere al pi\u00FA " + max + " elementi.");
+			throw new ValidationException("Il campo " + fieldName + " deve avere massimo " + max + " elementi.");
 		}
 		return this;
 	}
