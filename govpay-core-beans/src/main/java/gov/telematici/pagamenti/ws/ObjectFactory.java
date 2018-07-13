@@ -151,10 +151,9 @@ public class ObjectFactory {
      * 
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "avvisoDigitale")
-    public JAXBElement<CtAvvisoDigitale> createCtEsitoAvvisoDigitale(CtAvvisoDigitale value) {
+    public JAXBElement<CtAvvisoDigitale> createCtAvvisoDigitale(CtAvvisoDigitale value) {
         return new JAXBElement<CtAvvisoDigitale>(_CtAvvisoDigitale_QNAME, CtAvvisoDigitale.class, null, value);
     }
-
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link CtEsitoPresaInCarico }{@code >}}
      * 

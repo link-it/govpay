@@ -36,6 +36,7 @@ import it.govpay.orm.Tracciato;
 public class TracciatoFilter extends AbstractFilter {
 
 	private String filenameRichiestaLike;
+	private String filenameRichiesta;
 	private List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo;
 	private it.govpay.model.Tracciato.STATO_ELABORAZIONE stato;
 	private List<String> domini;
@@ -64,6 +65,11 @@ public class TracciatoFilter extends AbstractFilter {
 			
 			if(this.filenameRichiestaLike != null){
 				exp.like(Tracciato.model().FILE_NAME_RICHIESTA, this.filenameRichiestaLike,LikeMode.END); 
+				addAnd = true;
+			}
+			
+			if(this.filenameRichiesta != null){
+				exp.equals(Tracciato.model().FILE_NAME_RICHIESTA, this.filenameRichiesta); 
 				addAnd = true;
 			}
 			
@@ -122,6 +128,14 @@ public class TracciatoFilter extends AbstractFilter {
 
 	public void setTipo(List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getFilenameRichiesta() {
+		return filenameRichiesta;
+	}
+
+	public void setFilenameRichiesta(String filenameRichiesta) {
+		this.filenameRichiesta = filenameRichiesta;
 	}
 
 

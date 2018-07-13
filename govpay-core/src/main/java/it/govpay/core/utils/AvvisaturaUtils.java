@@ -19,34 +19,46 @@
  */
 package it.govpay.core.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import gov.telematici.pagamenti.ws.CtAvvisoDigitale;
 import gov.telematici.pagamenti.ws.CtDatiSingoloVersamento;
+import gov.telematici.pagamenti.ws.CtEsitoAvvisoDigitale;
 import gov.telematici.pagamenti.ws.CtEsitoPresaInCarico;
 import gov.telematici.pagamenti.ws.CtIdentificativoUnivocoPersonaFG;
 import gov.telematici.pagamenti.ws.CtSoggettoPagatore;
+import gov.telematici.pagamenti.ws.ListaEsitoAvvisiDigitali;
 import gov.telematici.pagamenti.ws.ObjectFactory;
 import gov.telematici.pagamenti.ws.StTipoIdentificativoUnivocoPersFG;
 import gov.telematici.pagamenti.ws.StTipoOperazione;
@@ -59,7 +71,8 @@ public class AvvisaturaUtils {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(AvvisaturaUtils.class);
 	private static JAXBContext jaxbContext;
-	
+	public static Schema schema;
+
 	public static void scriviHeaderTracciatoAvvisatura(OutputStream out) throws IOException {
 		out.write("<listaAvvisiDigitali xmlns=\"http://ws.pagamenti.telematici.gov/\"><versioneOggetto>1.0</versioneOggetto>".getBytes());
 	}
@@ -176,12 +189,14 @@ public class AvvisaturaUtils {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		jaxbMarshaller.marshal(new ObjectFactory().createCtEsitoAvvisoDigitale(avviso), out);
+		jaxbMarshaller.marshal(new ObjectFactory().createCtAvvisoDigitale(avviso), out);
 	}
 
-	private static void init() throws JAXBException {
-		if(jaxbContext == null) {
+	private static void init() throws JAXBException, SAXException {
+		if(jaxbContext == null || schema == null) {
 			jaxbContext = JAXBContext.newInstance(CtAvvisoDigitale.class.getPackage().getName());
+			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			schema = schemaFactory.newSchema(new StreamSource(AvvisaturaUtils.class.getResourceAsStream("/xsd/avvisi-digitali-1.0.xsd"))); 
 		}
 		
 	}
@@ -196,13 +211,58 @@ public class AvvisaturaUtils {
 		out.write("</listaAvvisiDigitali>".getBytes());
 	}
 	
-	public static CtEsitoPresaInCarico leggiEsitoPresaInCaricoAvvisoDigitale(InputStream is) throws JAXBException, IOException {
+	
+	private static boolean trovaProssimoEsitoAvvisoDigitale(XMLStreamReader xsr) throws IOException, XMLStreamException {
+
+		int eventType = xsr.getEventType();
+		do {
+			if(eventType == XMLStreamReader.START_ELEMENT && xsr.getLocalName().equals(CtEsitoAvvisoDigitale.class.getAnnotation(XmlType.class).name())) {
+				return true;
+			}
+			eventType = xsr.next();
+		} while (xsr.hasNext());
+
+		return false;
+	}
+
+
+	public static  CtEsitoAvvisoDigitale leggiProssimoEsitoAvvisoDigitale(XMLStreamReader xsr, Transformer t) throws JAXBException, IOException, XMLStreamException, TransformerException {
+
+		if(trovaProssimoEsitoAvvisoDigitale(xsr)) {
+
+			DOMResult result = new DOMResult();
+			t.transform(new StAXSource(xsr), result);
+			Node domNode = result.getNode();
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			JAXBElement<CtEsitoAvvisoDigitale> root = jaxbUnmarshaller.unmarshal(domNode, CtEsitoAvvisoDigitale.class);
+			return root.getValue();
+		} else {
+			return null;
+		}
+
+	}
+
+	public static List<CtEsitoAvvisoDigitale> leggiListaAvvisiDigitali(InputStream is) throws JAXBException, IOException, XMLStreamException, TransformerException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-		IOUtils.copy(is, baos);
-		byte[] byteArray = baos.toByteArray();
-		JAXBElement<CtEsitoPresaInCarico> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(byteArray)), CtEsitoPresaInCarico.class);
+		jaxbUnmarshaller.setSchema(schema);
+		
+		JAXBElement<ListaEsitoAvvisiDigitali> root = jaxbUnmarshaller.unmarshal(new StreamSource(is), ListaEsitoAvvisiDigitali.class);
+		return root.getValue().getEsitoAvvisoDigitale();
+	}
+
+
+	public static void scriviEsitoPresaInCarico(CtEsitoPresaInCarico esito, OutputStream os) throws JAXBException, IOException, SAXException {
+		init();
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.marshal(new ObjectFactory().createEsitoPresaInCarico(esito), os);
+	}
+
+	public static CtEsitoPresaInCarico leggiEsitoPresaInCaricoAvvisoDigitale(InputStream is) throws JAXBException, IOException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		jaxbUnmarshaller.setSchema(schema);
+		JAXBElement<CtEsitoPresaInCarico> root = jaxbUnmarshaller.unmarshal(new StreamSource(is), CtEsitoPresaInCarico.class);
 		return root.getValue();
 	}
 }

@@ -292,6 +292,7 @@ public class Rpt extends BasicBD{
 				} catch (ClientException ee) {
 					ctx.log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
 					log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");
+					updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), null);
 					throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
 				} finally {
 					ctx.closeTransaction(idTransaction2);

@@ -69,7 +69,7 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.resetCacheAnagrafica();
 	}
 	
-	@Schedule(hour="*", minute="*", persistent=false)
+	@Schedule(hour="*", minute="*", second="*/20", persistent=false)
     public static String avvisaturaDigitale(){
 		return it.govpay.core.business.Operazioni.avvisaturaDigitale("Batch");
 	}

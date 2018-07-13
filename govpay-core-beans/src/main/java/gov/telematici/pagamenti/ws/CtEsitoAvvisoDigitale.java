@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ctEsitoAvvisoDigitale", propOrder = {
+@XmlType(name = "esitoAvvisoDigitale", propOrder = {
     "identificativoDominio",
     "identificativoMessaggioRichiesta",
     "esitoAvvisatura"

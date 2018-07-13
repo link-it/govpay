@@ -37,13 +37,15 @@ tags:
     description: Valori usabili nelle enumerazioni dinamiche
   - name: Utenti
     description: Operazioni per l'utente autenticato
+  - name: Tracciati
+    description: Operazioni sui tracciati
 security:
   - basicAuth: []    
 paths:
   '/tracciati':
     get:
       tags:
-        - Pendenze
+        - Tracciati
       summary: Elenco dei tracciati
       parameters:
         - in: query
@@ -86,7 +88,7 @@ paths:
   '/tracciati/{id}':
     get:
       tags:
-        - Pendenze
+        - Tracciati
       summary: Dettaglio di un tracciato
       parameters:
         - in: path
@@ -113,7 +115,7 @@ paths:
   '/tracciati/{id}/richiesta':
     get:
       tags:
-        - Pendenze
+        - Tracciati
       summary: Messaggio di richiesta di un tracciato
       parameters:
         - in: path
@@ -140,7 +142,7 @@ paths:
   '/tracciati/{id}/risposta':
     get:
       tags:
-        - Pendenze
+        - Tracciati
       summary: Messaggio di risposta di un tracciato
       parameters:
         - in: path

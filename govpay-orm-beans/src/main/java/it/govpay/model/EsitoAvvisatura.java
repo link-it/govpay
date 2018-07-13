@@ -55,6 +55,12 @@ public class EsitoAvvisatura extends BasicModel {
 	public void setIdTracciato(long idTracciato) {
 		this.idTracciato = idTracciato;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	private String identificativoAvvisatura;
 	private Integer tipoCanale;
 	private String codCanale;
@@ -62,5 +68,6 @@ public class EsitoAvvisatura extends BasicModel {
 	private Integer codEsito;
 	private String descrizioneEsito;
 	private long idTracciato;
+	private Long id;
 
 }

@@ -8,13 +8,12 @@ import java.util.Date;
 /**
  * @author Bussu Giovanni (bussu@link.it)
  * @author  $Author: bussu $
- * @version $ Rev: 12563 $, $Date: 09 lug 2018 $
+ * @version $ Rev: 12563 $, $Date: 11 lug 2018 $
  * 
  */
-public class Avvisatura {
+public class EsitoAvvisatura {
 
-	private String intermediario;
-	private long numeroAvvisi;
+	private long numeroEsiti; 
 	private String stepElaborazione;
 	private String descrizioneStepElaborazione;
 	private Date dataUltimoAggiornamento;
@@ -22,17 +21,11 @@ public class Avvisatura {
 	private int codiceEsitoPresaInCarico;
 	private String descrizioneEsitoPresaInCarico;
 
-	public String getIntermediario() {
-		return intermediario;
+	public long getNumeroEsiti() {
+		return numeroEsiti;
 	}
-	public void setIntermediario(String intermediario) {
-		this.intermediario = intermediario;
-	}
-	public long getNumeroAvvisi() {
-		return numeroAvvisi;
-	}
-	public void setNumeroAvvisi(long numeroAvvisi) {
-		this.numeroAvvisi = numeroAvvisi;
+	public void setNumeroEsiti(long numeroEsiti) {
+		this.numeroEsiti = numeroEsiti;
 	}
 	public String getStepElaborazione() {
 		return stepElaborazione;
@@ -72,5 +65,4 @@ public class Avvisatura {
 	public void setDescrizioneEsitoPresaInCarico(String descrizioneEsitoPresaInCarico) {
 		this.descrizioneEsitoPresaInCarico = descrizioneEsitoPresaInCarico;
 	}
-
 }
