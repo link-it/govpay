@@ -36,10 +36,6 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.bind.UnmarshalException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -600,10 +596,10 @@ public class Operazioni{
 
 											esitoAvvisaturaLst.add(esitoAvvisatura);
 
-											if(esitoAvvisaturaLst.size() > 100) { //TODO properties
-												esitiAvvisaturaBD.insertEsitoAvvisaturaBatch(esitoAvvisaturaLst);
-												esitoAvvisaturaLst = new ArrayList<>();
-											}
+//											if(esitoAvvisaturaLst.size() > 100) { //TODO batch e definire dimensione nel properties
+//												esitiAvvisaturaBD.insertEsitoAvvisaturaBatch(esitoAvvisaturaLst);
+//												esitoAvvisaturaLst = new ArrayList<>();
+//											}
 										}
 
 									}
