@@ -223,6 +223,7 @@ public class Operazioni{
 				if(notifiche.size() == 0) {
 					aggiornaSondaOK(ntfy, bd);
 					BatchManager.stopEsecuzione(bd, ntfy);
+					aggiornaSondaOK(ntfy, bd);
 					return "Nessuna notifica da inviare.";
 				}
 

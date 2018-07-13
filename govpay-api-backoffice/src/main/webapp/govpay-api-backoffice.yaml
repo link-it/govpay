@@ -2792,7 +2792,7 @@ components:
       type: object
       required:
         - denominazione
-        - pagopaConnector
+        - servizioPagoPa
       properties:
         denominazione:
           type: string
@@ -3115,6 +3115,7 @@ components:
           example: true
           default: true
     applicazioneIndex:
+      type: object
       required:
         - idA2A
         - principal
@@ -3134,6 +3135,7 @@ components:
           example: true        
           default: true                    
     applicazione:
+      type: object
       required:
         - idA2A
         - principal

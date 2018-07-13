@@ -1164,30 +1164,38 @@ components:
           description: codice fiscale o partita iva del soggetto
           type: string
           example: RSSMRA30A01H501I
+          minLength: 1
+          maxLength: 35
         anagrafica:
           description: nome e cognome o altra ragione sociale del soggetto
           type: string
           example: Mario Rossi
+          minLength: 1
           maxLength: 70
         indirizzo:
           type: string
           example: Piazza della Vittoria
+          minLength: 1
           maxLength: 70
         civico:
           type: string
           example: 10/A
+          minLength: 1
           maxLength: 16
         cap:
           type: string
           example: 00000
+          minLength: 1
           maxLength: 16
         localita:
           type: string
           example: Roma
+          minLength: 1
           maxLength: 35
         provincia:
           type: string
           example: Roma
+          minLength: 1
           maxLength: 35
         nazione:
           type: string
@@ -2163,7 +2171,7 @@ components:
                   type: string
                   example: IT60X0542811101000000123456
                 tipoContabilita:
-                  $ref: '#/components/schemas/tipoEntrata'
+                  $ref: '#/components/schemas/tipoContabilita'
                 codiceContabilita:
                   description: Codifica del capitolo di bilancio
                   type: string

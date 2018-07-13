@@ -2,17 +2,23 @@ package it.govpay.core.rs.v1.beans.pagamenti;
 
 import java.util.Objects;
 
+import org.openspcoop2.generic_project.exception.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 /**
  * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
- **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
+ **/
+
+@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "iban",
 "bic",
 })
-public class ContoAddebito extends JSONSerializable {
+public class ContoAddebito extends JSONSerializable implements IValidable {
   
   @JsonProperty("iban")
   private String iban = null;
@@ -71,7 +77,7 @@ public class ContoAddebito extends JSONSerializable {
   }
 
   public static ContoAddebito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
-    return (ContoAddebito) parse(json, ContoAddebito.class);
+    return parse(json, ContoAddebito.class);
   }
 
   @Override
@@ -100,6 +106,13 @@ public class ContoAddebito extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  public void validate() throws ValidationException {
+	  ValidatorFactory vf = ValidatorFactory.newInstance();
+	  vf.getValidator("iban", iban).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
+	  vf.getValidator("iban", iban).pattern("[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}");
+  }
+  
 }
 
 

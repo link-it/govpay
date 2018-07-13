@@ -21,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.rest.ProcessingException;
 import org.openspcoop2.utils.rest.ValidatorException;
 import org.openspcoop2.utils.rest.entity.Cookie;
@@ -237,6 +238,10 @@ public abstract class BaseController {
 			return handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
 		}
 		
+		if(e instanceof ValidationException) {
+			return handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
+		}
+		
 		log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
@@ -294,6 +299,27 @@ public abstract class BaseController {
 		}
 		
 		int statusCode = e.getStatusCode();
+		
+		try {
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
+		}catch(Exception e1) {
+			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
+		}
+		if(transactionId != null)
+			return Response.status(statusCode).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
+		else 
+			return Response.status(statusCode).entity(respKo.toJSON(null)).build();
+	}
+	
+	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
+		log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.RICHIESTA);
+			respKo.setCodice("SINTASSI");
+			respKo.setDescrizione("Richiesta non valida");
+			respKo.setDettaglio(e.getMessage());
+		
+		int statusCode = 400;
 		
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
