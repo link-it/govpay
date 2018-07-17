@@ -63,7 +63,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -116,7 +116,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			}
 			verificaPagamentoDTO.setOp(lstOp );
 
-			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
 			
 			GetApplicazioneDTOResponse pagamentoPortaleDTOResponse = applicazioniDAO.patch(verificaPagamentoDTO);
 			
@@ -155,7 +155,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 
 			
-			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
 			
 			PutApplicazioneDTOResponse putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putApplicazioneDTO);
 			
@@ -197,7 +197,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
 			
 			// CHIAMATA AL DAO
 			

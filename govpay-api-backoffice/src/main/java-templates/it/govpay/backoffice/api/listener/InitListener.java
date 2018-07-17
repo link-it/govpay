@@ -25,7 +25,7 @@ public class InitListener implements ServletContextListener{
 	private String govpayVersion = "${project.version}";
 	private String buildVersion = "${git.commit.id}";
 	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_JSON;
-	private String dominioAnagraficaManager = null; // "it.govpay.cache.anagrafica.backoffice";
+	private String dominioAnagraficaManager = "it.govpay.cache.anagrafica.backoffice";
 
 	public static boolean isInitialized() {
 		return InitListener.initialized;

@@ -28,6 +28,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.TributiBD;
@@ -37,7 +38,6 @@ import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
@@ -80,6 +80,14 @@ import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
 
 public class DominiDAO extends BaseDAO{
+	
+	public DominiDAO() {
+		super();
+	}
+	
+	public DominiDAO(boolean useCacheData) {
+		super(useCacheData);
+	}
 
 	public PutDominioDTOResponse createOrUpdate(PutDominioDTO putDominioDTO) throws ServiceException,
 	DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
@@ -91,8 +99,7 @@ public class DominiDAO extends BaseDAO{
 			this.autorizzaRichiesta(putDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.SCRITTURA,bd); 
 			// stazione
 			try {
-				Stazione stazione = AnagraficaManager.getStazione(bd, putDominioDTO.getCodStazione());
-				putDominioDTO.getDominio().setIdStazione(stazione.getId()); 
+				putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(bd, putDominioDTO.getCodStazione()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new StazioneNonTrovataException(e.getMessage());
 			} 
@@ -170,7 +177,6 @@ public class DominiDAO extends BaseDAO{
 				filter.setRagioneSociale(listaDominiDTO.getRagioneSociale());
 				filter.setAbilitato(listaDominiDTO.getAbilitato());
 			}
-			//filter.setIdDomini(domini);
 			filter.setOffset(listaDominiDTO.getOffset());
 			filter.setLimit(listaDominiDTO.getLimit());
 			filter.getFilterSortList().addAll(listaDominiDTO.getFieldSortList());
@@ -183,13 +189,13 @@ public class DominiDAO extends BaseDAO{
 		}
 	}
 
-	public byte[] getLogo(GetDominioDTO getDominioDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
+	public byte[] getLogo(GetDominioDTO getDominioDTO) throws DominioNonTrovatoException, ServiceException {
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
+			Dominio dominio = useCacheData ? AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio()) : AnagraficaManagerNoCache.getDominio(bd, getDominioDTO.getCodDominio());
 			if(dominio.getLogo() != null && dominio.getLogo().length > 0)
 				return Base64.getDecoder().decode(dominio.getLogo());
 			else
@@ -209,7 +215,7 @@ public class DominiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd); 
 
-			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
+			Dominio dominio = useCacheData ? AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio()) : AnagraficaManagerNoCache.getDominio(bd, getDominioDTO.getCodDominio());
 			GetDominioDTOResponse response = new GetDominioDTOResponse(dominio);
 			response.setUo(dominio.getUnitaOperative(bd));
 			response.setIban(dominio.getIbanAccredito(bd));
@@ -365,7 +371,7 @@ public class DominiDAO extends BaseDAO{
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getIbanDTO.getCodDominio() + " non censito in Anagrafica");
 			}
-			GetIbanDTOResponse response = new GetIbanDTOResponse(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), getIbanDTO.getCodIbanAccredito()));
+			GetIbanDTOResponse response = new GetIbanDTOResponse(useCacheData ? AnagraficaManager.getIbanAccredito(bd, dominio.getId(), getIbanDTO.getCodIbanAccredito()) : AnagraficaManagerNoCache.getIbanAccredito(bd, dominio.getId(), getIbanDTO.getCodIbanAccredito()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IbanAccreditoNonTrovatoException("Iban di accredito " + getIbanDTO.getCodIbanAccredito() + " non censito in Anagrafica per il dominio " + getIbanDTO.getCodDominio());
@@ -466,7 +472,7 @@ public class DominiDAO extends BaseDAO{
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getTributoDTO.getCodDominio() + " non censito in Anagrafica");
 			}
-			it.govpay.bd.model.Tributo tributo = AnagraficaManager.getTributo(bd, dominio.getId(), getTributoDTO.getCodTributo());
+			it.govpay.bd.model.Tributo tributo = useCacheData ? AnagraficaManager.getTributo(bd, dominio.getId(), getTributoDTO.getCodTributo()) : AnagraficaManagerNoCache.getTributo(bd, dominio.getId(), getTributoDTO.getCodTributo());
 			GetTributoDTOResponse response = new GetTributoDTOResponse(tributo, tributo.getIbanAccredito(), tributo.getIbanAppoggio());
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

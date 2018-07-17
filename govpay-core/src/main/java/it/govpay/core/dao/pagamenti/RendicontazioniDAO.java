@@ -68,7 +68,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 				for (Fr fr : findAll) {
 					LeggiRendicontazioneDTOResponse elem = new LeggiRendicontazioneDTOResponse();
-					populateRendicontazione(fr, bd);
+					try{ fr.getDominio(bd); } catch (NotFoundException e) {}
 					elem.setFr(fr);
 					resList.add(elem);
 				}

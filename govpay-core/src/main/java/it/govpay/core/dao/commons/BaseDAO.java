@@ -27,6 +27,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.exceptions.NotAuthenticatedException;
@@ -38,6 +39,16 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.IAutorizzato;
 
 public class BaseDAO {
+	
+	protected boolean useCacheData;
+	
+	public BaseDAO() {
+		this(true);
+	}
+	
+	public BaseDAO(boolean useCacheData) {
+		this.useCacheData = useCacheData;
+	}
 
 	public String populateUser(IAutorizzato user, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		if(user == null || user.getPrincipal() == null)
@@ -59,15 +70,23 @@ public class BaseDAO {
 	}
 
 	public Applicazione getApplicazioneFromUser(IAutorizzato user, BasicBD bd) throws ServiceException, NotFoundException {
-		Applicazione applicazione = user.isCheckSubject() ? AnagraficaManager.getApplicazioneBySubject(bd, user.getPrincipal())
-				: AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
-		return applicazione;
+		if(useCacheData) {
+			return user.isCheckSubject() ? AnagraficaManager.getApplicazioneBySubject(bd, user.getPrincipal())
+					: AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
+		} else {
+			return user.isCheckSubject() ? AnagraficaManagerNoCache.getApplicazioneBySubject(bd, user.getPrincipal())
+					: AnagraficaManagerNoCache.getApplicazioneByPrincipal(bd, user.getPrincipal());
+		}
 	}
 	
 	public Operatore getOperatoreFromUser(IAutorizzato user, BasicBD bd) throws ServiceException, NotFoundException {
-		Operatore operatore = user.isCheckSubject() ? AnagraficaManager.getOperatoreBySubject(bd, user.getPrincipal())
+		if(useCacheData) {
+			return user.isCheckSubject() ? AnagraficaManager.getOperatoreBySubject(bd, user.getPrincipal())
 				: AnagraficaManager.getOperatoreByPrincipal(bd, user.getPrincipal());
-		return operatore;
+		} else {
+			return user.isCheckSubject() ? AnagraficaManagerNoCache.getOperatoreBySubject(bd, user.getPrincipal())
+					: AnagraficaManagerNoCache.getOperatoreByPrincipal(bd, user.getPrincipal());
+		}
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {

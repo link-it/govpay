@@ -86,7 +86,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -128,7 +128,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -176,7 +176,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -223,7 +223,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -268,7 +268,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -313,7 +313,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -366,7 +366,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -414,7 +414,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -457,7 +457,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, user);
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = dominiDAO.createOrUpdateIbanAccredito(putibanAccreditoDTO);
 			
@@ -495,7 +495,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			PutUnitaOperativaDTO putUnitaOperativaDTO = DominiConverter.getPutUnitaOperativaDTO(unitaOperativaRequest, idDominio, idUnitaOperativa, user);
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			PutUnitaOperativaDTOResponse putUnitaOperativaDTOResponse = dominiDAO.createOrUpdateUnitaOperativa(putUnitaOperativaDTO);
 			
@@ -533,7 +533,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			PutEntrataDominioDTOResponse putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
 			
@@ -613,7 +613,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -659,7 +659,7 @@ public class DominiController extends it.govpay.rs.BaseController {
 
 			// INIT DAO
 			
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			

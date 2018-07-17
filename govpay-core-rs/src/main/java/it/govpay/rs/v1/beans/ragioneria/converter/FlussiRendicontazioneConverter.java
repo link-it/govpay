@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.core.rs.v1.beans.ragioneria.DominioIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.FlussoRendicontazione;
 import it.govpay.core.rs.v1.beans.ragioneria.FlussoRendicontazioneIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.Segnalazione;
@@ -51,7 +52,12 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
-		rsModel.setDominio(DominiConverter.toRsIndexModel(fr.getDominio(null)));
+		try {
+			rsModel.setDominio(DominiConverter.toRsIndexModel(fr.getDominio(null)));
+		} catch (Throwable e) {
+			DominioIndex dominioIndex = new DominioIndex();
+			dominioIndex.setIdDominio(fr.getCodDominio());
+		}
 		rsModel.setNumeroPagamenti(new BigDecimal(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
 		if(fr.getAnomalie() != null) {

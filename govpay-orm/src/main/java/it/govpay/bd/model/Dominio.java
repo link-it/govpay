@@ -27,6 +27,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
@@ -42,10 +43,9 @@ public class Dominio extends it.govpay.model.Dominio {
 	public Dominio() {
 		super();
 	}
-
+	
 	// Business
 	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
-
 		super.setId(idDominio);
 		super.setIdStazione(idStazione);
 
@@ -57,8 +57,7 @@ public class Dominio extends it.govpay.model.Dominio {
 
 		stazione = AnagraficaManager.getStazione(bd, idStazione);
 	}
-
-
+	
 	// Business
 
 	private transient Anagrafica anagrafica;
@@ -79,10 +78,14 @@ public class Dominio extends it.govpay.model.Dominio {
 	public void setAnagrafica(Anagrafica anagrafica) {
 		this.anagrafica = anagrafica;
 	}
-
+	
 	public Applicazione getApplicazioneDefault(BasicBD bd) throws ServiceException {
+		return getApplicazioneDefault(bd, false);
+	}
+
+	public Applicazione getApplicazioneDefault(BasicBD bd, boolean useCacheData) throws ServiceException {
 		if(applicazioneDefault == null && this.getIdApplicazioneDefault() != null) {
-			applicazioneDefault = AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault());
+			applicazioneDefault = useCacheData ? AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault()) : AnagraficaManagerNoCache.getApplicazione(bd, this.getIdApplicazioneDefault());
 		} 
 		return applicazioneDefault;
 	}
@@ -104,13 +107,13 @@ public class Dominio extends it.govpay.model.Dominio {
 		return unitaOperative;
 	}
 
+	
 	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco) throws ServiceException, NotFoundException {
-		List<UnitaOperativa> unitaOperative = getUnitaOperative(bd);
-		for(UnitaOperativa uo : unitaOperative) {
-			if(uo.getAnagrafica().getCodUnivoco().equals(codUnivoco))
-				return uo;
-		}
-		throw new NotFoundException();
+		return getUnitaOperativa(bd, codUnivoco, true);
+	}
+	
+	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco, boolean useCacheData) throws ServiceException, NotFoundException {
+		return useCacheData ? AnagraficaManager.getUnitaOperativa(bd, this.getId(), codUnivoco) : AnagraficaManagerNoCache.getUnitaOperativa(bd, this.getId(), codUnivoco);
 	}
 
 	public List<IbanAccredito> getIbanAccredito(BasicBD bd) throws ServiceException {
@@ -122,14 +125,13 @@ public class Dominio extends it.govpay.model.Dominio {
 		}
 		return ibanAccredito;
 	}
-
+	
 	public IbanAccredito getIban(BasicBD bd, String iban) throws ServiceException, NotFoundException {
-		List<IbanAccredito> ibans = getIbanAccredito(bd);
-		for(IbanAccredito ibanAccredito : ibans) {
-			if(ibanAccredito.getCodIban().equals(iban))
-				return ibanAccredito;
-		}
-		throw new NotFoundException();
+		return getIban(bd, iban, true);
+	}
+
+	public IbanAccredito getIban(BasicBD bd, String iban, boolean useCacheData) throws ServiceException, NotFoundException {
+		return useCacheData ? AnagraficaManager.getIbanAccredito(bd, this.getId(), iban) : AnagraficaManagerNoCache.getIbanAccredito(bd, this.getId(), iban);
 	}
 
 	public List<Tributo> getTributi(BasicBD bd) throws ServiceException {
@@ -143,12 +145,11 @@ public class Dominio extends it.govpay.model.Dominio {
 	}
 
 	public Tributo getTributo(BasicBD bd, String codTributo) throws ServiceException, NotFoundException {
-		List<Tributo> tributi = getTributi(bd);
-		for(Tributo tributo : tributi) {
-			if(tributo.getCodTributo().equals(codTributo))
-				return tributo;
-		}
-		throw new NotFoundException();
+		return getTributo(bd, codTributo, true);
+	}
+	
+	public Tributo getTributo(BasicBD bd, String codTributo, boolean useCacheData) throws ServiceException, NotFoundException {
+		return useCacheData ? AnagraficaManager.getTributo(bd, this.getId(), codTributo) : AnagraficaManagerNoCache.getTributo(bd, this.getId(), codTributo);
 	}
 }
 

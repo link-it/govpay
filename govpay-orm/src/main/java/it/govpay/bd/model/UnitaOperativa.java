@@ -24,6 +24,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 
 /**
  * Rapppresenta una Unita' Operativa
@@ -37,8 +38,12 @@ public class UnitaOperativa extends it.govpay.model.UnitaOperativa {
 	private transient Dominio dominio;
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
+		return getDominio(bd, true);
+	}
+	
+	public Dominio getDominio(BasicBD bd, boolean useCacheData) throws ServiceException {
 		if(dominio == null) {
-			dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+			dominio = useCacheData ? AnagraficaManager.getDominio(bd, this.getIdDominio()) : AnagraficaManagerNoCache.getDominio(bd, this.getIdDominio());
 		} 
 		return dominio;
 	}
