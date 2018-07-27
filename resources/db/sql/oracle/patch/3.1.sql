@@ -1,3 +1,9 @@
+-- patch dati pagamenti_portale malformati non gestiti dal cruscotto
+
+delete from pag_port_versamenti where id_pagamento_portale in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
+delete from pagamenti_portale where id in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
+
+-- fine patch dati
 ALTER TABLE versamenti MODIFY (tassonomia_avviso NULL);
 
 ALTER TABLE pagamenti_portale ADD ack NUMBER DEFAULT 0;
