@@ -102,6 +102,7 @@ public class Dominio extends it.govpay.model.Dominio {
 			UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
 			UnitaOperativaFilter filter = uoBD.newFilter();
 			filter.setDominioFilter(this.getId());
+			filter.setExcludeEC(true);
 			unitaOperative = uoBD.findAll(filter);
 		}
 		return unitaOperative;

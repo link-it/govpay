@@ -192,17 +192,17 @@ public class RppController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
-			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
-			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
-			leggiPagamentoPortaleDTO.setIuv(iuv);
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
-			leggiPagamentoPortaleDTO.setCcp(ccp);
+			leggiRptDTO.setCcp(ccp);
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
-			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(ricevutaDTOResponse.getRpt().getXmlRpt());
+			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt());
 			return this.handleResponseOk(Response.status(Status.OK).entity(rpt),transactionId).build();
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);

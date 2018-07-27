@@ -415,7 +415,7 @@ public class Operazioni{
 			ctx = new GpContext();
 			MDC.put("cmd", "EsitoAvvisaturaDigitale");
 			MDC.put("op", ctx.getTransactionId());
-			log.debug("Batch esito avvisatura digitale");
+			log.trace("Batch esito avvisatura digitale");
 			Service service = new Service();
 			service.setName(serviceName);
 			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
@@ -511,13 +511,13 @@ public class Operazioni{
 						}
 
 					} else {
-						log.debug("Nessun connettore SFTP configurato per l'intermediario " + intermediario.getCodIntermediario());
+						log.trace("Nessun connettore SFTP configurato per l'intermediario " + intermediario.getCodIntermediario());
 					}
 				}
 
 
 
-				log.debug("Lettura tracciati in elaborazione...");
+				log.trace("Lettura tracciati in elaborazione...");
 				TracciatoFilter filter = tracciatiBD.newFilter();
 				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.AV_ESITO));
 				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);

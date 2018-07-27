@@ -19,8 +19,8 @@
  */
 package it.govpay.backoffice.api.rs.v1.backoffice;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -29,19 +29,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
-import org.openspcoop2.utils.logger.beans.proxy.Operation;
-import org.openspcoop2.utils.logger.beans.proxy.Server;
-import org.openspcoop2.utils.logger.beans.proxy.Service;
-import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.sonde.ParametriSonda;
 import org.openspcoop2.utils.sonde.Sonda;
 import org.openspcoop2.utils.sonde.Sonda.StatoSonda;
@@ -49,7 +42,6 @@ import org.openspcoop2.utils.sonde.SondaException;
 import org.openspcoop2.utils.sonde.SondaFactory;
 import org.openspcoop2.utils.sonde.impl.SondaCoda;
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.CheckSonda;
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.DettaglioSonda;
@@ -57,23 +49,14 @@ import it.govpay.backoffice.api.rs.v1.backoffice.sonde.ElencoSonde;
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.SommarioSonda;
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.StazioniBD;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.bd.wrapper.StatoNdP;
 import it.govpay.core.business.Operazioni;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 
-@Path("/check")
+@Path("/sonde")
 public class Check {
 
 	@GET
-	@Path("/sonde")
+	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonde() {
 		BasicBD bd = null;
@@ -82,14 +65,21 @@ public class Check {
 			try {
 				bd = BasicBD.newInstance(UUID.randomUUID().toString());
 				
-				List<CheckSonda> listaCheckSonda = CheckSonda.getListaCheckSonda();
+				List<Sonda> sonde = SondaFactory.findAll(bd.getConnection(), bd.getJdbcProperties().getDatabase());
+				
 				ElencoSonde elenco = new ElencoSonde();
-				for(CheckSonda checkSonda: listaCheckSonda) {
+				for(Sonda sonda: sonde) {
+					sonda.getStatoSonda();
 					SommarioSonda sommarioSonda = new SommarioSonda();
-					sommarioSonda.setNome(checkSonda.getName());
+					StatoSonda statoSonda = sonda.getStatoSonda();
+					ParametriSonda parametri = sonda.getParam();
+					parametri.getDatiCheck();
+					StringWriter writer = new StringWriter();
+					parametri.getDatiCheck().list(new PrintWriter(writer));
+					writer.getBuffer().toString();
+					log.info(parametri.getNome() + ": " + writer.getBuffer().toString());
+					sommarioSonda.setNome(parametri.getNome());
 					try {
-						Sonda sonda = getSonda(bd, checkSonda);
-						StatoSonda statoSonda = sonda.getStatoSonda();
 						sommarioSonda.setStato(statoSonda.getStato());
 						sommarioSonda.setDescrizioneStato(statoSonda.getDescrizione());
 					} catch(Throwable t) {
@@ -127,7 +117,7 @@ public class Check {
 	}
 	
 	@GET
-	@Path("/sonde/{nome}")
+	@Path("/{nome}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonda(@PathParam(value = "nome") String nome) {
 		BasicBD bd = null;
@@ -177,82 +167,6 @@ public class Check {
 		} 
 	}
 
-
-	@GET
-	@Path("/db")
-	public Response verificaDB() {
-		BasicBD bd = null;
-		Logger log = LoggerWrapperFactory.getLogger(Check.class);
-		try {
-			DominiBD dominiBD = null;
-			try {
-				bd = BasicBD.newInstance(UUID.randomUUID().toString());
-				dominiBD = new DominiBD(bd);
-				dominiBD.count(dominiBD.newFilter());
-			} catch(Exception e) {
-				log.error("Errore di connessione al database", e);
-				throw new Exception("Errore di connessione al database");
-			} finally {
-				if(bd!= null) bd.closeConnection();
-			}
-			return Response.ok().build();
-
-		} catch (Exception e) {
-			return Response.status(500).entity(e.getMessage()).build();
-		} 
-	}
-	
-	@GET
-	@Path("/pdd")
-	public Response verificaPDD(
-			@QueryParam(value = "matchString") String matchString) {
-		Logger log = LoggerWrapperFactory.getLogger(Check.class);
-		try {
-			try {
-				URL url = GovpayConfig.getInstance().getUrlPddVerifica();
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				String checkResult = null;
-				conn.connect();
-
-				int responseCode = conn.getResponseCode();
-
-				String bodyResponse = null;
-
-				if(responseCode > 299) {
-					checkResult = "Ottenuto response code ["+responseCode+"] durante la connessione a ["+url+"]";
-				} 
-
-				if(matchString != null) {
-					checkResult = null;
-
-					if(responseCode < 300) {
-						if(conn.getInputStream() != null) {
-							bodyResponse = new String(conn.getInputStream() != null ? IOUtils.toByteArray(conn.getInputStream()) : new byte[]{});
-						}
-					} else {
-						if(conn.getErrorStream() != null) {
-							bodyResponse = new String(conn.getErrorStream() != null ? IOUtils.toByteArray(conn.getErrorStream()) : new byte[]{});
-						}
-					}
-
-					if(bodyResponse == null || !bodyResponse.contains(matchString))
-						checkResult = "Ottenuta risposta che non contiene la matchString ["+matchString+"] durante la connessione a ["+url+"]";
-				}
-
-				if(checkResult != null)
-					throw new Exception(checkResult);
-
-			} catch(Exception e) {
-				log.error("Errore di connessione alla PDD", e);
-				throw new Exception("Errore di connessione alla PDD: " + e.getMessage());
-			}
-
-			return Response.ok().build();
-		} catch (Exception e) {
-			return Response.status(500).entity(e.getMessage()).build();
-		} 
-	}
-	
 	public class EsitoVerifica {
 		private Date ultimo_aggiornamento;
 		private Integer codice_stato;
@@ -292,88 +206,5 @@ public class Check {
 		}
 	}
 	
-	@GET
-	@Path("/domini/{codDominio}")
-	public Response verificaDominioJson(@PathParam(value = "codDominio") String codDominio) {
-		BasicBD bd = null;
-		GpContext ctx = null;
-		try {
-			ctx = new GpContext();
-			Service service = new Service();
-			service.setName("Check");
-			ctx.getTransaction().setService(service);
-			
-			Operation operation = new Operation();
-			operation.setMode(FlowMode.INPUT_OUTPUT);
-			operation.setName("VerificaDominio");
-			ctx.getTransaction().setOperation(operation);
-			
-			Server server = new Server();
-			server.setName(GpContext.GovPay);
-			ctx.getTransaction().setServer(server);
-			
-			Actor to = new Actor();
-			to.setName(GpContext.GovPay);
-			to.setType(GpContext.TIPO_SOGGETTO_GOVPAY);
-			ctx.getTransaction().setTo(to);
-			
-			MDC.put("op", ctx.getTransactionId());
-			GpThreadLocal.set(ctx);
-			
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			
-			EsitoVerifica esito = new EsitoVerifica();
-			try {
-				DominiBD dominiBD = new DominiBD(bd);
-				StazioniBD stazioniBD = new StazioniBD(bd);
-				
-				Dominio d = AnagraficaManager.getDominio(bd, codDominio);
-				Stazione stazione = d.getStazione();
-				
-				StatoNdP statoDominioNdp = dominiBD.getStatoNdp(d.getId());
-				StatoNdP statoStazioneNdp = stazioniBD.getStatoNdp(stazione.getId());
-				
-				if(statoDominioNdp.getCodice() == null) {
-					esito.setCodice_stato(1);
-					esito.setErrore_rilevato("STATO NON VERIFICATO");
-					return Response.ok().entity(esito).build();
-				}
-				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice() == null) {
-					esito.setCodice_stato(0);
-					return Response.ok().entity(esito).build();
-				}
-				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() == 0) {
-					esito.setCodice_stato(0);
-					return Response.ok().entity(esito).build();
-				}
-				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() != 0) {
-					esito.setCodice_stato(2);
-					esito.setUltimo_aggiornamento(statoStazioneNdp.getData());
-					esito.setOperazione_eseguita(statoStazioneNdp.getOperazione());
-					esito.setErrore_rilevato(statoStazioneNdp.getDescrizione());
-					return Response.status(500).entity(esito).build();
-				}
-				if(statoDominioNdp.getCodice().intValue() != 0){ 
-					esito.setCodice_stato(2);
-					esito.setUltimo_aggiornamento(statoDominioNdp.getData());
-					esito.setOperazione_eseguita(statoDominioNdp.getOperazione());
-					esito.setErrore_rilevato(statoDominioNdp.getDescrizione());
-					return Response.status(500).entity(esito).build();
-				}
-
-			} catch(NotFoundException e) {
-				return Response.status(404).build();
-			} 
-			return Response.ok().build();
-		} catch (ServiceException e) {
-			return Response.status(500).entity(e.getMessage()).build();
-		} finally {
-			if(bd!= null) bd.closeConnection();
-			if(ctx != null) ctx.log();
-		}
-	}
 }
 

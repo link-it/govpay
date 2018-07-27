@@ -8,6 +8,7 @@ public class AnagraficaConverter {
 
 	
 	public static Soggetto toSoggettoRsModel(it.govpay.model.Anagrafica anagrafica) {
+		if(anagrafica == null) return null;
 		Soggetto rsModel = new Soggetto();
 
 		if(anagrafica.getTipo() != null)
@@ -32,6 +33,7 @@ public class AnagraficaConverter {
 	 * @return
 	 */
 	public static Anagrafica toAnagrafica(it.govpay.core.rs.v1.beans.pagamenti.Soggetto anagrafica) {
+		if(anagrafica == null) return null;
 		Anagrafica rsModel = new Anagrafica();
 
 		if(anagrafica.getTipo() != null)
