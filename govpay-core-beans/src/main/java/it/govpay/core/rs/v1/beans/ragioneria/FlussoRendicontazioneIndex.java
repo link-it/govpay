@@ -13,9 +13,9 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "dataFlusso",
 "trn",
 "dataRegolamento",
-"istitutoMittente",
+"idPsp",
 "bicRiversamento",
-"dominio",
+"idDominio",
 "numeroPagamenti",
 "importoTotale",
 "segnalazioni",
@@ -34,14 +34,14 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   @JsonProperty("dataRegolamento")
   private Date dataRegolamento = null;
   
-  @JsonProperty("istitutoMittente")
-  private Object istitutoMittente = null;
+  @JsonProperty("idPsp")
+  private String idPsp = null;
   
   @JsonProperty("bicRiversamento")
   private String bicRiversamento = null;
   
-  @JsonProperty("dominio")
-  private DominioIndex dominio = null;
+  @JsonProperty("idDominio")
+  private String idDominio = null;
   
   @JsonProperty("numeroPagamenti")
   private BigDecimal numeroPagamenti = null;
@@ -118,17 +118,17 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   /**
    **/
-  public FlussoRendicontazioneIndex istitutoMittente(Object istitutoMittente) {
-    this.istitutoMittente = istitutoMittente;
+  public FlussoRendicontazioneIndex idPsp(String idPsp) {
+    this.idPsp = idPsp;
     return this;
   }
 
-  @JsonProperty("istitutoMittente")
-  public Object getIstitutoMittente() {
-    return istitutoMittente;
+  @JsonProperty("idPsp")
+  public String getIdPsp() {
+    return idPsp;
   }
-  public void setIstitutoMittente(Object istitutoMittente) {
-    this.istitutoMittente = istitutoMittente;
+  public void setIdPsp(String idPsp) {
+    this.idPsp = idPsp;
   }
 
   /**
@@ -149,17 +149,17 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   /**
    **/
-  public FlussoRendicontazioneIndex dominio(DominioIndex dominio) {
-    this.dominio = dominio;
+  public FlussoRendicontazioneIndex dominio(String idDominio) {
+    this.idDominio = idDominio;
     return this;
   }
 
-  @JsonProperty("dominio")
-  public DominioIndex getDominio() {
-    return dominio;
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
   }
-  public void setDominio(DominioIndex dominio) {
-    this.dominio = dominio;
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
   }
 
   /**
@@ -222,9 +222,9 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
         Objects.equals(dataFlusso, flussoRendicontazioneIndex.dataFlusso) &&
         Objects.equals(trn, flussoRendicontazioneIndex.trn) &&
         Objects.equals(dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
-        Objects.equals(istitutoMittente, flussoRendicontazioneIndex.istitutoMittente) &&
+        Objects.equals(idPsp, flussoRendicontazioneIndex.idPsp) &&
         Objects.equals(bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
-        Objects.equals(dominio, flussoRendicontazioneIndex.dominio) &&
+        Objects.equals(idDominio, flussoRendicontazioneIndex.idDominio) &&
         Objects.equals(numeroPagamenti, flussoRendicontazioneIndex.numeroPagamenti) &&
         Objects.equals(importoTotale, flussoRendicontazioneIndex.importoTotale) &&
         Objects.equals(segnalazioni, flussoRendicontazioneIndex.segnalazioni);
@@ -232,7 +232,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, istitutoMittente, bicRiversamento, dominio, numeroPagamenti, importoTotale, segnalazioni);
+    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, segnalazioni);
   }
 
   public static FlussoRendicontazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
@@ -253,9 +253,9 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
-    sb.append("    istitutoMittente: ").append(toIndentedString(istitutoMittente)).append("\n");
+    sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
     sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
-    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
     sb.append("    importoTotale: ").append(toIndentedString(importoTotale)).append("\n");
     sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");

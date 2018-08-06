@@ -1185,31 +1185,18 @@ components:
           format: date
           description: Data dell'operazione di riversamento fondi
           example: '2020-12-31'        
-        istitutoMittente:
-          type: object
-          properties:
-            denominazione:
-              type: string
-              description: Nome dell'istituto che ha emesso la rendicontazione
-              example: 'Banco di Ponzi' 
-            tipoIdentificativo:
-              type: string
-              description: Tipo di identificativo dell'istituto mittente
-              enum:
-                - G
-                - A
-                - B
-              example: 'A' 
-            identificativo:
-              type: string
-              description: Identificativo dell'istituto mittente
-              example: 'ABI-12345' 
+        idPsp:
+          type: string
+          description: Identificativo dell'istituto mittente
+          example: 'ABI-12345' 
         bicRiversamento:
           type: string
           description: Codice Bic della banca che ha generato il riversamento
           example: 'BIC-12345' 
-        dominio:
-          $ref: '#/components/schemas/dominioIndex'
+        idDominio:
+          type: string
+          description: Identificativo dominio destinatario
+          example: '01234567890' 
         numeroPagamenti:
           type: number
           description: numero di pagamenti oggetto della rendicontazione

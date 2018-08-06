@@ -8,12 +8,10 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.core.rs.v1.beans.ragioneria.DominioIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.FlussoRendicontazione;
 import it.govpay.core.rs.v1.beans.ragioneria.FlussoRendicontazioneIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.Segnalazione;
 import it.govpay.model.Fr.Anomalia;
-import it.govpay.rs.v1.beans.ragioneria.converter.DominiConverter;
 
 public class FlussiRendicontazioneConverter {
 
@@ -24,9 +22,11 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
-		rsModel.setDominio(DominiConverter.toRsIndexModel(fr.getDominio(null)));
+		rsModel.setIdDominio(fr.getCodDominio());
 		rsModel.setNumeroPagamenti(new BigDecimal(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
+		rsModel.setIdPsp(fr.getCodPsp());
+		rsModel.setIdDominio(fr.getCodDominio());
 		
 		if(fr.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();
@@ -52,14 +52,10 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
-		try {
-			rsModel.setDominio(DominiConverter.toRsIndexModel(fr.getDominio(null)));
-		} catch (Throwable e) {
-			DominioIndex dominioIndex = new DominioIndex();
-			dominioIndex.setIdDominio(fr.getCodDominio());
-		}
+		rsModel.setIdDominio(fr.getCodDominio());
 		rsModel.setNumeroPagamenti(new BigDecimal(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
+		rsModel.setIdPsp(fr.getCodPsp());
 		if(fr.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();
 			for(Anomalia anomalia: fr.getAnomalie()) {

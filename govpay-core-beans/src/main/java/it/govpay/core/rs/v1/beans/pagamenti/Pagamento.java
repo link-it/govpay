@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
-import it.govpay.core.utils.SimpleDateFormatUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "nome",

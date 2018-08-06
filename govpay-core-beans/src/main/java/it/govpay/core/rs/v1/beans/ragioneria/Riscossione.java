@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"dominio",
+"idDominio",
 "iuv",
 "iur",
 "indice",
@@ -25,8 +25,8 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 })
 public class Riscossione extends JSONSerializable {
   
-  @JsonProperty("dominio")
-  private DominioIndex dominio = null;
+  @JsonProperty("idDominio")
+  private String idDominio = null;
   
   @JsonProperty("iuv")
   private String iuv = null;
@@ -69,17 +69,17 @@ public class Riscossione extends JSONSerializable {
   
   /**
    **/
-  public Riscossione dominio(DominioIndex dominio) {
-    this.dominio = dominio;
+  public Riscossione idDominio(String idDominio) {
+    this.idDominio = idDominio;
     return this;
   }
 
-  @JsonProperty("dominio")
-  public DominioIndex getDominio() {
-    return dominio;
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
   }
-  public void setDominio(DominioIndex dominio) {
-    this.dominio = dominio;
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
   }
 
   /**
@@ -292,7 +292,7 @@ public class Riscossione extends JSONSerializable {
       return false;
     }
     Riscossione riscossione = (Riscossione) o;
-    return Objects.equals(dominio, riscossione.dominio) &&
+    return Objects.equals(idDominio, riscossione.idDominio) &&
         Objects.equals(iuv, riscossione.iuv) &&
         Objects.equals(iur, riscossione.iur) &&
         Objects.equals(indice, riscossione.indice) &&
@@ -310,7 +310,7 @@ public class Riscossione extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(dominio, iuv, iur, indice, pendenza, vocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
+    return Objects.hash(idDominio, iuv, iur, indice, pendenza, vocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
   public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
@@ -327,7 +327,7 @@ public class Riscossione extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Riscossione {\n");
     
-    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");

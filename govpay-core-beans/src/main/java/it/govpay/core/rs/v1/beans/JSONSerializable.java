@@ -19,19 +19,19 @@ public abstract class JSONSerializable {
 	@JsonIgnore
 	public abstract String getJsonIdFilter();
 	
-	public String toJSON(String fields) {
+	public String toJSON(String fields) throws ServiceException {
 		SerializationConfig serializationConfig = new SerializationConfig();
 		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
 		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 		return toJSON(fields, serializationConfig);
 	}
 	
-	public String toJSON(String fields,SerializationConfig serializationConfig) {
+	public String toJSON(String fields,SerializationConfig serializationConfig) throws ServiceException {
 		try {
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			return serializer.getObject(this);
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
-			return "";
+			throw new ServiceException("Errore nella serializzazione della risposta.", e);
 		}
 		
 	}

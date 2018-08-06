@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import it.govpay.core.rs.v1.costanti.Costanti;
@@ -66,7 +68,7 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 		
 	}
 	
-	public String toJSONArray(String fields) {
+	public String toJSONArray(String fields) throws ServiceException {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		

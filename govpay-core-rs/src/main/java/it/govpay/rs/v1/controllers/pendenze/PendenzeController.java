@@ -180,7 +180,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			}catch(Exception e1) {
 				log.error("Errore durante il log della risposta", e1);
 			}
-			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(getRespJson(respKo)),transactionId).build();
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

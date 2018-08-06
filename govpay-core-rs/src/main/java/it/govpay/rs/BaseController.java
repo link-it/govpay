@@ -106,7 +106,7 @@ public abstract class BaseController {
 		GpThreadLocal.set(ctx);
 	}
 
-	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException, ResponseValidationException {
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException, ResponseValidationException, ServiceException {
 		if(o != null && o instanceof JSONSerializable) {
 			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((JSONSerializable) o).toJSON(null).getBytes(), responseCode);
 		}
@@ -253,10 +253,57 @@ public abstract class BaseController {
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta", e1);
 		}
+		
+		String respKoJson = getRespJson(respKo);
+		 
 		if(transactionId != null)
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKoJson).header(this.transactionIdHeaderName, transactionId).build();
 		else 
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKoJson).build();
+	}
+
+	protected String getRespJson(FaultBean respKo) {
+		String respKoJson = null;
+		try {
+			respKoJson =respKo.toJSON(null);
+		} catch(ServiceException ex) {
+			log.error("Errore durante la serializzazione del FaultBean", ex);
+			respKoJson = "Errore durante la serializzazione del FaultBean";
+		}
+		return respKoJson;
+	}
+
+	protected String getRespJson(it.govpay.core.rs.v1.beans.pagamenti.FaultBean respKo) {
+		String respKoJson = null;
+		try {
+			respKoJson =respKo.toJSON(null);
+		} catch(ServiceException ex) {
+			log.error("Errore durante la serializzazione del FaultBean", ex);
+			respKoJson = "Errore durante la serializzazione del FaultBean";
+		}
+		return respKoJson;
+	}
+
+	protected String getRespJson(it.govpay.core.rs.v1.beans.pendenze.FaultBean respKo) {
+		String respKoJson = null;
+		try {
+			respKoJson =respKo.toJSON(null);
+		} catch(ServiceException ex) {
+			log.error("Errore durante la serializzazione del FaultBean", ex);
+			respKoJson = "Errore durante la serializzazione del FaultBean";
+		}
+		return respKoJson;
+	}
+
+	protected String getRespJson(it.govpay.core.rs.v1.beans.ragioneria.FaultBean respKo) {
+		String respKoJson = null;
+		try {
+			respKoJson =respKo.toJSON(null);
+		} catch(ServiceException ex) {
+			log.error("Errore durante la serializzazione del FaultBean", ex);
+			respKoJson = "Errore durante la serializzazione del FaultBean";
+		}
+		return respKoJson;
 	}
 
 	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e, String transactionId) {
@@ -271,15 +318,18 @@ public abstract class BaseController {
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
+		
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
+
+		String respJson = getRespJson(respKo);
 		if(transactionId != null)
-			return Response.status(e.getTransportErrorCode()).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
-		else
-			return Response.status(e.getTransportErrorCode()).entity(respKo.toJSON(null)).build();
+				return Response.status(e.getTransportErrorCode()).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
+			else
+				return Response.status(e.getTransportErrorCode()).entity(respJson).build();
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
@@ -305,10 +355,13 @@ public abstract class BaseController {
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
+		
+		String respJson = getRespJson(respKo);
+
 		if(transactionId != null)
-			return Response.status(statusCode).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
+			return Response.status(statusCode).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
 		else 
-			return Response.status(statusCode).entity(respKo.toJSON(null)).build();
+			return Response.status(statusCode).entity(respJson).build();
 	}
 	
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
@@ -326,10 +379,13 @@ public abstract class BaseController {
 		}catch(Exception e1) {
 			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
+		
+		String respJson = getRespJson(respKo);
+
 		if(transactionId != null)
-			return Response.status(statusCode).entity(respKo.toJSON(null)).header(this.transactionIdHeaderName, transactionId).build();
+			return Response.status(statusCode).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
 		else 
-			return Response.status(statusCode).entity(respKo.toJSON(null)).build();
+			return Response.status(statusCode).entity(respJson).build();
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {

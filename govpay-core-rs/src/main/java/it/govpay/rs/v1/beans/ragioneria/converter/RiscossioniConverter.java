@@ -26,7 +26,7 @@ public class RiscossioniConverter {
 	public static Riscossione toRsModel(Pagamento input) throws NotFoundException {
 		Riscossione rsModel = new Riscossione();
 		try {
-			rsModel.setDominio(DominiConverter.toRsIndexModel(input.getDominio(null)));
+			rsModel.setIdDominio(input.getCodDominio());
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
@@ -79,7 +79,7 @@ public class RiscossioniConverter {
 	public static RiscossioneIndex toRsModelIndex(Pagamento input) throws NotFoundException {
 		RiscossioneIndex rsModel = new RiscossioneIndex();
 		try {
-			rsModel.setDominio(DominiConverter.toRsIndexModel(input.getDominio(null)));
+			rsModel.setIdDominio(input.getCodDominio());
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
