@@ -9,16 +9,28 @@
 
 
 
-	
+        <target name="govpay_war_properties" >
+		<unzip src="${file}" dest="${file}.tmp" />
+		<foreach target="filler" param="file">
+			<fileset dir="${file}.tmp">
+			  <include name="*.yaml" />
+			  <include name="*.html" />
+			</fileset>
+		</foreach>
+		<delete file="${file}" />
+		<zip destfile="${file}"  basedir="${file}.tmp" />   
+		<delete dir="${file}.tmp" />
+	</target>
+
 	<target name="govpay_properties_settings">
 
-		<properties-filler template="${file}"/>
-
+		<echo>file : ${file}</echo>
 		<antcall target="set_property">
 			<param name="file" value="${file}"/>
 			<param name="token" value="govpay.sourceCodeDisclaimer"/>
 			<param name="value" value="Generato con GovPay v${antinstaller_product_version}"/>
 		</antcall>
+		<properties-filler template="${file}"/>
 
 
 	</target>
@@ -39,11 +51,6 @@
 
 	</target>
 
-	<target name="govpay_console_properties_settings">
-
-		<properties-filler template="${file}"/>
-
-	</target>
 
         <target name="wildfly_govpay_securitydomain">
 		<antcall target="replace_token">

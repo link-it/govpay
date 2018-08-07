@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
-<installer name="GovPay vPRODUCT_VERSION Installer" defaultImageResource="/logoSetup.png"
+<installer name="GovPay v3.1.0 Installer" defaultImageResource="/logoSetup.png"
     windowIcon="/iconaSetup.png" wide="550:275">
     
     <!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
     <!-- loadDefaults="true" > -->
 
-    <page type="input" name="intro" displayText="Installer GovPay vPRODUCT_VERSION">
+    <page type="input" name="intro" displayText="Installer GovPay v3.1.0">
 
-	<hidden property="antinstaller_product_version" value="PRODUCT_VERSION"/>
+	<hidden property="antinstaller_product_version" value="3.1.0"/>
 
         <comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay"/>
-        <comment explanatoryText="Copyright (c) 2014-2017 Link.it srl (http://www.link.it)."/>
+        <comment explanatoryText="Copyright (c) 2014-2018 Link.it srl (http://www.link.it)."/>
         <comment explanatoryText=""/>
 	<comment explanatoryText="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."/>
         <comment explanatoryText="This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."/>
@@ -23,29 +23,24 @@
         
 	<comment displayText=""/>
 
-        <large-select defaultValue="jboss7" property="antinstaller_as" displayText="Application Server">
+	<hidden property="antinstaller_log_level" value="INFO"/>
+        <!--large-select defaultValue="jboss7" property="antinstaller_as" displayText="Application Server">
             <option value="jboss7" text="JBoss 7.x"/>
 	    <option value="jboss7" text="JBoss EAP 6.x"/>
-	    <option value="wildfly8" text="WildFly 8.2"/>
-        </large-select>
+	    <option value="wildfly11" text="WildFly 11.0"/>
+        </large-select-->
+        <select defaultValue="wildfly11" property="antinstaller_as" displayText="Application Server">
+            <option value="wildfly11" text="WildFly 11.0"/>
+        </select>
+
 
 	<comment displayText=""/>
 
-	<directory defaultValue="/var/govpay" defaultValueWin="C:\govpay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
-	<directory defaultValue="/var/govpay/console" defaultValueWin="C:\govpay\console" displayText="Console Work Folder" checkExists="false" property="antinstaller_console_work_folder" />
+	<directory defaultValue="/var/lib/GovPay" defaultValueWin="C:\GovPay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
 
 	<comment displayText=""/>
 
-	<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder" checkExists="false" property="antinstaller_log_folder" />
-
-        <large-select defaultValue="INFO" property="antinstaller_log_level" displayText="Log Level">
-            <option value="TRACE" text="TRACE"/>
-            <option value="DEBUG" text="DEBUG"/>
-            <option value="INFO" text="INFO"/>
-	    <option value="WARN" text="WARN"/>
-	    <option value="ERROR" text="ERROR"/>
-        </large-select>
-
+	<directory defaultValue="/var/log/GovPay" defaultValueWin="C:\GovPay\log" displayText="Log Folder" checkExists="false" property="antinstaller_log_folder" />
     </page>
     
     <page name="informazioniApplicative" type="input" displayText="Informazioni Applicative">
@@ -54,9 +49,9 @@
 	<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
 	<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username Amministratore" regex=".+"/>
 	<comment displayText=""/>
+	<validated property="antinstaller_domain_name" defaultValue="yourdomain.it" displayText="Nome Dominio" regex="(?:(?:0|1\d?\d?|2[0-4]?\d?|25[0-5]?|[3-9]\d?)\.){3}(?:0|1\d?\d?|2[0-4]?\d?|25[0-5]?|[3-9]\d?)(?::\d{2,5})?$|(?:(?:[a-z\u00a1-\uffffA-Z0-9]+-?)*[a-z\u00a1-\uffffA-Z0-9]+)(?:\.(?:[a-z\u00a1-\uffffA-Z0-9]+-?)*[a-z\u00a1-\uffffA-Z0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))(?::\d{2,5})?$" />
 
-	<validated defaultValue="http://serviziclienti.link.it/openspcoop2/PD?wsdl" property="antinstaller_pddcheck" displayText="URL Verifica Porta di Dominio" regex=".+"/>
-
+	
     </page>
 
     <page name="informazionidibasexml" type="input" displayText="Il Database">
