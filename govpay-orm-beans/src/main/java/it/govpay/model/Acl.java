@@ -19,8 +19,8 @@
  */
 package it.govpay.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -55,7 +55,7 @@ public class Acl extends BasicModel {
 	private String principal;
 	private String diritti;
 	private Servizio servizio;
-	private List<Diritti> listaDiritti= null;
+	private Set<Diritti> listaDiritti= null;
 	private long id;
 
 	private static final long serialVersionUID = 1L;
@@ -128,7 +128,7 @@ public class Acl extends BasicModel {
 	public void setServizio(Servizio servizio) {
 		this.servizio = servizio;
 	}
-	public List<Diritti> getListaDiritti() {
+	public Set<Diritti> getListaDiritti() {
 		return listaDiritti;
 	}
 	public String getListaDirittiString() {
@@ -142,11 +142,11 @@ public class Acl extends BasicModel {
 		
 		return sb.toString();
 	}
-	public void setListaDiritti(List<Diritti> listaDiritti) {
+	public void setListaDiritti(Set<Diritti> listaDiritti) {
 		this.listaDiritti = listaDiritti;
 	}
 	public void setListaDiritti(String diritti) {
-		this.listaDiritti = new ArrayList<Acl.Diritti>();
+		this.listaDiritti = new HashSet<Acl.Diritti>();
 		
 		if(StringUtils.isNotEmpty(diritti)) {
 			for(Diritti p : Diritti.values()){

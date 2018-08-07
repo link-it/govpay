@@ -3,8 +3,7 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 
 ## Documentazione
 
-* [Introduzione a GovPay](./resources/doc/pdf/GovPay-pagoPA.pdf)
-* [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazioneSOAP.pdf)
+* [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)
 * [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
 
 ## Contatti

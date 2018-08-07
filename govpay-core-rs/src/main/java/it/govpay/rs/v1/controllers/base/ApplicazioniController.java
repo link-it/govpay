@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.ApplicazioniDAO;
@@ -105,15 +106,25 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			ApplicazionePatchDTO verificaPagamentoDTO = new ApplicazionePatchDTO(user);
 			verificaPagamentoDTO.setCodApplicazione(idA2A);
 			
-			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
 			List<PatchOp> lstOp = new ArrayList<>();
-			for(java.util.LinkedHashMap<?,?> map: lst) {
-				PatchOp op = new PatchOp();
-				op.setOp(OpEnum.fromValue((String) map.get("op")));
-				op.setPath((String) map.get("path"));
-				op.setValue(map.get("value"));
+			
+			try {
+				List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+				for(java.util.LinkedHashMap<?,?> map: lst) {
+					PatchOp op = new PatchOp();
+					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					op.setPath((String) map.get("path"));
+					op.setValue(map.get("value"));
+					op.validate();
+					lstOp.add(op);
+				}
+			} catch (ServiceException e) {
+				PatchOp op = PatchOp.parse(jsonRequest);
+				op.validate();
 				lstOp.add(op);
 			}
+			
+			
 			verificaPagamentoDTO.setOp(lstOp );
 
 			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
@@ -152,6 +163,7 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 			
 			String jsonRequest = baos.toString();
 			ApplicazionePost applicazioneRequest= (ApplicazionePost) ApplicazionePost.parse(jsonRequest, ApplicazionePost.class);
+			applicazioneRequest.validate();
 			
 			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 
 			

@@ -1,7 +1,15 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import org.openspcoop2.generic_project.exception.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 /**
  * informazioni sulla codifica e decodifica degli iuv
@@ -10,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "regExpIuv",
 "generazioneIuvInterna",
 })
-public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable {
+public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable implements IValidable {
   
   @JsonProperty("codificaIuv")
   private String codificaIuv = null;
@@ -119,6 +127,21 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		if(codificaIuv != null)
+			vf.getValidator("codificaIuv", codificaIuv).pattern("[0-9]{1,15}");
+		
+		if(regExpIuv != null)
+			try {
+				Pattern.compile(regExpIuv);
+			} catch(PatternSyntaxException e) {
+			    throw new ValidationException("Il valore [" + regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
+			}
+		
+		vf.getValidator("generazioneIuvInterna", generazioneIuvInterna).notNull();
+	}
 }
 
 

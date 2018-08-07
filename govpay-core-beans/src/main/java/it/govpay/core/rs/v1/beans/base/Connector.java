@@ -1,19 +1,22 @@
 package it.govpay.core.rs.v1.beans.base;
 
+import java.util.Arrays;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.openspcoop2.generic_project.exception.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "url",
 "versioneApi",
 "auth",
 })
-public class Connector extends JSONSerializable {
+public class Connector extends JSONSerializable implements IValidable {
   
   @JsonProperty("url")
   private String url = null;
@@ -121,6 +124,20 @@ public class Connector extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("url", url).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+		vf.getValidator("versioneApi", versioneApi).notNull();
+		try {
+			VersioneApiEnum v = VersioneApiEnum.fromValue(versioneApi);
+			if(v==null) throw new IllegalArgumentException();
+		} catch (IllegalArgumentException e) {
+			throw new ValidationException("Il valore [" + versioneApi + "] del campo versioneApi corrisponde con uno dei valori consentiti: " + Arrays.asList(VersioneApiEnum.values()));
+		}
+		if(auth != null)
+			vf.getValidator("auth", auth).validateFields();
+	}
 }
 
 
