@@ -1,7 +1,7 @@
 package it.govpay.rs.v1.beans.pagamenti.converter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -22,7 +22,7 @@ public class AclConverter {
 		PostAclDTO aclDTO = new PostAclDTO(user);
 		Acl acl = new Acl();
 		
-		List<Diritti> lst = new ArrayList<>();
+		Set<Diritti> lst = new HashSet<>();
 		for(String authS: aclPost.getAutorizzazioni()) {
 			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
 			switch(auth) {

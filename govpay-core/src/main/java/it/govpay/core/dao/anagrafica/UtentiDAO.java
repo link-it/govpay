@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.exception.ValidationException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -221,7 +222,7 @@ public class UtentiDAO extends BaseDAO{
 	}
 	
 
-	public LeggiOperatoreDTOResponse patch(OperatorePatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiOperatoreDTOResponse patch(OperatorePatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		BasicBD bd = null;
 
 		try {
