@@ -228,7 +228,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
 							else {
 								Pagamento pagamento = pagamenti.get(0);
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Iur:" + pagamento.getIur() + "]");
 							}
 						}
 					}
