@@ -11,6 +11,7 @@ package it.govpay.backoffice.api.rs.v1.backoffice.sonde;
  */
 public class SommarioSonda {
 
+	private String id;
 	private String nome;
 	private Integer stato;
 	private String descrizioneStato;
