@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -255,7 +257,7 @@ public class FlussoRendicontazione extends JSONSerializable {
     return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, segnalazioni, rendicontazioni);
   }
 
-  public static FlussoRendicontazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static FlussoRendicontazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (FlussoRendicontazione) parse(json, FlussoRendicontazione.class);
   }
 

@@ -2,6 +2,8 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ibanAccredito",
@@ -186,7 +188,7 @@ public class Entrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, codificaIUV, abilitato, idEntrata, tipoEntrata);
   }
 
-  public static Entrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Entrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Entrata) parse(json, Entrata.class);
   }
 

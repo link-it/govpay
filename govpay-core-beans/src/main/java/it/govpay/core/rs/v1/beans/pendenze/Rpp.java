@@ -3,6 +3,8 @@ package it.govpay.core.rs.v1.beans.pendenze;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
@@ -153,7 +155,7 @@ public class Rpp extends JSONSerializable {
     return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
   }
 
-  public static Rpp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Rpp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Rpp) parse(json, Rpp.class);
   }
 

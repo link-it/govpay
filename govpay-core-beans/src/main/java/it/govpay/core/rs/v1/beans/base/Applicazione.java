@@ -3,6 +3,8 @@ package it.govpay.core.rs.v1.beans.base;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idA2A",
@@ -211,7 +213,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(idA2A, principal, codificaAvvisi, domini, entrate, acl, servizioVerifica, servizioNotifica, abilitato);
   }
 
-  public static Applicazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Applicazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Applicazione) parse(json, Applicazione.class);
   }
 

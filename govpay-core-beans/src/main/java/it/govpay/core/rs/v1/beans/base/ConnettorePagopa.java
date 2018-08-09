@@ -2,6 +2,8 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -66,7 +68,7 @@ public class ConnettorePagopa extends JSONSerializable {
     return Objects.hash(url, auth);
   }
 
-  public static ConnettorePagopa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static ConnettorePagopa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (ConnettorePagopa) parse(json, ConnettorePagopa.class);
   }
 

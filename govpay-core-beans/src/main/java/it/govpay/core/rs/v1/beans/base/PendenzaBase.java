@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -298,7 +300,7 @@ public class PendenzaBase extends JSONSerializable {
     return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso);
   }
 
-  public static PendenzaBase parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static PendenzaBase parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (PendenzaBase) parse(json, PendenzaBase.class);
   }
 

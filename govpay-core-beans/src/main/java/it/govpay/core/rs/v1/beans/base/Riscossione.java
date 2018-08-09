@@ -1,6 +1,9 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.rs.v1.beans.base.Allegato;
 import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
@@ -318,7 +321,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
-  public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Riscossione) parse(json, Riscossione.class);
   }
 

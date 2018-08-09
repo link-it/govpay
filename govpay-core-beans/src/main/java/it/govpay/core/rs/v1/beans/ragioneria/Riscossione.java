@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -313,7 +315,7 @@ public class Riscossione extends JSONSerializable {
     return Objects.hash(idDominio, iuv, iur, indice, pendenza, vocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
-  public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Riscossione) parse(json, Riscossione.class);
   }
 

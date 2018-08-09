@@ -3,6 +3,7 @@ package it.govpay.core.rs.v1.beans.base;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -91,7 +92,7 @@ public class ConnettoreFtp extends JSONSerializable {
     return Objects.hash(serverurl, username, password);
   }
 
-  public static ConnettoreFtp parse(String json) throws ServiceException {
+  public static ConnettoreFtp parse(String json) throws ServiceException, ValidationException {
     return (ConnettoreFtp) parse(json, ConnettoreFtp.class);
   }
 

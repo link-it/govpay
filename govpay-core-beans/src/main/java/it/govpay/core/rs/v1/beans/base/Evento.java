@@ -1,6 +1,9 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Date;
@@ -413,7 +416,7 @@ public class Evento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(idDominio, iuv, ccp, idPsp, tipoVersamento, componente, categoriaEvento, tipoEvento, identificativoFruitore, identificativoErogatore, idCanale, idStazione, parametriRichiesta, parametriRisposta, dataOraRichiesta, dataOraRisposta, esito);
   }
 
-  public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Evento) parse(json, Evento.class);
   }
 

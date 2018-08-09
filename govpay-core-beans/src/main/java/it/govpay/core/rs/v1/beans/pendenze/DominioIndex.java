@@ -2,6 +2,8 @@ package it.govpay.core.rs.v1.beans.pendenze;
 
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -529,7 +531,7 @@ public class DominioIndex extends JSONSerializable {
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, idDominio, unitaOperative, contiAccredito, entrate);
   }
 
-  public static DominioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static DominioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (DominioIndex) parse(json, DominioIndex.class);
   }
 

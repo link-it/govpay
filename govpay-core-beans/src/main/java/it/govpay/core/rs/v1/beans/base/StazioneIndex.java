@@ -2,6 +2,8 @@ package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -109,7 +111,7 @@ public class StazioneIndex extends JSONSerializable {
     return Objects.hash(password, abilitato, idStazione, domini);
   }
 
-  public static StazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static StazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (StazioneIndex) parse(json, StazioneIndex.class);
   }
 

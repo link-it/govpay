@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -372,7 +374,7 @@ public class PendenzaPut extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idDominio, idUnitaOperativa, voci);
   }
 
-  public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (PendenzaPut) parse(json, PendenzaPut.class);
   }
 

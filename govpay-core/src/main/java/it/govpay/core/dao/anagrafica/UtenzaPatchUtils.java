@@ -42,14 +42,14 @@ public class UtenzaPatchUtils {
 			}
 			
 			if(map.get("autorizzazioni") == null) throw new ValidationException("ACL non valida: atteso campo `autorizzazioni`");
-			if(!(map.get("servizio") instanceof List<?>)) throw new ValidationException("ACL non valida: attesa lista di stringhe nel campo `servizio`");
+			if(!(map.get("autorizzazioni") instanceof List<?>)) throw new ValidationException("ACL non valida: attesa lista di stringhe nel campo `autorizzazioni`");
 
 			List<?> lstAuth = (List<?>) map.get("autorizzazioni");
 			Set<Diritti> listaDiritti = new HashSet<>();
 			
 			for(Object obj: lstAuth) {
 				try {
-					if(!(obj instanceof String)) throw new ValidationException("ACL non valida: attesa lista di stringhe nel campo `servizio`");
+					if(!(obj instanceof String)) throw new ValidationException("ACL non valida: attesa lista di stringhe nel campo `autorizzazioni`");
 					Diritti diritto = Diritti.toEnum((String)obj);
 					if(!listaDiritti.contains(diritto))
 						listaDiritti.add(diritto);

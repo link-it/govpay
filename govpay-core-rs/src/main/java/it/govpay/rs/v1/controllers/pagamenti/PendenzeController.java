@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.commons.Versamento;
@@ -18,9 +19,12 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.Avviso;
 import it.govpay.core.rs.v1.beans.pagamenti.FaultBean;
 import it.govpay.core.rs.v1.beans.pagamenti.FaultBean.CategoriaEnum;
@@ -138,57 +142,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
-    public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
-    	String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
-			
-			PatchPendenzaDTO patchPendenzaDTO = new PatchPendenzaDTO(user);
-			patchPendenzaDTO.setIdA2a(idA2A);
-			patchPendenzaDTO.setIdPendenza(idPendenza);
-			
-			pendenzeDAO.cambioStato(patchPendenzaDTO);
-			
-			Status responseStatus = Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-		} catch(GovPayException e) {
-			log.error("Errore durante il processo di pagamento", e);
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-			respKo.setCodice(e.getCodEsito().name());
-			respKo.setDescrizione(e.getDescrizioneEsito());
-			respKo.setDettaglio(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
-			}
-			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(getRespJson(respKo)),transactionId).build();
-		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-
 
     public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
     	String methodName = "pendenzeIdA2AIdPendenzaPUT";  

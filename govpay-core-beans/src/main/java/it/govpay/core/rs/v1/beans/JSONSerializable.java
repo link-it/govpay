@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -36,14 +37,14 @@ public abstract class JSONSerializable {
 		
 	}
 	
-	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException  {
+	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException, ValidationException  {
 		SerializationConfig serializationConfig = new SerializationConfig();
 		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 		serializationConfig.setIgnoreNullValues(true);
 		return parse(jsonString, t, serializationConfig);
 	}
 	
-	public static <T> T parse(String jsonString, Class<T> t, SerializationConfig serializationConfig) throws ServiceException  {
+	public static <T> T parse(String jsonString, Class<T> t, SerializationConfig serializationConfig) throws ServiceException, ValidationException  {
 		try {
 			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			
@@ -51,7 +52,7 @@ public abstract class JSONSerializable {
 			T object = (T) deserializer.getObject(jsonString, t);
 			return object;
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
-			throw new ServiceException("Errore nella deserializzazione dei dati - " + t.getSimpleName());
+			throw new ValidationException(e.getMessage(), e);
 		}
 	}
 

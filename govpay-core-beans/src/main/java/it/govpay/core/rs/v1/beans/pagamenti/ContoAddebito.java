@@ -76,7 +76,7 @@ public class ContoAddebito extends JSONSerializable implements IValidable {
     return Objects.hash(iban, bic);
   }
 
-  public static ContoAddebito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static ContoAddebito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
     return parse(json, ContoAddebito.class);
   }
 

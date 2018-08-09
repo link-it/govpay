@@ -19,8 +19,8 @@ public enum VersioneApiEnum {
 
 
 
-	REST_1("REST v1"),
-	SOAP_3("SOAP v3");
+	REST_1("REST v1");
+	//SOAP_3("SOAP v3");
 
 
 
@@ -58,7 +58,7 @@ public enum VersioneApiEnum {
 	public String toNameString() {
 		switch(this) {
 		case REST_1: return "REST_1";
-		case SOAP_3: return "SOAP_3";
+		//case SOAP_3: return "SOAP_3";
 		default:  return "";
 		}
 	}

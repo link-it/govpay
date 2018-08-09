@@ -93,7 +93,7 @@ public class Connector extends JSONSerializable implements IValidable {
     return Objects.hash(url, versioneApi, auth);
   }
 
-  public static Connector parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Connector parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
     return (Connector) parse(json, Connector.class);
   }
 

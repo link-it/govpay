@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
@@ -20,7 +21,9 @@ import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.rs.v1.beans.base.ListaPendenze;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaIndex;
 import it.govpay.core.utils.GovpayConfig;
@@ -154,14 +157,39 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			patchPendenzaDTO.setIdA2a(idA2A);
 			patchPendenzaDTO.setIdPendenza(idPendenza);
 			
-			pendenzeDAO.cambioStato(patchPendenzaDTO);
+			String jsonRequest = baos.toString();
 			
-			Status responseStatus = Status.OK;
+			List<PatchOp> lstOp = new ArrayList<>();
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			try {
+				List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+				for(java.util.LinkedHashMap<?,?> map: lst) {
+					PatchOp op = new PatchOp();
+					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					op.setPath((String) map.get("path"));
+					op.setValue(map.get("value"));
+					op.validate();
+					lstOp.add(op);
+				}
+			} catch (ServiceException e) {
+				PatchOp op = PatchOp.parse(jsonRequest);
+				op.validate();
+				lstOp.add(op);
+			}
+			
+			patchPendenzaDTO.setOp(lstOp );
+			
+			pendenzeDAO.patch(patchPendenzaDTO);
+			
+			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
+			
+			leggiPendenzaDTO.setCodA2A(idA2A);
+			leggiPendenzaDTO.setCodPendenza(idPendenza);
+			
+			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
+			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
+			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		} catch(GovPayException e) {
 			log.error("Errore durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();

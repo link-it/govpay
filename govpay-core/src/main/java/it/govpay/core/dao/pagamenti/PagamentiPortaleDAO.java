@@ -471,7 +471,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			for(PatchOp op: patchDTO.getOp()) {
 				
-				if("note".equals(op.getPath())) {
+				if("/note".equals(op.getPath())) {
 					switch(op.getOp()) {
 					case ADD: Nota nota = new Nota();
 						nota.setAutore(patchDTO.getUser().getPrincipal());
@@ -481,7 +481,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						break;
 					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
 					}
-				} else if("verificato".equals(op.getPath())) {
+				} else if("/verificato".equals(op.getPath())) {
 					switch(op.getOp()) {
 					case REPLACE: 
 						pagamentoPortale.setAck((Boolean)op.getValue()); 

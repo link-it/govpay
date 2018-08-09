@@ -2,10 +2,12 @@ package it.govpay.core.dao.pagamenti;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.exception.ValidationException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -31,8 +33,9 @@ import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.rs.v1.beans.base.StatoPendenza;
-import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
@@ -179,7 +182,7 @@ public class PendenzeDAO extends BaseDAO{
 	}
 	
 	
-	public PatchPendenzaDTOResponse cambioStato(PatchPendenzaDTO patchPendenzaDTO) throws PendenzaNonTrovataException, GovPayException, NotAuthorizedException, NotAuthenticatedException{
+	public PatchPendenzaDTOResponse patch(PatchPendenzaDTO patchPendenzaDTO) throws PendenzaNonTrovataException, GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		
 		PatchPendenzaDTOResponse response = new PatchPendenzaDTOResponse();
 		BasicBD bd = null;
@@ -194,34 +197,50 @@ public class PendenzeDAO extends BaseDAO{
 			// controllo che il dominio sia autorizzato
 			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, versamentoLetto.getDominio(bd).getCodDominio(), null, bd);
 			
-			StatoVersamento current = null;
-			switch(patchPendenzaDTO.getStato()) {
-			case ANNULLATO: current = StatoVersamento.ANNULLATO;
-				break;
-			case DA_PAGARE: current = StatoVersamento.NON_ESEGUITO;
-				break;
-			default:
-				break;
-			}
-			
-			StatoVersamento previous = current == StatoVersamento.ANNULLATO ? StatoVersamento.NON_ESEGUITO : StatoVersamento.ANNULLATO;
-			
-			// Se è già nello stesso stato non devo far nulla.
-			if(versamentoLetto.getStatoVersamento().equals(current)) {
-				return response;
-			}
-			
-			// Se è in stato NON_ESEGUITO lo annullo
-			if(versamentoLetto.getStatoVersamento().equals(previous)) {
-				versamentoLetto.setStatoVersamento(current);
-				versamentoLetto.setDescrizioneStato(patchPendenzaDTO.getDescrizioneStato());
-				versamentiBD.updateVersamento(versamentoLetto);
-				return response;
-			}
-			
-			// Se non è nello stato corretto non posso aggiornarne lo stato
-			throw new GovPayException(EsitoOperazione.VER_009, patchPendenzaDTO.getIdA2a(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getStatoVersamento().toString());
+			for(PatchOp op: patchPendenzaDTO.getOp()) {
+				
+				if("/stato".equals(op.getPath())) {
+					
+					if(!op.getOp().equals(OpEnum.REPLACE)) {
+						throw new ValidationException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
+					}
+					
+					StatoVersamento nuovoStato = StatoVersamento.valueOf((String) op.getValue());
 
+					switch (nuovoStato) {
+					case ANNULLATO:
+						if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+							versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
+						} else {
+							throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO");
+						}
+						break;
+					case NON_ESEGUITO:
+						if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
+							versamentoLetto.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+						} else {
+							throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad NON_ESEGUITO da uno stato diverso da ANNULLATO");
+						}
+					default:
+						throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad " + nuovoStato.name());
+					}
+				}
+				
+				if("/descrizioneStato".equals(op.getPath())) {
+					
+					if(!op.getOp().equals(OpEnum.REPLACE)) {
+						throw new ValidationException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
+					}
+					
+					String descrizioneStato = (String) op.getValue();
+					versamentoLetto.setDescrizioneStato(descrizioneStato);
+				}
+			}
+			
+			versamentoLetto.setDataUltimoAggiornamento(new Date());
+			versamentiBD.updateVersamento(versamentoLetto);
+			return response;
+			
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
 		} catch (NotFoundException e) {

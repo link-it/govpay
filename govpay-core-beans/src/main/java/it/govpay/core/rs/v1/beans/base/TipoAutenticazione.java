@@ -214,7 +214,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 		return Objects.hash(username, password, tipo, ksLocation, ksPassword, tsLocation, tsPassword);
 	}
 
-	public static TipoAutenticazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+	public static TipoAutenticazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
 		return (TipoAutenticazione) parse(json, TipoAutenticazione.class);
 	}
 

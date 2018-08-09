@@ -3,6 +3,8 @@ package it.govpay.core.rs.v1.beans.ragioneria;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
@@ -133,7 +135,7 @@ public class RppIndex extends JSONSerializable {
     return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt);
   }
 
-  public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (RppIndex) parse(json, RppIndex.class);
   }
 

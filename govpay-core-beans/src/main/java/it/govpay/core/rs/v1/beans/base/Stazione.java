@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "password",
@@ -108,7 +110,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(password, abilitato, idStazione, domini);
   }
 
-  public static Stazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Stazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Stazione) parse(json, Stazione.class);
   }
 

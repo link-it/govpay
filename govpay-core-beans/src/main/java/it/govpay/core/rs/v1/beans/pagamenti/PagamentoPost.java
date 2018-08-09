@@ -327,7 +327,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 		return Objects.hash(pendenze, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua);
 	}
 
-	public static PagamentoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+	public static PagamentoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
 		return (PagamentoPost) parse(json, PagamentoPost.class);
 	}
 

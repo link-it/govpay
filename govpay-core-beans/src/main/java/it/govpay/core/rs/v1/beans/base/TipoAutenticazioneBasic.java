@@ -1,6 +1,9 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.util.Objects;
+
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "username",
@@ -62,7 +65,7 @@ public class TipoAutenticazioneBasic extends it.govpay.core.rs.v1.beans.JSONSeri
     return Objects.hash(username, password);
   }
 
-  public static TipoAutenticazioneBasic parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static TipoAutenticazioneBasic parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (TipoAutenticazioneBasic) parse(json, TipoAutenticazioneBasic.class);
   }
 

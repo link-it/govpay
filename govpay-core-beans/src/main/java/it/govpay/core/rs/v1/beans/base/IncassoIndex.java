@@ -3,6 +3,8 @@ package it.govpay.core.rs.v1.beans.base;
 import java.util.Date;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "causale",
@@ -170,7 +172,7 @@ public class IncassoIndex extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(causale, importo, dataValuta, dataContabile, ibanAccredito, idDominio, idIncasso);
   }
 
-  public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (IncassoIndex) parse(json, IncassoIndex.class);
   }
 

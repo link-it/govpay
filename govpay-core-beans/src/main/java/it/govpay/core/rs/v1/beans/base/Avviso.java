@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -302,7 +304,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(stato, importo, idDominio, numeroAvviso, dataValidita, dataScadenza, descrizione, tassonomiaAvviso, qrcode, barcode);
   }
 
-  public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Avviso) parse(json, Avviso.class);
   }
 

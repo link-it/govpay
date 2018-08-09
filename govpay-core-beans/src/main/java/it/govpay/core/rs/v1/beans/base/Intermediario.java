@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "denominazione",
@@ -170,7 +172,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, abilitato, idIntermediario, stazioni);
   }
 
-  public static Intermediario parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Intermediario parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Intermediario) parse(json, Intermediario.class);
   }
 

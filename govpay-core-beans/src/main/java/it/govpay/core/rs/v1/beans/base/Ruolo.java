@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -69,7 +71,7 @@ public class Ruolo extends JSONSerializable {
     return Objects.hash(acl, id);
   }
 
-  public static Ruolo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Ruolo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Ruolo) parse(json, Ruolo.class);
   }
 

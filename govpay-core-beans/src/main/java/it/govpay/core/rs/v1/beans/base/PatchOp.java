@@ -136,7 +136,7 @@ public class PatchOp extends JSONSerializable implements IValidable {
 		return Objects.hash(op, path, value);
 	}
 
-	public static PatchOp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+	public static PatchOp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
 		return (PatchOp) parse(json, PatchOp.class);
 	}
 

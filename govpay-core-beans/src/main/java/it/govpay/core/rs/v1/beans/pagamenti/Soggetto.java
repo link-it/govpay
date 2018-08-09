@@ -296,7 +296,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 		 return Objects.hash(tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare);
 	 }
 
-	 public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+	 public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
 		 return parse(json, Soggetto.class);
 	 }
 

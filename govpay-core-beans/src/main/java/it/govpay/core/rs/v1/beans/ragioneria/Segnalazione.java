@@ -2,6 +2,8 @@ package it.govpay.core.rs.v1.beans.ragioneria;
 
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -85,7 +87,7 @@ public class Segnalazione extends JSONSerializable {
     return Objects.hash(codice, descrizione, dettaglio);
   }
 
-  public static Segnalazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Segnalazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Segnalazione) parse(json, Segnalazione.class);
   }
 

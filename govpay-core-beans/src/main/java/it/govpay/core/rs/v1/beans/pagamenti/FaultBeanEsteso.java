@@ -2,6 +2,8 @@ package it.govpay.core.rs.v1.beans.pagamenti;
 
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
@@ -199,7 +201,7 @@ public class FaultBeanEsteso extends JSONSerializable {
     return Objects.hash(codice, descrizione, dettaglio, id, location);
   }
 
-  public static FaultBeanEsteso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static FaultBeanEsteso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (FaultBeanEsteso) parse(json, FaultBeanEsteso.class);
   }
 

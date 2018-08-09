@@ -3,6 +3,8 @@ package it.govpay.core.rs.v1.beans.client;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
@@ -133,7 +135,7 @@ public class Notifica extends JSONSerializable {
     return Objects.hash(idA2A, idPendenza, rpt, rt, riscossioni);
   }
 
-  public static Notifica parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Notifica parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Notifica) parse(json, Notifica.class);
   }
 

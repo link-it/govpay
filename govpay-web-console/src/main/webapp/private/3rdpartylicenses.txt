@@ -87,11 +87,11 @@ THE SOFTWARE.
 MIT
 MIT
 
-@angular/platform-browser@5.2.8
+@angular/animations@5.2.8
 MIT
 MIT
 
-@angular/animations@5.2.8
+@angular/platform-browser@5.2.8
 MIT
 MIT
 

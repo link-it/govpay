@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.utils.json.ValidationException;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dataCaricamento",
 "dataValidita",
 "dataScadenza",
+"dataUltimoAggiornamento",
 "annoRiferimento",
 "cartellaPagamento",
 "datiAllegati",
@@ -27,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dominio",
 "unitaOperativa",
 "stato",
+"descrizioneStato",
 "segnalazioni",
 "voci",
 "rpp",
@@ -58,6 +62,9 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
   
+  @JsonProperty("dataUltimoAggiornamento")
+  private Date dataUltimoAggiornamento = null;
+  
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
   
@@ -87,6 +94,9 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("stato")
   private StatoPendenza stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
@@ -225,6 +235,22 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
   public void setDataScadenza(Date dataScadenza) {
     this.dataScadenza = dataScadenza;
+  }
+  
+  /**
+   * Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+   **/
+  public Pendenza dataUltimoAggiornamento(Date dataUltimoAggiornamento) {
+    this.dataUltimoAggiornamento = dataUltimoAggiornamento;
+    return this;
+  }
+
+  @JsonProperty("dataUltimoAggiornamento")
+  public Date getDataUltimoAggiornamento() {
+    return dataUltimoAggiornamento;
+  }
+  public void setDataUltimoAggiornamento(Date dataUltimoAggiornamento) {
+    this.dataUltimoAggiornamento = dataUltimoAggiornamento;
   }
 
   /**
@@ -393,6 +419,21 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   public void setStato(StatoPendenza stato) {
     this.stato = stato;
   }
+  
+  /**
+   **/
+  public Pendenza descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
 
   /**
    **/
@@ -471,6 +512,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(dataCaricamento, pendenza.dataCaricamento) &&
         Objects.equals(dataValidita, pendenza.dataValidita) &&
         Objects.equals(dataScadenza, pendenza.dataScadenza) &&
+        Objects.equals(dataUltimoAggiornamento, pendenza.dataUltimoAggiornamento) &&
         Objects.equals(annoRiferimento, pendenza.annoRiferimento) &&
         Objects.equals(cartellaPagamento, pendenza.cartellaPagamento) &&
         Objects.equals(datiAllegati, pendenza.datiAllegati) &&
@@ -481,6 +523,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(dominio, pendenza.dominio) &&
         Objects.equals(unitaOperativa, pendenza.unitaOperativa) &&
         Objects.equals(stato, pendenza.stato) &&
+        Objects.equals(descrizioneStato, pendenza.descrizioneStato) &&
         Objects.equals(segnalazioni, pendenza.segnalazioni) &&
         Objects.equals(voci, pendenza.voci) &&
         Objects.equals(rpp, pendenza.rpp) &&
@@ -489,10 +532,10 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, dataUltimoAggiornamento, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, voci, rpp, pagamenti);
   }
 
-  public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException {
+  public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return (Pendenza) parse(json, Pendenza.class);
   }
 
@@ -514,6 +557,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
     sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
+    sb.append("    dataUltimoAggiornamento: ").append(toIndentedString(dataUltimoAggiornamento)).append("\n");
     sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
     sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
@@ -524,6 +568,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
