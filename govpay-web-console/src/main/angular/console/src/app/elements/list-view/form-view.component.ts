@@ -4,6 +4,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { LinkService } from '../../services/link.service';
 import { UtilService } from '../../services/util.service';
 
+import * as moment from 'moment';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'link-form-view',
@@ -22,8 +24,7 @@ export class FormViewComponent implements OnInit, AfterViewInit {
 
   basicForm: FormGroup;
 
-  constructor(private ls: LinkService, private fb: FormBuilder, private us: UtilService,
-              private changeDetector: ChangeDetectorRef) {
+  constructor(private ls: LinkService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef) {
     this.basicForm = fb.group({});
   }
 
@@ -38,7 +39,13 @@ export class FormViewComponent implements OnInit, AfterViewInit {
         _validators.push(Validators.required);
       }
       field.pattern?_validators.push(Validators.pattern(field.pattern)):null;
-      controls[field.id+'_ctrl'] = new FormControl('', (_validators.length != 0)?_validators:null);
+      let _default = (field.type != UtilService.DATE_PICKER)?'':undefined;
+      controls[field.id+'_ctrl'] = new FormControl(_default, (_validators.length != 0)?_validators:null);
+      UtilService.DASHBOARD_LINKS_PARAMS.params.forEach((item) => {
+        if(field.id == item.controller) {
+          field.value = item.value;
+        }
+      });
     });
     this.basicForm = this.fb.group(controls);
     this.fields.forEach(function(field) {
@@ -53,7 +60,21 @@ export class FormViewComponent implements OnInit, AfterViewInit {
   }
 
   protected onSubmit(_form) {
-    this.onFormSubmit.emit({ value: _form.value })
+    let _formValues = JSON.parse(JSON.stringify(_form.value));
+    this.fields.forEach((field) => {
+      if(field.type == UtilService.DATE_PICKER) {
+        _formValues[field.id+'_ctrl'] = '';
+        let _dpValue = _form.controls[field.id+'_ctrl'].value;
+        if(_dpValue) {
+          let _md = moment(_dpValue);
+          if(_md.isValid()) {
+            let _format = field.showTime?'YYYY-MM-DDTHH:mm':'YYYY-MM-DD';
+            _formValues[field.id+'_ctrl'] = _md.format(_format);
+          }
+        }
+      }
+    });
+    this.onFormSubmit.emit({ value: _formValues })
   }
 
   resetForm() {

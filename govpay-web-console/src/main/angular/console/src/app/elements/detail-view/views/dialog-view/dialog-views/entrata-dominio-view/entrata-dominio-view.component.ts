@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
+import { Voce } from '../../../../../../services/voce.service';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { IModalDialog } from '../../../../../../classes/interfaces/IModalDialog';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -52,6 +53,19 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
   }
 
   ngAfterViewInit() {
+    setTimeout(() => {
+      if(this.json) {
+        this.fGroup.controls['tipoEntrata_ctrl'].disable();
+        this.fGroup.controls['tipoEntrata_ctrl'].setValue((this.json.tipoEntrata)?this.json.tipoEntrata:'');
+        this.fGroup.controls['ibanAccredito_ctrl'].setValue((this.json.ibanAccredito)?this.json.ibanAccredito:'');
+        this.fGroup.controls['ibanAppoggio_ctrl'].setValue((this.json.ibanAppoggio)?this.json.ibanAppoggio:'');
+        this.fGroup.controls['tipoContabilita_ctrl'].setValue((this.json.tipoContabilita)?this.json.tipoContabilita:'');
+        this.fGroup.controls['codiceContabilita_ctrl'].setValue((this.json.codiceContabilita)?this.json.codiceContabilita:'');
+        this.fGroup.controls['codificaIUV_ctrl'].setValue((this.json.codificaIUV)?this.json.codificaIUV:'');
+        this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
+        (this.json.ibanAccredito)?this.fGroup.controls['ibanAppoggio_ctrl'].enable():this.fGroup.controls['ibanAppoggio_ctrl'].disable();
+      }
+    });
   }
 
   protected _onChangeSelection(target) {
@@ -66,9 +80,14 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
       UtilService.dialogBehavior.next(_mb);
     } else {
       this._resetDefault();
-      this._updatePlaceholders(target.value);
+      this._updateValues(target.value);
     }
   }
+
+  protected _tipoEntrataComparingFct(option: any, selection: any): boolean {
+    return (selection && option.idEntrata == selection.idEntrata);
+  }
+
 
   protected _onIbanChangeSelection(_accredito: any, _appoggio: any, isAccredito: boolean) {
     if(isAccredito && _accredito.value) {
@@ -130,18 +149,24 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
         p.model = this.mapNewItem(item);
         return p;
       }, this);
-      this.tipiEntrata_items = this.filterByList(_de.slice(0), this.parent.entrate, 'idEntrata');
+      if(!this.json) {
+        //Insert mode
+        this.tipiEntrata_items = this.filterByList(_de.slice(0), this.parent.entrate, 'idEntrata');
+      } else {
+        //Edit mode
+        this.tipiEntrata_items = _de;
+      }
     },
     (error) => {
       this.gps.updateSpinner(false);
-      this.us.alert(error.message);
+      this.us.onError(error);
     });
   }
 
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
     _std.titolo = new Dato({ label: item.descrizione, value: '' });
-    _std.sottotitolo = new Dato({ label: 'Id: ', value: item.idEntrata });
+    _std.sottotitolo = new Dato({ label: Voce.ID_ENTRATA+': ', value: item.idEntrata });
     return _std;
   }
 
@@ -150,10 +175,15 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
     (i != -1)?value = value.substr(0, i):null;
   }
 
-  protected _updatePlaceholders(json: any) {
-    (json.tipoContabilita)?this._phTc = 'Tipo contabilità (valore predefinito: ' + UtilService.TIPI_CONTABILITA[json.tipoContabilita] + ')':null;
-    (json.codiceContabilita)?this._phCc = 'Codice contabilità (valore predefinito: ' + json.codiceContabilita + ')':null;
-    (json.codificaIUV)?this._phCiuv = 'Codifica IUV (valore predefinito: ' + json.codificaIUV + ')':null;
+  // protected _updatePlaceholders(json: any) {
+  //   (json.tipoContabilita)?this._phTc = Voce.TIPO_CONTABILITA+' ('+Voce.VALORE_PREDEFINITO+': ' + UtilService.TIPI_CONTABILITA[json.tipoContabilita] + ')':null;
+  //   (json.codiceContabilita)?this._phCc = Voce.CODICE_CONTABILITA+' ('+Voce.VALORE_PREDEFINITO+': ' + json.codiceContabilita + ')':null;
+  //   (json.codificaIUV)?this._phCiuv = Voce.IUV_CODEC+' ('+Voce.VALORE_PREDEFINITO+': ' + json.codificaIUV + ')':null;
+  // }
+  protected _updateValues(json: any) {
+    (json.tipoContabilita)?this.fGroup.controls['tipoContabilita_ctrl'].setValue(json.tipoContabilita):null;
+    (json.codiceContabilita)?this.fGroup.controls['codiceContabilita_ctrl'].setValue(json.codiceContabilita):null;
+    (json.codificaIUV)?this.fGroup.controls['codificaIUV_ctrl'].setValue(json.codificaIUV):null;
   }
 
   protected _resetDefault() {
@@ -171,15 +201,17 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
     let _hasEntry = this.checkItemIndex(mb.info.viewModel, this.parent.entrate, 'idEntrata');
     let _hasLocalEntry = this.checkItemIndex(mb.info.viewModel, this.tipiEntrata_items, 'idEntrata');
     if(!_hasEntry && !_hasLocalEntry) {
-      let _service = UtilService.URL_ENTRATE+'/'+mb.info.viewModel.idEntrata;
-      this.gps.saveData(_service, mb.info.viewModel).subscribe(
+      let _service = UtilService.URL_ENTRATE+'/'+encodeURIComponent(mb.info.viewModel.idEntrata);
+      let _json = JSON.parse(JSON.stringify(mb.info.viewModel));
+      delete _json.idEntrata;
+      this.gps.saveData(_service, _json).subscribe(
         () => {
           this.gps.updateSpinner(false);
           responseService.next(true);
         },
         (error) => {
           this.gps.updateSpinner(false);
-          this.us.alert(error.message);
+          this.us.onError(error);
         });
     } else {
       this.us.alert('Tipo informazione "'+mb.info.viewModel.idEntrata+'" già associata.');
@@ -188,6 +220,7 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
 
   refresh(mb: ModalBehavior) {
     this.modified = false;
+    this._resetDefault();
     if(mb && mb.info && mb.info.viewModel) {
       this.modified = true;
       let p: Parameters = new Parameters();
@@ -196,8 +229,7 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
       this.tipiEntrata_items.push(p);
 
       this.fGroup.controls['tipoEntrata_ctrl'].setValue(p.jsonP);
-      this._updatePlaceholders(p.jsonP);
-      this._resetDefault();
+      this._updateValues(p.jsonP);
     }
   }
 
@@ -209,14 +241,19 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
     let _info = this.fGroup.value;
     let _json:any = {};
 
-    _json.tipoEntrata = _info[ 'tipoEntrata_ctrl' ];
-    _json.idEntrata = _info[ 'tipoEntrata_ctrl' ].idEntrata;
-    _json.ibanAccredito = _info[ 'ibanAccredito_ctrl' ];
-    _json.ibanAppoggio = _info[ 'ibanAppoggio_ctrl' ]?_info[ 'ibanAppoggio_ctrl' ]:'';
-    _json.tipoContabilita = _info[ 'tipoContabilita_ctrl' ];
-    _json.codiceContabilita = _info[ 'codiceContabilita_ctrl' ];
-    _json.codificaIUV = _info[ 'codificaIUV_ctrl' ];
-    _json.abilitato = _info[ 'abilita_ctrl' ];
+    if(!this.fGroup.controls['tipoEntrata_ctrl'].disabled) {
+      _json.tipoEntrata = _info['tipoEntrata_ctrl'];
+      _json.idEntrata = _info['tipoEntrata_ctrl'].idEntrata;
+    } else {
+      _json.tipoEntrata = this.json.tipoEntrata;
+      _json.idEntrata = this.json.idEntrata;
+    }
+    _json.ibanAccredito = (_info['ibanAccredito_ctrl'])?_info['ibanAccredito_ctrl']:null;
+    _json.ibanAppoggio = (_info['ibanAppoggio_ctrl'])?_info['ibanAppoggio_ctrl']:null;
+    _json.tipoContabilita = (_info['tipoContabilita_ctrl'])?_info['tipoContabilita_ctrl']:null;
+    _json.codiceContabilita = (_info['codiceContabilita_ctrl'])?_info['codiceContabilita_ctrl']:null;
+    _json.codificaIUV = (_info['codificaIUV_ctrl'])?_info['codificaIUV_ctrl']:null;
+    _json.abilitato = _info['abilita_ctrl'];
 
     return _json;
   }

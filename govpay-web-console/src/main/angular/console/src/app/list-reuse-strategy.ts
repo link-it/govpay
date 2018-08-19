@@ -1,5 +1,6 @@
 import { RouteReuseStrategy, DetachedRouteHandle } from '@angular/router/src/route_reuse_strategy';
 import { ActivatedRouteSnapshot } from '@angular/router/src/router_state';
+import { UtilService } from './services/util.service';
 
 export class ListReuseStrategy  implements RouteReuseStrategy {
 
@@ -7,7 +8,7 @@ export class ListReuseStrategy  implements RouteReuseStrategy {
   subscribers: { [ key: string ]: boolean } = {};
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return (route.routeConfig.path.indexOf('/dettaglio') == -1);
+    return (route.routeConfig.path.indexOf(UtilService.URL_DETTAGLIO) == -1);
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {

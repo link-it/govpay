@@ -1,0 +1,26 @@
+:host {
+  position: fixed;
+  display: block;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.1);
+}
+
+.progress-bar {
+  width: 75%;
+  height: 30px;
+}
+
+.vertical-spinner {
+  position: relative;
+  top: calc(50% - 15px);
+}
+
+@media (min-width: 576px) {
+  .progress-bar {
+    width: 35%;
+  }
+}
+

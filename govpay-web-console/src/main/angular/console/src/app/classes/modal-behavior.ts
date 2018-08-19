@@ -1,6 +1,7 @@
 export class ModalBehavior {
 
   editMode: boolean = false;
+  operation: string;
   info: any = {
     viewModel: null, //dialog data
     parent: null, //parent

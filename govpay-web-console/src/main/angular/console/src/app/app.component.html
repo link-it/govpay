@@ -1,15 +1,18 @@
 <mat-sidenav-container class="side-nav-container">
-  <mat-sidenav #matS class="side-nav overflow-hidden" [mode]="_sideNavMode()" [opened]="_open">
-    <link-side-navigator (menu-navigation)="_onMenuNavigation($event)"></link-side-navigator>
+  <mat-sidenav #matS class="side-nav overflow-hidden" [mode]="_sideNavMode()" [opened]="_open" role="navigation">
+    <link-side-navigator (menu-navigation)="_onMenuNavigation($event)" [side-nav-title]="_appName"
+                         [side-nav-inhibitor]="_showBlueDialog"></link-side-navigator>
   </mat-sidenav>
   <mat-sidenav-content class="overflow-hidden">
-    <link-header-menu [back-icon]="_headerBackIcon" [menu-icon]="_headerMenuIcon" [search-icon]="_headerSearchIcon"
-                      [action-menu]="_headerActionsMenu" [head-title]="_headerTitle" [actions]="_actions"
+    <link-header-menu #lhm [back-icon]="_headerBackIcon" [menu-icon]="_headerMenuIcon" [search-icon]="_headerSearchIcon"
+                      [action-menu]="_headerActionsMenu" [head-title]="_appName" [head-sub-title]="_headerSubTitle"
+                      [show-header-title]="_headerMenuTitle" [actions]="_actions" [notification-title]="_notificationTitle"
                       (icon-menu)="_menuIcon()" (icon-back)="_backIcon()" (toggle-search)="_toggleSearch($event)"
                       (on-action)="_doAction($event)" (search)="_querySearch($event)"></link-header-menu>
-    <link-content-view #lcv [style.marginTop.px]="_marginTop()" class="overflow-auto"></link-content-view>
+    <link-content-view #lcv [style.marginTop.px]="_contentMarginTop" class="overflow-auto"></link-content-view>
     <link-dialog-blue-view class="full-absolute z-index-2" *ngIf="_showBlueDialog" [blue-data]="_blueDialogData"
                            (on-close-blue-dialog)="_onCloseBlueDialog($event)"></link-dialog-blue-view>
   </mat-sidenav-content>
 </mat-sidenav-container>
 <link-spinner *ngIf="_spinner" class="d-flex position-fixed align-content-center justify-content-center z-index-max"></link-spinner>
+<link-progress *ngIf="_progress" [value]="_progressValue" class="d-flex position-fixed align-content-center justify-content-center z-index-max"></link-progress>

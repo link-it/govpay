@@ -40,10 +40,11 @@ export class OperatoreViewComponent implements IFormComponent, OnInit, AfterView
     let _json:any = {};
     _json.principal = (!this.fGroup.controls['principal_ctrl'].disabled)?_info['principal_ctrl']: this.json.principal;
     _json.abilitato = _info['abilita_ctrl'];
-    _json.ragioneSociale = _info['ragioneSociale_ctrl'];
+    _json.ragioneSociale = (_info['ragioneSociale_ctrl'])?_info['ragioneSociale_ctrl']:null;
 
-    (this.fGroup.controls['principal_ctrl'].disabled)?_json.domini = this.json.domini:null;
-    (this.fGroup.controls['principal_ctrl'].disabled)?_json.entrate = this.json.entrate:null;
+    _json.domini = (this.fGroup.controls['principal_ctrl'].disabled)?this.json.domini:[];
+    _json.entrate = (this.fGroup.controls['principal_ctrl'].disabled)?this.json.entrate:[];
+    _json.acl = (this.fGroup.controls['principal_ctrl'].disabled)?this.json.acl:[];
 
     return _json;
   }

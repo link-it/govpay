@@ -49,10 +49,10 @@ export class IncassoViewComponent implements IFormComponent,  OnInit, AfterViewI
     let _json:any = {};
 
     //_json.id = (!this.fGroup.controls['id_ctrl'].disabled)?_info['id_ctrl']:this.json.id;
-    _json.causale = _info['causale_ctrl'];
-    _json.importo = _info['importo_ctrl'];
-    _json.dataValuta = moment(_info['dataValuta_ctrl']).format('YYYY-MM-DD');
-    _json.dataContabile = moment(_info['dataContabile_ctrl']).format('YYYY-MM-DD');
+    _json.causale = (_info['causale_ctrl'])?_info['causale_ctrl']:null;
+    _json.importo = (_info['importo_ctrl'])?_info['importo_ctrl']:null;
+    _json.dataValuta = (_info['dataValuta_ctrl'])?moment(_info['dataValuta_ctrl']).format('YYYY-MM-DD'):null;
+    _json.dataContabile = (_info['dataContabile_ctrl'])?moment(_info['dataContabile_ctrl']).format('YYYY-MM-DD'):null;
 
     return _json;
   }

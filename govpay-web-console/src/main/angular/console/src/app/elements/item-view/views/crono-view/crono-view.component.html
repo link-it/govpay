@@ -2,17 +2,17 @@
   <div class="row m-0 align-items-sm-center">
     <div class="col-8">
       <div class="row align-items-center">
-        <p class="col-sm-5 px-0 text-truncate font-weight-500">{{info.data}}</p>
+        <p class="col-sm-5 px-0 text-truncate medium-16">{{info.data}}</p>
         <div class="col col-sm-7 px-0 pl-sm-2">
           <div class="d-flex flex-column">
-            <p class="text-truncate">{{info.titolo?.label}} {{info.titolo?.value}}</p>
-            <p class="text-truncate text-sub-color text-small-font">{{info.sottotitolo?.label}} {{info.sottotitolo?.value}}</p>
+            <p class="lh-130 mb-1">{{info.titolo?.label}} {{info.titolo?.value}}</p>
+            <p class="text-truncate color-gray regular-14">{{info.sottotitolo?.label}} {{info.sottotitolo?.value}}</p>
           </div>
         </div>
       </div>
     </div>
     <div class="col-4 px-0 text-right">
-      <p [ngClass]="us.importoClass(info.stato)">{{info.stato}}</p>
+      <p class="text-truncate medium-14 color-gray lh-130">{{info.stato}}</p>
     </div>
   </div>
 </div>

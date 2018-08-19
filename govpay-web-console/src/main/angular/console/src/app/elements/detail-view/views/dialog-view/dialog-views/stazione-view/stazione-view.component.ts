@@ -40,7 +40,7 @@ export class StazioneViewComponent implements IFormComponent, OnInit, AfterViewI
     let _json:any = {};
     _json.idStazione = (!this.fGroup.controls['idStazione_ctrl'].disabled)?_info['idStazione_ctrl']:this.json.idStazione;
     _json.abilitato = _info['abilita_ctrl'];
-    _json.password = _info['password_ctrl'];
+    _json.password = (_info['password_ctrl'])?_info['password_ctrl']:null;
 
     return _json;
   }

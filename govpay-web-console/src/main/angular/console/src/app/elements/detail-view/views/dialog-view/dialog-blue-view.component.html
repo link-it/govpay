@@ -5,8 +5,8 @@
 <form class="full-absolute overflow-auto p-4" [style.top.px]="_Y"
       [formGroup]="blueModalForm" novalidate (ngSubmit)="_save(blueModalForm)">
   <ng-container #bdfec></ng-container>
+  <button mat-fab class="fab-action" type="submit" [disabled]="!blueModalForm.valid">
+    <i class="material-icons">save</i>
+  </button>
 </form>
-<button mat-fab class="fab-action" type="submit" [disabled]="!blueModalForm.valid" (click)="_save(blueModalForm)">
-  <i class="material-icons">save</i>
-</button>
 

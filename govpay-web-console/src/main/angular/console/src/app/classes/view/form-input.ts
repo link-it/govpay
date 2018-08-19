@@ -9,6 +9,7 @@ export class FormInput {
   type: string = '';
   values: any[] = [];
   value: any = '';
+  showTime: boolean = true;
   pattern: RegExp = null;
   required: boolean = false;
 

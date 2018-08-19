@@ -1,9 +1,9 @@
-<mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="_jsonFormInput">
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_jsonFormInput">
   <mat-select placeholder="Dominio" formControlName="idDominio_ctrl" multiple required>
     <mat-option *ngFor="let item of json.values" [value]="item">{{item.label}}</mat-option>
   </mat-select>
 </mat-form-field>
-<mat-card class="no-shadow container-fluid" *ngIf="!_jsonFormInput">
+<mat-card class="shadow no-border-radius container-fluid" *ngIf="!_jsonFormInput">
   <div class="row">
     <mat-form-field class="col-12 col-sm-4" color="accent" [formGroup]="fGroup">
       <input matInput placeholder="Id dominio" formControlName="idDominio_ctrl" autocomplete="off" required>
@@ -80,11 +80,16 @@
     </mat-form-field>
   </div>
   <div class="row">
-    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Logo" formControlName="logo_ctrl" autocomplete="off">
-    </mat-form-field>
+    <div class="col-12" [formGroup]="fGroup">
+      <input #iBrowse hidden placeholder="Logo" type="file" formControlName="logo_ctrl" autocomplete="off">
+      <div class="d-inline action" *ngIf="!_base64File" (click)="_select()">Sfoglia...</div>
+      <div class="d-block b64-group" *ngIf="_base64File">
+        <img class="d-block w-50" [src]="_base64File"/>
+        <mat-icon class="action b64-icon" (click)="_resetSelection()">delete</mat-icon>
+      </div>
+    </div>
   </div>
-  <div class="w-100" [formGroup]="fGroup">
+  <div class="w-100 mt-3" [formGroup]="fGroup">
     <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
   </div>
 </mat-card>

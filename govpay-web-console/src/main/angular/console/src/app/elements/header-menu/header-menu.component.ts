@@ -14,13 +14,20 @@ export class HeaderMenuComponent implements OnInit {
     this._toggleInputSearch(false);
   }
 
-  @Input('head-title') _title: string = 'Header menu title';
+  @Input('notification-title') _notification: string = '';
+  @Input('notification-dismiss') _agree: boolean = false;
+  @Input('notification-progress') _progress: number = 0;
+
+  @Input('head-title') _title: string = '';
+  @Input('head-sub-title') _subtitle: string = '';
+
   @Input('actions') _actions: any[] = [];
   @Input('actions-label') _actionLabel = 'label';
   @Input('action-menu') _showActionMenu: boolean = false;
   @Input('back-icon') _showBackIcon: boolean = false;
   @Input('menu-icon') _showMenuIcon: boolean = false;
   @Input('search-icon') _showSearchIcon: boolean = false;
+  @Input('show-header-title') _showHeaderTitle: boolean = false;
 
   @Output('icon-menu') onIconMenu: EventEmitter<any> = new EventEmitter();
   @Output('icon-back') onIconBack: EventEmitter<any> = new EventEmitter();
@@ -41,6 +48,14 @@ export class HeaderMenuComponent implements OnInit {
    */
   protected _dispatchSideMenu(isIconBack: boolean = false) {
     (isIconBack)?this.onIconBack.emit():this.onIconMenu.emit();
+  }
+
+  /**
+   * Internal header controller
+   * @private
+   */
+  protected _showUpperHeader() {
+    return this._showHeaderTitle;
   }
 
   /**

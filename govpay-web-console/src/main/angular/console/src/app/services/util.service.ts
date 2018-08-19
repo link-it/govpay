@@ -4,18 +4,32 @@ import { FormInput } from '../classes/view/form-input';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ModalBehavior } from '../classes/modal-behavior';
 import { FormService } from './form.service';
+import { Subscription } from 'rxjs/Subscription';
+
 
 @Injectable()
 export class UtilService {
 
-  public static ROOT_SERVICE: string = UtilService.HTTP_ROOT_SERVICE();
+  public static NEED_BASIC_AUTHORIZATION: boolean = false;
 
+  public static ROOT_SERVICE: string = UtilService.HTTP_ROOT_SERVICE();
+  public static LOGOUT_SERVICE: string = UtilService.HTTP_LOGOUT_SERVICE();
+  public static BASE_HREF: string = UtilService.HTTP_BASE_HREF();
+
+  public static TIMEOUT: number = 20000; //20 seconds
+  public static PROFILO_UTENTE: any;
   public static AUTHORIZATION: string = 'Z3BhZG1pbjpwYXNzd29yZA==';
   public static METHODS: any = {
     POST: 'post',
     PUT: 'put',
     PATCH: 'patch',
     DELETE: 'delete',
+  };
+
+  public static PATCH_METHODS: any = {
+    ADD: 'ADD',
+    DELETE: 'DELETE',
+    REPLACE: 'REPLACE'
   };
 
   public static ICONS: any = {
@@ -26,66 +40,93 @@ export class UtilService {
   };
 
   //DIRITTI
-  public static DIRITTI: any = {
+  public static USER_ACL: any = {
+    hasPagoPA: false,
+    hasCreditore: false,
+    hasApplicazioni: false,
+    hasRuoli: false,
+    hasPagamentiePendenze: false,
+    hasRendiIncassi: false,
+    hasGdE: false,
+    hasConfig: false
+  };
+
+  public static _LABEL: any = {
     LETTURA: 'Lettura',
     SCRITTURA: 'Scrittura',
     ESECUZIONE: 'Esecuzione'
   };
-
-  //LISTA SERVIZI
-  public static SERVIZI: any = {
-    ANAGRAFICA_PAGOPA: 'Anagrafica PagoPA',
-    ANAGRAFICA_CREDITORE: 'Anagrafica Creditore',
-    ANAGRAFICA_APPLICAZIONI: 'Anagrafica Applicazioni',
-    ANAGRAFICA_RUOLI: 'Anagrafica Ruoli',
-    PENDENZE_E_PAGAMENTI: 'Pendenze e Pagamenti',
-    PENDENZE_E_PAGAMENTI_PROPRI: 'Pendenze e Pagamenti propri',
-    RENDICONTAZIONI_E_INCASSI: 'Rendicontazioni e Incassi',
-    GIORNALE_DEGLI_EVENTI: 'Giornale degli Eventi',
-    STATISTICHE: 'Statistiche',
-    CONFIGURAZIONE_E_MANUTENZIONE: 'Configurazione e Manutenzione'
+  public static _CODE: any = {
+    LETTURA: 'R',
+    SCRITTURA: 'W',
+    ESECUZIONE: 'X'
   };
+
+  public static DIRITTI_CODE: any[] = [
+    { label: UtilService._LABEL.LETTURA, code: UtilService._CODE.LETTURA },
+    { label: UtilService._LABEL.SCRITTURA, code: UtilService._CODE.SCRITTURA },
+    { label: UtilService._LABEL.ESECUZIONE, code: UtilService._CODE.ESECUZIONE }
+  ];
 
   //STATI PAGAMENTO
   public static STATI_PAGAMENTO: any = {
     IN_CORSO: 'Pagamento in corso',
-    RIFIUTATO: 'Pagamento rifiutato',
+    FALLITO: 'Pagamento rifiutato',
     ESEGUITO: 'Pagamento eseguito',
+    ANNULLATO: 'Pagamento annullato',
     NON_ESEGUITO: 'Pagamento non eseguito',
-    ESEGUITO_PARZIALE: 'Pagamento parzialmente eseguito',
-    DECORRENZA: 'Decorrenza termini',
-    DECORRENZA_PARZIALE: 'Decorrenza termini parziale'
+    ESEGUITO_PARZIALE: 'Pagamento parzialmente eseguito'
+    //DECORRENZA: 'Decorrenza termini',
+    //DECORRENZA_PARZIALE: 'Decorrenza termini parziale'
   };
 
   //STATI PENDENZE
   public static STATI_PENDENZE: any = {
-    ESEGUITO: 'Pagata',
-    NON_ESEGUITO: 'Da pagare',
-    ESEGUITO_PARZIALE: 'Pagata parzialmente',
-    ANNULLATO: 'Annullata',
-    SCADUTO: 'Scaduta'
+    ESEGUITA: 'Pagata',
+    NON_ESEGUITA: 'Da pagare',
+    ESEGUITA_PARZIALE: 'Pagata parzialmente',
+    ANNULLATA: 'Annullata',
+    SCADUTA: 'Scaduta'
+  };
+
+  //STATI RPP PAGAMENTI
+  public static STATI_RPP: any = {
+    FALLITO: 'Fallito',
+    ANOMALO: 'Anomalo',
+    IN_CORSO: 'In corso'
+  };
+
+  //STATI RISCOSSIONE
+  public static STATI_RISCOSSIONE: any = {
+    RISCOSSA: 'Riscossa',
+    INCASSATA: 'Incassata'
   };
 
   //STATI ESITO PAGAMENTO
   public static STATI_ESITO_PAGAMENTO: any = {
-    IN_CORSO: 'Pagamento in corso',
-    RIFIUTATO: 'Pagamento rifiutato',
-    ESEGUITO: 'Pagamento eseguito',
-    NON_ESEGUITO: 'Pagamento non eseguito',
-    ESEGUITO_PARZIALE: 'Pagamento parzialmente eseguito',
-    DECORRENZA: 'Decorrenza termini',
-    DECORRENZA_PARZIALE: 'Decorrenza termini parziale'
+    0: 'Pagamento eseguito',
+    1: 'Pagamento non eseguito',
+    2: 'Pagamento parzialmente eseguito',
+    3: 'Decorrenza termini',
+    4: 'Decorrenza termini parziale'
+  };
+
+  //STATI ESITO RENDICONTAZIONI
+  public static STATI_ESITO_RENDICONTAZIONI: any = {
+    0: 'Pagamento eseguito',
+    3: 'Pagamento revocato',
+    9: 'Pagamento eseguito in assenza di RPT'
   };
 
   //TIPOLOGIE VERSAMENTO
   public static TIPI_VERSAMENTO: any = {
     PO: 'Pagamento da PSP',
-    BP: 'Bollettino postale',
-    BBT: 'Bonifico bancario',
-    CP: 'Carta di pagamento',
-    AD: 'Addebito diretto',
-    OBEP: 'Pagamento Mybank',
-    OTH: 'Altro tipo di pagamento'
+    BP: 'Pagamento da portale',
+    BBT: 'Pagamento da portale',
+    CP: 'Pagamento da portale',
+    AD: 'Pagamento da portale',
+    OBEP: 'Pagamento da portale',
+    OTH: 'Pagamento da portale'
   };
 
   //TIPOLOGIE CATEGORIA EVENTO
@@ -94,27 +135,23 @@ export class UtilService {
     INTERFACCIA: 'Interfaccia'
   };
 
-  //TIPOLOGIE MODELLI DI PAGAMENTO
-  public static TIPI_MODELLI_PAGAMENTO: any = {
-    '0': 'Immediato mono-beneficiario',
-    '1': 'Immediato pluri-beneficiario',
-    '2': 'Pagamento differito',
-    '4': 'Pagamento da PSP'
-  };
-
   //TIPI VERSIONE
-  public static TIPI_VERSIONE_API: any = {
-    'REST_1.0': 'REST 1.0',
-    'SOAP_2.0': 'SOAP 2.0',
-    'SOAP_2.1': 'SOAP 2.1',
-    'SOAP_2.3': 'SOAP 2.3',
-    'SOAP_2.5': 'SOAP 2.5'
-  };
+  public static TIPI_VERSIONE_API: string[] = [];
+
+  //LISTA SERVIZI
+  public static SERVIZI: string[] = [];
+  public static CONFIGURAZIONE_E_MANUTENZIONE: string = 'Configurazione e manutenzione';
 
   //TIPI SOGGETTO
   public static TIPI_SOGGETTO: any = {
     'F': 'Persona fisica',
     'G': 'Persona giuridica'
+  };
+
+  //TIPI RISCOSSIONE
+  public static TIPI_RISCOSSIONE: any = {
+    'ENTRATA': 'Entrata in tesoreria',
+    'MBT': 'Marca da bollo telematica'
   };
 
   //ABILITAZIONI
@@ -144,11 +181,18 @@ export class UtilService {
     ALTRO: 'Altro'
   };
 
+  //VERIFICA
+  public static VERIFICHE: any = {
+    'true': 'Verificato',
+    'false': 'Non verificato'
+  };
+
   //ROOT URL SERVIZI
+  public static URL_DETTAGLIO: string = '/dettaglio';
   public static URL_PROFILO: string = '/profilo';
+  public static URL_DASHBOARD: string = '/dashboard';
   public static URL_PENDENZE: string = '/pendenze';
   public static URL_PAGAMENTI: string = '/pagamenti';
-  public static URL_REGISTRO_PSP: string = '/psp';
   public static URL_REGISTRO_INTERMEDIARI: string = '/intermediari';
   public static URL_RPPS: string = '/rpp';
   public static URL_APPLICAZIONI: string = '/applicazioni';
@@ -156,42 +200,57 @@ export class UtilService {
   public static URL_ENTRATE: string = '/entrate';
   public static URL_DOMINI: string = '/domini';
   public static URL_OPERATORI: string = '/operatori';
+  public static URL_ACLS: string = '/acl';
   public static URL_GIORNALE_EVENTI: string = '/eventi';
   public static URL_RISCOSSIONI: string = '/riscossioni';
   public static URL_RENDICONTAZIONI: string = '/flussiRendicontazione';
   public static URL_INCASSI: string = '/incassi';
   public static URL_UNITA_OPERATIVE: string = '/unitaOperative';
-  public static URL_IBAN_ACCREDITI: string = '/ibanAccredito';
-  public static URL_ACL: string = '/acl';
+  public static URL_IBAN_ACCREDITI: string = '/contiAccredito';
+  public static URL_RUOLI: string = '/ruoli';
+  public static URL_OPERAZIONI: string = '/operazioni';
+  public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
+  public static URL_RECUPERO_RPT_PENDENTI: string = '/recuperoRptPendenti';
+
+  //ROOT URL SHARED SERVICES
+  public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
+  public static URL_TIPI_VERSIONE_API: string = '/enumerazioni/versioneConnettore';
 
   //LABEL
+  public static TXT_DASHBOARD: string = 'Cruscotto';
   public static TXT_PENDENZE: string = 'Pendenze';
   public static TXT_PAGAMENTI: string = 'Pagamenti';
   public static TXT_PROFILO: string = 'Profilo utente';
-  public static TXT_REGISTRO_PSP: string = 'Registro PSP';
-  public static TXT_REGISTRO_INTERMEDIARI: string = 'Registro intermediari';
+  public static TXT_REGISTRO_INTERMEDIARI: string = 'Intermediari';
   public static TXT_RPPS: string = 'Richieste di pagamento';
   public static TXT_APPLICAZIONI: string = 'Applicazioni';
   public static TXT_DOMINI: string = 'Domini';
   public static TXT_ENTRATE: string = 'Entrate';
-  public static TXT_ACL: string = 'ACL';
+  public static TXT_RUOLI: string = 'Ruoli';
   public static TXT_OPERATORI: string = 'Operatori';
   public static TXT_GIORNALE_EVENTI: string = 'Giornale degli eventi';
   public static TXT_RISCOSSIONI: string = 'Riscossioni';
-  public static TXT_RENDICONTAZIONI: string = 'Flussi rendicontazione';
-  public static TXT_INCASSI: string = 'Incassi';
+  public static TXT_RENDICONTAZIONI: string = 'Rendicontazioni';
+  public static TXT_INCASSI: string = 'Riconciliazioni';
+
+  public static TXT_MAN_NOTIFICHE: string = 'Spedisci notifiche';
+  public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';
+  public static TXT_MAN_PAGAMENTI: string = 'Recupera pagamenti';
+  public static TXT_MAN_CACHE: string = 'Resetta la cache';
+
 
   //Types
   //Component view ref
+  public static DASHBOARD: string = 'dashboard';
   public static PENDENZE: string = 'pendenze';
   public static PAGAMENTI: string = 'pagamenti';
-  public static REGISTRO_PSP: string = 'registro_psp';
   public static REGISTRO_INTERMEDIARI: string = 'registro_intermediari';
   public static RPPS: string = 'richieste_pagamenti';
   public static APPLICAZIONI: string = 'applicazioni';
   public static DOMINI: string = 'domini';
   public static ENTRATE: string = 'entrate';
-  public static ACLS: string = 'acls';
+  public static ACLS: string = 'acl';
+  public static RUOLI: string = 'ruoli';
   public static OPERATORI: string = 'operatori';
   public static GIORNALE_EVENTI: string = 'giornale_eventi';
   public static RISCOSSIONI: string = 'riscossioni';
@@ -201,14 +260,17 @@ export class UtilService {
   public static IBAN_ACCREDITI: string = 'ibanAccredito';
   //Item view ref
   public static STANDARD: string = '';
+  public static STANDARD_COLLAPSE: string = 'standard_collapse';
   public static RIEPILOGO: string = 'riepilogo';
   public static CRONO: string = 'crono';
+  public static CRONO_CODE: string = 'crono_code';
   public static KEY_VALUE: string = 'key_value';
   //Dialog view ref
   public static INTERMEDIARIO: string = 'intermediario';
   public static STAZIONE: string = 'stazione';
   public static APPLICAZIONE: string = 'applicazione';
-  public static ACL: string = 'acl';
+  public static ACL: string = 'autorizzazione';
+  public static RUOLO: string = 'ruolo';
   public static DOMINIO: string = 'dominio';
   public static OPERATORE: string = 'operatore';
   public static GIORNALE_EVENTO: string = 'giornale_evento';
@@ -225,6 +287,7 @@ export class UtilService {
   public static NO_TYPE: string = '-';
   //Material standard ref
   public static INPUT: string = 'input';
+  public static DATE_PICKER: string = 'date_picker';
   public static SELECT: string = 'select';
   public static SLIDE_TOGGLE: string = 'slide_toggle';
   public static LABEL: string = 'label';
@@ -233,18 +296,43 @@ export class UtilService {
   public static dialogBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static blueDialogBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static headBehavior: BehaviorSubject<any> = new BehaviorSubject(null);
+  public static exportBehavior: BehaviorSubject<string> = new BehaviorSubject(null);
+  public static exportSubscription: Subscription;
 
   //Active detail state
   public static ActiveDetailState: ComponentRef<any>;
 
   //Header: actions list
-  public static HEADER_ACTIONS: any[] = [{ label: 'Esporta', type: UtilService.NO_TYPE } ];
+  public static HEADER_ACTIONS: any[] = [];//[{ label: 'Esporta', type: UtilService.NO_TYPE } ];
+  public static EXPORT_PENDENZA: string = 'esporta_pendenza';
+  public static EXPORT_PENDENZE: string = 'esporta_pendenze';
+  public static EXPORT_PAGAMENTO: string = 'esporta_pagamento';
+  public static EXPORT_PAGAMENTI: string = 'esporta_pagamenti';
+  public static EXPORT_GIORNALE_EVENTI: string = 'esporta_giornale_eventi';
+  public static EXPORT_RISCOSSIONI: string = 'esporta_riscossioni';
+  public static EXPORT_INCASSI: string = 'esporta_incassi';
+  public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
+
+  /**
+   * Dashboard link params
+   * @type { {method: string; params: Array<{ controller: '', key: '', value: '' }>} }
+   */
+  public static DASHBOARD_LINKS_PARAMS: any = { method: null, params: [] };
+
 
   constructor(private message: MatSnackBar, private dialog: MatDialog) { }
 
 
   public static HTTP_ROOT_SERVICE(): string {
     return window['rootService']();
+  }
+
+  public static HTTP_LOGOUT_SERVICE(): string {
+    return window['httpLogoutService']();
+  }
+
+  public static HTTP_BASE_HREF(): string {
+    return window['httpBase']();
   }
 
   /**
@@ -281,21 +369,37 @@ export class UtilService {
     return options.text;
   }
 
+  onError(error: any) {
+    let _msg = '';
+    try {
+      _msg = (!error.instance.error.dettaglio)?error.instance.error.descrizione:error.instance.error.descrizione+': '+error.instance.error.dettaglio;
+    } catch(e) {
+      _msg = error.message;
+    }
+    if(_msg.length > 200) {
+      _msg = _msg.substring(0, 200);
+    }
+    this.alert(_msg);
+  }
+
   /**
    *
    * Alert messages
    * @param {string} _message
+   * @param {boolean} _action
    * @param {boolean} _keep
    */
-  alert(_message: string, _keep: boolean = false) {
-    let _config = { duration: 3000 };
-    let _action = null;
+  alert(_message: string, _action: boolean = true, _keep: boolean = false) {
+    let _config = { duration: 10000, panelClass: 'overflow-hidden' };
+    let _actions = null;
     if (_keep){
       _config = null;
-      _action = 'Chiudi';
+    }
+    if (_action){
+      _actions = 'Chiudi';
     }
     if(_message) {
-      this.message.open(_message, _action, _config);
+      this.message.open(_message, _actions, _config);
     }
   }
 
@@ -320,44 +424,51 @@ export class UtilService {
    */
   currencyFormat(value: number): string {
     if(value && !isNaN(value)) {
-      return '€ '+ (value.toFixed(2));
+      let currency;
+      try {
+        currency = value.toLocaleString("it-IT", { minimumFractionDigits: 2 });
+      } catch (e) {
+        currency = 'n/a';
+      }
+      return '€ '+ currency;
     }
-    return '€ 0.00';
+    return '€ 0,00';
   }
 
-  importoClass(_stato: string): any {
-    let _status = { e: false, w: false, n: false, got: false };
-    switch(_stato) {
-      case UtilService.STATI_PENDENZE.SCADUTO:
-        _status.e = true;
-        _status.got = true;
-        break;
-      case UtilService.STATI_PENDENZE.NON_ESEGUITO:
-        _status.w = true;
-        _status.got = true;
-        break;
-    }
-    if(!_status.got) {
-      switch(_stato) {
-        case UtilService.STATI_PAGAMENTO.DECORRENZA:
-          _status.e = true;
-          break;
-        case UtilService.STATI_PAGAMENTO.NON_ESEGUITO:
-          _status.w = true;
-          break;
-        default:
-          _status.n = true;
-          break;
-      }
-    }
-    return {
-      'font-weight-500': true,
-      'text-truncate': true,
-      'stato-error': _status.e,
-      'stato-warning': _status.w,
-      'stato-normal': _status.n,
-    };
-  }
+  // importoClass(_stato: string, detail: boolean = false): any {
+  //   let _status = { e: false, w: false, n: false, got: false };
+  //   switch(_stato) {
+  //     case UtilService.STATI_PENDENZE.SCADUTO:
+  //       _status.e = true;
+  //       _status.got = true;
+  //       break;
+  //     case UtilService.STATI_PENDENZE.NON_ESEGUITO:
+  //       _status.w = true;
+  //       _status.got = true;
+  //       break;
+  //   }
+  //   if(!_status.got) {
+  //     switch(_stato) {
+  //       case UtilService.STATI_PAGAMENTO.DECORRENZA:
+  //         _status.e = true;
+  //         break;
+  //       case UtilService.STATI_PAGAMENTO.NON_ESEGUITO:
+  //         _status.w = true;
+  //         break;
+  //       default:
+  //         _status.n = true;
+  //         break;
+  //     }
+  //   }
+  //   return {
+  //     'medium-24': detail,
+  //     'medium-16': !detail,
+  //     'text-truncate': true,
+  //     'stato-error': _status.e,
+  //     'stato-warning': _status.w,
+  //     'stato-normal': _status.n,
+  //   };
+  // }
 
   /**
    * Var is valid
@@ -394,6 +505,7 @@ export class UtilService {
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE, type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza() }),
+          new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT })
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })
         ];
@@ -402,27 +514,23 @@ export class UtilService {
         _list = [
           new FormInput({ id: 'versante', label: FormService.FORM_VERSANTE, placeholder: FormService.FORM_PH_VERSANTE, type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPagamento() }),
-          new FormInput({ id: 'idSessionePortale', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT })
+          new FormInput({ id: 'idSessionePortale', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT }),
+          new FormInput({ id: 'dataRichiestaPagamentoInizio', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
+          new FormInput({ id: 'dataRichiestaPagamentoFine', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER }),
+          new FormInput({ id: 'verificato', label: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiVerifica() })
         ];
         break;
       case UtilService.REGISTRO_INTERMEDIARI:
       case UtilService.APPLICAZIONI:
       case UtilService.OPERATORI:
         _list = [
-          new FormInput({ id: 'abilitato', label: FormService.FORM_ABILITATO, type: UtilService.SLIDE_TOGGLE })
-        ];
-        break;
-      case UtilService.REGISTRO_PSP:
-        _list = [
-          new FormInput({ id: 'bollo', label: FormService.FORM_BOLLO, type: UtilService.SLIDE_TOGGLE }),
-          new FormInput({ id: 'storno', label: FormService.FORM_STORNO, type: UtilService.SLIDE_TOGGLE }),
-          new FormInput({ id: 'abilitato', label: FormService.FORM_ABILITATO, type: UtilService.SLIDE_TOGGLE })
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiAbilitazione() })
         ];
         break;
       case UtilService.DOMINI:
         _list = [
           new FormInput({ id: 'idStazione', label: FormService.FORM_STAZIONE, placeholder: FormService.FORM_PH_STAZIONE, type: UtilService.INPUT }),
-          new FormInput({ id: 'abilitato', label: FormService.FORM_ABILITATO, type: UtilService.SLIDE_TOGGLE })
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiAbilitazione() })
         ];
         break;
       case UtilService.RPPS:
@@ -436,17 +544,32 @@ export class UtilService {
           new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT })
         ];
       break;
-      case UtilService.ACLS:
+      case UtilService.RUOLI:
+      break;
+      case UtilService.RENDICONTAZIONI:
         _list = [
-          new FormInput({ id: 'ruolo', label: FormService.FORM_RUOLO, placeholder: FormService.FORM_PH_RUOLO, type: UtilService.INPUT }),
-          new FormInput({ id: 'principal', label: FormService.FORM_PRINCIPAL, placeholder: FormService.FORM_PH_PRINCIPAL, type: UtilService.INPUT }),
-          new FormInput({ id: 'servizio', label: FormService.FORM_SERVIZIO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.elencoServizi() })
+          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
+          new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER })
         ];
       break;
       case UtilService.GIORNALE_EVENTI:
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
-          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT })
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
+          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
+          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT })
+        ];
+      break;
+      case UtilService.RISCOSSIONI:
+        _list = [
+          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
+          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
+          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
+          new FormInput({ id: 'stato', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiRiscossione() }),
+          new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER }),
+          new FormInput({ id: 'tipo', label: FormService.FORM_TIPO_RISCOSSIONE, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.elencoTipiRiscossione() })
         ];
       break;
     }
@@ -466,15 +589,27 @@ export class UtilService {
     });
   }
 
-  tipiAutenticazione(): any[] {
-    return Object.keys(UtilService.TIPI_AUTENTICAZIONE).map((key) => {
-      return { label: UtilService.TIPI_AUTENTICAZIONE[key], value: key };
+  statiRiscossione(): any[] {
+    return Object.keys(UtilService.STATI_RISCOSSIONE).map((key) => {
+      return { label: UtilService.STATI_RISCOSSIONE[key], value: key };
     });
   }
 
-  tipiVersione(): any[] {
-    return Object.keys(UtilService.TIPI_VERSIONE_API).map((key) => {
-      return { label: UtilService.TIPI_VERSIONE_API[key], value: key };
+  statiAbilitazione(): any[] {
+    return Object.keys(UtilService.ABILITAZIONI).map((key) => {
+      return { label: UtilService.ABILITAZIONI[key], value: key == 'true' };
+    });
+  }
+
+  statiVerifica(): any[] {
+    return Object.keys(UtilService.VERIFICHE).map((key) => {
+      return { label: UtilService.VERIFICHE[key], value: key == 'true' };
+    });
+  }
+
+  tipiAutenticazione(): any[] {
+    return Object.keys(UtilService.TIPI_AUTENTICAZIONE).map((key) => {
+      return { label: UtilService.TIPI_AUTENTICAZIONE[key], value: key };
     });
   }
 
@@ -484,16 +619,18 @@ export class UtilService {
     });
   }
 
-  dirittiUtente(): any[] {
-    return Object.keys(UtilService.DIRITTI).map((key) => {
-      return { label: UtilService.DIRITTI[key], value: key };
+  dirittiCodeUtente(): any[] {
+    return UtilService.DIRITTI_CODE;
+  }
+
+  elencoTipiRiscossione(): any[] {
+    return Object.keys(UtilService.TIPI_RISCOSSIONE).map((key) => {
+      return { label: UtilService.TIPI_RISCOSSIONE[key], value: key };
     });
   }
 
-  elencoServizi(): any[] {
-    return Object.keys(UtilService.SERVIZI).map((key) => {
-      return { label: UtilService.SERVIZI[key], value: key };
-    });
+  resetDashboardLinksParams() {
+    UtilService.DASHBOARD_LINKS_PARAMS = { method: null, params: [] };
   }
 
 }

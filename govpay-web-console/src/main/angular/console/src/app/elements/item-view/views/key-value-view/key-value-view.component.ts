@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Dato } from '../../../../classes/view/dato';
-import { UtilService } from '../../../../services/util.service';
 
 @Component({
   selector: 'link-key-value-view',
@@ -16,17 +15,17 @@ export class KeyValueViewComponent implements OnInit {
   ngOnInit() {
   }
 
-  protected _setLabelStyle() {
-    let _trunc: boolean = true;
-    if(this.info && this.info.value && this.info.value.indexOf(' ') != -1) {
-      _trunc = false;
-    }
-    return {
-      'text-truncate': _trunc,
-      'text-sub-color': true,
-      'my-0': true
-    }
-  }
+  // protected _setLabelStyle() {
+  //   let _trunc: boolean = true;
+  //   if(this.info && this.info.value && this.info.value.indexOf(' ') != -1) {
+  //     _trunc = false;
+  //   }
+  //   return {
+  //     'text-truncate': _trunc,
+  //     'color-gray': true,
+  //     'my-0': true
+  //   }
+  // }
 
   // protected _tooltip(): string {
   //   if(this.info) {

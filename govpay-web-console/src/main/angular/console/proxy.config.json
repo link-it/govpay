@@ -1,12 +1,8 @@
 {
-  "/Govpay/gov-pay/0.2/*": {
-    "target": "https://virtserver.swaggerhub.com",
-    "secure": false,
-    "logLevel": "debug"
-  },
   "/govpay/backend/api/backoffice/rs/v1/*": {
-    "target": "http://10.114.87.99:8080",
+    "target": "http://10.114.87.30:8080",
     "secure": false,
-    "logLevel": "debug"
+    "logLevel": "debug",
+    "changeOrigin": true
   }
 }

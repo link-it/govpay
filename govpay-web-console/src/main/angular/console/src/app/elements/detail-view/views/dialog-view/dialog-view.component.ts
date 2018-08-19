@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild, ViewContainerRef, AfterViewInit, ComponentRef, OnDestroy } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ViewContainerRef, AfterViewInit, ComponentRef, OnDestroy, AfterContentChecked } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { LinkService } from '../../../../services/link.service';
 import { UtilService } from '../../../../services/util.service';
@@ -12,11 +12,12 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
   templateUrl: './dialog-view.component.html',
   styleUrls: ['./dialog-view.component.scss']
 })
-export class DialogViewComponent  implements OnInit, OnDestroy, AfterViewInit {
+export class DialogViewComponent  implements OnInit, OnDestroy, AfterContentChecked {
   @ViewChild('dfec', {read: ViewContainerRef}) dialogFormElementContainer: ViewContainerRef;
 
   protected _componentRef: ComponentRef<any>;
   protected _responseSubscription: Subscription;
+  protected _isValid: boolean = false;
 
   modalForm: FormGroup;
 
@@ -36,7 +37,8 @@ export class DialogViewComponent  implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
+  ngAfterContentChecked() {
+    this._isValid = this.modalForm.valid;
   }
 
   ngOnDestroy() {

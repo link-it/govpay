@@ -27,14 +27,13 @@
     </mat-form-field>
     <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
       <!--<input matInput placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i" autocomplete="off">-->
-      <mat-select placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i">
-        <mat-option>Nessuna</mat-option>
-        <mat-option *ngFor="let item of versioni" [value]="item.value">{{item.label}}</mat-option>
+      <mat-select placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i" required>
+        <mat-option *ngFor="let ver of versioni" [value]="ver">{{ver}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
       <mat-select #auth placeholder="Tipo autenticazione" [formControlName]="'auth_ctrl_'+i" (selectionChange)="_onAuthChange(auth, i)">
-        <mat-option>Nessuna</mat-option>
+        <mat-option value="">Nessuna</mat-option>
         <mat-option [value]="BASIC">HTTP Basic</mat-option>
         <mat-option [value]="SSL">SSL</mat-option>
       </mat-select>

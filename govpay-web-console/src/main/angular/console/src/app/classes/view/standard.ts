@@ -4,7 +4,7 @@ export class Standard {
 
   titolo: Dato = new Dato({ label: '', value: '' });
   sottotitolo: Dato = new Dato({ label: '', value: '' });
-  importo: number = -1;
+  importo: string = null;
   stato: string = null;
 
   constructor (_data?: any) {

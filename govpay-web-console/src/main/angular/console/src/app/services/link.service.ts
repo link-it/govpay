@@ -20,21 +20,23 @@ export class LinkService implements OnDestroy{
    * Large screen min limit media matcher
    */
   checkLargeMediaMatch(): MediaQueryList {
-    return this.media.matchMedia('(min-width: 1104px)');
+    return this.media.matchMedia('(min-width: 1440px)');
   }
 
   /**
    * Medium screen min limit media matcher
    */
   checkMediumMediaMatch(): MediaQueryList {
-    return this.media.matchMedia('(min-width: 576px)');
+    //return this.media.matchMedia('(min-width: 576px)');
+    return this.media.matchMedia('(min-width: 768px)');
   }
 
   /**
    * Small screen limit media matcher
    */
   checkSmallMediaMatch(): MediaQueryList {
-    return this.media.matchMedia('(max-width: 575px)');
+    //return this.media.matchMedia('(max-width: 575px)');
+    return this.media.matchMedia('(max-width: 767px)');
   }
 
   /**
@@ -90,7 +92,8 @@ export class LinkService implements OnDestroy{
    */
   getRouterStateConfig(_url?: string): any {
     _url = _url || this.router.url;
-    let re = _url.split('?')[0].substring(1).match(/^[^/]+(\/(\w+)){0,1}/);
+    _url = _url.split('?')[0];
+    let re = _url.substring(1).match(/^[^/]+(\/(\w+)){0,1}/);
     let _redirect;
     let _parent;
     if(re && re[1]) {
@@ -101,7 +104,7 @@ export class LinkService implements OnDestroy{
       _parent = re?'/'+re[0]:'/';
       _redirect = this.router.config.filter((obj) => obj.path == s)[0];
     }
-    return (_redirect)?{ data: _redirect.data, path: _parent }:null;
+    return (_redirect)?{ data: _redirect.data, path: _parent, fullPath: _url }:null;
   }
 
   setRouterStateConfigData(data: any,_url?: string) {

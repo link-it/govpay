@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { GovpayService } from '../../../../services/govpay.service';
 import { UtilService } from '../../../../services/util.service';
+import { Voce } from '../../../../services/voce.service';
 import { Dato } from '../../../../classes/view/dato';
 import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -40,9 +41,8 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
-        //console.log(error);
-        this.us.alert(error.message);
         this.gps.updateSpinner(false);
+        this.us.onError(error);
       });
   }
 
@@ -51,12 +51,12 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
     let _dvi = UtilService.defaultDisplay({ value: moment(this.json.dataValuta).format('DD/MM/YYYY') });
     let _dci = UtilService.defaultDisplay({ value: moment(this.json.dataContabile).format('DD/MM/YYYY') });
     this.info = new Riepilogo({
-      titolo: new Dato({ label: 'Data valuta incasso', value: UtilService.defaultDisplay({ value: _dvi }) }),
-      sottotitolo: new Dato({ label: 'Id incasso', value: this.json.idIncasso }),
-      importo: this.json.importo,
+      titolo: new Dato({ label: Voce.DATA_VALUTA_INCASSO, value: UtilService.defaultDisplay({ value: _dvi }) }),
+      sottotitolo: new Dato({ label: Voce.ID_INCASSO, value: this.json.idIncasso }),
+      importo: this.us.currencyFormat(this.json.importo),
       extraInfo: [
-        { label: 'Causale: ', value: this.json.causale },
-        { label: 'Data contabile incasso: ', value: UtilService.defaultDisplay({ value: _dci }) }
+        { label: Voce.CAUSALE+': ', value: this.json.causale },
+        { label: Voce.DATA_CONTABILE+': ', value: UtilService.defaultDisplay({ value: _dci }) }
       ]
     });
 
@@ -74,13 +74,13 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
     switch(type) {
       case UtilService.URL_RISCOSSIONI:
         let _st = Dato.arraysToDato(
-          ['Pendenza', 'IUV', 'Id dominio'],
+          [ Voce.ID_PENDENZA, Voce.IUV, Voce.ID_DOMINIO ],
           [ item.idVocePendenza, item.iuv, item.idDominio ],
           ', '
         );
-        _std.titolo = new Dato({ label: 'Riscossione (IUR): ', value: item.iur });
+        _std.titolo = new Dato({ label: Voce.IUR+': ', value: item.iur });
         _std.sottotitolo = _st;
-        _std.importo = item.importo;
+        _std.importo = this.us.currencyFormat(item.importo);
         break;
     }
     return _std;
@@ -105,7 +105,7 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
         },
         (error) => {
           this.gps.updateSpinner(false);
-          this.us.alert(error.message);
+          this.us.onError(error);
         });
     }
   }

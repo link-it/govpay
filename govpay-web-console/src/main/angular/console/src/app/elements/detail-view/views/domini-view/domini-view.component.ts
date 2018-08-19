@@ -4,6 +4,7 @@ import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { GovpayService } from '../../../../services/govpay.service';
+import { Voce } from '../../../../services/voce.service';
 import { Dato } from '../../../../classes/view/dato';
 import { Parameters } from '../../../../classes/parameters';
 import { Standard } from '../../../../classes/view/standard';
@@ -25,19 +26,18 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   @Input() parent: any;
 
   protected logo: string;
+  protected logoError: boolean = false;
 
   protected _IBAN = UtilService.IBAN_ACCREDITO;
   protected _ENTRATA_DOMINIO = UtilService.ENTRATA_DOMINIO;
   protected _UNITA = UtilService.UNITA_OPERATIVA;
+  protected _PLUS_CREDIT = UtilService.USER_ACL.hasCreditore;
 
 
   constructor(public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
     this.dettaglioDominio();
-    this.elencoUnitaOperative();
-    this.elencoAccreditiIban();
-    this.elencoEntrateDominio();
   }
 
   ngAfterViewInit() {
@@ -47,105 +47,85 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     let _url = UtilService.URL_DOMINI+'/'+encodeURIComponent(this.json.idDominio);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
-        this.json = _response.body;
+        // this.json = _response.body;
         //Riepilogo
-        this.mapJsonDetail();
+        this.mapJsonDetail(_response.body);
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
-        //console.log(error);
-        this.us.alert(error.message);
         this.gps.updateSpinner(false);
+        this.us.onError(error);
       });
 
   }
 
-  protected mapJsonDetail() {
+  protected mapJsonDetail(json: any) {
     let _dettaglio = { info: [], iban: [], entrate: [], unita: [] };
-    _dettaglio.info.push(new Dato({ label: 'Id dominio', value: this.json.idDominio }));
-    _dettaglio.info.push(new Dato({ label: 'Ragione sociale', value: this.json.ragioneSociale }));
-    _dettaglio.info.push(new Dato({ label: 'Indirizzo', value: this.json.indirizzo }));
-    _dettaglio.info.push(new Dato({ label: 'Numero civico', value: this.json.civico }));
-    _dettaglio.info.push(new Dato({ label: 'Cap', value: this.json.cap }));
-    _dettaglio.info.push(new Dato({ label: 'Località', value: this.json.localita }));
-    _dettaglio.info.push(new Dato({ label: 'Provincia', value: this.json.provincia }));
-    _dettaglio.info.push(new Dato({ label: 'Nazione', value: this.json.nazione }));
-    _dettaglio.info.push(new Dato({ label: 'Email', value: this.json.email }));
-    _dettaglio.info.push(new Dato({ label: 'Pec', value: this.json.pec }));
-    _dettaglio.info.push(new Dato({ label: 'Telefono', value: this.json.tel }));
-    _dettaglio.info.push(new Dato({ label: 'Fax', value: this.json.fax }));
-    _dettaglio.info.push(new Dato({ label: 'Sito web', value: this.json.web }));
-    _dettaglio.info.push(new Dato({ label: 'Global location number', value: this.json.gln }));
-    _dettaglio.info.push(new Dato({ label: 'CBill', value: this.json.cbill }));
-    _dettaglio.info.push(new Dato({ label: 'Prefisso IUV', value: this.json.iuvPrefix }));
-    _dettaglio.info.push(new Dato({ label: 'Stazione', value: this.json.stazione }));
-    _dettaglio.info.push(new Dato({ label: 'Aux', value: this.json.auxDigit }));
-    _dettaglio.info.push(new Dato({ label: 'Codice di segregazione', value: this.json.segregationCode }));
-    _dettaglio.info.push(new Dato({ label: 'Abilitato', value: UtilService.ABILITA[this.json.abilitato.toString()] }));
+    _dettaglio.info.push(new Dato({ label: Voce.ID_DOMINIO, value: json.idDominio }));
+    _dettaglio.info.push(new Dato({ label: Voce.RAGIONE_SOCIALE, value: json.ragioneSociale }));
+    _dettaglio.info.push(new Dato({ label: Voce.INDIRIZZO, value: json.indirizzo }));
+    _dettaglio.info.push(new Dato({ label: Voce.CIVICO, value: json.civico }));
+    _dettaglio.info.push(new Dato({ label: Voce.CAP, value: json.cap }));
+    _dettaglio.info.push(new Dato({ label: Voce.LUOGO, value: json.localita }));
+    _dettaglio.info.push(new Dato({ label: Voce.PROVINCIA, value: json.provincia }));
+    _dettaglio.info.push(new Dato({ label: Voce.NAZIONE, value: json.nazione }));
+    _dettaglio.info.push(new Dato({ label: Voce.EMAIL, value: json.email }));
+    _dettaglio.info.push(new Dato({ label: Voce.PEC, value: json.pec }));
+    _dettaglio.info.push(new Dato({ label: Voce.TELEFONO, value: json.tel }));
+    _dettaglio.info.push(new Dato({ label: Voce.FAX, value: json.fax }));
+    _dettaglio.info.push(new Dato({ label: Voce.WEB, value: json.web }));
+    _dettaglio.info.push(new Dato({ label: Voce.GLN, value: json.gln }));
+    _dettaglio.info.push(new Dato({ label: Voce.CBILL, value: json.cbill }));
+    _dettaglio.info.push(new Dato({ label: Voce.IUV_PREFIX, value: json.iuvPrefix }));
+    _dettaglio.info.push(new Dato({ label: Voce.STAZIONE, value: json.stazione }));
+    _dettaglio.info.push(new Dato({ label: Voce.AUX, value: json.auxDigit }));
+    _dettaglio.info.push(new Dato({ label: Voce.SECRET_CODE, value: UtilService.defaultDisplay({ value: json.segregationCode }) }));
+    _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[json.abilitato.toString()] }));
 
-    this.logo = this.json.logo;
+    this.logo = this.json.logo?window['hostname']()+window['rootService']()+this.json.logo:'no-logo';
     this.informazioni = _dettaglio.info.slice(0);
+
+    this.elencoUnitaOperative(json);
+    this.elencoAccreditiIban(json);
+    this.elencoEntrateDominio(json);
   }
 
-  protected elencoUnitaOperative() {
-    this.gps.getDataService(this.json.unitaOperative).subscribe(function (_response) {
-        let _body = _response.body;
-        let p: Parameters;
-        let _duo = _body['risultati'].map(function(item) {
-          p = new Parameters();
-          p.jsonP = item;
-          p.model = this._mapNewItemByType(item, this._UNITA);
-          return p;
-        }, this);
-        this.unita_operative = _duo.slice(0);
-        this.gps.updateSpinner(false);
-      }.bind(this),
-      (error) => {
-        this.gps.updateSpinner(false);
-        this.us.alert(error.message);
-      });
+  protected elencoUnitaOperative(json: any) {
+    let p: Parameters;
+    let _duo = json.unitaOperative.map(function(item) {
+      p = new Parameters();
+      p.jsonP = item;
+      p.model = this._mapNewItemByType(item, this._UNITA);
+      return p;
+    }, this);
+    this.unita_operative = _duo.slice(0);
   }
 
-  protected elencoAccreditiIban() {
-    this.gps.getDataService(this.json.ibanAccredito).subscribe(function (_response) {
-        let _body = _response.body;
-        let p: Parameters;
-        let _di = _body['risultati'].map(function(item) {
-          p = new Parameters();
-          p.jsonP = item;
-          p.model = this._mapNewItemByType(item, this._IBAN);
-          return p;
-        }, this);
-        this.iban_cc = _di.slice(0);
-        this.gps.updateSpinner(false);
-      }.bind(this),
-      (error) => {
-        this.gps.updateSpinner(false);
-        this.us.alert(error.message);
-      });
+  protected elencoAccreditiIban(json: any) {
+    let p: Parameters;
+    let _di = json.contiAccredito.map(function(item) {
+      p = new Parameters();
+      p.jsonP = item;
+      p.model = this._mapNewItemByType(item, this._IBAN);
+      return p;
+    }, this);
+    this.iban_cc = _di.slice(0);
   }
 
-  protected elencoEntrateDominio() {
-    this.gps.getDataService(this.json.entrate).subscribe(function (_response) {
-        let _body = _response.body;
-        let p: Parameters;
-        let _de = _body['risultati'].map(function(item) {
-          p = new Parameters();
-          p.jsonP = item;
-          p.model = this._mapNewItemByType(item, this._ENTRATA_DOMINIO);
-          return p;
-        }, this);
-        this.entrate = _de.slice(0);
-        this.gps.updateSpinner(false);
-      }.bind(this),
-      (error) => {
-        this.gps.updateSpinner(false);
-        this.us.alert(error.message);
-      });
+  protected elencoEntrateDominio(json: any) {
+    let p: Parameters;
+    let _de = json.entrate.map(function(item) {
+      p = new Parameters();
+      p.jsonP = item;
+      p.model = this._mapNewItemByType(item, this._ENTRATA_DOMINIO);
+      return p;
+    }, this);
+    this.entrate = _de.slice(0);
   }
 
   protected _onError() {
-    console.warn('Png image: Cannot load base64 data.')
+    this.logoError = true;
+    console.warn('Cannot load png image.')
   }
 
   protected _editDominio(event: any) {
@@ -162,33 +142,82 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   }
 
   protected _iconClick(type: string, ref: any, event: any) {
-
-    //TODO: Servizi non attivi
-
+    //TODO: Delete non sono impostati
     let _ivm = ref.getItemViewModel();
     switch(event.type) {
       case 'edit':
-        console.log('edit');
+        this._addEdit(type, true, _ivm.jsonP);
         break;
-      case 'delete':
-        console.log('delete');
-        break;
+        // let _json;
+        // case 'delete':
+        //   switch(type) {
+        //     case this._UNITA:
+        //       _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_UNITA_OPERATIVE, value: _ivm.jsonP.idUnita } ];
+        //       break;
+        //     case this._ENTRATA_DOMINIO:
+        //       _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_ENTRATE, value: _ivm.jsonP.idEntrata }];
+        //       break;
+        //     case this._IBAN:
+        //       _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_IBAN_ACCREDITI, value: _ivm.jsonP.iban }];
+        //       break;
+        //   }
+        //   if(_json) {
+        //     this.updateElements(type, _json);
+        //   }
+        //  break;
     }
   }
 
+  /**
+   * Update json list elements
+   * @param {string} type
+   * @param json
+   */
+  // protected updateElements(type: string, json: any) {
+  //   let _service = '...';
+  //   this.gps.saveData(_service, json, null, UtilService.METHODS.PATCH).subscribe(
+  //     (response) => {
+  //       this.gps.updateSpinner(false);
+  //       this.json = response.body;
+  //       switch(type) {
+  //         case this._UNITA:
+  //           this.elencoUnitaOperative(this.json);
+  //           break;
+  //         case this._ENTRATA_DOMINIO:
+  //           this.elencoEntrateDominio(this.json);
+  //           break;
+  //         case this._IBAN:
+  //           this.elencoAccreditiIban(this.json);
+  //           break;
+  //       }
+  //       this.us.alert('Operazione completata.');
+  //     },
+  //     (error) => {
+  //        this.gps.updateSpinner(false);
+  //        this.us.onError(error);
+  //     });
+  // }
+
+  /**
+   * _mapNewItemByType
+   * @param item
+   * @param {string} type
+   * @returns {Standard}
+   * @private
+   */
   protected _mapNewItemByType(item: any, type: string): Standard {
     let _std = new Standard();
     switch(type) {
       case this._ENTRATA_DOMINIO:
         _std.titolo = new Dato({ value: item.tipoEntrata.descrizione });
-        _std.sottotitolo = new Dato({ label: 'Id: ', value: item.idEntrata });
+        _std.sottotitolo = new Dato({ label: Voce.ID_ENTRATA+': ', value: item.idEntrata });
       break;
       case this._UNITA:
         _std.titolo = new Dato({ value: item.ragioneSociale });
-        _std.sottotitolo = new Dato({ label: 'Id: ', value: item.idUnita });
+        _std.sottotitolo = new Dato({ label: Voce.ID_UNITA+': ', value: item.idUnita });
       break;
       case this._IBAN:
-        _std.titolo = new Dato({ value: item.ibanAccredito });
+        _std.titolo = new Dato({ value: item.iban });
       break;
     }
     return _std;
@@ -203,28 +232,28 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       case this._UNITA:
         _mb.info = {
           viewModel: _viewModel,
-          dialogTitle: 'Nuova unità operativa',
+          dialogTitle: (!mode)?'Nuova unità operativa':'Modifica unità operativa',
           templateName: this._UNITA
         };
-      UtilService.blueDialogBehavior.next(_mb);
+        UtilService.blueDialogBehavior.next(_mb);
       break;
       case this._ENTRATA_DOMINIO:
         _mb.info = {
           viewModel: _viewModel,
           parent: this,
-          dialogTitle: 'Nuova entrata',
+          dialogTitle: (!mode)?'Nuova entrata':'Modifica entrata',
           templateName: this._ENTRATA_DOMINIO
         };
-      UtilService.blueDialogBehavior.next(_mb);
+        UtilService.blueDialogBehavior.next(_mb);
       break;
       case this._IBAN:
         _mb.info = {
           viewModel: _viewModel,
           parent: this,
-          dialogTitle: 'Nuovo IBAN',
+          dialogTitle: (!mode)?'Nuovo IBAN':'Modifica IBAN',
           templateName: this._IBAN
         };
-      UtilService.dialogBehavior.next(_mb);
+        UtilService.dialogBehavior.next(_mb);
       break;
     }
   }
@@ -235,36 +264,41 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
    * @param {ModalBehavior} mb
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
-    let _service = null;
+    let _id = mb.info.viewModel['idDominio'] || this.json.idDominio;
+    let _service = UtilService.URL_DOMINI+'/'+_id;
     let _json = null;
     switch(mb.info.templateName) {
       case UtilService.DOMINIO:
-        _service = UtilService.URL_DOMINI+'/'+mb.info.viewModel['idDominio'];
         _json = mb.info.viewModel;
+        delete _json.idDominio;
       break;
       case this._ENTRATA_DOMINIO:
-        _service = this.json['entrate']+'/'+mb.info.viewModel['tipoEntrata'].idEntrata;
-        _json = mb.info.viewModel;
+        _service += UtilService.URL_ENTRATE+'/'+mb.info.viewModel.idEntrata;
+        _json = JSON.parse(JSON.stringify(mb.info.viewModel));
+        delete _json.idEntrata;
+        delete _json['tipoEntrata'];
       break;
       case this._UNITA:
-        _service = this.json['unitaOperative']+'/'+mb.info.viewModel.idUnita;
-        _json = mb.info.viewModel;
+        _service += UtilService.URL_UNITA_OPERATIVE+'/'+mb.info.viewModel.idUnita;
+        _json = JSON.parse(JSON.stringify(mb.info.viewModel));
+        delete _json.idUnita;
       break;
       case this._IBAN:
-        _service = this.json['ibanAccredito']+'/'+mb.info.viewModel.ibanAccredito;
-        _json = mb.info.viewModel;
+        _service += UtilService.URL_IBAN_ACCREDITI+'/'+mb.info.viewModel.iban;
+        _json = JSON.parse(JSON.stringify(mb.info.viewModel));
+        delete _json.iban;
       break;
     }
     if(_json && _service) {
-    this.gps.saveData(_service, _json).subscribe(
-      () => {
-        this.gps.updateSpinner(false);
-        responseService.next(true);
-      },
-      (error) => {
-        this.gps.updateSpinner(false);
-        this.us.alert(error.message);
-      });
+      this.gps.saveData(_service, _json).subscribe(
+        () => {
+          this.gps.updateSpinner(false);
+          responseService.next(true);
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
     }
   }
 
@@ -276,28 +310,64 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       switch(mb.info.templateName) {
         case UtilService.DOMINIO:
           if(mb.editMode) {
-            let j = { e: this.json['entrate'], ia: this.json['ibanAccredito'], uo: this.json['unitaOperative'] };
-            this.json = mb.info.viewModel;
-            this.json['entrate'] = j.e;
-            this.json['ibanAccredito'] = j.ia;
-            this.json['unitaOperative'] = j.uo;
-            this.mapJsonDetail();
+            let j = { e: this.json['entrate'], ia: this.json['contiAccredito'], uo: this.json['unitaOperative'] };
+            let json = mb.info.viewModel;
+            json['entrate'] = j.e;
+            json['contiAccredito'] = j.ia;
+            json['unitaOperative'] = j.uo;
+            this.mapJsonDetail(json);
           }
         break;
         case this._ENTRATA_DOMINIO:
           p.jsonP = mb.info.viewModel;
           p.model = this._mapNewItemByType(mb.info.viewModel, this._ENTRATA_DOMINIO);
-          this.entrate.push(p);
+          if(!mb.editMode) {
+            this.entrate.push(p);
+          } else {
+            this.entrate.map((item) => {
+              if (item.jsonP.idEntrata == mb.info.viewModel['idEntrata']) {
+                Object.keys(p.jsonP).forEach((key) => {
+                  item.jsonP[key]= p.jsonP[key];
+                });
+                item.model = p.model;
+              }
+              return item;
+            });
+          }
         break;
         case this._UNITA:
           p.jsonP = mb.info.viewModel;
           p.model = this._mapNewItemByType(mb.info.viewModel, this._UNITA);
-          this.unita_operative.push(p);
+          if(!mb.editMode) {
+            this.unita_operative.push(p);
+          } else {
+            this.unita_operative.map((item) => {
+              if (item.jsonP.idUnita == mb.info.viewModel['idUnita']) {
+                Object.keys(p.jsonP).forEach((key) => {
+                  item.jsonP[key]= p.jsonP[key];
+                });
+                item.model = p.model;
+              }
+              return item;
+            });
+          }
         break;
         case this._IBAN:
           p.jsonP = mb.info.viewModel;
           p.model = this._mapNewItemByType(mb.info.viewModel, this._IBAN);
-          this.iban_cc.push(p);
+          if(!mb.editMode) {
+            this.iban_cc.push(p);
+          } else {
+            this.iban_cc.map((item) => {
+              if (item.jsonP.iban == mb.info.viewModel['iban']) {
+                Object.keys(p.jsonP).forEach((key) => {
+                  item.jsonP[key]= p.jsonP[key];
+                });
+                item.model = p.model;
+              }
+              return item;
+            });
+          }
         break;
       }
     }

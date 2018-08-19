@@ -16,4 +16,12 @@ export class RiepilogoViewComponent implements OnInit {
   ngOnInit() {
   }
 
+  // _createSottotitolo(): string {
+  //   if(this.info && this.info.sottotitolo && this.info.sottotitolo.label.trim() != '') {
+  //     return this.info.sottotitolo.label+': ';
+  //   }
+  //
+  //   return '';
+  // }
+
 }

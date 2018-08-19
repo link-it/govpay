@@ -1,9 +1,22 @@
 @import '~@angular/material/theming';
 @import '../../../styles/variables.scss';
 
+.side-nav-inhibitor {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(125, 125, 125, .5);
+}
+
+.side-nav-title {
+  font-size: 28px;
+  color: white;
+}
+
 .side-list-menu-group {
   display: block;
-  width: 220px;
+  width: 320px;
 }
 
 .menu-group {
@@ -28,15 +41,62 @@
 }
 
 .bg-head {
-  background: url('../../../assets/background.jpg') !important;
+  background-color: mat-color($link-header-row) !important;
 }
 
 .lower-position {
-  margin-top: 4rem;
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
 }
 
 // Overridden styles
-// mat-list
+// mat-list, mat-icon, mat-expansion-panel
 mat-list {
   padding: .5rem 0 !important;
+}
+
+.lower-position mat-icon {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+
+.lower-position mat-icon i {
+  font-size: 20px !important;
+}
+
+.mat-expansion-panel {
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+.mat-expansion-panel-header {
+  padding: 0 16px !important;
+  font-size: 16px !important;
+}
+
+.mat-expansion-panel-spacing {
+  margin: 0 !important;
+}
+
+.mat-expansion-panel .mat-list-item {
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.mat-expansion-panel .mat-list-item h4{
+  font-weight: 300;
+}
+
+.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled='true']).cdk-keyboard-focused,
+.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled='true']).cdk-program-focused,
+.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled='true']):hover {
+  background-color: transparent !important;
+}
+
+.mat-list {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }

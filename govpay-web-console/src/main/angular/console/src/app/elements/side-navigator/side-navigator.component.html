@@ -1,47 +1,58 @@
 <div class="side-list-menu-group">
-  <div #head class="d-block position-relative px-3 pt-3 pb-0 bg-head">
-    <div class="d-flex flex-row">
-      <link-logo></link-logo>
-      <div class="w-100 ml-3 light-color">
-        <h5 class="mb-1">GovPay</h5>
-        <h5 class="m-0">Enterprise</h5>
+  <div #head class="d-block position-relative p-3 bg-head" [ngStyle]="_size()">
+    <div class="side-nav-title">{{_title}}</div>
+    <div class="lower-position">
+      <div class="d-flex flex-row">
+        <p class="user-name light-color text-truncate mr-3">{{_utenteConnesso}}</p>
+        <mat-icon class="ml-auto action" (click)="_menuRoute(_profilo_router_link)" matTooltip="Profilo utente"><i class="material-icons">visibility</i></mat-icon>
+        <mat-icon class="ml-3 action" (click)="_logout()"><i class="material-icons" matTooltip="Esci">exit_to_app</i></mat-icon>
       </div>
     </div>
-      <div class="lower-position">
-        <div class="d-flex flex-row pb-2 action" (click)="_userInfo()">
-          <p class="user-name light-color text-truncate mr-3">{{profilo.denominazione}}</p>
-          <mat-icon class="ml-auto"><i class="material-icons">{{up?'arrow_drop_up':'arrow_drop_down'}}</i></mat-icon>
-        </div>
-        <mat-list class="user-panel" *ngIf="up">
-          <mat-list-item class="action" routerLinkActive="active-route" [routerLinkActiveOptions]="{exact: true}"
-                         routerLink="{{_profilo_router_link}}">
-            <mat-icon mat-list-icon><i class="material-icons dark-material-icons">face</i></mat-icon>
-            <h4 mat-line (click)="_menuRoute('profilo')">Profilo utente</h4>
-          </mat-list-item>
-          <mat-list-item>
-            <mat-icon mat-list-icon><i class="material-icons color-gray">build</i></mat-icon>
-            <h4 mat-line class="color-gray">Preferenze</h4>
-          </mat-list-item>
-          <mat-list-item>
-            <mat-icon mat-list-icon><i class="material-icons color-gray">exit_to_app</i></mat-icon>
-            <h4 mat-line class="color-gray">Esci</h4>
-          </mat-list-item>
-        </mat-list>
-      </div>
   </div>
-  <div class="menu-group overflow-auto" [style.top.px]="_topRef">
+  <div #mat_list_menu class="menu-group overflow-auto" [style.top.px]="_topRef">
     <mat-list>
       <mat-list-item class="action" *ngFor="let section of menu" routerLinkActive="active-route"
-                     [routerLinkActiveOptions]="{exact: false}" (click)="_menuRoute(section.link)">
-        <h4 mat-line><span routerLink="{{section.link}}">{{section.name}}</span></h4>
+                     [routerLinkActiveOptions]="{exact: false}" routerLink="{{section.link}}"
+                     (click)="_menuRoute(section)">
+        <h4 mat-line tabindex="-1">{{section.name}}</h4>
       </mat-list-item>
     </mat-list>
-    <mat-divider *ngIf="secMenu?.length != 0"></mat-divider>
-    <mat-list>
-      <mat-list-item class="action" *ngFor="let secSection of secMenu" routerLinkActive="active-route"
-                     [routerLinkActiveOptions]="{exact: false}" (click)="_menuRoute(secSection.link)">
-        <h4 mat-line><span routerLink="{{secSection.link}}">{{secSection.name}}</span></h4>
-      </mat-list-item>
-    </mat-list>
+    <mat-accordion>
+      <mat-expansion-panel *ngIf="secMenu.length != 0">
+        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+          <mat-panel-title>Configurazioni</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="action" *ngFor="let secSection of secMenu" routerLinkActive="active-route"
+                         [routerLinkActiveOptions]="{exact: false}" routerLink="{{secSection.link}}"
+                         (click)="_menuRoute(secSection)">
+            <h4 mat-line>{{secSection.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="terMenu.length != 0">
+        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+          <mat-panel-title>Funzioni avanzate</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="action" *ngFor="let terSection of terMenu" routerLinkActive="active-route"
+                         [routerLinkActiveOptions]="{exact: false}" routerLink="{{terSection.link}}"
+                         (click)="_menuRoute(terSection)">
+            <h4 mat-line>{{terSection.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="quaMenu.length != 0">
+        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+          <mat-panel-title>Manutenzione</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="action" *ngFor="let quaSection of quaMenu" (click)="_menuRoute(quaSection)">
+            <h4 mat-line>{{quaSection.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 </div>
+<div class="side-nav-inhibitor" *ngIf="_disableSideNavigator"></div>

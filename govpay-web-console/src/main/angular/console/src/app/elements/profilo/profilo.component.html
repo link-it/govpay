@@ -1,5 +1,10 @@
-<div class="container my-4" *ngIf="cards.length != 0">
-  <mat-card class="no-shadow" *ngFor="let card of cards">
-    <link-key-value-view class="card-profilo" *ngFor="let info of card" [info]="info"></link-key-value-view>
+<div class="container my-4 card-container" *ngIf="cards.length != 0">
+  <mat-card class="shadow no-border-radius p-0">
+    <p class="container py-3 matcard-title color-gray regular-24">{{username}}</p>
+    <p class="container normal-color regular-16" *ngIf="domini != ''">{{domini}}</p>
+    <p class="container normal-color regular-16" *ngIf="entrate != ''">{{entrate}}</p>
+    <div *ngFor="let card of cards" class="card-profilo py-3">
+      <link-key-value-view *ngFor="let info of card" [info]="info"></link-key-value-view>
+    </div>
   </mat-card>
 </div>

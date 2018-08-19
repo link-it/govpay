@@ -11,17 +11,17 @@
 }
 
 .item-directive-hover {
-  background-color: $link-gray-light;
+  background-color: $link-over-item;
   border-bottom: 1px solid mat-color($link-accent);
 }
 
 .link-item-download {
-  background-color: $link-gray-light;
-  background: -moz-linear-gradient(right, transparent, $link-gray-light 15%);
-  background: -webkit-linear-gradient(right, transparent, $link-gray-light 15%);
-  background: -o-linear-gradient(right, transparent, $link-gray-light 15%);
-  background: -ms-linear-gradient(right, transparent, $link-gray-light 15%);
-  background: linear-gradient(to right, transparent, $link-gray-light 15%);
+  background-color: $link-over-item;
+  background: -moz-linear-gradient(right, rgba(255, 255, 255, 0), $link-over-item 15%);
+  background: -webkit-linear-gradient(right, rgba(255, 255, 255, 0), $link-over-item 15%);
+  background: -o-linear-gradient(right, rgba(255, 255, 255, 0), $link-over-item 15%);
+  background: -ms-linear-gradient(right, rgba(255, 255, 255, 0), $link-over-item 15%);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), $link-over-item 15%);
   position: absolute;
   display: flex;
   justify-content: flex-end;

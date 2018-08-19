@@ -4,6 +4,11 @@
 .head-toolbar {
   width: 100%;
 }
+.head-toolbar-row {
+  height: 128px !important;
+  background-color: mat-color($link-header-row) !important;
+  font-size: 28px;
+}
 
 .head-title {
   overflow: hidden;

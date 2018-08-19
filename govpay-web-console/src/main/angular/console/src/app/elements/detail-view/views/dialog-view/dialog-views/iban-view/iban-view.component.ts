@@ -25,14 +25,24 @@ export class IbanViewComponent implements IFormComponent, OnInit, AfterViewInit 
   }
 
   ngAfterViewInit() {
+    setTimeout(() => {
+      if(this.json) {
+        this.fGroup.controls['ibanAccredito_ctrl'].disable();
+        this.fGroup.controls['ibanAccredito_ctrl'].setValue((this.json.iban)?this.json.iban:'');
+        this.fGroup.controls['bicAccredito_ctrl'].setValue((this.json.bic)?this.json.bic:'');
+        this.fGroup.controls['postale_ctrl'].setValue((this.json.postale)?this.json.postale:'');
+        this.fGroup.controls['mybank_ctrl'].setValue((this.json.mybank)?this.json.mybank:false);
+        this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
+      }
+    });
   }
 
   mapToJson(): any {
     let _info = this.fGroup.value;
     let _json:any = {};
 
-    _json.ibanAccredito = _info['ibanAccredito_ctrl'];
-    _json.bicAccredito = _info['bicAccredito_ctrl'];
+    _json.iban = (!this.fGroup.controls['ibanAccredito_ctrl'].disabled)?_info['ibanAccredito_ctrl']:this.json.iban;
+    _json.bic = (_info['bicAccredito_ctrl'])?_info['bicAccredito_ctrl']:null;
     _json.postale = _info['postale_ctrl'];
     _json.mybank = _info['mybank_ctrl'];
     _json.abilitato = _info['abilita_ctrl'];
@@ -48,7 +58,7 @@ export class IbanViewComponent implements IFormComponent, OnInit, AfterViewInit 
       }
       if(iban_cc) {
         iban_cc.forEach((item) => {
-          if(control.value == item.jsonP.ibanAccredito) {
+          if(control.value == item.jsonP.iban) {
             valid = { valid: false, error: 'Iban già presente.' };
           }
         }, this);

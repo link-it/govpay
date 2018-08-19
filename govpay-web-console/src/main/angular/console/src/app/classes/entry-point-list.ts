@@ -5,21 +5,22 @@ import { UtilService } from '../services/util.service';
 import { RiepilogoViewComponent } from '../elements/item-view/views/riepilogo-view/riepilogo-view.component';
 import { StandardViewComponent } from '../elements/item-view/views/standard-view/standard-view.component';
 import { CronoViewComponent } from '../elements/item-view/views/crono-view/crono-view.component';
+import { CronoCodeViewComponent } from '../elements/item-view/views/crono-code-view/crono-code-view.component';
 import { KeyValueViewComponent } from '../elements/item-view/views/key-value-view/key-value-view.component';
 
 import { InputViewComponent } from '../elements/item-view/views/input-view/input-view.component';
 import { SelectViewComponent } from '../elements/item-view/views/select-view/select-view.component';
 import { BooleanViewComponent } from '../elements/item-view/views/boolean-view/boolean-view.component';
 import { LabelViewComponent } from '../elements/item-view/views/label-view/label-view.component';
+import { DatePickerViewComponent, TimePickerDialogComponent } from '../elements/item-view/views/date-picker-view/date-picker-view.component';
 
 import { PendenzeViewComponent } from '../elements/detail-view/views/pendenze-view/pendenze-view.component';
 import { PagamentiViewComponent } from '../elements/detail-view/views/pagamenti-view/pagamenti-view.component';
-import { RegistroPspViewComponent } from '../elements/detail-view/views/registro-psp-view/registro-psp-view.component';
 import { RegistroIntermediariViewComponent } from '../elements/detail-view/views/registro-intermediari-view/registro-intermediari-view.component';
+import { RuoliViewComponent } from '../elements/detail-view/views/ruoli-view/ruoli-view.component';
 import { ApplicazioniViewComponent } from '../elements/detail-view/views/applicazioni-view/applicazioni-view.component';
 import { DominiViewComponent } from '../elements/detail-view/views/domini-view/domini-view.component';
 import { OperatoriViewComponent } from '../elements/detail-view/views/operatori-view/operatori-view.component';
-import { AclsViewComponent } from "../elements/detail-view/views/acls-view/acls-view.component";
 import { StazioneViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/stazione-view/stazione-view.component';
 import { IntermediarioViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/intermediario-view/intermediario-view.component';
 import { ApplicazioneViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/applicazione-view/applicazione-view.component';
@@ -38,25 +39,27 @@ import { RendicontazioniViewComponent } from '../elements/detail-view/views/rend
 import { IncassiViewComponent } from '../elements/detail-view/views/incassi-view/incassi-view.component';
 import { IncassoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/incasso-view/incasso-view.component';
 import { RppsViewComponent } from '../elements/detail-view/views/rpps-view/rpps-view.component';
+import { StandardCollapseViewComponent } from '../elements/item-view/views/standard-collapse-view/standard-collapse-view.component';
+import { RuoloViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/ruolo-view/ruolo-view.component';
 
 export class EntryPointList {
 
   public static entryList: Array<any> = [
     PendenzeViewComponent,
     PagamentiViewComponent,
-    RegistroPspViewComponent,
     RegistroIntermediariViewComponent,
     ApplicazioniViewComponent,
     RppsViewComponent,
     GiornaleEventiViewComponent,
     RiscossioniViewComponent,
     RendicontazioniViewComponent,
-    AclsViewComponent,
+    RuoliViewComponent,
     IncassiViewComponent,
     DominiViewComponent,
     EntrateViewComponent,
     OperatoriViewComponent,
     StandardViewComponent,
+    StandardCollapseViewComponent,
     RiepilogoViewComponent,
     StazioneViewComponent,
     IncassoViewComponent,
@@ -70,9 +73,12 @@ export class EntryPointList {
     ApplicazioneViewComponent,
     OperatoreViewComponent,
     AclViewComponent,
+    RuoloViewComponent,
     CronoViewComponent,
+    CronoCodeViewComponent,
     KeyValueViewComponent,
     InputViewComponent,
+    DatePickerViewComponent, TimePickerDialogComponent,
     SelectViewComponent,
     BooleanViewComponent,
     LabelViewComponent
@@ -88,9 +94,6 @@ export class EntryPointList {
         break;
       case UtilService.PAGAMENTI:
         _type = PagamentiViewComponent;
-        break;
-      case UtilService.REGISTRO_PSP:
-        _type = RegistroPspViewComponent;
         break;
       case UtilService.REGISTRO_INTERMEDIARI:
         _type = RegistroIntermediariViewComponent;
@@ -113,8 +116,8 @@ export class EntryPointList {
       case UtilService.DOMINI:
         _type = DominiViewComponent;
         break;
-      case UtilService.ACLS:
-        _type = AclsViewComponent;
+      case UtilService.RUOLI:
+        _type = RuoliViewComponent;
         break;
       case UtilService.ENTRATE:
         _type = EntrateViewComponent;
@@ -128,6 +131,12 @@ export class EntryPointList {
         break;
       case UtilService.CRONO:
         _type = CronoViewComponent;
+        break;
+      case UtilService.CRONO_CODE:
+        _type = CronoCodeViewComponent;
+        break;
+      case UtilService.STANDARD_COLLAPSE:
+        _type = StandardCollapseViewComponent;
         break;
       case UtilService.KEY_VALUE:
         _type = KeyValueViewComponent;
@@ -150,6 +159,9 @@ export class EntryPointList {
         break;
       case UtilService.ACL:
         _type = AclViewComponent;
+        break;
+      case UtilService.RUOLO:
+        _type = RuoloViewComponent;
         break;
       case UtilService.ENTRATA:
         _type = EntrataViewComponent;
@@ -175,6 +187,9 @@ export class EntryPointList {
       //Material Lib
       case UtilService.INPUT:
         _type = InputViewComponent;
+        break;
+      case UtilService.DATE_PICKER:
+        _type = DatePickerViewComponent;
         break;
       case UtilService.SELECT:
         _type = SelectViewComponent;
@@ -203,9 +218,6 @@ export class EntryPointList {
       case 'PagamentiViewComponent':
         _name = UtilService.PAGAMENTI;
         break;
-      case 'RegistroPspViewComponent':
-        _name = UtilService.REGISTRO_PSP;
-        break;
       case 'RegistroIntermediariViewComponent':
         _name = UtilService.REGISTRO_INTERMEDIARI;
         break;
@@ -230,8 +242,8 @@ export class EntryPointList {
       case 'DominiViewComponent':
         _name = UtilService.DOMINI;
         break;
-      case 'AclsViewComponent':
-        _name = UtilService.ACLS;
+      case 'RuoliViewComponent':
+        _name = UtilService.RUOLI;
         break;
       case 'EntrateViewComponent':
         _name = UtilService.ENTRATE;
@@ -245,6 +257,12 @@ export class EntryPointList {
         break;
       case 'CronoViewComponent':
         _name = UtilService.CRONO;
+        break;
+      case 'CronoCodeViewComponent':
+        _name = UtilService.CRONO_CODE;
+        break;
+      case 'StandardCollapseViewComponent':
+        _name = UtilService.STANDARD_COLLAPSE;
         break;
       case 'KeyValueViewComponent':
         _name = UtilService.KEY_VALUE;
@@ -264,6 +282,9 @@ export class EntryPointList {
         break;
       case 'AclViewComponent':
         _name = UtilService.ACL;
+        break;
+      case 'RuoloViewComponent':
+        _name = UtilService.RUOLO;
         break;
       case 'EntrataViewComponent':
         _name = UtilService.ENTRATA;
@@ -289,6 +310,9 @@ export class EntryPointList {
       //Material Lib
       case 'InputViewComponent':
         _name = UtilService.INPUT;
+        break;
+      case 'DatePickerViewComponent':
+        _name = UtilService.DATE_PICKER;
         break;
       case 'SelectViewComponent':
         _name = UtilService.SELECT;

@@ -4,12 +4,13 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "lock": "npm shrinkwrap",
+    "lock modules": "npm shrinkwrap",
     "start": "ng serve",
     "proxy-start": "ng serve --proxy-config proxy.config.json",
-    "proxy-start-fastweb": "ng serve --proxy-config proxy.config.json --host 192.168.1.101",
+    "proxy-start-ip-fastweb": "ng serve --proxy-config proxy.config.json --host 192.168.1.101",
+    "proxy-start-ip-linkit": "ng serve --proxy-config proxy.config.json --host 10.114.87.111",
     "build": "ng build --prod --aot false",
-    "build giuliano": "ng build --prod --aot false --base-href '/govpay/backend/gui/backoffice/'",
+    "build baseHref backend": "ng build --prod --aot false  --base-href '/govpay/backend/gui/backoffice/public/'",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

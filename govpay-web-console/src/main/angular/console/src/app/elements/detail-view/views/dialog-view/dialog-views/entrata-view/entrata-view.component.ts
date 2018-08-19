@@ -70,10 +70,10 @@ export class EntrataViewComponent implements IFormComponent,  OnInit, AfterViewI
       });
     } else {
       _json.idEntrata = (!this.fGroup.controls['idEntrata_ctrl'].disabled)?_info['idEntrata_ctrl']:this.json.idEntrata;
-      _json.descrizione = _info['descrizione_ctrl'];
-      _json.tipoContabilita = _info['tipoContabilita_ctrl'];
-      _json.codiceContabilita = _info['codiceContabilita_ctrl'];
-      _json.codificaIUV = _info['codificaIUV_ctrl'];
+      _json.descrizione = (_info['descrizione_ctrl'])?_info['descrizione_ctrl']:null;
+      _json.tipoContabilita = (_info['tipoContabilita_ctrl'])?_info['tipoContabilita_ctrl']:null;
+      _json.codiceContabilita = (_info['codiceContabilita_ctrl'])?_info['codiceContabilita_ctrl']:null;
+      _json.codificaIUV = (_info['codificaIUV_ctrl'])?_info['codificaIUV_ctrl']:null;
     }
     return _json;
   }

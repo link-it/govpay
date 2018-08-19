@@ -28,28 +28,28 @@ export class StandardViewComponent implements OnInit, AfterViewInit {
     return (this.info && this.info.stato !== null);
   }
 
-  protected _titleStyle() {
-    let _trunc: boolean = true;
-    if((this.info.titolo && this.info.titolo.label && this.info.titolo.label.indexOf(' ') != -1) ||
-      (this.info.titolo && this.info.titolo.value && this.info.titolo.value.indexOf(' ') != -1)) {
-      _trunc = false;
-    }
-    return {
-      'text-truncate': _trunc,
-      'text-normal-font': true
-    }
-  }
+  // protected _titleStyle() {
+  //   let _trunc: boolean = true;
+  //   if((this.info.titolo && this.info.titolo.label && this.info.titolo.label.indexOf(' ') != -1) ||
+  //     (this.info.titolo && this.info.titolo.value && this.info.titolo.value.indexOf(' ') != -1)) {
+  //     _trunc = false;
+  //   }
+  //   return {
+  //     'text-truncate': _trunc,
+  //     'text-normal-font': true
+  //   }
+  // }
 
-  protected _subTitleStyle() {
-    let _trunc: boolean = true;
-    if((this.info.sottotitolo && this.info.sottotitolo.label && this.info.sottotitolo.label.indexOf(' ') != -1) ||
-      (this.info.sottotitolo && this.info.sottotitolo.value && this.info.sottotitolo.value.indexOf(' ') != -1)) {
-      _trunc = false;
-    }
-    return {
-      'text-truncate': _trunc,
-      'text-sub-color': true,
-      'text-small-font': true
-    }
-  }
+  // protected _subTitleStyle() {
+  //   let _trunc: boolean = true;
+  //   if((this.info.sottotitolo && this.info.sottotitolo.label && this.info.sottotitolo.label.indexOf(' ') != -1) ||
+  //     (this.info.sottotitolo && this.info.sottotitolo.value && this.info.sottotitolo.value.indexOf(' ') != -1)) {
+  //     _trunc = false;
+  //   }
+  //   return {
+  //     'text-truncate': _trunc,
+  //     'color-gray': true,
+  //     'text-small-font': true
+  //   }
+  // }
 }

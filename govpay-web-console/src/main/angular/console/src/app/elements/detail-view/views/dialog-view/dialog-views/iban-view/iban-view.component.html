@@ -1,24 +1,24 @@
 <div class="d-block">
   <div class="row">
-    <mat-form-field class="col-8" color="accent" [formGroup]="fGroup">
+    <mat-form-field class="col-12 col-md-8" color="accent" [formGroup]="fGroup">
       <input matInput placeholder="Iban accredito" formControlName="ibanAccredito_ctrl" autocomplete="off" required>
       <mat-error *ngIf="fGroup.get('ibanAccredito_ctrl').invalid && fGroup.get('ibanAccredito_ctrl').errors['error']">
         {{fGroup.get('ibanAccredito_ctrl').errors['error']}}"
       </mat-error>
     </mat-form-field>
-    <mat-form-field class="col-4" color="accent" [formGroup]="fGroup">
+    <mat-form-field class="col-12 col-md-4" color="accent" [formGroup]="fGroup">
       <input matInput placeholder="BIC accredito" formControlName="bicAccredito_ctrl" autocomplete="off">
     </mat-form-field>
   </div>
   <div class="row">
-    <div class="col-4" [formGroup]="fGroup">
-      <mat-slide-toggle formControlName="postale_ctrl" color="accent">Postale</mat-slide-toggle>
+    <div class="col-12 col-md-4 mb-2 mb-md-0" [formGroup]="fGroup">
+      <mat-slide-toggle formControlName="postale_ctrl" color="accent" matTooltip="Postale">Postale</mat-slide-toggle>
     </div>
-    <div class="col-4" [formGroup]="fGroup">
-      <mat-slide-toggle formControlName="mybank_ctrl" color="accent">My Bank</mat-slide-toggle>
+    <div class="col-12 col-md-4 mb-2 mb-md-0" [formGroup]="fGroup">
+      <mat-slide-toggle formControlName="mybank_ctrl" color="accent" matTooltip="My Bank">My Bank</mat-slide-toggle>
     </div>
-    <div class="col-4" [formGroup]="fGroup">
-      <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+    <div class="col-12 col-md-4" [formGroup]="fGroup">
+      <mat-slide-toggle formControlName="abilita_ctrl" color="accent" matTooltip="Abilitato">Abilitato</mat-slide-toggle>
     </div>
   </div>
 </div>

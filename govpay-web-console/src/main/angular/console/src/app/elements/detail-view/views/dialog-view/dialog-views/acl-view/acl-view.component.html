@@ -1,34 +1,17 @@
-<mat-card class="no-shadow container-fluid">
+<mat-card class="no-shadow container-fluid p-0">
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Id" formControlName="id_ctrl" autocomplete="off" required>
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Principal" formControlName="principal_ctrl"
-             (input)="_inputChange('principal_ctrl', 'ruolo_ctrl')" autocomplete="off" required>
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Ruolo" formControlName="ruolo_ctrl"
-             (input)="_inputChange('ruolo_ctrl', 'principal_ctrl')" autocomplete="off" required>
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <mat-select #servizio placeholder="Servizio" formControlName="servizio_ctrl"
+      <mat-select #servizio placeholder="{{_RISORSA}}" formControlName="servizio_ctrl"
                   (selectionChange)="_onChangeServizio(servizio, 'autorizzazioni_ctrl')" required>
-        <mat-option *ngFor="let item of servizi" [value]="item.label">{{item.label}}</mat-option>
+        <mat-option *ngFor="let servizio of servizi" [value]="servizio">{{servizio}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <mat-select placeholder="Autorizzazioni" formControlName="autorizzazioni_ctrl"
+      <mat-select placeholder="{{_OPERAZIONI}}" formControlName="autorizzazioni_ctrl"
                   (selectionChange)="_onChangeDiritti(servizio, 'autorizzazioni_ctrl')" multiple required>
-        <mat-option *ngFor="let item of autorizzazioni" [value]="item.label" [disabled]="item.disabled">{{item.label}}</mat-option>
+        <mat-option *ngFor="let item of autorizzazioni" [value]="item.code" [disabled]="item.disabled">{{item.label}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

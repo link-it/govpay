@@ -1,0 +1,45 @@
+<div class="container-fluid p-3">
+  <div class="row">
+    <div class="col-sm-4 col-12 flex-column form-col">
+      <mat-card class="mb-3 mat-elevation-card">
+        <mat-card-header>
+          <p class="card-title-margin color-gray regular-24">Govpay</p>
+        </mat-card-header>
+        <mat-card-content>
+          <ul class="regular-16">
+            <li class="accent-text">
+              <a class="pt-1 d-block" href="" target="_blank">Manuale utente</a>
+            </li>
+            <li class="accent-text">
+              <a class="pt-1 d-block" href="" target="_blank">Copyright</a>
+            </li>
+            <li class="accent-text">
+              <a class="pt-1 d-block" href="" target="_blank">Progetto Govpay</a>
+            </li>
+            <li class="accent-text paragraph">
+              <a class="pt-1 d-block action" (click)="_route(0)">Pagamenti falliti</a>
+            </li>
+            <li class="accent-text">
+              <a class="pt-1 d-block action" (click)="_route(1)">Pagamenti incompleti</a>
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col">
+      <mat-card class="flex-grow-1 mat-elevation-card">
+        <mat-card-header>
+          <p class="card-title-margin color-gray regular-24">Notizie</p>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngFor="let _news of news">
+            <div class="py-3 news-title"><a [href]="_news.html_url" target="_blank">{{_news.tag_name}} {{_news.name}}</a></div>
+            <div class="news-body" [innerHTML]="_news.body_html"></div>
+          </div>
+          <div class="regular-16 normal-color" *ngIf="news.length==0">Nessuna notizia.</div>
+        </mat-card-content>
+        <mat-spinner diameter="30" color="primary" class="news-spinner" *ngIf="_isLoading"></mat-spinner>
+      </mat-card>
+    </div>
+  </div>
+</div>

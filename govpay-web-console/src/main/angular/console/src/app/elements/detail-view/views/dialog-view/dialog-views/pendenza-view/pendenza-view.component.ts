@@ -23,8 +23,19 @@ export class PendenzaViewComponent implements IFormComponent,  OnInit, AfterView
     this.stati = this.us.statiPendenza().filter((stato) => {
       return (this.parent.stato != stato.value);
     });
-    this.fGroup.addControl('stato_ctrl', new FormControl('', Validators.required));
+    let _stato = '';
+    let _choice = UtilService.STATI_PENDENZE[this.parent.stato];
+    switch(_choice) {
+      case UtilService.STATI_PENDENZE.NON_ESEGUITA:
+        _stato = this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ANNULLATA);
+      break;
+      case UtilService.STATI_PENDENZE.ANNULLATA:
+        _stato =  this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.NON_ESEGUITA);
+      break;
+    }
+    this.fGroup.addControl('stato_ctrl', new FormControl(_stato, Validators.required));
     this.fGroup.addControl('descrizioneStato_ctrl', new FormControl(''));
+    this.fGroup.controls['stato_ctrl'].disable();
   }
 
   ngAfterViewInit() {
@@ -38,8 +49,8 @@ export class PendenzaViewComponent implements IFormComponent,  OnInit, AfterView
     let _info = this.fGroup.value;
     let _json:any = {};
 
-    _json.stato = _info['stato_ctrl'];
-    _json.descrizioneStato = _info['descrizioneStato_ctrl'];
+    _json.stato = this.fGroup.controls['stato_ctrl'].enabled?_info['stato_ctrl']:this.fGroup.controls['stato_ctrl'].value;
+    _json.descrizioneStato = (_info['descrizioneStato_ctrl'])?_info['descrizioneStato_ctrl']:null;
 
     return _json;
   }

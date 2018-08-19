@@ -23,6 +23,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule, MatInputModule, MatSelectModule } from '@angular/material';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { DateFormat } from './classes/date-format';
 
@@ -36,12 +37,15 @@ import { FormViewComponent } from './elements/list-view/form-view.component';
 import { SideListComponent } from './elements/list-view/side-list.component';
 import { ItemViewComponent } from './elements/item-view/item-view.component';
 import { ItemDirective } from './elements/item-view/item.directive';
+import { TimepickerScrollDirective } from './elements/item-view/views/date-picker-view/date-picker-view.component';
 import { DetailViewComponent } from './elements/detail-view/detail-view.component';
 import { SpinnerComponent } from './elements/spinner/spinner.component';
+import { ProgressComponent } from './elements/progress/progress.component';
 import { LinkScrollDirective } from './link-scroll.directive';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
 import { DialogBlueViewComponent } from './elements/detail-view/views/dialog-view/dialog-blue-view.component';
 import { LogoComponent } from './elements/logo/logo.component';
+import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
 
 
 @NgModule({
@@ -50,6 +54,7 @@ import { LogoComponent } from './elements/logo/logo.component';
     HeaderMenuComponent,
     MobileSearchComponent,
     ProfiloComponent,
+    DashboardViewComponent,
     SideNavigatorComponent,
     ContentViewComponent,
     ListViewComponent,
@@ -62,8 +67,10 @@ import { LogoComponent } from './elements/logo/logo.component';
     DetailViewComponent,
     EntryListComponents,
     SpinnerComponent,
+    ProgressComponent,
     LinkScrollDirective,
-    LogoComponent
+    LogoComponent,
+    TimepickerScrollDirective
   ],
   imports: [
     BrowserModule,
@@ -88,7 +95,8 @@ import { LogoComponent } from './elements/logo/logo.component';
     MatDialogModule,
     MatSlideToggleModule,
     MatDatepickerModule, MatNativeDateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatProgressBarModule
   ],
   entryComponents: [ EntryListComponents, DialogViewComponent ],
   providers: [ { provide: RouteReuseStrategy, useClass: ListReuseStrategy },

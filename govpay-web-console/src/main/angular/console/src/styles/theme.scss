@@ -7,7 +7,12 @@ $theme: mat-light-theme($link-primary, $link-accent, $link-error);
 // Overridden styles
 // mat-datepicker-toggle button
 mat-datepicker-toggle button {
-  color: $link-normal !important;
+  color: $link-primary-text !important;
+}
+
+body,
+.mat-drawer-container {
+  color: $link-primary-text;
 }
 
 //SCSS global classes
@@ -20,19 +25,71 @@ mat-datepicker-toggle button {
 }
 
 .stato-normal {
-  color: $link-normal;
+  color: $link-primary-text;
 }
 
 .normal-color {
-  color: $link-normal;
+  color: $link-primary-text;
 }
 
 .light-color{
   color: $link-light;
 }
 
-.color-gray{
-  color: $link-gray !important;
+.medium-24 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.medium-16 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.medium-14 {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.medium-18 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.regular-24 {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.regular-18 {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.regular-16 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.regular-14 {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.lh-130 {
+  line-height: 130%;
+}
+
+.lh-100 {
+  line-height: 100%;
+}
+
+.lh-90 {
+  line-height: 90%;
+}
+
+.color-gray {
+  color: $link-secondary-text !important;
 }
 
 .head-shadow {
@@ -43,30 +100,14 @@ mat-datepicker-toggle button {
   box-shadow: 0 1px 1px 0 $link-shadow !important;
 }
 
-.text-sub-color {
-  color: $link-dark-gray;
-}
-
-.text-normal-font {
-  font-size: 16px !important;
-}
-
-.text-sub-font {
-  font-size: 14px !important;
-}
-
-.text-small-font {
-  font-size: 13px !important;
-}
-
 .active-route {
   color: black;
-  background-color: $link-gray-light;
+  background-color: $link-over-item;
 }
 
 a, a:hover {
   text-decoration: none;
-  color: $link-normal;
+  color: $link-primary-text;
 }
 
 i.material-icons {
@@ -74,7 +115,7 @@ i.material-icons {
 }
 
 .dark-material-icons {
-  color: $link-normal !important;
+  color: $link-primary-text !important;
 }
 
 .full-absolute {
@@ -88,4 +129,29 @@ i.material-icons {
 
 .default-background {
   background-color: $link-form-background;
+}
+
+//News [innerHTML]
+.news-body h1,
+.news-body h2,
+.news-body h3,
+.news-body h4,
+.news-body h5,
+.news-body h6 {
+  font-size: 20px;
+  color: mat-color($link-primary);
+}
+
+.news-body a,
+.news-body a:hover  {
+  text-decoration: none;
+  color: mat-color($link-accent) !important;
+}
+
+//Bootstrap Override
+//.card-container
+@media (min-width: 768px) {
+  .card-container {
+    max-width: 740px !important;
+  }
 }

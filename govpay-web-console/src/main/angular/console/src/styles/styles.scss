@@ -7,13 +7,41 @@
   font-weight: 400;
   src: url('../assets/Materialicons.woff2') format('woff2');
 }
+/* roboto-regular - latin */
+@font-face {
+  font-family: 'Roboto Font';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/roboto-v18-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Roboto'), local('Roboto-Regular'),
+  url('../fonts/roboto-v18-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('../fonts/roboto-v18-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+  url('../fonts/roboto-v18-latin-regular.woff') format('woff'), /* Modern Browsers */
+  url('../fonts/roboto-v18-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+  url('../fonts/roboto-v18-latin-regular.svg#Roboto') format('svg'); /* Legacy iOS */
+}
 
-body {
-  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+/* roboto-500 - latin */
+@font-face {
+  font-family: 'Roboto Font';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/roboto-v18-latin-500.eot'); /* IE9 Compat Modes */
+  src: local('Roboto Medium'), local('Roboto-Medium'),
+  url('../fonts/roboto-v18-latin-500.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('../fonts/roboto-v18-latin-500.woff2') format('woff2'), /* Super Modern Browsers */
+  url('../fonts/roboto-v18-latin-500.woff') format('woff'), /* Modern Browsers */
+  url('../fonts/roboto-v18-latin-500.ttf') format('truetype'), /* Safari, Android, iOS */
+  url('../fonts/roboto-v18-latin-500.svg#Roboto') format('svg'); /* Legacy iOS */
+}
+
+
+* {
+  font-family: "Roboto Font", "Helvetica Neue", sans-serif !important;
 }
 
 .material-icons {
-  font-family: 'Material Icons';
+  font-family: 'Material Icons' !important;
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
@@ -41,7 +69,7 @@ body {
   z-index: 9999;
 }
 
-form button {
+form button[mat-raised-button] {
   color: white !important;
   box-shadow: none !important;
   border-radius: 0 !important;
@@ -50,8 +78,21 @@ form button {
   font-size: 15px !important;
 }
 
+button[mat-raised-button],
+button[mat-button] {
+  text-transform: uppercase !important;
+}
+
 .no-shadow {
   box-shadow: none !important;
+}
+
+.no-border-radius {
+  border-radius: 0 !important;
+}
+
+.no-directive-border > .item-directive {
+  border: none !important;
 }
 
 .action {
@@ -80,9 +121,9 @@ form button {
   overflow: auto !important;
 }
 
-.font-weight-500 {
-  font-weight: 500 !important;
-}
+//.font-weight-500 {
+//  font-weight: 500 !important;
+//}
 
 .link-item-view-fill {
   display: block;
@@ -109,7 +150,7 @@ form button {
   margin: 0;
 }
 
-//Overridden styles
+// Overridden styles
 // mat-dialog, mat-card
 mat-dialog-container {
   box-shadow: none !important;
@@ -118,4 +159,14 @@ mat-dialog-container {
 
 mat-card {
   padding: 24px !important;
+}
+
+.menu-group .mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+//News [innerHTML]
+.news-body ul {
+  margin: 0 0 16px !important;
+  padding-left: 16px;
 }

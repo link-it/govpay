@@ -25,10 +25,13 @@ export class FormService {
   public static FORM_PH_VERSANTE: string = 'Codice fiscale';
   public static FORM_SESSIONE: string = 'Identificativo sessione';
   public static FORM_PH_SESSIONE: string = '';
+  public static FORM_DATA_INIZIO: string = 'Data da';
+  public static FORM_DATA_FINE: string = 'Data a';
+  public static FORM_VERIFICATO: string = 'Verificati';
 
   //PSP
-  public static FORM_BOLLO: string = 'Bollo';
-  public static FORM_STORNO: string = 'Storno';
+  // public static FORM_BOLLO: string = 'Bollo';
+  // public static FORM_STORNO: string = 'Storno';
   public static FORM_ABILITATO: string = 'Abilitato';
 
   //Domini
@@ -46,10 +49,20 @@ export class FormService {
   public static FORM_PH_PENDENZA: string = '';
   public static FORM_ESITO: string = 'Esito pagamento';
 
-  //ACLS
+  //Ruoli
   public static FORM_RUOLO: string = 'Ruolo';
   public static FORM_PH_RUOLO: string = '';
   public static FORM_PRINCIPAL: string = 'Principal';
   public static FORM_PH_PRINCIPAL: string = '';
   public static FORM_SERVIZIO: string = 'Servizio';
+
+  //Riscossioni
+  public static FORM_TIPO_RISCOSSIONE: string = 'Tipo';
+
+  //Rendicontazioni
+  public static FORM_DATA_RISC_INIZIO: string = 'Data riscossione';
+  public static FORM_DATA_RISC_FINE: string = 'Data riscossione';
+  public static FORM_PH_DATA_RISC_INIZIO: string = '(Inzio)';
+  public static FORM_PH_DATA_RISC_FINE: string = '(Fine)';
+
 }

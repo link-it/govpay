@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { GovpayService } from '../../../../services/govpay.service';
 import { UtilService } from '../../../../services/util.service';
+import { Voce } from '../../../../services/voce.service';
 import { Dato } from '../../../../classes/view/dato';
 import { Standard } from '../../../../classes/view/standard';
 import { Parameters } from '../../../../classes/parameters';
@@ -30,7 +31,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
 
   ngOnInit() {
     this.dettaglioRegistroIntermediari();
-    this.elencoStazioni();
+    //this.elencoStazioni();
   }
 
   ngAfterViewInit() {
@@ -45,9 +46,8 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
-        //console.log(error);
-        this.us.alert(error.message);
         this.gps.updateSpinner(false);
+        this.us.onError(error);
       });
 
   }
@@ -55,51 +55,43 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
   protected mapJsonDetail() {
     //Riepilogo
     let _dettaglio = { informazioni: [], connettori: [] };
-    _dettaglio.informazioni.push(new Dato({ label: 'Denominazione', value: this.json.denominazione }));
-    _dettaglio.informazioni.push(new Dato({ label: 'ID intermediario', value: this.json.idIntermediario }));
-    _dettaglio.informazioni.push(new Dato({ label: 'Principal pagoPa', value: this.json.principalPagoPa }));
-    _dettaglio.informazioni.push(new Dato({ label: 'Abilitato', value: UtilService.ABILITA[this.json.abilitato.toString()] }));
+    _dettaglio.informazioni.push(new Dato({ label: Voce.DENOMINAZIONE, value: this.json.denominazione }));
+    _dettaglio.informazioni.push(new Dato({ label: Voce.ID_INTERMEDIARIO, value: this.json.idIntermediario }));
+    _dettaglio.informazioni.push(new Dato({ label: Voce.PAGO_PA, value: this.json.principalPagoPa }));
+    _dettaglio.informazioni.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
     if(this.json.servizioPagoPa) {
-      _dettaglio.connettori.push(new Dato({ label: 'URL', value: this.json.servizioPagoPa.url }));
-      _dettaglio.connettori.push(new Dato({ label: 'Versione API', value: UtilService.TIPI_VERSIONE_API[this.json.servizioPagoPa.versioneApi] }));
+      _dettaglio.connettori.push(new Dato({ label: Voce.URL, value: this.json.servizioPagoPa.url }));
       if(this.json.servizioPagoPa.auth) {
-        _dettaglio.connettori.push(new Dato({ label: 'Tipo autenticazione', value: '' }));
+        _dettaglio.connettori.push(new Dato({ label: Voce.TIPO_AUTH, value: '' }));
         if(this.json.servizioPagoPa.auth.username) {
-          _dettaglio.connettori.push(new Dato({label: 'Username', value: this.json.servizioPagoPa.auth.username }));
-          _dettaglio.connettori.push(new Dato({label: 'Password', value: this.json.servizioPagoPa.auth.password }));
+          _dettaglio.connettori.push(new Dato({label: Voce.USERNAME, value: this.json.servizioPagoPa.auth.username }));
+          _dettaglio.connettori.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioPagoPa.auth.password }));
         }
         if(this.json.servizioPagoPa.auth.tipo) {
-          _dettaglio.connettori.push(new Dato({label: 'Tipo', value: this.json.servizioPagoPa.auth.tipo }));
-          _dettaglio.connettori.push(new Dato({label: 'KeyStore Location', value: this.json.servizioPagoPa.auth.ksLocation }));
-          _dettaglio.connettori.push(new Dato({label: 'KeyStore Password', value: this.json.servizioPagoPa.auth.ksPassword }));
+          _dettaglio.connettori.push(new Dato({label: Voce.TIPO, value: this.json.servizioPagoPa.auth.tipo }));
+          _dettaglio.connettori.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioPagoPa.auth.ksLocation }));
+          _dettaglio.connettori.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioPagoPa.auth.ksPassword }));
           if(this.json.servizioPagoPa.auth.tsLocation) {
-            _dettaglio.connettori.push(new Dato({label: 'TrustStore Location', value: this.json.servizioPagoPa.auth.tsLocation }));
+            _dettaglio.connettori.push(new Dato({label: Voce.TRUST_STORE_LOC, value: this.json.servizioPagoPa.auth.tsLocation }));
           }
           if(this.json.servizioPagoPa.auth.tsPassword) {
-            _dettaglio.connettori.push(new Dato({label: 'TrustStore Password', value: this.json.servizioPagoPa.auth.tsPassword }));
+            _dettaglio.connettori.push(new Dato({label: Voce.TRUST_STORE_PWD, value: this.json.servizioPagoPa.auth.tsPassword }));
           }
         }
       }
     }
+    this.elencoStazioni();
     this.informazioni = _dettaglio.informazioni.slice(0);
     this.connettori = _dettaglio.connettori.slice(0);
   }
 
   protected elencoStazioni() {
-    this.gps.getDataService(this.json.stazioni).subscribe(function (_response) {
-        let _body = _response.body;
-        this.stazioni = _body['risultati'].map(function(item) {
-          let p = new Parameters();
-          p.jsonP = item;
-          p.model = this.mapNewItem(item);
-          return p;
-        }, this);
-        this.gps.updateSpinner(false);
-      }.bind(this),
-      (error) => {
-        this.gps.updateSpinner(false);
-        this.us.alert(error.message);
-      });
+    this.stazioni = this.json.stazioni.map(function(item) {
+      let p = new Parameters();
+      p.jsonP = item;
+      p.model = this.mapNewItem(item);
+      return p;
+    }, this);
   }
 
   /**
@@ -110,11 +102,11 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
     let _st = Dato.arraysToDato(
-      ['Password', 'Abilitato'],
+      [ Voce.PASSWORD, Voce.ABILITATO ],
       [ UtilService.defaultDisplay({ value: item.password }), UtilService.defaultDisplay({ value: UtilService.ABILITA[(item.abilitato).toString()] }) ],
       ', '
     );
-    _std.titolo = new Dato({ label: 'Id Stazione: ', value: item.idStazione });
+    _std.titolo = new Dato({ label: Voce.ID_STAZIONE+': ', value: item.idStazione });
     _std.sottotitolo = _st;
 
     return  _std;
@@ -198,15 +190,17 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     let _service = UtilService.URL_REGISTRO_INTERMEDIARI;
-    let json = mb.info.viewModel;
+    let json = JSON.parse(JSON.stringify(mb.info.viewModel));
     let templateName = mb.info.templateName;
     if(templateName == UtilService.INTERMEDIARIO) {
-      (mb.editMode)?json.stazioni = this.json.stazioni:null;
-      _service += '/'+encodeURIComponent(json['idIntermediario']);
+      //(mb.editMode)?json.stazioni = this.json.stazioni:null;
+      delete json['idIntermediario'];
+      _service += '/'+encodeURIComponent(mb.info.viewModel['idIntermediario']);
     }
     if(templateName == UtilService.STAZIONE) {
       _service += '/'+encodeURIComponent(this.json.idIntermediario);
-      _service += UtilService.URL_STAZIONI+'/'+encodeURIComponent(json['idStazione']);
+      _service += UtilService.URL_STAZIONI+'/'+encodeURIComponent(mb.info.viewModel['idStazione']);
+      delete json['idStazione'];
     }
     this.gps.saveData(_service, json).subscribe(
       () => {
@@ -215,7 +209,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
       },
       (error) => {
         this.gps.updateSpinner(false);
-        this.us.alert(error.message);
+        this.us.onError(error);
       });
   }
 

@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 
 import { LinkService } from "../../services/link.service";
 import { GovpayService } from '../../services/govpay.service';
 import { UtilService } from '../../services/util.service';
+import { Voce } from '../../services/voce.service';
 
 import { Parameters } from '../../classes/parameters';
 import { Standard } from '../../classes/view/standard';
@@ -11,14 +12,17 @@ import { Dato } from '../../classes/view/dato';
 
 import * as moment from 'moment';
 import { ModalBehavior } from '../../classes/modal-behavior';
-import { Crono } from '../../classes/view/crono';
+import { IExport } from '../../classes/interfaces/IExport';
+
+declare let JSZip: any;
+declare let FileSaver: any;
 
 @Component({
   selector: 'link-side-list',
   templateUrl: './side-list.component.html',
   styleUrls: ['./side-list.component.scss']
 })
-export class SideListComponent implements OnInit, AfterViewInit {
+export class SideListComponent implements OnInit, OnDestroy, IExport {
 
   @Input('list-data') listResults = [];
   @Input('enable-over-actions') iconOverActions: boolean = false;
@@ -28,18 +32,38 @@ export class SideListComponent implements OnInit, AfterViewInit {
 
   protected rsc: any;
 
-  private _lastResponse: any;
+  protected _lastResponse: any;
+  protected _timerProgress: any;
+  protected _csv: any;
 
   constructor(public ls: LinkService, public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
+    this._unsubscribeExport();
+    UtilService.exportSubscription = UtilService.exportBehavior.subscribe((value: string) => {
+      if(value) {
+        this.exportData(value);
+      }
+    });
     this.rsc = this.ls.getRouterStateConfig();
     this.iconOverActions = this.showIconOverActions();
     this.fabAction = this.showFabAction();
-    this.getList();
+    let _service: string = UtilService.DASHBOARD_LINKS_PARAMS.method;
+    let _dashboard_link_query = UtilService.DASHBOARD_LINKS_PARAMS.params.map((item) => {
+      return item.controller + '=' + item.value;
+    }).join('&');
+    this.getList(_service, _dashboard_link_query);
   }
 
-  ngAfterViewInit() {
+  ngOnDestroy() {
+    this._unsubscribeExport();
+  }
+
+  protected _unsubscribeExport() {
+    if(UtilService.exportSubscription) {
+      UtilService.exportSubscription.unsubscribe();
+      UtilService.exportBehavior.next(null);
+    }
   }
 
   /**
@@ -62,11 +86,10 @@ export class SideListComponent implements OnInit, AfterViewInit {
           this._isLoadingChange.emit(this._isLoading);
         },
         (error) => {
-          //console.log(error);
-          this.us.alert(error.message);
-          this.gps.updateSpinner(false);
           this._isLoading = false;
           this._isLoadingChange.emit(this._isLoading);
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
         });
     }
   }
@@ -115,12 +138,12 @@ export class SideListComponent implements OnInit, AfterViewInit {
         };
         _component = this.ls.componentRefByName(UtilService.DOMINI);
         break;
-      case UtilService.URL_ACL:
+      case UtilService.URL_RUOLI:
         _mb.info = {
-          dialogTitle: 'Nuovo Acl',
-          templateName: UtilService.ACL
+          dialogTitle: 'Nuovo ruolo',
+          templateName: UtilService.RUOLO
         };
-        _component = this.ls.componentRefByName(UtilService.ACLS);
+        _component = this.ls.componentRefByName(UtilService.RUOLI);
         break;
       case UtilService.URL_ENTRATE:
         _mb.info = {
@@ -131,7 +154,7 @@ export class SideListComponent implements OnInit, AfterViewInit {
         break;
       case UtilService.URL_INCASSI:
         _mb.info = {
-          dialogTitle: 'Nuovo incasso',
+          dialogTitle: 'Nuova riconciliazione',
           templateName: UtilService.INCASSO
         };
         _component = this.ls.componentRefByName(UtilService.INCASSI);
@@ -160,12 +183,13 @@ export class SideListComponent implements OnInit, AfterViewInit {
   }
 
   protected _risultati(value: number = 0) {
+    value = (value || 0);
     return (value != 1)?`Trovati ${value} risultati`:`Trovato ${value} risultato`;
   }
 
   protected _livClick(ref: any) {
     //console.log('click-tap', ref);
-    let _url = this.ls.getRouterUrl()+'/dettaglio';
+    let _url = this.ls.getRouterUrl()+UtilService.URL_DETTAGLIO;
     let _rc = this.ls.getRouterStateConfig(_url);
     if(_rc) {
       let _ivm = ref.getItemViewModel();
@@ -188,8 +212,8 @@ export class SideListComponent implements OnInit, AfterViewInit {
       case 'delete': {
         _method = UtilService.METHODS.DELETE;
         switch(_rc.data.type) {
-          case UtilService.ACLS:
-            _service = UtilService.URL_ACL+'/'+_ivm.jsonP.id;
+          case UtilService.RUOLI:
+            _service = UtilService.URL_RUOLI+'/'+_ivm.jsonP.id;
             break;
         }
         break;
@@ -219,28 +243,30 @@ export class SideListComponent implements OnInit, AfterViewInit {
       },
       (error) => {
         this.gps.updateSpinner(false);
-        this.us.alert(error.message);
+        this.us.onError(error);
       });
   }
 
   protected showIconOverActions(): boolean {
-    let _iconOverActions: boolean = false;
-    switch(this.rsc.path) {
-      case UtilService.URL_PENDENZE:
-      case UtilService.URL_PAGAMENTI:
-      case UtilService.URL_ACL:
-        _iconOverActions = true;
-        break;
-      default:
-    }
+    //TODO: Actions disattivate
+    // let _iconOverActions: boolean = false;
+    // switch(this.rsc.path) {
+    //   case UtilService.URL_PENDENZE:
+    //   case UtilService.URL_PAGAMENTI:
+    //   case UtilService.URL_ACL:
+    //     _iconOverActions = true;
+    //     break;
+    //   default:
+    // }
 
-    return _iconOverActions;
+    // return _iconOverActions;
+    return false;
   }
 
   protected _overIcons(): string[] {
     let _icons: string[] = [];
     switch(this.rsc.path) {
-      case UtilService.URL_ACL:
+      case UtilService.URL_RUOLI:
         _icons = ['delete'];
         break;
       default:
@@ -257,7 +283,7 @@ export class SideListComponent implements OnInit, AfterViewInit {
       case UtilService.URL_APPLICAZIONI:
       case UtilService.URL_OPERATORI:
       case UtilService.URL_DOMINI:
-      case UtilService.URL_ACL:
+      case UtilService.URL_RUOLI:
       case UtilService.URL_INCASSI:
         _fabAction = true;
         break;
@@ -287,9 +313,9 @@ export class SideListComponent implements OnInit, AfterViewInit {
     _service = (_service || this.rsc.path);
     let _classTemplate = '';
     switch(_service) {
-      case UtilService.URL_RPPS:
-        _classTemplate = UtilService.CRONO;
-      break;
+      // case UtilService.URL_RPPS:
+      //   _classTemplate = UtilService.CRONO;
+      // break;
     }
 
     return _classTemplate;
@@ -300,34 +326,26 @@ export class SideListComponent implements OnInit, AfterViewInit {
     let _st, _date;
     switch(this.rsc.path) {
       case UtilService.URL_PENDENZE:
-        _std.titolo = new Dato({ label: '',  value: item.nome });
-        _std.sottotitolo = new Dato({ label: 'ID pendenza: ',  value: item.idPendenza });
-        _std.importo = item.importo;
+        _std.titolo = new Dato({ label: '',  value: item.causale });
+        _std.sottotitolo = new Dato({ label: '',  value: Dato.concatStrings([ Voce.ENTE_CREDITORE+': '+item.dominio.ragioneSociale, Voce.IUV+': '+item.numeroAvviso ], ', ') });
+        _std.importo = this.us.currencyFormat(item.importo);
         _std.stato = UtilService.STATI_PENDENZE[item.stato];
         break;
       case UtilService.URL_PAGAMENTI:
-        _date = UtilService.defaultDisplay({ value: moment(item.dataEsecuzionePagamento).format('DD/MM/YYYY') });
-        _st = Dato.arraysToDato(
-          [ 'C.F. versante', 'Data esecuzione' ],
-          [ UtilService.defaultDisplay({ value: (item.soggettoVersante)?item.soggettoVersante.identificativo:null }), _date ],
-          ', '
-        );
-        _std.titolo = new Dato({ label: '',  value: item.id });
+        _date = UtilService.defaultDisplay({ value: moment(item.dataRichiestaPagamento).format('DD/MM/YYYY') });
+        _st = new Dato({ label: Voce.DATA_RICHIESTA_PAGAMENTO+': ', value: _date });
+        _std.titolo = new Dato({ value: item.nome });
         _std.sottotitolo = _st;
-        _std.importo = item.importo;
+        _std.importo = this.us.currencyFormat(item.importo);
         _std.stato = UtilService.STATI_PAGAMENTO[item.stato];
         break;
-      case UtilService.URL_REGISTRO_PSP:
-        _std.titolo = new Dato({ label: '',  value: item.ragioneSociale });
-        _std.sottotitolo = new Dato({ label: 'Codice: ', value: item.idPsp });
-        break;
       case UtilService.URL_REGISTRO_INTERMEDIARI:
-        _std.titolo = new Dato({ label: 'Denominazione', value: item.denominazione });
-        _std.sottotitolo = new Dato({ label: 'Id intermediario: ', value: item.idIntermediario });
+        _std.titolo = new Dato({ label: item.denominazione });
+        _std.sottotitolo = new Dato({ label: Voce.ID_INTERMEDIARIO+': ', value: item.idIntermediario });
         break;
       case UtilService.URL_APPLICAZIONI:
         _st = Dato.arraysToDato(
-          ['Id A2A', 'Abilitato'],
+          [ Voce.ID_A2A, Voce.ABILITATO ],
           [ item.idA2A, UtilService.ABILITA[item.abilitato.toString()] ],
           ', '
         );
@@ -335,69 +353,64 @@ export class SideListComponent implements OnInit, AfterViewInit {
         _std.sottotitolo = _st;
         break;
       case UtilService.URL_INCASSI:
-        _std.titolo = new Dato({ label: 'Incasso', value: item.idIncasso });
-        _std.sottotitolo = new Dato({ label: 'Causale', value: item.causale });
-        _std.importo = item.importo;
+        _std.titolo = new Dato({ label: Voce.ID_INCASSO+': ', value: item.idIncasso });
+        _std.sottotitolo = new Dato({ label: Voce.CAUSALE+': ', value: item.causale });
+        _std.importo = this.us.currencyFormat(item.importo);
         break;
       case UtilService.URL_GIORNALE_EVENTI:
+        let _dataOraRichiesta = UtilService.defaultDisplay({ value: moment(item.dataOraRichiesta).format('DD/MM/YYYY [ore] HH:mm') });
         _st = Dato.arraysToDato(
-          [ 'Codice di pagamento (CCP)', 'IUV', 'Id dominio' ],
-          [ item.ccp, item.iuv, item.idDominio ],
+          [ Voce.ID_DOMINIO, Voce.IUV, Voce.CCP, Voce.DATA ],
+          [ item.idDominio, item.iuv, item.ccp, _dataOraRichiesta ],
           ', '
         );
-        _std.titolo = new Dato({ label: '',  value: item.tipoEvento });
+        _std.titolo = new Dato({ label: item.tipoEvento });
         _std.sottotitolo = _st;
+        _std.stato = item.esito;
         break;
       case UtilService.URL_RISCOSSIONI:
         _st = Dato.arraysToDato(
-          ['Pendenza', 'IUV', 'Id dominio'],
+          [ Voce.PENDENZA, Voce.IUV, Voce.ID_DOMINIO ],
           [ item.idVocePendenza, item.iuv, item.idDominio ],
           ', '
         );
-        _std.titolo = new Dato({ label: 'Riscossione (IUR): ', value: item.iur });
+        _std.titolo = new Dato({ label: Voce.IUR+': ', value: item.iur });
         _std.sottotitolo = _st;
-        _std.importo = item.importo;
+        _std.importo = this.us.currencyFormat(item.importo);
         break;
       case UtilService.URL_RENDICONTAZIONI:
+        let tmpValue = [];
+        tmpValue.push(UtilService.defaultDisplay({ value: moment(item.dataRegolamento).format('DD/MM/YYYY') }));
+        tmpValue.push(item.ragioneSocialeDominio?item.ragioneSocialeDominio:item.idDominio);
+        tmpValue.push(item.ragioneSocialePsp?item.ragioneSocialePsp:item.idPsp);
         _st = Dato.arraysToDato(
-          ['Data incasso', 'Id PSP'],
-          [ UtilService.defaultDisplay({ value: moment(item.dataRegolamento).format('DD/MM/YYYY') }) , item.idPsp ],
+          [ Voce.DATA, Voce.DOMINIO, Voce.PSP ],
+          tmpValue,
           ', '
         );
         _std.titolo = new Dato({ label: '',  value: item.idFlusso });
         _std.sottotitolo = _st;
-        _std.importo = item.importoTotale;
+        _std.importo = this.us.currencyFormat(item.importoTotale);
         break;
       case UtilService.URL_OPERATORI:
         _st = Dato.arraysToDato(
-          ['Ragione sociale', 'Abilitato'],
-          [ item.ragioneSociale, UtilService.ABILITA[item.abilitato.toString()] ],
+          [ Voce.PRINCIPAL, Voce.ABILITATO ],
+          [ item.principal, UtilService.ABILITA[item.abilitato.toString()] ],
           ', '
         );
-        _std.titolo = new Dato({ label: '',  value: item.principal });
+        _std.titolo = new Dato({ label: item.ragioneSociale });
         _std.sottotitolo = _st;
         break;
       case UtilService.URL_DOMINI:
         _std.titolo = new Dato({ label: '',  value: item.ragioneSociale });
-        _std.sottotitolo = new Dato({ label: 'Id: ', value: item.idDominio });
+        _std.sottotitolo = new Dato({ label: Voce.ID_DOMINIO+': ', value: item.idDominio });
         break;
-      case UtilService.URL_ACL:
-        let al = ['Servizio', 'Autorizzazioni'];
-        let av = [
-          item.servizio,
-          item.autorizzazioni.join(', ')
-        ];
-        let _aclTitle = UtilService.defaultDisplay({ value: item.principal, text: '-' });
-        if(_aclTitle === '-') {
-          _aclTitle = UtilService.defaultDisplay({ value: item.ruolo });
-        }
-        _st = Dato.arraysToDato(al, av, ', ');
-        _std.titolo = new Dato({ label: _aclTitle, value: '' });
-        _std.sottotitolo = _st;
+      case UtilService.URL_RUOLI:
+        _std.titolo = new Dato({ label: item.id });
         break;
       case UtilService.URL_ENTRATE:
         _st = Dato.arraysToDato(
-          ['Id', 'Tipo contabilità'],
+          [ Voce.ID_ENTRATA, Voce.TIPO_CONTABILITA ],
           [ item.idEntrata, item.tipoContabilita ],
           ', '
         );
@@ -405,16 +418,37 @@ export class SideListComponent implements OnInit, AfterViewInit {
         _std.sottotitolo = _st;
         break;
       case UtilService.URL_RPPS:
-        _date = UtilService.defaultDisplay({ value:moment(item.dataRichiesta).format('DD/MM/YYYY') });
-        let _crn = new Crono();
-        _crn.data = _date;
-        _crn.titolo = new Dato({ label: '',  value: item.iuv });
-        _crn.sottotitolo = new Dato({ label: 'CCP', value: item.ccp });
-        _crn.stato = UtilService.STATI_ESITO_PAGAMENTO[item.esito];
-        _std = _crn;
+        _date = UtilService.defaultDisplay({ value: moment(item.rpt.dataOraMessaggioRichiesta).format('DD/MM/YYYY') });
+        let _subtitle = Dato.concatStrings([ Voce.DATA+': '+_date, Voce.CCP+': '+item.rpt.datiVersamento.codiceContestoPagamento ], ', ');
+        _std.titolo = new Dato({ label: '', value: (item.rt && item.rt.istitutoAttestante)?item.rt.istitutoAttestante.denominazioneAttestante:Voce.NO_PSP });
+        _std.sottotitolo = new Dato({ label: '', value: _subtitle });
+        _std.stato = this._mapStato(item).stato;
         break;
     }
     return _std;
+  }
+
+  _mapStato(item: any): any {
+    let _map: any = { stato: '', motivo: '' };
+    switch (item.stato) {
+      case 'RT_ACCETTATA_PA':
+        _map.stato = (item.rt)?UtilService.STATI_ESITO_PAGAMENTO[item.rt.datiPagamento.codiceEsitoPagamento]:'n/a';
+        break;
+      case 'RPT_RIFIUTATA_NODO':
+      case 'RPT_RIFIUTATA_PSP':
+      case 'RPT_ERRORE_INVIO_A_PSP':
+        _map.stato = UtilService.STATI_RPP.FALLITO;
+        _map.motivo = item.dettaglioStato+' - stato: '+item.stato;
+        break;
+      case 'RT_RIFIUTATA_PA':
+      case 'RT_ESITO_SCONOSCIUTO_PA':
+        _map.stato = UtilService.STATI_RPP.ANOMALO;
+        _map.motivo = item.dettaglioStato+' - stato: '+item.stato;
+        break;
+      default:
+        _map.stato = UtilService.STATI_RPP.IN_CORSO;
+    }
+    return _map;
   }
 
   //TODO: Decidere se aggiungere un item alle liste in base allo switch o ricaricare i dati
@@ -433,5 +467,215 @@ export class SideListComponent implements OnInit, AfterViewInit {
           this.getList();
       }
     }
+  }
+
+  exportData(type: string) {
+    this.gps.updateProgress(true, 0);
+    let urls: string[] = [];
+    let contents: string[] = [];
+    let types: string[] = [];
+    let _name: string = 'Export';
+
+    switch(type) {
+      case UtilService.EXPORT_PENDENZE:
+        _name = UtilService.TXT_PENDENZE;
+        break;
+      case UtilService.EXPORT_PAGAMENTI:
+        _name = UtilService.TXT_PAGAMENTI;
+        break;
+      case UtilService.EXPORT_RISCOSSIONI:
+        _name = UtilService.TXT_RISCOSSIONI;
+        break;
+      case UtilService.EXPORT_GIORNALE_EVENTI:
+        _name = UtilService.TXT_GIORNALE_EVENTI;
+        break;
+      case UtilService.EXPORT_INCASSI:
+        _name = UtilService.TXT_INCASSI;
+        break;
+      case UtilService.EXPORT_RENDICONTAZIONI:
+        _name = UtilService.TXT_RENDICONTAZIONI;
+        break;
+    }
+    let _preloadedData:any = this.getLastResult();
+    if(_preloadedData['prossimiRisultati']) {
+      let _query = _preloadedData['prossimiRisultati'].split('?');
+      _query[_query.length - 1] = _query[_query.length - 1].split('&').filter((_p) => {
+        return _p.indexOf('pagina') == -1;
+      }).join('&');
+      for(let i = _preloadedData.pagina + 1; i <= _preloadedData.numPagine; i++) {
+        urls.push(_query.join('?') + '&pagina=' + i);
+        contents.push('application/json');
+        types.push('json');
+      }
+    }
+    let cachedCalls = this.listResults.map((result) => {
+      return result.jsonP;
+    });
+    if(_preloadedData.pagina == _preloadedData.numPagine) {
+      this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
+    } else {
+      this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+          _responses.forEach((response) => {
+            cachedCalls = cachedCalls.concat(response.body.risultati);
+          });
+          this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
+        }.bind(this),
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
+    }
+  }
+
+  saveFile(data: any, structure: any, ext: string) {
+    this._csv = { name: structure.name + ext, data: null, structure: structure };
+    this.jsonToCsv(structure.type, data);
+  }
+
+  jsonToCsv(_name: string, _jsonData: any) {
+
+    clearInterval(this._timerProgress);
+
+    let _properties = {};
+    switch(_name) {
+      case UtilService.EXPORT_PENDENZE:
+        _properties = {
+          idA2A: 'idA2A', idPendenza: 'idPendenza', dominio_idDominio: 'idDominio', dominio_ragioneSociale: 'anagraficaDominio',
+          numeroAvviso: 'numeroAvviso', importo: 'importo', dataCaricamento: 'dataCaricamento', dataValidita: 'dataValidita',
+          dataScadenza: 'dataScadenza', tassonomiaAvviso: 'tassonomiaAvviso', stato: 'stato'
+        };
+        this.filteredJson(_properties, _jsonData, [ 'dataScadenza' ], { dataScadenza: '' });
+        break;
+      case UtilService.EXPORT_PAGAMENTI:
+        _properties = {
+          id: 'id', dataRichiestaPagamento: 'dataRichiestaPagamento', importo: 'importo', stato: 'stato',
+          soggettoVersante_identificativo: 'idSoggettoVersante', soggettoVersante_anagrafica: 'anagraficaSoggettoVersante',
+          contoAddebito_iban: 'contoAddebito'
+        };
+        this.filteredJson(_properties, _jsonData);
+        break;
+      case UtilService.EXPORT_RISCOSSIONI:
+        _properties = {
+          idDominio: 'idDominio', iuv: 'iuv', iur: 'iur', indice: 'indice', pendenza: 'pendenza', idVocePendenza: 'idVocePendenza',
+          rpp: 'rpp', stato: 'stato', tipo: 'tipo', importo: 'importo', data: 'data', commissioni: 'commissioni', incasso: 'incasso'
+        };
+        this.filteredJson(_properties, _jsonData);
+        break;
+      case UtilService.EXPORT_GIORNALE_EVENTI:
+      case UtilService.EXPORT_INCASSI:
+        this.fullJson(_jsonData);
+        break;
+      case UtilService.EXPORT_RENDICONTAZIONI:
+        _jsonData = _jsonData.map((item) => {
+          let _segnalazioni = item.segnalazioni;
+          item.segnalazioni = _segnalazioni.map((s) => {
+            return s.codice;
+          }).join(', ');
+          return item;
+        });
+        this.fullJson(_jsonData);
+        break;
+    }
+  }
+
+  protected filteredJson(_properties: any, _jsonData: any, _customProperties: string[] = [], _defaultValues?: any) {
+    let _csv: string = '';
+    _csv = Object.keys(_properties).map((key) => {
+      return '"'+_properties[key]+'"';
+    }).join(', ')+'\r\n';
+
+    this._csv.data = _csv;
+    this._timerProgress = setInterval(() => {
+      if(this._csv.data) {
+        clearInterval(this._timerProgress);
+        this._generateZip();
+      }
+    }, 1200);
+
+    for(let _index = 0; _index < _jsonData.length; _index++) {
+      setTimeout(() => {
+        let row: string[] = [];
+        Object.keys(_properties).forEach((key) => {
+          let _defaultValue = 'n/a';
+          if(_customProperties.indexOf(key) != -1) {
+            _defaultValue = _defaultValues[key];
+          }
+          row.push('"'+this.getJsonProperty(key, _jsonData[_index], _defaultValue)+'"');
+        }, this);
+        _csv += row.join(', ') + '\r\n';
+
+        let _progress = _index * (100/_jsonData.length);
+        this.gps.updateProgress(true, _progress);
+        if(_index == (_jsonData.length - 1)) {
+          this._csv.data = _csv;
+        }
+      }, 1000);
+    }
+  }
+
+  protected fullJson(_jsonData: any) {
+    let _csv: string = '';
+    let _keys = [];
+
+    this._csv.data = _csv;
+    this._timerProgress = setInterval(() => {
+      if(this._csv.data) {
+        clearInterval(this._timerProgress);
+        this._generateZip();
+      }
+    }, 1200);
+
+    for(let _index = 0; _index < _jsonData.length; _index++) {
+      setTimeout(() => {
+
+        let _json = _jsonData[_index];
+        if(_index == 0) {
+          _keys = Object.keys(_json);
+          let _mappedKeys = _keys.map((key) => {
+            return '"'+key+'"';
+          });
+          _csv = _mappedKeys.join(', ')+'\r\n';
+        }
+        let row: string[] = [];
+        _keys.forEach((_key) => {
+          let value = '';
+          try {
+            value = (_json[_key] || 'n/a');
+          } catch(e) {
+            value = 'n/a';
+          }
+          row.push('"'+value+'"');
+        });
+        _csv += row.join(', ')+'\r\n';
+
+        let _progress = _index * (100/_jsonData.length);
+        this.gps.updateProgress(true, _progress);
+        if(_index == (_jsonData.length - 1)) {
+          this._csv.data = _csv;
+        }
+      }, 1000);
+    }
+  }
+
+  protected _generateZip() {
+    this.gps.updateProgress(true, 100);
+    let zip = new JSZip();
+    zip.file(this._csv.name, this._csv.data);
+    zip.generateAsync({type: 'blob'}).then(function (zipData) {
+      FileSaver(zipData, this._csv.structure.name);
+      this.gps.updateProgress(false);
+    }.bind(this));
+  }
+
+  protected getJsonProperty(value: string, property: any, _defaultValue: string = 'n/a'): any {
+    value.split('_').forEach((value) => {
+      try {
+        property = (property[value] || _defaultValue);
+      } catch(e) {
+        property = _defaultValue;
+      }
+    });
+
+    return property;
   }
 }

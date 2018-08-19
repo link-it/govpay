@@ -5,6 +5,7 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { UtilService } from '../../../../services/util.service';
 import { GovpayService } from '../../../../services/govpay.service';
+import { Voce } from '../../../../services/voce.service';
 
 @Component({
   selector: 'link-entrate-view',
@@ -33,20 +34,19 @@ export class EntrateViewComponent implements IModalDialog, OnInit {
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
-        //console.log(error);
-        this.us.alert(error.message);
         this.gps.updateSpinner(false);
+        this.us.onError(error);
       });
   }
 
   protected mapJsonDetail() {
     //Riepilogo
     let _dettaglio = [];
-    _dettaglio.push(new Dato({ label: 'Id entrata', value: this.json.idEntrata }));
-    _dettaglio.push(new Dato({ label: 'Descrizione', value: this.json.descrizione }));
-    _dettaglio.push(new Dato({ label: 'Tipo contabilita', value: this.json.tipoContabilita }));
-    _dettaglio.push(new Dato({ label: 'Codice contabilita', value: this.json.codiceContabilita }));
-    _dettaglio.push(new Dato({ label: 'Codifica IUV', value: this.json.codificaIUV }));
+    _dettaglio.push(new Dato({ label: Voce.ID_ENTRATA, value: this.json.idEntrata }));
+    _dettaglio.push(new Dato({ label: Voce.DESCRIZIONE, value: this.json.descrizione }));
+    _dettaglio.push(new Dato({ label: Voce.TIPO_CONTABILITA, value: this.json.tipoContabilita }));
+    _dettaglio.push(new Dato({ label: Voce.CODICE_CONTABILITA, value: this.json.codiceContabilita }));
+    _dettaglio.push(new Dato({ label: Voce.IUV_CODEC, value: this.json.codificaIUV }));
 
     this.informazioni = _dettaglio.slice(0);
   }
@@ -81,7 +81,7 @@ export class EntrateViewComponent implements IModalDialog, OnInit {
         },
         (error) => {
           this.gps.updateSpinner(false);
-          this.us.alert(error.message);
+          this.us.onError(error);
         });
     }
   }

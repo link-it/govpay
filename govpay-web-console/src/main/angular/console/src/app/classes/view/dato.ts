@@ -32,7 +32,24 @@ export class Dato {
   public static arraysToString(labels: string[], values: string[], separator: string = ' '): string {
     let sst = [];
     labels.forEach((s, i) => {
-      sst.push(s + ': ' + values[ i ]);
+      sst.push(s + ': ' + values[i]);
+    });
+
+    return sst.join(separator);
+  }
+
+  /**
+   * concatStrings
+   * @param {string[]} labels
+   * @param {string} separator: default ' '
+   * @returns {string}
+   */
+  public static concatStrings(labels: string[], separator: string = ' '): string {
+    let sst = [];
+    labels.forEach((s) => {
+      if(s) {
+        sst.push(s);
+      }
     });
 
     return sst.join(separator);
