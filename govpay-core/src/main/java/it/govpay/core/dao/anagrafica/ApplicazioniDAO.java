@@ -22,6 +22,7 @@ package it.govpay.core.dao.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
@@ -31,6 +32,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
@@ -159,17 +161,24 @@ public class ApplicazioniDAO extends BaseDAO {
 
 			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_APPLICAZIONI, Diritti.SCRITTURA,bd);
 
-			GetApplicazioneDTOResponse getApplicazioneDTOResponse = new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(bd, patchDTO.getCodApplicazione()));
+			Applicazione applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());
+			
+			GetApplicazioneDTOResponse getApplicazioneDTOResponse = new GetApplicazioneDTOResponse(applicazione);
 
 			for(PatchOp op: patchDTO.getOp()) {
 				UtenzaPatchUtils.patchUtenza(op, getApplicazioneDTOResponse.getApplicazione().getUtenza(), bd);
 			}
 
 			applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
-
+			
+			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione());
+			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione().getUtenza()); 
+			
+			applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());
+			getApplicazioneDTOResponse.setApplicazione(applicazione);
 
 			return getApplicazioneDTOResponse;
-		}catch(NotFoundException e) {
+		}catch(NotFoundException | MultipleResultException e) {
 			throw new ApplicazioneNonTrovataException("Non esiste un'applicazione associata all'ID ["+patchDTO.getCodApplicazione()+"]");
 		}finally {
 			if(bd != null)

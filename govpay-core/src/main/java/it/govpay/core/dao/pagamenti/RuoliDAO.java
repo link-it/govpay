@@ -8,11 +8,13 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
+import it.govpay.core.dao.anagrafica.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PatchRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RuoloPatchDTO;
@@ -20,6 +22,7 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
@@ -67,7 +70,8 @@ public class RuoliDAO extends BaseDAO{
 	
 			filter.setOffset(listaRuoliDTO.getOffset());
 			filter.setLimit(listaRuoliDTO.getLimit());
-	
+			filter.setForceRuolo(true);
+			
 			long count = rptBD.countRuoli(filter);
 	
 			List<String> resList = null;
@@ -117,78 +121,27 @@ public class RuoliDAO extends BaseDAO{
 
 	}
 	
-	public LeggiRuoloDTOResponse patch(RuoloPatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
-//		LeggiRuoloDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiRuoloDTOResponse();
-//		
-//		BasicBD bd = null;
-//
-//		try {
-//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-//			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
-//
-//			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-//			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(patchDTO.getIdSessione());
-//
-//			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
-//				versamento.getDominio(bd);
-//				versamento.getSingoliVersamenti(bd);
-//			}
-//			if(pagamentoPortale.getMultiBeneficiario() != null) {
-//				// controllo che il dominio sia autorizzato
-//				this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
-//			}
-//			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
-//
-//			PendenzeDAO pendenzeDao = new PendenzeDAO();
-//			ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(patchDTO.getUser());
-//			listaPendenzaDTO.setIdPagamento(patchDTO.getIdSessione());
-//			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
-//			leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
-//
-//			RptDAO rptDao = new RptDAO(); 
-//			ListaRptDTO listaRptDTO = new ListaRptDTO(patchDTO.getUser());
-//			listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
-//			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
-//			leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
-//
-//			for(PatchOp op: patchDTO.getOp()) {
-//				
-//				if("note".equals(op.getPath())) {
-//					switch(op.getOp()) {
-//					case ADD: Nota nota = new Nota();
-//						nota.setAutore(patchDTO.getUser().getPrincipal());
-//						nota.setData(new Date());
-//						nota.setTesto((String)op.getValue());
-//						pagamentoPortale.getNote().add(nota);
-//						break;
-//					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
-//					}
-//				} else if("verificato".equals(op.getPath())) {
-//					switch(op.getOp()) {
-//					case REPLACE: 
-//						pagamentoPortale.setAck((Boolean)op.getValue()); 
-//						break;
-//					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
-//					}
-//					
-//				} else {
-//					throw new ServiceException("Path '"+op.getPath()+"' non valido");
-//				}
-//			}
-//			
-//			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false);
-//			
-//			
-//			
-//			return leggiPagamentoPortaleDTOResponse;
-//		}catch(NotFoundException e) {
-//			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+patchDTO.getIdSessione()+"]");
-//		}finally {
-//			if(bd != null)
-//				bd.closeConnection();
-//		}
+	public PatchRuoloDTOResponse patch(RuoloPatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+		PatchRuoloDTOResponse patchRuoloDTOResponse = new PatchRuoloDTOResponse();
 		
-		return null; //TODO ruoli
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA, bd);
+			
+			for(PatchOp op: patchDTO.getOp()) {
+				UtenzaPatchUtils.patchRuolo(op, patchDTO.getIdRuolo(), bd);
+			}
+
+			return patchRuoloDTOResponse;
+		}catch(Exception e) {
+			throw new NotAuthorizedException("Operazione non autorizzata");
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		
 	}
 
 }

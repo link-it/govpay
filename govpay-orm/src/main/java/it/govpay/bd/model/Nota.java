@@ -3,6 +3,7 @@
  */
 package it.govpay.bd.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,8 +12,13 @@ import java.util.Date;
  * @version $ Rev: 12563 $, $Date: 28 giu 2018 $
  * 
  */
-public class Nota {
+public class Nota implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; 
+	
 	private String autore = null;
 	private Date data = null;
 	private String testo = null;

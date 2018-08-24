@@ -87,11 +87,11 @@ public class TracciatiBD extends BasicBD {
 	}
 
 
-	public TracciatoFilter newFilter() throws ServiceException {
+	public TracciatoFilter newFilter() {
 		return new TracciatoFilter(this.getTracciatoService());
 	}
 	
-	public TracciatoFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public TracciatoFilter newFilter(boolean simpleSearch) {
 		return new TracciatoFilter(this.getTracciatoService(),simpleSearch);
 	}
 
@@ -131,7 +131,7 @@ public class TracciatiBD extends BasicBD {
 		try {
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
 			
-			log.info("aggiorno bean dati del tracciato:"  + convertToId.getId());
+			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
 			this.getTracciatoService().updateFields(convertToId, new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, beanDati));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

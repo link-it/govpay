@@ -4510,12 +4510,12 @@ components:
           items:
             type: string
             enum:
-             - Lettura
-             - Scrittura
-             - Esecuzione
+             - R
+             - W
+             - X
           example:
-            - Lettura
-            - Scrittura
+            - R
+            - W
     tracciato:
       type: object
       required:

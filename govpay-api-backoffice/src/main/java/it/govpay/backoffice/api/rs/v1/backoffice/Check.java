@@ -45,9 +45,9 @@ import org.slf4j.Logger;
 
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.CheckSonda;
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.DettaglioSonda;
+import it.govpay.backoffice.api.rs.v1.backoffice.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.ElencoSonde;
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.SommarioSonda;
-import it.govpay.backoffice.api.rs.v1.backoffice.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.business.Operazioni;
@@ -74,10 +74,17 @@ public class Check {
 					StatoSonda statoSonda = sonda.getStatoSonda();
 					ParametriSonda parametri = sonda.getParam();
 					parametri.getDatiCheck();
-					StringWriter writer = new StringWriter();
-					parametri.getDatiCheck().list(new PrintWriter(writer));
-					writer.getBuffer().toString();
-					log.info(parametri.getNome() + ": " + writer.getBuffer().toString());
+					
+					try (
+							StringWriter writer  = new StringWriter();
+							PrintWriter printWriter = new PrintWriter(writer); 	
+						){
+						parametri.getDatiCheck().list(printWriter);
+						StringBuffer sb = new StringBuffer(parametri.getNome());
+						sb.append(": ").append(writer.getBuffer().toString());
+						log.info(sb.toString());
+					}
+					
 					sommarioSonda.setNome(parametri.getNome());
 					try {
 						sommarioSonda.setStato(statoSonda.getStato());

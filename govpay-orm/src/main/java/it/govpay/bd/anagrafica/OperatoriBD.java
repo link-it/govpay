@@ -170,7 +170,7 @@ public class OperatoriBD extends BasicBD {
 
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
-		operatore.setUtenza(AnagraficaManager.getUtenza(this, operatoreVO.getIdUtenza().getId()));
+		operatore.setUtenza(new UtenzeBD(this).getUtenza(operatoreVO.getIdUtenza().getId()));
 		return operatore;
 	}
 

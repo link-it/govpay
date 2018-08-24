@@ -10,6 +10,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
 import it.govpay.core.rs.v1.beans.base.AclPost;
+import it.govpay.core.rs.v1.beans.base.Ruolo;
 import it.govpay.core.rs.v1.beans.base.RuoloIndex;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
@@ -46,4 +47,17 @@ public class RuoliConverter {
 		return putRuoloDTO;
 	}
 
+	
+	public static Ruolo toRsModel(String ruoloName, List<Acl> listaAcl) throws ServiceException {
+		Ruolo ruolo = new Ruolo();
+		ruolo.setId(ruoloName);
+		List<AclPost> aclsPost = new ArrayList<>();
+		for (Acl acl : listaAcl) {
+			aclsPost.add(AclConverter.toRsModel(acl));
+		}
+		
+		ruolo.setAcl(aclsPost );
+		
+		return ruolo;
+	}
 }

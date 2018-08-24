@@ -154,10 +154,7 @@ public class BasicClient {
 		if(connettore.getTipoAutenticazione().equals(EnumAuthType.SSL)) {
 			isSslEnabled = true;
 			if(sslContext == null) {
-				try {
-					FileInputStream finKeyStore = null;
-					FileInputStream finTrustStore = null;
-						
+				try  {
 					KeyManager[] km = null;
 					TrustManager[] tm = null;
 			
@@ -171,8 +168,9 @@ public class BasicClient {
 								throw new ClientException("Configurazione SSL Client del connettore " + errMsg + " incompleta.");	
 						
 						KeyStore keystore = KeyStore.getInstance(connettore.getSslKsType()); // JKS,PKCS12,jceks,bks,uber,gkr
-						finKeyStore = new FileInputStream(connettore.getSslKsLocation());
-						keystore.load(finKeyStore, connettore.getSslKsPasswd().toCharArray());
+						try (FileInputStream finKeyStore = new FileInputStream(connettore.getSslKsLocation());){
+							keystore.load(finKeyStore, connettore.getSslKsPasswd().toCharArray());
+						}
 						KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 						keyManagerFactory.init(keystore, connettore.getSslPKeyPasswd().toCharArray());
 						km = keyManagerFactory.getKeyManagers();
@@ -186,8 +184,9 @@ public class BasicClient {
 			
 					// Autenticazione SERVER
 					KeyStore truststore = KeyStore.getInstance(connettore.getSslTsType()); // JKS,PKCS12,jceks,bks,uber,gkr
-					finTrustStore = new FileInputStream(connettore.getSslTsLocation());
-					truststore.load(finTrustStore, connettore.getSslTsPasswd().toCharArray());
+					try (FileInputStream finTrustStore = new FileInputStream(connettore.getSslTsLocation());){
+						truststore.load(finTrustStore, connettore.getSslTsPasswd().toCharArray());
+					}
 					TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 					trustManagerFactory.init(truststore);
 					tm = trustManagerFactory.getTrustManagers();
@@ -198,7 +197,7 @@ public class BasicClient {
 					sslContexts.put(bundleKey, sslContext);
 				} catch (Exception e) {
 					throw new ClientException(e);
-				}
+				} 
 			}
 		}
 		

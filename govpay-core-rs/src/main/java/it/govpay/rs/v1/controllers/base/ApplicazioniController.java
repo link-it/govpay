@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.anagrafica.ApplicazioniDAO;
@@ -86,7 +85,8 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
     }
 
 
-    public Response applicazioniIdA2APATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
+    @SuppressWarnings("unchecked")
+	public Response applicazioniIdA2APATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
     	String methodName = "applicazioniIdA2APATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -118,12 +118,12 @@ public class ApplicazioniController extends it.govpay.rs.BaseController {
 					op.validate();
 					lstOp.add(op);
 				}
-			} catch (ServiceException e) {
-				PatchOp op = PatchOp.parse(jsonRequest);
-				op.validate();
-				lstOp.add(op);
+			} catch (Exception e) {
+				lstOp = PatchOp.parse(jsonRequest, List.class);
+//				PatchOp op = PatchOp.parse(jsonRequest);
+//				op.validate();
+//				lstOp.add(op);
 			}
-			
 			
 			verificaPagamentoDTO.setOp(lstOp );
 

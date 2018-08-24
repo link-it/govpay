@@ -136,7 +136,8 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+    @SuppressWarnings("unchecked")
+	public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
     	String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -172,9 +173,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 					lstOp.add(op);
 				}
 			} catch (ServiceException e) {
-				PatchOp op = PatchOp.parse(jsonRequest);
-				op.validate();
-				lstOp.add(op);
+				lstOp = PatchOp.parse(jsonRequest, List.class);
+//				PatchOp op = PatchOp.parse(jsonRequest);
+//				op.validate();
+//				lstOp.add(op);
 			}
 			
 			patchPendenzaDTO.setOp(lstOp );

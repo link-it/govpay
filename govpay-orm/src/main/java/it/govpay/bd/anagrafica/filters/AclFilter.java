@@ -64,10 +64,8 @@ public class AclFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.ruolo != null){
-				if(addAnd)
-					newExpression.and();
-				
 				newExpression.equals(ACL.model().RUOLO, this.ruolo);
+				addAnd = true;
 			}
 			
 			if(this.forceRuolo != null && this.forceRuolo.booleanValue() == true){
@@ -75,6 +73,8 @@ public class AclFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.isNotNull(ACL.model().RUOLO);
+				
+				addAnd = true;
 			}
 			
 			if(this.principal != null){
@@ -82,6 +82,8 @@ public class AclFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.equals(ACL.model().PRINCIPAL, this.principal);
+				
+				addAnd = true;
 			}
 			
 			if(this.forcePrincipal != null && this.forcePrincipal.booleanValue() == true){
@@ -89,6 +91,8 @@ public class AclFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.isNotNull(ACL.model().PRINCIPAL);
+				
+				addAnd = true;
 			}
 			
 			if(this.servizio != null){
@@ -96,6 +100,8 @@ public class AclFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.equals(ACL.model().SERVIZIO, this.servizio);
+				
+				addAnd = true;
 			}
 
 			if(this.forceServizio != null && this.forceServizio.booleanValue() == true){

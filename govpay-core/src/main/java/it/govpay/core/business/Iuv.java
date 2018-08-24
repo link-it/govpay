@@ -97,7 +97,7 @@ public class Iuv extends BasicBD {
 			
 			// Se non ho generato nessun IUV per colpa di errori interni, 
 			// ritorno l'ultimo errore riscontato.
-			if(response.getIuvGenerato().size() == 0)
+			if(response.getIuvGenerato().size() == 0 && e != null)
 				throw e;
 			
 			return response;
@@ -181,7 +181,7 @@ public class Iuv extends BasicBD {
 			
 			// Se non ho generato nessun IUV per colpa di errori interni, 
 			// ritorno l'ultimo errore riscontato.
-			if(response.getIuvCaricato().size() == 0)
+			if(response.getIuvCaricato().size() == 0 && e != null)
 				throw e;
 			
 			return response;

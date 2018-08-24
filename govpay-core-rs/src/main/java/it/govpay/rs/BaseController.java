@@ -56,6 +56,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
  */
 public abstract class BaseController {
 
+	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
 	protected Logger log;
 	protected String nomeServizio;
 	protected HttpServletRequest request;
@@ -267,8 +268,8 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(ServiceException ex) {
-			log.error("Errore durante la serializzazione del FaultBean", ex);
-			respKoJson = "Errore durante la serializzazione del FaultBean";
+			log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
 	}
@@ -278,8 +279,8 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(ServiceException ex) {
-			log.error("Errore durante la serializzazione del FaultBean", ex);
-			respKoJson = "Errore durante la serializzazione del FaultBean";
+			log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
 	}
@@ -289,8 +290,8 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(ServiceException ex) {
-			log.error("Errore durante la serializzazione del FaultBean", ex);
-			respKoJson = "Errore durante la serializzazione del FaultBean";
+			log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
 	}
@@ -300,8 +301,8 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(ServiceException ex) {
-			log.error("Errore durante la serializzazione del FaultBean", ex);
-			respKoJson = "Errore durante la serializzazione del FaultBean";
+			log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
 	}

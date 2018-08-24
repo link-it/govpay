@@ -24,13 +24,13 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     
         
             
-    LETTURA("Lettura"),
+    LETTURA("R"),
     
             
-    SCRITTURA("Scrittura"),
+    SCRITTURA("W"),
     
             
-    ESECUZIONE("Esecuzione");
+    ESECUZIONE("X");
             
         
     

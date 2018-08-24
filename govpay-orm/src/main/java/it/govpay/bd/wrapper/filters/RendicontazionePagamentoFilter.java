@@ -62,7 +62,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	private List<Long> idVersamento;
 	private List<Long> idPagamento;
 	
-	public String statoVersamento ;
+	private String statoVersamento;
 	private boolean ignoraStatoVersamento;
 	
 

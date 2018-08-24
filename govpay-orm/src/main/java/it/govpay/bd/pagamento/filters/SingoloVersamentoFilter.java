@@ -34,9 +34,6 @@ public class SingoloVersamentoFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.codSingoloVersamentoEnte != null){
-				if(addAnd)
-					newExpression.and();
-
 				newExpression.ilike(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE, this.codSingoloVersamentoEnte, LikeMode.ANYWHERE);
 				addAnd = true;
 			}

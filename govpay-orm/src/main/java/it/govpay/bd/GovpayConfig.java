@@ -130,11 +130,13 @@ public class GovpayConfig {
 		}
 		
 		String pspPostaliString = getProperty("psp.postali", props, false);
+		this.pspPostali = new ArrayList<>();
 		try{
-			this.pspPostali = Arrays.asList(pspPostaliString.split(","));
+			if(pspPostaliString != null)
+				this.pspPostali = Arrays.asList(pspPostaliString.split(","));
 		} catch(Throwable t) {
 			log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
-			this.pspPostali = new ArrayList<String>();
+			this.pspPostali = new ArrayList<>();
 		}
 		
 		String sizePaginaNumeroVersamentiPerAvvisoString = getProperty("it.govpay.batch.avvisaturaDigitale.sizePaginaNumeroVersamenti", props, false);

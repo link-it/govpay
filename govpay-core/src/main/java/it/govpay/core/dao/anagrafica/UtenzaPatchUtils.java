@@ -3,6 +3,7 @@
  */
 package it.govpay.core.dao.anagrafica;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.rs.v1.beans.base.PatchOp;
@@ -28,105 +30,169 @@ import it.govpay.model.Acl.Servizio;
  */
 public class UtenzaPatchUtils {
 
+	public static final String PATH_ENTRATE = "/entrate";
+	public static final String PATH_DOMINI = "/domini";
+	public static final String PATH_RUOLI = "/ruoli";
+	public static final String PATH_ACL = "/acl";
+	public static final String PATH_XX_NON_VALIDO = "Path ''{0}'' non valido";
+	public static final String VALUE_NON_VALIDO_PER_IL_PATH_XX = "Value non valido per il path ''{0}''";
+	public static final String OP_XX_NON_VALIDO_PER_IL_PATH_YY = "Op ''{0}'' non valido per il path ''{1}''";
+	public static final String ACL_NON_VALIDA_SERVIZIO_XX_NON_GESTITO = "ACL non valida: servizio `{0}` non gestito.";
+	public static final String ACL_NON_VALIDA_ATTESA_LISTA_DI_STRINGHE_NEL_CAMPO_AUTORIZZAZIONI = "ACL non valida: attesa lista di stringhe nel campo `autorizzazioni`";
+	public static final String ACL_NON_VALIDA_ATTESO_CAMPO_AUTORIZZAZIONI = "ACL non valida: atteso campo `autorizzazioni`";
+	public static final String AUTORIZZAZIONI_KEY = "autorizzazioni";
+	public static final String SERVIZIO_KEY = "servizio";
+	public static final String ACL_NON_VALIDA_ATTESA_STRINGA_COME_VALORE_DI_SERVIZIO = "ACL non valida: attesa stringa come valore di `servizio`";
+	public static final String ACL_NON_VALIDA_ATTESO_CAMPO_SERVIZIO = "ACL non valida: atteso campo `servizio`";
+
+	
 	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BasicBD bd) throws ServiceException, NotFoundException, ValidationException {
 
-		if("/acl".equals(op.getPath())) {
-			LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
-			Acl acl = new Acl();
-			try {
-				if(map.get("servizio") == null) throw new ValidationException("ACL non valida: atteso campo `servizio`");
-				if(!(map.get("servizio") instanceof String)) throw new ValidationException("ACL non valida: attesa stringa come valore di `servizio`");
-				acl.setServizio(Servizio.toEnum((String) map.get("servizio")));
-			} catch (ServiceException se) {
-				throw new ValidationException("ACL non valida: servizio `" + map.get("servizio") + "` non gestito.");
-			}
-			
-			if(map.get("autorizzazioni") == null) throw new ValidationException("ACL non valida: atteso campo `autorizzazioni`");
-			if(!(map.get("autorizzazioni") instanceof List<?>)) throw new ValidationException("ACL non valida: attesa lista di stringhe nel campo `autorizzazioni`");
-
-			List<?> lstAuth = (List<?>) map.get("autorizzazioni");
-			Set<Diritti> listaDiritti = new HashSet<>();
-			
-			for(Object obj: lstAuth) {
-				try {
-					if(!(obj instanceof String)) throw new ValidationException("ACL non valida: attesa lista di stringhe nel campo `autorizzazioni`");
-					Diritti diritto = Diritti.toEnum((String)obj);
-					if(!listaDiritti.contains(diritto))
-						listaDiritti.add(diritto);
-				} catch (ServiceException se) {
-					throw new ValidationException("ACL non valida: servizio `" + map.get("servizio") + "` non gestito.");
-				}
-			}
-			acl.setListaDiritti(listaDiritti);
-
-			switch(op.getOp()) {
-			case ADD: 
-				boolean update = false;
-				for(Acl aclPresente : utenza.getAcls()) {
-					if(aclPresente.getServizio().equals(acl.getServizio())) {
-						aclPresente.getListaDiritti().addAll(acl.getListaDiritti());
-						update = true;
-					}
-				}
-				if(!update)
-					utenza.getAcls().add(acl); 
-			break;
-			case DELETE: 
-				for(Acl aclPresente : utenza.getAcls()) {
-					if(aclPresente.getServizio().equals(acl.getServizio())) {
-						utenza.getAcls().remove(aclPresente);
-					}
-				}
-			break;
-			default: throw new ValidationException("Op '"+op.getOp().name()+"' non valido per il path '"+op.getPath()+"'");
-			}
-
-		} else if("/domini".equals(op.getPath())) {
-			if(!(op.getValue() instanceof String)) throw new ValidationException("Value non valido per il path '"+op.getPath()+"'");
-			String dominio = (String) op.getValue();
-
-			try {
-				AnagraficaManager.getDominio(bd, dominio).getId();
-			} catch (NotFoundException e) {
-				throw new ValidationException("Value non valido per il path '"+op.getPath()+"'");
-			}
-			Long idDominio = AnagraficaManager.getDominio(bd, dominio).getId();
-			switch(op.getOp()) {
-			case ADD: utenza.getIdDomini().add(idDominio); 
-			break;
-			case DELETE: utenza.getIdDomini().remove(idDominio);
-			break;
-			default: throw new ValidationException("Op '"+op.getOp().name()+"' non valido per il path '"+op.getPath()+"'");
-			}
-
-			utenza.setDomini(null);
-			utenza.getDomini(bd);
-
-		} else if("/entrate".equals(op.getPath())) {
-			if(!(op.getValue() instanceof String)) throw new ValidationException("Value non valido per il path '"+op.getPath()+"'");
-			String tributo = (String) op.getValue();
-			try {
-				AnagraficaManager.getTipoTributo(bd, tributo).getId();
-			} catch (NotFoundException e) {
-				throw new ValidationException("Value non valido per il path '"+op.getPath()+"'");
-			}
-			Long idTributo = AnagraficaManager.getTipoTributo(bd, tributo).getId();
-			switch(op.getOp()) {
-			case ADD: utenza.getIdTributi().add(idTributo); 
-			break;
-			case DELETE: utenza.getIdTributi().remove(idTributo);
-			break;
-			default: throw new ValidationException("Op '"+op.getOp().name()+"' non valido per il path '"+op.getPath()+"'");
-			}
-
-			utenza.setTributi(null);
-			utenza.getTributi(bd);
-
+		if(PATH_ACL.equals(op.getPath())) {
+			patchACL(op, utenza, bd);
+		} else if(PATH_DOMINI.equals(op.getPath())) {
+			patchDominio(op, utenza, bd);
+		} else if(PATH_ENTRATE.equals(op.getPath())) {
+			patchEntrata(op, utenza, bd);
 		} else {
-			throw new ValidationException("Path '"+op.getPath()+"' non valido");
+			throw new ValidationException(MessageFormat.format(PATH_XX_NON_VALIDO, op.getPath()));
 		}
 
 		return utenza;
+	}
+
+	private static void patchEntrata(PatchOp op, Utenza utenza, BasicBD bd)
+			throws ValidationException, ServiceException, NotFoundException {
+		if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+		String tributo = (String) op.getValue();
+		try {
+			AnagraficaManager.getTipoTributo(bd, tributo).getId();
+		} catch (NotFoundException e) {
+			throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+		}
+		Long idTributo = AnagraficaManager.getTipoTributo(bd, tributo).getId();
+		switch(op.getOp()) {
+		case ADD: utenza.getIdTributi().add(idTributo); 
+		break;
+		case DELETE: utenza.getIdTributi().remove(idTributo);
+		break;
+		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+		}
+
+		utenza.setTributi(null);
+		utenza.getTributi(bd);
+	}
+
+	private static void patchDominio(PatchOp op, Utenza utenza, BasicBD bd)
+			throws ValidationException, ServiceException, NotFoundException {
+		if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+		String dominio = (String) op.getValue();
+
+		try {
+			AnagraficaManager.getDominio(bd, dominio).getId();
+		} catch (NotFoundException e) {
+			throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+		}
+		Long idDominio = AnagraficaManager.getDominio(bd, dominio).getId();
+		switch(op.getOp()) {
+		case ADD: utenza.getIdDomini().add(idDominio); 
+		break;
+		case DELETE: utenza.getIdDomini().remove(idDominio);
+		break;
+		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+		}
+
+		utenza.setDomini(null);
+		utenza.getDomini(bd);
+	}
+
+	public static void patchRuolo(PatchOp op, String idRuolo, BasicBD bd)
+			throws ValidationException, ServiceException, NotFoundException {
+		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
+		Acl acl = new Acl();
+		acl.setRuolo(idRuolo); 
+		setServizioAcl(map, acl);
+		setAutorizzazioniAcl(map, acl);
+		
+		AclBD aclBD = new AclBD(bd);
+		switch(op.getOp()) {
+		case ADD: 
+			aclBD.insertAcl(acl);
+			break;
+		case REPLACE:
+			aclBD.updateAcl(acl);
+			break;
+		case DELETE: 
+			aclBD.deleteAcl(acl);
+			break;
+		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+		}
+	}
+
+	private static void patchACL(PatchOp op, Utenza utenza, BasicBD bd)
+			throws ValidationException, ServiceException, NotFoundException {
+		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
+		Acl acl = new Acl();
+		setServizioAcl(map, acl);
+		setAutorizzazioniAcl(map, acl);
+		
+		AclBD aclBD = new AclBD(bd);
+		acl.setPrincipal(utenza.getPrincipal()); 
+		
+		boolean found = false;
+		for(Acl aclPresente : utenza.getAcls()) {
+			if(aclPresente.getServizio().equals(acl.getServizio()) && (aclPresente.getPrincipal() != null && acl.getPrincipal().equals(aclPresente.getPrincipal()))) {
+				found = true;
+				break;
+			}
+		}
+		
+		switch(op.getOp()) {
+		case ADD: 
+			if(!found)
+				aclBD.insertAcl(acl);
+			else
+				aclBD.updateAcl(acl);
+			break;
+		case DELETE: 
+			if(found)
+				aclBD.deleteAcl(acl);
+			else
+				throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+			break;
+		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+		}
+	}
+
+	private static void setAutorizzazioniAcl(LinkedHashMap<?, ?> map, Acl acl) throws ValidationException {
+		if(map.get(AUTORIZZAZIONI_KEY) == null) throw new ValidationException(ACL_NON_VALIDA_ATTESO_CAMPO_AUTORIZZAZIONI);
+		if(!(map.get(AUTORIZZAZIONI_KEY) instanceof List<?>)) throw new ValidationException(ACL_NON_VALIDA_ATTESA_LISTA_DI_STRINGHE_NEL_CAMPO_AUTORIZZAZIONI);
+
+		List<?> lstAuth = (List<?>) map.get(AUTORIZZAZIONI_KEY);
+		Set<Diritti> listaDiritti = new HashSet<>();
+
+		for(Object obj: lstAuth) {
+			try {
+				if(!(obj instanceof String)) throw new ValidationException(ACL_NON_VALIDA_ATTESA_LISTA_DI_STRINGHE_NEL_CAMPO_AUTORIZZAZIONI);
+				Diritti diritto = Diritti.toEnum((String)obj);
+				if(!listaDiritti.contains(diritto))
+					listaDiritti.add(diritto);
+			} catch (ServiceException se) {
+				throw new ValidationException(MessageFormat.format(ACL_NON_VALIDA_SERVIZIO_XX_NON_GESTITO, map.get(SERVIZIO_KEY)));
+			}
+		}
+		acl.setListaDiritti(listaDiritti);
+	}
+
+	private static void setServizioAcl(LinkedHashMap<?, ?> map, Acl acl) throws ValidationException {
+		try {
+			if(map.get(SERVIZIO_KEY) == null) throw new ValidationException(ACL_NON_VALIDA_ATTESO_CAMPO_SERVIZIO);
+			if(!(map.get(SERVIZIO_KEY) instanceof String)) throw new ValidationException(ACL_NON_VALIDA_ATTESA_STRINGA_COME_VALORE_DI_SERVIZIO);
+			acl.setServizio(Servizio.toEnum((String) map.get(SERVIZIO_KEY)));
+		} catch (ServiceException se) {
+			throw new ValidationException(MessageFormat.format(ACL_NON_VALIDA_SERVIZIO_XX_NON_GESTITO, map.get(SERVIZIO_KEY)));
+		}
+		
 	}
 
 }

@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.commons.Versamento;
@@ -18,16 +17,9 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
-import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.rs.v1.beans.base.PatchOp;
-import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.Avviso;
-import it.govpay.core.rs.v1.beans.pagamenti.FaultBean;
-import it.govpay.core.rs.v1.beans.pagamenti.FaultBean.CategoriaEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaPendenzeIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.Pendenza;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex;

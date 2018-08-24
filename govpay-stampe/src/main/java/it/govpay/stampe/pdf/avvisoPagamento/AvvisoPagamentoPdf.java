@@ -46,20 +46,20 @@ public class AvvisoPagamentoPdf {
 	public AvvisoPagamentoPdf() {
 
 	}
-	
-	
+
+
 	public JasperPrint creaJasperPrintAvviso(Logger log, AvvisoPagamentoInput input, AvvisoPagamento avvisoPagamento, 
 			Properties propertiesAvvisoPerDominio, InputStream jasperTemplateInputStream,JRDataSource dataSource,Map<String, Object> parameters) throws Exception {
 		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperTemplateInputStream);
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);
 		return jasperPrint;
 	}
-	
+
 	public AvvisoPagamento creaAvviso(Logger log, AvvisoPagamentoInput input, AvvisoPagamento avvisoPagamento, AvvisoPagamentoProperties avProperties) throws Exception {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		String codDominio = avvisoPagamento.getCodDominio();
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
-		
+
 		caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 
 		// leggo il template file jasper da inizializzare
@@ -85,14 +85,14 @@ public class AvvisoPagamentoPdf {
 		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(os.toByteArray()),AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
 		return dataSource;
 	}
-	
+
 	public JRDataSource creaCustomDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException {
 		List<AvvisoPagamentoInput> listaAvvisi = new ArrayList<AvvisoPagamentoInput>();
 		listaAvvisi.add(input);
 		JRDataSource dataSource = new AvvisoPagamentoDatasource(listaAvvisi,log);
 		return dataSource;
 	}
-	
+
 	public void caricaLoghiAvviso(AvvisoPagamentoInput input, Properties propertiesAvvisoPerDominio) {
 		// valorizzo la sezione loghi
 		input.setEnteLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));
@@ -109,49 +109,51 @@ public class AvvisoPagamentoPdf {
 
 
 	public static void main(String[] args) throws Exception {
-		Logger log = LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class);
+		try (InputStream jasperTemplateInputStream = new FileInputStream("FILE_PATH/AvvisoPagamento.jasper");) {
+			Logger log = LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class);
 
-		AvvisoPagamentoProperties.newInstance("/var/govpay");
+			AvvisoPagamentoProperties.newInstance("/var/govpay");
 
-		AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-		AvvisoPagamento av = new AvvisoPagamento();
-		av.setCodDominio("83000390019");
+			AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
+			AvvisoPagamento av = new AvvisoPagamento();
+			av.setCodDominio("83000390019");
 
-		String codDominio = av.getCodDominio();
-		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
+			String codDominio = av.getCodDominio();
+			Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
-		InputStream jasperTemplateInputStream = new FileInputStream("/home/pintori/Downloads/Jasper_1/AvvisoPagamento.jasper");
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
-		AvvisoPagamentoPdf.getInstance().caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
-		
-		input.setEnteDenominazione("Comune di San Valentino in Abruzzo Citeriore");
-		input.setEnteArea("Area di sviluppo per le politiche agricole e forestali");
-		input.setEnteIdentificativo("83000390019");
-		input.setEnteCbill("AAAAAAA");
-		input.setEnteUrl("www.comune.sanciprianopicentino.sa.it/");
-		input.setEntePeo("info@comune.sancipriano.sa.it");
-		input.setEntePec("protocollo@pec.comune.sanciprianopicentino.sa.it");
-		input.setEntePartner("Link.it Srl");
-		input.setIntestatarioDenominazione("Lorenzo Nardi");
-		input.setIntestatarioIdentificativo("NRDLNA80P19D612M");
-		input.setIntestatarioIndirizzo1("Via di Corniola 119A");
-		input.setIntestatarioIndirizzo2("50053 Empoli (FI)");
-		input.setAvvisoCausale("Pagamento diritti di segreteria per il rilascio in duplice copia della documentazione richiesta.");
-		input.setAvvisoImporto(9999999.99);
-		input.setAvvisoScadenza("31/12/2020");
-		input.setAvvisoNumero("399000012345678900");
-		input.setAvvisoIuv("99000012345678900");
-		input.setAvvisoBarcode("415808888880094580203990000123456789003902222250");
-		input.setAvvisoQrcode("PAGOPA|002|399000012345678900|83000390019|222250");
-		
-		JRDataSource dataSource = AvvisoPagamentoPdf.getInstance().creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = AvvisoPagamentoPdf.getInstance().creaJasperPrintAvviso(log, input, av, propertiesAvvisoPerDominio, jasperTemplateInputStream, dataSource,parameters);
-		
-		JasperExportManager.exportReportToPdfFile(jasperPrint,"/tmp/tmp.pdf");
-		
-		//System.out.println(input.toXml_Jaxb()); 
-		System.out.println("FINE");
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			AvvisoPagamentoInput input = new AvvisoPagamentoInput();
+			AvvisoPagamentoPdf.getInstance().caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 
+			input.setEnteDenominazione("Comune di San Valentino in Abruzzo Citeriore");
+			input.setEnteArea("Area di sviluppo per le politiche agricole e forestali");
+			input.setEnteIdentificativo("83000390019");
+			input.setEnteCbill("AAAAAAA");
+			input.setEnteUrl("www.comune.sanciprianopicentino.sa.it/");
+			input.setEntePeo("info@comune.sancipriano.sa.it");
+			input.setEntePec("protocollo@pec.comune.sanciprianopicentino.sa.it");
+			input.setEntePartner("Link.it Srl");
+			input.setIntestatarioDenominazione("Lorenzo Nardi");
+			input.setIntestatarioIdentificativo("NRDLNA80P19D612M");
+			input.setIntestatarioIndirizzo1("Via di Corniola 119A");
+			input.setIntestatarioIndirizzo2("50053 Empoli (FI)");
+			input.setAvvisoCausale("Pagamento diritti di segreteria per il rilascio in duplice copia della documentazione richiesta.");
+			input.setAvvisoImporto(9999999.99);
+			input.setAvvisoScadenza("31/12/2020");
+			input.setAvvisoNumero("399000012345678900");
+			input.setAvvisoIuv("99000012345678900");
+			input.setAvvisoBarcode("415808888880094580203990000123456789003902222250");
+			input.setAvvisoQrcode("PAGOPA|002|399000012345678900|83000390019|222250");
+
+			JRDataSource dataSource = AvvisoPagamentoPdf.getInstance().creaXmlDataSource(log,input);
+			JasperPrint jasperPrint = AvvisoPagamentoPdf.getInstance().creaJasperPrintAvviso(log, input, av, propertiesAvvisoPerDominio, jasperTemplateInputStream, dataSource,parameters);
+
+			JasperExportManager.exportReportToPdfFile(jasperPrint,"/tmp/tmp.pdf");
+
+			//System.out.println(input.toXml_Jaxb()); 
+			System.out.println("FINE");
+		}catch(Exception e ) {
+			throw e;
+		}  
 	}
 }

@@ -245,6 +245,11 @@ public class UtentiDAO extends BaseDAO{
 			
 			operatoriBD.updateOperatore(getOperatoreDTOResponse.getOperatore());
 			
+			AnagraficaManager.removeFromCache(getOperatoreDTOResponse.getOperatore());
+			AnagraficaManager.removeFromCache(getOperatoreDTOResponse.getOperatore().getUtenza()); 
+			
+			operatore = operatoriBD.getOperatore(patchDTO.getIdOperatore());
+			response.setOperatore(operatore);
 			
 			return getOperatoreDTOResponse;
 		}catch(NotFoundException e) {

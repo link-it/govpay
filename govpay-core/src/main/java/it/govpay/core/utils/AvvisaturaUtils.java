@@ -47,8 +47,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.slf4j.Logger;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -69,9 +67,8 @@ import it.govpay.model.Anagrafica.TIPO;
 
 public class AvvisaturaUtils {
 
-	private static Logger log = LoggerWrapperFactory.getLogger(AvvisaturaUtils.class);
 	private static JAXBContext jaxbContext;
-	public static Schema schema;
+	private static Schema schema;
 
 	public static void scriviHeaderTracciatoAvvisatura(OutputStream out) throws IOException {
 		out.write("<listaAvvisiDigitali xmlns=\"http://ws.pagamenti.telematici.gov/\"><versioneOggetto>1.0</versioneOggetto>".getBytes());

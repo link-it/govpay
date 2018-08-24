@@ -192,7 +192,7 @@ public class BatchManager {
 				return;
 			}
 		} catch (NotFoundException e) {
-			e.printStackTrace();
+			log.error("Errore nell'aggiornamento del semaforo di concorrenza per il batch " + codBatch, e);
 			return;
 		} finally {
 			if(wasAutocommit)

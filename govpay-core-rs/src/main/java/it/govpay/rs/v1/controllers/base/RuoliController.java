@@ -2,7 +2,6 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -10,17 +9,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.JSONUtils;
-import org.openspcoop2.utils.serialization.IDeserializer;
-import org.openspcoop2.utils.serialization.IOException;
-import org.openspcoop2.utils.serialization.SerializationConfig;
-import org.openspcoop2.utils.serialization.SerializationFactory;
-import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 import org.slf4j.Logger;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import it.govpay.core.dao.pagamenti.RuoliDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
@@ -29,10 +18,15 @@ import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.RuoloPatchDTO;
 import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.ListaAcl;
 import it.govpay.core.rs.v1.beans.base.ListaRuoli;
+import it.govpay.core.rs.v1.beans.base.PatchOp;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
+import it.govpay.core.rs.v1.beans.base.Ruolo;
 import it.govpay.core.rs.v1.beans.base.RuoloIndex;
+import it.govpay.core.rs.v1.beans.base.RuoloPost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -55,10 +49,8 @@ public class RuoliController extends BaseController {
 		String methodName = "ruoliGET";  
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -101,10 +93,8 @@ public class RuoliController extends BaseController {
 		String methodName = "ruoliIdRuoloGET";  
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
 		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -113,7 +103,7 @@ public class RuoliController extends BaseController {
 			// Parametri - > DTO Input
 
 			LeggiRuoloDTO leggiRuoloDTO = new LeggiRuoloDTO(user);
-
+			leggiRuoloDTO.setRuolo(idRuolo);
 			
 			// INIT DAO
 
@@ -142,54 +132,64 @@ public class RuoliController extends BaseController {
     }
 
 
-    public Response ruoliIdRuoloPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
-//    	String methodName = "ruoliIdRuoloPATCH";  
-//		GpContext ctx = null;
-//		String transactionId = null;
-//		ByteArrayOutputStream baos= null;
-//		this.log.info("Esecuzione " + methodName + " in corso..."); 
-//		try{
-//			baos = new ByteArrayOutputStream();
-//			// salvo il json ricevuto
-//			BaseRsService.copy(is, baos);
-//			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-//			
-//			ctx =  GpThreadLocal.get();
-//			transactionId = ctx.getTransactionId();
-//			
-//			String jsonRequest = baos.toString();
-//
-//			RuoloPatchDTO ruoloPatchDTO = new RuoloPatchDTO(user);
-//			ruoloPatchDTO.setIdRuolo(idRuolo);
-//			
-//			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
-//			List<PatchOp> lstOp = new ArrayList<>();
-//			for(java.util.LinkedHashMap<?,?> map: lst) {
-//				PatchOp op = new PatchOp();
-//				op.setOp(OpEnum.fromValue((String) map.get("op")));
-//				op.setPath((String) map.get("path"));
-//				op.setValue(map.get("value"));
+    @SuppressWarnings("unchecked")
+	public Response ruoliIdRuoloPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
+    	String methodName = "ruoliIdRuoloPATCH";  
+		GpContext ctx = null;
+		String transactionId = null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+
+			RuoloPatchDTO ruoloPatchDTO = new RuoloPatchDTO(user);
+			ruoloPatchDTO.setIdRuolo(idRuolo);
+			
+			
+			List<PatchOp> lstOp = new ArrayList<>();
+			
+			try {
+				List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+				for(java.util.LinkedHashMap<?,?> map: lst) {
+					PatchOp op = new PatchOp();
+					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					op.setPath((String) map.get("path"));
+					op.setValue(map.get("value"));
+					op.validate();
+					lstOp.add(op);
+				}
+			} catch (Exception e) {
+				lstOp = PatchOp.parse(jsonRequest, List.class);
+//				PatchOp op = PatchOp.parse(jsonRequest);
+//				op.validate();
 //				lstOp.add(op);
-//			}
-//			ruoloPatchDTO.setOp(lstOp );
-//
-//			RuoliDAO ruoliDAO = new RuoliDAO();
-//			
-//			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = ruoliDAO.patch(ruoloPatchDTO);
-//			
-//			it.govpay.core.rs.v1.beans.base.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleDTOResponse);
-//			
-//
-//			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-//			this.log.info("Esecuzione " + methodName + " completata."); 
-//			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-//			
-//		}catch (Exception e) {
-//			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-//		} finally {
-//			if(ctx != null) ctx.log();
-//		}
-    	return null;
+			}
+			
+			ruoloPatchDTO.setOp(lstOp);
+			RuoliDAO ruoliDAO = new RuoliDAO();
+			ruoliDAO.patch(ruoloPatchDTO);
+			
+			LeggiRuoloDTO leggiRuoliDTO = new LeggiRuoloDTO(user);
+			leggiRuoliDTO.setRuolo(idRuolo);
+			LeggiRuoloDTOResponse leggiRuoloDTOResponse = ruoliDAO.leggiRuoli(leggiRuoliDTO);
+			
+			Ruolo response = RuoliConverter.toRsModel(idRuolo,leggiRuoloDTOResponse.getResults());
+
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 
@@ -210,7 +210,8 @@ public class RuoliController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 
-			List<AclPost> listaAcl = deserialize(jsonRequest, AclPost.class); 
+			RuoloPost ruoloPost = RuoloPost.parse(jsonRequest);
+			List<AclPost> listaAcl = ruoloPost.getAcl();
 
 			PutRuoloDTO putRuoloDTO = RuoliConverter.getPutRuoloDTO(listaAcl, idRuolo, user); 
 			
@@ -229,25 +230,6 @@ public class RuoliController extends BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
-	@SuppressWarnings("unchecked")
-	private static <T> List<T> deserialize(String json, Class<T> t) throws UtilsException, IOException {
-
-		IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, new SerializationConfig());
-
-		JSONUtils jsonUtils = JSONUtils.getInstance();
-		JsonNode asNode = jsonUtils.getAsNode(json);
-		ArrayNode array = (ArrayNode) asNode;
-		Iterator<JsonNode> iterator = array.iterator();
-		
-		List<T> lst= new ArrayList<>();
-		while(iterator.hasNext()) {
-			lst.add((T)deserializer.getObject(jsonUtils.toString(iterator.next()), t));
-		}
-		return lst;
-	}
-
-
 }
 
 

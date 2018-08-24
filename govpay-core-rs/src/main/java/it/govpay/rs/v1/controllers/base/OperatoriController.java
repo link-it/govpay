@@ -162,7 +162,8 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 
 
 
-    public Response operatoriPrincipalPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
+    @SuppressWarnings("unchecked")
+	public Response operatoriPrincipalPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
     	String methodName = "operatoriPrincipalPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -182,15 +183,22 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			OperatorePatchDTO verificaPagamentoDTO = new OperatorePatchDTO(user);
 			verificaPagamentoDTO.setIdOperatore(principal);
 			
-			List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
 			List<PatchOp> lstOp = new ArrayList<>();
-			for(java.util.LinkedHashMap<?,?> map: lst) {
-				PatchOp op = new PatchOp();
-				op.setOp(OpEnum.fromValue((String) map.get("op")));
-				op.setPath((String) map.get("path"));
-				op.setValue(map.get("value"));
-				lstOp.add(op);
+			
+			try {
+				List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+				for(java.util.LinkedHashMap<?,?> map: lst) {
+					PatchOp op = new PatchOp();
+					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					op.setPath((String) map.get("path"));
+					op.setValue(map.get("value"));
+					op.validate();
+					lstOp.add(op);
+				}
+			} catch (Exception e) {
+				lstOp = PatchOp.parse(jsonRequest, List.class);
 			}
+			
 			verificaPagamentoDTO.setOp(lstOp );
 
 			UtentiDAO utentiDAO = new UtentiDAO();

@@ -22,44 +22,46 @@ package it.govpay.bd.model.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.model.ConnettoreSftp;
 
 public class ConnettoreSftpConverter {
 
-	public static ConnettoreSftp toDTO(List<it.govpay.orm.Connettore> connettoreLst) throws ServiceException {
+	public static ConnettoreSftp toDTO(List<it.govpay.orm.Connettore> connettoreLst) {
 		ConnettoreSftp dto = new ConnettoreSftp();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){
-
-				dto.setIdConnettore(connettore.getCodConnettore());
-				if(ConnettoreSftp.P_USER_NAME_IN.equals(connettore.getCodProprieta())) {
-					dto.setHttpUserIn(connettore.getValore());
-				}
-
-				if(ConnettoreSftp.P_PASS_NAME_IN.equals(connettore.getCodProprieta())) {
-					dto.setHttpPasswIn(connettore.getValore());
-				}
-
-				if(ConnettoreSftp.P_URL_NAME_IN.equals(connettore.getCodProprieta())) {
-					dto.setUrlIn(connettore.getValore());
-				}
-				
-				if(ConnettoreSftp.P_USER_NAME_OUT.equals(connettore.getCodProprieta())) {
-					dto.setHttpUserOut(connettore.getValore());
-				}
-
-				if(ConnettoreSftp.P_PASS_NAME_OUT.equals(connettore.getCodProprieta())) {
-					dto.setHttpPasswOut(connettore.getValore());
-				}
-
-				if(ConnettoreSftp.P_URL_NAME_OUT.equals(connettore.getCodProprieta())) {
-					dto.setUrlOut(connettore.getValore());
-				}
-
+				dto = setProprietaConnettoreDTO(dto, connettore);
 			}
 		}
+		return dto;
+	}
+
+	private static ConnettoreSftp setProprietaConnettoreDTO(ConnettoreSftp dto, it.govpay.orm.Connettore connettore) {
+		dto.setIdConnettore(connettore.getCodConnettore());
+		if(ConnettoreSftp.P_USER_NAME_IN.equals(connettore.getCodProprieta())) {
+			dto.setHttpUserIn(connettore.getValore());
+		}
+
+		if(ConnettoreSftp.P_PASS_NAME_IN.equals(connettore.getCodProprieta())) {
+			dto.setHttpPasswIn(connettore.getValore());
+		}
+
+		if(ConnettoreSftp.P_URL_NAME_IN.equals(connettore.getCodProprieta())) {
+			dto.setUrlIn(connettore.getValore());
+		}
+		
+		if(ConnettoreSftp.P_USER_NAME_OUT.equals(connettore.getCodProprieta())) {
+			dto.setHttpUserOut(connettore.getValore());
+		}
+
+		if(ConnettoreSftp.P_PASS_NAME_OUT.equals(connettore.getCodProprieta())) {
+			dto.setHttpPasswOut(connettore.getValore());
+		}
+
+		if(ConnettoreSftp.P_URL_NAME_OUT.equals(connettore.getCodProprieta())) {
+			dto.setUrlOut(connettore.getValore());
+		}
+		
 		return dto;
 	}
 

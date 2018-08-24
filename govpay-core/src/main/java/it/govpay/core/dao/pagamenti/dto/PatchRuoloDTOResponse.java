@@ -1,6 +1,6 @@
 package it.govpay.core.dao.pagamenti.dto;
 
-public class PatchPendenzaDTOResponse {
+public class PatchRuoloDTOResponse {
 	
 
 }

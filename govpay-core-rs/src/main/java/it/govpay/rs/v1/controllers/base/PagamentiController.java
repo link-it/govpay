@@ -136,7 +136,8 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pagamentiIdPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String id) {
+    @SuppressWarnings("unchecked")
+	public Response pagamentiIdPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String id) {
     	String methodName = "pagamentiIdPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -168,9 +169,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 					lstOp.add(op);
 				}
 			} catch (ServiceException e) {
-				PatchOp op = PatchOp.parse(jsonRequest);
-				op.validate();
-				lstOp.add(op);
+				lstOp = PatchOp.parse(jsonRequest, List.class);
 			}
 			
 			verificaPagamentoDTO.setOp(lstOp );

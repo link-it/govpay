@@ -113,40 +113,42 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
 				}
 
-				UnitaOperativa uo = versamentoModel.getUo(bd);
-				if(!uo.isAbilitato()) {
-					throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+uo.getCodUo()+"].", EsitoOperazione.UOP_001, uo.getCodUo());
-				}
-
-				Dominio dominio = uo.getDominio(bd); 
-				if(!dominio.isAbilitato()) {
-					throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+dominio.getCodDominio()+"].", EsitoOperazione.DOM_001, dominio.getCodDominio());
-				}
-
-
-				if(i == 0) {
-					// la prima pendenza da il nome al pagamento, eventualmente si appende il numero di pendenze ulteriori
-					if(versamentoModel.getNome()!=null) {
-						sbNomeVersamenti.append(versamentoModel.getNome());
-					} else {
-						try {
-							sbNomeVersamenti.append(versamentoModel.getCausaleVersamento().getSimple());
-						} catch (UnsupportedEncodingException e) {}						
+				if(versamentoModel != null) {
+					UnitaOperativa uo = versamentoModel.getUo(bd);
+					if(!uo.isAbilitato()) {
+						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+uo.getCodUo()+"].", EsitoOperazione.UOP_001, uo.getCodUo());
 					}
-					if(pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() > 1) {
-						sbNomeVersamenti.append(" ed altre "+pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size()+" pendenze.");
+	
+					Dominio dominio = uo.getDominio(bd); 
+					if(!dominio.isAbilitato()) {
+						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+dominio.getCodDominio()+"].", EsitoOperazione.DOM_001, dominio.getCodDominio());
 					}
-					
-					// 	2. Codice dominio della prima pendenza
-					codDominio = dominio.getCodDominio();
-					// 3. ente creditore
+	
+	
+					if(i == 0) {
+						// la prima pendenza da il nome al pagamento, eventualmente si appende il numero di pendenze ulteriori
+						if(versamentoModel.getNome()!=null) {
+							sbNomeVersamenti.append(versamentoModel.getNome());
+						} else {
+							try {
+								sbNomeVersamenti.append(versamentoModel.getCausaleVersamento().getSimple());
+							} catch (UnsupportedEncodingException e) {}						
+						}
+						if(pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() > 1) {
+							sbNomeVersamenti.append(" ed altre "+pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size()+" pendenze.");
+						}
+						
+						// 	2. Codice dominio della prima pendenza
+						codDominio = dominio.getCodDominio();
+						// 3. ente creditore
+					}
+	
+					versamenti.add(versamentoModel);
+	
+					// colleziono i domini inserendo solo se non presente in lista
+					if(!listaMultibeneficiari.contains(dominio.getCodDominio()))
+						listaMultibeneficiari.add(dominio.getCodDominio());
 				}
-
-				versamenti.add(versamentoModel);
-
-				// colleziono i domini inserendo solo se non presente in lista
-				if(!listaMultibeneficiari.contains(dominio.getCodDominio()))
-					listaMultibeneficiari.add(dominio.getCodDominio());
 			}
 
 			// 5. somma degli importi delle pendenze

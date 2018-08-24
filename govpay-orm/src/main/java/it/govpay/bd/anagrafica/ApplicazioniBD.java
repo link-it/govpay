@@ -349,9 +349,9 @@ public class ApplicazioniBD extends BasicBD {
 			}
 
 			Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreNotifica, connettoreVerifica);
-			applicazione.setUtenza(AnagraficaManager.getUtenza(this, applicazioneVO.getIdUtenza().getId()));
+			applicazione.setUtenza(new UtenzeBD(this).getUtenza(applicazioneVO.getIdUtenza().getId()));
 			return applicazione;
-		} catch (ExpressionNotImplementedException e) {
+		} catch (ExpressionNotImplementedException | MultipleResultException | NotFoundException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);

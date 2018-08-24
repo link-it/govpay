@@ -92,11 +92,11 @@ public class EsitiAvvisaturaBD extends BasicBD {
 	}
 
 
-	public EsitoAvvisaturaFilter newFilter() throws ServiceException {
+	public EsitoAvvisaturaFilter newFilter() {
 		return new EsitoAvvisaturaFilter(this.getEsitoAvvisaturaService());
 	}
 	
-	public EsitoAvvisaturaFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public EsitoAvvisaturaFilter newFilter(boolean simpleSearch) {
 		return new EsitoAvvisaturaFilter(this.getEsitoAvvisaturaService(),simpleSearch);
 	}
 

@@ -842,7 +842,7 @@ public class Operazioni{
 
 								avvisatura.setStepElaborazione("IN_SPEDIZIONE");
 								avvisatura.setDataUltimoAggiornamento(new Date());
-								avvisatura.setPercentualeStep(Math.round((versamentiFilter.getOffset() / count) * 100.0f));
+								avvisatura.setPercentualeStep(Math.round(((long) versamentiFilter.getOffset() / count) * 100.0f));
 
 								tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
 								versamentiFilter.setOffset(versamentiFilter.getOffset() + lstVersamenti.size());
@@ -942,7 +942,7 @@ public class Operazioni{
 				}
 
 
-				SimpleDateFormat sdfYYYYMMDD = new SimpleDateFormat("YYYYMMdd"); 
+				SimpleDateFormat sdfYYYYMMDD = new SimpleDateFormat("yyyyMMdd"); 
 				VersamentoFilter versamentiFilter = versamentiBD.newFilter();
 				versamentiFilter.setDaAvvisare(true);
 				versamentiFilter.setTracciatoNull(true);

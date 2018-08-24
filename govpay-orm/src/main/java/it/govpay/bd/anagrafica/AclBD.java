@@ -194,6 +194,15 @@ public class AclBD extends BasicBD {
 			throw new ServiceException(e);
 		} 
 	}
+	
+	public void deleteAcl(Acl acl) throws ServiceException{
+		try {
+			it.govpay.orm.ACL vo = AclConverter.toVO(acl);
+			this.getAclService().delete(vo);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
+	}
 
 	public boolean existsAcl(String ruolo, String principal, Servizio servizio) throws ServiceException {
 		try {
