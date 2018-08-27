@@ -31,7 +31,7 @@ import it.govpay.model.Canale.TipoVersamento;
 public class Rpt extends BasicModel{
 	
 	private static final long serialVersionUID = 1L;
-	public static final String VERSIONE = "6.2";
+	public static final String VERSIONE = "6.2.0";
 	public static final String codIntermediarioPspWISP20 = "97735020584"; 
 	public static final String codCanaleWISP20 = "97735020584_02"; 
 	public static final String codPspWISP20 = "AGID_01"; 
