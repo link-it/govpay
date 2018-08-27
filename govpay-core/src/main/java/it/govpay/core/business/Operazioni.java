@@ -180,6 +180,7 @@ public class Operazioni{
 				if(notifiche.size() == 0) {
 					BatchManager.stopEsecuzione(bd, ntfy);
 					aggiornaSondaOK(ntfy, bd);
+					log.info("Nessuna notifica da inviare.");
 					return "Nessuna notifica da inviare.";
 				}
 
@@ -187,10 +188,12 @@ public class Operazioni{
 				for(Notifica notifica: notifiche) {
 					InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
 					ThreadExecutorManager.getClientPoolExecutor().execute(sender);
+					threads.add(sender);
 				}
 				log.info("Processi di spedizione avviati.");
 				aggiornaSondaOK(ntfy, bd);
 			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
@@ -222,7 +225,7 @@ public class Operazioni{
 				} finally {
 					if(bd != null) bd.closeConnection();
 				}
-
+				log.info("Spedizione notifiche completata.");
 				return "Spedizione notifiche completata.";
 			} else {
 				try {
