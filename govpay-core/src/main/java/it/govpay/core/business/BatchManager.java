@@ -74,6 +74,7 @@ public class BatchManager {
 				}
 			} else {
 				log.trace("Semaforo rosso impostato dal nodo [" + batch.getNodo() + "]");
+				bd.commit();
 				return false;
 			}
 		} finally {
