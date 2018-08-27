@@ -73,7 +73,8 @@ public class BatchManager {
 					return true;
 				}
 			} else {
-				log.debug("Semaforo rosso impostato dal nodo [" + batch.getNodo() + "]");
+				log.debug("Semaforo rosso impostato dal nodo [" + batch.getNodo() + "]. Esecuzione interrotta sul nodo [" + GovpayConfig.getInstance().getClusterId() + "]");
+				bd.commit();
 				return false;
 			}
 		} finally {
