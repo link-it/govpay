@@ -3,7 +3,9 @@ package it.govpay.backoffice.api.rs.v1.backoffice;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -52,6 +54,15 @@ public class Pendenze extends BaseRsServiceV1{
         return this.controller.pendenzeGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento);
     }
 
+    @GET
+    @Path("/tracciati")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeTracciatiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pendenzeTracciatiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
+    }
+
     @PATCH
     @Path("/{idA2A}/{idPendenza}")
     @Consumes({ "application/json" })
@@ -59,6 +70,42 @@ public class Pendenze extends BaseRsServiceV1{
     public Response pendenzeIdA2AIdPendenzaPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.pendenzeIdA2AIdPendenzaPATCH(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is);
+    }
+
+    @GET
+    @Path("/tracciati/{id}/raw")
+    
+    @Produces({ "application/octet-stream" })
+    public Response pendenzeTracciatiIdRawGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pendenzeTracciatiIdRawGET(this.getUser(), uriInfo, httpHeaders,  id);
+    }
+
+    @POST
+    @Path("/")
+    @Consumes({ "text/csv" })
+    
+    public Response pendenzePOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @HeaderParam("nomeFile") String nomeFile){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pendenzePOST(this.getUser(), uriInfo, httpHeaders, is, nomeFile);
+    }
+
+    @GET
+    @Path("/tracciati/{id}")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeTracciatiIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pendenzeTracciatiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
+    }
+
+    @GET
+    @Path("/tracciati/{id}/operazioni")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeTracciatiIdOperazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pendenzeTracciatiIdOperazioniGET(this.getUser(), uriInfo, httpHeaders,  id, pagina, risultatiPerPagina);
     }
 
 }

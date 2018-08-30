@@ -213,6 +213,35 @@ public class PendenzeController extends it.govpay.rs.BaseController {
     }
 
 
+
+    public Response pendenzePOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String nomeFile) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
+
+    public Response pendenzeTracciatiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
+
+    public Response pendenzeTracciatiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
+
+    public Response pendenzeTracciatiIdOperazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
+
+
+    public Response pendenzeTracciatiIdRawGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    }
+
 }
 
 
