@@ -108,6 +108,9 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 
 			if(ordinamento != null)
 				listaPagamentiPortaleDTO.setOrderBy(ordinamento);
+			
+			if(idSessionePortale != null)
+				listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 			// INIT DAO
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
