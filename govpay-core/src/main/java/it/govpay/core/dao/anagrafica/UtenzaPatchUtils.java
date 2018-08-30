@@ -32,7 +32,6 @@ public class UtenzaPatchUtils {
 
 	public static final String PATH_ENTRATE = "/entrate";
 	public static final String PATH_DOMINI = "/domini";
-	public static final String PATH_RUOLI = "/ruoli";
 	public static final String PATH_ACL = "/acl";
 	public static final String PATH_XX_NON_VALIDO = "Path ''{0}'' non valido";
 	public static final String VALUE_NON_VALIDO_PER_IL_PATH_XX = "Value non valido per il path ''{0}''";

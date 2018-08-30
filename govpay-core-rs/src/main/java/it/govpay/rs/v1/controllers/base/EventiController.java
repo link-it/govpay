@@ -2,6 +2,7 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -9,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.slf4j.Logger;
 
 import it.govpay.core.dao.eventi.EventiDAO;
@@ -18,6 +20,7 @@ import it.govpay.core.rs.v1.beans.base.ListaEventi;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.v1.beans.converter.EventiConverter;
 
@@ -73,9 +76,13 @@ public class EventiController extends it.govpay.rs.BaseController {
 			ListaEventi response = new ListaEventi(results, this.getServicePath(uriInfo),
 					listaEventiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null,serializationConfig), 200);
 			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,serializationConfig)),transactionId).build();
 			
 		}catch (Exception e) {
 			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);

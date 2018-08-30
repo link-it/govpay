@@ -21,6 +21,8 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	private String stato;
 	private String versante;
 	private Boolean verificato;
+	private String idSessionePortale;
+	
 	public Date getDataA() {
 		return dataA;
 	}
@@ -50,5 +52,11 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	}
 	public void setVerificato(Boolean verificato) {
 		this.verificato = verificato;
+	}
+	public String getIdSessionePortale() {
+		return idSessionePortale;
+	}
+	public void setIdSessionePortale(String idSessionePortale) {
+		this.idSessionePortale = idSessionePortale;
 	}
 }
