@@ -125,6 +125,7 @@ public class BasicClient {
 	
 	protected BasicClient(Intermediario intermediario) throws ClientException {
 		this("I_" + intermediario.getCodIntermediario(), intermediario.getConnettorePdd());
+		GpThreadLocal.get().getIntegrationCtx().setApplicazione(null);
 		errMsg = "Pdd dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";
