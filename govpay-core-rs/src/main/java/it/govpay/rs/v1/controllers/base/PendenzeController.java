@@ -3,8 +3,11 @@ package it.govpay.rs.v1.controllers.base;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -12,27 +15,42 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
+import it.govpay.bd.model.Operazione;
+import it.govpay.bd.model.Tracciato;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
+import it.govpay.core.dao.pagamenti.TracciatiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaOperazioniTracciatoDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaOperazioniTracciatoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTO;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.rs.v1.beans.base.FaultBean;
 import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
-import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
+import it.govpay.core.rs.v1.beans.base.ListaOperazioniPendenza;
 import it.govpay.core.rs.v1.beans.base.ListaPendenze;
+import it.govpay.core.rs.v1.beans.base.ListaTracciatiPendenza;
+import it.govpay.core.rs.v1.beans.base.OperazionePendenza;
 import it.govpay.core.rs.v1.beans.base.PatchOp;
+import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
 import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaIndex;
+import it.govpay.core.rs.v1.beans.base.StatoTracciatoPendenza;
+import it.govpay.core.rs.v1.beans.base.TracciatoPendenze;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.PendenzeConverter;
-import it.govpay.core.rs.v1.beans.base.StatoTracciatoPendenza;
+import it.govpay.rs.v1.beans.converter.TracciatiConverter;
 
 
 public class PendenzeController extends it.govpay.rs.BaseController {
@@ -215,25 +233,212 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 
     public Response pendenzePOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String nomeFile) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "pendenzePOST";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+
+			TracciatiDAO tracciatiDAO = new TracciatiDAO();
+			
+			PostTracciatoDTO postTracciatoDTO = new PostTracciatoDTO(user);
+			postTracciatoDTO.setContenuto(baos.toByteArray());
+			postTracciatoDTO.setNomeFile(nomeFile);
+			tracciatiDAO.create(postTracciatoDTO);
+			
+			Status responseStatus = Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 
 
     public Response pendenzeTracciatiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, StatoTracciatoPendenza stato) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	GpContext ctx = null;
+    	String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		String methodName = "pendenzeTracciatiGET";
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			// Parametri - > DTO Input
+			
+			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO(user);
+			
+			listaTracciatiDTO.setPagina(pagina);
+			listaTracciatiDTO.setLimit(risultatiPerPagina);
+			listaTracciatiDTO.setStatoTracciatoPendenza(stato);
+			List<TIPO_TRACCIATO> tipoTracciato = new ArrayList<>();
+			tipoTracciato.add(TIPO_TRACCIATO.PENDENZA);
+			listaTracciatiDTO.setTipoTracciato(tipoTracciato);
+			
+			// INIT DAO
+			
+			TracciatiDAO tracciatiDAO = new TracciatiDAO(); 
+			
+			// CHIAMATA AL DAO
+			
+			ListaTracciatiDTOResponse listaTracciatiDTOResponse = tracciatiDAO.listaTracciati(listaTracciatiDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			List<TracciatoPendenze> results = new ArrayList<TracciatoPendenze>();
+			for(Tracciato tracciato: listaTracciatiDTOResponse.getResults()) {
+				TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
+				results.add(rsModel);
+			}
+			
+			ListaTracciatiPendenza response = new ListaTracciatiPendenza(results, this.getServicePath(uriInfo),
+					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 
 
     public Response pendenzeTracciatiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	String methodName = "pendenzeTracciatiIdGET";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		String accept = null;
+		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
+			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+		}
+
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
+			leggiTracciatoDTO.setId((long) id);
+			
+			TracciatiDAO tracciatiDAO = new TracciatiDAO();
+			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
+			
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
+				ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
+				ZipOutputStream zos = new ZipOutputStream(baos1);
+				
+				ZipEntry tracciatoInputEntry = new ZipEntry(tracciato.getFileNameRichiesta());
+				zos.putNextEntry(tracciatoInputEntry);
+				zos.write(tracciato.getRawRichiesta());
+				zos.flush();
+				zos.closeEntry();
+				
+				if(tracciato.getRawEsito() != null) {
+					ZipEntry tracciatoOutputEntry = new ZipEntry(tracciato.getFileNameEsito());
+					zos.putNextEntry(tracciatoOutputEntry);
+					zos.write(tracciato.getRawEsito());
+					zos.flush();
+					zos.closeEntry();
+				}
+				
+				zos.flush();
+				zos.close();
+				
+				
+				// TODO aggiungere avvisi e fare in streaming
+				
+				String zipFileName = (tracciato.getFileNameEsito().indexOf(".") > 0 ? tracciato.getFileNameEsito().substring(0, tracciato.getFileNameEsito().lastIndexOf(".")) : tracciato.getFileNameEsito()) + ".zip";
+				byte[] b = baos1.toByteArray();
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(b).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
+			} else {
+				TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
+				return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null)),transactionId).build();
+			}
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 
 
     public Response pendenzeTracciatiIdOperazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    	GpContext ctx = null;
+    	String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		String methodName = "pendenzeTracciatiGET";
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			// Parametri - > DTO Input
+			
+			ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO = new ListaOperazioniTracciatoDTO(user);
+			
+			listaOperazioniTracciatoDTO.setPagina(pagina);
+			listaOperazioniTracciatoDTO.setLimit(risultatiPerPagina);
+			listaOperazioniTracciatoDTO.setIdTracciato((long) id);
+			
+			// INIT DAO
+			
+			TracciatiDAO tracciatiDAO = new TracciatiDAO(); 
+			
+			// CHIAMATA AL DAO
+			
+			ListaOperazioniTracciatoDTOResponse listaTracciatiDTOResponse = tracciatiDAO.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			List<OperazionePendenza> results = new ArrayList<OperazionePendenza>();
+			for(Operazione operazione: listaTracciatiDTOResponse.getResults()) {
+				OperazionePendenza rsModel = TracciatiConverter.toOperazioneTracciatoPendenzaRsModel(operazione);
+				results.add(rsModel);
+			}
+			
+			ListaOperazioniPendenza response = new ListaOperazioniPendenza(results, this.getServicePath(uriInfo),
+					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info("Esecuzione " + methodName + " completata."); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
     }
 
 
