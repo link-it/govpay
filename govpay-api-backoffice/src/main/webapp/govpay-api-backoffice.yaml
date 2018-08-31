@@ -5035,10 +5035,17 @@ components:
     tracciatoPendenze:
       type: object
       required:
+        - id
         - nomeFile
         - dataOraCaricamento
         - stato
       properties:
+        id:
+          type: number
+          description: 
+            Identificativo numerico del tracciato
+          example:
+            123456
         nomeFile:
           type: string
           description: Nome del file tracciato
