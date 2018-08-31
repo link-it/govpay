@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"id",
 "nomeFile",
 "dataOraCaricamento",
 "stato",
@@ -21,6 +22,9 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "dataOraUltimoAggiornamento",
 })
 public class TracciatoPendenze extends JSONSerializable {
+  
+  @JsonProperty("id")
+  private BigDecimal id = null;
   
   @JsonProperty("nomeFile")
   private String nomeFile = null;
@@ -46,6 +50,22 @@ public class TracciatoPendenze extends JSONSerializable {
   @JsonProperty("dataOraUltimoAggiornamento")
   private Date dataOraUltimoAggiornamento = null;
   
+  /**
+   * Identificativo numerico del tracciato
+   **/
+  public TracciatoPendenze id(BigDecimal id) {
+    this.id = id;
+    return this;
+  }
+
+  @JsonProperty("id")
+  public BigDecimal getId() {
+    return id;
+  }
+  public void setId(BigDecimal id) {
+    this.id = id;
+  }
+
   /**
    * Nome del file tracciato
    **/
@@ -182,7 +202,8 @@ public class TracciatoPendenze extends JSONSerializable {
       return false;
     }
     TracciatoPendenze tracciatoPendenze = (TracciatoPendenze) o;
-    return Objects.equals(nomeFile, tracciatoPendenze.nomeFile) &&
+    return Objects.equals(id, tracciatoPendenze.id) &&
+        Objects.equals(nomeFile, tracciatoPendenze.nomeFile) &&
         Objects.equals(dataOraCaricamento, tracciatoPendenze.dataOraCaricamento) &&
         Objects.equals(stato, tracciatoPendenze.stato) &&
         Objects.equals(numeroOperazioniTotali, tracciatoPendenze.numeroOperazioniTotali) &&
@@ -194,7 +215,7 @@ public class TracciatoPendenze extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(nomeFile, dataOraCaricamento, stato, numeroOperazioniTotali, numeroOperazioniEseguite, numeroOperazioniFallite, operatoreMittente, dataOraUltimoAggiornamento);
+    return Objects.hash(id, nomeFile, dataOraCaricamento, stato, numeroOperazioniTotali, numeroOperazioniEseguite, numeroOperazioniFallite, operatoreMittente, dataOraUltimoAggiornamento);
   }
 
   public static TracciatoPendenze parse(String json) throws ServiceException, ValidationException {
@@ -211,6 +232,7 @@ public class TracciatoPendenze extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class TracciatoPendenze {\n");
     
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    nomeFile: ").append(toIndentedString(nomeFile)).append("\n");
     sb.append("    dataOraCaricamento: ").append(toIndentedString(dataOraCaricamento)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
