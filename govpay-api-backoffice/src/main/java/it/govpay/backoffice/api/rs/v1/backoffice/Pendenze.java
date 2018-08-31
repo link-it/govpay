@@ -75,11 +75,11 @@ public class Pendenze extends BaseRsServiceV1{
 
     @POST
     @Path("/")
-    @Consumes({ "text/csv" })
+    @Consumes({ "application/json" })
     
-    public Response pendenzePOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @HeaderParam("nomeFile") String nomeFile){
+    public Response pendenzePOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.pendenzePOST(this.getUser(), uriInfo, httpHeaders, is, nomeFile);
+        return this.controller.pendenzePOST(this.getUser(), uriInfo, httpHeaders, is);
     }
 
     @GET
