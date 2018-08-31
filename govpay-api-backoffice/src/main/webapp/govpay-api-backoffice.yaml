@@ -63,6 +63,12 @@ paths:
             type: integer
             default: 25
             maximum: 200
+        - name: stato
+          in: query
+          description: filtro sullo stato della pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoTracciatoPendenza'
       responses:
         '200':
           description: Lista paginata dei tracciati ricercati
@@ -104,6 +110,9 @@ paths:
             application/json:
               schema:
                $ref: '#/components/schemas/tracciatoPendenze'
+            application/octet-stream:
+              schema:
+               type: object
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -159,33 +168,6 @@ paths:
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
-  '/pendenze/tracciati/{id}/raw':
-    get:
-      tags:
-        - Pendenze
-      summary: Tracciato in formato Zip
-      parameters:
-        - in: path
-          name: id
-          description: identificativo di un tracciato
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Zip contenente il tracciato di richiesta, risposta e gli avvisi di pagamento generati
-          content:
-            application/octet-stream:
-              schema:
-               type: object
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403' 
-        '404':
-          $ref: '#/components/responses/404'          
         '500':
           $ref: '#/components/responses/500'
   '/tracciati':
@@ -5041,6 +5023,15 @@ components:
           type: object
           description: valore del'oggetto dell'operazione
           example: "01234567890"
+    statoTracciatoPendenza:
+      example: ESEGUITO
+      type: string
+      enum:
+        - IN_ATTESA
+        - IN_ELABORAZIONE
+        - ESEGUITO
+        - ESEGUITO_CON_ERRORI
+        - SCARTATO
     tracciatoPendenze:
       type: object
       required:
@@ -5058,15 +5049,7 @@ components:
           example: '2018-12-31T12:00'
           description: Data di caricamento del tracciato
         stato:
-          type: string
-          enum:
-            - IN ATTESA
-            - IN ELABORAZIONE
-            - ESEGUITO
-            - ESEGUITO CON ERRORI
-            - SCARTATO
-          description: Stato del tracciato caricato
-          example: "ESEGUITO"
+          $ref: '#/components/schemas/statoTracciatoPendenza'
         numeroOperazioniTotali:
           type: number
           description: Numero totale di operazioni previste
@@ -5104,7 +5087,7 @@ components:
           enum:
             - ADD
             - DEL
-            - NON VALIDA
+            - NON_VALIDA
           description: Tipo Operazione
           example: "ADD"
         stato:
@@ -5112,7 +5095,7 @@ components:
           enum:
             - ESEGUITO
             - SCARTATO
-            - NON VALIDO
+            - NON_VALIDO
           description: Stato elaborazione dell'operazione
           example: "ESEGUITO"
         descrizioneStato:
