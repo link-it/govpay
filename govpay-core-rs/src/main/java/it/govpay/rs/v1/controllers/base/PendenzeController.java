@@ -32,7 +32,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.converter.PendenzeConverter;
-
+import it.govpay.core.rs.v1.beans.base.StatoTracciatoPendenza;
 
 
 public class PendenzeController extends it.govpay.rs.BaseController {
@@ -220,7 +220,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 
 
-    public Response pendenzeTracciatiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response pendenzeTracciatiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, StatoTracciatoPendenza stato) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
@@ -236,11 +236,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 
-
-
-    public Response pendenzeTracciatiIdRawGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
-    }
 
 }
 

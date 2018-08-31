@@ -28,58 +28,8 @@ public class TracciatoPendenze extends JSONSerializable {
   @JsonProperty("dataOraCaricamento")
   private Date dataOraCaricamento = null;
   
-    
-  /**
-   * Stato del tracciato caricato
-   */
-  public enum StatoEnum {
-    
-    
-        
-            
-    IN_ATTESA("IN ATTESA"),
-    
-            
-    IN_ELABORAZIONE("IN ELABORAZIONE"),
-    
-            
-    ESEGUITO("ESEGUITO"),
-    
-            
-    ESEGUITO_CON_ERRORI("ESEGUITO CON ERRORI"),
-    
-            
-    SCARTATO("SCARTATO");
-            
-        
-    
-
-    private String value;
-
-    StatoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static StatoEnum fromValue(String text) {
-      for (StatoEnum b : StatoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("stato")
-  private StatoEnum stato = null;
+  private StatoTracciatoPendenza stato = null;
   
   @JsonProperty("numeroOperazioniTotali")
   private BigDecimal numeroOperazioniTotali = null;
@@ -129,18 +79,17 @@ public class TracciatoPendenze extends JSONSerializable {
   }
 
   /**
-   * Stato del tracciato caricato
    **/
-  public TracciatoPendenze stato(StatoEnum stato) {
+  public TracciatoPendenze stato(StatoTracciatoPendenza stato) {
     this.stato = stato;
     return this;
   }
 
   @JsonProperty("stato")
-  public StatoEnum getStato() {
+  public StatoTracciatoPendenza getStato() {
     return stato;
   }
-  public void setStato(StatoEnum stato) {
+  public void setStato(StatoTracciatoPendenza stato) {
     this.stato = stato;
   }
 
