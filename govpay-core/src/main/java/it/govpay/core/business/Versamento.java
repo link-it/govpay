@@ -20,11 +20,13 @@
 package it.govpay.core.business;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
@@ -34,9 +36,13 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.core.business.model.AnnullaVersamentoDTO;
+import it.govpay.core.business.model.CaricaVersamentoDTO;
+import it.govpay.core.business.model.CaricaVersamentoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
@@ -163,6 +169,40 @@ public class Versamento extends BasicBD {
 				throw new GovPayException(e);
 		}
 	}
+	
+	public CaricaVersamentoDTOResponse caricaVersamento(CaricaVersamentoDTO caricaVersamentoDTO) throws GovPayException, NotAuthorizedException, ServiceException {
+		
+		// AUTORIZZAZIONE
+		if(caricaVersamentoDTO.getApplicazione() != null && !caricaVersamentoDTO.getApplicazione().getCodApplicazione().equals(caricaVersamentoDTO.getVersamento().getApplicazione(this).getCodApplicazione())) {
+			throw new NotAuthorizedException("Applicazione ["+caricaVersamentoDTO.getApplicazione().getCodApplicazione()+"] non autorizzata a caricare il Versamento ["+caricaVersamentoDTO.getVersamento().getCodVersamentoEnte()+"]");
+		}
+		
+		
+		if(caricaVersamentoDTO.getOperatore() != null && 
+				AclEngine.isAuthorized(caricaVersamentoDTO.getOperatore().getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null, Arrays.asList(Diritti.SCRITTURA,Diritti.ESECUZIONE))){
+			throw new NotAuthorizedException("Operatore chiamante [" + caricaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio());
+		}
+		
+		it.govpay.bd.model.Versamento versamento = caricaVersamentoDTO.getVersamento();
+		boolean generaIuv = caricaVersamentoDTO.isGeneraIuv();
+		boolean aggiornaSeEsiste = caricaVersamentoDTO.isAggiornaSeEsiste();
+		CaricaVersamentoDTOResponse response = new CaricaVersamentoDTOResponse();
+		
+		try {
+			it.govpay.model.Iuv iuv = this.caricaVersamento(versamento, generaIuv, aggiornaSeEsiste);
+			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), iuv, versamento.getImportoTotale());
+			response.setBarCode(iuvGenerato.getBarCode());
+			response.setCodApplicazione(iuvGenerato.getCodApplicazione());
+			response.setCodDominio(iuvGenerato.getCodDominio());
+			response.setCodVersamentoEnte(iuvGenerato.getCodVersamentoEnte());
+			response.setIuv(iuvGenerato.getIuv());
+			response.setNumeroAvviso(iuvGenerato.getNumeroAvviso());
+			response.setQrCode(iuvGenerato.getQrCode());
+			return response;
+		} catch (GovPayException e) {
+			throw e;
+		}
+	}
 
 	@Deprecated
 	public void annullaVersamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte) throws GovPayException {
@@ -208,6 +248,88 @@ public class Versamento extends BasicBD {
 			try {
 				disableSelectForUpdate();
 			} catch (Exception e) {}
+		}
+	}
+	
+	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException {
+		log.info("Richiesto annullamento per il Versamento (" + annullaVersamentoDTO.getCodVersamentoEnte() + ") dell'applicazione (" + annullaVersamentoDTO.getCodApplicazione() + ")");
+		
+		GpContext ctx = GpThreadLocal.get();
+		
+		if(!ctx.hasCorrelationId()) ctx.setCorrelationId(annullaVersamentoDTO.getCodApplicazione() + annullaVersamentoDTO.getCodVersamentoEnte());
+		ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", annullaVersamentoDTO.getCodApplicazione()));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codVersamentoEnte", annullaVersamentoDTO.getCodVersamentoEnte()));
+		ctx.log("versamento.annulla");
+		
+		if(annullaVersamentoDTO.getApplicazione() != null && !annullaVersamentoDTO.getApplicazione().getCodApplicazione().equals(annullaVersamentoDTO.getCodApplicazione())) {
+			throw new NotAuthorizedException("Applicazione chiamante [" + annullaVersamentoDTO.getApplicazione().getCodApplicazione() + "] non e' proprietaria del versamento");
+		}
+		
+		String codApplicazione = annullaVersamentoDTO.getCodApplicazione();
+		String codVersamentoEnte = annullaVersamentoDTO.getCodVersamentoEnte();
+		
+		try {
+			VersamentiBD versamentiBD = new VersamentiBD(this);
+			
+			setAutoCommit(false);
+			enableSelectForUpdate();
+			
+			try {
+				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
+			
+				if(annullaVersamentoDTO.getOperatore() != null && 
+						AclEngine.isAuthorized(annullaVersamentoDTO.getOperatore().getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamentoLetto.getUo(this).getDominio(this).getCodDominio(), null, Arrays.asList(Diritti.SCRITTURA,Diritti.ESECUZIONE))){
+					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
+				}
+				// Se è già annullato non devo far nulla.
+				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
+					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") gia' annullato. Aggiornamento non necessario.");
+					ctx.log("versamento.annullaOk");
+					return;
+				}
+				
+				// Se è in stato NON_ESEGUITO lo annullo
+				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+					versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
+					versamentoLetto.setDescrizioneStato(annullaVersamentoDTO.getMotivoAnnullamento()); 
+					versamentiBD.updateVersamento(versamentoLetto);
+					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") annullato.");
+					ctx.log("versamento.annullaOk");
+					return;
+				}
+				
+				// Se non è ne ANNULLATO ne NON_ESEGUITO non lo posso annullare
+				throw new GovPayException(EsitoOperazione.VER_009, codApplicazione, codVersamentoEnte, versamentoLetto.getStatoVersamento().toString());
+				
+			} catch (NotFoundException e) {
+				// Versamento inesistente
+				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
+			} finally {
+				commit();
+			}
+		} catch (Exception e) {
+			rollback();
+			if(e instanceof GovPayException) {
+				GovPayException gpe = (GovPayException) e;
+				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
+				throw (GovPayException) e;
+			} else if(e instanceof NotAuthorizedException) { 
+				NotAuthorizedException nae = (NotAuthorizedException) e;
+				ctx.log("versamento.annullaKo", "NOT_AUTHORIZED", nae.getDetails(), nae.getMessage() != null ? nae.getMessage() : "- Non specificata -");
+				throw nae;
+			} else {
+				GovPayException gpe = new GovPayException(e);
+				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
+				throw gpe;
+			}
+		} finally {
+			try {
+				disableSelectForUpdate();
+			} catch (ServiceException e) {
+				GovPayException gpe = new GovPayException(e);
+				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
+				throw gpe;
+			}
 		}
 	}
 	

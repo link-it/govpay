@@ -84,6 +84,7 @@ import it.govpay.core.business.model.ListaAvvisiDTO;
 import it.govpay.core.business.model.ListaAvvisiDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -92,7 +93,7 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Tracciato;
+import it.govpay.bd.model.Tracciato;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
@@ -106,9 +107,12 @@ public class Operazioni{
 	public static final String pnd = "update-pnd";
 	public static final String ntfy = "update-ntfy";
 	public static final String check_ntfy = "check-ntfy";
+	public static final String batch_tracciati = "caricamento-tracciati";
+	public static final String check_tracciati = "check-tracciati";
 	public static final String batch_generazione_avvisi = "generazione-avvisi";
 	public static final String batch_avvisatura_digitale = "avvisatura-digitale";
 	public static final String batch_esito_avvisatura_digitale = "esito-avvisatura-digitale";
+
 
 
 	private static boolean eseguiGenerazioneAvvisi;
@@ -123,6 +127,20 @@ public class Operazioni{
 
 	public static synchronized boolean getEseguiGenerazioneAvvisi() {
 		return eseguiGenerazioneAvvisi;
+	}
+
+	private static boolean eseguiElaborazioneTracciati;
+	
+	public static synchronized void setEseguiElaborazioneTracciati() {
+		eseguiElaborazioneTracciati = true;
+	}
+	
+	public static synchronized void resetEseguiElaborazioneTracciati() {
+		eseguiElaborazioneTracciati = false;
+	}
+	
+	public static synchronized boolean getEseguiElaborazioneTracciati() {
+		return eseguiElaborazioneTracciati;
 	}
 
 	public static String acquisizioneRendicontazioni(String serviceName){
@@ -1021,6 +1039,69 @@ public class Operazioni{
 			BatchManager.stopEsecuzione(bd, batch_avvisatura_digitale);
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
+		}
+	}
+
+	public static String elaborazioneTracciati(String serviceName){
+		BasicBD bd = null;
+		GpContext ctx = null;
+		try {
+			ctx = new GpContext();
+			MDC.put("cmd", "ElaborazioneTracciati");
+			MDC.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName(serviceName);
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
+			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("CaricamentoTracciato");
+			ctx.getTransaction().setOperation(opt);
+			GpThreadLocal.set(ctx);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			
+			if(BatchManager.startEsecuzione(bd, batch_tracciati)) {
+				bd.setAutoCommit(false);
+				log.trace("Elaborazione tracciati");
+				
+				TracciatiBD tracciatiBD = new TracciatiBD(bd);
+				TracciatoFilter filter = tracciatiBD.newFilter();
+				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
+				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+//				filter.setDataUltimoAggiornamentoMax(new Date());
+				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
+				Tracciati tracciatiBusiness = new Tracciati(bd);
+				
+				while(tracciati.size() != 0) {
+					log.info("Trovati ["+tracciati.size()+"] tracciati da elaborare...");
+					
+					for(Tracciato tracciato: tracciati) {
+						log.info("Avvio elaborazione tracciato "  + tracciato.getId());
+						ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
+						elaboraTracciatoDTO.setTracciato(tracciato);
+						tracciatiBusiness.elaboraTracciato(elaboraTracciatoDTO);
+						log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
+					}
+					
+//					filter.setDataUltimoAggiornamentoMax(new Date());
+					tracciati = tracciatiBD.findAll(filter);
+				}
+				
+				aggiornaSondaOK(batch_tracciati, bd);
+				BatchManager.stopEsecuzione(bd, batch_tracciati);
+				log.info("Elaborazione tracciati terminata.");
+				return "Elaborazione tracciati terminata.";
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			if(bd != null) {
+				bd.rollback();
+				aggiornaSondaKO(batch_tracciati, e, bd); 
+			}
+			log.error("Non è stato possibile eseguire l'elaborazione dei tracciati", e);
+			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
+		} finally {
+			if(bd != null) bd.closeConnection();
 		}
 	}
 }

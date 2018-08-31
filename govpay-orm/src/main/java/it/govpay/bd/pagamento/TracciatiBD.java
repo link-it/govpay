@@ -31,7 +31,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.TracciatoConverter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.model.Tracciato;
+import it.govpay.bd.model.Tracciato;
 import it.govpay.orm.IdTracciato;
 import it.govpay.orm.dao.jdbc.JDBCTracciatoServiceSearch;
 

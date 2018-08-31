@@ -74,7 +74,7 @@ public class Check {
 					StatoSonda statoSonda = sonda.getStatoSonda();
 					ParametriSonda parametri = sonda.getParam();
 					parametri.getDatiCheck();
-				
+					
 					try (
 							StringWriter writer  = new StringWriter();
 							PrintWriter printWriter = new PrintWriter(writer); 	

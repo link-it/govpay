@@ -20,7 +20,8 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.model.Tracciato;
+import it.govpay.bd.model.Tracciato;
+import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.rs.BaseController;
 import it.govpay.rs.v1.beans.converter.TracciatiConverter;
 
@@ -52,6 +53,10 @@ public class TracciatiController extends BaseController {
 			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO(user);
 			listaTracciatiDTO.setPagina(pagina);
 			listaTracciatiDTO.setLimit(risultatiPerPagina);
+			List<TIPO_TRACCIATO> tipo = new ArrayList<>();
+			tipo.add(TIPO_TRACCIATO.AV);
+			tipo.add(TIPO_TRACCIATO.AV_ESITO);
+			listaTracciatiDTO.setTipoTracciato(tipo); 
 
 			// INIT DAO
 

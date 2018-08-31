@@ -1,6 +1,6 @@
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.Tracciato;
+import it.govpay.bd.model.Tracciato;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 
@@ -24,7 +24,7 @@ public class TracciatoConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.Tracciato toVO(it.govpay.model.Tracciato dto)  {
+	public static it.govpay.orm.Tracciato toVO(Tracciato dto)  {
 		it.govpay.orm.Tracciato vo = new it.govpay.orm.Tracciato();
 		vo.setId(dto.getId());
 

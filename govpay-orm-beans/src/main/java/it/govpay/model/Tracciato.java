@@ -85,10 +85,17 @@ public class Tracciato extends BasicModel {
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
+	
+	public Long getIdOperatore() {
+		return idOperatore;
+	}
+	public void setIdOperatore(Long idOperatore) {
+		this.idOperatore = idOperatore;
+	}
 
 	public enum STATO_ELABORAZIONE {ELABORAZIONE, COMPLETATO, SCARTATO}
 	
-	public enum TIPO_TRACCIATO {AV, AV_ESITO}
+	public enum TIPO_TRACCIATO {AV, AV_ESITO, PENDENZA}
 	
 	private TIPO_TRACCIATO tipo;
 	private STATO_ELABORAZIONE stato;
@@ -102,5 +109,8 @@ public class Tracciato extends BasicModel {
 	private String fileNameEsito;
 	private byte[] rawEsito;
 	private Long id;
+	private Long idOperatore;
+
+
 
 }
