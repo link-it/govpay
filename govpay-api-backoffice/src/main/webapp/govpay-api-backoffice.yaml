@@ -1723,13 +1723,6 @@ paths:
       tags:
         - Pendenze
       summary: Aggiunge un nuovo Tracciato di Pendenze
-      parameters:
-        - in: header
-          name: nomeFile
-          description: Nome del file Pendenze inviato
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
