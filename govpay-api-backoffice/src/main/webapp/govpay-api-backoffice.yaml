@@ -5131,12 +5131,18 @@ components:
           example: "1528380303573122"
     tracciatoPendenzePost:
       type: object
+      required:
+        - idTracciato
       properties:
-        add:
+        idTracciato:
+          type: string
+          description: Identificativo del tracciato
+          example: "1528380303573122"
+        inserimenti:
           type: array
           items:
             $ref: '#/components/schemas/pendenzaPost'
-        del:
+        annullamenti:
           type: array
           items:
             $ref: '#/components/schemas/annullamentoPendenza'
