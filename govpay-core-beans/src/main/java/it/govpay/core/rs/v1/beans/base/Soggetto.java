@@ -7,6 +7,9 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
+
 /**
  * dati anagrafici di un versante o pagatore.
  **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -22,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 "email",
 "cellulare",
 })
-public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable {
+public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implements IValidable {
   
     
   /**
@@ -332,6 +335,21 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
+		 ValidatorFactory vf = ValidatorFactory.newInstance();
+		 vf.getValidator("tipo", tipo).notNull();
+		 vf.getValidator("identificativo", identificativo).notNull().minLength(1).maxLength(35);
+		 vf.getValidator("anagrafica", anagrafica).minLength(1).maxLength(70);
+		 vf.getValidator("indirizzo", indirizzo).minLength(1).maxLength(70);
+		 vf.getValidator("civico", civico).minLength(1).maxLength(16);
+		 vf.getValidator("cap", cap).minLength(1).maxLength(16);
+		 vf.getValidator("localita", localita).minLength(1).maxLength(35);
+		 vf.getValidator("provincia", provincia).minLength(1).maxLength(70);
+		 vf.getValidator("nazione", nazione).pattern("[A-Z]{2,2}");
+		 vf.getValidator("email", email).pattern("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)");
+		 vf.getValidator("cellulare", cellulare).pattern("\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}");
+	 }
 }
 
 

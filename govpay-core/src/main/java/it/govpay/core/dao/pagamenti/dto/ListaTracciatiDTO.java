@@ -18,6 +18,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	private String operatore;
 	private STATO_ELABORAZIONE statoTracciato = null;
 	private StatoTracciatoPendenza statoTracciatoPendenza = null;
+	private String idDominio;
 	
 	public ListaTracciatiDTO(IAutorizzato user) {
 		super(user);
@@ -55,6 +56,12 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	public void setStatoTracciatoPendenza(StatoTracciatoPendenza statoTracciatoPendenza) {
 		this.statoTracciatoPendenza = statoTracciatoPendenza;
 	}
-	
-	
+
+	public String getIdDominio() {
+		return idDominio;
+	}
+
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
+	}
 }

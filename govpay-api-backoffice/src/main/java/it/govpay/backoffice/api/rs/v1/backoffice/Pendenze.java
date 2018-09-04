@@ -3,7 +3,6 @@ package it.govpay.backoffice.api.rs.v1.backoffice;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -47,6 +46,15 @@ public class Pendenze extends BaseRsServiceV1{
     }
 
     @GET
+    @Path("/tracciati/{id}/esito")
+    
+    @Produces({ "application/json" })
+    public Response pendenzeTracciatiIdEsitoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pendenzeTracciatiIdEsitoGET(this.getUser(), uriInfo, httpHeaders,  id);
+    }
+
+    @GET
     @Path("/")
     
     @Produces({ "application/json" })
@@ -59,9 +67,9 @@ public class Pendenze extends BaseRsServiceV1{
     @Path("/tracciati")
     
     @Produces({ "application/json" })
-    public Response pendenzeTracciatiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("stato") StatoTracciatoPendenza stato){
+    public Response pendenzeTracciatiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("stato") StatoTracciatoPendenza stato){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.pendenzeTracciatiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, stato);
+        return this.controller.pendenzeTracciatiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, stato);
     }
 
     @PATCH
@@ -85,10 +93,19 @@ public class Pendenze extends BaseRsServiceV1{
     @GET
     @Path("/tracciati/{id}")
     
-    @Produces({ "application/json", "application/octet-stream" })
+    @Produces({ "application/json" })
     public Response pendenzeTracciatiIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.pendenzeTracciatiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
+    }
+
+    @GET
+    @Path("/tracciati/{id}/stampe")
+    
+    @Produces({ "application/zip" })
+    public Response pendenzeTracciatiIdStampeGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pendenzeTracciatiIdStampeGET(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
     @GET

@@ -28,6 +28,7 @@ public class OperazioniDAO extends BaseDAO{
 	public final static String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
 	public final static String GENERAZIONE_AVVISI_PAGAMENTO = "generaAvvisiPagamento";
 	public final static String ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO = "attivazioneGenerazioneAvvisiPagamento";
+	public final static String ELABORAZIONE_TRACCIATI_PENDENZE = "elaborazioneTracciatiPendenze";
 
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws ServiceException, OperazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
@@ -52,6 +53,9 @@ public class OperazioniDAO extends BaseDAO{
 			}else if(leggiOperazioneDTO.getIdOperazione().equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
 				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
 				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
+			}else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_PENDENZE)){
+				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
+				esitoOperazione = "Elaborazione Tacciati schedulata";
 			}else {
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
@@ -83,6 +87,7 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(RESET_CACHE_ANAGRAFICA));
 			results.add(new LeggiOperazioneDTOResponse(GENERAZIONE_AVVISI_PAGAMENTO));
 			results.add(new LeggiOperazioneDTOResponse(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO));
+			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_PENDENZE));
 			
 			return new ListaOperazioniDTOResponse(results .size(), results);
 		}finally {

@@ -24,6 +24,7 @@ public class LeggiPendenzaDTOResponse {
 	private UnitaOperativa unitaOperativa;
 	private Dominio dominio;
 	private Applicazione applicazione;
+	private byte[] avvisoPdf;
 
 	public Versamento getVersamento() {
 		return versamento;
@@ -64,4 +65,13 @@ public class LeggiPendenzaDTOResponse {
 	public void setLstSingoliVersamenti(List<SingoloVersamento> lstSingoliVersamenti) {
 		this.lstSingoliVersamenti = lstSingoliVersamenti;
 	}
+
+	public byte[] getAvvisoPdf() {
+		return avvisoPdf;
+	}
+
+	public void setAvvisoPdf(byte[] avvisoPdf) {
+		this.avvisoPdf = avvisoPdf;
+	}
+	
 }

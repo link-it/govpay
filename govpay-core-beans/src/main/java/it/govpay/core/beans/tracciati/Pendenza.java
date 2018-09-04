@@ -4,10 +4,16 @@ import java.util.Date;
 
 public class Pendenza {
 
-	private long numLineeTotali;
-	private long numOperazioniOk;
-	private long numOperazioniKo;
-	private long lineaElaborazione;
+	private long numAddTotali;
+	private long numAddOk;
+	private long numAddKo;
+	private long lineaElaborazioneAdd;
+	
+	private long numDelTotali;
+	private long numDelOk;
+	private long numDelKo;
+	private long lineaElaborazioneDel;
+	
 	private Date dataUltimoAggiornamento;
 	private String stepElaborazione;
 	private String descrizioneStepElaborazione;
@@ -25,30 +31,6 @@ public class Pendenza {
 	public void setDescrizioneStepElaborazione(String descrizioneStepElaborazione) {
 		this.descrizioneStepElaborazione = descrizioneStepElaborazione;
 	}
-	public long getNumLineeTotali() {
-		return numLineeTotali;
-	}
-	public void setNumLineeTotali(long numLineeTotali) {
-		this.numLineeTotali = numLineeTotali;
-	}
-	public long getNumOperazioniOk() {
-		return numOperazioniOk;
-	}
-	public void setNumOperazioniOk(long numOperazioniOk) {
-		this.numOperazioniOk = numOperazioniOk;
-	}
-	public long getNumOperazioniKo() {
-		return numOperazioniKo;
-	}
-	public void setNumOperazioniKo(long numOperazioniKo) {
-		this.numOperazioniKo = numOperazioniKo;
-	}
-	public long getLineaElaborazione() {
-		return lineaElaborazione;
-	}
-	public void setLineaElaborazione(long lineaElaborazione) {
-		this.lineaElaborazione = lineaElaborazione;
-	}
 	public Date getDataUltimoAggiornamento() {
 		return dataUltimoAggiornamento;
 	}
@@ -61,6 +43,52 @@ public class Pendenza {
 	public void setOperatore(String operatore) {
 		this.operatore = operatore;
 	}
-	
-	
+	public long getNumAddTotali() {
+		return numAddTotali;
+	}
+	public void setNumAddTotali(long numAddTotali) {
+		this.numAddTotali = numAddTotali;
+	}
+	public long getNumAddOk() {
+		return numAddOk;
+	}
+	public void setNumAddOk(long numAddOk) {
+		this.numAddOk = numAddOk;
+	}
+	public long getNumAddKo() {
+		return numAddKo;
+	}
+	public void setNumAddKo(long numAddKo) {
+		this.numAddKo = numAddKo;
+	}
+	public long getLineaElaborazioneAdd() {
+		return lineaElaborazioneAdd;
+	}
+	public void setLineaElaborazioneAdd(long lineaElaborazioneAdd) {
+		this.lineaElaborazioneAdd = lineaElaborazioneAdd;
+	}
+	public long getNumDelTotali() {
+		return numDelTotali;
+	}
+	public void setNumDelTotali(long numDelTotali) {
+		this.numDelTotali = numDelTotali;
+	}
+	public long getNumDelOk() {
+		return numDelOk;
+	}
+	public void setNumDelOk(long numDelOk) {
+		this.numDelOk = numDelOk;
+	}
+	public long getNumDelKo() {
+		return numDelKo;
+	}
+	public void setNumDelKo(long numDelKo) {
+		this.numDelKo = numDelKo;
+	}
+	public long getLineaElaborazioneDel() {
+		return lineaElaborazioneDel;
+	}
+	public void setLineaElaborazioneDel(long lineaElaborazioneDel) {
+		this.lineaElaborazioneDel = lineaElaborazioneDel;
+	}
 }

@@ -1,5 +1,6 @@
 package it.govpay.core.utils.tracciati.operazioni;
 
+import it.govpay.bd.model.Operatore;
 import it.govpay.model.Operazione.TipoOperazioneType;
 
 
@@ -9,7 +10,10 @@ public abstract class AbstractOperazioneRequest {
 	private Long linea;
 	private byte[] dati;
 	private TipoOperazioneType tipoOperazione;
-	
+	private Operatore operatore;
+	private String codApplicazione;
+	private String codVersamentoEnte;
+
 	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
@@ -40,7 +44,28 @@ public abstract class AbstractOperazioneRequest {
 	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
-	
-	public abstract String getCodApplicazione();
-	public abstract String getCodVersamentoEnte();
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+
+	public Operatore getOperatore() {
+		return operatore;
+	}
+
+	public void setOperatore(Operatore operatore) {
+		this.operatore = operatore;
+	}
 }

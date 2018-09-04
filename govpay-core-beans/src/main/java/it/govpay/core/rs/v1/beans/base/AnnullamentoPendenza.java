@@ -8,12 +8,14 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idA2A",
 "idPendenza",
 "motivoAnnullamento",
 })
-public class AnnullamentoPendenza extends JSONSerializable {
+public class AnnullamentoPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("idA2A")
   private String idA2A = null;
@@ -122,6 +124,15 @@ public class AnnullamentoPendenza extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		
+		vf.getValidator("idA2A", idA2A).notNull().minLength(1).maxLength(35);
+		vf.getValidator("idPendenza", idPendenza).notNull().minLength(1).maxLength(35);
+		vf.getValidator("motivoAnnullamento", motivoAnnullamento).notNull();
+	}
 }
 
 

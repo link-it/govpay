@@ -1,5 +1,6 @@
 package it.govpay.core.business;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -96,6 +97,10 @@ public class AvvisoPagamento extends BasicBD {
 	}
 
 	public PrintAvvisoDTOResponse printAvviso(PrintAvvisoDTO printAvviso) {
+		return printAvviso(printAvviso, true);
+	}
+
+	public PrintAvvisoDTOResponse printAvviso(PrintAvvisoDTO printAvviso, boolean update) {
 		PrintAvvisoDTOResponse response = new PrintAvvisoDTOResponse();
 
 		it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento = printAvviso.getAvviso();
@@ -105,12 +110,14 @@ public class AvvisoPagamento extends BasicBD {
 		try {
 			it.govpay.model.avvisi.AvvisoPagamento avvisoPagamentoResponse  = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, avvisoPagamento, avProperties);
 			
-			log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db in corso...");
-			// aggiornamento della entry sul db
-			AvvisiPagamentoBD avvisiBD = new AvvisiPagamentoBD(this);
-			avvisoPagamentoResponse.setStato(StatoAvviso.STAMPATO); 
-			avvisiBD.updateAvviso(avvisoPagamentoResponse);
-			log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db completato.");
+			if(update) {
+				log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db in corso...");
+				// aggiornamento della entry sul db
+				AvvisiPagamentoBD avvisiBD = new AvvisiPagamentoBD(this);
+				avvisoPagamentoResponse.setStato(StatoAvviso.STAMPATO); 
+				avvisiBD.updateAvviso(avvisoPagamentoResponse);
+				log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db completato.");
+			}
 			response.setAvviso(avvisoPagamentoResponse);
 		} catch (Exception e) {
 			log.error("Creazione Pdf Avviso Pagamento fallito", e);
@@ -119,7 +126,7 @@ public class AvvisoPagamento extends BasicBD {
 		return response;
 	}
 
-	public AvvisoPagamentoInput fromVersamento(it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento, it.govpay.bd.model.Versamento versamento) throws Exception {
+	public AvvisoPagamentoInput fromVersamento(it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento, it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 
 		Dominio dominio = versamento.getUo(this).getDominio(this);
@@ -166,8 +173,13 @@ public class AvvisoPagamento extends BasicBD {
 				IuvUtils.toIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), 
 						versamento.getIuv(this), versamento.getImportoTotale());
 
-		if(versamento.getCausaleVersamento() != null)
-			input.setAvvisoCausale(versamento.getCausaleVersamento().getSimple());
+		if(versamento.getCausaleVersamento() != null) {
+			try {
+				input.setAvvisoCausale(versamento.getCausaleVersamento().getSimple());
+			}catch (UnsupportedEncodingException e) {
+				throw new ServiceException(e);
+			}
+		}
 		
 		// avviso_mav 
 		input.setAvvisoMav(false);

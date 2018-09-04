@@ -3,25 +3,29 @@ package it.govpay.core.rs.v1.beans.base;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.generic_project.exception.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"indice",
-"idVocePendenza",
-"importo",
-"descrizione",
-"stato",
-"datiAllegati",
-"hashDocumento",
-"tipoBollo",
-"provinciaResidenza",
-"codEntrata",
-"codiceContabilita",
-"ibanAccredito",
-"tipoContabilita",
+	"indice",
+	"idVocePendenza",
+	"importo",
+	"descrizione",
+	"stato",
+	"datiAllegati",
+	"hashDocumento",
+	"tipoBollo",
+	"provinciaResidenza",
+	"codEntrata",
+	"codiceContabilita",
+	"ibanAccredito",
+	"ibanAppoggio",
+	"tipoContabilita",
 })
-public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
+public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable implements IValidable{
   
   @JsonProperty("indice")
   private BigDecimal indice = null;
@@ -102,6 +106,9 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("ibanAccredito")
   private String ibanAccredito= null;
+  
+	@JsonProperty("ibanAppoggio")
+	private String ibanAppoggio= null;
   
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita= null;
@@ -284,6 +291,19 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     this.tipoContabilita= tipoContabilita;
     return this;
   }
+  
+	public VocePendenza ibanAppoggio(String ibanAppoggio) {
+		this.ibanAppoggio= ibanAppoggio;
+		return this;
+	}
+
+	@JsonProperty("ibanAppoggio")
+	public String getIbanAppoggio() {
+		return ibanAppoggio;
+	}
+	public void setIbanAppoggio(String ibanAppoggio) {
+		this.ibanAppoggio = ibanAppoggio;
+	}
 
   @JsonProperty("tipoContabilita")
   public TipoContabilita getTipoContabilita() {
@@ -320,7 +340,7 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, datiAllegati, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, ibanAccredito, tipoContabilita);
   }
 
-  public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
     return (VocePendenza) parse(json, VocePendenza.class);
   }
 
@@ -360,6 +380,63 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("idVocePendenza", idVocePendenza).notNull().minLength(1).maxLength(35);
+		vf.getValidator("importo", importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
+
+		if(codEntrata != null) {
+			vf.getValidator("codEntrata", codEntrata).notNull().minLength(1).maxLength(35);
+			try {
+				vf.getValidator("tipoBollo", tipoBollo).isNull();
+				vf.getValidator("hashDocumento", hashDocumento).isNull();
+				vf.getValidator("provinciaResidenza", provinciaResidenza).isNull();
+				vf.getValidator("ibanAccredito", ibanAccredito).isNull();
+				vf.getValidator("ibanAppoggio", ibanAppoggio).isNull();
+				vf.getValidator("tipoContabilita", tipoContabilita).isNull();
+				vf.getValidator("codiceContabilita", codiceContabilita).isNull();
+			} catch (ValidationException ve) {
+				throw new ValidationException("Valorizzato codEntrata. " + ve.getMessage());
+			}
+
+			return;
+		}
+
+		if(tipoBollo != null) {
+			vf.getValidator("tipoBollo", tipoBollo).notNull();
+			vf.getValidator("hashDocumento", hashDocumento).notNull().minLength(1).maxLength(70);
+			vf.getValidator("provinciaResidenza", provinciaResidenza).notNull().pattern("[A-Z]{2,2}");
+
+			try {
+				vf.getValidator("ibanAccredito", ibanAccredito).isNull();
+				vf.getValidator("ibanAppoggio", ibanAppoggio).isNull();
+				vf.getValidator("tipoContabilita", tipoContabilita).isNull();
+				vf.getValidator("codiceContabilita", codiceContabilita).isNull();
+			} catch (ValidationException ve) {
+				throw new ValidationException("Valorizzato tipoBollo. " + ve.getMessage());
+			}
+
+			return;
+		}
+
+
+		if(ibanAccredito != null) {
+			vf.getValidator("ibanAccredito", ibanAccredito).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
+			vf.getValidator("ibanAppoggio", ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");;
+			vf.getValidator("tipoContabilita", tipoContabilita).notNull();
+			vf.getValidator("codiceContabilita", codiceContabilita).notNull().pattern("\\S{3,138}");;
+
+			try {
+				vf.getValidator("hashDocumento", hashDocumento).isNull();
+				vf.getValidator("provinciaResidenza", provinciaResidenza).isNull();
+			} catch (ValidationException ve) {
+				throw new ValidationException("Valorizzato ibanAccredito. " + ve.getMessage());
+			}
+		}
+
+	}
 }
 
 

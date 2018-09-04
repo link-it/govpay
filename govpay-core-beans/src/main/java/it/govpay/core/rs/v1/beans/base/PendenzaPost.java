@@ -1,6 +1,7 @@
 package it.govpay.core.rs.v1.beans.base;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +11,9 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "idUnitaOperativa",
@@ -30,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "idA2A",
 "idPendenza",
 })
-public class PendenzaPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
+public class PendenzaPost extends it.govpay.core.rs.v1.beans.JSONSerializable implements IValidable {
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -463,6 +467,26 @@ public class PendenzaPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+
+		vf.getValidator("idDominio", idDominio).isNull();
+		vf.getValidator("idUnitaOperativa", idUnitaOperativa).minLength(1).maxLength(35);
+		vf.getValidator("nome", nome).minLength(1).maxLength(35);
+		vf.getValidator("causale", causale).notNull().minLength(1).maxLength(140);
+		vf.getValidator("soggettoPagatore", soggettoPagatore).notNull().validateFields();
+		vf.getValidator("importo", importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
+		vf.getValidator("numeroAvviso", numeroAvviso).pattern("[0-9]{18}");
+		vf.getValidator("dataValidita", dataValidita).after(LocalDate.now());
+		vf.getValidator("dataScadenza", dataScadenza).after(LocalDate.now());
+		if(annoRiferimento != null)
+			vf.getValidator("annoRiferimento", annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
+		vf.getValidator("cartellaPagamento", cartellaPagamento).minLength(1).maxLength(35);
+		vf.getValidator("idA2A", idA2A).notNull().minLength(1).maxLength(35);
+		vf.getValidator("idPendenza", idPendenza).notNull().minLength(1).maxLength(35);
+		vf.getValidator("voci", voci).notNull().minItems(1).maxItems(5).validateObjects();
+	}
 }
 
 

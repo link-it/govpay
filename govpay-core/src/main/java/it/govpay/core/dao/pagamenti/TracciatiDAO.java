@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -13,6 +14,7 @@ import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Tracciato;
@@ -155,7 +157,7 @@ public class TracciatiDAO extends BaseDAO{
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 
 		List<String> listaDominiFiltro;
-		this.autorizzaRichiesta(listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+		this.autorizzaRichiesta(listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, listaTracciatiDTO.getIdDominio(), null, bd);
 
 		// Autorizzazione sui domini
 		listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
@@ -166,12 +168,24 @@ public class TracciatiDAO extends BaseDAO{
 		TracciatiBD tracciatoBD = new TracciatiBD(bd);
 		TracciatoFilter filter = tracciatoBD.newFilter();
 
+		if(listaTracciatiDTO.getIdDominio() != null)
+				listaDominiFiltro.add(listaTracciatiDTO.getIdDominio());
+		
 		filter.setDomini(listaDominiFiltro);
 		filter.setTipo(listaTracciatiDTO.getTipoTracciato());
 		filter.setOffset(listaTracciatiDTO.getOffset());
 		filter.setLimit(listaTracciatiDTO.getLimit());
 		filter.setOperatore(listaTracciatiDTO.getOperatore());
 		filter.setStato(listaTracciatiDTO.getStatoTracciato()); 
+		
+		List<FilterSortWrapper> filterSortList = new ArrayList<>();
+		FilterSortWrapper fsw = new FilterSortWrapper();
+		fsw.setSortOrder(SortOrder.DESC);
+		fsw.setField(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO);
+		filterSortList.add(fsw );
+		filter.setFilterSortList(filterSortList );
+		
+		
 
 		long count = tracciatoBD.count(filter);
 
@@ -189,13 +203,12 @@ public class TracciatiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(postTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
+			this.autorizzaRichiesta(postTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, postTracciatoDTO.getIdDominio(), null, bd);
 			
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			config.setIgnoreNullValues(true);
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-
 	
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			
@@ -205,6 +218,7 @@ public class TracciatiDAO extends BaseDAO{
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
 			
 			Tracciato tracciato = new Tracciato();
+			tracciato.setCodDominio(postTracciatoDTO.getIdDominio());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			tracciato.setDataCaricamento(new Date());
 			tracciato.setFileNameRichiesta(postTracciatoDTO.getNomeFile());
@@ -216,6 +230,8 @@ public class TracciatiDAO extends BaseDAO{
 			
 			tracciatoBD.insertTracciato(tracciato);
 			
+			// avvio elaborazione tracciato
+			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 			return new PostTracciatoDTOResponse();
 
 			

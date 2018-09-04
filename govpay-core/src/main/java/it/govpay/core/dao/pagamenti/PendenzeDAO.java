@@ -335,8 +335,6 @@ public class PendenzeDAO extends BaseDAO{
 
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
-		} catch (Exception e) {
-			throw new GovPayException(e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -344,4 +342,39 @@ public class PendenzeDAO extends BaseDAO{
 		return createOrUpdatePendenzaResponse;
 	}
 
+	public LeggiPendenzaDTOResponse leggiAvvisoPagamento(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
+		Versamento versamento;
+		BasicBD bd = null;
+		
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(leggiPendenzaDTO.getIdDominio(), leggiPendenzaDTO.getNumeroAvviso()); 
+			
+			Dominio dominio = versamento.getDominio(versamentiBD);
+			// controllo che il dominio sia autorizzato
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), null, bd);
+			
+			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
+			AvvisoPagamento avvisoPagamento = new AvvisoPagamento();
+			avvisoPagamento.setCodDominio(versamento.getDominio(bd).getCodDominio());
+			avvisoPagamento.setIuv(versamento.getIuvVersamento());
+			PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
+			printAvvisoDTO.setAvviso(avvisoPagamento);
+			AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, versamento);
+			printAvvisoDTO.setInput(input); 
+			PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO,false);
+			response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
+
+		} catch (NotFoundException e) {
+			throw new PendenzaNonTrovataException(e.getMessage(), e);
+		}  finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		return response;
+	}
 }

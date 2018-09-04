@@ -21,6 +21,8 @@ public class LeggiPendenzaDTO extends BasicCreateRequestDTO {
 
 	private String codA2A;
 	private String codPendenza;
+	private String idDominio;
+	private String numeroAvviso;
 
 	public String getCodA2A() {
 		return codA2A;
@@ -33,5 +35,17 @@ public class LeggiPendenzaDTO extends BasicCreateRequestDTO {
 	}
 	public void setCodPendenza(String codPendenza) {
 		this.codPendenza = codPendenza;
+	}
+	public String getIdDominio() {
+		return idDominio;
+	}
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
+	}
+	public String getNumeroAvviso() {
+		return numeroAvviso;
+	}
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
 	}
 }
