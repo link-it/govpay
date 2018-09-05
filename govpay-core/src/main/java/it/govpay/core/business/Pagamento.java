@@ -607,16 +607,18 @@ public class Pagamento extends BasicBD {
 					// SKIPPO LE RPT PENDENTI CREATE MENO DI MEZZ'ORA FA
 					
 					if(rpt.getDataMsgRichiesta().after(mezzorafa)) {
-						log.debug("Rpt recente [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: aggiornamento non necessario");
+						log.info("Rpt recente [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] aggiornamento non necessario");
 						continue;
+					} else {
+						log.info("Rpt pendente su GovPay [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + rpt.getStato().name());
 					}
 					
 					// Aggiorno il batch
 					BatchManager.aggiornaEsecuzione(this, Operazioni.pnd);
 					
-					String stato = statiRptPendenti.get(rpt.getIuv() + "@" + rpt.getCcp());
+					String stato = statiRptPendenti.get(rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null) {
-						log.debug("Rpt confermata pendente dal nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: stato " + stato);
+						log.info("Rpt confermata pendente dal nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
 						ctx.log("pendenti.confermaPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato);
 						StatoRpt statoRpt = StatoRpt.toEnum(stato);
 						if(!rpt.getStato().equals(statoRpt)) {
@@ -624,7 +626,7 @@ public class Pagamento extends BasicBD {
 							rptBD.updateRpt(rpt.getId(), statoRpt, null, null, null);
 						}
 					} else {
-						log.debug("Rpt non pendente sul nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
+						log.info("Rpt non pendente sul nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
 						ctx.log("pendenti.confermaNonPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 						// Accedo alle entita che serviranno in seguito prima di chiudere la connessione;
 						rpt.getStazione(this).getIntermediario(this);
@@ -642,10 +644,10 @@ public class Pagamento extends BasicBD {
 
 						if(rpt.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP) && (rpt.getStato().equals(StatoRpt.RPT_ATTIVATA) || rpt.getStato().equals(StatoRpt.RPT_ERRORE_INVIO_A_NODO))) {
 							ctx.log("pendenti.rptAttivata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
-							log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt in stato " + rpt.getStato().toString() + ". Avviata rispedizione al Nodo.");
+							log.info("Rpt attivata ma non consegnata [" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]: avviata rispedizione al Nodo.");
 						} else {
 							ctx.log("pendenti.rptAggiornata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rpt.getStato().toString());
-							log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
+							log.info("Processo di aggiornamento completato [" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]: nuovo stato " + rpt.getStato().toString());
 							response.add("[" + rpt.getCodDominio() + " " + rpt.getIuv() + " " + rpt.getCcp() + "]# Aggiornamento in stato " + rpt.getStato().toString());
 						}
 					}
@@ -785,7 +787,7 @@ public class Pagamento extends BasicBD {
 			
 			// Qui ci arrivo o se ho meno di 500 risultati oppure se sono in *giornaliero per dominio*
 			for(TipoRPTPendente rptPendente : risposta.getListaRPTPendenti().getRptPendente()) {
-				String rptKey = rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
+				String rptKey = rptPendente.getIdentificativoDominio() + "@" + rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
 				statiRptPendenti.put(rptKey, rptPendente.getStato());
 			}
 			
