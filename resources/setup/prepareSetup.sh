@@ -1,6 +1,5 @@
 VERSION=3.1.0
 
-
 mvn -f ../../pom.xml -Denv=installer_template clean install
 
 # Directory

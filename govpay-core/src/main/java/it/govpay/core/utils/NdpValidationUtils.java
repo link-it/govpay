@@ -37,7 +37,7 @@ public class NdpValidationUtils {
 		if(rr == null && er == null) return;
 		if(rr == null || er == null) esito.addErrore("SoggettoVersante non corriponde", true);
 
-		valida(rr.getAnagraficaVersante(),er.getAnagraficaVersante(), esito, "AnagraficaVersante non corrisponde", true);
+		valida(rr.getAnagraficaVersante(),er.getAnagraficaVersante(), esito, "AnagraficaVersante non corrisponde", false);
 		valida(rr.getCapVersante(),er.getCapVersante(), esito, "CapVersante non corrisponde", false);
 		valida(rr.getCivicoVersante(),er.getCivicoVersante(), esito, "CivicoVersante non corrisponde", false);
 		valida(rr.getEMailVersante(),er.getEMailVersante(), esito, "EMailVersante non corrisponde", false);
@@ -62,7 +62,7 @@ public class NdpValidationUtils {
 	}
 
 	public static String validaSemantica(it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoPagatore rr, it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoPagatore er, EsitoValidazione esito) {
-		valida(rr.getAnagraficaPagatore(),er.getAnagraficaPagatore(), esito, "AnagraficaPagatore non corrisponde", true);
+		valida(rr.getAnagraficaPagatore(),er.getAnagraficaPagatore(), esito, "AnagraficaPagatore non corrisponde", false);
 		valida(rr.getCapPagatore(),er.getCapPagatore(), esito, "CapPagatore non corrisponde", false);
 		valida(rr.getCivicoPagatore(),er.getCivicoPagatore(), esito, "CivicoPagatore non corrisponde", false);
 		valida(rr.getEMailPagatore(),er.getEMailPagatore(), esito, "EMailPagatore non corrisponde", false);
@@ -75,7 +75,7 @@ public class NdpValidationUtils {
 	}
 	
 	public static void validaSemantica(CtEnteBeneficiario rpt, CtEnteBeneficiario rt, EsitoValidazione esito) {
-		valida(rpt.getDenominazioneBeneficiario(), rt.getDenominazioneBeneficiario(), esito, "DenominazioneBeneficiario non corrisponde", true);
+		valida(rpt.getDenominazioneBeneficiario(), rt.getDenominazioneBeneficiario(), esito, "DenominazioneBeneficiario non corrisponde", false);
 		valida(rpt.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco(), rt.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco(), esito, "IdentificativoUnivocoBeneficiario non corrisponde", true);
 		valida(rpt.getProvinciaBeneficiario(), rt.getProvinciaBeneficiario(), esito, "ProvinciaBeneficiario non corrisponde", false);
 		valida(rpt.getNazioneBeneficiario(), rt.getNazioneBeneficiario(), esito, "NazioneBeneficiario non corrisponde", false);
@@ -88,9 +88,9 @@ public class NdpValidationUtils {
 
 	public static void validaSemantica(CtSoggettoVersante rpt, CtSoggettoVersante rt, EsitoValidazione esito) {
 		if(rpt == null && rt == null) return;
-		if(rpt == null || rt == null) esito.addErrore("SoggettoVersante non corriponde", true);
+		if(rpt == null || rt == null) esito.addErrore("SoggettoVersante non corriponde", false);
 
-		valida(rpt.getAnagraficaVersante(),rt.getAnagraficaVersante(), esito, "AnagraficaVersante non corrisponde", true);
+		valida(rpt.getAnagraficaVersante(),rt.getAnagraficaVersante(), esito, "AnagraficaVersante non corrisponde", false);
 		valida(rpt.getCapVersante(),rt.getCapVersante(), esito, "CapVersante non corrisponde", false);
 		valida(rpt.getCivicoVersante(),rt.getCivicoVersante(), esito, "CivicoVersante non corrisponde", false);
 		valida(rpt.getEMailVersante(),rt.getEMailVersante(), esito, "EMailVersante non corrisponde", false);
@@ -102,7 +102,7 @@ public class NdpValidationUtils {
 	}
 
 	public static void validaSemantica(CtSoggettoPagatore rpt, CtSoggettoPagatore rt, EsitoValidazione esito) {
-		valida(rpt.getAnagraficaPagatore(),rt.getAnagraficaPagatore(), esito, "AnagraficaPagatore non corrisponde", true);
+		valida(rpt.getAnagraficaPagatore(),rt.getAnagraficaPagatore(), esito, "AnagraficaPagatore non corrisponde", false);
 		valida(rpt.getCapPagatore(),rt.getCapPagatore(), esito, "CapPagatore non corrisponde", false);
 		valida(rpt.getCivicoPagatore(),rt.getCivicoPagatore(), esito, "CivicoPagatore non corrisponde", false);
 		valida(rpt.getEMailPagatore(),rt.getEMailPagatore(), esito, "EMailPagatore non corrisponde", false);
