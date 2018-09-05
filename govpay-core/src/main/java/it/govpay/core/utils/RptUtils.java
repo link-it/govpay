@@ -214,22 +214,23 @@ public class RptUtils {
 
 	public static boolean aggiornaRptDaNpD(NodoClient client, Rpt rpt, BasicBD bd) throws GovPayException, ServiceException, ClientException, NdpException {
 		try {
-			switch (rpt.getStato()) {
+			StatoRpt stato_originale = rpt.getStato();
+			switch (stato_originale) {
 			case RPT_RIFIUTATA_NODO:
 			case RPT_RIFIUTATA_PSP:
 			case RPT_ERRORE_INVIO_A_PSP:
 			case RT_ACCETTATA_PA:
-				log.info("Rpt in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario.");
+				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario.");
 				return false;
 				
 			case RPT_ATTIVATA:
-				log.info("Rpt in stato non terminale [" + rpt.getStato()+ "]. Eseguo una rispedizione della RPT.");
+				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato non terminale [" + rpt.getStato()+ "]. Eseguo una rispedizione della RPT.");
 				inviaRPTAsync(rpt, bd);
 				return false;
 				
 			default:
-				log.info("Rpt in stato non terminale [" + rpt.getStato()+ "]. Eseguo un aggiornamento dello stato.");
-	
+				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato non terminale [" + rpt.getStato()+ "]. Eseguo un aggiornamento dello stato con il Nodo dei Pagamenti.");
+
 				bd.closeConnection();
 				String transactionId = null;
 				NodoChiediStatoRPTRisposta risposta = null;
@@ -249,29 +250,41 @@ public class RptUtils {
 					bd.setupConnection(GpThreadLocal.get().getTransactionId());
 					GpThreadLocal.get().closeTransaction(transactionId);
 				}
+				
 				if(risposta.getFault() != null) {
 					if(it.govpay.core.exceptions.NdpException.FaultNodo.valueOf(risposta.getFault().getFaultCode()).equals(it.govpay.core.exceptions.NdpException.FaultNodo.PPT_RPT_SCONOSCIUTA)) {
-						log.info("RPT inesistente. Aggiorno lo stato in " + StatoRpt.RPT_ERRORE_INVIO_A_NODO + ".");
+						log.info("Rpt inesistene sul Nodo dei Pagamenti [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: aggiorno lo stato in " + StatoRpt.RPT_ERRORE_INVIO_A_NODO + ".");
+
 						rpt.setStato(StatoRpt.RPT_ERRORE_INVIO_A_NODO);
 						rpt.setDescrizioneStato("Stato sul nodo: PPT_RPT_SCONOSCIUTA");
 	
+						
+						// Controllo che lo stato sia ancora quello originale per il successivo aggiornamento
+						bd.enableSelectForUpdate();
 						RptBD rptBD = new RptBD(bd);
-						rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ERRORE_INVIO_A_NODO, null, null, null);
+						Rpt rpt_attuale = rptBD.getRpt(rpt.getId());
+						if(!stato_originale.equals(rpt_attuale.getStato())) {
+							// Lo stato e' cambiato. Rinuncio all'aggiornamento
+							bd.disableSelectForUpdate();
+							return false;
+						}
+						rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Stato sul nodo: PPT_RPT_SCONOSCIUTA", null, null);
+						bd.disableSelectForUpdate();
 						return true;
 					}
 					throw new GovPayException(risposta.getFault());
 				} else {
 					StatoRpt nuovoStato = Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
-					log.info("Acquisito stato della RPT: " + nuovoStato + ".");
-	
-					RptBD rptBD = null;
 					
+					log.info("Acquisito dal Nodo dei Pagamenti lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: " + nuovoStato);
+
 					switch (nuovoStato) {
 					case RT_ACCETTATA_NODO:
 					case RT_ESITO_SCONOSCIUTO_PA:
 					case RT_RIFIUTATA_PA:
 					case RT_ACCETTATA_PA:
-						log.info("Richiesta dell'RT al Nodo dei Pagamenti [CodDominio: " + rpt.getCodDominio() + "][IUV: " + rpt.getIuv() + "][CCP: " + rpt.getCcp() + "].");
+						
+						log.info("Richiesta dell'RT al Nodo dei Pagamenti [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "].");
 	
 						bd.closeConnection();
 						transactionId = null;
@@ -292,7 +305,7 @@ public class RptUtils {
 							GpThreadLocal.get().closeTransaction(transactionId);
 						}
 	
-						rptBD = new RptBD(bd);
+						RptBD rptBD = new RptBD(bd);
 						
 						byte[] rtByte = null;
 						try {
@@ -302,19 +315,12 @@ public class RptUtils {
 							rtByte = output.toByteArray();
 						} catch (IOException e) {
 							log.error("Errore durante la lettura dell'RT: " + e);
-							rptBD.updateRpt(rpt.getId(), nuovoStato, null, null, null);
-							rpt.setStato(nuovoStato);
-							rpt.setDescrizioneStato(null);
 							throw new GovPayException(EsitoOperazione.INTERNAL, e);
 						}
 	
 						if(nodoChiediCopiaRTRisposta.getFault() != null) {
 							log.info("Fault nell'acquisizione dell'RT: [" + nodoChiediCopiaRTRisposta.getFault().getFaultCode() + "] " + nodoChiediCopiaRTRisposta.getFault().getFaultString());
-							log.info("Aggiorno lo stato della RPT [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "] in " + nuovoStato + ".");
-							rptBD.updateRpt(rpt.getId(), nuovoStato, null, null, null);
-							rpt.setStato(nuovoStato);
-							rpt.setDescrizioneStato(null);
-							return true;
+							return false;
 						}
 						
 						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
@@ -326,12 +332,23 @@ public class RptUtils {
 						GpThreadLocal.get().log("pagamento.acquisizioneRtOk");
 						return true;
 					default:
-						log.info("Aggiorno lo stato della RPT [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "] in " + nuovoStato + ".");
+						
+						// Controllo che lo stato sia ancora quello originale per il successivo aggiornamento
+						bd.enableSelectForUpdate();
 						rptBD = new RptBD(bd);
-						rptBD.updateRpt(rpt.getId(), nuovoStato, null, null, null);
+						Rpt rpt_attuale = rptBD.getRpt(rpt.getId());
+						if(!stato_originale.equals(rpt_attuale.getStato())) {
+							// Lo stato e' cambiato. Rinuncio all'aggiornamento
+							log.info("Lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] risulta cambiato su GovPay durante l'aggiornamento: " + rpt_attuale.getStato() + ". Operazione di recupero annullata.");
+							bd.disableSelectForUpdate();
+							return false;
+						}
+						log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + ".");
+						rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato acquisito da Nodo dei Pagamenti", null, null);
 						rpt.setStato(nuovoStato);
-						rpt.setDescrizioneStato(null);
-						return false;
+						rpt.setDescrizioneStato("Stato acquisito da Nodo dei Pagamenti");
+						bd.disableSelectForUpdate();
+						return true;
 					}
 				}
 			}

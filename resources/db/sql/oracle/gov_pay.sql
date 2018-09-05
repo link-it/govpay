@@ -870,6 +870,8 @@ CREATE TABLE pagamenti
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 );
 
+CREATE INDEX index_pagamenti_1 ON pagamenti (id_rpt);
+
 CREATE TRIGGER trg_pagamenti
 BEFORE
 insert on pagamenti
