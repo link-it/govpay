@@ -133,6 +133,7 @@
 			<then>
 				<unzip src="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}.war" dest="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}"/>
 				<delete file="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}.war" />
+				<delete file="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}/WEB-INF/lib/cxf-xjc-runtime-2.7.0.jar" />
 				<antcall target="wildfly_govpay_securitydomain">
         	                	<param name="file" value="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}/WEB-INF/jboss-web.xml"/>
 				</antcall>
