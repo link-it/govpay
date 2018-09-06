@@ -29,7 +29,7 @@ public class LeggiRptDTOResponse {
 	private Dominio dominio;
 
 	public Versamento getVersamento() {
-		return versamento;
+		return this.versamento;
 	}
 
 	public void setVersamento(Versamento versamento) {
@@ -37,7 +37,7 @@ public class LeggiRptDTOResponse {
 	}
 
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 
 	public void setApplicazione(Applicazione applicazione) {
@@ -45,7 +45,7 @@ public class LeggiRptDTOResponse {
 	}
 
 	public Rpt getRpt() {
-		return rpt;
+		return this.rpt;
 	}
 
 	public void setRpt(Rpt rpt) {
@@ -53,7 +53,7 @@ public class LeggiRptDTOResponse {
 	}
 
 	public List<SingoloVersamento> getLstSingoliVersamenti() {
-		return lstSingoliVersamenti;
+		return this.lstSingoliVersamenti;
 	}
 
 	public void setLstSingoliVersamenti(List<SingoloVersamento> lstSingoliVersamenti) {
@@ -61,7 +61,7 @@ public class LeggiRptDTOResponse {
 	}
 
 	public UnitaOperativa getUnitaOperativa() {
-		return unitaOperativa;
+		return this.unitaOperativa;
 	}
 
 	public void setUnitaOperativa(UnitaOperativa unitaOperativa) {
@@ -69,7 +69,7 @@ public class LeggiRptDTOResponse {
 	}
 
 	public Dominio getDominio() {
-		return dominio;
+		return this.dominio;
 	}
 
 	public void setDominio(Dominio dominio) {

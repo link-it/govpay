@@ -57,7 +57,7 @@ public class Risposta {
      *     
      */
     public FaultBean getFault() {
-        return fault;
+        return this.fault;
     }
 
     /**

@@ -395,7 +395,7 @@ public class TemplateBase {
 		try{
 			boolean showColumnTitle = StringUtils.isNotEmpty(title);
 			// Scittura Intestazione
-			List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();
+			List<ColumnBuilder<?, ?>> colonne = new ArrayList<>();
 
 			TextFieldBuilder<String> componentText = cmp.text(new TemplateBase().new ColonnaUnoExpression())
 					.setMarkup(Markup.HTML).setStyle(columnStyle).setHorizontalTextAlignment(horizontalTextAlignment); 
@@ -404,16 +404,16 @@ public class TemplateBase {
 
 			colonne.add(columnOne);
 
-			List<FieldBuilder<String>> fields = new ArrayList<FieldBuilder<String>>();
+			List<FieldBuilder<String>> fields = new ArrayList<>();
 
 			fields.add(field(Costanti.COL_UNO, String.class));
 
-			List<String> header = new ArrayList<String>();
+			List<String> header = new ArrayList<>();
 			header.add(Costanti.COL_UNO);
 
 			DRDataSource dataSource = new DRDataSource(header.toArray(new String[header.size()]));
 			for (String value : values) {
-				List<String> oneLine = new ArrayList<String>();
+				List<String> oneLine = new ArrayList<>();
 				oneLine.add(value);
 				dataSource.add(oneLine.toArray(new Object[oneLine.size()]));	
 			}

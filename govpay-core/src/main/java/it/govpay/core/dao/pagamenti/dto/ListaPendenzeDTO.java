@@ -27,43 +27,43 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String idA2A;
 	
 	public Date getDataA() {
-		return dataA;
+		return this.dataA;
 	}
 	public void setDataA(Date dataA) {
 		this.dataA = dataA;
 	}
 	public Date getDataDa() {
-		return dataDa;
+		return this.dataDa;
 	}
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
 	public String getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(String stato) {
 		this.stato = stato;
 	}
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
 	}
 	public String getIdPagamento() {
-		return idPagamento;
+		return this.idPagamento;
 	}
 	public void setIdPagamento(String idPagamento) {
 		this.idPagamento = idPagamento;
 	}
 	public String getIdDebitore() {
-		return idDebitore;
+		return this.idDebitore;
 	}
 	public void setIdDebitore(String idDebitore) {
 		this.idDebitore = idDebitore;
 	}
 	public String getIdA2A() {
-		return idA2A;
+		return this.idA2A;
 	}
 	public void setIdA2A(String idA2A) {
 		this.idA2A = idA2A;

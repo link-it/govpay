@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -21,11 +22,11 @@
 	<dependencies>
 
 		<dependency>
-    <groupId>com.sun.xml.security</groupId>
-    <artifactId>xml-security-impl</artifactId>
-    <version>1.0</version>
-</dependency>
-	
+			<groupId>com.sun.xml.security</groupId>
+			<artifactId>xml-security-impl</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-core-beans</artifactId>
@@ -37,7 +38,7 @@
 			<artifactId>govpay-orm</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-stampe</artifactId>
@@ -65,45 +66,75 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jboss.spec.javax.ws.rs</groupId>
 			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
 			<version>1.2</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>soap</groupId>
-		    <artifactId>soap</artifactId>
-		    <version>2.3</version>
+			<groupId>soap</groupId>
+			<artifactId>soap</artifactId>
+			<version>2.3</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.santuario</groupId>
-		    <artifactId>xmlsec</artifactId>
-		    <version>2.0.7</version>
+			<groupId>org.apache.santuario</groupId>
+			<artifactId>xmlsec</artifactId>
+			<version>2.0.7</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
-<dependency>
-    <groupId>com.jcraft</groupId>
-    <artifactId>jsch</artifactId>
-    <version>0.1.54</version>
-</dependency>
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.54</version>
+		</dependency>
 		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-logger</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-transport</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-csv</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-sonde</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-date</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-resources</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

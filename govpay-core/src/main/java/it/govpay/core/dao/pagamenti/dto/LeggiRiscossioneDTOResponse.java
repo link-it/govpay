@@ -16,7 +16,7 @@ public class LeggiRiscossioneDTOResponse {
 	private Pagamento pagamento;
 
 	public Pagamento getPagamento() {
-		return pagamento;
+		return this.pagamento;
 	}
 
 	public void setPagamento(Pagamento pagamento) {

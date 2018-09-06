@@ -44,7 +44,7 @@ public class PaaInviaRTRisposta {
      *     
      */
     public EsitoPaaInviaRT getPaaInviaRTRisposta() {
-        return paaInviaRTRisposta;
+        return this.paaInviaRTRisposta;
     }
 
     /**

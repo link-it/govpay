@@ -64,8 +64,8 @@ public class GpGeneraIuvResponse
      * 
      */
     public List<IuvGenerato> getIuvGenerato() {
-        if (iuvGenerato == null) {
-            iuvGenerato = new ArrayList<IuvGenerato>();
+        if (this.iuvGenerato == null) {
+            this.iuvGenerato = new ArrayList<>();
         }
         return this.iuvGenerato;
     }

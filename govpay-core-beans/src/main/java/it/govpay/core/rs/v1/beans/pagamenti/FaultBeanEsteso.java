@@ -51,7 +51,7 @@ public class FaultBeanEsteso extends JSONSerializable {
 	    @Override
 	    @com.fasterxml.jackson.annotation.JsonValue
 	    public String toString() {
-	      return String.valueOf(value);
+	      return String.valueOf(this.value);
 	    }
 
 	    public static CategoriaEnum fromValue(String text) {
@@ -94,7 +94,7 @@ public class FaultBeanEsteso extends JSONSerializable {
 
   @JsonProperty("categoria")
   public CategoriaEnum getCategoria() {
-    return categoria;
+    return this.categoria;
   }
   public void setCategoria(CategoriaEnum categoria) {
     this.categoria = categoria;
@@ -110,7 +110,7 @@ public class FaultBeanEsteso extends JSONSerializable {
 
   @JsonProperty("codice")
   public String getCodice() {
-    return codice;
+    return this.codice;
   }
   public void setCodice(String codice) {
     this.codice = codice;
@@ -126,7 +126,7 @@ public class FaultBeanEsteso extends JSONSerializable {
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return descrizione;
+    return this.descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -142,7 +142,7 @@ public class FaultBeanEsteso extends JSONSerializable {
 
   @JsonProperty("dettaglio")
   public String getDettaglio() {
-    return dettaglio;
+    return this.dettaglio;
   }
   public void setDettaglio(String dettaglio) {
     this.dettaglio = dettaglio;
@@ -158,7 +158,7 @@ public class FaultBeanEsteso extends JSONSerializable {
 
   @JsonProperty("id")
   public String getId() {
-    return id;
+    return this.id;
   }
   public void setId(String id) {
     this.id = id;
@@ -174,7 +174,7 @@ public class FaultBeanEsteso extends JSONSerializable {
 
   @JsonProperty("location")
   public String getLocation() {
-    return location;
+    return this.location;
   }
   public void setLocation(String location) {
     this.location = location;
@@ -185,24 +185,24 @@ public class FaultBeanEsteso extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     FaultBeanEsteso faultBeanEsteso = (FaultBeanEsteso) o;
-    return Objects.equals(codice, faultBeanEsteso.codice) &&
-        Objects.equals(descrizione, faultBeanEsteso.descrizione) &&
-        Objects.equals(dettaglio, faultBeanEsteso.dettaglio) &&
-        Objects.equals(id, faultBeanEsteso.id) &&
-        Objects.equals(location, faultBeanEsteso.location);
+    return Objects.equals(this.codice, faultBeanEsteso.codice) &&
+        Objects.equals(this.descrizione, faultBeanEsteso.descrizione) &&
+        Objects.equals(this.dettaglio, faultBeanEsteso.dettaglio) &&
+        Objects.equals(this.id, faultBeanEsteso.id) &&
+        Objects.equals(this.location, faultBeanEsteso.location);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(codice, descrizione, dettaglio, id, location);
+    return Objects.hash(this.codice, this.descrizione, this.dettaglio, this.id, this.location);
   }
 
   public static FaultBeanEsteso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (FaultBeanEsteso) parse(json, FaultBeanEsteso.class);
+    return parse(json, FaultBeanEsteso.class);
   }
 
   @Override
@@ -214,12 +214,12 @@ public class FaultBeanEsteso extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FaultBeanEsteso {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    codice: ").append(toIndentedString(codice)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    location: ").append(toIndentedString(location)).append("\n");
+    sb.append("    ").append(this.toIndentedString(super.toString())).append("\n");
+    sb.append("    codice: ").append(this.toIndentedString(this.codice)).append("\n");
+    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
+    sb.append("    dettaglio: ").append(this.toIndentedString(this.dettaglio)).append("\n");
+    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
+    sb.append("    location: ").append(this.toIndentedString(this.location)).append("\n");
     sb.append("}");
     return sb.toString();
   }

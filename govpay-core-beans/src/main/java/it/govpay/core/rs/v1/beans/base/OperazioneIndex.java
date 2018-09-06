@@ -30,7 +30,7 @@ public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable
 
   @JsonProperty("idOperazione")
   public String getIdOperazione() {
-    return idOperazione;
+    return this.idOperazione;
   }
   public void setIdOperazione(String idOperazione) {
     this.idOperazione = idOperazione;
@@ -45,7 +45,7 @@ public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return descrizione;
+    return this.descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -60,7 +60,7 @@ public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable
 
   @JsonProperty("location")
   public String getLocation() {
-    return location;
+    return this.location;
   }
   public void setLocation(String location) {
     this.location = location;
@@ -71,22 +71,22 @@ public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     OperazioneIndex operazioneIndex = (OperazioneIndex) o;
-    return Objects.equals(idOperazione, operazioneIndex.idOperazione) &&
-        Objects.equals(descrizione, operazioneIndex.descrizione) &&
-        Objects.equals(location, operazioneIndex.location);
+    return Objects.equals(this.idOperazione, operazioneIndex.idOperazione) &&
+        Objects.equals(this.descrizione, operazioneIndex.descrizione) &&
+        Objects.equals(this.location, operazioneIndex.location);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idOperazione, descrizione, location);
+    return Objects.hash(this.idOperazione, this.descrizione, this.location);
   }
 
   public static OperazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (OperazioneIndex) parse(json, OperazioneIndex.class);
+    return parse(json, OperazioneIndex.class);
   }
 
   @Override
@@ -99,9 +99,9 @@ public class OperazioneIndex extends it.govpay.core.rs.v1.beans.JSONSerializable
     StringBuilder sb = new StringBuilder();
     sb.append("class OperazioneIndex {\n");
     
-    sb.append("    idOperazione: ").append(toIndentedString(idOperazione)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    location: ").append(toIndentedString(location)).append("\n");
+    sb.append("    idOperazione: ").append(this.toIndentedString(this.idOperazione)).append("\n");
+    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
+    sb.append("    location: ").append(this.toIndentedString(this.location)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -106,7 +106,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "paaInviaRT")
     public JAXBElement<PaaInviaRT> createPaaInviaRT(PaaInviaRT value) {
-        return new JAXBElement<PaaInviaRT>(_PaaInviaRT_QNAME, PaaInviaRT.class, null, value);
+        return new JAXBElement<>(_PaaInviaRT_QNAME, PaaInviaRT.class, null, value);
     }
 
     /**
@@ -115,7 +115,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "paaInviaRTRisposta")
     public JAXBElement<PaaInviaRTRisposta> createPaaInviaRTRisposta(PaaInviaRTRisposta value) {
-        return new JAXBElement<PaaInviaRTRisposta>(_PaaInviaRTRisposta_QNAME, PaaInviaRTRisposta.class, null, value);
+        return new JAXBElement<>(_PaaInviaRTRisposta_QNAME, PaaInviaRTRisposta.class, null, value);
     }
 
     /**
@@ -124,7 +124,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "paaInviaEsitoStorno")
     public JAXBElement<PaaInviaEsitoStorno> createPaaInviaEsitoStorno(PaaInviaEsitoStorno value) {
-        return new JAXBElement<PaaInviaEsitoStorno>(_PaaInviaEsitoStorno_QNAME, PaaInviaEsitoStorno.class, null, value);
+        return new JAXBElement<>(_PaaInviaEsitoStorno_QNAME, PaaInviaEsitoStorno.class, null, value);
     }
 
     /**
@@ -133,7 +133,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "paaInviaEsitoStornoRisposta")
     public JAXBElement<PaaInviaEsitoStornoRisposta> createPaaInviaEsitoStornoRisposta(PaaInviaEsitoStornoRisposta value) {
-        return new JAXBElement<PaaInviaEsitoStornoRisposta>(_PaaInviaEsitoStornoRisposta_QNAME, PaaInviaEsitoStornoRisposta.class, null, value);
+        return new JAXBElement<>(_PaaInviaEsitoStornoRisposta_QNAME, PaaInviaEsitoStornoRisposta.class, null, value);
     }
 
 }

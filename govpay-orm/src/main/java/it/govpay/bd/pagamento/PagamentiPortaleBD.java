@@ -69,7 +69,7 @@ public class PagamentiPortaleBD extends BasicBD{
 				this.getPagamentoPortaleService().create(vo);
 				pagamentoPortale.setId(vo.getId());
 
-				insertPagPortVers(pagamentoPortale);
+				this.insertPagPortVers(pagamentoPortale);
 			} catch (NotImplementedException e) {
 				throw new ServiceException();
 			}
@@ -164,8 +164,8 @@ public class PagamentiPortaleBD extends BasicBD{
 			try {
 				this.getPagamentoPortaleService().update(this.getPagamentoPortaleService().convertToId(vo), vo);
 				if(updateVersamenti) {
-					deleteAllPagPortVers(pagamento);
-					insertPagPortVers(pagamento);
+					this.deleteAllPagPortVers(pagamento);
+					this.insertPagPortVers(pagamento);
 				}
 			} catch (NotFoundException e) {
 				throw new ServiceException();
@@ -202,7 +202,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			id.setIdSessione(codSessione);;
 			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().get(id));
 
-			return getPagamentoArricchito(dto);
+			return this.getPagamentoArricchito(dto);
 		} catch (MultipleResultException e) {
 			throw new ServiceException();
 		} catch (NotImplementedException e) {
@@ -212,7 +212,7 @@ public class PagamentiPortaleBD extends BasicBD{
 
 	private PagamentoPortale getPagamentoArricchito(PagamentoPortale dto) throws ServiceException, NotImplementedException {
 		List<PagamentoPortaleVersamento> allPagPortVers = this.getAllPagPortVers(dto);
-		List<IdVersamento> idVersamento = new ArrayList<IdVersamento>();
+		List<IdVersamento> idVersamento = new ArrayList<>();
 		for(PagamentoPortaleVersamento vers: allPagPortVers) {
 			idVersamento.add(vers.getIdVersamento());
 		}
@@ -228,7 +228,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			IExpression exp = this.getPagamentoPortaleService().newExpression();
 			exp.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PSP, codSessionePsp);
 			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().find(exp));
-			return getPagamentoArricchito(dto);
+			return this.getPagamentoArricchito(dto);
 		} catch (MultipleResultException e) {
 			throw new ServiceException();
 		} catch (NotImplementedException e) {

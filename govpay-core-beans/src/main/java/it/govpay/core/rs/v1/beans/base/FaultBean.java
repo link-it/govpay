@@ -53,7 +53,7 @@ public class FaultBean extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static CategoriaEnum fromValue(String text) {
@@ -90,7 +90,7 @@ public class FaultBean extends JSONSerializable {
 
   @JsonProperty("categoria")
   public CategoriaEnum getCategoria() {
-    return categoria;
+    return this.categoria;
   }
   public void setCategoria(CategoriaEnum categoria) {
     this.categoria = categoria;
@@ -106,7 +106,7 @@ public class FaultBean extends JSONSerializable {
 
   @JsonProperty("codice")
   public String getCodice() {
-    return codice;
+    return this.codice;
   }
   public void setCodice(String codice) {
     this.codice = codice;
@@ -122,7 +122,7 @@ public class FaultBean extends JSONSerializable {
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return descrizione;
+    return this.descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -138,7 +138,7 @@ public class FaultBean extends JSONSerializable {
 
   @JsonProperty("dettaglio")
   public String getDettaglio() {
-    return dettaglio;
+    return this.dettaglio;
   }
   public void setDettaglio(String dettaglio) {
     this.dettaglio = dettaglio;
@@ -149,23 +149,23 @@ public class FaultBean extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     FaultBean faultBean = (FaultBean) o;
-    return Objects.equals(categoria, faultBean.categoria) &&
-        Objects.equals(codice, faultBean.codice) &&
-        Objects.equals(descrizione, faultBean.descrizione) &&
-        Objects.equals(dettaglio, faultBean.dettaglio);
+    return Objects.equals(this.categoria, faultBean.categoria) &&
+        Objects.equals(this.codice, faultBean.codice) &&
+        Objects.equals(this.descrizione, faultBean.descrizione) &&
+        Objects.equals(this.dettaglio, faultBean.dettaglio);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(categoria, codice, descrizione, dettaglio);
+    return Objects.hash(this.categoria, this.codice, this.descrizione, this.dettaglio);
   }
 
   public static FaultBean parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (FaultBean) parse(json, FaultBean.class);
+    return parse(json, FaultBean.class);
   }
 
   @Override
@@ -178,10 +178,10 @@ public class FaultBean extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class FaultBean {\n");
     
-    sb.append("    categoria: ").append(toIndentedString(categoria)).append("\n");
-    sb.append("    codice: ").append(toIndentedString(codice)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");
+    sb.append("    categoria: ").append(this.toIndentedString(this.categoria)).append("\n");
+    sb.append("    codice: ").append(this.toIndentedString(this.codice)).append("\n");
+    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
+    sb.append("    dettaglio: ").append(this.toIndentedString(this.dettaglio)).append("\n");
     sb.append("}");
     return sb.toString();
   }

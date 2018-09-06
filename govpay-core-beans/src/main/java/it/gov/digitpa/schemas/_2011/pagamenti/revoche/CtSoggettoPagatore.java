@@ -70,7 +70,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public CtIdentificativoUnivocoPersonaFG getIdentificativoUnivocoPagatore() {
-        return identificativoUnivocoPagatore;
+        return this.identificativoUnivocoPagatore;
     }
 
     /**
@@ -94,7 +94,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getAnagraficaPagatore() {
-        return anagraficaPagatore;
+        return this.anagraficaPagatore;
     }
 
     /**
@@ -118,7 +118,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getIndirizzoPagatore() {
-        return indirizzoPagatore;
+        return this.indirizzoPagatore;
     }
 
     /**
@@ -142,7 +142,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getCivicoPagatore() {
-        return civicoPagatore;
+        return this.civicoPagatore;
     }
 
     /**
@@ -166,7 +166,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getCapPagatore() {
-        return capPagatore;
+        return this.capPagatore;
     }
 
     /**
@@ -190,7 +190,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getLocalitaPagatore() {
-        return localitaPagatore;
+        return this.localitaPagatore;
     }
 
     /**
@@ -214,7 +214,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getProvinciaPagatore() {
-        return provinciaPagatore;
+        return this.provinciaPagatore;
     }
 
     /**
@@ -238,7 +238,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getNazionePagatore() {
-        return nazionePagatore;
+        return this.nazionePagatore;
     }
 
     /**
@@ -262,7 +262,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getEMailPagatore() {
-        return eMailPagatore;
+        return this.eMailPagatore;
     }
 
     /**

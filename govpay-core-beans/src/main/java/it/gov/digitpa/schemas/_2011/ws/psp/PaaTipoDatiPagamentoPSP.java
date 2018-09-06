@@ -70,7 +70,7 @@ public class PaaTipoDatiPagamentoPSP {
      *     
      */
     public BigDecimal getImportoSingoloVersamento() {
-        return importoSingoloVersamento;
+        return this.importoSingoloVersamento;
     }
 
     /**
@@ -94,7 +94,7 @@ public class PaaTipoDatiPagamentoPSP {
      *     
      */
     public String getIbanAppoggio() {
-        return ibanAppoggio;
+        return this.ibanAppoggio;
     }
 
     /**
@@ -118,7 +118,7 @@ public class PaaTipoDatiPagamentoPSP {
      *     
      */
     public String getBicAppoggio() {
-        return bicAppoggio;
+        return this.bicAppoggio;
     }
 
     /**
@@ -142,7 +142,7 @@ public class PaaTipoDatiPagamentoPSP {
      *     
      */
     public CtSoggettoVersante getSoggettoVersante() {
-        return soggettoVersante;
+        return this.soggettoVersante;
     }
 
     /**
@@ -166,7 +166,7 @@ public class PaaTipoDatiPagamentoPSP {
      *     
      */
     public String getIbanAddebito() {
-        return ibanAddebito;
+        return this.ibanAddebito;
     }
 
     /**
@@ -190,7 +190,7 @@ public class PaaTipoDatiPagamentoPSP {
      *     
      */
     public String getBicAddebito() {
-        return bicAddebito;
+        return this.bicAddebito;
     }
 
     /**
@@ -214,7 +214,7 @@ public class PaaTipoDatiPagamentoPSP {
      *     
      */
     public CtSoggettoPagatore getSoggettoPagatore() {
-        return soggettoPagatore;
+        return this.soggettoPagatore;
     }
 
     /**

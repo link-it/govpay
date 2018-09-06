@@ -50,12 +50,12 @@ public class Dominio extends it.govpay.model.Dominio {
 		super.setIdStazione(idStazione);
 
 		try {
-			anagrafica = AnagraficaManager.getUnitaOperativa(bd, idDominio, EC).getAnagrafica();
+			this.anagrafica = AnagraficaManager.getUnitaOperativa(bd, idDominio, EC).getAnagrafica();
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}
 
-		stazione = AnagraficaManager.getStazione(bd, idStazione);
+		this.stazione = AnagraficaManager.getStazione(bd, idStazione);
 	}
 	
 	// Business
@@ -68,11 +68,11 @@ public class Dominio extends it.govpay.model.Dominio {
 	private transient List<Tributo> tributi;
 
 	public Stazione getStazione() throws ServiceException {
-		return stazione;
+		return this.stazione;
 	}
 
 	public Anagrafica getAnagrafica() throws ServiceException {
-		return anagrafica;
+		return this.anagrafica;
 	}
 
 	public void setAnagrafica(Anagrafica anagrafica) {
@@ -80,14 +80,14 @@ public class Dominio extends it.govpay.model.Dominio {
 	}
 	
 	public Applicazione getApplicazioneDefault(BasicBD bd) throws ServiceException {
-		return getApplicazioneDefault(bd, false);
+		return this.getApplicazioneDefault(bd, false);
 	}
 
 	public Applicazione getApplicazioneDefault(BasicBD bd, boolean useCacheData) throws ServiceException {
-		if(applicazioneDefault == null && this.getIdApplicazioneDefault() != null) {
-			applicazioneDefault = useCacheData ? AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault()) : AnagraficaManagerNoCache.getApplicazione(bd, this.getIdApplicazioneDefault());
+		if(this.applicazioneDefault == null && this.getIdApplicazioneDefault() != null) {
+			this.applicazioneDefault = useCacheData ? AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault()) : AnagraficaManagerNoCache.getApplicazione(bd, this.getIdApplicazioneDefault());
 		} 
-		return applicazioneDefault;
+		return this.applicazioneDefault;
 	}
 
 	public void setApplicazioneDefault(Applicazione applicazioneDefault) {
@@ -98,19 +98,19 @@ public class Dominio extends it.govpay.model.Dominio {
 	// Business
 
 	public List<UnitaOperativa> getUnitaOperative(BasicBD bd) throws ServiceException {
-		if(unitaOperative == null) { 
+		if(this.unitaOperative == null) { 
 			UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
 			UnitaOperativaFilter filter = uoBD.newFilter();
 			filter.setDominioFilter(this.getId());
 			filter.setExcludeEC(true);
-			unitaOperative = uoBD.findAll(filter);
+			this.unitaOperative = uoBD.findAll(filter);
 		}
-		return unitaOperative;
+		return this.unitaOperative;
 	}
 
 	
 	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco) throws ServiceException, NotFoundException {
-		return getUnitaOperativa(bd, codUnivoco, true);
+		return this.getUnitaOperativa(bd, codUnivoco, true);
 	}
 	
 	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco, boolean useCacheData) throws ServiceException, NotFoundException {
@@ -118,17 +118,17 @@ public class Dominio extends it.govpay.model.Dominio {
 	}
 
 	public List<IbanAccredito> getIbanAccredito(BasicBD bd) throws ServiceException {
-		if(ibanAccredito == null) { 
+		if(this.ibanAccredito == null) { 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter();
 			filter.setIdDominio(this.getId());
-			ibanAccredito = ibanAccreditoBD.findAll(filter);
+			this.ibanAccredito = ibanAccreditoBD.findAll(filter);
 		}
-		return ibanAccredito;
+		return this.ibanAccredito;
 	}
 	
 	public IbanAccredito getIban(BasicBD bd, String iban) throws ServiceException, NotFoundException {
-		return getIban(bd, iban, true);
+		return this.getIban(bd, iban, true);
 	}
 
 	public IbanAccredito getIban(BasicBD bd, String iban, boolean useCacheData) throws ServiceException, NotFoundException {
@@ -136,17 +136,17 @@ public class Dominio extends it.govpay.model.Dominio {
 	}
 
 	public List<Tributo> getTributi(BasicBD bd) throws ServiceException {
-		if(tributi == null) { 
+		if(this.tributi == null) { 
 			TributiBD tributiBD = new TributiBD(bd);
 			TributoFilter filter = tributiBD.newFilter();
 			filter.setIdDominio(this.getId());
-			tributi = tributiBD.findAll(filter);
+			this.tributi = tributiBD.findAll(filter);
 		}
-		return tributi;
+		return this.tributi;
 	}
 
 	public Tributo getTributo(BasicBD bd, String codTributo) throws ServiceException, NotFoundException {
-		return getTributo(bd, codTributo, true);
+		return this.getTributo(bd, codTributo, true);
 	}
 	
 	public Tributo getTributo(BasicBD bd, String codTributo, boolean useCacheData) throws ServiceException, NotFoundException {

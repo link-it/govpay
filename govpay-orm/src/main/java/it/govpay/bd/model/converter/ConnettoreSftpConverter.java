@@ -66,7 +66,7 @@ public class ConnettoreSftpConverter {
 	}
 
 	public static List<it.govpay.orm.Connettore> toVOList(ConnettoreSftp connettore) {
-		List<it.govpay.orm.Connettore> voList = new ArrayList<it.govpay.orm.Connettore>();
+		List<it.govpay.orm.Connettore> voList = new ArrayList<>();
 		
 		if(connettore.getHttpUserIn() != null && !connettore.getHttpUserIn().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();

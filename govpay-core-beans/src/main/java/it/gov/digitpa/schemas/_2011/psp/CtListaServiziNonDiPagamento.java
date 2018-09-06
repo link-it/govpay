@@ -67,8 +67,8 @@ public class CtListaServiziNonDiPagamento {
      * 
      */
     public List<CtServizioNonDiPagamento> getServizioNonDiPagamentos() {
-        if (servizioNonDiPagamentos == null) {
-            servizioNonDiPagamentos = new ArrayList<CtServizioNonDiPagamento>();
+        if (this.servizioNonDiPagamentos == null) {
+            this.servizioNonDiPagamentos = new ArrayList<>();
         }
         return this.servizioNonDiPagamentos;
     }

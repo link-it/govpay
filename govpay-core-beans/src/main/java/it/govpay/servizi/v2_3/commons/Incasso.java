@@ -101,7 +101,7 @@ public class Incasso {
      *     
      */
     public String getTrn() {
-        return trn;
+        return this.trn;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Incasso {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -149,7 +149,7 @@ public class Incasso {
      *     
      */
     public String getCausale() {
-        return causale;
+        return this.causale;
     }
 
     /**
@@ -173,7 +173,7 @@ public class Incasso {
      *     
      */
     public BigDecimal getImporto() {
-        return importo;
+        return this.importo;
     }
 
     /**
@@ -197,7 +197,7 @@ public class Incasso {
      *     
      */
     public Date getDataValuta() {
-        return dataValuta;
+        return this.dataValuta;
     }
 
     /**
@@ -221,7 +221,7 @@ public class Incasso {
      *     
      */
     public Date getDataContabile() {
-        return dataContabile;
+        return this.dataContabile;
     }
 
     /**
@@ -245,7 +245,7 @@ public class Incasso {
      *     
      */
     public String getDispositivo() {
-        return dispositivo;
+        return this.dispositivo;
     }
 
     /**
@@ -283,8 +283,8 @@ public class Incasso {
      * 
      */
     public List<Incasso.Pagamento> getPagamento() {
-        if (pagamento == null) {
-            pagamento = new ArrayList<Incasso.Pagamento>();
+        if (this.pagamento == null) {
+            this.pagamento = new ArrayList<>();
         }
         return this.pagamento;
     }
@@ -355,7 +355,7 @@ public class Incasso {
          *     
          */
         public String getIuv() {
-            return iuv;
+            return this.iuv;
         }
 
         /**
@@ -379,7 +379,7 @@ public class Incasso {
          *     
          */
         public String getIur() {
-            return iur;
+            return this.iur;
         }
 
         /**
@@ -403,7 +403,7 @@ public class Incasso {
          *     
          */
         public String getCodApplicazione() {
-            return codApplicazione;
+            return this.codApplicazione;
         }
 
         /**
@@ -427,7 +427,7 @@ public class Incasso {
          *     
          */
         public String getCodVersamentoEnte() {
-            return codVersamentoEnte;
+            return this.codVersamentoEnte;
         }
 
         /**
@@ -451,7 +451,7 @@ public class Incasso {
          *     
          */
         public String getCodSingoloVersamentoEnte() {
-            return codSingoloVersamentoEnte;
+            return this.codSingoloVersamentoEnte;
         }
 
         /**
@@ -475,7 +475,7 @@ public class Incasso {
          *     
          */
         public BigDecimal getImportoPagato() {
-            return importoPagato;
+            return this.importoPagato;
         }
 
         /**
@@ -499,7 +499,7 @@ public class Incasso {
          *     
          */
         public Date getDataPagamento() {
-            return dataPagamento;
+            return this.dataPagamento;
         }
 
         /**

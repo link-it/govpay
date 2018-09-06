@@ -24,10 +24,10 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String ragioneSociale = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<DominioIndex>();
+  private List<DominioIndex> domini = new ArrayList<>();
   
   @JsonProperty("entrate")
-  private List<TipoEntrata> entrate = new ArrayList<TipoEntrata>();
+  private List<TipoEntrata> entrate = new ArrayList<>();
   
   @JsonProperty("acl")
   private List<AclPost> acl = null;
@@ -45,7 +45,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return principal;
+    return this.principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
@@ -61,7 +61,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return ragioneSociale;
+    return this.ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
@@ -77,7 +77,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("domini")
   public List<DominioIndex> getDomini() {
-    return domini;
+    return this.domini;
   }
   public void setDomini(List<DominioIndex> domini) {
     this.domini = domini;
@@ -93,7 +93,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("entrate")
   public List<TipoEntrata> getEntrate() {
-    return entrate;
+    return this.entrate;
   }
   public void setEntrate(List<TipoEntrata> entrate) {
     this.entrate = entrate;
@@ -109,7 +109,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return acl;
+    return this.acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -125,7 +125,7 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -136,25 +136,25 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Operatore operatore = (Operatore) o;
-    return Objects.equals(principal, operatore.principal) &&
-        Objects.equals(ragioneSociale, operatore.ragioneSociale) &&
-        Objects.equals(domini, operatore.domini) &&
-        Objects.equals(entrate, operatore.entrate) &&
-        Objects.equals(acl, operatore.acl) &&
-        Objects.equals(abilitato, operatore.abilitato);
+    return Objects.equals(this.principal, operatore.principal) &&
+        Objects.equals(this.ragioneSociale, operatore.ragioneSociale) &&
+        Objects.equals(this.domini, operatore.domini) &&
+        Objects.equals(this.entrate, operatore.entrate) &&
+        Objects.equals(this.acl, operatore.acl) &&
+        Objects.equals(this.abilitato, operatore.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(principal, ragioneSociale, domini, entrate, acl, abilitato);
+    return Objects.hash(this.principal, this.ragioneSociale, this.domini, this.entrate, this.acl, this.abilitato);
   }
 
   public static Operatore parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Operatore) parse(json, Operatore.class);
+    return parse(json, Operatore.class);
   }
 
   @Override
@@ -167,12 +167,12 @@ public class Operatore extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Operatore {\n");
     
-    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
-    sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
-    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
-    sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
-    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
+    sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
+    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
+    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

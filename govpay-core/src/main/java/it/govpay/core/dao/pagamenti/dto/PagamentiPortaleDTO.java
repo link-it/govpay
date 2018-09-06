@@ -27,73 +27,73 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private String autenticazioneSoggetto = null;
 
 	public String getJsonRichiesta() {
-		return jsonRichiesta;
+		return this.jsonRichiesta;
 	}
 	public void setJsonRichiesta(String jsonRichiesta) {
 		this.jsonRichiesta = jsonRichiesta;
 	}
 	public String getUrlRitorno() {
-		return urlRitorno;
+		return this.urlRitorno;
 	}
 	public void setUrlRitorno(String urlRitorno) {
 		this.urlRitorno = urlRitorno;
 	}
 	public String getIbanAddebito() {
-		return ibanAddebito;
+		return this.ibanAddebito;
 	}
 	public void setIbanAddebito(String ibanAddebito) {
 		this.ibanAddebito = ibanAddebito;
 	}
 	public String getBicAddebito() {
-		return bicAddebito;
+		return this.bicAddebito;
 	}
 	public void setBicAddebito(String bicAddebito) {
 		this.bicAddebito = bicAddebito;
 	}
 	public Date getDataEsecuzionePagamento() {
-		return dataEsecuzionePagamento;
+		return this.dataEsecuzionePagamento;
 	}
 	public void setDataEsecuzionePagamento(Date dataEsecuzionePagamento) {
 		this.dataEsecuzionePagamento = dataEsecuzionePagamento;
 	}
 	public String getCredenzialiPagatore() {
-		return credenzialiPagatore;
+		return this.credenzialiPagatore;
 	}
 	public void setCredenzialiPagatore(String credenzialiPagatore) {
 		this.credenzialiPagatore = credenzialiPagatore;
 	}
 	public String getLingua() {
-		return lingua;
+		return this.lingua;
 	}
 	public void setLingua(String lingua) {
 		this.lingua = lingua;
 	}
 	public Anagrafica getVersante() {
-		return versante;
+		return this.versante;
 	}
 	public void setVersante(Anagrafica versante) {
 		this.versante = versante;
 	}
 	public List<Object> getPendenzeOrPendenzeRef() {
-		return pendenzeOrPendenzeRef;
+		return this.pendenzeOrPendenzeRef;
 	}
 	public void setPendenzeOrPendenzeRef(List<Object> pendenzeOrPendenzeRef) {
 		this.pendenzeOrPendenzeRef = pendenzeOrPendenzeRef;
 	}
 	public String getIdSessione() {
-		return idSessione;
+		return this.idSessione;
 	}
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
 	}
 	public String getIdSessionePortale() {
-		return idSessionePortale;
+		return this.idSessionePortale;
 	}
 	public void setIdSessionePortale(String idSessionePortale) {
 		this.idSessionePortale = idSessionePortale;
 	}
 	public String getAutenticazioneSoggetto() {
-		return autenticazioneSoggetto;
+		return this.autenticazioneSoggetto;
 	}
 	public void setAutenticazioneSoggetto(String autenticazioneSoggetto) {
 		this.autenticazioneSoggetto = autenticazioneSoggetto;
@@ -105,13 +105,13 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 		private String numeroAvviso;
 		
 		public String getIdDominio() {
-			return idDominio;
+			return this.idDominio;
 		}
 		public void setIdDominio(String idDominio) {
 			this.idDominio = idDominio;
 		}
 		public String getNumeroAvviso() {
-			return numeroAvviso;
+			return this.numeroAvviso;
 		}
 		public void setNumeroAvviso(String numeroAvviso) {
 			this.numeroAvviso = numeroAvviso;
@@ -123,13 +123,13 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 		private String idA2A;
 		private String idPendenza;
 		public String getIdA2A() {
-			return idA2A;
+			return this.idA2A;
 		}
 		public void setIdA2A(String idA2A) {
 			this.idA2A = idA2A;
 		}
 		public String getIdPendenza() {
-			return idPendenza;
+			return this.idPendenza;
 		}
 		public void setIdPendenza(String idPendenza) {
 			this.idPendenza = idPendenza;

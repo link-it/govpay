@@ -59,7 +59,7 @@ public class NodoChiediQuadraturaPA {
      *     
      */
     public String getIdentificativoIntermediarioPA() {
-        return identificativoIntermediarioPA;
+        return this.identificativoIntermediarioPA;
     }
 
     /**
@@ -83,7 +83,7 @@ public class NodoChiediQuadraturaPA {
      *     
      */
     public String getIdentificativoStazioneIntermediarioPA() {
-        return identificativoStazioneIntermediarioPA;
+        return this.identificativoStazioneIntermediarioPA;
     }
 
     /**
@@ -107,7 +107,7 @@ public class NodoChiediQuadraturaPA {
      *     
      */
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -131,7 +131,7 @@ public class NodoChiediQuadraturaPA {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -155,7 +155,7 @@ public class NodoChiediQuadraturaPA {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**

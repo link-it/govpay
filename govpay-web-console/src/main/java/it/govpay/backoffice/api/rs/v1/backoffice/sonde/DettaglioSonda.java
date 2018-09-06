@@ -50,19 +50,19 @@ public class DettaglioSonda {
 	}
 
 	public long getSogliaWarnValue() {
-		return sogliaWarnValue;
+		return this.sogliaWarnValue;
 	}
 	
 	public String getSogliaWarn() {
-		return sogliaWarn;
+		return this.sogliaWarn;
 	}
 	
 	public void setSogliaWarn(long sogliaWarn) {
 		this.sogliaWarnValue = sogliaWarn;
 		
-		switch (tipo) {
+		switch (this.tipo) {
 		case Batch:
-			this.sogliaWarn = "Lasso di tempo senza esecuzioni con successo: " + toString(sogliaWarn);
+			this.sogliaWarn = "Lasso di tempo senza esecuzioni con successo: " + this.toString(sogliaWarn);
 			break;
 		case Coda:
 			this.sogliaWarn = "Numero di elementi accodati: " + sogliaWarn;
@@ -74,19 +74,19 @@ public class DettaglioSonda {
 	}
 	
 	public long getSogliaErrorValue() {
-		return sogliaErrorValue;
+		return this.sogliaErrorValue;
 	}
 	
 	public String getSogliaError() {
-		return sogliaError;
+		return this.sogliaError;
 	}
 	
 	public void setSogliaError(long sogliaError) {
 		this.sogliaErrorValue = sogliaError;
 		
-		switch (tipo) {
+		switch (this.tipo) {
 		case Batch:
-			this.sogliaError = "Lasso di tempo senza esecuzioni con successo: " + toString(sogliaError);
+			this.sogliaError = "Lasso di tempo senza esecuzioni con successo: " + this.toString(sogliaError);
 			break;
 		case Coda:
 			this.sogliaError = "Numero di elementi accodati: " + sogliaError;
@@ -98,38 +98,38 @@ public class DettaglioSonda {
 	}
 	
 	public Date getDataUltimoCheck() {
-		return dataUltimoCheck;
+		return this.dataUltimoCheck;
 	}
 	public void setDataUltimoCheck(Date dataUltimoCheck) {
 		this.dataUltimoCheck = dataUltimoCheck;
 	}
 	public String getNome() {
-		return nome;
+		return this.nome;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
 	public Integer getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(Integer stato) {
 		this.stato = stato;
 	}
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
 		this.descrizioneStato = descrizioneStato;
 	}
 	
 	public String getDurataStato() {
-		return durataStato;
+		return this.durataStato;
 	}
 
 	public void setDurataStato(Date inizioStato) {
 		if(inizioStato != null) {
 			this.durataStatoValue = new Date().getTime() - inizioStato.getTime();
-			this.durataStato = toString(this.durataStatoValue);
+			this.durataStato = this.toString(this.durataStatoValue);
 		} else {
 			this.durataStatoValue = 0l;
 			this.durataStato = null;
@@ -137,7 +137,7 @@ public class DettaglioSonda {
 	}
 	
 	public TipoSonda getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 	
 	private String toString(long millis) {

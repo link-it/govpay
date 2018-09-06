@@ -30,7 +30,7 @@ public enum TipoSceltaWisp {
     PAGA_DOPO;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static TipoSceltaWisp fromValue(String v) {

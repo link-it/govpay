@@ -33,7 +33,7 @@ public class IntermediarioIndex extends JSONSerializable {
 
   @JsonProperty("idIntermediario")
   public String getIdIntermediario() {
-    return idIntermediario;
+    return this.idIntermediario;
   }
   public void setIdIntermediario(String idIntermediario) {
     this.idIntermediario = idIntermediario;
@@ -49,7 +49,7 @@ public class IntermediarioIndex extends JSONSerializable {
 
   @JsonProperty("denominazione")
   public String getDenominazione() {
-    return denominazione;
+    return this.denominazione;
   }
   public void setDenominazione(String denominazione) {
     this.denominazione = denominazione;
@@ -65,7 +65,7 @@ public class IntermediarioIndex extends JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -76,22 +76,22 @@ public class IntermediarioIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     IntermediarioIndex intermediarioIndex = (IntermediarioIndex) o;
-    return Objects.equals(idIntermediario, intermediarioIndex.idIntermediario) &&
-        Objects.equals(denominazione, intermediarioIndex.denominazione) &&
-        Objects.equals(abilitato, intermediarioIndex.abilitato);
+    return Objects.equals(this.idIntermediario, intermediarioIndex.idIntermediario) &&
+        Objects.equals(this.denominazione, intermediarioIndex.denominazione) &&
+        Objects.equals(this.abilitato, intermediarioIndex.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idIntermediario, denominazione, abilitato);
+    return Objects.hash(this.idIntermediario, this.denominazione, this.abilitato);
   }
 
   public static IntermediarioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (IntermediarioIndex) parse(json, IntermediarioIndex.class);
+    return parse(json, IntermediarioIndex.class);
   }
 
   @Override
@@ -104,9 +104,9 @@ public class IntermediarioIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class IntermediarioIndex {\n");
     
-    sb.append("    idIntermediario: ").append(toIndentedString(idIntermediario)).append("\n");
-    sb.append("    denominazione: ").append(toIndentedString(denominazione)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    idIntermediario: ").append(this.toIndentedString(this.idIntermediario)).append("\n");
+    sb.append("    denominazione: ").append(this.toIndentedString(this.denominazione)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

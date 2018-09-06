@@ -177,7 +177,7 @@ public class JDBCEsitoAvvisaturaServiceImpl extends JDBCEsitoAvvisaturaServiceSe
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getEsitoAvvisaturaFieldConverter().toTable(EsitoAvvisatura.model()));
 		boolean isUpdate_esitoAvvisatura = true;
-		java.util.List<JDBCObject> lstObjects_esitoAvvisatura = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_esitoAvvisatura = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getEsitoAvvisaturaFieldConverter().toColumn(EsitoAvvisatura.model().COD_DOMINIO,false), "?");
 		lstObjects_esitoAvvisatura.add(new JDBCObject(esitoAvvisatura.getCodDominio(), EsitoAvvisatura.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getEsitoAvvisaturaFieldConverter().toColumn(EsitoAvvisatura.model().IDENTIFICATIVO_AVVISATURA,false), "?");
@@ -240,7 +240,7 @@ public class JDBCEsitoAvvisaturaServiceImpl extends JDBCEsitoAvvisaturaServiceSe
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getEsitoAvvisaturaFieldConverter().toTable(EsitoAvvisatura.model()), 
@@ -251,7 +251,7 @@ public class JDBCEsitoAvvisaturaServiceImpl extends JDBCEsitoAvvisaturaServiceSe
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getEsitoAvvisaturaFieldConverter().toTable(EsitoAvvisatura.model()), 
@@ -262,7 +262,7 @@ public class JDBCEsitoAvvisaturaServiceImpl extends JDBCEsitoAvvisaturaServiceSe
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getEsitoAvvisaturaFieldConverter().toTable(EsitoAvvisatura.model()), 

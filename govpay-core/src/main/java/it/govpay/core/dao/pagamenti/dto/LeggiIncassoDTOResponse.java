@@ -7,7 +7,7 @@ public class LeggiIncassoDTOResponse {
 	private Incasso incasso;
 
 	public Incasso getIncasso() {
-		return incasso;
+		return this.incasso;
 	}
 
 	public void setIncasso(Incasso incasso) {

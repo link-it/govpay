@@ -20,7 +20,7 @@ public class LeggiStazioneDTO extends BasicCreateRequestDTO {
 	}
 	
 	public String getIdCanale() {
-		return idCanale;
+		return this.idCanale;
 	}
 
 	public void setIdCanale(String idCanale) {
@@ -28,7 +28,7 @@ public class LeggiStazioneDTO extends BasicCreateRequestDTO {
 	}
 
 	public TipoVersamento getTipoVersamento() {
-		return tipoVersamento;
+		return this.tipoVersamento;
 	}
 
 	public void setTipoVersamento(TipoVersamento tipoVersamento) {
@@ -36,7 +36,7 @@ public class LeggiStazioneDTO extends BasicCreateRequestDTO {
 	}
 
 	public String getIdPsp() {
-		return idPsp;
+		return this.idPsp;
 	}
 
 	public void setIdPsp(String idPsp) {

@@ -50,7 +50,7 @@ public class CtIdentificativoUnivoco {
      *     
      */
     public StTipoIdentificativoUnivoco getTipoIdentificativoUnivoco() {
-        return tipoIdentificativoUnivoco;
+        return this.tipoIdentificativoUnivoco;
     }
 
     /**
@@ -74,7 +74,7 @@ public class CtIdentificativoUnivoco {
      *     
      */
     public String getCodiceIdentificativoUnivoco() {
-        return codiceIdentificativoUnivoco;
+        return this.codiceIdentificativoUnivoco;
     }
 
     /**

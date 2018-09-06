@@ -32,7 +32,7 @@ public enum TipoContabilita {
     ALTRO;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static TipoContabilita fromValue(String v) {

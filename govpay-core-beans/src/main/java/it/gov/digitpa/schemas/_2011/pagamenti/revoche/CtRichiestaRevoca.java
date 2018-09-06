@@ -77,7 +77,7 @@ public class CtRichiestaRevoca {
      *     
      */
     public String getVersioneOggetto() {
-        return versioneOggetto;
+        return this.versioneOggetto;
     }
 
     /**
@@ -101,7 +101,7 @@ public class CtRichiestaRevoca {
      *     
      */
     public CtDominio getDominio() {
-        return dominio;
+        return this.dominio;
     }
 
     /**
@@ -125,7 +125,7 @@ public class CtRichiestaRevoca {
      *     
      */
     public String getIdentificativoMessaggioRevoca() {
-        return identificativoMessaggioRevoca;
+        return this.identificativoMessaggioRevoca;
     }
 
     /**
@@ -149,7 +149,7 @@ public class CtRichiestaRevoca {
      *     
      */
     public Date getDataOraMessaggioRevoca() {
-        return dataOraMessaggioRevoca;
+        return this.dataOraMessaggioRevoca;
     }
 
     /**
@@ -173,7 +173,7 @@ public class CtRichiestaRevoca {
      *     
      */
     public CtIstitutoAttestante getIstitutoAttestante() {
-        return istitutoAttestante;
+        return this.istitutoAttestante;
     }
 
     /**
@@ -197,7 +197,7 @@ public class CtRichiestaRevoca {
      *     
      */
     public CtSoggettoVersante getSoggettoVersante() {
-        return soggettoVersante;
+        return this.soggettoVersante;
     }
 
     /**
@@ -221,7 +221,7 @@ public class CtRichiestaRevoca {
      *     
      */
     public CtSoggettoPagatore getSoggettoPagatore() {
-        return soggettoPagatore;
+        return this.soggettoPagatore;
     }
 
     /**
@@ -245,7 +245,7 @@ public class CtRichiestaRevoca {
      *     
      */
     public CtDatiRevoca getDatiRevoca() {
-        return datiRevoca;
+        return this.datiRevoca;
     }
 
     /**

@@ -10,6 +10,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.pagamenti.ContoAddebito;
 import it.govpay.core.rs.v1.beans.pagamenti.PagamentiPortaleResponseOk;
 import it.govpay.core.rs.v1.beans.pagamenti.Pagamento;
@@ -72,7 +73,7 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setVersante(VersamentoUtils.toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
 		if(pagamentiPortaleRequest.getPendenze() != null && pagamentiPortaleRequest.getPendenze().size() > 0 ) {
-			List<Object> listRefs = new ArrayList<Object>();
+			List<Object> listRefs = new ArrayList<>();
 
 			int i =0;
 			for (PendenzaPost pendenza: pagamentiPortaleRequest.getPendenze()) {
@@ -124,7 +125,7 @@ public class PagamentiPortaleConverter {
 		PagamentoPost pagamentiPortaleRequest = null;
 		if(pagamentoPortale.getJsonRequest()!=null)
 			try {
-				pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
+				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
 			
 				if(pagamentiPortaleRequest.getContoAddebito()!=null) {
 					ContoAddebito contoAddebito = new ContoAddebito();
@@ -161,7 +162,7 @@ public class PagamentiPortaleConverter {
 		
 		if(pagamentoPortale.getJsonRequest()!=null)
 			try {
-				pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
+				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
 			
 				if(pagamentiPortaleRequest.getContoAddebito()!=null) {
 					ContoAddebito contoAddebito = new ContoAddebito();

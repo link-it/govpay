@@ -18,7 +18,7 @@ public class ElencoSonde {
 
 	public List<SommarioSonda> getItems() {
 		if(this.items == null)
-			this.items = new ArrayList<SommarioSonda>();
-		return items;
+			this.items = new ArrayList<>();
+		return this.items;
 	}
 }

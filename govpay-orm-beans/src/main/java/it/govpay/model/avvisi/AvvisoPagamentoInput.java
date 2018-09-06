@@ -395,7 +395,7 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   }
   
 	  public java.lang.String getTaglio() {
-		return taglio;
+		return this.taglio;
 	}
 	
 	public void setTaglio(java.lang.String taglio) {
@@ -403,7 +403,7 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
 	}
 	
 	public java.lang.String getTaglio1() {
-		return taglio1;
+		return this.taglio1;
 	}
 	
 	public void setTaglio1(java.lang.String taglio1) {

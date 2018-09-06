@@ -103,7 +103,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getCodFlusso() {
-        return codFlusso;
+        return this.codFlusso;
     }
 
     /**
@@ -127,7 +127,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public Date getDataFlusso() {
-        return dataFlusso;
+        return this.dataFlusso;
     }
 
     /**
@@ -151,7 +151,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getTrn() {
-        return trn;
+        return this.trn;
     }
 
     /**
@@ -175,7 +175,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public Date getDataRegolamento() {
-        return dataRegolamento;
+        return this.dataRegolamento;
     }
 
     /**
@@ -199,7 +199,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getCodPsp() {
-        return codPsp;
+        return this.codPsp;
     }
 
     /**
@@ -223,7 +223,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getCodBicRiversamento() {
-        return codBicRiversamento;
+        return this.codBicRiversamento;
     }
 
     /**
@@ -247,7 +247,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -267,7 +267,7 @@ public class EstremiFlussoRendicontazione {
      * 
      */
     public long getNumeroPagamenti() {
-        return numeroPagamenti;
+        return this.numeroPagamenti;
     }
 
     /**
@@ -287,7 +287,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public BigDecimal getImportoTotale() {
-        return importoTotale;
+        return this.importoTotale;
     }
 
     /**
@@ -311,7 +311,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public StatoFr getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**
@@ -349,8 +349,8 @@ public class EstremiFlussoRendicontazione {
      * 
      */
     public List<Anomalia> getAnomalia() {
-        if (anomalia == null) {
-            anomalia = new ArrayList<Anomalia>();
+        if (this.anomalia == null) {
+            this.anomalia = new ArrayList<>();
         }
         return this.anomalia;
     }

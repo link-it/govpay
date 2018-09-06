@@ -73,7 +73,7 @@ public class TributoFilter extends AbstractFilter {
 			boolean addAnd = false;
 			if(this.idDominio != null){
 				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), idDominio);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idDominio);
 				addAnd = true;
 			}
 			
@@ -87,7 +87,7 @@ public class TributoFilter extends AbstractFilter {
 			if(this.listaIdTributi != null && this.listaIdTributi.size() > 0){
 				if(addAnd)
 					newExpression.and();
-				newExpression.in(cf, listaIdTributi);
+				newExpression.in(this.cf, this.listaIdTributi);
 				
 				addAnd = true;
 			}
@@ -138,7 +138,7 @@ public class TributoFilter extends AbstractFilter {
 			
 			if(this.idDominio != null){
 				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), idDominio);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idDominio);
 			//	addAnd = true;
 			}
 
@@ -157,7 +157,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -165,7 +165,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getListaIdTributi() {
-		return listaIdTributi;
+		return this.listaIdTributi;
 	}
 
 	public void setListaIdTributi(List<Long> listaIdTributi) {
@@ -173,7 +173,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public Long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(Long idDominio) {
@@ -181,7 +181,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public String getCodTributo() {
-		return codTributo;
+		return this.codTributo;
 	}
 
 	public void setCodTributo(String codTributo) {
@@ -189,7 +189,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public String getDescrizione() {
-		return descrizione;
+		return this.descrizione;
 	}
 
 	public void setDescrizione(String descrizione) {
@@ -198,7 +198,7 @@ public class TributoFilter extends AbstractFilter {
 
 	
 	public Long getIdIbanAccredito() {
-		return idIbanAccredito;
+		return this.idIbanAccredito;
 	}
 
 	public void setIdIbanAccredito(Long idIbanAccredito) {
@@ -206,7 +206,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public Long getIdIbanAppoggio() {
-		return idIbanAppoggio;
+		return this.idIbanAppoggio;
 	}
 
 	public void setIdIbanAppoggio(Long idIbanAppoggio) {

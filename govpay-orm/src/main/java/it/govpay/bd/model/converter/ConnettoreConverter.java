@@ -104,7 +104,7 @@ public class ConnettoreConverter {
 	}
 
 	public static List<it.govpay.orm.Connettore> toVOList(Connettore connettore) {
-		List<it.govpay.orm.Connettore> voList = new ArrayList<it.govpay.orm.Connettore>();
+		List<it.govpay.orm.Connettore> voList = new ArrayList<>();
 		
 		if(connettore.getHttpUser() != null && !connettore.getHttpUser().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();

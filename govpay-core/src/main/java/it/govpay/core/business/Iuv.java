@@ -167,8 +167,8 @@ public class Iuv extends BasicBD {
 			for(CaricaIuvDTO.Iuv iuvDaCaricare : dto.getIuvDaCaricare()) {
 				it.govpay.model.Iuv iuv = null;
 				try {
-					checkIUV(dominio, iuvDaCaricare.getIuv(), TipoIUV.NUMERICO);
-					iuv = caricaIUV(dto.getApplicazioneAutenticata(), dominio, iuvDaCaricare.getIuv(), TipoIUV.NUMERICO, iuvDaCaricare.getCodVersamentoEnte());
+					this.checkIUV(dominio, iuvDaCaricare.getIuv(), TipoIUV.NUMERICO);
+					iuv = this.caricaIUV(dto.getApplicazioneAutenticata(), dominio, iuvDaCaricare.getIuv(), TipoIUV.NUMERICO, iuvDaCaricare.getCodVersamentoEnte());
 				} catch (ServiceException se) {
 					e = se;
 					continue;

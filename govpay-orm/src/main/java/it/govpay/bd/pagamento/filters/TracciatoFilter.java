@@ -43,7 +43,7 @@ public class TracciatoFilter extends AbstractFilter {
 	private String operatore;
 
 	public String getFilenameRichiestaLike() {
-		return filenameRichiestaLike;
+		return this.filenameRichiestaLike;
 	}
 
 	public void setFilenameRichiestaLike(String filenameRichiestaLike) {
@@ -108,7 +108,7 @@ public class TracciatoFilter extends AbstractFilter {
 	}
 
 	public it.govpay.model.Tracciato.STATO_ELABORAZIONE getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(it.govpay.model.Tracciato.STATO_ELABORAZIONE stato) {
@@ -116,7 +116,7 @@ public class TracciatoFilter extends AbstractFilter {
 	}
 
 	public List<String> getDomini() {
-		return domini;
+		return this.domini;
 	}
 
 	public void setDomini(List<String> domini) {
@@ -124,7 +124,7 @@ public class TracciatoFilter extends AbstractFilter {
 	}
 
 	public List<it.govpay.model.Tracciato.TIPO_TRACCIATO> getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 
 	public void setTipo(List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo) {
@@ -132,7 +132,7 @@ public class TracciatoFilter extends AbstractFilter {
 	}
 
 	public String getFilenameRichiesta() {
-		return filenameRichiesta;
+		return this.filenameRichiesta;
 	}
 
 	public void setFilenameRichiesta(String filenameRichiesta) {
@@ -140,7 +140,7 @@ public class TracciatoFilter extends AbstractFilter {
 	}
 
 	public String getOperatore() {
-		return operatore;
+		return this.operatore;
 	}
 
 	public void setOperatore(String operatore) {

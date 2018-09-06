@@ -73,97 +73,97 @@ public class Connettore extends Versionabile {
 	}
 		
 	public String getIdConnettore() {
-		return idConnettore;
+		return this.idConnettore;
 	}
 	public void setIdConnettore(String idConnettore) {
 		this.idConnettore = idConnettore;
 	}
 	public EnumAuthType getTipoAutenticazione() {
-		return tipoAutenticazione;
+		return this.tipoAutenticazione;
 	}
 	public void setTipoAutenticazione(EnumAuthType tipoAutenticazione) {
 		this.tipoAutenticazione = tipoAutenticazione;
 	}
 	public EnumSslType getTipoSsl() {
-		return tipoSsl;
+		return this.tipoSsl;
 	}
 	public void setTipoSsl(EnumSslType tipoSsl) {
 		this.tipoSsl = tipoSsl;
 	}
 	public String getSslKsType() {
-		return sslKsType;
+		return this.sslKsType;
 	}
 	public void setSslKsType(String sslKsType) {
 		this.sslKsType = sslKsType;
 	}
 	public String getSslKsLocation() {
-		return sslKsLocation;
+		return this.sslKsLocation;
 	}
 	public void setSslKsLocation(String sslKsLocation) {
 		this.sslKsLocation = sslKsLocation;
 	}
 	public String getSslKsPasswd() {
-		return sslKsPasswd;
+		return this.sslKsPasswd;
 	}
 	public void setSslKsPasswd(String sslKsPasswd) {
 		this.sslKsPasswd = sslKsPasswd;
 	}
 	public String getSslPKeyPasswd() {
-		return sslPKeyPasswd;
+		return this.sslPKeyPasswd;
 	}
 	public void setSslPKeyPasswd(String sslPKeyPasswd) {
 		this.sslPKeyPasswd = sslPKeyPasswd;
 	}
 	public String getSslTsType() {
-		return sslTsType;
+		return this.sslTsType;
 	}
 	public void setSslTsType(String sslTsType) {
 		this.sslTsType = sslTsType;
 	}
 	public String getSslTsLocation() {
-		return sslTsLocation;
+		return this.sslTsLocation;
 	}
 	public void setSslTsLocation(String sslTsLocation) {
 		this.sslTsLocation = sslTsLocation;
 	}
 	public String getSslTsPasswd() {
-		return sslTsPasswd;
+		return this.sslTsPasswd;
 	}
 	public void setSslTsPasswd(String sslTsPasswd) {
 		this.sslTsPasswd = sslTsPasswd;
 	}
 	public String getSslType() {
-		return sslType;
+		return this.sslType;
 	}
 	public void setSslType(String sslType) {
 		this.sslType = sslType;
 	}
 	public String getHttpUser() {
-		return httpUser;
+		return this.httpUser;
 	}
 	public void setHttpUser(String httpUser) {
 		this.httpUser = httpUser;
 	}
 	public String getHttpPassw() {
-		return httpPassw;
+		return this.httpPassw;
 	}
 	public void setHttpPassw(String httpPassw) {
 		this.httpPassw = httpPassw;
 	}
 	public String getUrl() {
-		return url;
+		return this.url;
 	}
 	public void setUrl(String url) {
 		this.url = url;
 	}
 	public boolean isAzioneInUrl() {
-		return azioneInUrl;
+		return this.azioneInUrl;
 	}
 	public void setAzioneInUrl(boolean azioneInUrl) {
 		this.azioneInUrl = azioneInUrl;
 	}
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;

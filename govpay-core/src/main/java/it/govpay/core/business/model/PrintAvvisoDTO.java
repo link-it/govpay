@@ -9,13 +9,13 @@ public class PrintAvvisoDTO {
 	private AvvisoPagamentoInput input;
 	
 	public AvvisoPagamento getAvviso() {
-		return avviso;
+		return this.avviso;
 	}
 	public void setAvviso(AvvisoPagamento avviso) {
 		this.avviso = avviso;
 	}
 	public AvvisoPagamentoInput getInput() {
-		return input;
+		return this.input;
 	}
 	public void setInput(AvvisoPagamentoInput input) {
 		this.input = input;

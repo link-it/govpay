@@ -72,7 +72,7 @@ public class InformativaPSP {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**
@@ -96,7 +96,7 @@ public class InformativaPSP {
      *     
      */
     public String getIdentificativoPSP() {
-        return identificativoPSP;
+        return this.identificativoPSP;
     }
 
     /**
@@ -120,7 +120,7 @@ public class InformativaPSP {
      *     
      */
     public String getRagioneSociale() {
-        return ragioneSociale;
+        return this.ragioneSociale;
     }
 
     /**
@@ -144,7 +144,7 @@ public class InformativaPSP {
      *     
      */
     public CtInformativaMaster getInformativaMaster() {
-        return informativaMaster;
+        return this.informativaMaster;
     }
 
     /**
@@ -168,7 +168,7 @@ public class InformativaPSP {
      *     
      */
     public CtListaInformativaDetail getListaInformativaDetail() {
-        return listaInformativaDetail;
+        return this.listaInformativaDetail;
     }
 
     /**
@@ -192,7 +192,7 @@ public class InformativaPSP {
      *     
      */
     public CtListaServiziNonDiPagamento getListaServiziNonDiPagamento() {
-        return listaServiziNonDiPagamento;
+        return this.listaServiziNonDiPagamento;
     }
 
     /**

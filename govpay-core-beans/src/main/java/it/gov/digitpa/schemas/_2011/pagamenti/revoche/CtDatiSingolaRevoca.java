@@ -62,7 +62,7 @@ public class CtDatiSingolaRevoca {
      *     
      */
     public BigDecimal getSingoloImportoRevocato() {
-        return singoloImportoRevocato;
+        return this.singoloImportoRevocato;
     }
 
     /**
@@ -86,7 +86,7 @@ public class CtDatiSingolaRevoca {
      *     
      */
     public String getIdentificativoUnivocoRiscossione() {
-        return identificativoUnivocoRiscossione;
+        return this.identificativoUnivocoRiscossione;
     }
 
     /**
@@ -110,7 +110,7 @@ public class CtDatiSingolaRevoca {
      *     
      */
     public String getCausaleRevoca() {
-        return causaleRevoca;
+        return this.causaleRevoca;
     }
 
     /**
@@ -134,7 +134,7 @@ public class CtDatiSingolaRevoca {
      *     
      */
     public String getDatiAggiuntiviRevoca() {
-        return datiAggiuntiviRevoca;
+        return this.datiAggiuntiviRevoca;
     }
 
     /**

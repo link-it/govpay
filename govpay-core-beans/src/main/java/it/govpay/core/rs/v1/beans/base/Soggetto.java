@@ -53,7 +53,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
     @Override
     @JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static TipoEnum fromValue(String text) {
@@ -111,7 +111,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("tipo")
   public TipoEnum getTipo() {
-    return tipo;
+    return this.tipo;
   }
   public void setTipo(TipoEnum tipo) {
     this.tipo = tipo;
@@ -127,7 +127,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("identificativo")
   public String getIdentificativo() {
-    return identificativo;
+    return this.identificativo;
   }
   public void setIdentificativo(String identificativo) {
     this.identificativo = identificativo;
@@ -143,7 +143,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("anagrafica")
   public String getAnagrafica() {
-    return anagrafica;
+    return this.anagrafica;
   }
   public void setAnagrafica(String anagrafica) {
     this.anagrafica = anagrafica;
@@ -158,7 +158,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("indirizzo")
   public String getIndirizzo() {
-    return indirizzo;
+    return this.indirizzo;
   }
   public void setIndirizzo(String indirizzo) {
     this.indirizzo = indirizzo;
@@ -173,7 +173,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("civico")
   public String getCivico() {
-    return civico;
+    return this.civico;
   }
   public void setCivico(String civico) {
     this.civico = civico;
@@ -188,7 +188,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("cap")
   public String getCap() {
-    return cap;
+    return this.cap;
   }
   public void setCap(String cap) {
     this.cap = cap;
@@ -203,7 +203,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("localita")
   public String getLocalita() {
-    return localita;
+    return this.localita;
   }
   public void setLocalita(String localita) {
     this.localita = localita;
@@ -218,7 +218,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("provincia")
   public String getProvincia() {
-    return provincia;
+    return this.provincia;
   }
   public void setProvincia(String provincia) {
     this.provincia = provincia;
@@ -233,7 +233,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("nazione")
   public String getNazione() {
-    return nazione;
+    return this.nazione;
   }
   public void setNazione(String nazione) {
     this.nazione = nazione;
@@ -248,7 +248,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("email")
   public String getEmail() {
-    return email;
+    return this.email;
   }
   public void setEmail(String email) {
     this.email = email;
@@ -263,7 +263,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
 
   @JsonProperty("cellulare")
   public String getCellulare() {
-    return cellulare;
+    return this.cellulare;
   }
   public void setCellulare(String cellulare) {
     this.cellulare = cellulare;
@@ -274,30 +274,30 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Soggetto soggetto = (Soggetto) o;
-    return Objects.equals(tipo, soggetto.tipo) &&
-        Objects.equals(identificativo, soggetto.identificativo) &&
-        Objects.equals(anagrafica, soggetto.anagrafica) &&
-        Objects.equals(indirizzo, soggetto.indirizzo) &&
-        Objects.equals(civico, soggetto.civico) &&
-        Objects.equals(cap, soggetto.cap) &&
-        Objects.equals(localita, soggetto.localita) &&
-        Objects.equals(provincia, soggetto.provincia) &&
-        Objects.equals(nazione, soggetto.nazione) &&
-        Objects.equals(email, soggetto.email) &&
-        Objects.equals(cellulare, soggetto.cellulare);
+    return Objects.equals(this.tipo, soggetto.tipo) &&
+        Objects.equals(this.identificativo, soggetto.identificativo) &&
+        Objects.equals(this.anagrafica, soggetto.anagrafica) &&
+        Objects.equals(this.indirizzo, soggetto.indirizzo) &&
+        Objects.equals(this.civico, soggetto.civico) &&
+        Objects.equals(this.cap, soggetto.cap) &&
+        Objects.equals(this.localita, soggetto.localita) &&
+        Objects.equals(this.provincia, soggetto.provincia) &&
+        Objects.equals(this.nazione, soggetto.nazione) &&
+        Objects.equals(this.email, soggetto.email) &&
+        Objects.equals(this.cellulare, soggetto.cellulare);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare);
+    return Objects.hash(this.tipo, this.identificativo, this.anagrafica, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.cellulare);
   }
 
   public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Soggetto) parse(json, Soggetto.class);
+    return parse(json, Soggetto.class);
   }
 
   @Override
@@ -310,17 +310,17 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
     StringBuilder sb = new StringBuilder();
     sb.append("class Soggetto {\n");
     
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
-    sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
-    sb.append("    anagrafica: ").append(toIndentedString(anagrafica)).append("\n");
-    sb.append("    indirizzo: ").append(toIndentedString(indirizzo)).append("\n");
-    sb.append("    civico: ").append(toIndentedString(civico)).append("\n");
-    sb.append("    cap: ").append(toIndentedString(cap)).append("\n");
-    sb.append("    localita: ").append(toIndentedString(localita)).append("\n");
-    sb.append("    provincia: ").append(toIndentedString(provincia)).append("\n");
-    sb.append("    nazione: ").append(toIndentedString(nazione)).append("\n");
-    sb.append("    email: ").append(toIndentedString(email)).append("\n");
-    sb.append("    cellulare: ").append(toIndentedString(cellulare)).append("\n");
+    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
+    sb.append("    identificativo: ").append(this.toIndentedString(this.identificativo)).append("\n");
+    sb.append("    anagrafica: ").append(this.toIndentedString(this.anagrafica)).append("\n");
+    sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
+    sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");
+    sb.append("    cap: ").append(this.toIndentedString(this.cap)).append("\n");
+    sb.append("    localita: ").append(this.toIndentedString(this.localita)).append("\n");
+    sb.append("    provincia: ").append(this.toIndentedString(this.provincia)).append("\n");
+    sb.append("    nazione: ").append(this.toIndentedString(this.nazione)).append("\n");
+    sb.append("    email: ").append(this.toIndentedString(this.email)).append("\n");
+    sb.append("    cellulare: ").append(this.toIndentedString(this.cellulare)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -336,19 +336,20 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
     return o.toString().replace("\n", "\n    ");
   }
   
-  public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
+  @Override
+public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
 		 ValidatorFactory vf = ValidatorFactory.newInstance();
-		 vf.getValidator("tipo", tipo).notNull();
-		 vf.getValidator("identificativo", identificativo).notNull().minLength(1).maxLength(35);
-		 vf.getValidator("anagrafica", anagrafica).minLength(1).maxLength(70);
-		 vf.getValidator("indirizzo", indirizzo).minLength(1).maxLength(70);
-		 vf.getValidator("civico", civico).minLength(1).maxLength(16);
-		 vf.getValidator("cap", cap).minLength(1).maxLength(16);
-		 vf.getValidator("localita", localita).minLength(1).maxLength(35);
-		 vf.getValidator("provincia", provincia).minLength(1).maxLength(70);
-		 vf.getValidator("nazione", nazione).pattern("[A-Z]{2,2}");
-		 vf.getValidator("email", email).pattern("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)");
-		 vf.getValidator("cellulare", cellulare).pattern("\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}");
+		 vf.getValidator("tipo", this.tipo).notNull();
+		 vf.getValidator("identificativo", this.identificativo).notNull().minLength(1).maxLength(35);
+		 vf.getValidator("anagrafica", this.anagrafica).minLength(1).maxLength(70);
+		 vf.getValidator("indirizzo", this.indirizzo).minLength(1).maxLength(70);
+		 vf.getValidator("civico", this.civico).minLength(1).maxLength(16);
+		 vf.getValidator("cap", this.cap).minLength(1).maxLength(16);
+		 vf.getValidator("localita", this.localita).minLength(1).maxLength(35);
+		 vf.getValidator("provincia", this.provincia).minLength(1).maxLength(70);
+		 vf.getValidator("nazione", this.nazione).pattern("[A-Z]{2,2}");
+		 vf.getValidator("email", this.email).pattern("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)");
+		 vf.getValidator("cellulare", this.cellulare).pattern("\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}");
 	 }
 }
 

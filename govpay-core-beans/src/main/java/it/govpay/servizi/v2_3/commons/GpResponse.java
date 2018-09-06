@@ -70,7 +70,7 @@ public class GpResponse {
      *     
      */
     public String getCodOperazione() {
-        return codOperazione;
+        return this.codOperazione;
     }
 
     /**
@@ -94,7 +94,7 @@ public class GpResponse {
      *     
      */
     public Mittente getMittente() {
-        return mittente;
+        return this.mittente;
     }
 
     /**
@@ -118,7 +118,7 @@ public class GpResponse {
      *     
      */
     public String getCodEsito() {
-        return codEsito;
+        return this.codEsito;
     }
 
     /**
@@ -142,7 +142,7 @@ public class GpResponse {
      *     
      */
     public String getDescrizioneEsito() {
-        return descrizioneEsito;
+        return this.descrizioneEsito;
     }
 
     /**
@@ -166,7 +166,7 @@ public class GpResponse {
      *     
      */
     public String getDettaglioEsito() {
-        return dettaglioEsito;
+        return this.dettaglioEsito;
     }
 
     /**

@@ -67,7 +67,7 @@ public class CtInformazioniServizio {
      *     
      */
     public StCodiceLingua getCodiceLingua() {
-        return codiceLingua;
+        return this.codiceLingua;
     }
 
     /**
@@ -91,7 +91,7 @@ public class CtInformazioniServizio {
      *     
      */
     public String getDescrizioneServizio() {
-        return descrizioneServizio;
+        return this.descrizioneServizio;
     }
 
     /**
@@ -115,7 +115,7 @@ public class CtInformazioniServizio {
      *     
      */
     public String getDisponibilitaServizio() {
-        return disponibilitaServizio;
+        return this.disponibilitaServizio;
     }
 
     /**
@@ -139,7 +139,7 @@ public class CtInformazioniServizio {
      *     
      */
     public String getLimitazioniServizio() {
-        return limitazioniServizio;
+        return this.limitazioniServizio;
     }
 
     /**
@@ -163,7 +163,7 @@ public class CtInformazioniServizio {
      *     
      */
     public String getUrlInformazioniCanale() {
-        return urlInformazioniCanale;
+        return this.urlInformazioniCanale;
     }
 
     /**
@@ -187,7 +187,7 @@ public class CtInformazioniServizio {
      *     
      */
     public String getCondizioniEconomicheMassime() {
-        return condizioniEconomicheMassime;
+        return this.condizioniEconomicheMassime;
     }
 
     /**

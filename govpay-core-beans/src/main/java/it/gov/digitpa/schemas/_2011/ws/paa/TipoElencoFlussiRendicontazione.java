@@ -45,7 +45,7 @@ public class TipoElencoFlussiRendicontazione {
      * 
      */
     public int getTotRestituiti() {
-        return totRestituiti;
+        return this.totRestituiti;
     }
 
     /**
@@ -79,8 +79,8 @@ public class TipoElencoFlussiRendicontazione {
      * 
      */
     public List<TipoIdRendicontazione> getIdRendicontazione() {
-        if (idRendicontazione == null) {
-            idRendicontazione = new ArrayList<TipoIdRendicontazione>();
+        if (this.idRendicontazione == null) {
+            this.idRendicontazione = new ArrayList<>();
         }
         return this.idRendicontazione;
     }

@@ -19,7 +19,7 @@ public class GetDominioDTOResponse {
 	}
 
 	public Dominio getDominio() {
-		return dominio;
+		return this.dominio;
 	}
 
 	public void setDominio(Dominio dominio) {
@@ -27,7 +27,7 @@ public class GetDominioDTOResponse {
 	}
 
 	public List<IbanAccredito> getIban() {
-		return iban;
+		return this.iban;
 	}
 
 	public void setIban(List<IbanAccredito> iban) {
@@ -35,7 +35,7 @@ public class GetDominioDTOResponse {
 	}
 
 	public List<Tributo> getTributi() {
-		return tributi;
+		return this.tributi;
 	}
 
 	public void setTributi(List<Tributo> tributi) {
@@ -43,7 +43,7 @@ public class GetDominioDTOResponse {
 	}
 
 	public List<UnitaOperativa> getUo() {
-		return uo;
+		return this.uo;
 	}
 
 	public void setUo(List<UnitaOperativa> uo) {

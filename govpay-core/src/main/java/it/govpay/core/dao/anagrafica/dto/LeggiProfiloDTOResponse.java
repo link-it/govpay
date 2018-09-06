@@ -22,25 +22,25 @@ public class LeggiProfiloDTOResponse {
 	private List<Dominio> domini;
 	private List<Tributo> tributi;
 	public IAutorizzato getUtente() {
-		return utente;
+		return this.utente;
 	}
 	public void setUtente(IAutorizzato utente) {
 		this.utente = utente;
 	}
 	public List<Dominio> getDomini() {
-		return domini;
+		return this.domini;
 	}
 	public void setDomini(List<Dominio> domini) {
 		this.domini = domini;
 	}
 	public List<Tributo> getTributi() {
-		return tributi;
+		return this.tributi;
 	}
 	public void setTributi(List<Tributo> tributi) {
 		this.tributi = tributi;
 	}
 	public String getNome() {
-		return nome;
+		return this.nome;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;

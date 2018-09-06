@@ -116,7 +116,7 @@ public class Pagamento {
      *     
      */
     public String getCodSingoloVersamentoEnte() {
-        return codSingoloVersamentoEnte;
+        return this.codSingoloVersamentoEnte;
     }
 
     /**
@@ -140,7 +140,7 @@ public class Pagamento {
      *     
      */
     public BigDecimal getImportoPagato() {
-        return importoPagato;
+        return this.importoPagato;
     }
 
     /**
@@ -164,7 +164,7 @@ public class Pagamento {
      *     
      */
     public String getIur() {
-        return iur;
+        return this.iur;
     }
 
     /**
@@ -188,7 +188,7 @@ public class Pagamento {
      *     
      */
     public Date getDataPagamento() {
-        return dataPagamento;
+        return this.dataPagamento;
     }
 
     /**
@@ -212,7 +212,7 @@ public class Pagamento {
      *     
      */
     public Date getDataAcquisizione() {
-        return dataAcquisizione;
+        return this.dataAcquisizione;
     }
 
     /**
@@ -236,7 +236,7 @@ public class Pagamento {
      *     
      */
     public BigDecimal getCommissioniPsp() {
-        return commissioniPsp;
+        return this.commissioniPsp;
     }
 
     /**
@@ -260,7 +260,7 @@ public class Pagamento {
      *     
      */
     public Pagamento.Allegato getAllegato() {
-        return allegato;
+        return this.allegato;
     }
 
     /**
@@ -284,7 +284,7 @@ public class Pagamento {
      *     
      */
     public Date getDataAcquisizioneRevoca() {
-        return dataAcquisizioneRevoca;
+        return this.dataAcquisizioneRevoca;
     }
 
     /**
@@ -308,7 +308,7 @@ public class Pagamento {
      *     
      */
     public String getCausaleRevoca() {
-        return causaleRevoca;
+        return this.causaleRevoca;
     }
 
     /**
@@ -332,7 +332,7 @@ public class Pagamento {
      *     
      */
     public String getDatiRevoca() {
-        return datiRevoca;
+        return this.datiRevoca;
     }
 
     /**
@@ -356,7 +356,7 @@ public class Pagamento {
      *     
      */
     public BigDecimal getImportoRevocato() {
-        return importoRevocato;
+        return this.importoRevocato;
     }
 
     /**
@@ -380,7 +380,7 @@ public class Pagamento {
      *     
      */
     public String getEsitoRevoca() {
-        return esitoRevoca;
+        return this.esitoRevoca;
     }
 
     /**
@@ -404,7 +404,7 @@ public class Pagamento {
      *     
      */
     public String getDatiEsitoRevoca() {
-        return datiEsitoRevoca;
+        return this.datiEsitoRevoca;
     }
 
     /**
@@ -462,7 +462,7 @@ public class Pagamento {
          *     
          */
         public TipoAllegato getTipo() {
-            return tipo;
+            return this.tipo;
         }
 
         /**
@@ -485,7 +485,7 @@ public class Pagamento {
          *     byte[]
          */
         public byte[] getTesto() {
-            return testo;
+            return this.testo;
         }
 
         /**

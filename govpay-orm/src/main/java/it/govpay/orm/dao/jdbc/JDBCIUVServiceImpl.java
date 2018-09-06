@@ -214,7 +214,7 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getIUVFieldConverter().toTable(IUV.model()));
 		boolean isUpdate_iuv = true;
-		java.util.List<JDBCObject> lstObjects_iuv = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_iuv = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().PRG,false), "?");
 		lstObjects_iuv.add(new JDBCObject(iuv.getPrg(), IUV.model().PRG.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().IUV,false), "?");
@@ -284,7 +284,7 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIUVFieldConverter().toTable(IUV.model()), 
@@ -295,7 +295,7 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIUVFieldConverter().toTable(IUV.model()), 
@@ -306,7 +306,7 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIUVFieldConverter().toTable(IUV.model()), 

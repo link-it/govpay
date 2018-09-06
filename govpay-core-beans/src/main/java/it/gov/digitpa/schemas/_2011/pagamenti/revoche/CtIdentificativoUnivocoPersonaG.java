@@ -50,7 +50,7 @@ public class CtIdentificativoUnivocoPersonaG {
      *     
      */
     public StTipoIdentificativoUnivocoPersG getTipoIdentificativoUnivoco() {
-        return tipoIdentificativoUnivoco;
+        return this.tipoIdentificativoUnivoco;
     }
 
     /**
@@ -74,7 +74,7 @@ public class CtIdentificativoUnivocoPersonaG {
      *     
      */
     public String getCodiceIdentificativoUnivoco() {
-        return codiceIdentificativoUnivoco;
+        return this.codiceIdentificativoUnivoco;
     }
 
     /**

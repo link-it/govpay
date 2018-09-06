@@ -1,6 +1,7 @@
 package it.govpay.rs.v1.controllers.ragioneria;
 
 import java.io.ByteArrayOutputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.ragioneria.Incasso;
 import it.govpay.core.rs.v1.beans.ragioneria.IncassoPost;
 import it.govpay.core.rs.v1.beans.ragioneria.ListaIncassiIndex;
@@ -42,7 +44,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		String campi = null;
 		try{
 			baos = new ByteArrayOutputStream();
@@ -68,7 +70,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.ragioneria.IncassoIndex> listaIncassi = new ArrayList<it.govpay.core.rs.v1.beans.ragioneria.IncassoIndex>();
+			List<it.govpay.core.rs.v1.beans.ragioneria.IncassoIndex> listaIncassi = new ArrayList<>();
 			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getResults()) {
 				listaIncassi.add(IncassiConverter.toRsIndexModel(i));
 			}
@@ -77,11 +79,11 @@ public class IncassiController extends it.govpay.rs.BaseController {
 					listaIncassiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -93,7 +95,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -120,11 +122,11 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			Incasso response = IncassiConverter.toRsModel(leggiIncassoDTOResponse.getIncasso());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -135,7 +137,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
@@ -145,7 +147,7 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
-			it.govpay.core.rs.v1.beans.ragioneria.IncassoPost incasso = (IncassoPost) it.govpay.core.rs.v1.beans.ragioneria.IncassoPost.parse(baos.toString(), it.govpay.core.rs.v1.beans.ragioneria.IncassoPost.class);
+			it.govpay.core.rs.v1.beans.ragioneria.IncassoPost incasso = JSONSerializable.parse(baos.toString(), it.govpay.core.rs.v1.beans.ragioneria.IncassoPost.class);
 			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
@@ -157,10 +159,10 @@ public class IncassiController extends it.govpay.rs.BaseController {
 			Status responseStatus = richiestaIncassoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, incassoExt.toJSON(null), responseStatus.getStatusCode());
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(incassoExt.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

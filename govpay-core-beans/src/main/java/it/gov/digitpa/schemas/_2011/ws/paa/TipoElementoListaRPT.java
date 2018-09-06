@@ -59,7 +59,7 @@ public class TipoElementoListaRPT {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -83,7 +83,7 @@ public class TipoElementoListaRPT {
      *     
      */
     public String getIdentificativoUnivocoVersamento() {
-        return identificativoUnivocoVersamento;
+        return this.identificativoUnivocoVersamento;
     }
 
     /**
@@ -107,7 +107,7 @@ public class TipoElementoListaRPT {
      *     
      */
     public String getCodiceContestoPagamento() {
-        return codiceContestoPagamento;
+        return this.codiceContestoPagamento;
     }
 
     /**
@@ -131,7 +131,7 @@ public class TipoElementoListaRPT {
      *     
      */
     public String getTipoFirma() {
-        return tipoFirma;
+        return this.tipoFirma;
     }
 
     /**
@@ -154,7 +154,7 @@ public class TipoElementoListaRPT {
      *     byte[]
      */
     public byte[] getRpt() {
-        return rpt;
+        return this.rpt;
     }
 
     /**

@@ -52,7 +52,7 @@ public class PagamentoPortaleVersamentoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(PagamentoPortaleVersamento.model())){
 				PagamentoPortaleVersamento object = new PagamentoPortaleVersamento();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				return object;
 			}
@@ -74,7 +74,7 @@ public class PagamentoPortaleVersamentoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(PagamentoPortaleVersamento.model())){
 				PagamentoPortaleVersamento object = new PagamentoPortaleVersamento();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
 				return object;
 			}

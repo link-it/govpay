@@ -91,7 +91,7 @@ public class CtInformativaDetail {
      *     
      */
     public String getIdentificativoIntermediario() {
-        return identificativoIntermediario;
+        return this.identificativoIntermediario;
     }
 
     /**
@@ -115,7 +115,7 @@ public class CtInformativaDetail {
      *     
      */
     public String getIdentificativoCanale() {
-        return identificativoCanale;
+        return this.identificativoCanale;
     }
 
     /**
@@ -139,7 +139,7 @@ public class CtInformativaDetail {
      *     
      */
     public StTipoVersamento getTipoVersamento() {
-        return tipoVersamento;
+        return this.tipoVersamento;
     }
 
     /**
@@ -159,7 +159,7 @@ public class CtInformativaDetail {
      * 
      */
     public int getModelloPagamento() {
-        return modelloPagamento;
+        return this.modelloPagamento;
     }
 
     /**
@@ -175,7 +175,7 @@ public class CtInformativaDetail {
      * 
      */
     public int getPriorita() {
-        return priorita;
+        return this.priorita;
     }
 
     /**
@@ -191,7 +191,7 @@ public class CtInformativaDetail {
      * 
      */
     public int getCanaleApp() {
-        return canaleApp;
+        return this.canaleApp;
     }
 
     /**
@@ -211,7 +211,7 @@ public class CtInformativaDetail {
      *     
      */
     public Integer getGenerazioneEsitoTransazione() {
-        return generazioneEsitoTransazione;
+        return this.generazioneEsitoTransazione;
     }
 
     /**
@@ -235,7 +235,7 @@ public class CtInformativaDetail {
      *     
      */
     public Integer getServizioAlleImprese() {
-        return servizioAlleImprese;
+        return this.servizioAlleImprese;
     }
 
     /**
@@ -259,7 +259,7 @@ public class CtInformativaDetail {
      *     
      */
     public Integer getPagamentiPreEsercizio() {
-        return pagamentiPreEsercizio;
+        return this.pagamentiPreEsercizio;
     }
 
     /**
@@ -283,7 +283,7 @@ public class CtInformativaDetail {
      *     
      */
     public CtIdentificazioneServizio getIdentificazioneServizio() {
-        return identificazioneServizio;
+        return this.identificazioneServizio;
     }
 
     /**
@@ -307,7 +307,7 @@ public class CtInformativaDetail {
      *     
      */
     public CtListaInformazioniServizio getListaInformazioniServizio() {
-        return listaInformazioniServizio;
+        return this.listaInformazioniServizio;
     }
 
     /**
@@ -331,7 +331,7 @@ public class CtInformativaDetail {
      *     
      */
     public CtListaParoleChiave getListaParoleChiave() {
-        return listaParoleChiave;
+        return this.listaParoleChiave;
     }
 
     /**
@@ -355,7 +355,7 @@ public class CtInformativaDetail {
      *     
      */
     public CtCostiServizio getCostiServizio() {
-        return costiServizio;
+        return this.costiServizio;
     }
 
     /**

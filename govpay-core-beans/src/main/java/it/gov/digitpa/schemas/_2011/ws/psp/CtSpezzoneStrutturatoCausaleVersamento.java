@@ -54,7 +54,7 @@ public class CtSpezzoneStrutturatoCausaleVersamento {
      *     
      */
     public String getCausaleSpezzone() {
-        return causaleSpezzone;
+        return this.causaleSpezzone;
     }
 
     /**
@@ -78,7 +78,7 @@ public class CtSpezzoneStrutturatoCausaleVersamento {
      *     
      */
     public BigDecimal getImportoSpezzone() {
-        return importoSpezzone;
+        return this.importoSpezzone;
     }
 
     /**

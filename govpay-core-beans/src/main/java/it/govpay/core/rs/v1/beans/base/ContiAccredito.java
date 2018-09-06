@@ -40,7 +40,7 @@ public class ContiAccredito extends JSONSerializable {
 
   @JsonProperty("bic")
   public String getBic() {
-    return bic;
+    return this.bic;
   }
   public void setBic(String bic) {
     this.bic = bic;
@@ -56,7 +56,7 @@ public class ContiAccredito extends JSONSerializable {
 
   @JsonProperty("postale")
   public Boolean isPostale() {
-    return postale;
+    return this.postale;
   }
   public void setPostale(Boolean postale) {
     this.postale = postale;
@@ -72,7 +72,7 @@ public class ContiAccredito extends JSONSerializable {
 
   @JsonProperty("mybank")
   public Boolean isMybank() {
-    return mybank;
+    return this.mybank;
   }
   public void setMybank(Boolean mybank) {
     this.mybank = mybank;
@@ -88,7 +88,7 @@ public class ContiAccredito extends JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -103,7 +103,7 @@ public class ContiAccredito extends JSONSerializable {
 
   @JsonProperty("iban")
   public String getIban() {
-    return iban;
+    return this.iban;
   }
   public void setIban(String iban) {
     this.iban = iban;
@@ -114,24 +114,24 @@ public class ContiAccredito extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     ContiAccredito contiAccredito = (ContiAccredito) o;
-    return Objects.equals(bic, contiAccredito.bic) &&
-        Objects.equals(postale, contiAccredito.postale) &&
-        Objects.equals(mybank, contiAccredito.mybank) &&
-        Objects.equals(abilitato, contiAccredito.abilitato) &&
-        Objects.equals(iban, contiAccredito.iban);
+    return Objects.equals(this.bic, contiAccredito.bic) &&
+        Objects.equals(this.postale, contiAccredito.postale) &&
+        Objects.equals(this.mybank, contiAccredito.mybank) &&
+        Objects.equals(this.abilitato, contiAccredito.abilitato) &&
+        Objects.equals(this.iban, contiAccredito.iban);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(bic, postale, mybank, abilitato, iban);
+    return Objects.hash(this.bic, this.postale, this.mybank, this.abilitato, this.iban);
   }
 
   public static ContiAccredito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (ContiAccredito) parse(json, ContiAccredito.class);
+    return parse(json, ContiAccredito.class);
   }
 
   @Override
@@ -144,11 +144,11 @@ public class ContiAccredito extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContiAccredito {\n");
     
-    sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
-    sb.append("    postale: ").append(toIndentedString(postale)).append("\n");
-    sb.append("    mybank: ").append(toIndentedString(mybank)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
+    sb.append("    bic: ").append(this.toIndentedString(this.bic)).append("\n");
+    sb.append("    postale: ").append(this.toIndentedString(this.postale)).append("\n");
+    sb.append("    mybank: ").append(this.toIndentedString(this.mybank)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    iban: ").append(this.toIndentedString(this.iban)).append("\n");
     sb.append("}");
     return sb.toString();
   }

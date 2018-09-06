@@ -60,7 +60,7 @@ public class AvvisoPagamentoPdf {
 		String codDominio = avvisoPagamento.getCodDominio();
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
-		caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
+		this.caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 
 		// leggo il template file jasper da inizializzare
 		String jasperTemplateFilename = propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER);
@@ -69,9 +69,9 @@ public class AvvisoPagamentoPdf {
 			jasperTemplateFilename = "/" + jasperTemplateFilename; 
 
 		InputStream is = AvvisoPagamentoPdf.class.getResourceAsStream(jasperTemplateFilename);
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		JRDataSource dataSource = creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = creaJasperPrintAvviso(log, input, avvisoPagamento, propertiesAvvisoPerDominio, is, dataSource,parameters);
+		Map<String, Object> parameters = new HashMap<>();
+		JRDataSource dataSource = this.creaXmlDataSource(log,input);
+		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, avvisoPagamento, propertiesAvvisoPerDominio, is, dataSource,parameters);
 
 		byte[] reportToPdf = JasperExportManager.exportReportToPdf(jasperPrint);
 		avvisoPagamento.setPdf(reportToPdf);
@@ -87,7 +87,7 @@ public class AvvisoPagamentoPdf {
 	}
 
 	public JRDataSource creaCustomDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException {
-		List<AvvisoPagamentoInput> listaAvvisi = new ArrayList<AvvisoPagamentoInput>();
+		List<AvvisoPagamentoInput> listaAvvisi = new ArrayList<>();
 		listaAvvisi.add(input);
 		JRDataSource dataSource = new AvvisoPagamentoDatasource(listaAvvisi,log);
 		return dataSource;
@@ -121,7 +121,7 @@ public class AvvisoPagamentoPdf {
 			String codDominio = av.getCodDominio();
 			Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
-			Map<String, Object> parameters = new HashMap<String, Object>();
+			Map<String, Object> parameters = new HashMap<>();
 			AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 			AvvisoPagamentoPdf.getInstance().caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 

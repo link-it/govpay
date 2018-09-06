@@ -33,11 +33,11 @@ public class FindIbanDTO extends BasicFindRequestDTO {
 	}
 	
 	public String getCodDominio(){
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public Boolean getAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(Boolean abilitato) {
@@ -45,7 +45,7 @@ public class FindIbanDTO extends BasicFindRequestDTO {
 	}
 
 	public String getIban() {
-		return iban;
+		return this.iban;
 	}
 
 	public void setIban(String iban) {

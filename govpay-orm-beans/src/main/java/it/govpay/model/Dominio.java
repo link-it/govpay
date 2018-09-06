@@ -46,8 +46,9 @@ public class Dominio extends BasicModel {
 	private byte[] logo;
 	private String cbill;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
@@ -55,7 +56,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -63,7 +64,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public String getGln() {
-		return gln;
+		return this.gln;
 	}
 
 	public void setGln(String gln) {
@@ -71,7 +72,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public String getRagioneSociale() {
-		return ragioneSociale;
+		return this.ragioneSociale;
 	}
 
 	public void setRagioneSociale(String ragioneSociale) {
@@ -79,7 +80,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(boolean abilitato) {
@@ -87,7 +88,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public long getIdStazione() {
-		return idStazione;
+		return this.idStazione;
 	}
 
 	public void setIdStazione(long idStazione) {
@@ -95,7 +96,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public Long getIdApplicazioneDefault() {
-		return idApplicazioneDefault;
+		return this.idApplicazioneDefault;
 	}
 
 	public void setIdApplicazioneDefault(Long idApplicazioneDefault) {
@@ -103,7 +104,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public int getAuxDigit() {
-		return auxDigit;
+		return this.auxDigit;
 	}
 
 	public void setAuxDigit(int auxDigit) {
@@ -111,7 +112,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public String getIuvPrefix() {
-		return iuvPrefix;
+		return this.iuvPrefix;
 	}
 
 	public void setIuvPrefix(String iuvPrefix) {
@@ -119,14 +120,14 @@ public class Dominio extends BasicModel {
 	}
 
 	public Integer getSegregationCode() {
-		return segregationCode;
+		return this.segregationCode;
 	}
 
 	public void setSegregationCode(Integer segregationCode) {
 		this.segregationCode = segregationCode;
 	}
 	public Integer getNdpStato() {
-		return ndpStato;
+		return this.ndpStato;
 	}
 
 	public void setNdpStato(Integer ndpStato) {
@@ -134,7 +135,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public String getNdpOperazione() {
-		return ndpOperazione;
+		return this.ndpOperazione;
 	}
 
 	public void setNdpOperazione(String ndpOperazione) {
@@ -142,7 +143,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public String getNdpDescrizione() {
-		return ndpDescrizione;
+		return this.ndpDescrizione;
 	}
 
 	public void setNdpDescrizione(String ndpDescrizione) {
@@ -150,7 +151,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public Date getNdpData() {
-		return ndpData;
+		return this.ndpData;
 	}
 
 	public void setNdpData(Date ndpData) {
@@ -158,7 +159,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public byte[] getLogo() {
-		return logo;
+		return this.logo;
 	}
 
 	public void setLogo(byte[] logo) {
@@ -166,7 +167,7 @@ public class Dominio extends BasicModel {
 	}
 
 	public String getCbill() {
-		return cbill;
+		return this.cbill;
 	}
 
 	public void setCbill(String cbill) {

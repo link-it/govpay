@@ -44,7 +44,7 @@ public class BaseRsServiceV1 extends BaseRsService {
 	public static synchronized void initValidator(Logger log, byte[] swaggerBackOffice, String name) throws Exception{
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 			if(validatorMap == null)
-				validatorMap = new HashMap<String, Validator>();
+				validatorMap = new HashMap<>();
 			
 			if(!validatorMap.containsKey(name)) {
 				try {

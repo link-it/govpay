@@ -69,8 +69,8 @@ public class ListaInformativeControparte {
      * 
      */
     public List<InformativaControparte> getInformativaContropartes() {
-        if (informativaContropartes == null) {
-            informativaContropartes = new ArrayList<InformativaControparte>();
+        if (this.informativaContropartes == null) {
+            this.informativaContropartes = new ArrayList<>();
         }
         return this.informativaContropartes;
     }

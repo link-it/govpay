@@ -101,7 +101,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return ragioneSociale;
+    return this.ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
@@ -117,7 +117,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("indirizzo")
   public String getIndirizzo() {
-    return indirizzo;
+    return this.indirizzo;
   }
   public void setIndirizzo(String indirizzo) {
     this.indirizzo = indirizzo;
@@ -133,7 +133,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("civico")
   public String getCivico() {
-    return civico;
+    return this.civico;
   }
   public void setCivico(String civico) {
     this.civico = civico;
@@ -149,7 +149,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("cap")
   public String getCap() {
-    return cap;
+    return this.cap;
   }
   public void setCap(String cap) {
     this.cap = cap;
@@ -165,7 +165,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("localita")
   public String getLocalita() {
-    return localita;
+    return this.localita;
   }
   public void setLocalita(String localita) {
     this.localita = localita;
@@ -181,7 +181,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("provincia")
   public String getProvincia() {
-    return provincia;
+    return this.provincia;
   }
   public void setProvincia(String provincia) {
     this.provincia = provincia;
@@ -197,7 +197,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("nazione")
   public String getNazione() {
-    return nazione;
+    return this.nazione;
   }
   public void setNazione(String nazione) {
     this.nazione = nazione;
@@ -213,7 +213,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("email")
   public String getEmail() {
-    return email;
+    return this.email;
   }
   public void setEmail(String email) {
     this.email = email;
@@ -229,7 +229,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("pec")
   public String getPec() {
-    return pec;
+    return this.pec;
   }
   public void setPec(String pec) {
     this.pec = pec;
@@ -245,7 +245,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("tel")
   public String getTel() {
-    return tel;
+    return this.tel;
   }
   public void setTel(String tel) {
     this.tel = tel;
@@ -261,7 +261,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("fax")
   public String getFax() {
-    return fax;
+    return this.fax;
   }
   public void setFax(String fax) {
     this.fax = fax;
@@ -277,7 +277,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("web")
   public String getWeb() {
-    return web;
+    return this.web;
   }
   public void setWeb(String web) {
     this.web = web;
@@ -293,7 +293,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("gln")
   public String getGln() {
-    return gln;
+    return this.gln;
   }
   public void setGln(String gln) {
     this.gln = gln;
@@ -309,7 +309,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("cbill")
   public String getCbill() {
-    return cbill;
+    return this.cbill;
   }
   public void setCbill(String cbill) {
     this.cbill = cbill;
@@ -325,7 +325,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("iuvPrefix")
   public String getIuvPrefix() {
-    return iuvPrefix;
+    return this.iuvPrefix;
   }
   public void setIuvPrefix(String iuvPrefix) {
     this.iuvPrefix = iuvPrefix;
@@ -341,7 +341,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("stazione")
   public String getStazione() {
-    return stazione;
+    return this.stazione;
   }
   public void setStazione(String stazione) {
     this.stazione = stazione;
@@ -357,7 +357,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("auxDigit")
   public String getAuxDigit() {
-    return auxDigit;
+    return this.auxDigit;
   }
   public void setAuxDigit(String auxDigit) {
     this.auxDigit = auxDigit;
@@ -373,7 +373,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("segregationCode")
   public String getSegregationCode() {
-    return segregationCode;
+    return this.segregationCode;
   }
   public void setSegregationCode(String segregationCode) {
     this.segregationCode = segregationCode;
@@ -389,7 +389,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("logo")
   public String getLogo() {
-    return logo;
+    return this.logo;
   }
   public void setLogo(String logo) {
     this.logo = logo;
@@ -405,7 +405,7 @@ public class DominioPost extends JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -416,39 +416,39 @@ public class DominioPost extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     DominioPost dominioPost = (DominioPost) o;
-    return Objects.equals(ragioneSociale, dominioPost.ragioneSociale) &&
-        Objects.equals(indirizzo, dominioPost.indirizzo) &&
-        Objects.equals(civico, dominioPost.civico) &&
-        Objects.equals(cap, dominioPost.cap) &&
-        Objects.equals(localita, dominioPost.localita) &&
-        Objects.equals(provincia, dominioPost.provincia) &&
-        Objects.equals(nazione, dominioPost.nazione) &&
-        Objects.equals(email, dominioPost.email) &&
-        Objects.equals(pec, dominioPost.pec) &&
-        Objects.equals(tel, dominioPost.tel) &&
-        Objects.equals(fax, dominioPost.fax) &&
-        Objects.equals(web, dominioPost.web) &&
-        Objects.equals(gln, dominioPost.gln) &&
-        Objects.equals(cbill, dominioPost.cbill) &&
-        Objects.equals(iuvPrefix, dominioPost.iuvPrefix) &&
-        Objects.equals(stazione, dominioPost.stazione) &&
-        Objects.equals(auxDigit, dominioPost.auxDigit) &&
-        Objects.equals(segregationCode, dominioPost.segregationCode) &&
-        Objects.equals(logo, dominioPost.logo) &&
-        Objects.equals(abilitato, dominioPost.abilitato);
+    return Objects.equals(this.ragioneSociale, dominioPost.ragioneSociale) &&
+        Objects.equals(this.indirizzo, dominioPost.indirizzo) &&
+        Objects.equals(this.civico, dominioPost.civico) &&
+        Objects.equals(this.cap, dominioPost.cap) &&
+        Objects.equals(this.localita, dominioPost.localita) &&
+        Objects.equals(this.provincia, dominioPost.provincia) &&
+        Objects.equals(this.nazione, dominioPost.nazione) &&
+        Objects.equals(this.email, dominioPost.email) &&
+        Objects.equals(this.pec, dominioPost.pec) &&
+        Objects.equals(this.tel, dominioPost.tel) &&
+        Objects.equals(this.fax, dominioPost.fax) &&
+        Objects.equals(this.web, dominioPost.web) &&
+        Objects.equals(this.gln, dominioPost.gln) &&
+        Objects.equals(this.cbill, dominioPost.cbill) &&
+        Objects.equals(this.iuvPrefix, dominioPost.iuvPrefix) &&
+        Objects.equals(this.stazione, dominioPost.stazione) &&
+        Objects.equals(this.auxDigit, dominioPost.auxDigit) &&
+        Objects.equals(this.segregationCode, dominioPost.segregationCode) &&
+        Objects.equals(this.logo, dominioPost.logo) &&
+        Objects.equals(this.abilitato, dominioPost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato);
+    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato);
   }
 
   public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (DominioPost) parse(json, DominioPost.class);
+    return parse(json, DominioPost.class);
   }
 
   @Override
@@ -461,26 +461,26 @@ public class DominioPost extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class DominioPost {\n");
     
-    sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
-    sb.append("    indirizzo: ").append(toIndentedString(indirizzo)).append("\n");
-    sb.append("    civico: ").append(toIndentedString(civico)).append("\n");
-    sb.append("    cap: ").append(toIndentedString(cap)).append("\n");
-    sb.append("    localita: ").append(toIndentedString(localita)).append("\n");
-    sb.append("    provincia: ").append(toIndentedString(provincia)).append("\n");
-    sb.append("    nazione: ").append(toIndentedString(nazione)).append("\n");
-    sb.append("    email: ").append(toIndentedString(email)).append("\n");
-    sb.append("    pec: ").append(toIndentedString(pec)).append("\n");
-    sb.append("    tel: ").append(toIndentedString(tel)).append("\n");
-    sb.append("    fax: ").append(toIndentedString(fax)).append("\n");
-    sb.append("    web: ").append(toIndentedString(web)).append("\n");
-    sb.append("    gln: ").append(toIndentedString(gln)).append("\n");
-    sb.append("    cbill: ").append(toIndentedString(cbill)).append("\n");
-    sb.append("    iuvPrefix: ").append(toIndentedString(iuvPrefix)).append("\n");
-    sb.append("    stazione: ").append(toIndentedString(stazione)).append("\n");
-    sb.append("    auxDigit: ").append(toIndentedString(auxDigit)).append("\n");
-    sb.append("    segregationCode: ").append(toIndentedString(segregationCode)).append("\n");
-    sb.append("    logo: ").append(toIndentedString(logo)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
+    sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
+    sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");
+    sb.append("    cap: ").append(this.toIndentedString(this.cap)).append("\n");
+    sb.append("    localita: ").append(this.toIndentedString(this.localita)).append("\n");
+    sb.append("    provincia: ").append(this.toIndentedString(this.provincia)).append("\n");
+    sb.append("    nazione: ").append(this.toIndentedString(this.nazione)).append("\n");
+    sb.append("    email: ").append(this.toIndentedString(this.email)).append("\n");
+    sb.append("    pec: ").append(this.toIndentedString(this.pec)).append("\n");
+    sb.append("    tel: ").append(this.toIndentedString(this.tel)).append("\n");
+    sb.append("    fax: ").append(this.toIndentedString(this.fax)).append("\n");
+    sb.append("    web: ").append(this.toIndentedString(this.web)).append("\n");
+    sb.append("    gln: ").append(this.toIndentedString(this.gln)).append("\n");
+    sb.append("    cbill: ").append(this.toIndentedString(this.cbill)).append("\n");
+    sb.append("    iuvPrefix: ").append(this.toIndentedString(this.iuvPrefix)).append("\n");
+    sb.append("    stazione: ").append(this.toIndentedString(this.stazione)).append("\n");
+    sb.append("    auxDigit: ").append(this.toIndentedString(this.auxDigit)).append("\n");
+    sb.append("    segregationCode: ").append(this.toIndentedString(this.segregationCode)).append("\n");
+    sb.append("    logo: ").append(this.toIndentedString(this.logo)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

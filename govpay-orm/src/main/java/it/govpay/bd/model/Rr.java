@@ -51,11 +51,11 @@ public class Rr extends it.govpay.model.Rr{
 	}
 	
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
-		if(pagamenti == null) {
+		if(this.pagamenti == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			pagamenti = pagamentiBD.getPagamentiByRr(this.getId());
+			this.pagamenti = pagamentiBD.getPagamentiByRr(this.getId());
 		}
-		return pagamenti;
+		return this.pagamenti;
 	}
 	
 	public void setPagamenti(List<Pagamento> pagamenti) {
@@ -63,7 +63,7 @@ public class Rr extends it.govpay.model.Rr{
 	}
 	
 	public Pagamento getPagamento(String iur, int indiceDati, BasicBD bd) throws ServiceException, NotFoundException {
-		List<Pagamento> pagamenti = getPagamenti(bd);
+		List<Pagamento> pagamenti = this.getPagamenti(bd);
 		for(Pagamento pagamento : pagamenti) {
 			if(pagamento.getIur().equals(iur) && pagamento.getIndiceDati()==indiceDati)
 				return pagamento;

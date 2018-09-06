@@ -16,11 +16,11 @@ public class RequestParamException extends BaseException {
 		}
 		
 		public String getFaultSubCode(){
-			return faultSubCode;
+			return this.faultSubCode;
 		}
 		
 		public String getDescription(){
-			return description;
+			return this.description;
 		}
 	}
 	

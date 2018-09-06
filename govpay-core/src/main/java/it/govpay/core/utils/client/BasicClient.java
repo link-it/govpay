@@ -105,7 +105,7 @@ public class BasicClient {
 		}
 	}
 	
-	protected static Map<String, SSLContext> sslContexts = new HashMap<String, SSLContext>();
+	protected static Map<String, SSLContext> sslContexts = new HashMap<>();
 	protected URL url = null;
 	protected SSLContext sslContext;
 	protected boolean ishttpBasicEnabled=false, isSslEnabled=false;
@@ -125,17 +125,17 @@ public class BasicClient {
 	
 	protected BasicClient(Intermediario intermediario) throws ClientException {
 		this("I_" + intermediario.getCodIntermediario(), intermediario.getConnettorePdd());
-		errMsg = "Pdd dell'intermediario (" + intermediario.getCodIntermediario() + ")";
-		mittente = intermediario.getDenominazione();
-		destinatario = "NodoDeiPagamentiDellaPA";
+		this.errMsg = "Pdd dell'intermediario (" + intermediario.getCodIntermediario() + ")";
+		this.mittente = intermediario.getDenominazione();
+		this.destinatario = "NodoDeiPagamentiDellaPA";
 	}
 	
 	protected BasicClient(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
 		this("A_" + tipoConnettore + applicazione.getCodApplicazione(), tipoConnettore == TipoConnettore.NOTIFICA ? applicazione.getConnettoreNotifica() : applicazione.getConnettoreVerifica());
 		GpThreadLocal.get().getIntegrationCtx().setApplicazione(applicazione);
-		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
-		mittente = "GovPay";
-		destinatario = applicazione.getCodApplicazione();
+		this.errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
+		this.mittente = "GovPay";
+		this.destinatario = applicazione.getCodApplicazione();
 	}
 	
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
@@ -147,13 +147,13 @@ public class BasicClient {
 		try {
 			this.url =  new URL(connettore.getUrl());
 		} catch (Exception e) {
-			throw new ClientException("La URL del connettore " + errMsg + " non e' valida: " + e);
+			throw new ClientException("La URL del connettore " + this.errMsg + " non e' valida: " + e);
 		}
-		sslContext = sslContexts.get(bundleKey);
+		this.sslContext = sslContexts.get(bundleKey);
 		
 		if(connettore.getTipoAutenticazione().equals(EnumAuthType.SSL)) {
-			isSslEnabled = true;
-			if(sslContext == null) {
+			this.isSslEnabled = true;
+			if(this.sslContext == null) {
 				try  {
 					KeyManager[] km = null;
 					TrustManager[] tm = null;
@@ -165,7 +165,7 @@ public class BasicClient {
 								connettore.getSslKsLocation() == null ||
 								connettore.getSslKsPasswd() == null ||
 								connettore.getSslPKeyPasswd() == null)
-								throw new ClientException("Configurazione SSL Client del connettore " + errMsg + " incompleta.");	
+								throw new ClientException("Configurazione SSL Client del connettore " + this.errMsg + " incompleta.");	
 						
 						KeyStore keystore = KeyStore.getInstance(connettore.getSslKsType()); // JKS,PKCS12,jceks,bks,uber,gkr
 						try (FileInputStream finKeyStore = new FileInputStream(connettore.getSslKsLocation());){
@@ -180,7 +180,7 @@ public class BasicClient {
 							connettore.getSslTsLocation() == null ||
 							connettore.getSslTsPasswd() == null || 
 							connettore.getSslType() == null)
-							throw new ClientException("Configurazione SSL Server del connettore " + errMsg + " incompleta.");	
+							throw new ClientException("Configurazione SSL Server del connettore " + this.errMsg + " incompleta.");	
 			
 					// Autenticazione SERVER
 					KeyStore truststore = KeyStore.getInstance(connettore.getSslTsType()); // JKS,PKCS12,jceks,bks,uber,gkr
@@ -192,9 +192,9 @@ public class BasicClient {
 					tm = trustManagerFactory.getTrustManagers();
 		
 					// Creo contesto SSL
-					sslContext = SSLContext.getInstance(connettore.getSslType());
-					sslContext.init(km, tm, null);
-					sslContexts.put(bundleKey, sslContext);
+					this.sslContext = SSLContext.getInstance(connettore.getSslType());
+					this.sslContext.init(km, tm, null);
+					sslContexts.put(bundleKey, this.sslContext);
 				} catch (Exception e) {
 					throw new ClientException(e);
 				} 
@@ -202,15 +202,15 @@ public class BasicClient {
 		}
 		
 		if(connettore.getTipoAutenticazione().equals(EnumAuthType.HTTPBasic)) {
-			ishttpBasicEnabled = true;
-			httpBasicUser = connettore.getHttpUser();
-			httpBasicPassword = connettore.getHttpPassw();
+			this.ishttpBasicEnabled = true;
+			this.httpBasicUser = connettore.getHttpUser();
+			this.httpBasicPassword = connettore.getHttpPassw();
 		}
 	}
 	
 	
 	public byte[] sendXml(JAXBElement<?> body, boolean isAzioneInUrl) throws ClientException {
-		return send(false, null, body, null, isAzioneInUrl);
+		return this.send(false, null, body, null, isAzioneInUrl);
 	}
 
 	private void invokeOutHandlers() throws ClientException {
@@ -239,7 +239,7 @@ public class BasicClient {
 	
 	
 	public byte[] sendSoap(String azione, JAXBElement<?> body, Object header, boolean isAzioneInUrl) throws ClientException {
-		return send(true, azione, body, header, isAzioneInUrl);
+		return this.send(true, azione, body, header, isAzioneInUrl);
 	}
 	
 	private byte[] send(boolean soap, String azione, JAXBElement<?> body, Object header, boolean isAzioneInUrl) throws ClientException {
@@ -249,11 +249,11 @@ public class BasicClient {
 		HttpURLConnection connection = null;
 		byte[] msg = null;
 		GpContext ctx = GpThreadLocal.get();
-		String urlString = url.toExternalForm();
+		String urlString = this.url.toExternalForm();
 		if(isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 			try {
-				url = new URL(urlString.concat(azione));
+				this.url = new URL(urlString.concat(azione));
 			} catch (MalformedURLException e) {
 				throw new ClientException("Url di connessione malformata: " + urlString.concat(azione), e);
 			}
@@ -263,7 +263,7 @@ public class BasicClient {
 			Message requestMsg = new Message();
 			requestMsg.setType(MessageType.REQUEST_OUT);
 			
-			connection = (HttpURLConnection) url.openConnection();
+			connection = (HttpURLConnection) this.url.openConnection();
 			connection.setDoOutput(true);
 			if(soap) {
 				connection.setRequestProperty("SOAPAction", "\"" + azione + "\"");
@@ -274,17 +274,17 @@ public class BasicClient {
 			connection.setRequestMethod("POST");
 	
 			// Imposta Contesto SSL se attivo
-			if(sslContext != null){
+			if(this.sslContext != null){
 				HttpsURLConnection httpsConn = (HttpsURLConnection) connection;
-				httpsConn.setSSLSocketFactory(sslContext.getSocketFactory());
+				httpsConn.setSSLSocketFactory(this.sslContext.getSocketFactory());
 				HostNameVerifierDisabled disabilitato = new HostNameVerifierDisabled();
 				httpsConn.setHostnameVerifier(disabilitato);
 			}
 	
 			// Imposta l'autenticazione HTTP Basic se attiva
-			if(ishttpBasicEnabled) {
+			if(this.ishttpBasicEnabled) {
 				Base64 base = new Base64();
-				String encoding = new String(base.encode((httpBasicUser + ":" + httpBasicPassword).getBytes()));
+				String encoding = new String(base.encode((this.httpBasicUser + ":" + this.httpBasicPassword).getBytes()));
 				connection.setRequestProperty("Authorization", "Basic " + encoding);
 				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
 			}
@@ -297,7 +297,7 @@ public class BasicClient {
 			}
 
 			ctx.getIntegrationCtx().setMsg(baos.toByteArray());
-			invokeOutHandlers();
+			this.invokeOutHandlers();
 			
 			if(log.isTraceEnabled()) {
 				StringBuffer sb = new StringBuffer();
@@ -399,11 +399,11 @@ public class BasicClient {
 	}
 	
 	public byte[] getJson(String path, List<Property> headerProperties) throws ClientException {
-		return handleJsonRequest(path, null, headerProperties, "GET", null);
+		return this.handleJsonRequest(path, null, headerProperties, "GET", null);
 	}
 	
 	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties) throws ClientException {
-		return handleJsonRequest(path, jsonBody, headerProperties, "POST", "application/json");
+		return this.handleJsonRequest(path, jsonBody, headerProperties, "POST", "application/json");
 	}
 
 	private byte[] handleJsonRequest(String path, String jsonBody, List<Property> headerProperties, 
@@ -414,13 +414,13 @@ public class BasicClient {
 		HttpURLConnection connection = null;
 		byte[] msg = null;
 		GpContext ctx = GpThreadLocal.get();
-		String urlString = url.toExternalForm();
+		String urlString = this.url.toExternalForm();
 		if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		try {
 			// elimino la possibilita' di avere due '/'
 			path = path.startsWith("/") ? path.substring(1) : path;
-			url = new URL(urlString.concat(path));
-			log.debug("La richiesta sara' spedita alla URL: ["+url+"].");
+			this.url = new URL(urlString.concat(path));
+			log.debug("La richiesta sara' spedita alla URL: ["+this.url+"].");
 		} catch (MalformedURLException e) {
 			throw new ClientException("Url di connessione malformata: " + urlString.concat(path), e);
 		}
@@ -429,7 +429,7 @@ public class BasicClient {
 			Message requestMsg = new Message();
 			requestMsg.setType(MessageType.REQUEST_OUT);
 			
-			connection = (HttpURLConnection) url.openConnection();
+			connection = (HttpURLConnection) this.url.openConnection();
 			if(httpMethod.equals("POST"))
 				connection.setDoOutput(true);
 			if(contentType != null) {
@@ -446,24 +446,24 @@ public class BasicClient {
 			}
 	
 			// Imposta Contesto SSL se attivo
-			if(sslContext != null){
+			if(this.sslContext != null){
 				HttpsURLConnection httpsConn = (HttpsURLConnection) connection;
-				httpsConn.setSSLSocketFactory(sslContext.getSocketFactory());
+				httpsConn.setSSLSocketFactory(this.sslContext.getSocketFactory());
 				HostNameVerifierDisabled disabilitato = new HostNameVerifierDisabled();
 				httpsConn.setHostnameVerifier(disabilitato);
 			}
 	
 			// Imposta l'autenticazione HTTP Basic se attiva
-			if(ishttpBasicEnabled) {
+			if(this.ishttpBasicEnabled) {
 				Base64 base = new Base64();
-				String encoding = new String(base.encode((httpBasicUser + ":" + httpBasicPassword).getBytes()));
+				String encoding = new String(base.encode((this.httpBasicUser + ":" + this.httpBasicPassword).getBytes()));
 				connection.setRequestProperty("Authorization", "Basic " + encoding);
 				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
 			}
 			
 			
 			ctx.getIntegrationCtx().setMsg(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
-			invokeOutHandlers();
+			this.invokeOutHandlers();
 			
 			if(log.isTraceEnabled()) {
 				StringBuffer sb = new StringBuffer();
@@ -480,7 +480,7 @@ public class BasicClient {
 			ctx.getContext().getRequest().setOutSize(Long.valueOf(ctx.getIntegrationCtx().getMsg().length));
 			
 			requestMsg.addHeader(new Property("HTTP-Method", httpMethod));
-			requestMsg.addHeader(new Property("RequestPath", url.toString()));
+			requestMsg.addHeader(new Property("RequestPath", this.url.toString()));
 			
 			ctx.log(requestMsg);
 			
@@ -501,7 +501,7 @@ public class BasicClient {
 		Message responseMsg = new Message();
 		responseMsg.setType(MessageType.RESPONSE_IN);
 		responseMsg.addHeader(new Property("HTTP-Method", httpMethod));
-		responseMsg.addHeader(new Property("RequestPath", url.toString()));
+		responseMsg.addHeader(new Property("RequestPath", this.url.toString()));
 		
 		for(String key : connection.getHeaderFields().keySet()) {
 			if(connection.getHeaderFields().get(key) != null) {
@@ -566,7 +566,7 @@ public class BasicClient {
 	}
 	
 	public static boolean cleanCache() {
-		sslContexts = new HashMap<String, SSLContext>();
+		sslContexts = new HashMap<>();
 		return true;
 	}
 	

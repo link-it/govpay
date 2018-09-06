@@ -26,10 +26,10 @@ public abstract class Versionabile extends BasicModel {
 		}
 		
 		public String getLabel(){
-			return label;
+			return this.label;
 		}
 		public String getApi(){
-			return api;
+			return this.api;
 		}
 		
 		public String getApiLabel(){
@@ -67,7 +67,7 @@ public abstract class Versionabile extends BasicModel {
 		
 		public int compareVersione(Versione other) {
 			try {
-				return compareVersione(other, true);
+				return this.compareVersione(other, true);
 			} catch (ServiceException e) {
 				return 0;
 			}
@@ -89,7 +89,7 @@ public abstract class Versionabile extends BasicModel {
 	private Versione versione;
 
 	public Versione getVersione() {
-		return versione;
+		return this.versione;
 	}
 
 	public void setVersione(Versione versione) {

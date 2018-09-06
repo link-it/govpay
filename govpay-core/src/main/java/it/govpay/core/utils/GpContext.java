@@ -68,14 +68,14 @@ public class GpContext {
 	
 	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {
 		try {
-			loggers = new ArrayList<ILogger>();
+			this.loggers = new ArrayList<>();
 			ILogger logger = LoggerFactory.newLogger(new Context());	
-			loggers.add(logger);
+			this.loggers.add(logger);
 			
-			contexts = new ArrayList<Context>();
+			this.contexts = new ArrayList<>();
 			Context context = (Context) logger.getContext();
 			context.getTransaction().setProtocol("govpay");
-			contexts.add(context);
+			this.contexts.add(context);
 			
 			Transaction transaction = context.getTransaction();
 			transaction.setRole(Role.SERVER);
@@ -130,14 +130,14 @@ public class GpContext {
 	public GpContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
 			String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws ServiceException {
 		try {
-			loggers = new ArrayList<ILogger>();
+			this.loggers = new ArrayList<>();
 			ILogger logger = LoggerFactory.newLogger(new Context());	
-			loggers.add(logger);
+			this.loggers.add(logger);
 			
-			contexts = new ArrayList<Context>();
+			this.contexts = new ArrayList<>();
 			Context context = (Context) logger.getContext();
 			context.getTransaction().setProtocol("govpay");
-			contexts.add(context);
+			this.contexts.add(context);
 			
 			Transaction transaction = context.getTransaction();
 			transaction.setRole(Role.SERVER);
@@ -180,26 +180,26 @@ public class GpContext {
 	}
 	
 	public GpContext() throws ServiceException {
-		loggers = new ArrayList<ILogger>();
-		contexts = new ArrayList<Context>();
-		openTransaction();
+		this.loggers = new ArrayList<>();
+		this.contexts = new ArrayList<>();
+		this.openTransaction();
 	}
 	
 	public GpContext(String correlationId) throws ServiceException {
 		this();
-		setCorrelationId(correlationId);
+		this.setCorrelationId(correlationId);
 	}
 	
 	public String openTransaction() throws ServiceException {
 		try {
 			ILogger logger = LoggerFactory.newLogger(new Context());	
-			loggers.add(logger);
+			this.loggers.add(logger);
 			
 			Context context = (Context) logger.getContext();
 			context.getTransaction().setProtocol("govpay");
-			if(!contexts.isEmpty())
-				context.getRequest().setCorrelationIdentifier(contexts.get(0).getIdTransaction());
-			contexts.add(context);
+			if(!this.contexts.isEmpty())
+				context.getRequest().setCorrelationIdentifier(this.contexts.get(0).getIdTransaction());
+			this.contexts.add(context);
 			
 			Request request = context.getRequest();
 			request.setInDate(new Date());
@@ -216,19 +216,19 @@ public class GpContext {
 	public void closeTransaction(String idTransaction) {
 		if(idTransaction == null) return;
 		
-		Context c = getContext(idTransaction);
+		Context c = this.getContext(idTransaction);
 		if(c != null) c.setActive(false);
 	}
 	
 	public Context getContext(){
-		for(int i=contexts.size() -1; i>=0; i--) {
-			if(contexts.get(i).isActive) return contexts.get(i);
+		for(int i=this.contexts.size() -1; i>=0; i--) {
+			if(this.contexts.get(i).isActive) return this.contexts.get(i);
 		}
 		return null;
 	}
 	
 	private Context getContext(String idTransaction){
-		for(Context c : contexts) {
+		for(Context c : this.contexts) {
 			if(c.getIdTransaction().equals(idTransaction))
 					return c;
 		}
@@ -283,8 +283,8 @@ public class GpContext {
 	}
 	
 	private ILogger getActiveLogger(){
-		for(int i=contexts.size()-1; i>=0; i--) {
-			if(contexts.get(i).isActive) return loggers.get(i);
+		for(int i=this.contexts.size()-1; i>=0; i--) {
+			if(this.contexts.get(i).isActive) return this.loggers.get(i);
 		}
 		return null;
 	}
@@ -294,89 +294,89 @@ public class GpContext {
 		service.setName(servizio);
 		service.setVersion(version);
 		service.setType(tipoServizio);
-		getContext().getTransaction().setService(service);
+		this.getContext().getTransaction().setService(service);
 		
 		Operation operation = new Operation();
 		operation.setMode(FlowMode.INPUT_OUTPUT);
 		operation.setName(operazione);
-		getContext().getTransaction().setOperation(operation);
+		this.getContext().getTransaction().setOperation(operation);
 	}
 	
 	public Transaction getTransaction() {
-		return getContext().getTransaction();
+		return this.getContext().getTransaction();
 	}
 	
 	public String getTransactionId() {
-		return getContext().getIdTransaction();
+		return this.getContext().getIdTransaction();
 	}
 	
 	public boolean hasCorrelationId() {
 		try {
-			return contexts.get(0).getRequest().getCorrelationIdentifier() != null;
+			return this.contexts.get(0).getRequest().getCorrelationIdentifier() != null;
 		} catch (Throwable t) {
 			return false;
 		}
 	}
 	
 	public void setCorrelationId(String id) {
-		contexts.get(0).getRequest().setCorrelationIdentifier(id);
+		this.contexts.get(0).getRequest().setCorrelationIdentifier(id);
 	}
 
 	public void setResult(GpResponse response) {
 		if(response == null || response.getCodEsitoOperazione() == null) {
-			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
 			return;
 		}
 		switch (response.getCodEsitoOperazione()) {
 		case OK:
-			getContext().getTransaction().setResult(Result.SUCCESS);
+			this.getContext().getTransaction().setResult(Result.SUCCESS);
 			break;
 		case INTERNAL:
-			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
 			break;
 		default:
-			getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
+			this.getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 			break;
 		}
 	}
 	
 	public void setResult(it.govpay.servizi.v2_3.commons.GpResponse response) {
 		if(response == null || response.getCodEsito() == null) {
-			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
 			return;
 		}
 		if(response.getCodEsito().equals("OK")) 
-			getContext().getTransaction().setResult(Result.SUCCESS);
+			this.getContext().getTransaction().setResult(Result.SUCCESS);
 		else if(response.getCodEsito().equals("INTERNAL"))
-			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
 		else
-			getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
+			this.getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 	}
 	
 	public void setResult(String faultCode) {
 		if(faultCode == null) {
-			getContext().getTransaction().setResult(Result.SUCCESS);
+			this.getContext().getTransaction().setResult(Result.SUCCESS);
 			return;
 		}
 			
 		if(faultCode.equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
 			return; 
 		}
 		
-		getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
+		this.getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 	}
 	
 	public void log(String string, String...params) {
 		try {
-			getActiveLogger().log(string, params);
+			this.getActiveLogger().log(string, params);
 		} catch (Exception e) {
 			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione del diagnostico", e);
 		}
 	}
 	
 	public void log() {
-		for(ILogger l : loggers) {
+		for(ILogger l : this.loggers) {
 			try {
 				l.log();
 			} catch (UtilsException e) {
@@ -387,7 +387,7 @@ public class GpContext {
 	
 	public void log(Message m) {
 		try {
-			getActiveLogger().log(m);
+			this.getActiveLogger().log(m);
 		} catch (Exception e) {
 			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione della transazione", e);
 		}
@@ -397,13 +397,13 @@ public class GpContext {
 		if(this.integrationCtx == null) 
 			this.integrationCtx=new IntegrationContext();
 		
-		return integrationCtx;
+		return this.integrationCtx;
 	}
 
 	public PagamentoContext getPagamentoCtx() {
 		if(this.pagamentoCtx == null) 
 			this.pagamentoCtx = new PagamentoContext();
-		return pagamentoCtx;
+		return this.pagamentoCtx;
 	}
 
 
@@ -413,7 +413,7 @@ public class GpContext {
 		private boolean isActive = true;
 		
 		public boolean isActive() {
-			return isActive;
+			return this.isActive;
 		}
 
 		public void setActive(boolean isActive) {

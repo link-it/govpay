@@ -44,7 +44,7 @@ public enum StatoPagamento {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(value);
+    return String.valueOf(this.value);
   }
 
   public static StatoPagamento fromValue(String text) {

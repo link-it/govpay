@@ -37,7 +37,7 @@ public class Canale extends BasicModel {
 		}
 		
 		public int getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static ModelloPagamento toEnum(int codifica) throws ServiceException {
@@ -64,7 +64,7 @@ public class Canale extends BasicModel {
 			this.codifica = codifica;
 		}
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static TipoVersamento toEnum(String codifica) throws ServiceException {
@@ -86,13 +86,13 @@ public class Canale extends BasicModel {
 	private TipoVersamento tipoVersamento;
 	
 	public TipoVersamento getTipoVersamento() {
-		return tipoVersamento;
+		return this.tipoVersamento;
 	}
 	public void setTipoVersamento(TipoVersamento tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 	public String getCodCanale() {
-		return codCanale;
+		return this.codCanale;
 	}
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;

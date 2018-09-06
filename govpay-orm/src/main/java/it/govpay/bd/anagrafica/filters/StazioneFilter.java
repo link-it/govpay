@@ -94,7 +94,7 @@ public class StazioneFilter extends AbstractFilter {
 	}
 
 	public String getCodIntermediario() {
-		return codIntermediario;
+		return this.codIntermediario;
 	}
 
 	public void setCodIntermediario(String codIntermediario) {
@@ -102,7 +102,7 @@ public class StazioneFilter extends AbstractFilter {
 	}
 
 	public String getCodStazione() {
-		return codStazione;
+		return this.codStazione;
 	}
 
 	public void setCodStazione(String codStazione) {

@@ -53,7 +53,7 @@ public class Rpt extends BasicModel{
 			this.codifica = codifica;
 		}
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static FirmaRichiesta toEnum(String codifica) throws ServiceException {
@@ -84,7 +84,7 @@ public class Rpt extends BasicModel{
 		}
 
 		public int getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 
 		public static EsitoPagamento toEnum(String codifica) throws ServiceException {
@@ -187,224 +187,225 @@ public class Rpt extends BasicModel{
 	
 	
 	public TipoIdentificativoAttestante getTipoIdentificativoAttestante() {
-		return tipoIdentificativoAttestante;
+		return this.tipoIdentificativoAttestante;
 	}
 	public void setTipoIdentificativoAttestante(TipoIdentificativoAttestante tipoIdentificativoAttestante) {
 		this.tipoIdentificativoAttestante = tipoIdentificativoAttestante;
 	}
 	public String getIdentificativoAttestante() {
-		return identificativoAttestante;
+		return this.identificativoAttestante;
 	}
 	public void setIdentificativoAttestante(String identificativoAttestante) {
 		this.identificativoAttestante = identificativoAttestante;
 	}
 	public String getDenominazioneAttestante() {
-		return denominazioneAttestante;
+		return this.denominazioneAttestante;
 	}
 	public void setDenominazioneAttestante(String denominazioneAttestante) {
 		this.denominazioneAttestante = denominazioneAttestante;
 	}
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public long getIdVersamento() {
-		return idVersamento;
+		return this.idVersamento;
 	}
 	public void setIdVersamento(long idVersamento) {
 		this.idVersamento = idVersamento;
 	}
 	public Long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
 	}
 	public String getCodCarrello() {
-		return codCarrello;
+		return this.codCarrello;
 	}
 	public void setCodCarrello(String codCarrello) {
 		this.codCarrello = codCarrello;
 	}
 	public String getCodStazione() {
-		return codStazione;
+		return this.codStazione;
 	}
 	public void setCodStazione(String codStazione) {
 		this.codStazione = codStazione;
 	}
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public String getCodMsgRichiesta() {
-		return codMsgRichiesta;
+		return this.codMsgRichiesta;
 	}
 	public void setCodMsgRichiesta(String codMsgRichiesta) {
 		this.codMsgRichiesta = codMsgRichiesta;
 	}
 	public Date getDataMsgRichiesta() {
-		return dataMsgRichiesta;
+		return this.dataMsgRichiesta;
 	}
 	public void setDataMsgRichiesta(Date dataMsgRichiesta) {
 		this.dataMsgRichiesta = dataMsgRichiesta;
 	}
 	public StatoRpt getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(StatoRpt stato) {
 		this.stato = stato;
 	}
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
 		this.descrizioneStato = descrizioneStato;
 	}
 	public String getCodSessione() {
-		return codSessione;
+		return this.codSessione;
 	}
 	public void setCodSessione(String codSessione) {
 		this.codSessione = codSessione;
 	}
 	public String getPspRedirectURL() {
-		return pspRedirectURL;
+		return this.pspRedirectURL;
 	}
 	public void setPspRedirectURL(String pspRedirectURL) {
 		this.pspRedirectURL = pspRedirectURL;
 	}
 	public byte[] getXmlRpt() {
-		return xmlRpt;
+		return this.xmlRpt;
 	}
 	public void setXmlRpt(byte[] xml) {
 		this.xmlRpt = xml;
 	}
 	public Date getDataAggiornamento() {
-		return dataAggiornamento;
+		return this.dataAggiornamento;
 	}
 	public void setDataAggiornamento(Date dataAggiornamento) {
 		this.dataAggiornamento = dataAggiornamento;
 	}
 	public String getCallbackURL() {
-		return callbackURL;
+		return this.callbackURL;
 	}
 	public void setCallbackURL(String callbackURL) {
 		this.callbackURL = callbackURL;
 	}
 	public Date getDataMsgRicevuta() {
-		return dataMsgRicevuta;
+		return this.dataMsgRicevuta;
 	}
 	public void setDataMsgRicevuta(Date dataMsgRicevuta) {
 		this.dataMsgRicevuta = dataMsgRicevuta;
 	}
 	public String getCodMsgRicevuta() {
-		return codMsgRicevuta;
+		return this.codMsgRicevuta;
 	}
 	public void setCodMsgRicevuta(String codMsgRicevuta) {
 		this.codMsgRicevuta = codMsgRicevuta;
 	}
 	public EsitoPagamento getEsitoPagamento() {
-		return esitoPagamento;
+		return this.esitoPagamento;
 	}
 	public void setEsitoPagamento(EsitoPagamento esitoPagamento) {
 		this.esitoPagamento = esitoPagamento;
 	}
 	public BigDecimal getImportoTotalePagato() {
-		return importoTotalePagato;
+		return this.importoTotalePagato;
 	}
 	public void setImportoTotalePagato(BigDecimal importoTotalePagato) {
 		this.importoTotalePagato = importoTotalePagato;
 	}
 	public byte[] getXmlRt() {
-		return xmlRt;
+		return this.xmlRt;
 	}
 	public void setXmlRt(byte[] xml) {
 		this.xmlRt = xml;
 	}
 	public String getIdTransazioneRt() {
-		return idTransazioneRt;
+		return this.idTransazioneRt;
 	}
 	public void setIdTransazioneRt(String idTransazioneRt) {
 		this.idTransazioneRt = idTransazioneRt;
 	}
 	public String getIdTransazioneRpt() {
-		return idTransazioneRpt;
+		return this.idTransazioneRpt;
 	}
 	public void setIdTransazioneRpt(String idTransazioneRpt) {
 		this.idTransazioneRpt = idTransazioneRpt;
 	}
 	
 	public String getCodSessionePortale() {
-		return codSessionePortale;
+		return this.codSessionePortale;
 	}
 	public void setCodSessionePortale(String codSessionePortale) {
 		this.codSessionePortale = codSessionePortale;
 	}
 	public StatoConservazione getStatoConservazione() {
-		return statoConservazione;
+		return this.statoConservazione;
 	}
 	public void setStatoConservazione(StatoConservazione statoConservazione) {
 		this.statoConservazione = statoConservazione;
 	}
 	public Date getDataConservazione() {
-		return dataConservazione;
+		return this.dataConservazione;
 	}
 	public void setDataConservazione(Date dataConservazione) {
 		this.dataConservazione = dataConservazione;
 	}
 	public String getDescrizioneStatoConservazione() {
-		return descrizioneStatoConservazione;
+		return this.descrizioneStatoConservazione;
 	}
 	public void setDescrizioneStatoConservazione(String descrizioneStatoConservazione) {
 		this.descrizioneStatoConservazione = descrizioneStatoConservazione;
 	}
 	public Long getIdPagamentoPortale() {
-		return idPagamentoPortale;
+		return this.idPagamentoPortale;
 	}
 	public void setIdPagamentoPortale(Long idPagamentoPortale) {
 		this.idPagamentoPortale = idPagamentoPortale;
 	}
 	public String getCodCanale() {
-		return codCanale;
+		return this.codCanale;
 	}
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
 	}
 	public String getCodPsp() {
-		return codPsp;
+		return this.codPsp;
 	}
 	public void setCodPsp(String codPsp) {
 		this.codPsp = codPsp;
 	}
 	public String getCodIntermediarioPsp() {
-		return codIntermediarioPsp;
+		return this.codIntermediarioPsp;
 	}
 	public void setCodIntermediarioPsp(String codIntermediarioPsp) {
 		this.codIntermediarioPsp = codIntermediarioPsp;
 	}
 	public TipoVersamento getTipoVersamento() {
-		return tipoVersamento;
+		return this.tipoVersamento;
 	}
 	public void setTipoVersamento(TipoVersamento tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 	public ModelloPagamento getModelloPagamento() {
-		return modelloPagamento;
+		return this.modelloPagamento;
 	}
 	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
 		this.modelloPagamento = modelloPagamento;

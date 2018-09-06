@@ -178,7 +178,7 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getStazioneFieldConverter().toTable(Stazione.model()));
 		boolean isUpdate_stazione = true;
-		java.util.List<JDBCObject> lstObjects_stazione = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_stazione = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getStazioneFieldConverter().toColumn(Stazione.model().COD_STAZIONE,false), "?");
 		lstObjects_stazione.add(new JDBCObject(stazione.getCodStazione(), Stazione.model().COD_STAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getStazioneFieldConverter().toColumn(Stazione.model().PASSWORD,false), "?");
@@ -242,7 +242,7 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getStazioneFieldConverter().toTable(Stazione.model()), 
@@ -253,7 +253,7 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getStazioneFieldConverter().toTable(Stazione.model()), 
@@ -264,7 +264,7 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getStazioneFieldConverter().toTable(Stazione.model()), 

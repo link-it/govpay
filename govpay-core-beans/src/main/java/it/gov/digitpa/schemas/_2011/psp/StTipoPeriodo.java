@@ -45,11 +45,11 @@ public enum StTipoPeriodo {
     private final String value;
 
     StTipoPeriodo(String v) {
-        value = v;
+        this.value = v;
     }
 
     public String value() {
-        return value;
+        return this.value;
     }
 
     public static StTipoPeriodo fromValue(String v) {

@@ -67,7 +67,7 @@ public class IuvGenerato {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -91,7 +91,7 @@ public class IuvGenerato {
      *     
      */
     public String getCodVersamentoEnte() {
-        return codVersamentoEnte;
+        return this.codVersamentoEnte;
     }
 
     /**
@@ -115,7 +115,7 @@ public class IuvGenerato {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -139,7 +139,7 @@ public class IuvGenerato {
      *     
      */
     public String getIuv() {
-        return iuv;
+        return this.iuv;
     }
 
     /**
@@ -163,7 +163,7 @@ public class IuvGenerato {
      *     
      */
     public String getNumeroAvviso() {
-        return numeroAvviso;
+        return this.numeroAvviso;
     }
 
     /**
@@ -186,7 +186,7 @@ public class IuvGenerato {
      *     byte[]
      */
     public byte[] getQrCode() {
-        return qrCode;
+        return this.qrCode;
     }
 
     /**
@@ -208,7 +208,7 @@ public class IuvGenerato {
      *     byte[]
      */
     public byte[] getBarCode() {
-        return barCode;
+        return this.barCode;
     }
 
     /**

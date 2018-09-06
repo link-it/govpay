@@ -45,85 +45,85 @@ public class Operazione {
 	private String trn;
 	
 	public long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(long id) {
 		this.id = id;
 	}
 	public long getIdTracciato() {
-		return idTracciato;
+		return this.idTracciato;
 	}
 	public void setIdTracciato(long idTracciato) {
 		this.idTracciato = idTracciato;
 	}
 	public long getLineaElaborazione() {
-		return lineaElaborazione;
+		return this.lineaElaborazione;
 	}
 	public void setLineaElaborazione(long lineaElaborazione) {
 		this.lineaElaborazione = lineaElaborazione;
 	}
 	public byte[] getDatiRichiesta() {
-		return datiRichiesta;
+		return this.datiRichiesta;
 	}
 	public void setDatiRichiesta(byte[] datiRichiesta) {
 		this.datiRichiesta = datiRichiesta;
 	}
 	public byte[] getDatiRisposta() {
-		return datiRisposta;
+		return this.datiRisposta;
 	}
 	public void setDatiRisposta(byte[] datiRisposta) {
 		this.datiRisposta = datiRisposta;
 	}
 	public String getDettaglioEsito() {
-		return dettaglioEsito;
+		return this.dettaglioEsito;
 	}
 	public void setDettaglioEsito(String dettaglioEsito) {
 		this.dettaglioEsito = dettaglioEsito;
 	}
 	public String getIdOperazione() {
-		return idOperazione;
+		return this.idOperazione;
 	}
 	public void setIdOperazione(String idOperazione) {
 		this.idOperazione = idOperazione;
 	}
 	public TipoOperazioneType getTipoOperazione() {
-		return tipoOperazione;
+		return this.tipoOperazione;
 	}
 	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
 	public Long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
 	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 	public void setCodVersamentoEnte(String codVersamentoEnte) {
 		this.codVersamentoEnte = codVersamentoEnte;
 	}
 	public StatoOperazioneType getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(StatoOperazioneType stato) {
 		this.stato = stato;
 	}
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public String getTrn() {
-		return trn;
+		return this.trn;
 	}
 	public void setTrn(String trn) {
 		this.trn = trn;

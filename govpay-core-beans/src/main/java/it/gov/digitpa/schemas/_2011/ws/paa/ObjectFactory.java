@@ -366,7 +366,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediCopiaRT")
     public JAXBElement<NodoChiediCopiaRT> createNodoChiediCopiaRT(NodoChiediCopiaRT value) {
-        return new JAXBElement<NodoChiediCopiaRT>(_NodoChiediCopiaRT_QNAME, NodoChiediCopiaRT.class, null, value);
+        return new JAXBElement<>(_NodoChiediCopiaRT_QNAME, NodoChiediCopiaRT.class, null, value);
     }
 
     /**
@@ -375,7 +375,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediCopiaRTRisposta")
     public JAXBElement<NodoChiediCopiaRTRisposta> createNodoChiediCopiaRTRisposta(NodoChiediCopiaRTRisposta value) {
-        return new JAXBElement<NodoChiediCopiaRTRisposta>(_NodoChiediCopiaRTRisposta_QNAME, NodoChiediCopiaRTRisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediCopiaRTRisposta_QNAME, NodoChiediCopiaRTRisposta.class, null, value);
     }
 
     /**
@@ -384,7 +384,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoInviaRichiestaStorno")
     public JAXBElement<NodoInviaRichiestaStorno> createNodoInviaRichiestaStorno(NodoInviaRichiestaStorno value) {
-        return new JAXBElement<NodoInviaRichiestaStorno>(_NodoInviaRichiestaStorno_QNAME, NodoInviaRichiestaStorno.class, null, value);
+        return new JAXBElement<>(_NodoInviaRichiestaStorno_QNAME, NodoInviaRichiestaStorno.class, null, value);
     }
 
     /**
@@ -393,7 +393,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoInviaRichiestaStornoRisposta")
     public JAXBElement<NodoInviaRichiestaStornoRisposta> createNodoInviaRichiestaStornoRisposta(NodoInviaRichiestaStornoRisposta value) {
-        return new JAXBElement<NodoInviaRichiestaStornoRisposta>(_NodoInviaRichiestaStornoRisposta_QNAME, NodoInviaRichiestaStornoRisposta.class, null, value);
+        return new JAXBElement<>(_NodoInviaRichiestaStornoRisposta_QNAME, NodoInviaRichiestaStornoRisposta.class, null, value);
     }
 
     /**
@@ -402,7 +402,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediListaPendentiRPT")
     public JAXBElement<NodoChiediListaPendentiRPT> createNodoChiediListaPendentiRPT(NodoChiediListaPendentiRPT value) {
-        return new JAXBElement<NodoChiediListaPendentiRPT>(_NodoChiediListaPendentiRPT_QNAME, NodoChiediListaPendentiRPT.class, null, value);
+        return new JAXBElement<>(_NodoChiediListaPendentiRPT_QNAME, NodoChiediListaPendentiRPT.class, null, value);
     }
 
     /**
@@ -411,7 +411,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediListaPendentiRPTRisposta")
     public JAXBElement<NodoChiediListaPendentiRPTRisposta> createNodoChiediListaPendentiRPTRisposta(NodoChiediListaPendentiRPTRisposta value) {
-        return new JAXBElement<NodoChiediListaPendentiRPTRisposta>(_NodoChiediListaPendentiRPTRisposta_QNAME, NodoChiediListaPendentiRPTRisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediListaPendentiRPTRisposta_QNAME, NodoChiediListaPendentiRPTRisposta.class, null, value);
     }
 
     /**
@@ -420,7 +420,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediStatoRPT")
     public JAXBElement<NodoChiediStatoRPT> createNodoChiediStatoRPT(NodoChiediStatoRPT value) {
-        return new JAXBElement<NodoChiediStatoRPT>(_NodoChiediStatoRPT_QNAME, NodoChiediStatoRPT.class, null, value);
+        return new JAXBElement<>(_NodoChiediStatoRPT_QNAME, NodoChiediStatoRPT.class, null, value);
     }
 
     /**
@@ -429,7 +429,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediStatoRPTRisposta")
     public JAXBElement<NodoChiediStatoRPTRisposta> createNodoChiediStatoRPTRisposta(NodoChiediStatoRPTRisposta value) {
-        return new JAXBElement<NodoChiediStatoRPTRisposta>(_NodoChiediStatoRPTRisposta_QNAME, NodoChiediStatoRPTRisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediStatoRPTRisposta_QNAME, NodoChiediStatoRPTRisposta.class, null, value);
     }
 
     /**
@@ -438,7 +438,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoInviaRPT")
     public JAXBElement<NodoInviaRPT> createNodoInviaRPT(NodoInviaRPT value) {
-        return new JAXBElement<NodoInviaRPT>(_NodoInviaRPT_QNAME, NodoInviaRPT.class, null, value);
+        return new JAXBElement<>(_NodoInviaRPT_QNAME, NodoInviaRPT.class, null, value);
     }
 
     /**
@@ -447,7 +447,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoInviaRPTRisposta")
     public JAXBElement<NodoInviaRPTRisposta> createNodoInviaRPTRisposta(NodoInviaRPTRisposta value) {
-        return new JAXBElement<NodoInviaRPTRisposta>(_NodoInviaRPTRisposta_QNAME, NodoInviaRPTRisposta.class, null, value);
+        return new JAXBElement<>(_NodoInviaRPTRisposta_QNAME, NodoInviaRPTRisposta.class, null, value);
     }
 
     /**
@@ -456,7 +456,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoInviaCarrelloRPT")
     public JAXBElement<NodoInviaCarrelloRPT> createNodoInviaCarrelloRPT(NodoInviaCarrelloRPT value) {
-        return new JAXBElement<NodoInviaCarrelloRPT>(_NodoInviaCarrelloRPT_QNAME, NodoInviaCarrelloRPT.class, null, value);
+        return new JAXBElement<>(_NodoInviaCarrelloRPT_QNAME, NodoInviaCarrelloRPT.class, null, value);
     }
 
     /**
@@ -465,7 +465,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoInviaCarrelloRPTRisposta")
     public JAXBElement<NodoInviaCarrelloRPTRisposta> createNodoInviaCarrelloRPTRisposta(NodoInviaCarrelloRPTRisposta value) {
-        return new JAXBElement<NodoInviaCarrelloRPTRisposta>(_NodoInviaCarrelloRPTRisposta_QNAME, NodoInviaCarrelloRPTRisposta.class, null, value);
+        return new JAXBElement<>(_NodoInviaCarrelloRPTRisposta_QNAME, NodoInviaCarrelloRPTRisposta.class, null, value);
     }
 
     /**
@@ -474,7 +474,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediInformativaPSP")
     public JAXBElement<NodoChiediInformativaPSP> createNodoChiediInformativaPSP(NodoChiediInformativaPSP value) {
-        return new JAXBElement<NodoChiediInformativaPSP>(_NodoChiediInformativaPSP_QNAME, NodoChiediInformativaPSP.class, null, value);
+        return new JAXBElement<>(_NodoChiediInformativaPSP_QNAME, NodoChiediInformativaPSP.class, null, value);
     }
 
     /**
@@ -483,7 +483,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediInformativaPSPRisposta")
     public JAXBElement<NodoChiediInformativaPSPRisposta> createNodoChiediInformativaPSPRisposta(NodoChiediInformativaPSPRisposta value) {
-        return new JAXBElement<NodoChiediInformativaPSPRisposta>(_NodoChiediInformativaPSPRisposta_QNAME, NodoChiediInformativaPSPRisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediInformativaPSPRisposta_QNAME, NodoChiediInformativaPSPRisposta.class, null, value);
     }
 
     /**
@@ -492,7 +492,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediElencoQuadraturePA")
     public JAXBElement<NodoChiediElencoQuadraturePA> createNodoChiediElencoQuadraturePA(NodoChiediElencoQuadraturePA value) {
-        return new JAXBElement<NodoChiediElencoQuadraturePA>(_NodoChiediElencoQuadraturePA_QNAME, NodoChiediElencoQuadraturePA.class, null, value);
+        return new JAXBElement<>(_NodoChiediElencoQuadraturePA_QNAME, NodoChiediElencoQuadraturePA.class, null, value);
     }
 
     /**
@@ -501,7 +501,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediElencoQuadraturePARisposta")
     public JAXBElement<NodoChiediElencoQuadraturePARisposta> createNodoChiediElencoQuadraturePARisposta(NodoChiediElencoQuadraturePARisposta value) {
-        return new JAXBElement<NodoChiediElencoQuadraturePARisposta>(_NodoChiediElencoQuadraturePARisposta_QNAME, NodoChiediElencoQuadraturePARisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediElencoQuadraturePARisposta_QNAME, NodoChiediElencoQuadraturePARisposta.class, null, value);
     }
 
     /**
@@ -510,7 +510,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediQuadraturaPA")
     public JAXBElement<NodoChiediQuadraturaPA> createNodoChiediQuadraturaPA(NodoChiediQuadraturaPA value) {
-        return new JAXBElement<NodoChiediQuadraturaPA>(_NodoChiediQuadraturaPA_QNAME, NodoChiediQuadraturaPA.class, null, value);
+        return new JAXBElement<>(_NodoChiediQuadraturaPA_QNAME, NodoChiediQuadraturaPA.class, null, value);
     }
 
     /**
@@ -519,7 +519,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediQuadraturaPARisposta")
     public JAXBElement<NodoChiediQuadraturaPARisposta> createNodoChiediQuadraturaPARisposta(NodoChiediQuadraturaPARisposta value) {
-        return new JAXBElement<NodoChiediQuadraturaPARisposta>(_NodoChiediQuadraturaPARisposta_QNAME, NodoChiediQuadraturaPARisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediQuadraturaPARisposta_QNAME, NodoChiediQuadraturaPARisposta.class, null, value);
     }
 
     /**
@@ -528,7 +528,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediElencoFlussiRendicontazione")
     public JAXBElement<NodoChiediElencoFlussiRendicontazione> createNodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione value) {
-        return new JAXBElement<NodoChiediElencoFlussiRendicontazione>(_NodoChiediElencoFlussiRendicontazione_QNAME, NodoChiediElencoFlussiRendicontazione.class, null, value);
+        return new JAXBElement<>(_NodoChiediElencoFlussiRendicontazione_QNAME, NodoChiediElencoFlussiRendicontazione.class, null, value);
     }
 
     /**
@@ -537,7 +537,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediElencoFlussiRendicontazioneRisposta")
     public JAXBElement<NodoChiediElencoFlussiRendicontazioneRisposta> createNodoChiediElencoFlussiRendicontazioneRisposta(NodoChiediElencoFlussiRendicontazioneRisposta value) {
-        return new JAXBElement<NodoChiediElencoFlussiRendicontazioneRisposta>(_NodoChiediElencoFlussiRendicontazioneRisposta_QNAME, NodoChiediElencoFlussiRendicontazioneRisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediElencoFlussiRendicontazioneRisposta_QNAME, NodoChiediElencoFlussiRendicontazioneRisposta.class, null, value);
     }
 
     /**
@@ -546,7 +546,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediFlussoRendicontazione")
     public JAXBElement<NodoChiediFlussoRendicontazione> createNodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione value) {
-        return new JAXBElement<NodoChiediFlussoRendicontazione>(_NodoChiediFlussoRendicontazione_QNAME, NodoChiediFlussoRendicontazione.class, null, value);
+        return new JAXBElement<>(_NodoChiediFlussoRendicontazione_QNAME, NodoChiediFlussoRendicontazione.class, null, value);
     }
 
     /**
@@ -555,7 +555,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediFlussoRendicontazioneRisposta")
     public JAXBElement<NodoChiediFlussoRendicontazioneRisposta> createNodoChiediFlussoRendicontazioneRisposta(NodoChiediFlussoRendicontazioneRisposta value) {
-        return new JAXBElement<NodoChiediFlussoRendicontazioneRisposta>(_NodoChiediFlussoRendicontazioneRisposta_QNAME, NodoChiediFlussoRendicontazioneRisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediFlussoRendicontazioneRisposta_QNAME, NodoChiediFlussoRendicontazioneRisposta.class, null, value);
     }
 
     /**
@@ -564,7 +564,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediSceltaWISP")
     public JAXBElement<NodoChiediSceltaWISP> createNodoChiediSceltaWISP(NodoChiediSceltaWISP value) {
-        return new JAXBElement<NodoChiediSceltaWISP>(_NodoChiediSceltaWISP_QNAME, NodoChiediSceltaWISP.class, null, value);
+        return new JAXBElement<>(_NodoChiediSceltaWISP_QNAME, NodoChiediSceltaWISP.class, null, value);
     }
 
     /**
@@ -573,7 +573,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "nodoChiediSceltaWISPRisposta")
     public JAXBElement<NodoChiediSceltaWISPRisposta> createNodoChiediSceltaWISPRisposta(NodoChiediSceltaWISPRisposta value) {
-        return new JAXBElement<NodoChiediSceltaWISPRisposta>(_NodoChiediSceltaWISPRisposta_QNAME, NodoChiediSceltaWISPRisposta.class, null, value);
+        return new JAXBElement<>(_NodoChiediSceltaWISPRisposta_QNAME, NodoChiediSceltaWISPRisposta.class, null, value);
     }
 
 }

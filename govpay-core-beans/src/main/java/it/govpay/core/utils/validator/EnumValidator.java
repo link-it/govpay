@@ -13,15 +13,15 @@ public class EnumValidator {
 	}
 
 	public EnumValidator notNull() throws ValidationException {
-		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " non deve essere vuoto.");
+		if(this.fieldValue == null) {
+			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}
 	
 	public EnumValidator isNull() throws ValidationException {
-		if(fieldValue != null) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		if(this.fieldValue != null) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
 		}
 		return this;
 	}

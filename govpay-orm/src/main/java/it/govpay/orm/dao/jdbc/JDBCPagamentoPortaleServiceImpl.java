@@ -179,7 +179,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
 		boolean isUpdate_pagamentoPortale = true;
-		java.util.List<JDBCObject> lstObjects_pagamentoPortale = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_pagamentoPortale = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_APPLICAZIONE,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getCodApplicazione(), PagamentoPortale.model().COD_APPLICAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_CANALE,false), "?");
@@ -276,7 +276,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()), 
@@ -287,7 +287,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()), 
@@ -298,7 +298,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()), 

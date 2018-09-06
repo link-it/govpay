@@ -37,7 +37,7 @@ public class StazioneIndex extends JSONSerializable {
 
   @JsonProperty("password")
   public String getPassword() {
-    return password;
+    return this.password;
   }
   public void setPassword(String password) {
     this.password = password;
@@ -53,7 +53,7 @@ public class StazioneIndex extends JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -69,7 +69,7 @@ public class StazioneIndex extends JSONSerializable {
 
   @JsonProperty("idStazione")
   public String getIdStazione() {
-    return idStazione;
+    return this.idStazione;
   }
   public void setIdStazione(String idStazione) {
     this.idStazione = idStazione;
@@ -85,7 +85,7 @@ public class StazioneIndex extends JSONSerializable {
 
   @JsonProperty("domini")
   public String getDomini() {
-    return domini;
+    return this.domini;
   }
   public void setDomini(String domini) {
     this.domini = domini;
@@ -96,23 +96,23 @@ public class StazioneIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     StazioneIndex stazioneIndex = (StazioneIndex) o;
-    return Objects.equals(password, stazioneIndex.password) &&
-        Objects.equals(abilitato, stazioneIndex.abilitato) &&
-        Objects.equals(idStazione, stazioneIndex.idStazione) &&
-        Objects.equals(domini, stazioneIndex.domini);
+    return Objects.equals(this.password, stazioneIndex.password) &&
+        Objects.equals(this.abilitato, stazioneIndex.abilitato) &&
+        Objects.equals(this.idStazione, stazioneIndex.idStazione) &&
+        Objects.equals(this.domini, stazioneIndex.domini);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(password, abilitato, idStazione, domini);
+    return Objects.hash(this.password, this.abilitato, this.idStazione, this.domini);
   }
 
   public static StazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (StazioneIndex) parse(json, StazioneIndex.class);
+    return parse(json, StazioneIndex.class);
   }
 
   @Override
@@ -125,10 +125,10 @@ public class StazioneIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class StazioneIndex {\n");
     
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    idStazione: ").append(toIndentedString(idStazione)).append("\n");
-    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    idStazione: ").append(this.toIndentedString(this.idStazione)).append("\n");
+    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
     sb.append("}");
     return sb.toString();
   }

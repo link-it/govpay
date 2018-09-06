@@ -30,7 +30,7 @@ public enum StEffettuazioneScelta {
     PO;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StEffettuazioneScelta fromValue(String v) {

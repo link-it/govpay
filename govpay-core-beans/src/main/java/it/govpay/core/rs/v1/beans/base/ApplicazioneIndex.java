@@ -33,7 +33,7 @@ public class ApplicazioneIndex extends JSONSerializable {
 
   @JsonProperty("idA2A")
   public String getIdA2A() {
-    return idA2A;
+    return this.idA2A;
   }
   public void setIdA2A(String idA2A) {
     this.idA2A = idA2A;
@@ -49,7 +49,7 @@ public class ApplicazioneIndex extends JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return principal;
+    return this.principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
@@ -65,7 +65,7 @@ public class ApplicazioneIndex extends JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -76,22 +76,22 @@ public class ApplicazioneIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     ApplicazioneIndex applicazioneIndex = (ApplicazioneIndex) o;
-    return Objects.equals(idA2A, applicazioneIndex.idA2A) &&
-        Objects.equals(principal, applicazioneIndex.principal) &&
-        Objects.equals(abilitato, applicazioneIndex.abilitato);
+    return Objects.equals(this.idA2A, applicazioneIndex.idA2A) &&
+        Objects.equals(this.principal, applicazioneIndex.principal) &&
+        Objects.equals(this.abilitato, applicazioneIndex.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, principal, abilitato);
+    return Objects.hash(this.idA2A, this.principal, this.abilitato);
   }
 
   public static ApplicazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (ApplicazioneIndex) parse(json, ApplicazioneIndex.class);
+    return parse(json, ApplicazioneIndex.class);
   }
 
   @Override
@@ -104,9 +104,9 @@ public class ApplicazioneIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ApplicazioneIndex {\n");
     
-    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
-    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
+    sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

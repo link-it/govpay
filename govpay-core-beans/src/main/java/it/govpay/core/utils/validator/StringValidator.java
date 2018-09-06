@@ -16,48 +16,48 @@ public class StringValidator {
 	}
 
 	public StringValidator notNull() throws ValidationException {
-		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " non deve essere vuoto.");
+		if(this.fieldValue == null) {
+			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}
 	
 	public StringValidator isNull() throws ValidationException {
-		if(fieldValue != null) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		if(this.fieldValue != null) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
 		}
 		return this;
 	}
 
 	public StringValidator minLength(int length) throws ValidationException {
-		if(fieldValue != null && fieldValue.length() < length) {
-			throw new ValidationException("Il valore [" + fieldValue + "] del campo " + fieldName + " non rispetta la lungezza minima di" + length + " caratteri.");
+		if(this.fieldValue != null && this.fieldValue.length() < length) {
+			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lungezza minima di" + length + " caratteri.");
 
 		}
 		return this;
 	}
 
 	public StringValidator maxLength(int length) throws ValidationException {
-		if(fieldValue != null && fieldValue.length() > length) {
-			throw new ValidationException("Il valore [" + fieldValue + "] del campo " + fieldName + " non rispetta la lungezza massima di" + length + " caratteri.");
+		if(this.fieldValue != null && this.fieldValue.length() > length) {
+			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lungezza massima di" + length + " caratteri.");
 
 		}
 		return this;
 	}
 	
 	public StringValidator length(int length) throws ValidationException {
-		if(fieldValue != null && fieldValue.length() != length) {
-			throw new ValidationException("Il valore [" + fieldValue + "] del campo " + fieldName + " non rispetta la lunghezza di" + length + " caratteri.");
+		if(this.fieldValue != null && this.fieldValue.length() != length) {
+			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lunghezza di" + length + " caratteri.");
 		}
 		return this;
 	}
 
 	public StringValidator pattern(String pattern) throws ValidationException {
-		if(fieldValue != null) {
+		if(this.fieldValue != null) {
 			Pattern p = Pattern.compile(pattern);
-			Matcher m = p.matcher(fieldValue);
+			Matcher m = p.matcher(this.fieldValue);
 			if(!m.matches())
-				throw new ValidationException("Il valore [" + fieldValue + "] del campo " + fieldName + " non rispetta il pattern richiesto: " + pattern + "");
+				throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta il pattern richiesto: " + pattern + "");
 		}
 		return this;
 	}

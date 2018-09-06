@@ -62,7 +62,7 @@ public class NodoChiediFlussoRendicontazione {
      *     
      */
     public String getIdentificativoIntermediarioPA() {
-        return identificativoIntermediarioPA;
+        return this.identificativoIntermediarioPA;
     }
 
     /**
@@ -86,7 +86,7 @@ public class NodoChiediFlussoRendicontazione {
      *     
      */
     public String getIdentificativoStazioneIntermediarioPA() {
-        return identificativoStazioneIntermediarioPA;
+        return this.identificativoStazioneIntermediarioPA;
     }
 
     /**
@@ -110,7 +110,7 @@ public class NodoChiediFlussoRendicontazione {
      *     
      */
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -134,7 +134,7 @@ public class NodoChiediFlussoRendicontazione {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -158,7 +158,7 @@ public class NodoChiediFlussoRendicontazione {
      *     
      */
     public String getIdentificativoPSP() {
-        return identificativoPSP;
+        return this.identificativoPSP;
     }
 
     /**
@@ -182,7 +182,7 @@ public class NodoChiediFlussoRendicontazione {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**

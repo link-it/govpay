@@ -89,17 +89,17 @@ public class ApplicazioniConverter {
 		
 		
 		if(applicazione.getUtenza().getDomini(null) != null) {
-			List<DominioIndex> idDomini = new ArrayList<DominioIndex>();
+			List<DominioIndex> idDomini = new ArrayList<>();
 			for (Dominio dominio : applicazione.getUtenza().getDomini(null)) {
 				idDomini.add(DominiConverter.toRsModelIndex(dominio));
 			}
 			rsModel.setDomini(idDomini);
 		}
 
-		List<TipoEntrata> idTributi = new ArrayList<TipoEntrata>();
+		List<TipoEntrata> idTributi = new ArrayList<>();
 		List<Tributo> tributi = applicazione.getUtenza().getTributi(null);
 		if(tributi == null)
-			tributi = new ArrayList<Tributo>();
+			tributi = new ArrayList<>();
 		
 		if(applicazione.isTrusted() && tributi.size() == 0) {
 			TipoEntrata tEI = new TipoEntrata();

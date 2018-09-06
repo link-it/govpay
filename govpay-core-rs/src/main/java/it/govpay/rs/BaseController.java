@@ -57,6 +57,8 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 public abstract class BaseController {
 
 	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
+	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
+	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";
 	protected Logger log;
 	protected String nomeServizio;
 	protected HttpServletRequest request;
@@ -125,7 +127,7 @@ public abstract class BaseController {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
-			validateRequest(uriInfo, rsHttpHeaders, baos.toByteArray());
+			this.validateRequest(uriInfo, rsHttpHeaders, baos.toByteArray());
 		}
 	}
 	
@@ -133,7 +135,7 @@ public abstract class BaseController {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
 				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
 		if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata() && this.validate) {
-			validateRequest(uriInfo, rsHttpHeaders, baos);
+			this.validateRequest(uriInfo, rsHttpHeaders, baos);
 		}
 	}
 
@@ -142,7 +144,7 @@ public abstract class BaseController {
 			TextHttpRequestEntity httpEntity = new TextHttpRequestEntity();
 			httpEntity.setMethod(HttpRequestMethod.valueOf(this.request.getMethod()));
 			if(rsHttpHeaders.getCookies()!=null) {
-				List<Cookie> cookies = new ArrayList<Cookie>();
+				List<Cookie> cookies = new ArrayList<>();
 				for(String cookieS: rsHttpHeaders.getCookies().keySet()) {
 					javax.ws.rs.core.Cookie cookie = rsHttpHeaders.getCookies().get(cookieS);
 					cookies.add(new Cookie(cookie.getName(), cookie.getValue()));
@@ -165,13 +167,13 @@ public abstract class BaseController {
 				}
 				httpEntity.setParametersQuery(properties);
 			}
-			httpEntity.setUrl(getServicePathWithoutParameters(uriInfo).toString());
+			httpEntity.setUrl(this.getServicePathWithoutParameters(uriInfo).toString());
 			if(baos.length > 0) {
 				httpEntity.setContent(new String(baos));
 				httpEntity.setContentType(this.request.getContentType());
 			}
 			
-			BaseRsServiceV1.validatorMap.get(name).validate(httpEntity);
+			BaseRsServiceV1.validatorMap.get(this.name).validate(httpEntity);
 		} catch (ProcessingException | ValidatorException | URISyntaxException e) {
 			this.log.error("Errore di validazione di richiesta: " + e.getMessage(), e);
 			throw new RequestValidationException(e.getMessage());
@@ -207,7 +209,7 @@ public abstract class BaseController {
 	
 	public URI getServicePathWithoutParameters(UriInfo uriInfo) throws URISyntaxException {
 
-		URI servicePathwithParameters = getServicePath(uriInfo);
+		URI servicePathwithParameters = this.getServicePath(uriInfo);
 		String baseUri = servicePathwithParameters.toString();
 
 		int indexOf = baseUri.indexOf("?");
@@ -228,22 +230,22 @@ public abstract class BaseController {
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
 		
 		if(e instanceof BaseExceptionV1) {
-			return handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
+			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
 		}
 		
 		if(e instanceof RedirectException) {
-			return handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
+			return this.handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
 		}
 		
 		if(e instanceof GovPayException) {
-			return handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
+			return this.handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
 		}
 		
 		if(e instanceof ValidationException) {
-			return handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
+			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
 		}
 		
-		log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
+		this.log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
@@ -252,10 +254,10 @@ public abstract class BaseController {
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo, Status.INTERNAL_SERVER_ERROR.getStatusCode());
 		}catch(Exception e1) {
-			log.error("Errore durante il log della risposta", e1);
+			this.log.error("Errore durante il log della risposta", e1);
 		}
 		
-		String respKoJson = getRespJson(respKo);
+		String respKoJson = this.getRespJson(respKo);
 		 
 		if(transactionId != null)
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKoJson).header(this.transactionIdHeaderName, transactionId).build();
@@ -268,7 +270,7 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(ServiceException ex) {
-			log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
@@ -279,7 +281,7 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(ServiceException ex) {
-			log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
@@ -290,7 +292,7 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(ServiceException ex) {
-			log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
@@ -301,7 +303,7 @@ public abstract class BaseController {
 		try {
 			respKoJson =respKo.toJSON(null);
 		} catch(ServiceException ex) {
-			log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
+			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
 		return respKoJson;
@@ -309,9 +311,9 @@ public abstract class BaseController {
 
 	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e, String transactionId) {
 		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
-			log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
+			this.log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
 		} else {
-			log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+			this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 		}
 		
 		FaultBean respKo = new FaultBean();
@@ -323,10 +325,10 @@ public abstract class BaseController {
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
 		}catch(Exception e1) {
-			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
+			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
 
-		String respJson = getRespJson(respKo);
+		String respJson = this.getRespJson(respKo);
 		if(transactionId != null)
 				return Response.status(e.getTransportErrorCode()).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
 			else
@@ -334,7 +336,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
-		log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
 		FaultBean respKo = new FaultBean();
 		if(e.getFaultBean()!=null) {
 			respKo.setCategoria(CategoriaEnum.PAGOPA);
@@ -354,10 +356,10 @@ public abstract class BaseController {
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
 		}catch(Exception e1) {
-			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
+			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
 		
-		String respJson = getRespJson(respKo);
+		String respJson = this.getRespJson(respKo);
 
 		if(transactionId != null)
 			return Response.status(statusCode).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
@@ -366,7 +368,7 @@ public abstract class BaseController {
 	}
 	
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
-		log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
 			respKo.setCodice("SINTASSI");
@@ -378,10 +380,10 @@ public abstract class BaseController {
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
 		}catch(Exception e1) {
-			log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
+			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
 		}
 		
-		String respJson = getRespJson(respKo);
+		String respJson = this.getRespJson(respKo);
 
 		if(transactionId != null)
 			return Response.status(statusCode).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
@@ -390,7 +392,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
-		log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
+		this.log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
 		if(transactionId != null)
 			return Response.seeOther(e.getURILocation()).header(this.transactionIdHeaderName, transactionId).build();
 		else

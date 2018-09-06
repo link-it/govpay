@@ -32,7 +32,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class IuvConverter {
 
 	public static List<Iuv> toDTOList(List<it.govpay.orm.IUV> applicazioneLst) throws ServiceException {
-		List<Iuv> lstDTO = new ArrayList<Iuv>();
+		List<Iuv> lstDTO = new ArrayList<>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.IUV applicazione: applicazioneLst){
 				lstDTO.add(toDTO(applicazione));

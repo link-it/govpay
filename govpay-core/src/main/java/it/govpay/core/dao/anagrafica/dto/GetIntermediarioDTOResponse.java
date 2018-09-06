@@ -11,7 +11,7 @@ public class GetIntermediarioDTOResponse {
 	}
 
 	public Intermediario getIntermediario() {
-		return intermediario;
+		return this.intermediario;
 	}
 
 	public void setIntermediario(Intermediario intermediario) {

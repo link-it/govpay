@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Transformer;
@@ -213,7 +214,7 @@ public class AvvisaturaUtils {
 
 		int eventType = xsr.getEventType();
 		do {
-			if(eventType == XMLStreamReader.START_ELEMENT && xsr.getLocalName().equals(CtEsitoAvvisoDigitale.class.getAnnotation(XmlType.class).name())) {
+			if(eventType == XMLStreamConstants.START_ELEMENT && xsr.getLocalName().equals(CtEsitoAvvisoDigitale.class.getAnnotation(XmlType.class).name())) {
 				return true;
 			}
 			eventType = xsr.next();

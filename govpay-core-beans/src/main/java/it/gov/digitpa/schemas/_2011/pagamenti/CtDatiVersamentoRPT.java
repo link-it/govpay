@@ -87,7 +87,7 @@ public class CtDatiVersamentoRPT {
      *     
      */
     public Date getDataEsecuzionePagamento() {
-        return dataEsecuzionePagamento;
+        return this.dataEsecuzionePagamento;
     }
 
     /**
@@ -111,7 +111,7 @@ public class CtDatiVersamentoRPT {
      *     
      */
     public BigDecimal getImportoTotaleDaVersare() {
-        return importoTotaleDaVersare;
+        return this.importoTotaleDaVersare;
     }
 
     /**
@@ -135,7 +135,7 @@ public class CtDatiVersamentoRPT {
      *     
      */
     public StTipoVersamento getTipoVersamento() {
-        return tipoVersamento;
+        return this.tipoVersamento;
     }
 
     /**
@@ -159,7 +159,7 @@ public class CtDatiVersamentoRPT {
      *     
      */
     public String getIdentificativoUnivocoVersamento() {
-        return identificativoUnivocoVersamento;
+        return this.identificativoUnivocoVersamento;
     }
 
     /**
@@ -183,7 +183,7 @@ public class CtDatiVersamentoRPT {
      *     
      */
     public String getCodiceContestoPagamento() {
-        return codiceContestoPagamento;
+        return this.codiceContestoPagamento;
     }
 
     /**
@@ -207,7 +207,7 @@ public class CtDatiVersamentoRPT {
      *     
      */
     public String getIbanAddebito() {
-        return ibanAddebito;
+        return this.ibanAddebito;
     }
 
     /**
@@ -231,7 +231,7 @@ public class CtDatiVersamentoRPT {
      *     
      */
     public String getBicAddebito() {
-        return bicAddebito;
+        return this.bicAddebito;
     }
 
     /**
@@ -255,7 +255,7 @@ public class CtDatiVersamentoRPT {
      *     
      */
     public String getFirmaRicevuta() {
-        return firmaRicevuta;
+        return this.firmaRicevuta;
     }
 
     /**
@@ -293,8 +293,8 @@ public class CtDatiVersamentoRPT {
      * 
      */
     public List<CtDatiSingoloVersamentoRPT> getDatiSingoloVersamento() {
-        if (datiSingoloVersamento == null) {
-            datiSingoloVersamento = new ArrayList<CtDatiSingoloVersamentoRPT>();
+        if (this.datiSingoloVersamento == null) {
+            this.datiSingoloVersamento = new ArrayList<>();
         }
         return this.datiSingoloVersamento;
     }

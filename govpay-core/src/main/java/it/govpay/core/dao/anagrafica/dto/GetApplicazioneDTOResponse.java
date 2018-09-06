@@ -11,7 +11,7 @@ public class GetApplicazioneDTOResponse {
 	}
 
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 
 	public void setApplicazione(Applicazione applicazione) {

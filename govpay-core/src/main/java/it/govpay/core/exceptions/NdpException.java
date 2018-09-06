@@ -94,7 +94,7 @@ public class NdpException extends Exception {
 		}
 		
 		public String getFaultString() {
-			return fault;
+			return this.fault;
 		}
 	}
 	
@@ -123,7 +123,7 @@ public class NdpException extends Exception {
 	}
 	
 	public String getDescrizione() {
-		return descrizione;
+		return this.descrizione;
 	}
 
 	public void setDescrizione(String descrizione) {
@@ -131,7 +131,7 @@ public class NdpException extends Exception {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -139,7 +139,7 @@ public class NdpException extends Exception {
 	}
 
 	public String getFaultCode() {
-		return faultCode;
+		return this.faultCode;
 	}
 
 	public void setFaultCode(String faultCode) {
@@ -147,7 +147,7 @@ public class NdpException extends Exception {
 	}
 
 	public String getFaultString() {
-		return faultString;
+		return this.faultString;
 	}
 
 	public void setFaultString(String faultString) {

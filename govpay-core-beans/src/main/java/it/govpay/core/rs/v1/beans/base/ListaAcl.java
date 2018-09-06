@@ -28,7 +28,7 @@ public class ListaAcl extends JSONSerializable {
 
 	@JsonProperty("acl")
 	public List<AclPost> getAcl() {
-		return acl;
+		return this.acl;
 	}
 
 	public void setAcl(List<AclPost> acl) {

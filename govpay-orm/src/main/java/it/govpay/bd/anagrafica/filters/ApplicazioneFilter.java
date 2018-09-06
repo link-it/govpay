@@ -70,7 +70,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression(); 
 			boolean addAnd = false;
 			if(this.listaIdApplicazioni != null && this.listaIdApplicazioni.size() > 0){
-				newExpression.in(cf, listaIdApplicazioni);
+				newExpression.in(this.cf, this.listaIdApplicazioni);
 				addAnd = true;
 			}
 			
@@ -100,7 +100,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	}
 
 	public List<Long> getListaIdApplicazioni() {
-		return listaIdApplicazioni;
+		return this.listaIdApplicazioni;
 	}
 
 	public void setListaIdApplicazioni(List<Long> listaIdApplicazioni) {
@@ -108,7 +108,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String codApplicazione) {

@@ -8,55 +8,56 @@ public class EsitoAvvisatura extends BasicModel {
 	
 	private String codDominio;
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public String getIdentificativoAvvisatura() {
-		return identificativoAvvisatura;
+		return this.identificativoAvvisatura;
 	}
 	public void setIdentificativoAvvisatura(String identificativoAvvisatura) {
 		this.identificativoAvvisatura = identificativoAvvisatura;
 	}
 	public Integer getTipoCanale() {
-		return tipoCanale;
+		return this.tipoCanale;
 	}
 	public void setTipoCanale(Integer tipoCanale) {
 		this.tipoCanale = tipoCanale;
 	}
 	public String getCodCanale() {
-		return codCanale;
+		return this.codCanale;
 	}
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
 	}
 	public Date getData() {
-		return data;
+		return this.data;
 	}
 	public void setData(Date data) {
 		this.data = data;
 	}
 	public Integer getCodEsito() {
-		return codEsito;
+		return this.codEsito;
 	}
 	public void setCodEsito(Integer codEsito) {
 		this.codEsito = codEsito;
 	}
 	public String getDescrizioneEsito() {
-		return descrizioneEsito;
+		return this.descrizioneEsito;
 	}
 	public void setDescrizioneEsito(String descrizioneEsito) {
 		this.descrizioneEsito = descrizioneEsito;
 	}
 	public long getIdTracciato() {
-		return idTracciato;
+		return this.idTracciato;
 	}
 	public void setIdTracciato(long idTracciato) {
 		this.idTracciato = idTracciato;
 	}
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;

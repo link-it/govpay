@@ -14,13 +14,13 @@ public class PutRuoloDTO extends BasicCreateRequestDTO  {
 		super(user);
 	}
 	public String getIdRuolo() {
-		return idRuolo;
+		return this.idRuolo;
 	}
 	public void setIdRuolo(String idRuolo) {
 		this.idRuolo = idRuolo;
 	}
 	public List<Acl> getAcls() {
-		return acls;
+		return this.acls;
 	}
 	public void setAcls(List<Acl> acls) {
 		this.acls = acls;

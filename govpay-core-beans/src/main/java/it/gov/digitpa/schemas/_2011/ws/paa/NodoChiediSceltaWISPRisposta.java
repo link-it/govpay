@@ -59,7 +59,7 @@ public class NodoChiediSceltaWISPRisposta
      *     
      */
     public StEffettuazioneScelta getEffettuazioneScelta() {
-        return effettuazioneScelta;
+        return this.effettuazioneScelta;
     }
 
     /**
@@ -83,7 +83,7 @@ public class NodoChiediSceltaWISPRisposta
      *     
      */
     public String getIdentificativoPSP() {
-        return identificativoPSP;
+        return this.identificativoPSP;
     }
 
     /**
@@ -107,7 +107,7 @@ public class NodoChiediSceltaWISPRisposta
      *     
      */
     public String getIdentificativoIntermediarioPSP() {
-        return identificativoIntermediarioPSP;
+        return this.identificativoIntermediarioPSP;
     }
 
     /**
@@ -131,7 +131,7 @@ public class NodoChiediSceltaWISPRisposta
      *     
      */
     public String getIdentificativoCanale() {
-        return identificativoCanale;
+        return this.identificativoCanale;
     }
 
     /**
@@ -155,7 +155,7 @@ public class NodoChiediSceltaWISPRisposta
      *     
      */
     public StTipoVersamento getTipoVersamento() {
-        return tipoVersamento;
+        return this.tipoVersamento;
     }
 
     /**

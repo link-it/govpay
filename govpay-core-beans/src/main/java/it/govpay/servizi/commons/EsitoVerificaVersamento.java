@@ -34,7 +34,7 @@ public enum EsitoVerificaVersamento {
     PAGAMENTO_ANNULLATO;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static EsitoVerificaVersamento fromValue(String v) {

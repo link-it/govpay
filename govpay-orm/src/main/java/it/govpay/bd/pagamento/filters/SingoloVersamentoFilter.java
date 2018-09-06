@@ -39,7 +39,7 @@ public class SingoloVersamentoFilter extends AbstractFilter {
 			}
 			
 			if(this.codSingoliVersamentiEnte != null){
-				codSingoliVersamentiEnte.removeAll(Collections.singleton(null));
+				this.codSingoliVersamentiEnte.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE, this.codSingoliVersamentiEnte);
@@ -67,7 +67,7 @@ public class SingoloVersamentoFilter extends AbstractFilter {
 
 	
 	public String getCodSingoloVersamentoEnte() {
-		return codSingoloVersamentoEnte;
+		return this.codSingoloVersamentoEnte;
 	}
 
 	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
@@ -75,7 +75,7 @@ public class SingoloVersamentoFilter extends AbstractFilter {
 	}
 
 	public List<String> getCodSingoliVersamentiEnte() {
-		return codSingoliVersamentiEnte;
+		return this.codSingoliVersamentiEnte;
 	}
 
 	public void setCodSingoliVersamentiEnte(List<String> codSingoliVersamentiEnte) {
@@ -83,7 +83,7 @@ public class SingoloVersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdSingoloVersamento() {
-		return idSingoloVersamento;
+		return this.idSingoloVersamento;
 	}
 
 	public void setIdSingoloVersamento(List<Long> idSingoloVersamento) {

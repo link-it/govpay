@@ -87,10 +87,10 @@ public enum TipoTracciatoType implements IEnumeration , Serializable , Cloneable
 		return this.equals(((TipoTracciatoType)object));
 	}
 	public String toString(boolean reportHTML){
-		return toString();
+		return this.toString();
 	}
   	public String toString(boolean reportHTML,List<String> fieldsNotIncluded){
-  		return toString();
+  		return this.toString();
   	}
   	public String diff(Object object,StringBuffer bf,boolean reportHTML){
 		return bf.toString();

@@ -32,7 +32,7 @@ public class ContoAddebito extends JSONSerializable {
 
   @JsonProperty("iban")
   public String getIban() {
-    return iban;
+    return this.iban;
   }
   public void setIban(String iban) {
     this.iban = iban;
@@ -48,7 +48,7 @@ public class ContoAddebito extends JSONSerializable {
 
   @JsonProperty("bic")
   public String getBic() {
-    return bic;
+    return this.bic;
   }
   public void setBic(String bic) {
     this.bic = bic;
@@ -59,21 +59,21 @@ public class ContoAddebito extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     ContoAddebito contoAddebito = (ContoAddebito) o;
-    return Objects.equals(iban, contoAddebito.iban) &&
-        Objects.equals(bic, contoAddebito.bic);
+    return Objects.equals(this.iban, contoAddebito.iban) &&
+        Objects.equals(this.bic, contoAddebito.bic);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(iban, bic);
+    return Objects.hash(this.iban, this.bic);
   }
 
   public static ContoAddebito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (ContoAddebito) parse(json, ContoAddebito.class);
+    return parse(json, ContoAddebito.class);
   }
 
   @Override
@@ -86,8 +86,8 @@ public class ContoAddebito extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContoAddebito {\n");
     
-    sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
-    sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
+    sb.append("    iban: ").append(this.toIndentedString(this.iban)).append("\n");
+    sb.append("    bic: ").append(this.toIndentedString(this.bic)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -37,7 +37,7 @@ public class Connector extends JSONSerializable implements IValidable {
 
   @JsonProperty("url")
   public String getUrl() {
-    return url;
+    return this.url;
   }
   public void setUrl(String url) {
     this.url = url;
@@ -53,7 +53,7 @@ public class Connector extends JSONSerializable implements IValidable {
 
   @JsonProperty("versioneApi")
   public String getVersioneApi() {
-    return versioneApi;
+    return this.versioneApi;
   }
   public void setVersioneApi(String versioneApi) {
     this.versioneApi = versioneApi;
@@ -68,7 +68,7 @@ public class Connector extends JSONSerializable implements IValidable {
 
   @JsonProperty("auth")
   public TipoAutenticazione getAuth() {
-    return auth;
+    return this.auth;
   }
   public void setAuth(TipoAutenticazione auth) {
     this.auth = auth;
@@ -79,22 +79,22 @@ public class Connector extends JSONSerializable implements IValidable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Connector connector = (Connector) o;
-    return Objects.equals(url, connector.url) &&
-        Objects.equals(versioneApi, connector.versioneApi) &&
-        Objects.equals(auth, connector.auth);
+    return Objects.equals(this.url, connector.url) &&
+        Objects.equals(this.versioneApi, connector.versioneApi) &&
+        Objects.equals(this.auth, connector.auth);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(url, versioneApi, auth);
+    return Objects.hash(this.url, this.versioneApi, this.auth);
   }
 
   public static Connector parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
-    return (Connector) parse(json, Connector.class);
+    return parse(json, Connector.class);
   }
 
   @Override
@@ -107,9 +107,9 @@ public class Connector extends JSONSerializable implements IValidable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Connector {\n");
     
-    sb.append("    url: ").append(toIndentedString(url)).append("\n");
-    sb.append("    versioneApi: ").append(toIndentedString(versioneApi)).append("\n");
-    sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
+    sb.append("    url: ").append(this.toIndentedString(this.url)).append("\n");
+    sb.append("    versioneApi: ").append(this.toIndentedString(this.versioneApi)).append("\n");
+    sb.append("    auth: ").append(this.toIndentedString(this.auth)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -125,18 +125,19 @@ public class Connector extends JSONSerializable implements IValidable {
     return o.toString().replace("\n", "\n    ");
   }
   
-  public void validate() throws ValidationException {
+  @Override
+public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		vf.getValidator("url", url).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
-		vf.getValidator("versioneApi", versioneApi).notNull();
+		vf.getValidator("url", this.url).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+		vf.getValidator("versioneApi", this.versioneApi).notNull();
 		try {
-			VersioneApiEnum v = VersioneApiEnum.fromValue(versioneApi);
+			VersioneApiEnum v = VersioneApiEnum.fromValue(this.versioneApi);
 			if(v==null) throw new IllegalArgumentException();
 		} catch (IllegalArgumentException e) {
-			throw new ValidationException("Il valore [" + versioneApi + "] del campo versioneApi corrisponde con uno dei valori consentiti: " + Arrays.asList(VersioneApiEnum.values()));
+			throw new ValidationException("Il valore [" + this.versioneApi + "] del campo versioneApi corrisponde con uno dei valori consentiti: " + Arrays.asList(VersioneApiEnum.values()));
 		}
-		if(auth != null)
-			vf.getValidator("auth", auth).validateFields();
+		if(this.auth != null)
+			vf.getValidator("auth", this.auth).validateFields();
 	}
 }
 

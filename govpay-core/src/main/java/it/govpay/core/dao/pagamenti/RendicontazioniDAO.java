@@ -62,7 +62,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			long count = rendicontazioniBD.count(filter);
 
-			List<LeggiRendicontazioneDTOResponse> resList = new ArrayList<LeggiRendicontazioneDTOResponse>();
+			List<LeggiRendicontazioneDTOResponse> resList = new ArrayList<>();
 			if(count > 0) {
 				List<Fr> findAll = rendicontazioniBD.findAll(filter);
 
@@ -94,7 +94,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			// controllo che il dominio sia autorizzato
 			this.autorizzaRichiesta(leggiRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, flussoRendicontazione.getDominio(bd).getCodDominio(), null, bd);
-			populateRendicontazione(flussoRendicontazione, bd);
+			this.populateRendicontazione(flussoRendicontazione, bd);
 			response.setFr(flussoRendicontazione);
 
 		} catch (NotFoundException e) {

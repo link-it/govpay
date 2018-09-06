@@ -14,7 +14,7 @@ public class PutIbanAccreditoDTO extends BasicCreateRequestDTO  {
 	}
 
 	public IbanAccredito getIban() {
-		return iban;
+		return this.iban;
 	}
 
 	public void setIban(IbanAccredito iban) {
@@ -22,7 +22,7 @@ public class PutIbanAccreditoDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIbanAccredito() {
-		return ibanAccredito;
+		return this.ibanAccredito;
 	}
 
 	public void setIbanAccredito(String ibanAccredito) {
@@ -30,7 +30,7 @@ public class PutIbanAccreditoDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(String idDominio) {

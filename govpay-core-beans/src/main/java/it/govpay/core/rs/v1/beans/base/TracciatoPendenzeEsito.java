@@ -64,7 +64,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("id")
   public BigDecimal getId() {
-    return id;
+    return this.id;
   }
   public void setId(BigDecimal id) {
     this.id = id;
@@ -80,7 +80,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("nomeFile")
   public String getNomeFile() {
-    return nomeFile;
+    return this.nomeFile;
   }
   public void setNomeFile(String nomeFile) {
     this.nomeFile = nomeFile;
@@ -96,7 +96,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("dataOraCaricamento")
   public Date getDataOraCaricamento() {
-    return dataOraCaricamento;
+    return this.dataOraCaricamento;
   }
   public void setDataOraCaricamento(Date dataOraCaricamento) {
     this.dataOraCaricamento = dataOraCaricamento;
@@ -111,7 +111,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("stato")
   public StatoTracciatoPendenza getStato() {
-    return stato;
+    return this.stato;
   }
   public void setStato(StatoTracciatoPendenza stato) {
     this.stato = stato;
@@ -127,7 +127,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("numeroOperazioniTotali")
   public BigDecimal getNumeroOperazioniTotali() {
-    return numeroOperazioniTotali;
+    return this.numeroOperazioniTotali;
   }
   public void setNumeroOperazioniTotali(BigDecimal numeroOperazioniTotali) {
     this.numeroOperazioniTotali = numeroOperazioniTotali;
@@ -143,7 +143,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("numeroOperazioniEseguite")
   public BigDecimal getNumeroOperazioniEseguite() {
-    return numeroOperazioniEseguite;
+    return this.numeroOperazioniEseguite;
   }
   public void setNumeroOperazioniEseguite(BigDecimal numeroOperazioniEseguite) {
     this.numeroOperazioniEseguite = numeroOperazioniEseguite;
@@ -159,7 +159,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("numeroOperazioniFallite")
   public BigDecimal getNumeroOperazioniFallite() {
-    return numeroOperazioniFallite;
+    return this.numeroOperazioniFallite;
   }
   public void setNumeroOperazioniFallite(BigDecimal numeroOperazioniFallite) {
     this.numeroOperazioniFallite = numeroOperazioniFallite;
@@ -175,7 +175,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("operatoreMittente")
   public String getOperatoreMittente() {
-    return operatoreMittente;
+    return this.operatoreMittente;
   }
   public void setOperatoreMittente(String operatoreMittente) {
     this.operatoreMittente = operatoreMittente;
@@ -191,7 +191,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("dataOraUltimoAggiornamento")
   public Date getDataOraUltimoAggiornamento() {
-    return dataOraUltimoAggiornamento;
+    return this.dataOraUltimoAggiornamento;
   }
   public void setDataOraUltimoAggiornamento(Date dataOraUltimoAggiornamento) {
     this.dataOraUltimoAggiornamento = dataOraUltimoAggiornamento;
@@ -206,7 +206,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("esito")
   public DettaglioTracciatoPendenzeEsito getEsito() {
-    return esito;
+    return this.esito;
   }
   public void setEsito(DettaglioTracciatoPendenzeEsito esito) {
     this.esito = esito;
@@ -217,29 +217,29 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     TracciatoPendenzeEsito tracciatoPendenzeEsito = (TracciatoPendenzeEsito) o;
-    return Objects.equals(id, tracciatoPendenzeEsito.id) &&
-        Objects.equals(nomeFile, tracciatoPendenzeEsito.nomeFile) &&
-        Objects.equals(dataOraCaricamento, tracciatoPendenzeEsito.dataOraCaricamento) &&
-        Objects.equals(stato, tracciatoPendenzeEsito.stato) &&
-        Objects.equals(numeroOperazioniTotali, tracciatoPendenzeEsito.numeroOperazioniTotali) &&
-        Objects.equals(numeroOperazioniEseguite, tracciatoPendenzeEsito.numeroOperazioniEseguite) &&
-        Objects.equals(numeroOperazioniFallite, tracciatoPendenzeEsito.numeroOperazioniFallite) &&
-        Objects.equals(operatoreMittente, tracciatoPendenzeEsito.operatoreMittente) &&
-        Objects.equals(dataOraUltimoAggiornamento, tracciatoPendenzeEsito.dataOraUltimoAggiornamento) &&
-        Objects.equals(esito, tracciatoPendenzeEsito.esito);
+    return Objects.equals(this.id, tracciatoPendenzeEsito.id) &&
+        Objects.equals(this.nomeFile, tracciatoPendenzeEsito.nomeFile) &&
+        Objects.equals(this.dataOraCaricamento, tracciatoPendenzeEsito.dataOraCaricamento) &&
+        Objects.equals(this.stato, tracciatoPendenzeEsito.stato) &&
+        Objects.equals(this.numeroOperazioniTotali, tracciatoPendenzeEsito.numeroOperazioniTotali) &&
+        Objects.equals(this.numeroOperazioniEseguite, tracciatoPendenzeEsito.numeroOperazioniEseguite) &&
+        Objects.equals(this.numeroOperazioniFallite, tracciatoPendenzeEsito.numeroOperazioniFallite) &&
+        Objects.equals(this.operatoreMittente, tracciatoPendenzeEsito.operatoreMittente) &&
+        Objects.equals(this.dataOraUltimoAggiornamento, tracciatoPendenzeEsito.dataOraUltimoAggiornamento) &&
+        Objects.equals(this.esito, tracciatoPendenzeEsito.esito);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nomeFile, dataOraCaricamento, stato, numeroOperazioniTotali, numeroOperazioniEseguite, numeroOperazioniFallite, operatoreMittente, dataOraUltimoAggiornamento, esito);
+    return Objects.hash(this.id, this.nomeFile, this.dataOraCaricamento, this.stato, this.numeroOperazioniTotali, this.numeroOperazioniEseguite, this.numeroOperazioniFallite, this.operatoreMittente, this.dataOraUltimoAggiornamento, this.esito);
   }
 
   public static TracciatoPendenzeEsito parse(String json) throws ServiceException, ValidationException {
-    return (TracciatoPendenzeEsito) parse(json, TracciatoPendenzeEsito.class); 
+    return parse(json, TracciatoPendenzeEsito.class); 
   }
 
   @Override
@@ -252,16 +252,16 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class TracciatoPendenzeEsito {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    nomeFile: ").append(toIndentedString(nomeFile)).append("\n");
-    sb.append("    dataOraCaricamento: ").append(toIndentedString(dataOraCaricamento)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
-    sb.append("    numeroOperazioniTotali: ").append(toIndentedString(numeroOperazioniTotali)).append("\n");
-    sb.append("    numeroOperazioniEseguite: ").append(toIndentedString(numeroOperazioniEseguite)).append("\n");
-    sb.append("    numeroOperazioniFallite: ").append(toIndentedString(numeroOperazioniFallite)).append("\n");
-    sb.append("    operatoreMittente: ").append(toIndentedString(operatoreMittente)).append("\n");
-    sb.append("    dataOraUltimoAggiornamento: ").append(toIndentedString(dataOraUltimoAggiornamento)).append("\n");
-    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
+    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
+    sb.append("    nomeFile: ").append(this.toIndentedString(this.nomeFile)).append("\n");
+    sb.append("    dataOraCaricamento: ").append(this.toIndentedString(this.dataOraCaricamento)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    numeroOperazioniTotali: ").append(this.toIndentedString(this.numeroOperazioniTotali)).append("\n");
+    sb.append("    numeroOperazioniEseguite: ").append(this.toIndentedString(this.numeroOperazioniEseguite)).append("\n");
+    sb.append("    numeroOperazioniFallite: ").append(this.toIndentedString(this.numeroOperazioniFallite)).append("\n");
+    sb.append("    operatoreMittente: ").append(this.toIndentedString(this.operatoreMittente)).append("\n");
+    sb.append("    dataOraUltimoAggiornamento: ").append(this.toIndentedString(this.dataOraUltimoAggiornamento)).append("\n");
+    sb.append("    esito: ").append(this.toIndentedString(this.esito)).append("\n");
     sb.append("}");
     return sb.toString();
   }

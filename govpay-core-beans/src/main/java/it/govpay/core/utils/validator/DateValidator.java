@@ -21,43 +21,43 @@ public class DateValidator {
 	}
 
 	public DateValidator notNull() throws ValidationException {
-		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " non deve essere vuoto.");
+		if(this.fieldValue == null) {
+			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}
 	
 	public DateValidator isNull() throws ValidationException {
-		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		if(this.fieldValue == null) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
 		}
 		return this;
 	}
 	
 	public DateValidator after(LocalDate date) throws ValidationException {
-		if(fieldValue != null && fieldValue.isBefore(date)) {
-			throw new ValidationException("Il campo " + fieldName + " deve avere una data successiva a " + formatter.format(date) + ".");
+		if(this.fieldValue != null && this.fieldValue.isBefore(date)) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve avere una data successiva a " + this.formatter.format(date) + ".");
 		}
 		return this;
 	}
 	
 	public DateValidator before(LocalDate date) throws ValidationException {
-		if(fieldValue != null && fieldValue.isAfter(date)) {
-			throw new ValidationException("Il campo " + fieldName + " deve avere una data precedente a " + formatter.format(date) + ".");
+		if(this.fieldValue != null && this.fieldValue.isAfter(date)) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve avere una data precedente a " + this.formatter.format(date) + ".");
 		}
 		return this;
 	}
 	
 	public DateValidator inside(TemporalAmount temporalAmount) throws ValidationException {
-		if(fieldValue != null && (fieldValue.isAfter(LocalDate.now().plus(temporalAmount)) || fieldValue.isBefore(LocalDate.now().minus(temporalAmount)))) {
-			throw new ValidationException("Il campo " + fieldName + " deve avere una data entro " + temporalAmount + ".");
+		if(this.fieldValue != null && (this.fieldValue.isAfter(LocalDate.now().plus(temporalAmount)) || this.fieldValue.isBefore(LocalDate.now().minus(temporalAmount)))) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve avere una data entro " + temporalAmount + ".");
 		}
 		return this;
 	}
 	
 	public DateValidator outside(TemporalAmount temporalAmount) throws ValidationException {
-		if(fieldValue != null && !(fieldValue.isAfter(LocalDate.now().plus(temporalAmount)) || fieldValue.isBefore(LocalDate.now().minus(temporalAmount)))) {
-			throw new ValidationException("Il campo " + fieldName + " deve avere una data oltre " + temporalAmount + ".");
+		if(this.fieldValue != null && !(this.fieldValue.isAfter(LocalDate.now().plus(temporalAmount)) || this.fieldValue.isBefore(LocalDate.now().minus(temporalAmount)))) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve avere una data oltre " + temporalAmount + ".");
 		}
 		return this;
 	}

@@ -12,38 +12,39 @@ public class TipoTributo extends BasicModel {
 	private String codContabilitaDefault;
 	private String codTributoIuvDefault;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCodTributo() {
-		return codTributo;
+		return this.codTributo;
 	}
 	public void setCodTributo(String codTributo) {
 		this.codTributo = codTributo;
 	}
 	public String getDescrizione() {
-		return descrizione;
+		return this.descrizione;
 	}
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
 	}
 	public TipoContabilita getTipoContabilitaDefault() {
-		return tipoContabilitaDefault;
+		return this.tipoContabilitaDefault;
 	}
 	public void setTipoContabilitaDefault(TipoContabilita tipoContabilitaDefault) {
 		this.tipoContabilitaDefault = tipoContabilitaDefault;
 	}
 	public String getCodContabilitaDefault() {
-		return codContabilitaDefault;
+		return this.codContabilitaDefault;
 	}
 	public void setCodContabilitaDefault(String codContabilitaDefault) {
 		this.codContabilitaDefault = codContabilitaDefault;
 	}
 	public String getCodTributoIuvDefault() {
-		return codTributoIuvDefault;
+		return this.codTributoIuvDefault;
 	}
 	public void setCodTributoIuvDefault(String codTributoIuvDefault) {
 		this.codTributoIuvDefault = codTributoIuvDefault;

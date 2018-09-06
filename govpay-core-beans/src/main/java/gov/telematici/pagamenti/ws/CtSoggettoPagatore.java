@@ -55,7 +55,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public String getAnagraficaPagatore() {
-        return anagraficaPagatore;
+        return this.anagraficaPagatore;
     }
 
     /**
@@ -79,7 +79,7 @@ public class CtSoggettoPagatore {
      *     
      */
     public CtIdentificativoUnivocoPersonaFG getIdentificativoUnivocoPagatore() {
-        return identificativoUnivocoPagatore;
+        return this.identificativoUnivocoPagatore;
     }
 
     /**

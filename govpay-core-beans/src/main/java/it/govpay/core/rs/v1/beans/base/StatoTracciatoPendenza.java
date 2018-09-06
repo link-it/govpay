@@ -38,7 +38,7 @@ public enum StatoTracciatoPendenza {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(value);
+    return String.valueOf(this.value);
   }
 
   @JsonCreator

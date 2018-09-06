@@ -43,7 +43,7 @@ public class EventiFilter extends AbstractFilter{
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
-			IExpression newExpression = newExpression();
+			IExpression newExpression = this.newExpression();
 			EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 
 			boolean addAnd = false;
@@ -113,7 +113,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 	
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -121,7 +121,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -129,7 +129,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 
 	public void setCcp(String ccp) {
@@ -137,7 +137,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public Date getDatainizio() {
-		return datainizio;
+		return this.datainizio;
 	}
 
 	public void setDatainizio(Date datainizio) {
@@ -145,7 +145,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -153,7 +153,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public List<Long> getIdEventi() {
-		return idEventi;
+		return this.idEventi;
 	}
 
 	public void setIdEventi(List<Long> idEventi) {
@@ -161,7 +161,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 
 	public void setCodVersamentoEnte(String codVersamentoEnte) {
@@ -169,7 +169,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public Long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 
 	public void setIdApplicazione(Long idApplicazione) {

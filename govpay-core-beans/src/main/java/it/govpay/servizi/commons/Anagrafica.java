@@ -78,7 +78,7 @@ public class Anagrafica {
      *     
      */
     public String getCodUnivoco() {
-        return codUnivoco;
+        return this.codUnivoco;
     }
 
     /**
@@ -102,7 +102,7 @@ public class Anagrafica {
      *     
      */
     public String getRagioneSociale() {
-        return ragioneSociale;
+        return this.ragioneSociale;
     }
 
     /**
@@ -126,7 +126,7 @@ public class Anagrafica {
      *     
      */
     public String getIndirizzo() {
-        return indirizzo;
+        return this.indirizzo;
     }
 
     /**
@@ -150,7 +150,7 @@ public class Anagrafica {
      *     
      */
     public String getCivico() {
-        return civico;
+        return this.civico;
     }
 
     /**
@@ -174,7 +174,7 @@ public class Anagrafica {
      *     
      */
     public String getCap() {
-        return cap;
+        return this.cap;
     }
 
     /**
@@ -198,7 +198,7 @@ public class Anagrafica {
      *     
      */
     public String getLocalita() {
-        return localita;
+        return this.localita;
     }
 
     /**
@@ -222,7 +222,7 @@ public class Anagrafica {
      *     
      */
     public String getProvincia() {
-        return provincia;
+        return this.provincia;
     }
 
     /**
@@ -246,7 +246,7 @@ public class Anagrafica {
      *     
      */
     public String getNazione() {
-        return nazione;
+        return this.nazione;
     }
 
     /**
@@ -270,7 +270,7 @@ public class Anagrafica {
      *     
      */
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     /**
@@ -294,7 +294,7 @@ public class Anagrafica {
      *     
      */
     public String getTelefono() {
-        return telefono;
+        return this.telefono;
     }
 
     /**
@@ -318,7 +318,7 @@ public class Anagrafica {
      *     
      */
     public String getCellulare() {
-        return cellulare;
+        return this.cellulare;
     }
 
     /**
@@ -342,7 +342,7 @@ public class Anagrafica {
      *     
      */
     public String getFax() {
-        return fax;
+        return this.fax;
     }
 
     /**

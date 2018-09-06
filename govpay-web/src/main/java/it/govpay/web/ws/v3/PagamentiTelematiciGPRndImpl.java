@@ -95,7 +95,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			Applicazione applicazione = getApplicazioneAutenticata(bd);
+			Applicazione applicazione = this.getApplicazioneAutenticata(bd);
 			ctx.log("gprnd.ricevutaRichiesta");
 			it.govpay.core.business.Rendicontazioni rendicontazioneBusiness = new it.govpay.core.business.Rendicontazioni(bd);
 
@@ -155,13 +155,13 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			Applicazione applicazione = getApplicazioneAutenticata(bd);
+			Applicazione applicazione = this.getApplicazioneAutenticata(bd);
 			ctx.log("gprnd.ricevutaRichiesta");
 
 			//Autorizzazione alla richiesta: controllo che il dominio sia tra quelli abilitati per l'applicazione
 			Fr frModel = new FrBD(bd).getFr(bodyrichiesta.getCodFlusso());
 			
-			List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+			List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase
 			diritti.add(Diritti.LETTURA);
 			if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, frModel.getDominio(bd).getCodDominio(), null,diritti)) {
 				throw new GovPayException(EsitoOperazione.RND_001);
@@ -181,7 +181,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			
 			if(bodyrichiesta.getCodApplicazione() != null) {
 				Long idApplicazione = AnagraficaManager.getApplicazione(bd, bodyrichiesta.getCodApplicazione()).getId();
-				List<Rendicontazione> rendsFiltrato = new ArrayList<Rendicontazione>();
+				List<Rendicontazione> rendsFiltrato = new ArrayList<>();
 				
 				for(Rendicontazione rend : rends) {
 					if(rend.getVersamento(bd) ==  null || rend.getVersamento(bd).getIdApplicazione() != idApplicazione.longValue()) {
@@ -224,7 +224,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			Applicazione applicazione = getApplicazioneAutenticata(bd);
+			Applicazione applicazione = this.getApplicazioneAutenticata(bd);
 			ctx.log("gprnd.ricevutaRichiesta");
 
 			RichiestaIncassoDTO richiestaIncassoDTO = new RichiestaIncassoDTO(null);
@@ -287,14 +287,14 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 	private Applicazione getApplicazioneAutenticata(BasicBD bd) throws GovPayException, ServiceException {
 		Applicazione app = null;
 		try {
-			HttpServletRequest request = (HttpServletRequest) wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
+			HttpServletRequest request = (HttpServletRequest) this.wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
 			Utenza user = CredentialUtils.getUser(request, log);
 			if(user == null) {
 				throw new GovPayException(EsitoOperazione.AUT_000);
 			}
 			app = CredentialUtils.getApplicazione(bd,user);
 		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.AUT_001, wsCtxt.getUserPrincipal().getName());
+			throw new GovPayException(EsitoOperazione.AUT_001, this.wsCtxt.getUserPrincipal().getName());
 		}
 
 		if(app != null) {

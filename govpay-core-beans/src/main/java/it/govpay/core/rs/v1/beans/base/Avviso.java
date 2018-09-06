@@ -56,7 +56,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
     @Override
     @JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static StatoEnum fromValue(String text) {
@@ -111,7 +111,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonIgnore
   public StatoEnum getStatoEnum() {
-    return stato;
+    return this.stato;
   }
   public void setStato(StatoEnum stato) {
     this.stato = stato;
@@ -119,8 +119,8 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("stato")
   public String getStato() {
-	  if(stato != null) {
-		  return stato.value;
+	  if(this.stato != null) {
+		  return this.stato.value;
 	  } else {
 		  return null;
 	  }
@@ -144,7 +144,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("importo")
   public BigDecimal getImporto() {
-    return importo;
+    return this.importo;
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
@@ -160,7 +160,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return idDominio;
+    return this.idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -176,7 +176,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("numeroAvviso")
   public String getNumeroAvviso() {
-    return numeroAvviso;
+    return this.numeroAvviso;
   }
   public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
@@ -192,7 +192,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("dataValidita")
   public Date getDataValidita() {
-    return dataValidita;
+    return this.dataValidita;
   }
   public void setDataValidita(Date dataValidita) {
     this.dataValidita = dataValidita;
@@ -208,7 +208,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("dataScadenza")
   public Date getDataScadenza() {
-    return dataScadenza;
+    return this.dataScadenza;
   }
   public void setDataScadenza(Date dataScadenza) {
     this.dataScadenza = dataScadenza;
@@ -224,7 +224,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return descrizione;
+    return this.descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -240,7 +240,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("tassonomiaAvviso")
   public String getTassonomiaAvviso() {
-    return tassonomiaAvviso;
+    return this.tassonomiaAvviso;
   }
   public void setTassonomiaAvviso(String tassonomiaAvviso) {
     this.tassonomiaAvviso = tassonomiaAvviso;
@@ -256,7 +256,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("qrcode")
   public String getQrcode() {
-    return qrcode;
+    return this.qrcode;
   }
   public void setQrcode(String qrcode) {
     this.qrcode = qrcode;
@@ -272,7 +272,7 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("barcode")
   public String getBarcode() {
-    return barcode;
+    return this.barcode;
   }
   public void setBarcode(String barcode) {
     this.barcode = barcode;
@@ -283,29 +283,29 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Avviso avviso = (Avviso) o;
-    return Objects.equals(stato, avviso.stato) &&
-        Objects.equals(importo, avviso.importo) &&
-        Objects.equals(idDominio, avviso.idDominio) &&
-        Objects.equals(numeroAvviso, avviso.numeroAvviso) &&
-        Objects.equals(dataValidita, avviso.dataValidita) &&
-        Objects.equals(dataScadenza, avviso.dataScadenza) &&
-        Objects.equals(descrizione, avviso.descrizione) &&
-        Objects.equals(tassonomiaAvviso, avviso.tassonomiaAvviso) &&
-        Objects.equals(qrcode, avviso.qrcode) &&
-        Objects.equals(barcode, avviso.barcode);
+    return Objects.equals(this.stato, avviso.stato) &&
+        Objects.equals(this.importo, avviso.importo) &&
+        Objects.equals(this.idDominio, avviso.idDominio) &&
+        Objects.equals(this.numeroAvviso, avviso.numeroAvviso) &&
+        Objects.equals(this.dataValidita, avviso.dataValidita) &&
+        Objects.equals(this.dataScadenza, avviso.dataScadenza) &&
+        Objects.equals(this.descrizione, avviso.descrizione) &&
+        Objects.equals(this.tassonomiaAvviso, avviso.tassonomiaAvviso) &&
+        Objects.equals(this.qrcode, avviso.qrcode) &&
+        Objects.equals(this.barcode, avviso.barcode);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(stato, importo, idDominio, numeroAvviso, dataValidita, dataScadenza, descrizione, tassonomiaAvviso, qrcode, barcode);
+    return Objects.hash(this.stato, this.importo, this.idDominio, this.numeroAvviso, this.dataValidita, this.dataScadenza, this.descrizione, this.tassonomiaAvviso, this.qrcode, this.barcode);
   }
 
   public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Avviso) parse(json, Avviso.class);
+    return parse(json, Avviso.class);
   }
 
   @Override
@@ -318,16 +318,16 @@ public class Avviso extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Avviso {\n");
     
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
-    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
-    sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
-    sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
-    sb.append("    qrcode: ").append(toIndentedString(qrcode)).append("\n");
-    sb.append("    barcode: ").append(toIndentedString(barcode)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
+    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
+    sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
+    sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
+    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
+    sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
+    sb.append("    qrcode: ").append(this.toIndentedString(this.qrcode)).append("\n");
+    sb.append("    barcode: ").append(this.toIndentedString(this.barcode)).append("\n");
     sb.append("}");
     return sb.toString();
   }

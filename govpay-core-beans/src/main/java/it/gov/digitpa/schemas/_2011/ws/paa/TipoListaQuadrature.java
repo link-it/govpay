@@ -45,7 +45,7 @@ public class TipoListaQuadrature {
      * 
      */
     public int getTotRestituiti() {
-        return totRestituiti;
+        return this.totRestituiti;
     }
 
     /**
@@ -79,8 +79,8 @@ public class TipoListaQuadrature {
      * 
      */
     public List<TipoIdQuadratura> getIdQuadratura() {
-        if (idQuadratura == null) {
-            idQuadratura = new ArrayList<TipoIdQuadratura>();
+        if (this.idQuadratura == null) {
+            this.idQuadratura = new ArrayList<>();
         }
         return this.idQuadratura;
     }

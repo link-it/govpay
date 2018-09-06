@@ -49,7 +49,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("stato")
   public String getStato() {
-    return stato;
+    return this.stato;
   }
   public void setStato(String stato) {
     this.stato = stato;
@@ -65,7 +65,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("dettaglioStato")
   public String getDettaglioStato() {
-    return dettaglioStato;
+    return this.dettaglioStato;
   }
   public void setDettaglioStato(String dettaglioStato) {
     this.dettaglioStato = dettaglioStato;
@@ -80,7 +80,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("segnalazioni")
   public List<Segnalazione> getSegnalazioni() {
-    return segnalazioni;
+    return this.segnalazioni;
   }
   public void setSegnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -96,7 +96,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("rpt")
   public String getRpt() {
-    return rpt;
+    return this.rpt;
   }
   public void setRpt(String rpt) {
     this.rpt = rpt;
@@ -112,7 +112,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("rt")
   public String getRt() {
-    return rt;
+    return this.rt;
   }
   public void setRt(String rt) {
     this.rt = rt;
@@ -128,7 +128,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("pendenza")
   public String getPendenza() {
-    return pendenza;
+    return this.pendenza;
   }
   public void setPendenza(String pendenza) {
     this.pendenza = pendenza;
@@ -139,25 +139,25 @@ public class RppIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     RppIndex rppIndex = (RppIndex) o;
-    return Objects.equals(stato, rppIndex.stato) &&
-        Objects.equals(dettaglioStato, rppIndex.dettaglioStato) &&
-        Objects.equals(segnalazioni, rppIndex.segnalazioni) &&
-        Objects.equals(rpt, rppIndex.rpt) &&
-        Objects.equals(rt, rppIndex.rt) &&
-        Objects.equals(pendenza, rppIndex.pendenza);
+    return Objects.equals(this.stato, rppIndex.stato) &&
+        Objects.equals(this.dettaglioStato, rppIndex.dettaglioStato) &&
+        Objects.equals(this.segnalazioni, rppIndex.segnalazioni) &&
+        Objects.equals(this.rpt, rppIndex.rpt) &&
+        Objects.equals(this.rt, rppIndex.rt) &&
+        Objects.equals(this.pendenza, rppIndex.pendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
+    return Objects.hash(this.stato, this.dettaglioStato, this.segnalazioni, this.rpt, this.rt, this.pendenza);
   }
 
   public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (RppIndex) parse(json, RppIndex.class);
+    return parse(json, RppIndex.class);
   }
 
   @Override
@@ -170,12 +170,12 @@ public class RppIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class RppIndex {\n");
     
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
-    sb.append("    dettaglioStato: ").append(toIndentedString(dettaglioStato)).append("\n");
-    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
-    sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
-    sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
-    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    dettaglioStato: ").append(this.toIndentedString(this.dettaglioStato)).append("\n");
+    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
+    sb.append("    rpt: ").append(this.toIndentedString(this.rpt)).append("\n");
+    sb.append("    rt: ").append(this.toIndentedString(this.rt)).append("\n");
+    sb.append("    pendenza: ").append(this.toIndentedString(this.pendenza)).append("\n");
     sb.append("}");
     return sb.toString();
   }

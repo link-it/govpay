@@ -86,7 +86,7 @@ public class GpAvviaTransazionePagamento {
      *     
      */
     public String getCodSessionePortale() {
-        return codSessionePortale;
+        return this.codSessionePortale;
     }
 
     /**
@@ -110,7 +110,7 @@ public class GpAvviaTransazionePagamento {
      *     
      */
     public String getCodPortale() {
-        return codPortale;
+        return this.codPortale;
     }
 
     /**
@@ -134,7 +134,7 @@ public class GpAvviaTransazionePagamento {
      *     
      */
     public Anagrafica getVersante() {
-        return versante;
+        return this.versante;
     }
 
     /**
@@ -158,7 +158,7 @@ public class GpAvviaTransazionePagamento {
      *     
      */
     public String getIbanAddebito() {
-        return ibanAddebito;
+        return this.ibanAddebito;
     }
 
     /**
@@ -182,7 +182,7 @@ public class GpAvviaTransazionePagamento {
      *     
      */
     public TipoAutenticazione getAutenticazione() {
-        return autenticazione;
+        return this.autenticazione;
     }
 
     /**
@@ -206,7 +206,7 @@ public class GpAvviaTransazionePagamento {
      *     
      */
     public String getUrlRitorno() {
-        return urlRitorno;
+        return this.urlRitorno;
     }
 
     /**
@@ -230,7 +230,7 @@ public class GpAvviaTransazionePagamento {
      *     
      */
     public Boolean isAggiornaSeEsiste() {
-        return aggiornaSeEsiste;
+        return this.aggiornaSeEsiste;
     }
 
     /**
@@ -269,8 +269,8 @@ public class GpAvviaTransazionePagamento {
      * 
      */
     public List<Object> getVersamentoOrVersamentoRef() {
-        if (versamentoOrVersamentoRef == null) {
-            versamentoOrVersamentoRef = new ArrayList<Object>();
+        if (this.versamentoOrVersamentoRef == null) {
+            this.versamentoOrVersamentoRef = new ArrayList<>();
         }
         return this.versamentoOrVersamentoRef;
     }

@@ -39,7 +39,7 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("codificaIuv")
   public String getCodificaIuv() {
-    return codificaIuv;
+    return this.codificaIuv;
   }
   public void setCodificaIuv(String codificaIuv) {
     this.codificaIuv = codificaIuv;
@@ -55,7 +55,7 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("regExpIuv")
   public String getRegExpIuv() {
-    return regExpIuv;
+    return this.regExpIuv;
   }
   public void setRegExpIuv(String regExpIuv) {
     this.regExpIuv = regExpIuv;
@@ -71,7 +71,7 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("generazioneIuvInterna")
   public Boolean isGenerazioneIuvInterna() {
-    return generazioneIuvInterna;
+    return this.generazioneIuvInterna;
   }
   public void setGenerazioneIuvInterna(Boolean generazioneIuvInterna) {
     this.generazioneIuvInterna = generazioneIuvInterna;
@@ -82,22 +82,22 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     CodificaAvvisi codificaAvvisi = (CodificaAvvisi) o;
-    return Objects.equals(codificaIuv, codificaAvvisi.codificaIuv) &&
-        Objects.equals(regExpIuv, codificaAvvisi.regExpIuv) &&
-        Objects.equals(generazioneIuvInterna, codificaAvvisi.generazioneIuvInterna);
+    return Objects.equals(this.codificaIuv, codificaAvvisi.codificaIuv) &&
+        Objects.equals(this.regExpIuv, codificaAvvisi.regExpIuv) &&
+        Objects.equals(this.generazioneIuvInterna, codificaAvvisi.generazioneIuvInterna);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(codificaIuv, regExpIuv, generazioneIuvInterna);
+    return Objects.hash(this.codificaIuv, this.regExpIuv, this.generazioneIuvInterna);
   }
 
   public static CodificaAvvisi parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
-    return (CodificaAvvisi) parse(json, CodificaAvvisi.class);
+    return parse(json, CodificaAvvisi.class);
   }
 
   @Override
@@ -110,9 +110,9 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
     StringBuilder sb = new StringBuilder();
     sb.append("class CodificaAvvisi {\n");
     
-    sb.append("    codificaIuv: ").append(toIndentedString(codificaIuv)).append("\n");
-    sb.append("    regExpIuv: ").append(toIndentedString(regExpIuv)).append("\n");
-    sb.append("    generazioneIuvInterna: ").append(toIndentedString(generazioneIuvInterna)).append("\n");
+    sb.append("    codificaIuv: ").append(this.toIndentedString(this.codificaIuv)).append("\n");
+    sb.append("    regExpIuv: ").append(this.toIndentedString(this.regExpIuv)).append("\n");
+    sb.append("    generazioneIuvInterna: ").append(this.toIndentedString(this.generazioneIuvInterna)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -128,19 +128,20 @@ public class CodificaAvvisi extends it.govpay.core.rs.v1.beans.JSONSerializable 
     return o.toString().replace("\n", "\n    ");
   }
   
-  public void validate() throws ValidationException {
+  @Override
+public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		if(codificaIuv != null)
-			vf.getValidator("codificaIuv", codificaIuv).pattern("[0-9]{1,15}");
+		if(this.codificaIuv != null)
+			vf.getValidator("codificaIuv", this.codificaIuv).pattern("[0-9]{1,15}");
 		
-		if(regExpIuv != null)
+		if(this.regExpIuv != null)
 			try {
-				Pattern.compile(regExpIuv);
+				Pattern.compile(this.regExpIuv);
 			} catch(PatternSyntaxException e) {
-			    throw new ValidationException("Il valore [" + regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
+			    throw new ValidationException("Il valore [" + this.regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
 			}
 		
-		vf.getValidator("generazioneIuvInterna", generazioneIuvInterna).notNull();
+		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
 	}
 }
 

@@ -97,7 +97,7 @@ public class AvvisoPagamento extends BasicBD {
 	}
 
 	public PrintAvvisoDTOResponse printAvviso(PrintAvvisoDTO printAvviso) {
-		return printAvviso(printAvviso, true);
+		return this.printAvviso(printAvviso, false);
 	}
 
 	public PrintAvvisoDTOResponse printAvviso(PrintAvvisoDTO printAvviso, boolean update) {
@@ -129,38 +129,9 @@ public class AvvisoPagamento extends BasicBD {
 	public AvvisoPagamentoInput fromVersamento(it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento, it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 
-		Dominio dominio = versamento.getUo(this).getDominio(this);
-		String codDominio = dominio.getCodDominio();
-		Anagrafica anagraficaDominio = dominio.getAnagrafica();
-		
-		input.setEnteDenominazione(dominio.getRagioneSociale());
-		input.setEnteIdentificativo(codDominio);
-		input.setEnteIdentificativoSplit(this.splitString(codDominio));
-		input.setEnteCbill(dominio.getCbill());
-		
-		if(anagraficaDominio != null) {
-			input.setEnteArea(anagraficaDominio.getArea());
-			input.setEnteUrl(anagraficaDominio.getUrlSitoWeb());
-			input.setEntePeo(anagraficaDominio.getEmail());
-			input.setEntePec(anagraficaDominio.getPec());
-		}
-		
+		Dominio dominio = this.impostaAnagraficaEnteCreditore(versamento, input);
 
-		Anagrafica anagraficaDebitore = versamento.getAnagraficaDebitore();
-		if(anagraficaDebitore != null) {
-			String indirizzoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getIndirizzo()) ? anagraficaDebitore.getIndirizzo() : "";
-			String civicoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCivico()) ? anagraficaDebitore.getCivico() : "";
-			String capDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCap()) ? anagraficaDebitore.getCap() : "";
-			String localitaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getLocalita()) ? anagraficaDebitore.getLocalita() : "";
-			String provinciaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getProvincia()) ? (" (" +anagraficaDebitore.getProvincia() +")" ) : "";
-			String indirizzoCivicoDebitore = indirizzoDebitore + " " + civicoDebitore;
-			String capCittaDebitore = capDebitore + " " + localitaDebitore + provinciaDebitore;
-			
-			input.setIntestatarioDenominazione(anagraficaDebitore.getRagioneSociale());
-			input.setIntestatarioIdentificativo(anagraficaDebitore.getCodUnivoco());
-			input.setIntestatarioIndirizzo1(indirizzoCivicoDebitore);
-			input.setIntestatarioIndirizzo2(capCittaDebitore);
-		}
+		this.impostaAnagraficaDebitore(versamento, input);
 
 		Intermediario intermediario = dominio.getStazione().getIntermediario(this);
 		if(intermediario != null) {
@@ -207,6 +178,44 @@ public class AvvisoPagamento extends BasicBD {
 		input.setAvvisoQrcode(new String(iuvGenerato.getQrCode()));
 
 		return input;
+	}
+
+	private Dominio impostaAnagraficaEnteCreditore(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input)
+			throws ServiceException {
+		Dominio dominio = versamento.getUo(this).getDominio(this);
+		String codDominio = dominio.getCodDominio();
+		Anagrafica anagraficaDominio = dominio.getAnagrafica();
+		
+		input.setEnteDenominazione(dominio.getRagioneSociale());
+		input.setEnteIdentificativo(codDominio);
+		input.setEnteIdentificativoSplit(this.splitString(codDominio));
+		input.setEnteCbill(dominio.getCbill());
+		
+		if(anagraficaDominio != null) {
+			input.setEnteArea(anagraficaDominio.getArea());
+			input.setEnteUrl(anagraficaDominio.getUrlSitoWeb());
+			input.setEntePeo(anagraficaDominio.getEmail());
+			input.setEntePec(anagraficaDominio.getPec());
+		}
+		return dominio;
+	}
+
+	private void impostaAnagraficaDebitore(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input) {
+		Anagrafica anagraficaDebitore = versamento.getAnagraficaDebitore();
+		if(anagraficaDebitore != null) {
+			String indirizzoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getIndirizzo()) ? anagraficaDebitore.getIndirizzo() : "";
+			String civicoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCivico()) ? anagraficaDebitore.getCivico() : "";
+			String capDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCap()) ? anagraficaDebitore.getCap() : "";
+			String localitaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getLocalita()) ? anagraficaDebitore.getLocalita() : "";
+			String provinciaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getProvincia()) ? (" (" +anagraficaDebitore.getProvincia() +")" ) : "";
+			String indirizzoCivicoDebitore = indirizzoDebitore + " " + civicoDebitore;
+			String capCittaDebitore = capDebitore + " " + localitaDebitore + provinciaDebitore;
+			
+			input.setIntestatarioDenominazione(anagraficaDebitore.getRagioneSociale());
+			input.setIntestatarioIdentificativo(anagraficaDebitore.getCodUnivoco());
+			input.setIntestatarioIndirizzo1(indirizzoCivicoDebitore);
+			input.setIntestatarioIndirizzo2(capCittaDebitore);
+		}
 	}
 	
 	public String splitString(String start) {

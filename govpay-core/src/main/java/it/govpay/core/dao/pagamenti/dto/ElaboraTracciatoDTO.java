@@ -7,7 +7,7 @@ public class ElaboraTracciatoDTO {
 	private Tracciato tracciato;
 
 	public Tracciato getTracciato() {
-		return tracciato;
+		return this.tracciato;
 	}
 
 	public void setTracciato(Tracciato tracciato) {

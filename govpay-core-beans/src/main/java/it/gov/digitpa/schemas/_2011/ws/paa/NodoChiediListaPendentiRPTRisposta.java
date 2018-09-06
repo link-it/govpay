@@ -44,7 +44,7 @@ public class NodoChiediListaPendentiRPTRisposta
      *     
      */
     public TipoListaRPTPendenti getListaRPTPendenti() {
-        return listaRPTPendenti;
+        return this.listaRPTPendenti;
     }
 
     /**

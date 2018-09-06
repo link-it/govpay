@@ -51,7 +51,7 @@ public class Soggetto extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static TipoEnum fromValue(String text) {
@@ -109,7 +109,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("tipo")
   public TipoEnum getTipo() {
-    return tipo;
+    return this.tipo;
   }
   public void setTipo(TipoEnum tipo) {
     this.tipo = tipo;
@@ -125,7 +125,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("identificativo")
   public String getIdentificativo() {
-    return identificativo;
+    return this.identificativo;
   }
   public void setIdentificativo(String identificativo) {
     this.identificativo = identificativo;
@@ -141,7 +141,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("anagrafica")
   public String getAnagrafica() {
-    return anagrafica;
+    return this.anagrafica;
   }
   public void setAnagrafica(String anagrafica) {
     this.anagrafica = anagrafica;
@@ -156,7 +156,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("indirizzo")
   public String getIndirizzo() {
-    return indirizzo;
+    return this.indirizzo;
   }
   public void setIndirizzo(String indirizzo) {
     this.indirizzo = indirizzo;
@@ -171,7 +171,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("civico")
   public String getCivico() {
-    return civico;
+    return this.civico;
   }
   public void setCivico(String civico) {
     this.civico = civico;
@@ -186,7 +186,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("cap")
   public String getCap() {
-    return cap;
+    return this.cap;
   }
   public void setCap(String cap) {
     this.cap = cap;
@@ -201,7 +201,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("localita")
   public String getLocalita() {
-    return localita;
+    return this.localita;
   }
   public void setLocalita(String localita) {
     this.localita = localita;
@@ -216,7 +216,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("provincia")
   public String getProvincia() {
-    return provincia;
+    return this.provincia;
   }
   public void setProvincia(String provincia) {
     this.provincia = provincia;
@@ -231,7 +231,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("nazione")
   public String getNazione() {
-    return nazione;
+    return this.nazione;
   }
   public void setNazione(String nazione) {
     this.nazione = nazione;
@@ -246,7 +246,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("email")
   public String getEmail() {
-    return email;
+    return this.email;
   }
   public void setEmail(String email) {
     this.email = email;
@@ -261,7 +261,7 @@ public class Soggetto extends JSONSerializable {
 
   @JsonProperty("cellulare")
   public String getCellulare() {
-    return cellulare;
+    return this.cellulare;
   }
   public void setCellulare(String cellulare) {
     this.cellulare = cellulare;
@@ -272,30 +272,30 @@ public class Soggetto extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Soggetto soggetto = (Soggetto) o;
-    return Objects.equals(tipo, soggetto.tipo) &&
-        Objects.equals(identificativo, soggetto.identificativo) &&
-        Objects.equals(anagrafica, soggetto.anagrafica) &&
-        Objects.equals(indirizzo, soggetto.indirizzo) &&
-        Objects.equals(civico, soggetto.civico) &&
-        Objects.equals(cap, soggetto.cap) &&
-        Objects.equals(localita, soggetto.localita) &&
-        Objects.equals(provincia, soggetto.provincia) &&
-        Objects.equals(nazione, soggetto.nazione) &&
-        Objects.equals(email, soggetto.email) &&
-        Objects.equals(cellulare, soggetto.cellulare);
+    return Objects.equals(this.tipo, soggetto.tipo) &&
+        Objects.equals(this.identificativo, soggetto.identificativo) &&
+        Objects.equals(this.anagrafica, soggetto.anagrafica) &&
+        Objects.equals(this.indirizzo, soggetto.indirizzo) &&
+        Objects.equals(this.civico, soggetto.civico) &&
+        Objects.equals(this.cap, soggetto.cap) &&
+        Objects.equals(this.localita, soggetto.localita) &&
+        Objects.equals(this.provincia, soggetto.provincia) &&
+        Objects.equals(this.nazione, soggetto.nazione) &&
+        Objects.equals(this.email, soggetto.email) &&
+        Objects.equals(this.cellulare, soggetto.cellulare);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare);
+    return Objects.hash(this.tipo, this.identificativo, this.anagrafica, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.cellulare);
   }
 
   public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Soggetto) parse(json, Soggetto.class);
+    return parse(json, Soggetto.class);
   }
 
   @Override
@@ -308,17 +308,17 @@ public class Soggetto extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Soggetto {\n");
     
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
-    sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
-    sb.append("    anagrafica: ").append(toIndentedString(anagrafica)).append("\n");
-    sb.append("    indirizzo: ").append(toIndentedString(indirizzo)).append("\n");
-    sb.append("    civico: ").append(toIndentedString(civico)).append("\n");
-    sb.append("    cap: ").append(toIndentedString(cap)).append("\n");
-    sb.append("    localita: ").append(toIndentedString(localita)).append("\n");
-    sb.append("    provincia: ").append(toIndentedString(provincia)).append("\n");
-    sb.append("    nazione: ").append(toIndentedString(nazione)).append("\n");
-    sb.append("    email: ").append(toIndentedString(email)).append("\n");
-    sb.append("    cellulare: ").append(toIndentedString(cellulare)).append("\n");
+    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
+    sb.append("    identificativo: ").append(this.toIndentedString(this.identificativo)).append("\n");
+    sb.append("    anagrafica: ").append(this.toIndentedString(this.anagrafica)).append("\n");
+    sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
+    sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");
+    sb.append("    cap: ").append(this.toIndentedString(this.cap)).append("\n");
+    sb.append("    localita: ").append(this.toIndentedString(this.localita)).append("\n");
+    sb.append("    provincia: ").append(this.toIndentedString(this.provincia)).append("\n");
+    sb.append("    nazione: ").append(this.toIndentedString(this.nazione)).append("\n");
+    sb.append("    email: ").append(this.toIndentedString(this.email)).append("\n");
+    sb.append("    cellulare: ").append(this.toIndentedString(this.cellulare)).append("\n");
     sb.append("}");
     return sb.toString();
   }

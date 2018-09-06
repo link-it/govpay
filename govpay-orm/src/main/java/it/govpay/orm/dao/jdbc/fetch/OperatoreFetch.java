@@ -52,9 +52,9 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Operatore.model())){
 				Operatore object = new Operatore();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
+				this.setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "nome", Operatore.model().NOME.getFieldType()));
 				return object;
 			}
@@ -76,9 +76,9 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Operatore.model())){
 				Operatore object = new Operatore();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
+				this.setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
 					this.getObjectFromMap(map,"nome"));
 				return object;
 			}

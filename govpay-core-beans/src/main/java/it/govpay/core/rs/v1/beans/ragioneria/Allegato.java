@@ -39,7 +39,7 @@ public class Allegato extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static TipoEnum fromValue(String text) {
@@ -70,7 +70,7 @@ public class Allegato extends JSONSerializable {
 
   @JsonProperty("tipo")
   public TipoEnum getTipo() {
-    return tipo;
+    return this.tipo;
   }
   public void setTipo(TipoEnum tipo) {
     this.tipo = tipo;
@@ -86,7 +86,7 @@ public class Allegato extends JSONSerializable {
 
   @JsonProperty("testo")
   public String getTesto() {
-    return testo;
+    return this.testo;
   }
   public void setTesto(String testo) {
     this.testo = testo;
@@ -97,21 +97,21 @@ public class Allegato extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Allegato allegato = (Allegato) o;
-    return Objects.equals(tipo, allegato.tipo) &&
-        Objects.equals(testo, allegato.testo);
+    return Objects.equals(this.tipo, allegato.tipo) &&
+        Objects.equals(this.testo, allegato.testo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, testo);
+    return Objects.hash(this.tipo, this.testo);
   }
 
   public static Allegato parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Allegato) parse(json, Allegato.class);
+    return parse(json, Allegato.class);
   }
 
   @Override
@@ -124,8 +124,8 @@ public class Allegato extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Allegato {\n");
     
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
-    sb.append("    testo: ").append(toIndentedString(testo)).append("\n");
+    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
+    sb.append("    testo: ").append(this.toIndentedString(this.testo)).append("\n");
     sb.append("}");
     return sb.toString();
   }

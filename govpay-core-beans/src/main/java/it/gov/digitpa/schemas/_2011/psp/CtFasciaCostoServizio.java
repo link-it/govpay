@@ -65,7 +65,7 @@ public class CtFasciaCostoServizio {
      *     
      */
     public BigDecimal getImportoMassimoFascia() {
-        return importoMassimoFascia;
+        return this.importoMassimoFascia;
     }
 
     /**
@@ -89,7 +89,7 @@ public class CtFasciaCostoServizio {
      *     
      */
     public BigDecimal getCostoFisso() {
-        return costoFisso;
+        return this.costoFisso;
     }
 
     /**
@@ -113,7 +113,7 @@ public class CtFasciaCostoServizio {
      *     
      */
     public BigDecimal getValoreCommissione() {
-        return valoreCommissione;
+        return this.valoreCommissione;
     }
 
     /**

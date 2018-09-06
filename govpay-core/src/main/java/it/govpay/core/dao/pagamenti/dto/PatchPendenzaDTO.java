@@ -14,7 +14,7 @@ public class PatchPendenzaDTO extends AbstractPatchDTO  {
 	}
 
 	public String getIdA2a() {
-		return idA2a;
+		return this.idA2a;
 	}
 
 	public void setIdA2a(String idA2a) {
@@ -22,7 +22,7 @@ public class PatchPendenzaDTO extends AbstractPatchDTO  {
 	}
 
 	public String getIdPendenza() {
-		return idPendenza;
+		return this.idPendenza;
 	}
 
 	public void setIdPendenza(String idPendenza) {

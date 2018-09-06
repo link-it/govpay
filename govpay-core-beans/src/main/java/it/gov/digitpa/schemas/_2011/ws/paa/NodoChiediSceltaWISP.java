@@ -64,7 +64,7 @@ public class NodoChiediSceltaWISP {
      *     
      */
     public String getIdentificativoIntermediarioPA() {
-        return identificativoIntermediarioPA;
+        return this.identificativoIntermediarioPA;
     }
 
     /**
@@ -88,7 +88,7 @@ public class NodoChiediSceltaWISP {
      *     
      */
     public String getIdentificativoStazioneIntermediarioPA() {
-        return identificativoStazioneIntermediarioPA;
+        return this.identificativoStazioneIntermediarioPA;
     }
 
     /**
@@ -112,7 +112,7 @@ public class NodoChiediSceltaWISP {
      *     
      */
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -136,7 +136,7 @@ public class NodoChiediSceltaWISP {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -160,7 +160,7 @@ public class NodoChiediSceltaWISP {
      *     
      */
     public String getKeyPA() {
-        return keyPA;
+        return this.keyPA;
     }
 
     /**
@@ -184,7 +184,7 @@ public class NodoChiediSceltaWISP {
      *     
      */
     public String getKeyWISP() {
-        return keyWISP;
+        return this.keyWISP;
     }
 
     /**

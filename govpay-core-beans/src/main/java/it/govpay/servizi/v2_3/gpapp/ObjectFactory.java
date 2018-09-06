@@ -169,7 +169,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.govpay.it/servizi/v2_3/gpApp/", name = "gpAnnullaVersamentoResponse")
     public JAXBElement<GpResponse> createGpAnnullaVersamentoResponse(GpResponse value) {
-        return new JAXBElement<GpResponse>(_GpAnnullaVersamentoResponse_QNAME, GpResponse.class, null, value);
+        return new JAXBElement<>(_GpAnnullaVersamentoResponse_QNAME, GpResponse.class, null, value);
     }
 
     /**
@@ -178,7 +178,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.govpay.it/servizi/v2_3/gpApp/", name = "gpNotificaPagamentoResponse")
     public JAXBElement<GpResponse> createGpNotificaPagamentoResponse(GpResponse value) {
-        return new JAXBElement<GpResponse>(_GpNotificaPagamentoResponse_QNAME, GpResponse.class, null, value);
+        return new JAXBElement<>(_GpNotificaPagamentoResponse_QNAME, GpResponse.class, null, value);
     }
 
 }

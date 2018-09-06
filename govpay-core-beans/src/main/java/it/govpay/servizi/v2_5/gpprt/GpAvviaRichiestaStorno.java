@@ -87,7 +87,7 @@ public class GpAvviaRichiestaStorno {
      *     
      */
     public String getCodPortale() {
-        return codPortale;
+        return this.codPortale;
     }
 
     /**
@@ -111,7 +111,7 @@ public class GpAvviaRichiestaStorno {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -135,7 +135,7 @@ public class GpAvviaRichiestaStorno {
      *     
      */
     public String getIuv() {
-        return iuv;
+        return this.iuv;
     }
 
     /**
@@ -159,7 +159,7 @@ public class GpAvviaRichiestaStorno {
      *     
      */
     public String getCcp() {
-        return ccp;
+        return this.ccp;
     }
 
     /**
@@ -183,7 +183,7 @@ public class GpAvviaRichiestaStorno {
      *     
      */
     public String getCausaleRevoca() {
-        return causaleRevoca;
+        return this.causaleRevoca;
     }
 
     /**
@@ -207,7 +207,7 @@ public class GpAvviaRichiestaStorno {
      *     
      */
     public String getDatiAggiuntivi() {
-        return datiAggiuntivi;
+        return this.datiAggiuntivi;
     }
 
     /**
@@ -245,8 +245,8 @@ public class GpAvviaRichiestaStorno {
      * 
      */
     public List<GpAvviaRichiestaStorno.Pagamento> getPagamento() {
-        if (pagamento == null) {
-            pagamento = new ArrayList<GpAvviaRichiestaStorno.Pagamento>();
+        if (this.pagamento == null) {
+            this.pagamento = new ArrayList<>();
         }
         return this.pagamento;
     }
@@ -297,7 +297,7 @@ public class GpAvviaRichiestaStorno {
          *     
          */
         public String getIur() {
-            return iur;
+            return this.iur;
         }
 
         /**
@@ -321,7 +321,7 @@ public class GpAvviaRichiestaStorno {
          *     
          */
         public String getCausaleRevoca() {
-            return causaleRevoca;
+            return this.causaleRevoca;
         }
 
         /**
@@ -345,7 +345,7 @@ public class GpAvviaRichiestaStorno {
          *     
          */
         public String getDatiAggiuntivi() {
-            return datiAggiuntivi;
+            return this.datiAggiuntivi;
         }
 
         /**

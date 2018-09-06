@@ -191,7 +191,7 @@ public class JDBCPagamentoPortaleVersamentoServiceImpl extends JDBCPagamentoPort
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getPagamentoPortaleVersamentoFieldConverter().toTable(PagamentoPortaleVersamento.model()));
 		boolean isUpdate_pagamentoPortaleVersamento = true;
-		java.util.List<JDBCObject> lstObjects_pagamentoPortaleVersamento = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_pagamentoPortaleVersamento = new java.util.ArrayList<>();
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_pagamento_portale","?");
 		}
@@ -248,7 +248,7 @@ public class JDBCPagamentoPortaleVersamentoServiceImpl extends JDBCPagamentoPort
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoPortaleVersamentoFieldConverter().toTable(PagamentoPortaleVersamento.model()), 
@@ -259,7 +259,7 @@ public class JDBCPagamentoPortaleVersamentoServiceImpl extends JDBCPagamentoPort
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoPortaleVersamentoFieldConverter().toTable(PagamentoPortaleVersamento.model()), 
@@ -270,7 +270,7 @@ public class JDBCPagamentoPortaleVersamentoServiceImpl extends JDBCPagamentoPort
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoPortaleVersamentoFieldConverter().toTable(PagamentoPortaleVersamento.model()), 

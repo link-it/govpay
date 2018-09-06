@@ -48,7 +48,7 @@ public class AclDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return _listaAcl(listaAclDTO, bd);
+			return this._listaAcl(listaAclDTO, bd);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();

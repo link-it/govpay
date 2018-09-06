@@ -104,7 +104,7 @@ public class Pagamento extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static AutenticazioneSoggettoEnum fromValue(String text) {
@@ -157,7 +157,7 @@ public class Pagamento extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static LinguaEnum fromValue(String text) {
@@ -191,7 +191,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("id")
   public String getId() {
-    return id;
+    return this.id;
   }
   public void setId(String id) {
     this.id = id;
@@ -207,7 +207,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("nome")
   public String getNome() {
-    return nome;
+    return this.nome;
   }
   public void setNome(String nome) {
     this.nome = nome;
@@ -223,7 +223,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("dataRichiestaPagamento")
   public Date getDataRichiestaPagamento() {
-    return dataRichiestaPagamento;
+    return this.dataRichiestaPagamento;
   }
   public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
     this.dataRichiestaPagamento = dataRichiestaPagamento;
@@ -239,7 +239,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("idSessionePortale")
   public String getIdSessionePortale() {
-    return idSessionePortale;
+    return this.idSessionePortale;
   }
   public void setIdSessionePortale(String idSessionePortale) {
     this.idSessionePortale = idSessionePortale;
@@ -255,7 +255,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("idSessionePsp")
   public String getIdSessionePsp() {
-    return idSessionePsp;
+    return this.idSessionePsp;
   }
   public void setIdSessionePsp(String idSessionePsp) {
     this.idSessionePsp = idSessionePsp;
@@ -271,7 +271,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("importo")
   public BigDecimal getImporto() {
-    return importo;
+    return this.importo;
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
@@ -286,7 +286,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("stato")
   public StatoPagamento getStato() {
-    return stato;
+    return this.stato;
   }
   public void setStato(StatoPagamento stato) {
     this.stato = stato;
@@ -302,7 +302,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("pspRedirectUrl")
   public String getPspRedirectUrl() {
-    return pspRedirectUrl;
+    return this.pspRedirectUrl;
   }
   public void setPspRedirectUrl(String pspRedirectUrl) {
     this.pspRedirectUrl = pspRedirectUrl;
@@ -318,7 +318,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("urlRitorno")
   public String getUrlRitorno() {
-    return urlRitorno;
+    return this.urlRitorno;
   }
   public void setUrlRitorno(String urlRitorno) {
     this.urlRitorno = urlRitorno;
@@ -333,7 +333,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("contoAddebito")
   public ContoAddebito getContoAddebito() {
-    return contoAddebito;
+    return this.contoAddebito;
   }
   public void setContoAddebito(ContoAddebito contoAddebito) {
     this.contoAddebito = contoAddebito;
@@ -349,7 +349,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("dataEsecuzionePagamento")
   public Date getDataEsecuzionePagamento() {
-    return dataEsecuzionePagamento;
+    return this.dataEsecuzionePagamento;
   }
   public void setDataEsecuzionePagamento(Date dataEsecuzionePagamento) {
     this.dataEsecuzionePagamento = dataEsecuzionePagamento;
@@ -365,7 +365,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("credenzialiPagatore")
   public String getCredenzialiPagatore() {
-    return credenzialiPagatore;
+    return this.credenzialiPagatore;
   }
   public void setCredenzialiPagatore(String credenzialiPagatore) {
     this.credenzialiPagatore = credenzialiPagatore;
@@ -380,7 +380,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("soggettoVersante")
   public Soggetto getSoggettoVersante() {
-    return soggettoVersante;
+    return this.soggettoVersante;
   }
   public void setSoggettoVersante(Soggetto soggettoVersante) {
     this.soggettoVersante = soggettoVersante;
@@ -396,7 +396,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("autenticazioneSoggetto")
   public AutenticazioneSoggettoEnum getAutenticazioneSoggetto() {
-    return autenticazioneSoggetto;
+    return this.autenticazioneSoggetto;
   }
   public void setAutenticazioneSoggetto(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
     this.autenticazioneSoggetto = autenticazioneSoggetto;
@@ -412,7 +412,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("lingua")
   public LinguaEnum getLingua() {
-    return lingua;
+    return this.lingua;
   }
   public void setLingua(LinguaEnum lingua) {
     this.lingua = lingua;
@@ -427,7 +427,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("pendenze")
   public List<PendenzaIndex> getPendenze() {
-    return pendenze;
+    return this.pendenze;
   }
   public void setPendenze(List<PendenzaIndex> pendenze) {
     this.pendenze = pendenze;
@@ -442,7 +442,7 @@ public class Pagamento extends JSONSerializable {
 
   @JsonProperty("rpp")
   public List<RppIndex> getRpp() {
-    return rpp;
+    return this.rpp;
   }
   public void setRpp(List<RppIndex> rpp) {
     this.rpp = rpp;
@@ -453,36 +453,36 @@ public class Pagamento extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Pagamento pagamento = (Pagamento) o;
-    return Objects.equals(id, pagamento.id) &&
-        Objects.equals(nome, pagamento.nome) &&
-        Objects.equals(dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
-        Objects.equals(idSessionePortale, pagamento.idSessionePortale) &&
-        Objects.equals(idSessionePsp, pagamento.idSessionePsp) &&
-        Objects.equals(importo, pagamento.importo) &&
-        Objects.equals(stato, pagamento.stato) &&
-        Objects.equals(pspRedirectUrl, pagamento.pspRedirectUrl) &&
-        Objects.equals(urlRitorno, pagamento.urlRitorno) &&
-        Objects.equals(contoAddebito, pagamento.contoAddebito) &&
-        Objects.equals(dataEsecuzionePagamento, pagamento.dataEsecuzionePagamento) &&
-        Objects.equals(credenzialiPagatore, pagamento.credenzialiPagatore) &&
-        Objects.equals(soggettoVersante, pagamento.soggettoVersante) &&
-        Objects.equals(autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
-        Objects.equals(lingua, pagamento.lingua) &&
-        Objects.equals(pendenze, pagamento.pendenze) &&
-        Objects.equals(rpp, pagamento.rpp);
+    return Objects.equals(this.id, pagamento.id) &&
+        Objects.equals(this.nome, pagamento.nome) &&
+        Objects.equals(this.dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
+        Objects.equals(this.idSessionePortale, pagamento.idSessionePortale) &&
+        Objects.equals(this.idSessionePsp, pagamento.idSessionePsp) &&
+        Objects.equals(this.importo, pagamento.importo) &&
+        Objects.equals(this.stato, pagamento.stato) &&
+        Objects.equals(this.pspRedirectUrl, pagamento.pspRedirectUrl) &&
+        Objects.equals(this.urlRitorno, pagamento.urlRitorno) &&
+        Objects.equals(this.contoAddebito, pagamento.contoAddebito) &&
+        Objects.equals(this.dataEsecuzionePagamento, pagamento.dataEsecuzionePagamento) &&
+        Objects.equals(this.credenzialiPagatore, pagamento.credenzialiPagatore) &&
+        Objects.equals(this.soggettoVersante, pagamento.soggettoVersante) &&
+        Objects.equals(this.autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
+        Objects.equals(this.lingua, pagamento.lingua) &&
+        Objects.equals(this.pendenze, pagamento.pendenze) &&
+        Objects.equals(this.rpp, pagamento.rpp);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, pendenze, rpp);
+    return Objects.hash(this.id, this.nome, this.dataRichiestaPagamento, this.idSessionePortale, this.idSessionePsp, this.importo, this.stato, this.pspRedirectUrl, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua, this.pendenze, this.rpp);
   }
 
   public static Pagamento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Pagamento) parse(json, Pagamento.class);
+    return parse(json, Pagamento.class);
   }
 
   @Override
@@ -495,23 +495,23 @@ public class Pagamento extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Pagamento {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
-    sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
-    sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
-    sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
-    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
-    sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
-    sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
-    sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
-    sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
-    sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
-    sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
-    sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
-    sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
-    sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
-    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
+    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
+    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
+    sb.append("    dataRichiestaPagamento: ").append(this.toIndentedString(this.dataRichiestaPagamento)).append("\n");
+    sb.append("    idSessionePortale: ").append(this.toIndentedString(this.idSessionePortale)).append("\n");
+    sb.append("    idSessionePsp: ").append(this.toIndentedString(this.idSessionePsp)).append("\n");
+    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    pspRedirectUrl: ").append(this.toIndentedString(this.pspRedirectUrl)).append("\n");
+    sb.append("    urlRitorno: ").append(this.toIndentedString(this.urlRitorno)).append("\n");
+    sb.append("    contoAddebito: ").append(this.toIndentedString(this.contoAddebito)).append("\n");
+    sb.append("    dataEsecuzionePagamento: ").append(this.toIndentedString(this.dataEsecuzionePagamento)).append("\n");
+    sb.append("    credenzialiPagatore: ").append(this.toIndentedString(this.credenzialiPagatore)).append("\n");
+    sb.append("    soggettoVersante: ").append(this.toIndentedString(this.soggettoVersante)).append("\n");
+    sb.append("    autenticazioneSoggetto: ").append(this.toIndentedString(this.autenticazioneSoggetto)).append("\n");
+    sb.append("    lingua: ").append(this.toIndentedString(this.lingua)).append("\n");
+    sb.append("    pendenze: ").append(this.toIndentedString(this.pendenze)).append("\n");
+    sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
     sb.append("}");
     return sb.toString();
   }

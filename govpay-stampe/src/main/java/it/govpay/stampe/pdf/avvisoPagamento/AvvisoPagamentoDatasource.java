@@ -14,7 +14,7 @@ import net.sf.jasperreports.engine.JRField;
 
 public class AvvisoPagamentoDatasource implements JRDataSource{
 
-	private List<Map<String, Object>> parameters = new ArrayList<Map<String, Object>>();
+	private List<Map<String, Object>> parameters = new ArrayList<>();
 	private int index = -1;
 //	private Logger log = null;
 
@@ -35,14 +35,14 @@ public class AvvisoPagamentoDatasource implements JRDataSource{
 
 	@Override
 	public Object getFieldValue(JRField jrField) throws JRException {
-		Map<String, Object> map = this.parameters.get(index);
+		Map<String, Object> map = this.parameters.get(this.index);
 		System.out.println("Aggiungo field ["+jrField.getName()+"] con valore ["+map.get(jrField.getName())+"]. ");
 //		this.log.debug("Aggiungo field ["+jrField.getName()+"] con valore ["+map.get(jrField.getName())+"]. ");
 		return map.get(jrField.getName());
 	}
 	
 	public Map<String, Object> toMap(AvvisoPagamentoInput input){
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 
 		/*
      	<ente_denominazione>Comune di San Valentino in Abruzzo Citeriore</ente_denominazione>

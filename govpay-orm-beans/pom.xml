@@ -35,8 +35,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openspcoop2</groupId>
-			<artifactId>openspcoop2_utils</artifactId>
+		    <groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-core</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-beans</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -51,14 +56,4 @@
 			</resource>
 		</resources>
 	</build>
-	<repositories>
-		<repository>
-			<id>openspcoop2-releases</id>
-			<url>http://maven.openspcoop.org/content/repositories/public/</url>
-		</repository>
-		<repository>
-			<id>openspcoop2-snapshot</id>
-			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
-		</repository>
-	</repositories>
 </project>

@@ -15,7 +15,7 @@ public class PutDominioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getCodStazione() {
-		return codStazione;
+		return this.codStazione;
 	}
 
 	public void setCodStazione(String idStazione) {
@@ -23,7 +23,7 @@ public class PutDominioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public Dominio getDominio() {
-		return dominio;
+		return this.dominio;
 	}
 
 	public void setDominio(Dominio dominio) {
@@ -31,7 +31,7 @@ public class PutDominioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(String idDominio) {

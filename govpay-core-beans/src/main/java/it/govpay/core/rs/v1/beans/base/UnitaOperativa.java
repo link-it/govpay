@@ -79,7 +79,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return ragioneSociale;
+    return this.ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
@@ -95,7 +95,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("indirizzo")
   public String getIndirizzo() {
-    return indirizzo;
+    return this.indirizzo;
   }
   public void setIndirizzo(String indirizzo) {
     this.indirizzo = indirizzo;
@@ -111,7 +111,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("civico")
   public String getCivico() {
-    return civico;
+    return this.civico;
   }
   public void setCivico(String civico) {
     this.civico = civico;
@@ -127,7 +127,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("cap")
   public String getCap() {
-    return cap;
+    return this.cap;
   }
   public void setCap(String cap) {
     this.cap = cap;
@@ -143,7 +143,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("localita")
   public String getLocalita() {
-    return localita;
+    return this.localita;
   }
   public void setLocalita(String localita) {
     this.localita = localita;
@@ -159,7 +159,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("provincia")
   public String getProvincia() {
-    return provincia;
+    return this.provincia;
   }
   public void setProvincia(String provincia) {
     this.provincia = provincia;
@@ -175,7 +175,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("nazione")
   public String getNazione() {
-    return nazione;
+    return this.nazione;
   }
   public void setNazione(String nazione) {
     this.nazione = nazione;
@@ -191,7 +191,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("email")
   public String getEmail() {
-    return email;
+    return this.email;
   }
   public void setEmail(String email) {
     this.email = email;
@@ -207,7 +207,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("pec")
   public String getPec() {
-    return pec;
+    return this.pec;
   }
   public void setPec(String pec) {
     this.pec = pec;
@@ -223,7 +223,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("tel")
   public String getTel() {
-    return tel;
+    return this.tel;
   }
   public void setTel(String tel) {
     this.tel = tel;
@@ -239,7 +239,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("fax")
   public String getFax() {
-    return fax;
+    return this.fax;
   }
   public void setFax(String fax) {
     this.fax = fax;
@@ -255,7 +255,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("web")
   public String getWeb() {
-    return web;
+    return this.web;
   }
   public void setWeb(String web) {
     this.web = web;
@@ -271,7 +271,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("area")
   public String getArea() {
-    return area;
+    return this.area;
   }
   public void setArea(String area) {
     this.area = area;
@@ -287,7 +287,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -303,7 +303,7 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
 
   @JsonProperty("idUnita")
   public String getIdUnita() {
-    return idUnita;
+    return this.idUnita;
   }
   public void setIdUnita(String idUnita) {
     this.idUnita = idUnita;
@@ -314,34 +314,34 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     UnitaOperativa unitaOperativa = (UnitaOperativa) o;
-    return Objects.equals(ragioneSociale, unitaOperativa.ragioneSociale) &&
-        Objects.equals(indirizzo, unitaOperativa.indirizzo) &&
-        Objects.equals(civico, unitaOperativa.civico) &&
-        Objects.equals(cap, unitaOperativa.cap) &&
-        Objects.equals(localita, unitaOperativa.localita) &&
-        Objects.equals(provincia, unitaOperativa.provincia) &&
-        Objects.equals(nazione, unitaOperativa.nazione) &&
-        Objects.equals(email, unitaOperativa.email) &&
-        Objects.equals(pec, unitaOperativa.pec) &&
-        Objects.equals(tel, unitaOperativa.tel) &&
-        Objects.equals(fax, unitaOperativa.fax) &&
-        Objects.equals(web, unitaOperativa.web) &&
-        Objects.equals(area, unitaOperativa.area) &&
-        Objects.equals(abilitato, unitaOperativa.abilitato) &&
-        Objects.equals(idUnita, unitaOperativa.idUnita);
+    return Objects.equals(this.ragioneSociale, unitaOperativa.ragioneSociale) &&
+        Objects.equals(this.indirizzo, unitaOperativa.indirizzo) &&
+        Objects.equals(this.civico, unitaOperativa.civico) &&
+        Objects.equals(this.cap, unitaOperativa.cap) &&
+        Objects.equals(this.localita, unitaOperativa.localita) &&
+        Objects.equals(this.provincia, unitaOperativa.provincia) &&
+        Objects.equals(this.nazione, unitaOperativa.nazione) &&
+        Objects.equals(this.email, unitaOperativa.email) &&
+        Objects.equals(this.pec, unitaOperativa.pec) &&
+        Objects.equals(this.tel, unitaOperativa.tel) &&
+        Objects.equals(this.fax, unitaOperativa.fax) &&
+        Objects.equals(this.web, unitaOperativa.web) &&
+        Objects.equals(this.area, unitaOperativa.area) &&
+        Objects.equals(this.abilitato, unitaOperativa.abilitato) &&
+        Objects.equals(this.idUnita, unitaOperativa.idUnita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, area, abilitato, idUnita);
+    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.area, this.abilitato, this.idUnita);
   }
 
   public static UnitaOperativa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (UnitaOperativa) parse(json, UnitaOperativa.class);
+    return parse(json, UnitaOperativa.class);
   }
 
   @Override
@@ -354,21 +354,21 @@ public class UnitaOperativa extends it.govpay.core.rs.v1.beans.JSONSerializable 
     StringBuilder sb = new StringBuilder();
     sb.append("class UnitaOperativa {\n");
     
-    sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
-    sb.append("    indirizzo: ").append(toIndentedString(indirizzo)).append("\n");
-    sb.append("    civico: ").append(toIndentedString(civico)).append("\n");
-    sb.append("    cap: ").append(toIndentedString(cap)).append("\n");
-    sb.append("    localita: ").append(toIndentedString(localita)).append("\n");
-    sb.append("    provincia: ").append(toIndentedString(provincia)).append("\n");
-    sb.append("    nazione: ").append(toIndentedString(nazione)).append("\n");
-    sb.append("    email: ").append(toIndentedString(email)).append("\n");
-    sb.append("    pec: ").append(toIndentedString(pec)).append("\n");
-    sb.append("    tel: ").append(toIndentedString(tel)).append("\n");
-    sb.append("    fax: ").append(toIndentedString(fax)).append("\n");
-    sb.append("    web: ").append(toIndentedString(web)).append("\n");
-    sb.append("    area: ").append(toIndentedString(area)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    idUnita: ").append(toIndentedString(idUnita)).append("\n");
+    sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
+    sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
+    sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");
+    sb.append("    cap: ").append(this.toIndentedString(this.cap)).append("\n");
+    sb.append("    localita: ").append(this.toIndentedString(this.localita)).append("\n");
+    sb.append("    provincia: ").append(this.toIndentedString(this.provincia)).append("\n");
+    sb.append("    nazione: ").append(this.toIndentedString(this.nazione)).append("\n");
+    sb.append("    email: ").append(this.toIndentedString(this.email)).append("\n");
+    sb.append("    pec: ").append(this.toIndentedString(this.pec)).append("\n");
+    sb.append("    tel: ").append(this.toIndentedString(this.tel)).append("\n");
+    sb.append("    fax: ").append(this.toIndentedString(this.fax)).append("\n");
+    sb.append("    web: ").append(this.toIndentedString(this.web)).append("\n");
+    sb.append("    area: ").append(this.toIndentedString(this.area)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    idUnita: ").append(this.toIndentedString(this.idUnita)).append("\n");
     sb.append("}");
     return sb.toString();
   }

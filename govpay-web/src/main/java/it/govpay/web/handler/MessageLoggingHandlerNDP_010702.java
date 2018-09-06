@@ -36,18 +36,22 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 
 	private static Logger log = LoggerWrapperFactory.getLogger(MessageLoggingHandlerNDP_010702.class);
 	
+	@Override
 	public Set<QName> getHeaders() {
 		return null;
 	}
 
+	@Override
 	public boolean handleMessage(SOAPMessageContext smc) {
-		return logToSystemOut(smc);
+		return this.logToSystemOut(smc);
 	}
 
+	@Override
 	public boolean handleFault(SOAPMessageContext smc) {
-		return logToSystemOut(smc);
+		return this.logToSystemOut(smc);
 	}
 
+	@Override
 	public void close(MessageContext messageContext) {
 	}
 

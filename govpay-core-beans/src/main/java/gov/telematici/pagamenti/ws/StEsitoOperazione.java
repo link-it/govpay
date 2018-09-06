@@ -36,7 +36,7 @@ public enum StEsitoOperazione {
     KO;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StEsitoOperazione fromValue(String v) {

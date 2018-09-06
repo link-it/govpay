@@ -60,6 +60,8 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class Versamento extends BasicBD {
 
+	private static final String ECCEZIONE_NON_SPECIFICATA = "- Non specificata -";
+	private static final String LOG_KEY_VERSAMENTO_ANNULLA_KO = "versamento.annullaKo";
 	private static Logger log = LoggerWrapperFactory.getLogger(Versamento.class);
 	
 	public Versamento(BasicBD basicBD) {
@@ -69,7 +71,7 @@ public class Versamento extends BasicBD {
 	@Deprecated
 	public it.govpay.model.Iuv caricaVersamento(Applicazione applicazioneAutenticata, it.govpay.bd.model.Versamento versamentoModel, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException { 
 		try {
-			return caricaVersamento(versamentoModel, generaIuv, aggiornaSeEsiste);
+			return this.caricaVersamento(versamentoModel, generaIuv, aggiornaSeEsiste);
 		} catch (Exception e) {
 			if(e instanceof GovPayException)
 				throw (GovPayException) e;
@@ -90,8 +92,8 @@ public class Versamento extends BasicBD {
 			
 			VersamentiBD versamentiBD = new VersamentiBD(this);
 			
-			if(isAutoCommit()) {
-				setAutoCommit(false);
+			if(this.isAutoCommit()) {
+				this.setAutoCommit(false);
 				doCommit = true;
 			}
 
@@ -159,10 +161,10 @@ public class Versamento extends BasicBD {
 				
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");
 			}
-			if(doCommit) commit();
+			if(doCommit) this.commit();
 			return iuv;
 		} catch (Exception e) {
-			if(doCommit) rollback();
+			if(doCommit) this.rollback();
 			if(e instanceof GovPayException)
 				throw (GovPayException) e;
 			else 
@@ -209,8 +211,8 @@ public class Versamento extends BasicBD {
 		try {
 			VersamentiBD versamentiBD = new VersamentiBD(this);
 			
-			setAutoCommit(false);
-			enableSelectForUpdate();
+			this.setAutoCommit(false);
+			this.enableSelectForUpdate();
 			
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
@@ -236,17 +238,17 @@ public class Versamento extends BasicBD {
 				// Versamento inesistente
 				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
 			} finally {
-				commit();
+				this.commit();
 			}
 		} catch (Exception e) {
-			rollback();
+			this.rollback();
 			if(e instanceof GovPayException)
 				throw (GovPayException) e;
 			else 
 				throw new GovPayException(e);
 		} finally {
 			try {
-				disableSelectForUpdate();
+				this.disableSelectForUpdate();
 			} catch (Exception e) {}
 		}
 	}
@@ -271,8 +273,8 @@ public class Versamento extends BasicBD {
 		try {
 			VersamentiBD versamentiBD = new VersamentiBD(this);
 			
-			setAutoCommit(false);
-			enableSelectForUpdate();
+			this.setAutoCommit(false);
+			this.enableSelectForUpdate();
 			
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
@@ -305,31 +307,35 @@ public class Versamento extends BasicBD {
 				// Versamento inesistente
 				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
 			} finally {
-				commit();
+				this.commit();
 			}
 		} catch (Exception e) {
-			rollback();
-			if(e instanceof GovPayException) {
-				GovPayException gpe = (GovPayException) e;
-				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
-				throw (GovPayException) e;
-			} else if(e instanceof NotAuthorizedException) { 
-				NotAuthorizedException nae = (NotAuthorizedException) e;
-				ctx.log("versamento.annullaKo", "NOT_AUTHORIZED", nae.getDetails(), nae.getMessage() != null ? nae.getMessage() : "- Non specificata -");
-				throw nae;
-			} else {
-				GovPayException gpe = new GovPayException(e);
-				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
-				throw gpe;
-			}
+			this.rollback();
+			this.handleAnnullamentoException(ctx, e);
 		} finally {
 			try {
-				disableSelectForUpdate();
+				this.disableSelectForUpdate();
 			} catch (ServiceException e) {
-				GovPayException gpe = new GovPayException(e);
-				ctx.log("versamento.annullaKo", gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : "- Non specificata -");
-				throw gpe;
+//				GovPayException gpe = new GovPayException(e);
+//				ctx.log(LOG_KEY_VERSAMENTO_ANNULLA_KO, gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : ECCEZIONE_NON_SPECIFICATA);
+//				throw gpe;
 			}
+		}
+	}
+	
+	private void handleAnnullamentoException(GpContext ctx, Exception e) throws GovPayException, NotAuthorizedException {
+		if(e instanceof GovPayException) {
+			GovPayException gpe = (GovPayException) e;
+			ctx.log(LOG_KEY_VERSAMENTO_ANNULLA_KO, gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : ECCEZIONE_NON_SPECIFICATA);
+			throw (GovPayException) e;
+		} else if(e instanceof NotAuthorizedException) { 
+			NotAuthorizedException nae = (NotAuthorizedException) e;
+			ctx.log(LOG_KEY_VERSAMENTO_ANNULLA_KO, "NOT_AUTHORIZED", nae.getDetails(), nae.getMessage() != null ? nae.getMessage() : ECCEZIONE_NON_SPECIFICATA);
+			throw nae;
+		} else {
+			GovPayException gpe = new GovPayException(e);
+			ctx.log(LOG_KEY_VERSAMENTO_ANNULLA_KO, gpe.getCodEsito().toString(), gpe.getDescrizioneEsito(), gpe.getCausa() != null ? gpe.getCausa() : ECCEZIONE_NON_SPECIFICATA);
+			throw gpe;
 		}
 	}
 	
@@ -337,8 +343,8 @@ public class Versamento extends BasicBD {
 		try {
 			VersamentiBD versamentiBD = new VersamentiBD(this);
 			
-			setAutoCommit(false);
-			enableSelectForUpdate();
+			this.setAutoCommit(false);
+			this.enableSelectForUpdate();
 			
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
@@ -364,10 +370,10 @@ public class Versamento extends BasicBD {
 				// Versamento inesistente
 				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
 			} finally {
-				commit();
+				this.commit();
 			}
 		} catch (Exception e) {
-			rollback();
+			this.rollback();
 			if(e instanceof GovPayException)
 				throw (GovPayException) e;
 			else 
@@ -444,7 +450,7 @@ public class Versamento extends BasicBD {
 			// A questo punto ho sicuramente il codApplicazione. Se ho anche il codVersamentoEnte lo cerco localmente
 			if(codVersamentoEnte != null) {
 				try {
-					versamentoModel = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), iuvModel.getCodVersamentoEnte());
+					versamentoModel = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
 				} catch (NotFoundException e) {
 					// Non e' nel repo interno. vado oltre e lo richiedo all'applicazione gestrice
 				}
@@ -485,14 +491,14 @@ public class Versamento extends BasicBD {
 	
 	
 	public it.govpay.bd.model.Versamento chiediVersamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {
-		List<Diritti> diritti = new ArrayList<Diritti>();
+		List<Diritti> diritti = new ArrayList<>();
 		diritti.add(Diritti.LETTURA);
 		
 		if(codDominio != null && !AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, codDominio, null,diritti)) {
 			throw new GovPayException(EsitoOperazione.APP_005);
 		}
 		
-		it.govpay.bd.model.Versamento v = chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
+		it.govpay.bd.model.Versamento v = this.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
 		
 		if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, v.getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
 			return v;
@@ -508,8 +514,8 @@ public class Versamento extends BasicBD {
 		filter.setStatiPagamento(statiVersamento);
 		filter.addSortField(filterSortList);
 		
-		List<Long> domini = new ArrayList<Long>();
-		List<Diritti> diritti = new ArrayList<Diritti>();
+		List<Long> domini = new ArrayList<>();
+		List<Diritti> diritti = new ArrayList<>();
 		diritti.add(Diritti.SCRITTURA);
 		diritti.add(Diritti.ESECUZIONE);
 		 List<Long> dominiSet = AclEngine.getIdDominiAutorizzati(applicazioneAutenticata.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, diritti);

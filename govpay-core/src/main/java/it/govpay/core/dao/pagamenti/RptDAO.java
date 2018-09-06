@@ -102,7 +102,7 @@ public class RptDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			return listaRpt(listaRptDTO, bd);
+			return this.listaRpt(listaRptDTO, bd);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -144,7 +144,7 @@ public class RptDAO extends BaseDAO{
 
 		long count = rptBD.count(filter);
 
-		List<LeggiRptDTOResponse> resList = new ArrayList<LeggiRptDTOResponse>();
+		List<LeggiRptDTOResponse> resList = new ArrayList<>();
 		if(count > 0) {
 			List<Rpt> findAll = rptBD.findAll(filter);
 

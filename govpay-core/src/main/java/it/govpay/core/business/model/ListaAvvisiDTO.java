@@ -9,7 +9,7 @@ public class ListaAvvisiDTO {
 	private int limit;
 
 	public StatoAvviso getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(StatoAvviso stato) {
@@ -17,7 +17,7 @@ public class ListaAvvisiDTO {
 	}
 
 	public int getOffset() {
-		return offset;
+		return this.offset;
 	}
 
 	public void setOffset(int offset) {
@@ -25,7 +25,7 @@ public class ListaAvvisiDTO {
 	}
 
 	public int getLimit() {
-		return limit;
+		return this.limit;
 	}
 
 	public void setLimit(int limit) {

@@ -60,7 +60,7 @@ public class CtEsitoAvvisoDigitale {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -84,7 +84,7 @@ public class CtEsitoAvvisoDigitale {
      *     
      */
     public String getIdentificativoMessaggioRichiesta() {
-        return identificativoMessaggioRichiesta;
+        return this.identificativoMessaggioRichiesta;
     }
 
     /**
@@ -122,8 +122,8 @@ public class CtEsitoAvvisoDigitale {
      * 
      */
     public List<CtEsitoAvvisatura> getEsitoAvvisatura() {
-        if (esitoAvvisatura == null) {
-            esitoAvvisatura = new ArrayList<CtEsitoAvvisatura>();
+        if (this.esitoAvvisatura == null) {
+            this.esitoAvvisatura = new ArrayList<>();
         }
         return this.esitoAvvisatura;
     }

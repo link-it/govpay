@@ -34,7 +34,7 @@ public class FindOperatoriDTO extends BasicFindRequestDTO {
 	}
 
 	public Boolean getAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(Boolean abilitato) {

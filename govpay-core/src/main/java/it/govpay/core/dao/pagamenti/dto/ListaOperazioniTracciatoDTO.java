@@ -16,7 +16,7 @@ public class ListaOperazioniTracciatoDTO extends BasicFindRequestDTO{
 	}
 
 	public Long getIdTracciato() {
-		return idTracciato;
+		return this.idTracciato;
 	}
 
 	public void setIdTracciato(Long idTracciato) {

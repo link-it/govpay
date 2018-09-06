@@ -48,88 +48,89 @@ public class Fr extends BasicModel{
 	private byte[] xml;
 	private List<Anomalia> anomalie;
 
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCodPsp() {
-		return codPsp;
+		return this.codPsp;
 	}
 	public void setCodPsp(String codPsp) {
 		this.codPsp = codPsp;
 	}
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public String getCodFlusso() {
-		return codFlusso;
+		return this.codFlusso;
 	}
 	public void setCodFlusso(String codFlusso) {
 		this.codFlusso = codFlusso;
 	}
 	public StatoFr getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(StatoFr stato) {
 		this.stato = stato;
 	}
 	public String getDescrizioneStato() {
-		return marshall(getAnomalie());
+		return this.marshall(this.getAnomalie());
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
 		if(descrizioneStato != null)
-			this.anomalie = unmarshall(descrizioneStato);
+			this.anomalie = this.unmarshall(descrizioneStato);
 	}
 	public String getIur() {
-		return iur;
+		return this.iur;
 	}
 	public void setIur(String iur) {
 		this.iur = iur;
 	}
 	public Date getDataFlusso() {
-		return dataFlusso;
+		return this.dataFlusso;
 	}
 	public void setDataFlusso(Date dataFlusso) {
 		this.dataFlusso = dataFlusso;
 	}
 	public Date getDataRegolamento() {
-		return dataRegolamento;
+		return this.dataRegolamento;
 	}
 	public void setDataRegolamento(Date dataRegolamento) {
 		this.dataRegolamento = dataRegolamento;
 	}
 	public long getNumeroPagamenti() {
-		return numeroPagamenti;
+		return this.numeroPagamenti;
 	}
 	public void setNumeroPagamenti(long numeroPagamenti) {
 		this.numeroPagamenti = numeroPagamenti;
 	}
 	public BigDecimal getImportoTotalePagamenti() {
-		return importoTotalePagamenti;
+		return this.importoTotalePagamenti;
 	}
 	public void setImportoTotalePagamenti(BigDecimal importoTotalePagamenti) {
 		this.importoTotalePagamenti = importoTotalePagamenti;
 	}
 	public byte[] getXml() {
-		return xml;
+		return this.xml;
 	}
 	public void setXml(byte[] xml) {
 		this.xml = xml;
 	}
 
 	public String getCodBicRiversamento() {
-		return codBicRiversamento;
+		return this.codBicRiversamento;
 	}
 	public void setCodBicRiversamento(String codBicRiversamento) {
 		this.codBicRiversamento = codBicRiversamento;
 	}
 	public Date getDataAcquisizione() {
-		return dataAcquisizione;
+		return this.dataAcquisizione;
 	}
 	public void setDataAcquisizione(Date dataAcquisizione) {
 		this.dataAcquisizione = dataAcquisizione;
@@ -140,32 +141,32 @@ public class Fr extends BasicModel{
 		String descrizione;
 
 		public String getCodice(){
-			return codAnomalia;
+			return this.codAnomalia;
 		}
 
 		public String getDescrizione(){
-			return descrizione;
+			return this.descrizione;
 		}
 	}
 
 	public List<Anomalia> getAnomalie() {
-		if(anomalie == null)
-			anomalie = new ArrayList<Anomalia>();
-		return anomalie;
+		if(this.anomalie == null)
+			this.anomalie = new ArrayList<>();
+		return this.anomalie;
 	}
 
 	public void addAnomalia(String codAnomalia, String descrizione) {
 		Anomalia a = new Anomalia();
 		a.codAnomalia = codAnomalia;
 		a.descrizione = descrizione;
-		getAnomalie().add(a);
+		this.getAnomalie().add(a);
 	}
 
 	private String marshall(List<Anomalia> anomalie) {
 		if(anomalie == null || anomalie.size() == 0) return null;
 		StringBuffer sb = new StringBuffer();
 
-		if(stato.equals(StatoFr.RIFIUTATA)) {
+		if(this.stato.equals(StatoFr.RIFIUTATA)) {
 			// Retrocompatibilita' vecchia versione senza anomalie.
 			for(Anomalia a : anomalie){
 				sb.append(a.descrizione);
@@ -190,11 +191,11 @@ public class Fr extends BasicModel{
 
 
 	private List<Anomalia> unmarshall(String anomalie) {
-		List<Anomalia> list = new ArrayList<Anomalia>();
+		List<Anomalia> list = new ArrayList<>();
 
 		if(anomalie == null || anomalie.isEmpty()) return list;
 
-		if(stato.equals(StatoFr.RIFIUTATA)) {
+		if(this.stato.equals(StatoFr.RIFIUTATA)) {
 			// Retrocompatibilita' vecchia versione senza anomalie.
 			String[] split = anomalie.split("#");
 			for(String s : split){

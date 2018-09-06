@@ -7,7 +7,7 @@ public class LeggiOperazioneDTOResponse {
 	private Operazione operazione;
 
 	public Operazione getOperazione() {
-		return operazione;
+		return this.operazione;
 	}
 
 	public void setOperazione(Operazione operazione) {

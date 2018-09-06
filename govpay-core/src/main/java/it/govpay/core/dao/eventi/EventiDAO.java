@@ -40,7 +40,7 @@ public class EventiDAO {
 
 			long count = eventiBD.count(filter);
 
-			List<Evento> resList = new ArrayList<Evento>();
+			List<Evento> resList = new ArrayList<>();
 			if(count > 0) {
 				resList = eventiBD.findAll(filter);
 			} 

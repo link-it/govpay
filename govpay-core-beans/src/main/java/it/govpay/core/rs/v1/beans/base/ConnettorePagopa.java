@@ -29,7 +29,7 @@ public class ConnettorePagopa extends JSONSerializable {
 
   @JsonProperty("url")
   public String getUrl() {
-    return url;
+    return this.url;
   }
   public void setUrl(String url) {
     this.url = url;
@@ -44,7 +44,7 @@ public class ConnettorePagopa extends JSONSerializable {
 
   @JsonProperty("auth")
   public TipoAutenticazione getAuth() {
-    return auth;
+    return this.auth;
   }
   public void setAuth(TipoAutenticazione auth) {
     this.auth = auth;
@@ -55,21 +55,21 @@ public class ConnettorePagopa extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     ConnettorePagopa connettorePagopa = (ConnettorePagopa) o;
-    return Objects.equals(url, connettorePagopa.url) &&
-        Objects.equals(auth, connettorePagopa.auth);
+    return Objects.equals(this.url, connettorePagopa.url) &&
+        Objects.equals(this.auth, connettorePagopa.auth);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(url, auth);
+    return Objects.hash(this.url, this.auth);
   }
 
   public static ConnettorePagopa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (ConnettorePagopa) parse(json, ConnettorePagopa.class);
+    return parse(json, ConnettorePagopa.class);
   }
 
   @Override
@@ -82,8 +82,8 @@ public class ConnettorePagopa extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettorePagopa {\n");
     
-    sb.append("    url: ").append(toIndentedString(url)).append("\n");
-    sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
+    sb.append("    url: ").append(this.toIndentedString(this.url)).append("\n");
+    sb.append("    auth: ").append(this.toIndentedString(this.auth)).append("\n");
     sb.append("}");
     return sb.toString();
   }

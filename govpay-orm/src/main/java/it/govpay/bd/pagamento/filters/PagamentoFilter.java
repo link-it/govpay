@@ -133,7 +133,7 @@ public class PagamentoFilter extends AbstractFilter {
 			}
 
 			if(this.idDomini != null){
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(Pagamento.model().COD_DOMINIO, this.idDomini);
@@ -149,7 +149,7 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-			if(stati != null && !stati.isEmpty()){
+			if(this.stati != null && !this.stati.isEmpty()){
 				if(addAnd)
 					newExpression.and();
 
@@ -250,7 +250,7 @@ public class PagamentoFilter extends AbstractFilter {
 
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				newExpressionDomini.in(Pagamento.model().COD_DOMINIO, this.idDomini);
 				newExpression.and(newExpressionDomini);
 			}
@@ -274,7 +274,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public Long getIdRr() {
-		return idRr;
+		return this.idRr;
 	}
 
 	public void setIdRr(Long idRr) {
@@ -282,7 +282,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public Date getDataInizio() {
-		return dataInizio;
+		return this.dataInizio;
 	}
 
 	public void setDataInizio(Date dataInizio) {
@@ -290,7 +290,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -298,7 +298,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdVersamenti() {
-		return idVersamenti;
+		return this.idVersamenti;
 	}
 
 	public void setIdVersamenti(List<Long> idVersamenti) {
@@ -306,7 +306,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public Long getIdRpt() {
-		return idRpt;
+		return this.idRpt;
 	}
 
 	public void setIdRpt(Long idRpt) {
@@ -314,7 +314,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public Long getIdIncasso() {
-		return idIncasso;
+		return this.idIncasso;
 	}
 
 	public void setIdIncasso(Long idIncasso) {
@@ -322,7 +322,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public List<String> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<String> idDomini) {
@@ -330,7 +330,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public List<String> getStati() {
-		return stati;
+		return this.stati;
 	}
 
 	public void setStati(List<String> stati) {
@@ -338,7 +338,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public Integer getSogliaRitardo() {
-		return sogliaRitardo;
+		return this.sogliaRitardo;
 	}
 
 	public void setSogliaRitardo(Integer sogliaRitardo) {
@@ -346,7 +346,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodSingoloVersamentoEnte() {
-		return codSingoloVersamentoEnte;
+		return this.codSingoloVersamentoEnte;
 	}
 
 	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
@@ -354,7 +354,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public String getIur() {
-		return iur;
+		return this.iur;
 	}
 
 	public void setIur(String iur) {
@@ -362,7 +362,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdPagamenti() {
-		return idPagamenti;
+		return this.idPagamenti;
 	}
 
 	public void setIdPagamenti(List<Long> idPagamenti) {
@@ -370,7 +370,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -378,7 +378,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public Date getDataPagamentoRitardoIncasso() {
-		return dataPagamentoRitardoIncasso;
+		return this.dataPagamentoRitardoIncasso;
 	}
 
 	public void setDataPagamentoRitardoIncasso(Date dataPagamentoRitardoIncasso) {
@@ -386,7 +386,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public String getIdA2A() {
-		return idA2A;
+		return this.idA2A;
 	}
 
 	public void setIdA2A(String idA2A) {
@@ -394,7 +394,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	public TIPO_PAGAMENTO getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 
 	public void setTipo(TIPO_PAGAMENTO tipo) {

@@ -1,3 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.tracciati.operazioni;
 
 import java.math.BigDecimal;
@@ -23,44 +43,44 @@ public abstract class AbstractOperazioneResponse {
 	private FaultBean faultBean;
 
 	public StatoOperazioneType getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(StatoOperazioneType stato) {
 		this.stato = stato;
 	}
 
 	public String getDescrizioneEsito() {
-		return descrizioneEsito;
+		return this.descrizioneEsito;
 	}
 	public void setDescrizioneEsito(String descrizioneEsito) {
 		this.descrizioneEsito = descrizioneEsito;
 	}
 	public String getEsito() {
-		return esito;
+		return this.esito;
 	}
 	public void setEsito(String esito) {
 		this.esito = esito;
 	}
 	public TipoOperazioneType getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 	public void setTipo(TipoOperazioneType tipo) {
 		this.tipo = tipo;
 	}
 	public String getIdA2A() {
-		return idA2A;
+		return this.idA2A;
 	}
 	public void setIdA2A(String idA2A) {
 		this.idA2A = idA2A;
 	}
 	public String getIdPendenza() {
-		return idPendenza;
+		return this.idPendenza;
 	}
 	public void setIdPendenza(String idPendenza) {
 		this.idPendenza = idPendenza;
 	}
 	public long getNumero() {
-		return numero;
+		return this.numero;
 	}
 	public void setNumero(long numero) {
 		this.numero = numero;
@@ -116,7 +136,7 @@ public abstract class AbstractOperazioneResponse {
 		this.esitoOperazionePendenza = esitoOperazionePendenza;
 	}
 	public FaultBean getFaultBean() {
-		return faultBean;
+		return this.faultBean;
 	}
 	public void setFaultBean(FaultBean faultBean) {
 		this.faultBean = faultBean;

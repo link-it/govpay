@@ -38,7 +38,7 @@ public class AvviaTransazioneDTOResponse {
 		protected String ccp;
 
 		public String getCodApplicazione() {
-			return codApplicazione;
+			return this.codApplicazione;
 		}
 
 		public void setCodApplicazione(String value) {
@@ -46,7 +46,7 @@ public class AvviaTransazioneDTOResponse {
 		}
 
 		public String getCodVersamentoEnte() {
-			return codVersamentoEnte;
+			return this.codVersamentoEnte;
 		}
 
 		public void setCodVersamentoEnte(String value) {
@@ -54,7 +54,7 @@ public class AvviaTransazioneDTOResponse {
 		}
 
 		public String getCodDominio() {
-			return codDominio;
+			return this.codDominio;
 		}
 
 		public void setCodDominio(String value) {
@@ -62,7 +62,7 @@ public class AvviaTransazioneDTOResponse {
 		}
 
 		public String getIuv() {
-			return iuv;
+			return this.iuv;
 		}
 
 		public void setIuv(String value) {
@@ -70,7 +70,7 @@ public class AvviaTransazioneDTOResponse {
 		}
 
 		public String getCcp() {
-			return ccp;
+			return this.ccp;
 		}
 
 		public void setCcp(String value) {
@@ -79,7 +79,7 @@ public class AvviaTransazioneDTOResponse {
 	}
 
 	public String getCodSessione() {
-		return codSessione;
+		return this.codSessione;
 	}
 
 	public void setCodSessione(String codSessione) {
@@ -87,7 +87,7 @@ public class AvviaTransazioneDTOResponse {
 	}
 
 	public String getPspRedirectURL() {
-		return pspRedirectURL;
+		return this.pspRedirectURL;
 	}
 
 	public void setPspRedirectURL(String pspRedirectURL) {
@@ -95,10 +95,10 @@ public class AvviaTransazioneDTOResponse {
 	}
 
 	public List<RifTransazione> getRifTransazioni() {
-		if(rifTransazioni == null)
-			rifTransazioni = new ArrayList<RifTransazione>();
+		if(this.rifTransazioni == null)
+			this.rifTransazioni = new ArrayList<>();
 		
-		return rifTransazioni;
+		return this.rifTransazioni;
 	}
 
 	public void setRifTransazioni(List<RifTransazione> rifTransazioni) {

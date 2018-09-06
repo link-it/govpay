@@ -67,8 +67,8 @@ public class CtListaFasceCostoServizio {
      * 
      */
     public List<CtFasciaCostoServizio> getFasciaCostoServizios() {
-        if (fasciaCostoServizios == null) {
-            fasciaCostoServizios = new ArrayList<CtFasciaCostoServizio>();
+        if (this.fasciaCostoServizios == null) {
+            this.fasciaCostoServizios = new ArrayList<>();
         }
         return this.fasciaCostoServizios;
     }

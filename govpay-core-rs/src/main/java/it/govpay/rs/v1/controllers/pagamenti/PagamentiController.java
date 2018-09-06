@@ -1,6 +1,7 @@
 package it.govpay.rs.v1.controllers.pagamenti;
 
 import java.io.ByteArrayOutputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.pagamenti.FaultBeanEsteso;
 import it.govpay.core.rs.v1.beans.pagamenti.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.core.rs.v1.beans.pagamenti.ListaPagamentiIndex;
@@ -53,7 +55,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
@@ -64,7 +66,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			PagamentoPost pagamentiPortaleRequest= (PagamentoPost) PagamentoPost.parse(jsonRequest, PagamentoPost.class);
+			PagamentoPost pagamentiPortaleRequest= JSONSerializable.parse(jsonRequest, PagamentoPost.class);
 			pagamentiPortaleRequest.validate();
 			
 			String idSession = transactionId.replace("-", "");
@@ -77,13 +79,13 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			PagamentiPortaleResponseOk responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, responseOk.toJSON(null), Status.CREATED.getStatusCode());
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
 		} catch (Exception e) {
-			Response response = handleException(uriInfo, httpHeaders, methodName, e,transactionId);
+			Response response = this.handleException(uriInfo, httpHeaders, methodName, e,transactionId);
 			if(e instanceof GovPayException && (PagamentoPortale) ((GovPayException) e).getParam() != null) {
 				try {
-					it.govpay.core.rs.v1.beans.base.FaultBean fb = (it.govpay.core.rs.v1.beans.base.FaultBean) it.govpay.core.rs.v1.beans.base.FaultBean.parse((String) response.getEntity(), it.govpay.core.rs.v1.beans.base.FaultBean.class);
+					it.govpay.core.rs.v1.beans.base.FaultBean fb = JSONSerializable.parse((String) response.getEntity(), it.govpay.core.rs.v1.beans.base.FaultBean.class);
 					FaultBeanEsteso fbe = new FaultBeanEsteso();
 					fbe.setCodice(fb.getCodice());
 					fbe.setCategoria(CategoriaEnum.fromValue(fb.getCategoria().toString()));
@@ -107,7 +109,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -126,23 +128,23 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
 			it.govpay.core.rs.v1.beans.pagamenti.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
 			
-			List<RppIndex> rpp = new ArrayList<RppIndex>();
+			List<RppIndex> rpp = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
 				rpp.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
 			}
 			response.setRpp(rpp);
 
-			List<PendenzaIndex> pendenze = new ArrayList<PendenzaIndex>();
+			List<PendenzaIndex> pendenze = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
 				pendenze.add(PendenzeConverter.toRsModelIndex(leggiRptDtoResponse.getVersamento()));
 			}
 			response.setPendenze(pendenze);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -153,7 +155,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -183,9 +185,9 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex> results = new ArrayList<it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex>();
+			List<it.govpay.core.rs.v1.beans.pagamenti.PagamentoIndex> results = new ArrayList<>();
 			for(it.govpay.bd.model.PagamentoPortale pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
-				log.info("get Pagamenti portale: " + pagamentoPortale.getIdSessione());
+				this.log.info("get Pagamenti portale: " + pagamentoPortale.getIdSessione());
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
 			}
 			
@@ -193,10 +195,10 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

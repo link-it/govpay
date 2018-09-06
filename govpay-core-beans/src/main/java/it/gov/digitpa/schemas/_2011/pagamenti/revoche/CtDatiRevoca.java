@@ -63,7 +63,7 @@ public class CtDatiRevoca {
      *     
      */
     public BigDecimal getImportoTotaleRevocato() {
-        return importoTotaleRevocato;
+        return this.importoTotaleRevocato;
     }
 
     /**
@@ -87,7 +87,7 @@ public class CtDatiRevoca {
      *     
      */
     public String getIdentificativoUnivocoVersamento() {
-        return identificativoUnivocoVersamento;
+        return this.identificativoUnivocoVersamento;
     }
 
     /**
@@ -111,7 +111,7 @@ public class CtDatiRevoca {
      *     
      */
     public String getCodiceContestoPagamento() {
-        return codiceContestoPagamento;
+        return this.codiceContestoPagamento;
     }
 
     /**
@@ -149,8 +149,8 @@ public class CtDatiRevoca {
      * 
      */
     public List<CtDatiSingolaRevoca> getDatiSingolaRevoca() {
-        if (datiSingolaRevoca == null) {
-            datiSingolaRevoca = new ArrayList<CtDatiSingolaRevoca>();
+        if (this.datiSingolaRevoca == null) {
+            this.datiSingolaRevoca = new ArrayList<>();
         }
         return this.datiSingolaRevoca;
     }

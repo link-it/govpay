@@ -69,7 +69,7 @@ public class PaNotificaStorno {
      *     
      */
     public String getCodSessionePortale() {
-        return codSessionePortale;
+        return this.codSessionePortale;
     }
 
     /**
@@ -93,7 +93,7 @@ public class PaNotificaStorno {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -117,7 +117,7 @@ public class PaNotificaStorno {
      *     
      */
     public String getCodVersamentoEnte() {
-        return codVersamentoEnte;
+        return this.codVersamentoEnte;
     }
 
     /**
@@ -141,7 +141,7 @@ public class PaNotificaStorno {
      *     
      */
     public PaNotificaStorno.RichiestaStorno getRichiestaStorno() {
-        return richiestaStorno;
+        return this.richiestaStorno;
     }
 
     /**
@@ -204,7 +204,7 @@ public class PaNotificaStorno {
          *     
          */
         public String getCodDominio() {
-            return codDominio;
+            return this.codDominio;
         }
 
         /**
@@ -228,7 +228,7 @@ public class PaNotificaStorno {
          *     
          */
         public String getIuv() {
-            return iuv;
+            return this.iuv;
         }
 
         /**
@@ -252,7 +252,7 @@ public class PaNotificaStorno {
          *     
          */
         public String getCcp() {
-            return ccp;
+            return this.ccp;
         }
 
         /**

@@ -50,7 +50,7 @@ public class GpChiediStatoRichiestaStorno {
      *     
      */
     public String getCodPortale() {
-        return codPortale;
+        return this.codPortale;
     }
 
     /**
@@ -74,7 +74,7 @@ public class GpChiediStatoRichiestaStorno {
      *     
      */
     public String getCodRichiestaStorno() {
-        return codRichiestaStorno;
+        return this.codRichiestaStorno;
     }
 
     /**

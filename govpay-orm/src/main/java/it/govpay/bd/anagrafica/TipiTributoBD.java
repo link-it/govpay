@@ -99,7 +99,7 @@ public class TipiTributoBD extends BasicBD {
 			}
 			this.getTipoTributoService().update(idVO, vo);
 			tributo.setId(vo.getId());
-			emitAudit(tributo);
+			this.emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
@@ -122,7 +122,7 @@ public class TipiTributoBD extends BasicBD {
 			it.govpay.orm.TipoTributo vo = TipoTributoConverter.toVO(tributo);
 			this.getTipoTributoService().create(vo);
 			tributo.setId(vo.getId());
-			emitAudit(tributo);
+			this.emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

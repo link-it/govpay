@@ -34,10 +34,10 @@ public class Stazione extends it.govpay.model.Stazione {
 	private transient Intermediario intermediario;
 	
 	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
-		if(intermediario == null) {
-			intermediario = AnagraficaManager.getIntermediario(bd, this.getIdIntermediario());
+		if(this.intermediario == null) {
+			this.intermediario = AnagraficaManager.getIntermediario(bd, this.getIdIntermediario());
 		}
-		return intermediario;
+		return this.intermediario;
 	}
 	
 	public void setIntermediario(Intermediario intermediario) {

@@ -55,7 +55,7 @@ public class CtInfoContoDiAccreditoPair {
      *     
      */
     public String getIbanAccredito() {
-        return ibanAccredito;
+        return this.ibanAccredito;
     }
 
     /**
@@ -79,7 +79,7 @@ public class CtInfoContoDiAccreditoPair {
      *     
      */
     public String getIdBancaSeller() {
-        return idBancaSeller;
+        return this.idBancaSeller;
     }
 
     /**

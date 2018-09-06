@@ -71,7 +71,7 @@ public class GpGeneraIuv {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -95,7 +95,7 @@ public class GpGeneraIuv {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -133,8 +133,8 @@ public class GpGeneraIuv {
      * 
      */
     public List<GpGeneraIuv.IuvRichiesto> getIuvRichiesto() {
-        if (iuvRichiesto == null) {
-            iuvRichiesto = new ArrayList<GpGeneraIuv.IuvRichiesto>();
+        if (this.iuvRichiesto == null) {
+            this.iuvRichiesto = new ArrayList<>();
         }
         return this.iuvRichiesto;
     }
@@ -183,7 +183,7 @@ public class GpGeneraIuv {
          *     
          */
         public String getCodVersamentoEnte() {
-            return codVersamentoEnte;
+            return this.codVersamentoEnte;
         }
 
         /**
@@ -207,7 +207,7 @@ public class GpGeneraIuv {
          *     
          */
         public BigDecimal getImportoTotale() {
-            return importoTotale;
+            return this.importoTotale;
         }
 
         /**

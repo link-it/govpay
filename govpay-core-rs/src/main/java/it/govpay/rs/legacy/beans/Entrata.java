@@ -60,7 +60,7 @@ public class Entrata extends JSONSerializable {
 	}
 
 	public String getHref() {
-		return href;
+		return this.href;
 	}
 
 	public void setHref(String href) {
@@ -68,7 +68,7 @@ public class Entrata extends JSONSerializable {
 	}
 
 	public String getIdEntrata() {
-		return idEntrata;
+		return this.idEntrata;
 	}
 
 	public void setIdEntrata(String idEntrata) {
@@ -76,7 +76,7 @@ public class Entrata extends JSONSerializable {
 	}
 
 	public String getDescrizione() {
-		return descrizione;
+		return this.descrizione;
 	}
 
 	public void setDescrizione(String descrizione) {
@@ -84,7 +84,7 @@ public class Entrata extends JSONSerializable {
 	}
 
 	public String getIbanAccredito() {
-		return ibanAccredito;
+		return this.ibanAccredito;
 	}
 
 	public void setIbanAccredito(String ibanAccredito) {
@@ -92,7 +92,7 @@ public class Entrata extends JSONSerializable {
 	}
 
 	public String getTipoContabilita() {
-		return tipoContabilita;
+		return this.tipoContabilita;
 	}
 
 	public void setTipoContabilita(String tipoContabilita) {
@@ -100,7 +100,7 @@ public class Entrata extends JSONSerializable {
 	}
 
 	public String getCodContabilita() {
-		return codContabilita;
+		return this.codContabilita;
 	}
 
 	public void setCodContabilita(String codContabilita) {
@@ -108,7 +108,7 @@ public class Entrata extends JSONSerializable {
 	}
 
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(boolean abilitato) {

@@ -20,19 +20,19 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	private Date dataA;
 
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
 	}
 	public Date getDataDa() {
-		return dataDa;
+		return this.dataDa;
 	}
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
 	public Date getDataA() {
-		return dataA;
+		return this.dataA;
 	}
 	public void setDataA(Date dataA) {
 		this.dataA = dataA;

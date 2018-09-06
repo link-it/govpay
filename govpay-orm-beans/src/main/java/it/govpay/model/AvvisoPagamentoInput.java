@@ -23,76 +23,76 @@ public class AvvisoPagamentoInput {
 	private Map<String, TreeMap<String, String>> contenutoStatico;
 	
 	public byte[] getQrCode() {
-		return qrCode;
+		return this.qrCode;
 	}
 	public void setQrCode(byte[] qrCode) {
 		this.qrCode = qrCode;
 	}
 	public byte[] getBarCode() {
-		return barCode;
+		return this.barCode;
 	}
 	public void setBarCode(byte[] barCode) {
 		this.barCode = barCode;
 	}
 	public Dominio getDominioCreditore() {
-		return dominioCreditore;
+		return this.dominioCreditore;
 	}
 	public void setDominioCreditore(Dominio dominioCreditore) {
 		this.dominioCreditore = dominioCreditore;
 	}
 	public Anagrafica getAnagraficaCreditore() {
-		return anagraficaCreditore;
+		return this.anagraficaCreditore;
 	}
 	public void setAnagraficaCreditore(Anagrafica anagraficaCreditore) {
 		this.anagraficaCreditore = anagraficaCreditore;
 	}
 	public String getCodiceAvviso() {
-		return codiceAvviso;
+		return this.codiceAvviso;
 	}
 	public void setCodiceAvviso(String codiceAvviso) {
 		this.codiceAvviso = codiceAvviso;
 	}
 	public Date getDataScadenza() {
-		return dataScadenza;
+		return this.dataScadenza;
 	}
 	public void setDataScadenza(Date dataScadenza) {
 		this.dataScadenza = dataScadenza;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public BigDecimal getImporto() {
-		return importo;
+		return this.importo;
 	}
 	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
 	public Map<String, TreeMap<String, String>> getContenutoStatico() {
-		if(contenutoStatico == null)
-			contenutoStatico = new HashMap<String, TreeMap<String, String>>();
+		if(this.contenutoStatico == null)
+			this.contenutoStatico = new HashMap<>();
 		
-		return contenutoStatico;
+		return this.contenutoStatico;
 	}
 	public void setContenutoStatico(Map<String, TreeMap<String, String>> contenutoStatico) {
 		this.contenutoStatico = contenutoStatico;
 	}
 	public Anagrafica getAnagraficaDebitore() {
-		return anagraficaDebitore;
+		return this.anagraficaDebitore;
 	}
 	public void setAnagraficaDebitore(Anagrafica anagraficaDebitore) {
 		this.anagraficaDebitore = anagraficaDebitore;
 	}
 	public String getCausale() {
-		return causale;
+		return this.causale;
 	}
 	public void setCausale(String causale) {
 		this.causale = causale;
 	}
 	public String getCodVersamento() {
-		return codVersamento;
+		return this.codVersamento;
 	}
 	public void setCodVersamento(String codVersamento) {
 		this.codVersamento = codVersamento;

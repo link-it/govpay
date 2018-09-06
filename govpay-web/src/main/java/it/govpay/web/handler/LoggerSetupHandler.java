@@ -36,21 +36,25 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(LoggerSetupHandler.class);
 	
-    public Set<QName> getHeaders() {
+    @Override
+	public Set<QName> getHeaders() {
         return null;
     }
 
-    public boolean handleMessage(SOAPMessageContext smc) {
-    	setupMDC(smc);
+    @Override
+	public boolean handleMessage(SOAPMessageContext smc) {
+    	this.setupMDC(smc);
         return true;
     }
 
-    public boolean handleFault(SOAPMessageContext smc) {
-    	setupMDC(smc);
+    @Override
+	public boolean handleFault(SOAPMessageContext smc) {
+    	this.setupMDC(smc);
         return true;
     }
 
-    public void close(MessageContext messageContext) {
+    @Override
+	public void close(MessageContext messageContext) {
     }
 
     private void setupMDC(SOAPMessageContext smc) {
@@ -64,8 +68,8 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
         	}
         } else {
     		String codOperazione = UUID.randomUUID().toString().replace("-", "");
-    		if(smc.get(SOAPMessageContext.WSDL_OPERATION) != null)
-    			MDC.put("cmd", ((QName) smc.get(SOAPMessageContext.WSDL_OPERATION)).getLocalPart());
+    		if(smc.get(MessageContext.WSDL_OPERATION) != null)
+    			MDC.put("cmd", ((QName) smc.get(MessageContext.WSDL_OPERATION)).getLocalPart());
     		MDC.put("op",  codOperazione);
         }
     }

@@ -17,7 +17,7 @@ public class LeggiRendicontazioneDTOResponse {
 	private Fr fr;
 
 	public Fr getFr() {
-		return fr;
+		return this.fr;
 	}
 
 	public void setFr(Fr fr) {

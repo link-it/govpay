@@ -192,7 +192,7 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getUoFieldConverter().toTable(Uo.model()));
 		boolean isUpdate_uo = true;
-		java.util.List<JDBCObject> lstObjects_uo = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_uo = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().COD_UO,false), "?");
 		lstObjects_uo.add(new JDBCObject(uo.getCodUo(), Uo.model().COD_UO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().ABILITATO,false), "?");
@@ -270,7 +270,7 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUoFieldConverter().toTable(Uo.model()), 
@@ -281,7 +281,7 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUoFieldConverter().toTable(Uo.model()), 
@@ -292,7 +292,7 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUoFieldConverter().toTable(Uo.model()), 

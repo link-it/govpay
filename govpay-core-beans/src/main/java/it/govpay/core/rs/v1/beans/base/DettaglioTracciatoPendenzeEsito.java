@@ -39,7 +39,7 @@ public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("idTracciato")
   public String getIdTracciato() {
-    return idTracciato;
+    return this.idTracciato;
   }
   public void setIdTracciato(String idTracciato) {
     this.idTracciato = idTracciato;
@@ -55,7 +55,7 @@ public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return idDominio;
+    return this.idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -70,7 +70,7 @@ public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("inserimenti")
   public List<EsitoOperazionePendenza> getInserimenti() {
-    return inserimenti;
+    return this.inserimenti;
   }
   public void setInserimenti(List<EsitoOperazionePendenza> inserimenti) {
     this.inserimenti = inserimenti;
@@ -85,7 +85,7 @@ public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
 
   @JsonProperty("annullamenti")
   public List<EsitoOperazionePendenza> getAnnullamenti() {
-    return annullamenti;
+    return this.annullamenti;
   }
   public void setAnnullamenti(List<EsitoOperazionePendenza> annullamenti) {
     this.annullamenti = annullamenti;
@@ -96,23 +96,23 @@ public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     DettaglioTracciatoPendenzeEsito dettaglioTracciatoPendenzeEsito = (DettaglioTracciatoPendenzeEsito) o;
-    return Objects.equals(idTracciato, dettaglioTracciatoPendenzeEsito.idTracciato) &&
-        Objects.equals(idDominio, dettaglioTracciatoPendenzeEsito.idDominio) &&
-        Objects.equals(inserimenti, dettaglioTracciatoPendenzeEsito.inserimenti) &&
-        Objects.equals(annullamenti, dettaglioTracciatoPendenzeEsito.annullamenti);
+    return Objects.equals(this.idTracciato, dettaglioTracciatoPendenzeEsito.idTracciato) &&
+        Objects.equals(this.idDominio, dettaglioTracciatoPendenzeEsito.idDominio) &&
+        Objects.equals(this.inserimenti, dettaglioTracciatoPendenzeEsito.inserimenti) &&
+        Objects.equals(this.annullamenti, dettaglioTracciatoPendenzeEsito.annullamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTracciato, idDominio, inserimenti, annullamenti);
+    return Objects.hash(this.idTracciato, this.idDominio, this.inserimenti, this.annullamenti);
   }
 
   public static DettaglioTracciatoPendenzeEsito parse(String json) throws ServiceException, ValidationException {
-    return (DettaglioTracciatoPendenzeEsito) parse(json, DettaglioTracciatoPendenzeEsito.class); 
+    return parse(json, DettaglioTracciatoPendenzeEsito.class); 
   }
 
   @Override
@@ -125,10 +125,10 @@ public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class DettaglioTracciatoPendenzeEsito {\n");
     
-    sb.append("    idTracciato: ").append(toIndentedString(idTracciato)).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    inserimenti: ").append(toIndentedString(inserimenti)).append("\n");
-    sb.append("    annullamenti: ").append(toIndentedString(annullamenti)).append("\n");
+    sb.append("    idTracciato: ").append(this.toIndentedString(this.idTracciato)).append("\n");
+    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    inserimenti: ").append(this.toIndentedString(this.inserimenti)).append("\n");
+    sb.append("    annullamenti: ").append(this.toIndentedString(this.annullamenti)).append("\n");
     sb.append("}");
     return sb.toString();
   }

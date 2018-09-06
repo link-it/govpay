@@ -44,7 +44,7 @@ public class PaaInviaEsitoStornoRisposta {
      *     
      */
     public TipoInviaEsitoStornoRisposta getPaaInviaEsitoStornoRisposta() {
-        return paaInviaEsitoStornoRisposta;
+        return this.paaInviaEsitoStornoRisposta;
     }
 
     /**

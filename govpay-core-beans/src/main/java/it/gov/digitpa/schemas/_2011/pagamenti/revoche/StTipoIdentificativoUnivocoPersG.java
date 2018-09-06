@@ -27,7 +27,7 @@ public enum StTipoIdentificativoUnivocoPersG {
     G;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StTipoIdentificativoUnivocoPersG fromValue(String v) {

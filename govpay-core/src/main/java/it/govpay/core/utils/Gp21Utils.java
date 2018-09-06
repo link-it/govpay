@@ -157,7 +157,7 @@ public class Gp21Utils {
 	public static List<it.govpay.bd.model.Versamento.StatoVersamento> toStatiVersamento(List<StatoVersamento> stati) {
 		if(stati == null || stati.size() == 0) return null;
 
-		List<it.govpay.bd.model.Versamento.StatoVersamento> statiVersamento = new ArrayList<it.govpay.bd.model.Versamento.StatoVersamento>();
+		List<it.govpay.bd.model.Versamento.StatoVersamento> statiVersamento = new ArrayList<>();
 		for(StatoVersamento stato : stati) {
 			statiVersamento.add(it.govpay.bd.model.Versamento.StatoVersamento.valueOf(stato.toString()));
 		}
@@ -191,7 +191,7 @@ public class Gp21Utils {
 	public static SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
 	
 	public static List<IuvGenerato> toIuvGenerato(List<it.govpay.core.business.model.Iuv> iuvGeneratiModel) {
-		List<IuvGenerato> iuvGenerati = new ArrayList<IuvGenerato>();
+		List<IuvGenerato> iuvGenerati = new ArrayList<>();
 		for (it.govpay.core.business.model.Iuv iuvGeneratoModel : iuvGeneratiModel) {
 			iuvGenerati.add(toIuvGenerato(iuvGeneratoModel));
 		}
@@ -211,7 +211,7 @@ public class Gp21Utils {
 	}
 
 	public static Collection<? extends IuvGenerato> toIuvCaricato(List<it.govpay.core.business.model.Iuv> iuvCaricatiModel) {
-		List<IuvGenerato> iuvCaricati = new ArrayList<IuvGenerato>();
+		List<IuvGenerato> iuvCaricati = new ArrayList<>();
 		for (it.govpay.core.business.model.Iuv iuvCaricatoModel : iuvCaricatiModel) {
 			IuvGenerato iuvCaricato = new IuvGenerato();
 			iuvCaricato.setBarCode(iuvCaricatoModel.getBarCode());

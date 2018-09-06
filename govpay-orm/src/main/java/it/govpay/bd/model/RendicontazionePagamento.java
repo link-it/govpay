@@ -13,43 +13,43 @@ public class RendicontazionePagamento {
 	private transient Incasso incasso;
 	
 	public Fr getFr() {
-		return fr;
+		return this.fr;
 	}
 	public void setFr(Fr fr) {
 		this.fr = fr;
 	}
 	public Pagamento getPagamento() {
-		return pagamento;
+		return this.pagamento;
 	}
 	public void setPagamento(Pagamento pagamento) {
 		this.pagamento = pagamento;
 	}
 	public Versamento getVersamento() {
-		return versamento;
+		return this.versamento;
 	}
 	public void setVersamento(Versamento versamento) {
 		this.versamento = versamento;
 	}
 	public SingoloVersamento getSingoloVersamento() {
-		return singoloVersamento;
+		return this.singoloVersamento;
 	}
 	public void setSingoloVersamento(SingoloVersamento singoloVersamento) {
 		this.singoloVersamento = singoloVersamento;
 	}
 	public Rendicontazione getRendicontazione() {
-		return rendicontazione;
+		return this.rendicontazione;
 	}
 	public void setRendicontazione(Rendicontazione rendicontazione) {
 		this.rendicontazione = rendicontazione;
 	}
 	public String getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
 	public Incasso getIncasso() {
-		return incasso;
+		return this.incasso;
 	}
 	public void setIncasso(Incasso incasso) {
 		this.incasso = incasso;

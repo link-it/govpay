@@ -1,5 +1,6 @@
 package it.govpay.rs.v1.beans.converter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,8 +138,9 @@ public class DominiConverter {
 		dominio.setIdApplicazioneDefault(null);
 		
 		dominio.setIuvPrefix(dominioPost.getIuvPrefix());
-		if(dominioPost.getLogo() != null)
-			dominio.setLogo(dominioPost.getLogo().getBytes());
+		if(dominioPost.getLogo() != null) {
+			dominio.setLogo(dominioPost.getLogo().getBytes(StandardCharsets.UTF_8));
+		}
 		dominio.setNdpData(null);
 		dominio.setNdpDescrizione(null);
 		dominio.setNdpOperazione(null);
@@ -172,7 +174,9 @@ public class DominiConverter {
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
-		rsModel.setSegregationCode("" + dominio.getSegregationCode());
+		if(dominio.getSegregationCode() != null)
+			rsModel.setSegregationCode("" + dominio.getSegregationCode());
+		
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
@@ -202,7 +206,9 @@ public class DominiConverter {
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
-		rsModel.setSegregationCode("" + dominio.getSegregationCode());
+		if(dominio.getSegregationCode() != null)
+			rsModel.setSegregationCode("" + dominio.getSegregationCode());
+		
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
@@ -210,7 +216,7 @@ public class DominiConverter {
 		rsModel.setStazione(dominio.getStazione().getCodStazione());
 		
 		if(uoLst != null) {
-			List<UnitaOperativa> unitaOperative = new ArrayList<UnitaOperativa>();
+			List<UnitaOperativa> unitaOperative = new ArrayList<>();
 			
 			for(it.govpay.bd.model.UnitaOperativa uo: uoLst) {
 				unitaOperative.add(toUnitaOperativaRsModel(uo));
@@ -219,7 +225,7 @@ public class DominiConverter {
 		}
 
 		if(ibanAccreditoLst != null) {
-			List<ContiAccredito> contiAccredito = new ArrayList<ContiAccredito>();
+			List<ContiAccredito> contiAccredito = new ArrayList<>();
 			
 			for(it.govpay.bd.model.IbanAccredito iban: ibanAccreditoLst) {
 				contiAccredito.add(toIbanRsModel(iban));
@@ -228,7 +234,7 @@ public class DominiConverter {
 		}
 
 		if(tributoLst != null) {
-			List<Entrata> entrate = new ArrayList<Entrata>();
+			List<Entrata> entrate = new ArrayList<>();
 			
 			for(Tributo tributo: tributoLst) {
 				entrate.add(toEntrataRsModel(tributo, tributo.getIbanAccredito()));
@@ -236,6 +242,10 @@ public class DominiConverter {
 			rsModel.setEntrate(entrate);
 		}
 		rsModel.setAbilitato(dominio.isAbilitato());
+		
+		if(dominio.getLogo() != null) {
+			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  
+		}
 		
 		return rsModel;
 	}

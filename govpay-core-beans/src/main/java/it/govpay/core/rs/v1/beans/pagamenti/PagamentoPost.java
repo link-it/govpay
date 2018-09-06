@@ -78,7 +78,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 		@Override
 		@com.fasterxml.jackson.annotation.JsonValue
 		public String toString() {
-			return String.valueOf(value);
+			return String.valueOf(this.value);
 		}
 
 		public static AutenticazioneSoggettoEnum fromValue(String text) {
@@ -131,7 +131,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 		@Override
 		@com.fasterxml.jackson.annotation.JsonValue
 		public String toString() {
-			return String.valueOf(value);
+			return String.valueOf(this.value);
 		}
 
 		public static LinguaEnum fromValue(String text) {
@@ -159,7 +159,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("pendenze")
 	public List<PendenzaPost> getPendenze() {
-		return pendenze;
+		return this.pendenze;
 	}
 	public void setPendenze(List<PendenzaPost> pendenze) {
 		this.pendenze = pendenze;
@@ -175,7 +175,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("urlRitorno")
 	public String getUrlRitorno() {
-		return urlRitorno;
+		return this.urlRitorno;
 	}
 	public void setUrlRitorno(String urlRitorno) {
 		this.urlRitorno = urlRitorno;
@@ -190,7 +190,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("contoAddebito")
 	public ContoAddebito getContoAddebito() {
-		return contoAddebito;
+		return this.contoAddebito;
 	}
 	public void setContoAddebito(ContoAddebito contoAddebito) {
 		this.contoAddebito = contoAddebito;
@@ -206,7 +206,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("dataEsecuzionePagamento")
 	public Date getDataEsecuzionePagamento() {
-		return dataEsecuzionePagamento;
+		return this.dataEsecuzionePagamento;
 	}
 	public void setDataEsecuzionePagamento(Date dataEsecuzionePagamento) {
 		this.dataEsecuzionePagamento = dataEsecuzionePagamento;
@@ -222,7 +222,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("credenzialiPagatore")
 	public String getCredenzialiPagatore() {
-		return credenzialiPagatore;
+		return this.credenzialiPagatore;
 	}
 	public void setCredenzialiPagatore(String credenzialiPagatore) {
 		this.credenzialiPagatore = credenzialiPagatore;
@@ -237,7 +237,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("soggettoVersante")
 	public Soggetto getSoggettoVersante() {
-		return soggettoVersante;
+		return this.soggettoVersante;
 	}
 	public void setSoggettoVersante(Soggetto soggettoVersante) {
 		this.soggettoVersante = soggettoVersante;
@@ -256,7 +256,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 	}
 
 	public AutenticazioneSoggettoEnum getAutenticazioneSoggettoEnum() {
-		return autenticazioneSoggetto;
+		return this.autenticazioneSoggetto;
 	}
 	public void setAutenticazioneSoggetto(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
 		this.autenticazioneSoggetto = autenticazioneSoggetto;
@@ -272,8 +272,8 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("autenticazioneSoggetto")
 	public String getAutenticazioneSoggetto() {
-		if(autenticazioneSoggetto != null) {
-			return autenticazioneSoggetto.value;
+		if(this.autenticazioneSoggetto != null) {
+			return this.autenticazioneSoggetto.value;
 		} else {
 			return null;
 		}
@@ -297,7 +297,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("lingua")
 	public LinguaEnum getLingua() {
-		return lingua;
+		return this.lingua;
 	}
 	public void setLingua(LinguaEnum lingua) {
 		this.lingua = lingua;
@@ -308,27 +308,27 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || this.getClass() != o.getClass()) {
 			return false;
 		}
 		PagamentoPost pagamentoPost = (PagamentoPost) o;
-		return Objects.equals(pendenze, pagamentoPost.pendenze) &&
-				Objects.equals(urlRitorno, pagamentoPost.urlRitorno) &&
-				Objects.equals(contoAddebito, pagamentoPost.contoAddebito) &&
-				Objects.equals(dataEsecuzionePagamento, pagamentoPost.dataEsecuzionePagamento) &&
-				Objects.equals(credenzialiPagatore, pagamentoPost.credenzialiPagatore) &&
-				Objects.equals(soggettoVersante, pagamentoPost.soggettoVersante) &&
-				Objects.equals(autenticazioneSoggetto, pagamentoPost.autenticazioneSoggetto) &&
-				Objects.equals(lingua, pagamentoPost.lingua);
+		return Objects.equals(this.pendenze, pagamentoPost.pendenze) &&
+				Objects.equals(this.urlRitorno, pagamentoPost.urlRitorno) &&
+				Objects.equals(this.contoAddebito, pagamentoPost.contoAddebito) &&
+				Objects.equals(this.dataEsecuzionePagamento, pagamentoPost.dataEsecuzionePagamento) &&
+				Objects.equals(this.credenzialiPagatore, pagamentoPost.credenzialiPagatore) &&
+				Objects.equals(this.soggettoVersante, pagamentoPost.soggettoVersante) &&
+				Objects.equals(this.autenticazioneSoggetto, pagamentoPost.autenticazioneSoggetto) &&
+				Objects.equals(this.lingua, pagamentoPost.lingua);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(pendenze, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua);
+		return Objects.hash(this.pendenze, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua);
 	}
 
 	public static PagamentoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
-		return (PagamentoPost) parse(json, PagamentoPost.class);
+		return parse(json, PagamentoPost.class);
 	}
 
 	@Override
@@ -341,14 +341,14 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("class PagamentoPost {\n");
 
-		sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
-		sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
-		sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
-		sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
-		sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
-		sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
-		sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
-		sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
+		sb.append("    pendenze: ").append(this.toIndentedString(this.pendenze)).append("\n");
+		sb.append("    urlRitorno: ").append(this.toIndentedString(this.urlRitorno)).append("\n");
+		sb.append("    contoAddebito: ").append(this.toIndentedString(this.contoAddebito)).append("\n");
+		sb.append("    dataEsecuzionePagamento: ").append(this.toIndentedString(this.dataEsecuzionePagamento)).append("\n");
+		sb.append("    credenzialiPagatore: ").append(this.toIndentedString(this.credenzialiPagatore)).append("\n");
+		sb.append("    soggettoVersante: ").append(this.toIndentedString(this.soggettoVersante)).append("\n");
+		sb.append("    autenticazioneSoggetto: ").append(this.toIndentedString(this.autenticazioneSoggetto)).append("\n");
+		sb.append("    lingua: ").append(this.toIndentedString(this.lingua)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
@@ -364,15 +364,16 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 		return o.toString().replace("\n", "\n    ");
 	}
 
+	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		vf.getValidator("pendenze", pendenze).notNull().minItems(1).validateObjects();
-		vf.getValidator("urlRitorno", urlRitorno).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
-		vf.getValidator("contoAddebito", contoAddebito).validateFields();
-		vf.getValidator("dataEsecuzionePagamento", dataEsecuzionePagamento).after(LocalDate.now()).inside(Duration.ofDays(30));
-		vf.getValidator("credenzialiPagatore", credenzialiPagatore).minLength(1).maxLength(35);
-		vf.getValidator("soggettoVersante", soggettoVersante).validateFields();
-		vf.getValidator("autenticazioneSoggetto", autenticazioneSoggetto).notNull();
+		vf.getValidator("pendenze", this.pendenze).notNull().minItems(1).validateObjects();
+		vf.getValidator("urlRitorno", this.urlRitorno).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+		vf.getValidator("contoAddebito", this.contoAddebito).validateFields();
+		vf.getValidator("dataEsecuzionePagamento", this.dataEsecuzionePagamento).after(LocalDate.now()).inside(Duration.ofDays(30));
+		vf.getValidator("credenzialiPagatore", this.credenzialiPagatore).minLength(1).maxLength(35);
+		vf.getValidator("soggettoVersante", this.soggettoVersante).validateFields();
+		vf.getValidator("autenticazioneSoggetto", this.autenticazioneSoggetto).notNull();
 	}
 }
 

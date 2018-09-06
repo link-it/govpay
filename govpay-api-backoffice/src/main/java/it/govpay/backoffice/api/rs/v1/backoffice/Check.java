@@ -82,7 +82,8 @@ public class Check {
 						parametri.getDatiCheck().list(printWriter);
 						StringBuffer sb = new StringBuffer(parametri.getNome());
 						sb.append(": ").append(writer.getBuffer().toString());
-						log.info(sb.toString());
+						String msg = sb.toString();
+						log.info(msg);
 					}
 					
 					sommarioSonda.setNome(parametri.getNome());
@@ -114,7 +115,7 @@ public class Check {
 			throw new NotFoundException("Sonda con nome ["+checkSonda.getName()+"] non configurata");
 		if(checkSonda.isCoda()) {
 			long num = -1;
-			if(Operazioni.check_ntfy.equals(checkSonda.getName())) {
+			if(Operazioni.CHECK_NTFY.equals(checkSonda.getName())) {
 				NotificheBD notBD = new NotificheBD(bd);
 				num = notBD.countNotificheInAttesa();
 			} 
@@ -139,7 +140,7 @@ public class Check {
 				
 				DettaglioSonda dettaglioSonda = null;
 				try {
-					Sonda sonda = getSonda(bd, checkSonda);
+					Sonda sonda = this.getSonda(bd, checkSonda);
 					dettaglioSonda = new DettaglioSonda(sonda.getClass());
 					ParametriSonda param = sonda.getParam();
 					dettaglioSonda.setNome(param.getNome());
@@ -180,25 +181,25 @@ public class Check {
 		private String operazione_eseguita;
 		private String errore_rilevato;
 		public Integer getCodice_stato() {
-			return codice_stato;
+			return this.codice_stato;
 		}
 		public void setCodice_stato(Integer codice_stato) {
 			this.codice_stato = codice_stato;
 		}
 		public String getOperazione_eseguita() {
-			return operazione_eseguita;
+			return this.operazione_eseguita;
 		}
 		public void setOperazione_eseguita(String operazione_eseguita) {
 			this.operazione_eseguita = operazione_eseguita;
 		}
 		public String getErrore_rilevato() {
-			return errore_rilevato;
+			return this.errore_rilevato;
 		}
 		public void setErrore_rilevato(String errore_rilevato) {
 			this.errore_rilevato = errore_rilevato;
 		}
 		public Date getUltimo_aggiornamento() {
-			return ultimo_aggiornamento;
+			return this.ultimo_aggiornamento;
 		}
 		public void setUltimo_aggiornamento(Date ultimo_aggiornamento) {
 			this.ultimo_aggiornamento = ultimo_aggiornamento;
@@ -206,9 +207,9 @@ public class Check {
 		
 		@Override
 		public String toString() {
-			if(codice_stato == 0) return "OK";
-			if(codice_stato == 1) return "WARN: STATO NON VERIFICATO";
-			if(codice_stato == 2) return "FAIL: [" + operazione_eseguita + "] " + errore_rilevato;
+			if(this.codice_stato == 0) return "OK";
+			if(this.codice_stato == 1) return "WARN: STATO NON VERIFICATO";
+			if(this.codice_stato == 2) return "FAIL: [" + this.operazione_eseguita + "] " + this.errore_rilevato;
 			return "ERRORE!!";
 		}
 	}

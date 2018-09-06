@@ -52,25 +52,25 @@ public class IncassoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Incasso.model())){
 				Incasso object = new Incasso();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setTrn", Incasso.model().TRN.getFieldType(),
+				this.setParameter(object, "setTrn", Incasso.model().TRN.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trn", Incasso.model().TRN.getFieldType()));
-				setParameter(object, "setCodDominio", Incasso.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Incasso.model().COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Incasso.model().COD_DOMINIO.getFieldType()));
-				setParameter(object, "setCausale", Incasso.model().CAUSALE.getFieldType(),
+				this.setParameter(object, "setCausale", Incasso.model().CAUSALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "causale", Incasso.model().CAUSALE.getFieldType()));
-				setParameter(object, "setImporto", Incasso.model().IMPORTO.getFieldType(),
+				this.setParameter(object, "setImporto", Incasso.model().IMPORTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo", Incasso.model().IMPORTO.getFieldType()));
-				setParameter(object, "setDataValuta", Incasso.model().DATA_VALUTA.getFieldType(),
+				this.setParameter(object, "setDataValuta", Incasso.model().DATA_VALUTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_valuta", Incasso.model().DATA_VALUTA.getFieldType()));
-				setParameter(object, "setDataContabile", Incasso.model().DATA_CONTABILE.getFieldType(),
+				this.setParameter(object, "setDataContabile", Incasso.model().DATA_CONTABILE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_contabile", Incasso.model().DATA_CONTABILE.getFieldType()));
-				setParameter(object, "setDataOraIncasso", Incasso.model().DATA_ORA_INCASSO.getFieldType(),
+				this.setParameter(object, "setDataOraIncasso", Incasso.model().DATA_ORA_INCASSO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_incasso", Incasso.model().DATA_ORA_INCASSO.getFieldType()));
-				setParameter(object, "setNomeDispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType(),
+				this.setParameter(object, "setNomeDispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "nome_dispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType()));
-				setParameter(object, "setIbanAccredito", Incasso.model().IBAN_ACCREDITO.getFieldType(),
+				this.setParameter(object, "setIbanAccredito", Incasso.model().IBAN_ACCREDITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iban_accredito", Incasso.model().IBAN_ACCREDITO.getFieldType()));
 				return object;
 			}
@@ -92,25 +92,25 @@ public class IncassoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Incasso.model())){
 				Incasso object = new Incasso();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setTrn", Incasso.model().TRN.getFieldType(),
+				this.setParameter(object, "setTrn", Incasso.model().TRN.getFieldType(),
 					this.getObjectFromMap(map,"trn"));
-				setParameter(object, "setCodDominio", Incasso.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Incasso.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				setParameter(object, "setCausale", Incasso.model().CAUSALE.getFieldType(),
+				this.setParameter(object, "setCausale", Incasso.model().CAUSALE.getFieldType(),
 					this.getObjectFromMap(map,"causale"));
-				setParameter(object, "setImporto", Incasso.model().IMPORTO.getFieldType(),
+				this.setParameter(object, "setImporto", Incasso.model().IMPORTO.getFieldType(),
 					this.getObjectFromMap(map,"importo"));
-				setParameter(object, "setDataValuta", Incasso.model().DATA_VALUTA.getFieldType(),
+				this.setParameter(object, "setDataValuta", Incasso.model().DATA_VALUTA.getFieldType(),
 					this.getObjectFromMap(map,"dataValuta"));
-				setParameter(object, "setDataContabile", Incasso.model().DATA_CONTABILE.getFieldType(),
+				this.setParameter(object, "setDataContabile", Incasso.model().DATA_CONTABILE.getFieldType(),
 					this.getObjectFromMap(map,"dataContabile"));
-				setParameter(object, "setDataOraIncasso", Incasso.model().DATA_ORA_INCASSO.getFieldType(),
+				this.setParameter(object, "setDataOraIncasso", Incasso.model().DATA_ORA_INCASSO.getFieldType(),
 					this.getObjectFromMap(map,"dataOraIncasso"));
-				setParameter(object, "setNomeDispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType(),
+				this.setParameter(object, "setNomeDispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType(),
 					this.getObjectFromMap(map,"nomeDispositivo"));
-				setParameter(object, "setIbanAccredito", Incasso.model().IBAN_ACCREDITO.getFieldType(),
+				this.setParameter(object, "setIbanAccredito", Incasso.model().IBAN_ACCREDITO.getFieldType(),
 					this.getObjectFromMap(map,"ibanAccredito"));
 				return object;
 			}

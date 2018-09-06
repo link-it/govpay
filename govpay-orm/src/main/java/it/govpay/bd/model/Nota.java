@@ -23,19 +23,19 @@ public class Nota implements Serializable{
 	private Date data = null;
 	private String testo = null;
 	public String getAutore() {
-		return autore;
+		return this.autore;
 	}
 	public void setAutore(String autore) {
 		this.autore = autore;
 	}
 	public Date getData() {
-		return data;
+		return this.data;
 	}
 	public void setData(Date data) {
 		this.data = data;
 	}
 	public String getTesto() {
-		return testo;
+		return this.testo;
 	}
 	public void setTesto(String testo) {
 		this.testo = testo;

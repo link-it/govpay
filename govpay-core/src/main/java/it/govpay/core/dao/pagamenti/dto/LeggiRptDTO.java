@@ -26,31 +26,31 @@ public class LeggiRptDTO extends BasicCreateRequestDTO {
 	private String ccp;
 
 	public String getCodA2A() {
-		return codA2A;
+		return this.codA2A;
 	}
 	public void setCodA2A(String codA2A) {
 		this.codA2A = codA2A;
 	}
 	public String getCodPendenza() {
-		return codPendenza;
+		return this.codPendenza;
 	}
 	public void setCodPendenza(String codPendenza) {
 		this.codPendenza = codPendenza;
 	}
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 	public void setCcp(String ccp) {
 		this.ccp = ccp;

@@ -52,43 +52,43 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Pagamento.model())){
 				Pagamento object = new Pagamento();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodDominio", Pagamento.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Pagamento.model().COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Pagamento.model().COD_DOMINIO.getFieldType()));
-				setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
+				this.setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv", Pagamento.model().IUV.getFieldType()));
-				setParameter(object, "setIndiceDati", Pagamento.model().INDICE_DATI.getFieldType(),
+				this.setParameter(object, "setIndiceDati", Pagamento.model().INDICE_DATI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "indice_dati", Pagamento.model().INDICE_DATI.getFieldType()));
-				setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
+				this.setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Pagamento.model().IMPORTO_PAGATO.getFieldType()));
-				setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),
+				this.setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_acquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType()));
-				setParameter(object, "setIur", Pagamento.model().IUR.getFieldType(),
+				this.setParameter(object, "setIur", Pagamento.model().IUR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iur", Pagamento.model().IUR.getFieldType()));
-				setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
+				this.setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_pagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType()));
-				setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
+				this.setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "commissioni_psp", Pagamento.model().COMMISSIONI_PSP.getFieldType()));
-				setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),
+				this.setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_allegato", Pagamento.model().TIPO_ALLEGATO.getFieldType()));
-				setParameter(object, "setAllegato", Pagamento.model().ALLEGATO.getFieldType(),
+				this.setParameter(object, "setAllegato", Pagamento.model().ALLEGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "allegato", Pagamento.model().ALLEGATO.getFieldType()));
-				setParameter(object, "setDataAcquisizioneRevoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType(),
+				this.setParameter(object, "setDataAcquisizioneRevoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_acquisizione_revoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()));
-				setParameter(object, "setCausaleRevoca", Pagamento.model().CAUSALE_REVOCA.getFieldType(),
+				this.setParameter(object, "setCausaleRevoca", Pagamento.model().CAUSALE_REVOCA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "causale_revoca", Pagamento.model().CAUSALE_REVOCA.getFieldType()));
-				setParameter(object, "setDatiRevoca", Pagamento.model().DATI_REVOCA.getFieldType(),
+				this.setParameter(object, "setDatiRevoca", Pagamento.model().DATI_REVOCA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_revoca", Pagamento.model().DATI_REVOCA.getFieldType()));
-				setParameter(object, "setImportoRevocato", Pagamento.model().IMPORTO_REVOCATO.getFieldType(),
+				this.setParameter(object, "setImportoRevocato", Pagamento.model().IMPORTO_REVOCATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_revocato", Pagamento.model().IMPORTO_REVOCATO.getFieldType()));
-				setParameter(object, "setEsitoRevoca", Pagamento.model().ESITO_REVOCA.getFieldType(),
+				this.setParameter(object, "setEsitoRevoca", Pagamento.model().ESITO_REVOCA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "esito_revoca", Pagamento.model().ESITO_REVOCA.getFieldType()));
-				setParameter(object, "setDatiEsitoRevoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType(),
+				this.setParameter(object, "setDatiEsitoRevoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_esito_revoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType()));
-				setParameter(object, "setStato", Pagamento.model().STATO.getFieldType(),
+				this.setParameter(object, "setStato", Pagamento.model().STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato", Pagamento.model().STATO.getFieldType()));
-				setParameter(object, "setTipo", Pagamento.model().TIPO.getFieldType(),
+				this.setParameter(object, "setTipo", Pagamento.model().TIPO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo", Pagamento.model().TIPO.getFieldType()));
 				return object;
 			}
@@ -110,43 +110,43 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Pagamento.model())){
 				Pagamento object = new Pagamento();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodDominio", Pagamento.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Pagamento.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
+				this.setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
 					this.getObjectFromMap(map,"iuv"));
-				setParameter(object, "setIndiceDati", Pagamento.model().INDICE_DATI.getFieldType(),
+				this.setParameter(object, "setIndiceDati", Pagamento.model().INDICE_DATI.getFieldType(),
 					this.getObjectFromMap(map,"indiceDati"));
-				setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
+				this.setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
 					this.getObjectFromMap(map,"importoPagato"));
-				setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),
+				this.setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataAcquisizione"));
-				setParameter(object, "setIur", Pagamento.model().IUR.getFieldType(),
+				this.setParameter(object, "setIur", Pagamento.model().IUR.getFieldType(),
 					this.getObjectFromMap(map,"iur"));
-				setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
+				this.setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataPagamento"));
-				setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
+				this.setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
 					this.getObjectFromMap(map,"commissioniPsp"));
-				setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),
+				this.setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),
 					this.getObjectFromMap(map,"tipoAllegato"));
-				setParameter(object, "setAllegato", Pagamento.model().ALLEGATO.getFieldType(),
+				this.setParameter(object, "setAllegato", Pagamento.model().ALLEGATO.getFieldType(),
 					this.getObjectFromMap(map,"allegato"));
-				setParameter(object, "setDataAcquisizioneRevoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType(),
+				this.setParameter(object, "setDataAcquisizioneRevoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType(),
 					this.getObjectFromMap(map,"dataAcquisizioneRevoca"));
-				setParameter(object, "setCausaleRevoca", Pagamento.model().CAUSALE_REVOCA.getFieldType(),
+				this.setParameter(object, "setCausaleRevoca", Pagamento.model().CAUSALE_REVOCA.getFieldType(),
 					this.getObjectFromMap(map,"causaleRevoca"));
-				setParameter(object, "setDatiRevoca", Pagamento.model().DATI_REVOCA.getFieldType(),
+				this.setParameter(object, "setDatiRevoca", Pagamento.model().DATI_REVOCA.getFieldType(),
 					this.getObjectFromMap(map,"datiRevoca"));
-				setParameter(object, "setImportoRevocato", Pagamento.model().IMPORTO_REVOCATO.getFieldType(),
+				this.setParameter(object, "setImportoRevocato", Pagamento.model().IMPORTO_REVOCATO.getFieldType(),
 					this.getObjectFromMap(map,"importoRevocato"));
-				setParameter(object, "setEsitoRevoca", Pagamento.model().ESITO_REVOCA.getFieldType(),
+				this.setParameter(object, "setEsitoRevoca", Pagamento.model().ESITO_REVOCA.getFieldType(),
 					this.getObjectFromMap(map,"esitoRevoca"));
-				setParameter(object, "setDatiEsitoRevoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType(),
+				this.setParameter(object, "setDatiEsitoRevoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType(),
 					this.getObjectFromMap(map,"datiEsitoRevoca"));
-				setParameter(object, "setStato", Pagamento.model().STATO.getFieldType(),
+				this.setParameter(object, "setStato", Pagamento.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
-				setParameter(object, "setTipo", Pagamento.model().TIPO.getFieldType(),
+				this.setParameter(object, "setTipo", Pagamento.model().TIPO.getFieldType(),
 					this.getObjectFromMap(map,"tipo"));
 				return object;
 			}

@@ -152,7 +152,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.digitpa.gov.it/schemas/2011/Pagamenti/Revoche/", name = "RR")
     public JAXBElement<CtRichiestaRevoca> createRR(CtRichiestaRevoca value) {
-        return new JAXBElement<CtRichiestaRevoca>(_RR_QNAME, CtRichiestaRevoca.class, null, value);
+        return new JAXBElement<>(_RR_QNAME, CtRichiestaRevoca.class, null, value);
     }
 
     /**
@@ -161,7 +161,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.digitpa.gov.it/schemas/2011/Pagamenti/Revoche/", name = "ER")
     public JAXBElement<CtEsitoRevoca> createER(CtEsitoRevoca value) {
-        return new JAXBElement<CtEsitoRevoca>(_ER_QNAME, CtEsitoRevoca.class, null, value);
+        return new JAXBElement<>(_ER_QNAME, CtEsitoRevoca.class, null, value);
     }
 
 }

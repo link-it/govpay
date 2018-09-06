@@ -199,29 +199,11 @@ public class TracciatiConverter {
 		
 		switch (operazione.getTipoOperazione()) {
 		case ADD:
-			rsModel.setTipoOperazione(TipoOperazionePendenza.ADD);
-			rsModel.setIdentificativoPendenza(operazione.getCodVersamentoEnte());
-			
-			OperazioneCaricamento opCaricamento = (OperazioneCaricamento) operazione;
-			rsModel.setDescrizioneStato(opCaricamento.getDettaglioEsito()); 
-			
-			Versamento versamento = opCaricamento.getVersamento();
-			
-			if(versamento != null) {
-				try {
-					rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(opCaricamento.getDominio(null)));
-				} catch (NotFoundException e) {
-				}
-				
-				rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
-				rsModel.setNumeroAvviso(versamento.getNumeroAvviso()); 
-			}
+			TracciatiConverter.popolaOperazioneAdd(operazione, rsModel);
 			
 			break;
 		case DEL:
-			rsModel.setTipoOperazione(TipoOperazionePendenza.DEL);
-			OperazioneAnnullamento opAnnullamento = (OperazioneAnnullamento) operazione;
-			rsModel.setDescrizioneStato(opAnnullamento.getMotivoAnnullamento());
+			TracciatiConverter.popolaOperazioneDel(operazione, rsModel);
 			break;
 		
 		case N_V:
@@ -236,5 +218,40 @@ public class TracciatiConverter {
 		rsModel.setRisposta(risposta);
 
 		return rsModel;
+	}
+
+	private static void popolaOperazioneDel(it.govpay.bd.model.Operazione operazione, OperazionePendenza rsModel)
+			throws ServiceException {
+		rsModel.setTipoOperazione(TipoOperazionePendenza.DEL);
+		OperazioneAnnullamento opAnnullamento = (OperazioneAnnullamento) operazione;
+		rsModel.setDescrizioneStato(opAnnullamento.getMotivoAnnullamento());
+		
+		try {
+			if(opAnnullamento.getCodDominio() != null)
+				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(opAnnullamento.getDominio(null)));
+		} catch (NotFoundException e) {
+		}
+	}
+
+	private static void popolaOperazioneAdd(it.govpay.bd.model.Operazione operazione, OperazionePendenza rsModel)
+			throws ServiceException {
+		rsModel.setTipoOperazione(TipoOperazionePendenza.ADD);
+		rsModel.setIdentificativoPendenza(operazione.getCodVersamentoEnte());
+		
+		OperazioneCaricamento opCaricamento = (OperazioneCaricamento) operazione;
+		rsModel.setDescrizioneStato(opCaricamento.getDettaglioEsito()); 
+		
+		try {
+			if(opCaricamento.getCodDominio() != null)
+				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(opCaricamento.getDominio(null)));
+		} catch (NotFoundException e) {
+		}
+		
+		Versamento versamento = opCaricamento.getVersamento();
+		
+		if(versamento != null) {
+			rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
+			rsModel.setNumeroAvviso(versamento.getNumeroAvviso()); 
+		}
 	}
 }

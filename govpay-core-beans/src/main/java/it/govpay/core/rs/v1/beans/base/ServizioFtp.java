@@ -30,7 +30,7 @@ public class ServizioFtp extends JSONSerializable {
 
   @JsonProperty("ftp_lettura")
   public ConnettoreFtp getFtpLettura() {
-    return ftpLettura;
+    return this.ftpLettura;
   }
   public void setFtpLettura(ConnettoreFtp ftpLettura) {
     this.ftpLettura = ftpLettura;
@@ -45,7 +45,7 @@ public class ServizioFtp extends JSONSerializable {
 
   @JsonProperty("ftp_scrittura")
   public ConnettoreFtp getFtpScrittura() {
-    return ftpScrittura;
+    return this.ftpScrittura;
   }
   public void setFtpScrittura(ConnettoreFtp ftpScrittura) {
     this.ftpScrittura = ftpScrittura;
@@ -56,21 +56,21 @@ public class ServizioFtp extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     ServizioFtp servizioFtp = (ServizioFtp) o;
-    return Objects.equals(ftpLettura, servizioFtp.ftpLettura) &&
-        Objects.equals(ftpScrittura, servizioFtp.ftpScrittura);
+    return Objects.equals(this.ftpLettura, servizioFtp.ftpLettura) &&
+        Objects.equals(this.ftpScrittura, servizioFtp.ftpScrittura);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ftpLettura, ftpScrittura);
+    return Objects.hash(this.ftpLettura, this.ftpScrittura);
   }
 
   public static ServizioFtp parse(String json) throws ServiceException, ValidationException {
-    return (ServizioFtp) parse(json, ServizioFtp.class);
+    return parse(json, ServizioFtp.class);
   }
 
   @Override
@@ -83,8 +83,8 @@ public class ServizioFtp extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ServizioFtp {\n");
     
-    sb.append("    ftpLettura: ").append(toIndentedString(ftpLettura)).append("\n");
-    sb.append("    ftpScrittura: ").append(toIndentedString(ftpScrittura)).append("\n");
+    sb.append("    ftpLettura: ").append(this.toIndentedString(this.ftpLettura)).append("\n");
+    sb.append("    ftpScrittura: ").append(this.toIndentedString(this.ftpScrittura)).append("\n");
     sb.append("}");
     return sb.toString();
   }

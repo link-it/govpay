@@ -77,7 +77,7 @@ public class RichiestaStorno {
      *     
      */
     public String getCodRichiesta() {
-        return codRichiesta;
+        return this.codRichiesta;
     }
 
     /**
@@ -101,7 +101,7 @@ public class RichiestaStorno {
      *     
      */
     public Date getDataRichiesta() {
-        return dataRichiesta;
+        return this.dataRichiesta;
     }
 
     /**
@@ -125,7 +125,7 @@ public class RichiestaStorno {
      *     
      */
     public StatoRevoca getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**
@@ -149,7 +149,7 @@ public class RichiestaStorno {
      *     
      */
     public String getDescrizioneStato() {
-        return descrizioneStato;
+        return this.descrizioneStato;
     }
 
     /**
@@ -172,7 +172,7 @@ public class RichiestaStorno {
      *     byte[]
      */
     public byte[] getRr() {
-        return rr;
+        return this.rr;
     }
 
     /**
@@ -194,7 +194,7 @@ public class RichiestaStorno {
      *     byte[]
      */
     public byte[] getEr() {
-        return er;
+        return this.er;
     }
 
     /**
@@ -217,7 +217,7 @@ public class RichiestaStorno {
      *     
      */
     public BigDecimal getImportoStornato() {
-        return importoStornato;
+        return this.importoStornato;
     }
 
     /**

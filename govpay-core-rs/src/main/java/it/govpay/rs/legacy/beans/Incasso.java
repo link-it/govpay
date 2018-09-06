@@ -73,43 +73,43 @@ public class Incasso {
 	}
 
 	public String getTrn() {
-		return trn;
+		return this.trn;
 	}
 	public void setTrn(String trn) {
 		this.trn = trn;
 	}
 	public String getCausale() {
-		return causale;
+		return this.causale;
 	}
 	public void setCausale(String causale) {
 		this.causale = causale;
 	}
 	public BigDecimal getImporto() {
-		return importo;
+		return this.importo;
 	}
 	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
 	public Date getData_valuta() {
-		return data_valuta;
+		return this.data_valuta;
 	}
 	public void setData_valuta(Date data_valuta) {
 		this.data_valuta = data_valuta;
 	}
 	public Date getData_contabile() {
-		return data_contabile;
+		return this.data_contabile;
 	}
 	public void setData_contabile(Date data_contabile) {
 		this.data_contabile = data_contabile;
 	}
 	public String getDispositivo() {
-		return dispositivo;
+		return this.dispositivo;
 	}
 	public void setDispositivo(String dispositivo) {
 		this.dispositivo = dispositivo;
 	}
 	public String getDominio() {
-		return dominio;
+		return this.dominio;
 	}
 	public void setDominio(String dominio) {
 		this.dominio = dominio;
@@ -117,13 +117,13 @@ public class Incasso {
 	
 	public RichiestaIncassoDTO toRichiestaIncassoDTO(IAutorizzato user) {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
-		dto.setCausale(causale);
-		dto.setCodDominio(dominio);
-		dto.setDataValuta(data_valuta);
-		dto.setDataContabile(data_contabile);
-		dto.setDispositivo(dispositivo);
-		dto.setImporto(importo);
-		dto.setTrn(trn);
+		dto.setCausale(this.causale);
+		dto.setCodDominio(this.dominio);
+		dto.setDataValuta(this.data_valuta);
+		dto.setDataContabile(this.data_contabile);
+		dto.setDispositivo(this.dispositivo);
+		dto.setImporto(this.importo);
+		dto.setTrn(this.trn);
 		return dto;
 	}
 }

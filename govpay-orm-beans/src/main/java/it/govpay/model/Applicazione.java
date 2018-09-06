@@ -38,32 +38,33 @@ public class Applicazione extends BasicModel {
 	private long idUtenza;
 
     
-    public Long getId() {
-		return id;
+    @Override
+	public Long getId() {
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
 	}
 	public Connettore getConnettoreNotifica() {
-		return connettoreNotifica;
+		return this.connettoreNotifica;
 	}
 	public void setConnettoreNotifica(Connettore connettoreNotifica) {
 		this.connettoreNotifica = connettoreNotifica;
 	}
 	public Connettore getConnettoreVerifica() {
-		return connettoreVerifica;
+		return this.connettoreVerifica;
 	}
 	public void setConnettoreVerifica(Connettore connettoreVerifica) {
 		this.connettoreVerifica = connettoreVerifica;
 	}
 	public FirmaRichiesta getFirmaRichiesta() {
-		return firmaRichiesta;
+		return this.firmaRichiesta;
 	}
 	public void setFirmaRichiesta(FirmaRichiesta firmaRichiesta) {
 		this.firmaRichiesta = firmaRichiesta;
@@ -72,31 +73,31 @@ public class Applicazione extends BasicModel {
 		this.firmaRichiesta = FirmaRichiesta.toEnum(codifica);
 	}
 	public boolean isTrusted() {
-		return trusted;
+		return this.trusted;
 	}
 	public void setTrusted(boolean trusted) {
 		this.trusted = trusted;
 	}
 	public String getCodApplicazioneIuv() {
-		return codApplicazioneIuv;
+		return this.codApplicazioneIuv;
 	}
 	public void setCodApplicazioneIuv(String codApplicazioneIuv) {
 		this.codApplicazioneIuv = codApplicazioneIuv;
 	}
 	public String getRegExp() {
-		return regExp;
+		return this.regExp;
 	}
 	public void setRegExp(String regExp) {
 		this.regExp = regExp;
 	}
 	public boolean isAutoIuv() {
-		return autoIuv;
+		return this.autoIuv;
 	}
 	public void setAutoIuv(boolean autoIuv) {
 		this.autoIuv = autoIuv;
 	}
 	public long getIdUtenza() {
-		return idUtenza;
+		return this.idUtenza;
 	}
 	public void setIdUtenza(long idUtenza) {
 		this.idUtenza = idUtenza;

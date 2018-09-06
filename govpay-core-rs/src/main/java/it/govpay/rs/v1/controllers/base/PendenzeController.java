@@ -1,6 +1,8 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,7 +34,11 @@ import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTO;
+import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthenticatedException;
+import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.Avviso;
 import it.govpay.core.rs.v1.beans.base.DettaglioTracciatoPendenzeEsito;
 import it.govpay.core.rs.v1.beans.base.EsitoOperazionePendenza;
@@ -72,11 +78,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-		try{
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -92,9 +96,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -103,11 +108,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		
 		String methodName = "pendenzeGET";
-		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -143,7 +148,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			List<PendenzaIndex> results = new ArrayList<PendenzaIndex>();
+			List<PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
 				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento());
 				results.add(rsModel);
@@ -153,11 +158,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -168,10 +173,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
-		try{
-			baos = new ByteArrayOutputStream();
+		
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			
 			// salvo il json ricevuto
 			BaseRsService.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -190,7 +195,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			List<PatchOp> lstOp = new ArrayList<>();
 
 			try {
-				List<java.util.LinkedHashMap<?,?>> lst = PatchOp.parse(jsonRequest, List.class);
+				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
 				for(java.util.LinkedHashMap<?,?> map: lst) {
 					PatchOp op = new PatchOp();
 					op.setOp(OpEnum.fromValue((String) map.get("op")));
@@ -200,7 +205,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 					lstOp.add(op);
 				}
 			} catch (ServiceException e) {
-				lstOp = PatchOp.parse(jsonRequest, List.class);
+				lstOp = JSONSerializable.parse(jsonRequest, List.class);
 				//				PatchOp op = PatchOp.parse(jsonRequest);
 				//				op.validate();
 				//				lstOp.add(op);
@@ -218,9 +223,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		} catch(GovPayException e) {
-			log.error("Errore durante il processo di pagamento", e);
+			this.log.error("Errore durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
 			respKo.setCodice(e.getCodEsito().name());
@@ -229,11 +235,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			try {
 				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
 			}catch(Exception e1) {
-				log.error("Errore durante il log della risposta", e1);
+				this.log.error("Errore durante il log della risposta", e1);
 			}
-			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(getRespJson(respKo)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(this.getRespJson(respKo)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -245,11 +251,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzePOST";  
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-		try{
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			
 			// salvo il json ricevuto
 			BaseRsService.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -258,7 +264,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 
 			String jsonRequest = baos.toString();
-			TracciatoPendenzePost tracciatoPendenzeRequest = (TracciatoPendenzePost) TracciatoPendenzePost.parse(jsonRequest, TracciatoPendenzePost.class);
+			TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(jsonRequest, TracciatoPendenzePost.class);
 
 			tracciatoPendenzeRequest.validate();
 
@@ -275,10 +281,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			Status responseStatus = Status.OK;
 
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -289,11 +295,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	public Response pendenzeTracciatiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		
 		String methodName = "pendenzeTracciatiGET";
-		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -321,7 +327,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			List<TracciatoPendenze> results = new ArrayList<TracciatoPendenze>();
+			List<TracciatoPendenze> results = new ArrayList<>();
 			for(Tracciato tracciato: listaTracciatiDTOResponse.getResults()) {
 				TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
 				results.add(rsModel);
@@ -331,11 +337,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -347,11 +353,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzeTracciatiIdEsitoGET";  
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-		try{
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -367,9 +373,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 				throw new NonTrovataException("Tracciato di Esito non presente: elaborazione ancora in corso");
 
 			TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -381,11 +388,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzeTracciatiIdGET";  
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-		try{
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -400,7 +407,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
 			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -411,11 +418,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	public Response pendenzeTracciatiIdOperazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		
 		String methodName = "pendenzeTracciatiGET";
-		try{
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			baos = new ByteArrayOutputStream();
+			
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -439,7 +446,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			List<OperazionePendenza> results = new ArrayList<OperazionePendenza>();
+			List<OperazionePendenza> results = new ArrayList<>();
 			for(Operazione operazione: listaTracciatiDTOResponse.getResults()) {
 				OperazionePendenza rsModel = TracciatiConverter.toOperazioneTracciatoPendenzaRsModel(operazione);
 				results.add(rsModel);
@@ -449,11 +456,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -465,11 +472,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzeTracciatiIdStampeGET";  
 		GpContext ctx = null;
 		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-		try{
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -491,61 +498,68 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
 			ZipOutputStream zos = new ZipOutputStream(baos1);
 
-			boolean addError = true;
-			if(inserimenti != null && !inserimenti.isEmpty()) {
-				PendenzeDAO pendenzeDAO = new PendenzeDAO();
-				for (EsitoOperazionePendenza esitoOperazionePendenza : inserimenti) {
-					if(esitoOperazionePendenza.getStato().equals(StatoOperazionePendenza.ESEGUITO) && esitoOperazionePendenza.getEsito().equals("ADD_OK")) { 
-						addError = false; // ho trovato almeno un avviso da stampare
-
-						LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-
-						String idDominio = null;
-						String numeroAvviso = null;
-						try {
-							Avviso avviso = (Avviso) esitoOperazionePendenza.getDati();
-							idDominio = avviso.getIdDominio();
-							numeroAvviso = avviso.getNumeroAvviso();
-						} catch (Exception e) {
-							java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?, ?>) esitoOperazionePendenza.getDati();
-							idDominio =(String)map.get("idDominio");
-							numeroAvviso =(String)map.get("numeroAvviso");
-						}
-
-						leggiPendenzaDTO.setIdDominio(idDominio);
-						leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
-						LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
-
-						String pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
-						ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
-						zos.putNextEntry(tracciatoOutputEntry);
-						zos.write(leggiPendenzaDTOResponse.getAvvisoPdf());
-						zos.flush();
-						zos.closeEntry();
-					}
-				}
-			} 
-
-			if(addError){
-				ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
-				zos.putNextEntry(tracciatoOutputEntry);
-				zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
-				zos.flush();
-				zos.closeEntry();
-			}
+			this.popolaZip(user, inserimenti, zos);
 
 			zos.flush();
 			zos.close();
 
-			String zipFileName = (tracciato.getFileNameRichiesta().indexOf(".") > 0 ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
+			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 			byte[] b = baos1.toByteArray();
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(b).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
 
+	}
+
+	private void popolaZip(IAutorizzato user, List<EsitoOperazionePendenza> inserimenti, ZipOutputStream zos)
+			throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException,
+			IOException {
+		boolean addError = true;
+		if(inserimenti != null && !inserimenti.isEmpty()) {
+			PendenzeDAO pendenzeDAO = new PendenzeDAO();
+			for (EsitoOperazionePendenza esitoOperazionePendenza : inserimenti) {
+				if(esitoOperazionePendenza.getStato().equals(StatoOperazionePendenza.ESEGUITO) && esitoOperazionePendenza.getEsito().equals("ADD_OK")) { 
+					addError = false; // ho trovato almeno un avviso da stampare
+
+					LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
+
+					String idDominio = null;
+					String numeroAvviso = null;
+					try {
+						Avviso avviso = (Avviso) esitoOperazionePendenza.getDati();
+						idDominio = avviso.getIdDominio();
+						numeroAvviso = avviso.getNumeroAvviso();
+					} catch (Exception e) {
+						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?, ?>) esitoOperazionePendenza.getDati();
+						idDominio =(String)map.get("idDominio");
+						numeroAvviso =(String)map.get("numeroAvviso");
+					}
+
+					leggiPendenzaDTO.setIdDominio(idDominio);
+					leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+					LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
+
+					String pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
+					ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
+					zos.putNextEntry(tracciatoOutputEntry);
+					zos.write(leggiPendenzaDTOResponse.getAvvisoPdf());
+					zos.flush();
+					zos.closeEntry();
+				}
+			}
+		} 
+
+		if(addError){
+			ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
+			zos.putNextEntry(tracciatoOutputEntry);
+			zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
+			zos.flush();
+			zos.closeEntry();
+		}
 	}
 }
 

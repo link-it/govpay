@@ -58,7 +58,7 @@ public class TipoStoricoRPT {
      *     
      */
     public Date getData() {
-        return data;
+        return this.data;
     }
 
     /**
@@ -82,7 +82,7 @@ public class TipoStoricoRPT {
      *     
      */
     public String getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**
@@ -106,7 +106,7 @@ public class TipoStoricoRPT {
      *     
      */
     public String getDescrizione() {
-        return descrizione;
+        return this.descrizione;
     }
 
     /**

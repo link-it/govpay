@@ -14,7 +14,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	}
 
 	public Versamento getVersamento() {
-		return versamento;
+		return this.versamento;
 	}
 
 	public void setVersamento(Versamento versamento) {
@@ -22,7 +22,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	}
 
 	public boolean isStampaAvviso() {
-		return stampaAvviso;
+		return this.stampaAvviso;
 	}
 
 	public void setStampaAvviso(boolean stampaAvviso) {
@@ -30,7 +30,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	}
 
 	public boolean isAvvisaturaDigitale() {
-		return avvisaturaDigitale;
+		return this.avvisaturaDigitale;
 	}
 
 	public void setAvvisaturaDigitale(boolean avvisaturaDigitale) {

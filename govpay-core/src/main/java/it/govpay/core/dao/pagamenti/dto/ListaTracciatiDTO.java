@@ -26,7 +26,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	}
 
 	public List<TIPO_TRACCIATO> getTipoTracciato() {
-		return tipoTracciato;
+		return this.tipoTracciato;
 	}
 
 	public void setTipoTracciato(List<TIPO_TRACCIATO> tipoTracciato) {
@@ -34,7 +34,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	}
 
 	public String getOperatore() {
-		return operatore;
+		return this.operatore;
 	}
 
 	public void setOperatore(String operatore) {
@@ -42,7 +42,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	}
 
 	public STATO_ELABORAZIONE getStatoTracciato() {
-		return statoTracciato;
+		return this.statoTracciato;
 	}
 
 	public void setStatoTracciato(STATO_ELABORAZIONE statoTracciato) {
@@ -50,7 +50,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	}
 
 	public StatoTracciatoPendenza getStatoTracciatoPendenza() {
-		return statoTracciatoPendenza;
+		return this.statoTracciatoPendenza;
 	}
 
 	public void setStatoTracciatoPendenza(StatoTracciatoPendenza statoTracciatoPendenza) {
@@ -58,7 +58,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	}
 
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(String idDominio) {

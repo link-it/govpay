@@ -17,12 +17,13 @@ public class OperazioneAnnullamento extends Operazione{
 		this.setLineaElaborazione(operazione.getLineaElaborazione());
 		this.setStato(operazione.getStato());
 		this.setTipoOperazione(operazione.getTipoOperazione());
+		this.setCodDominio(operazione.getCodDominio());
 	}
 
 	private String motivoAnnullamento;
 	
 	public String getMotivoAnnullamento() {
-		return motivoAnnullamento;
+		return this.motivoAnnullamento;
 	}
 
 	public void setMotivoAnnullamento(String motivoAnnullamento) {

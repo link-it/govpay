@@ -52,7 +52,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 		@Override
 		@JsonValue
 		public String toString() {
-			return String.valueOf(value);
+			return String.valueOf(this.value);
 		}
 
 		public static TipoEnum fromValue(String text) {
@@ -91,7 +91,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 
 	@JsonProperty("username")
 	public String getUsername() {
-		return username;
+		return this.username;
 	}
 	public void setUsername(String username) {
 		this.username = username;
@@ -106,7 +106,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 
 	@JsonProperty("password")
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
@@ -121,7 +121,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 
 	@JsonProperty("tipo")
 	public TipoEnum getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 	public void setTipo(TipoEnum tipo) {
 		this.tipo = tipo;
@@ -137,7 +137,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 
 	@JsonProperty("ksLocation")
 	public String getKsLocation() {
-		return ksLocation;
+		return this.ksLocation;
 	}
 	public void setKsLocation(String ksLocation) {
 		this.ksLocation = ksLocation;
@@ -153,7 +153,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 
 	@JsonProperty("ksPassword")
 	public String getKsPassword() {
-		return ksPassword;
+		return this.ksPassword;
 	}
 	public void setKsPassword(String ksPassword) {
 		this.ksPassword = ksPassword;
@@ -169,7 +169,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 
 	@JsonProperty("tsLocation")
 	public String getTsLocation() {
-		return tsLocation;
+		return this.tsLocation;
 	}
 	public void setTsLocation(String tsLocation) {
 		this.tsLocation = tsLocation;
@@ -185,7 +185,7 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 
 	@JsonProperty("tsPassword")
 	public String getTsPassword() {
-		return tsPassword;
+		return this.tsPassword;
 	}
 	public void setTsPassword(String tsPassword) {
 		this.tsPassword = tsPassword;
@@ -196,26 +196,26 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || this.getClass() != o.getClass()) {
 			return false;
 		}
 		TipoAutenticazione tipoAutenticazione = (TipoAutenticazione) o;
-		return Objects.equals(username, tipoAutenticazione.username) &&
-				Objects.equals(password, tipoAutenticazione.password) &&
-				Objects.equals(tipo, tipoAutenticazione.tipo) &&
-				Objects.equals(ksLocation, tipoAutenticazione.ksLocation) &&
-				Objects.equals(ksPassword, tipoAutenticazione.ksPassword) &&
-				Objects.equals(tsLocation, tipoAutenticazione.tsLocation) &&
-				Objects.equals(tsPassword, tipoAutenticazione.tsPassword);
+		return Objects.equals(this.username, tipoAutenticazione.username) &&
+				Objects.equals(this.password, tipoAutenticazione.password) &&
+				Objects.equals(this.tipo, tipoAutenticazione.tipo) &&
+				Objects.equals(this.ksLocation, tipoAutenticazione.ksLocation) &&
+				Objects.equals(this.ksPassword, tipoAutenticazione.ksPassword) &&
+				Objects.equals(this.tsLocation, tipoAutenticazione.tsLocation) &&
+				Objects.equals(this.tsPassword, tipoAutenticazione.tsPassword);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(username, password, tipo, ksLocation, ksPassword, tsLocation, tsPassword);
+		return Objects.hash(this.username, this.password, this.tipo, this.ksLocation, this.ksPassword, this.tsLocation, this.tsPassword);
 	}
 
 	public static TipoAutenticazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
-		return (TipoAutenticazione) parse(json, TipoAutenticazione.class);
+		return parse(json, TipoAutenticazione.class);
 	}
 
 	@Override
@@ -228,13 +228,13 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 		StringBuilder sb = new StringBuilder();
 		sb.append("class TipoAutenticazione {\n");
 
-		sb.append("    username: ").append(toIndentedString(username)).append("\n");
-		sb.append("    password: ").append(toIndentedString(password)).append("\n");
-		sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
-		sb.append("    ksLocation: ").append(toIndentedString(ksLocation)).append("\n");
-		sb.append("    ksPassword: ").append(toIndentedString(ksPassword)).append("\n");
-		sb.append("    tsLocation: ").append(toIndentedString(tsLocation)).append("\n");
-		sb.append("    tsPassword: ").append(toIndentedString(tsPassword)).append("\n");
+		sb.append("    username: ").append(this.toIndentedString(this.username)).append("\n");
+		sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
+		sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
+		sb.append("    ksLocation: ").append(this.toIndentedString(this.ksLocation)).append("\n");
+		sb.append("    ksPassword: ").append(this.toIndentedString(this.ksPassword)).append("\n");
+		sb.append("    tsLocation: ").append(this.toIndentedString(this.tsLocation)).append("\n");
+		sb.append("    tsPassword: ").append(this.toIndentedString(this.tsPassword)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
@@ -250,13 +250,14 @@ public class TipoAutenticazione extends it.govpay.core.rs.v1.beans.JSONSerializa
 		return o.toString().replace("\n", "\n    ");
 	}
 
+	@Override
 	public void validate() throws ValidationException {
 
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
-		if(username != null) {
-			vf.getValidator("username", username).notNull();
-			vf.getValidator("password", password).notNull();
+		if(this.username != null) {
+			vf.getValidator("username", this.username).notNull();
+			vf.getValidator("password", this.password).notNull();
 		} else {
 			// TODO
 		}

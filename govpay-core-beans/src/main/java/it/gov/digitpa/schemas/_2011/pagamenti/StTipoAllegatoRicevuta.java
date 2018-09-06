@@ -29,7 +29,7 @@ public enum StTipoAllegatoRicevuta {
     BD;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StTipoAllegatoRicevuta fromValue(String v) {

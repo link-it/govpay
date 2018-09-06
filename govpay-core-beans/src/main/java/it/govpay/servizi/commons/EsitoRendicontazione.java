@@ -30,7 +30,7 @@ public enum EsitoRendicontazione {
     ESEGUITO_SENZA_RPT;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static EsitoRendicontazione fromValue(String v) {

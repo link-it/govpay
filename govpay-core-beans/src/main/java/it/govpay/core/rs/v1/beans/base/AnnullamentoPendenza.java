@@ -36,7 +36,7 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
 
   @JsonProperty("idA2A")
   public String getIdA2A() {
-    return idA2A;
+    return this.idA2A;
   }
   public void setIdA2A(String idA2A) {
     this.idA2A = idA2A;
@@ -52,7 +52,7 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
 
   @JsonProperty("idPendenza")
   public String getIdPendenza() {
-    return idPendenza;
+    return this.idPendenza;
   }
   public void setIdPendenza(String idPendenza) {
     this.idPendenza = idPendenza;
@@ -68,7 +68,7 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
 
   @JsonProperty("motivoAnnullamento")
   public String getMotivoAnnullamento() {
-    return motivoAnnullamento;
+    return this.motivoAnnullamento;
   }
   public void setMotivoAnnullamento(String motivoAnnullamento) {
     this.motivoAnnullamento = motivoAnnullamento;
@@ -79,22 +79,22 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     AnnullamentoPendenza annullamentoPendenza = (AnnullamentoPendenza) o;
-    return Objects.equals(idA2A, annullamentoPendenza.idA2A) &&
-        Objects.equals(idPendenza, annullamentoPendenza.idPendenza) &&
-        Objects.equals(motivoAnnullamento, annullamentoPendenza.motivoAnnullamento);
+    return Objects.equals(this.idA2A, annullamentoPendenza.idA2A) &&
+        Objects.equals(this.idPendenza, annullamentoPendenza.idPendenza) &&
+        Objects.equals(this.motivoAnnullamento, annullamentoPendenza.motivoAnnullamento);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, motivoAnnullamento);
+    return Objects.hash(this.idA2A, this.idPendenza, this.motivoAnnullamento);
   }
 
   public static AnnullamentoPendenza parse(String json) throws ServiceException, ValidationException {
-    return (AnnullamentoPendenza) parse(json, AnnullamentoPendenza.class);
+    return parse(json, AnnullamentoPendenza.class);
   }
 
   @Override
@@ -107,9 +107,9 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
     StringBuilder sb = new StringBuilder();
     sb.append("class AnnullamentoPendenza {\n");
     
-    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
-    sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
-    sb.append("    motivoAnnullamento: ").append(toIndentedString(motivoAnnullamento)).append("\n");
+    sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
+    sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
+    sb.append("    motivoAnnullamento: ").append(this.toIndentedString(this.motivoAnnullamento)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -129,9 +129,9 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
 	public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
-		vf.getValidator("idA2A", idA2A).notNull().minLength(1).maxLength(35);
-		vf.getValidator("idPendenza", idPendenza).notNull().minLength(1).maxLength(35);
-		vf.getValidator("motivoAnnullamento", motivoAnnullamento).notNull();
+		vf.getValidator("idA2A", this.idA2A).notNull().minLength(1).maxLength(35);
+		vf.getValidator("idPendenza", this.idPendenza).notNull().minLength(1).maxLength(35);
+		vf.getValidator("motivoAnnullamento", this.motivoAnnullamento).notNull();
 	}
 }
 

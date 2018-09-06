@@ -94,7 +94,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getCodFlusso() {
-        return codFlusso;
+        return this.codFlusso;
     }
 
     /**
@@ -118,7 +118,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getCodBicRiversamento() {
-        return codBicRiversamento;
+        return this.codBicRiversamento;
     }
 
     /**
@@ -142,7 +142,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public Integer getAnnoRiferimento() {
-        return annoRiferimento;
+        return this.annoRiferimento;
     }
 
     /**
@@ -166,7 +166,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getCodPsp() {
-        return codPsp;
+        return this.codPsp;
     }
 
     /**
@@ -190,7 +190,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public Date getDataFlusso() {
-        return dataFlusso;
+        return this.dataFlusso;
     }
 
     /**
@@ -214,7 +214,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public Date getDataRegolamento() {
-        return dataRegolamento;
+        return this.dataRegolamento;
     }
 
     /**
@@ -238,7 +238,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public String getIur() {
-        return iur;
+        return this.iur;
     }
 
     /**
@@ -262,7 +262,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public Long getNumeroPagamenti() {
-        return numeroPagamenti;
+        return this.numeroPagamenti;
     }
 
     /**
@@ -286,7 +286,7 @@ public class EstremiFlussoRendicontazione {
      *     
      */
     public BigDecimal getImportoTotale() {
-        return importoTotale;
+        return this.importoTotale;
     }
 
     /**

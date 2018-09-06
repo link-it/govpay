@@ -57,7 +57,7 @@ public class TipoStoricoVersamento {
      * 
      */
     public int getProgressivo() {
-        return progressivo;
+        return this.progressivo;
     }
 
     /**
@@ -77,7 +77,7 @@ public class TipoStoricoVersamento {
      *     
      */
     public Date getData() {
-        return data;
+        return this.data;
     }
 
     /**
@@ -101,7 +101,7 @@ public class TipoStoricoVersamento {
      *     
      */
     public String getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**
@@ -125,7 +125,7 @@ public class TipoStoricoVersamento {
      *     
      */
     public String getDescrizione() {
-        return descrizione;
+        return this.descrizione;
     }
 
     /**

@@ -18,19 +18,19 @@ public abstract class StatisticaFilter extends AbstractFilter {
 	private Double soglia;
 	
 	public Date getData() {
-		return data;
+		return this.data;
 	}
 	public void setData(Date data) {
 		this.data = data;
 	}
 	public TipoIntervallo getTipoIntervallo() {
-		return tipoIntervallo;
+		return this.tipoIntervallo;
 	}
 	public void setTipoIntervallo(TipoIntervallo tipoIntervallo) {
 		this.tipoIntervallo = tipoIntervallo;
 	}
 	public Double getSoglia() {
-		return soglia;
+		return this.soglia;
 	}
 	public void setSoglia(Double soglia) {
 		this.soglia = soglia;

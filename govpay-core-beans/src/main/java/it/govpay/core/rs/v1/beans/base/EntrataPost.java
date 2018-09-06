@@ -42,7 +42,7 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("ibanAccredito")
   public String getIbanAccredito() {
-    return ibanAccredito;
+    return this.ibanAccredito;
   }
   public void setIbanAccredito(String ibanAccredito) {
     this.ibanAccredito = ibanAccredito;
@@ -57,7 +57,7 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("ibanAppoggio")
   public String getIbanAppoggio() {
-    return ibanAppoggio;
+    return this.ibanAppoggio;
   }
   public void setIbanAppoggio(String ibanAppoggio) {
     this.ibanAppoggio = ibanAppoggio;
@@ -72,7 +72,7 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("tipoContabilita")
   public TipoContabilita getTipoContabilita() {
-    return tipoContabilita;
+    return this.tipoContabilita;
   }
   public void setTipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
@@ -88,7 +88,7 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("codiceContabilita")
   public String getCodiceContabilita() {
-    return codiceContabilita;
+    return this.codiceContabilita;
   }
   public void setCodiceContabilita(String codiceContabilita) {
     this.codiceContabilita = codiceContabilita;
@@ -104,7 +104,7 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("codificaIUV")
   public String getCodificaIUV() {
-    return codificaIUV;
+    return this.codificaIUV;
   }
   public void setCodificaIUV(String codificaIUV) {
     this.codificaIUV = codificaIUV;
@@ -120,7 +120,7 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -131,25 +131,25 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     EntrataPost entrataPost = (EntrataPost) o;
-    return Objects.equals(ibanAccredito, entrataPost.ibanAccredito) &&
-        Objects.equals(ibanAppoggio, entrataPost.ibanAppoggio) &&
-        Objects.equals(tipoContabilita, entrataPost.tipoContabilita) &&
-        Objects.equals(codiceContabilita, entrataPost.codiceContabilita) &&
-        Objects.equals(codificaIUV, entrataPost.codificaIUV) &&
-        Objects.equals(abilitato, entrataPost.abilitato);
+    return Objects.equals(this.ibanAccredito, entrataPost.ibanAccredito) &&
+        Objects.equals(this.ibanAppoggio, entrataPost.ibanAppoggio) &&
+        Objects.equals(this.tipoContabilita, entrataPost.tipoContabilita) &&
+        Objects.equals(this.codiceContabilita, entrataPost.codiceContabilita) &&
+        Objects.equals(this.codificaIUV, entrataPost.codificaIUV) &&
+        Objects.equals(this.abilitato, entrataPost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, codificaIUV, abilitato);
+    return Objects.hash(this.ibanAccredito, this.ibanAppoggio, this.tipoContabilita, this.codiceContabilita, this.codificaIUV, this.abilitato);
   }
 
   public static EntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (EntrataPost) parse(json, EntrataPost.class);
+    return parse(json, EntrataPost.class);
   }
 
   @Override
@@ -162,12 +162,12 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class EntrataPost {\n");
     
-    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
-    sb.append("    ibanAppoggio: ").append(toIndentedString(ibanAppoggio)).append("\n");
-    sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
-    sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
-    sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
+    sb.append("    ibanAppoggio: ").append(this.toIndentedString(this.ibanAppoggio)).append("\n");
+    sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
+    sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
+    sb.append("    codificaIUV: ").append(this.toIndentedString(this.codificaIUV)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

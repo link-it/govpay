@@ -44,7 +44,7 @@ public class PaaVerificaRPTRisposta {
      *     
      */
     public EsitoVerificaRPT getPaaVerificaRPTRisposta() {
-        return paaVerificaRPTRisposta;
+        return this.paaVerificaRPTRisposta;
     }
 
     /**

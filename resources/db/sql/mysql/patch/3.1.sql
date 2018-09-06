@@ -62,4 +62,28 @@ CREATE TABLE esiti_avvisatura
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('esito-avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
 
+CREATE TABLE operazioni
+(
+        tipo_operazione VARCHAR(255) NOT NULL,
+        linea_elaborazione BIGINT NOT NULL,
+        stato VARCHAR(255) NOT NULL,
+        dati_richiesta MEDIUMBLOB NOT NULL,
+        dati_risposta MEDIUMBLOB,
+        dettaglio_esito VARCHAR(255),
+        cod_versamento_ente VARCHAR(255),
+        cod_dominio VARCHAR(35),
+        iuv VARCHAR(35),
+        trn VARCHAR(35),
+        -- fk/pk columns
+        id BIGINT AUTO_INCREMENT,
+        id_tracciato BIGINT NOT NULL,
+        id_applicazione BIGINT,
+        -- fk/pk keys constraints
+        CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+        CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+        CONSTRAINT pk_operazioni PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
 

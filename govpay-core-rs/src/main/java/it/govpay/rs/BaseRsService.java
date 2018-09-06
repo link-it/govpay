@@ -89,7 +89,7 @@ public abstract class BaseRsService {
 //	}
 
 	protected List<String> getListaRuoli(HttpServletCredential credential){
-		List<String> listaRuoliPosseduti = new ArrayList<String>();
+		List<String> listaRuoliPosseduti = new ArrayList<>();
 		// caricamento dei ruoli ricevuti nella richiesta http
 		for (String chiaveRuolo : this.aclCache.getChiaviRuoli()) {
 			if(credential.isUserInRole(chiaveRuolo)){
@@ -104,7 +104,7 @@ public abstract class BaseRsService {
 		Utenza user = CredentialUtils.getUser(credential);
 		
 		user.setRuoli(this.getListaRuoli(credential));
-		List<Acl> aclDaRuoliContainer = new ArrayList<Acl>();
+		List<Acl> aclDaRuoliContainer = new ArrayList<>();
 		for (String ruolo : user.getRuoli()) {
 			aclDaRuoliContainer.addAll(this.aclCache.getAclsRuolo(ruolo));
 		}

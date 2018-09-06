@@ -55,7 +55,7 @@ public class NodoChiediElencoQuadraturePA {
      *     
      */
     public String getIdentificativoIntermediarioPA() {
-        return identificativoIntermediarioPA;
+        return this.identificativoIntermediarioPA;
     }
 
     /**
@@ -79,7 +79,7 @@ public class NodoChiediElencoQuadraturePA {
      *     
      */
     public String getIdentificativoStazioneIntermediarioPA() {
-        return identificativoStazioneIntermediarioPA;
+        return this.identificativoStazioneIntermediarioPA;
     }
 
     /**
@@ -103,7 +103,7 @@ public class NodoChiediElencoQuadraturePA {
      *     
      */
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -127,7 +127,7 @@ public class NodoChiediElencoQuadraturePA {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**

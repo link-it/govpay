@@ -10,84 +10,85 @@ public class Tracciato extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
 		this.descrizioneStato = descrizioneStato;
 	}
 	public Date getDataCaricamento() {
-		return dataCaricamento;
+		return this.dataCaricamento;
 	}
 	public void setDataCaricamento(Date dataCaricamento) {
 		this.dataCaricamento = dataCaricamento;
 	}
 	public Date getDataCompletamento() {
-		return dataCompletamento;
+		return this.dataCompletamento;
 	}
 	public void setDataCompletamento(Date dataCompletamento) {
 		this.dataCompletamento = dataCompletamento;
 	}
 	public String getBeanDati() {
-		return beanDati;
+		return this.beanDati;
 	}
 	public void setBeanDati(String beanDati) {
 		this.beanDati = beanDati;
 	}
 	public String getFileNameRichiesta() {
-		return fileNameRichiesta;
+		return this.fileNameRichiesta;
 	}
 	public void setFileNameRichiesta(String fileNameRichiesta) {
 		this.fileNameRichiesta = fileNameRichiesta;
 	}
 	public byte[] getRawRichiesta() {
-		return rawRichiesta;
+		return this.rawRichiesta;
 	}
 	public void setRawRichiesta(byte[] rawRichiesta) {
 		this.rawRichiesta = rawRichiesta;
 	}
 	public String getFileNameEsito() {
-		return fileNameEsito;
+		return this.fileNameEsito;
 	}
 	public void setFileNameEsito(String fileNameEsito) {
 		this.fileNameEsito = fileNameEsito;
 	}
 	public byte[] getRawEsito() {
-		return rawEsito;
+		return this.rawEsito;
 	}
 	public void setRawEsito(byte[] rawEsito) {
 		this.rawEsito = rawEsito;
 	}
 	
 	public TIPO_TRACCIATO getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 	public void setTipo(TIPO_TRACCIATO tipo) {
 		this.tipo = tipo;
 	}
 
 	public STATO_ELABORAZIONE getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(STATO_ELABORAZIONE stato) {
 		this.stato = stato;
 	}
 
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	
 	public Long getIdOperatore() {
-		return idOperatore;
+		return this.idOperatore;
 	}
 	public void setIdOperatore(Long idOperatore) {
 		this.idOperatore = idOperatore;

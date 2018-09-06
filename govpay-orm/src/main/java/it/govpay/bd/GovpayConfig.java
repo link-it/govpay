@@ -72,17 +72,17 @@ public class GovpayConfig {
 
 		Logger log = LoggerWrapperFactory.getLogger("boot");
 
-		props = new Properties[2];
+		this.props = new Properties[2];
 		Properties props1 = new Properties();
 		props1.load(propertyFile);
-		props[1] = props1;
+		this.props[1] = props1;
 
 		// Recupero la configurazione della working dir
 		// Se e' configurata, la uso come prioritaria
 
 		try {
 			if(resourcePathProperty != null)
-				this.resourceDir = getProperty(resourcePathProperty, props1, false, true);
+				this.resourceDir = this.getProperty(resourcePathProperty, props1, false, true);
 
 			if(this.resourceDir != null) {
 				File resourceDirFile = new File(this.resourceDir);
@@ -94,25 +94,25 @@ public class GovpayConfig {
 		}
 
 		Properties props0 = null;
-		props[0] = props0;
+		this.props[0] = props0;
 
 		File gpConfigFile = new File(this.resourceDir + propertyFileName);
 		if(gpConfigFile.exists()) {
 			props0 = new Properties();
 			props0.load(new FileInputStream(gpConfigFile));
 			log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
-			props[0] = props0;
+			this.props[0] = props0;
 		}
 
-		this.databaseType = getProperty("it.govpay.orm.databaseType", props, true);
-		String databaseShowSqlString = getProperty("it.govpay.orm.showSql", props, true);
+		this.databaseType = this.getProperty("it.govpay.orm.databaseType", this.props, true);
+		String databaseShowSqlString = this.getProperty("it.govpay.orm.showSql", this.props, true);
 		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
-		this.dataSourceJNDIName = getProperty("it.govpay.orm.dataSourceJNDIName", props, true);
-		this.dataSourceAppName = getProperty("it.govpay.orm.dataSourceAppName", props, true);
+		this.dataSourceJNDIName = this.getProperty("it.govpay.orm.dataSourceJNDIName", this.props, true);
+		this.dataSourceAppName = this.getProperty("it.govpay.orm.dataSourceAppName", this.props, true);
 
 		if(dataonly) return;
 		
-		String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", props, false);
+		String defaultCustomIuvGeneratorClass = this.getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false);
 		if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
 			Class<?> c = null;
 			try {
@@ -129,7 +129,7 @@ public class GovpayConfig {
 			this.defaultCustomIuvGenerator = new CustomIuv();
 		}
 		
-		String pspPostaliString = getProperty("psp.postali", props, false);
+		String pspPostaliString = this.getProperty("psp.postali", this.props, false);
 		this.pspPostali = new ArrayList<>();
 		try{
 			if(pspPostaliString != null)
@@ -139,7 +139,7 @@ public class GovpayConfig {
 			this.pspPostali = new ArrayList<>();
 		}
 		
-		String sizePaginaNumeroVersamentiPerAvvisoString = getProperty("it.govpay.batch.avvisaturaDigitale.sizePaginaNumeroVersamenti", props, false);
+		String sizePaginaNumeroVersamentiPerAvvisoString = this.getProperty("it.govpay.batch.avvisaturaDigitale.sizePaginaNumeroVersamenti", this.props, false);
 		try {
 			this.sizePaginaNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(sizePaginaNumeroVersamentiPerAvvisoString);
 		} catch(Throwable t) {
@@ -147,7 +147,7 @@ public class GovpayConfig {
 			this.sizePaginaNumeroVersamentiAvvisaturaDigitale = 100;
 		}
 		
-		String limiteNumeroVersamentiPerAvvisoString = getProperty("it.govpay.batch.avvisaturaDigitale.limiteNumeroVersamenti", props, false);
+		String limiteNumeroVersamentiPerAvvisoString = this.getProperty("it.govpay.batch.avvisaturaDigitale.limiteNumeroVersamenti", this.props, false);
 		try {
 			this.limiteNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(limiteNumeroVersamentiPerAvvisoString);
 		} catch(Throwable t) {
@@ -196,7 +196,7 @@ public class GovpayConfig {
 
 		String value = null;
 		for(int i=0; i<props.length; i++) {
-			try { value = getProperty(name, props[i], required, i==1); } catch (Exception e) { }
+			try { value = this.getProperty(name, props[i], required, i==1); } catch (Exception e) { }
 			if(value != null && !value.trim().isEmpty()) {
 				return value;
 			}
@@ -211,38 +211,38 @@ public class GovpayConfig {
 	}
 
 	public String getDatabaseType() {
-		return databaseType;
+		return this.databaseType;
 	}
 
 	public boolean isDatabaseShowSql() {
-		return databaseShowSql;
+		return this.databaseShowSql;
 	}
 
 	public String getDataSourceJNDIName() {
-		return dataSourceJNDIName;
+		return this.dataSourceJNDIName;
 	}
 
 	public String getDataSourceAppName() {
-		return dataSourceAppName;
+		return this.dataSourceAppName;
 	}
 
 	public CustomIuv getDefaultCustomIuvGenerator() {
-		return defaultCustomIuvGenerator;
+		return this.defaultCustomIuvGenerator;
 	}
 
 	public String getResourceDir() {
-		return resourceDir;
+		return this.resourceDir;
 	}
 
 	public List<String> getPspPostali() {
-		return pspPostali;
+		return this.pspPostali;
 	}
 
 	public Integer getSizePaginaNumeroVersamentiAvvisaturaDigitale() {
-		return sizePaginaNumeroVersamentiAvvisaturaDigitale;
+		return this.sizePaginaNumeroVersamentiAvvisaturaDigitale;
 	}
 
 	public Integer getLimiteNumeroVersamentiAvvisaturaDigitale() {
-		return limiteNumeroVersamentiAvvisaturaDigitale;
+		return this.limiteNumeroVersamentiAvvisaturaDigitale;
 	}
 }

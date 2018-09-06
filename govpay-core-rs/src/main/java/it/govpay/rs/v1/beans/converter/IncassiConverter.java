@@ -40,7 +40,7 @@ public class IncassiConverter {
 		
 		rsModel.setIbanAccredito(i.getIbanAccredito());
 		if(i.getPagamenti(null)!= null) {
-			List<Riscossione> riscossioni = new ArrayList<Riscossione>();
+			List<Riscossione> riscossioni = new ArrayList<>();
 			for (Pagamento pagamento : i.getPagamenti(null)) {
 				riscossioni.add(RiscossioniConverter.toRsModel(pagamento));
 			}

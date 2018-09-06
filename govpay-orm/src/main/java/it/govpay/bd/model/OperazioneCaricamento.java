@@ -17,6 +17,7 @@ public class OperazioneCaricamento extends Operazione{
 		this.setLineaElaborazione(operazione.getLineaElaborazione());
 		this.setStato(operazione.getStato());
 		this.setTipoOperazione(operazione.getTipoOperazione());
+		this.setCodDominio(operazione.getCodDominio());
 	}
 
 	// richiesta
@@ -29,27 +30,29 @@ public class OperazioneCaricamento extends Operazione{
 	private byte[] qrCode;
 	private byte[] barCode;
 	
+	@Override
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
+	@Override
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public byte[] getQrCode() {
-		return qrCode;
+		return this.qrCode;
 	}
 	public void setQrCode(byte[] qrCode) {
 		this.qrCode = qrCode;
 	}
 	public byte[] getBarCode() {
-		return barCode;
+		return this.barCode;
 	}
 	public void setBarCode(byte[] barCode) {
 		this.barCode = barCode;
 	}
 	
 	public Versamento getVersamento() {
-		return versamento;
+		return this.versamento;
 	}
 
 	public void setVersamento(Versamento versamento) {

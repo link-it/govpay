@@ -68,7 +68,7 @@ public class EsitoAvvisaturaFilter extends AbstractFilter {
 	}
 
 	public Long getIdTracciato() {
-		return idTracciato;
+		return this.idTracciato;
 	}
 
 	public void setIdTracciato(Long idTracciato) {

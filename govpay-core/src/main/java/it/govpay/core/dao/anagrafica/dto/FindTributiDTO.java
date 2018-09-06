@@ -34,11 +34,11 @@ public class FindTributiDTO extends BasicFindRequestDTO {
 	}
 	
 	public String getCodDominio(){
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public String getCodTributo() {
-		return codTributo;
+		return this.codTributo;
 	}
 
 	public void setCodTributo(String codTributo) {
@@ -46,7 +46,7 @@ public class FindTributiDTO extends BasicFindRequestDTO {
 	}
 
 	public String getDescrizione() {
-		return descrizione;
+		return this.descrizione;
 	}
 
 	public void setDescrizione(String descrizione) {
@@ -54,7 +54,7 @@ public class FindTributiDTO extends BasicFindRequestDTO {
 	}
 
 	public Boolean getAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(Boolean abilitato) {

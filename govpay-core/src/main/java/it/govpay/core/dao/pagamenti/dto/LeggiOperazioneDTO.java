@@ -20,7 +20,7 @@ public class LeggiOperazioneDTO extends BasicRequestDTO {
 	}
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {

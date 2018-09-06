@@ -92,7 +92,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public String getVersioneOggetto() {
-        return versioneOggetto;
+        return this.versioneOggetto;
     }
 
     /**
@@ -116,7 +116,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public CtDominio getDominio() {
-        return dominio;
+        return this.dominio;
     }
 
     /**
@@ -140,7 +140,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public String getIdentificativoMessaggioRicevuta() {
-        return identificativoMessaggioRicevuta;
+        return this.identificativoMessaggioRicevuta;
     }
 
     /**
@@ -164,7 +164,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public Date getDataOraMessaggioRicevuta() {
-        return dataOraMessaggioRicevuta;
+        return this.dataOraMessaggioRicevuta;
     }
 
     /**
@@ -188,7 +188,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public String getRiferimentoMessaggioRichiesta() {
-        return riferimentoMessaggioRichiesta;
+        return this.riferimentoMessaggioRichiesta;
     }
 
     /**
@@ -212,7 +212,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public Date getRiferimentoDataRichiesta() {
-        return riferimentoDataRichiesta;
+        return this.riferimentoDataRichiesta;
     }
 
     /**
@@ -236,7 +236,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public CtIstitutoAttestante getIstitutoAttestante() {
-        return istitutoAttestante;
+        return this.istitutoAttestante;
     }
 
     /**
@@ -260,7 +260,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public CtEnteBeneficiario getEnteBeneficiario() {
-        return enteBeneficiario;
+        return this.enteBeneficiario;
     }
 
     /**
@@ -284,7 +284,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public CtSoggettoVersante getSoggettoVersante() {
-        return soggettoVersante;
+        return this.soggettoVersante;
     }
 
     /**
@@ -308,7 +308,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public CtSoggettoPagatore getSoggettoPagatore() {
-        return soggettoPagatore;
+        return this.soggettoPagatore;
     }
 
     /**
@@ -332,7 +332,7 @@ public class CtRicevutaTelematica {
      *     
      */
     public CtDatiVersamentoRT getDatiPagamento() {
-        return datiPagamento;
+        return this.datiPagamento;
     }
 
     /**

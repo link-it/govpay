@@ -62,7 +62,7 @@ public class Rpt extends BasicBD{
 	}
 	
 	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Applicazione applicazione, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
-		return avviaTransazione(versamenti, applicazione, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
+		return this.avviaTransazione(versamenti, applicazione, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
 	}
 
 	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Applicazione applicazione, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
@@ -87,7 +87,7 @@ public class Rpt extends BasicBD{
 
 					log.debug("Verifica autorizzazione applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
 
-					List<Diritti> diritti = new ArrayList<Diritti>(); 
+					List<Diritti> diritti = new ArrayList<>(); 
 					diritti.add(Diritti.ESECUZIONE);
 					
 					if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti)) {
@@ -166,7 +166,7 @@ public class Rpt extends BasicBD{
 			RptBD rptBD = new RptBD(this);
 			it.govpay.core.business.Versamento versamentiBusiness = new it.govpay.core.business.Versamento(this);
 			this.setAutoCommit(false);
-			List<it.govpay.bd.model.Rpt> rpts = new ArrayList<it.govpay.bd.model.Rpt>();
+			List<it.govpay.bd.model.Rpt> rpts = new ArrayList<>();
 			for(Versamento versamento : versamenti) {
 				// Aggiorno tutti i versamenti che mi sono stati passati
 
@@ -185,7 +185,7 @@ public class Rpt extends BasicBD{
 					if(tipoIuv.equals(TipoIUV.NUMERICO))
 						ccp = IuvUtils.buildCCP();
 					else 
-						ccp = it.govpay.bd.model.Rpt.CCP_NA;
+						ccp = it.govpay.model.Rpt.CCP_NA;
 					ctx.log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {
 					// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso. 
@@ -200,7 +200,7 @@ public class Rpt extends BasicBD{
 						// Non c'e' iuv assegnato. Glielo genero io.
 						iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
 						if(iuvBusiness.getTipoIUV(iuv.getIuv()).equals(TipoIUV.ISO11694)) {
-							ccp = it.govpay.bd.model.Rpt.CCP_NA;
+							ccp = it.govpay.model.Rpt.CCP_NA;
 						} else {
 							ccp = IuvUtils.buildCCP();
 						}
@@ -225,8 +225,8 @@ public class Rpt extends BasicBD{
 				log.info("Inserita Rpt per il versamento ("+versamento.getCodVersamentoEnte()+") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") con dominio (" + rpt.getCodDominio() + ") iuv (" + rpt.getIuv() + ") ccp (" + rpt.getCcp() + ")");
 			} 
 
-			commit();
-			closeConnection();
+			this.commit();
+			this.closeConnection();
 
 			// Spedisco le RPT al Nodo
 			// Se ho una GovPayException, non ho sicuramente spedito nulla.
@@ -241,7 +241,7 @@ public class Rpt extends BasicBD{
 				ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", ctx.getPagamentoCtx().getCodCarrello()));
 				ctx.log("rpt.invioCarrelloRpt");
 				risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, this);
-				setupConnection(GpThreadLocal.get().getTransactionId());
+				this.setupConnection(GpThreadLocal.get().getTransactionId());
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
@@ -273,7 +273,7 @@ public class Rpt extends BasicBD{
 						log.debug("Nessuna URL di redirect");
 						ctx.log("rpt.invioOkNoRedirect");
 					}
-					return updateStatoRpt(rpts, StatoRpt.RPT_ACCETTATA_NODO, risposta.getUrl(), null);
+					return this.updateStatoRpt(rpts, StatoRpt.RPT_ACCETTATA_NODO, risposta.getUrl(), null);
 				}
 			} catch (ClientException e) {
 				// ClientException: tento una chiedi stato RPT per recuperare lo stato effettivo.
@@ -292,7 +292,7 @@ public class Rpt extends BasicBD{
 				} catch (ClientException ee) {
 					ctx.log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
 					log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");
-					updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), null);
+					this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), null);
 					throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
 				} finally {
 					ctx.closeTransaction(idTransaction2);
@@ -324,23 +324,23 @@ public class Rpt extends BasicBD{
 						log.info("Processo di pagamento recuperato. Nessuna URL di redirect.");
 						ctx.log("rpt.invioRecoveryStatoRPTOk");
 					}
-					return updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), e);
+					return this.updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), e);
 				}
 			} finally {
 				ctx.closeTransaction(idTransaction);
 			}
 		} catch (ServiceException e) {
-			rollback();
+			this.rollback();
 			throw new GovPayException(e);
 		} catch (GovPayException e){
-			rollback();
+			this.rollback();
 			throw e;
 		} 
 	}
 	
 	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, Exception e) throws ServiceException, GovPayException { 
 		GpContext ctx = GpThreadLocal.get();
-		setupConnection(ctx.getTransactionId());
+		this.setupConnection(ctx.getTransactionId());
 		String sessionId = null;
 		NotificheBD notificheBD = new NotificheBD(this);
 		try {

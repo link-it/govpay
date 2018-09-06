@@ -18,7 +18,7 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public Tributo getTributo() {
-		return tributo;
+		return this.tributo;
 	}
 
 	public void setTributo(Tributo tributo) {
@@ -26,7 +26,7 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdTributo() {
-		return idTributo;
+		return this.idTributo;
 	}
 
 	public void setIdTributo(String idTributo) {
@@ -34,7 +34,7 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(String idDominio) {
@@ -42,7 +42,7 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIbanAccredito() {
-		return ibanAccredito;
+		return this.ibanAccredito;
 	}
 
 	public void setIbanAccredito(String ibanAccredito) {
@@ -50,7 +50,7 @@ public class PutEntrataDominioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIbanAppoggio() {
-		return ibanAppoggio;
+		return this.ibanAppoggio;
 	}
 
 	public void setIbanAppoggio(String ibanAppoggio) {

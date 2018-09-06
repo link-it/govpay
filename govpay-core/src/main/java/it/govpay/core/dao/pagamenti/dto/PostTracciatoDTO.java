@@ -19,31 +19,31 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	private List<Versamento> annullamenti;
 	
 	public List<Versamento> getInserimenti() {
-		return inserimenti;
+		return this.inserimenti;
 	}
 	public void setInserimenti(List<Versamento> inserimenti) {
 		this.inserimenti = inserimenti;
 	}
 	public List<Versamento> getAnnullamenti() {
-		return annullamenti;
+		return this.annullamenti;
 	}
 	public void setAnnullamenti(List<Versamento> annullamenti) {
 		this.annullamenti = annullamenti;
 	}
 	public String getNomeFile() {
-		return nomeFile;
+		return this.nomeFile;
 	}
 	public void setNomeFile(String nomeFile) {
 		this.nomeFile = nomeFile;
 	}
 	public byte[] getContenuto() {
-		return contenuto;
+		return this.contenuto;
 	}
 	public void setContenuto(byte[] contenuto) {
 		this.contenuto = contenuto;
 	}
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;

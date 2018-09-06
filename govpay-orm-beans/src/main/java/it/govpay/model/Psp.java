@@ -33,15 +33,15 @@ public class Psp extends BasicModel {
 	}
 	
 	public String getCodPsp() {
-		return codPsp;
+		return this.codPsp;
 	}
 
 	public String getRagioneSociale() {
-		return ragioneSociale;
+		return this.ragioneSociale;
 	}
 
 	public String getCodIntermediarioPsp() {
-		return codIntermediarioPsp;
+		return this.codIntermediarioPsp;
 	}
 
 }

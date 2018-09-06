@@ -62,7 +62,7 @@ public class EsitoChiediStatoRPT {
      *     
      */
     public String getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**
@@ -86,7 +86,7 @@ public class EsitoChiediStatoRPT {
      *     
      */
     public Integer getRedirect() {
-        return redirect;
+        return this.redirect;
     }
 
     /**
@@ -110,7 +110,7 @@ public class EsitoChiediStatoRPT {
      *     
      */
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     /**
@@ -148,8 +148,8 @@ public class EsitoChiediStatoRPT {
      * 
      */
     public List<TipoStoricoRPT> getElementoStoricoRPT() {
-        if (elementoStoricoRPT == null) {
-            elementoStoricoRPT = new ArrayList<TipoStoricoRPT>();
+        if (this.elementoStoricoRPT == null) {
+            this.elementoStoricoRPT = new ArrayList<>();
         }
         return this.elementoStoricoRPT;
     }
@@ -177,8 +177,8 @@ public class EsitoChiediStatoRPT {
      * 
      */
     public List<TipoStoricoVersamento> getElementoStoricoVersamento() {
-        if (elementoStoricoVersamento == null) {
-            elementoStoricoVersamento = new ArrayList<TipoStoricoVersamento>();
+        if (this.elementoStoricoVersamento == null) {
+            this.elementoStoricoVersamento = new ArrayList<>();
         }
         return this.elementoStoricoVersamento;
     }

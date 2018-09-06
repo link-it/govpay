@@ -72,7 +72,7 @@ public class GpChiediStatoVersamento {
      *     
      */
     public String getCodPortale() {
-        return codPortale;
+        return this.codPortale;
     }
 
     /**
@@ -96,7 +96,7 @@ public class GpChiediStatoVersamento {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -120,7 +120,7 @@ public class GpChiediStatoVersamento {
      *     
      */
     public String getCodVersamentoEnte() {
-        return codVersamentoEnte;
+        return this.codVersamentoEnte;
     }
 
     /**
@@ -144,7 +144,7 @@ public class GpChiediStatoVersamento {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -168,7 +168,7 @@ public class GpChiediStatoVersamento {
      *     
      */
     public String getIuv() {
-        return iuv;
+        return this.iuv;
     }
 
     /**
@@ -192,7 +192,7 @@ public class GpChiediStatoVersamento {
      *     
      */
     public String getBundleKey() {
-        return bundleKey;
+        return this.bundleKey;
     }
 
     /**
@@ -216,7 +216,7 @@ public class GpChiediStatoVersamento {
      *     
      */
     public String getCodUnivocoDebitore() {
-        return codUnivocoDebitore;
+        return this.codUnivocoDebitore;
     }
 
     /**

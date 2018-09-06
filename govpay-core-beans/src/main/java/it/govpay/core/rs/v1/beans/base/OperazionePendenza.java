@@ -66,7 +66,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("tipoOperazione")
   public TipoOperazionePendenza getTipoOperazione() {
-    return tipoOperazione;
+    return this.tipoOperazione;
   }
   public void setTipoOperazione(TipoOperazionePendenza tipoOperazione) {
     this.tipoOperazione = tipoOperazione;
@@ -81,7 +81,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("stato")
   public StatoOperazionePendenza getStato() {
-    return stato;
+    return this.stato;
   }
   public void setStato(StatoOperazionePendenza stato) {
     this.stato = stato;
@@ -97,7 +97,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("descrizioneStato")
   public String getDescrizioneStato() {
-    return descrizioneStato;
+    return this.descrizioneStato;
   }
   public void setDescrizioneStato(String descrizioneStato) {
     this.descrizioneStato = descrizioneStato;
@@ -112,7 +112,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("enteCreditore")
   public DominioIndex getEnteCreditore() {
-    return enteCreditore;
+    return this.enteCreditore;
   }
   public void setEnteCreditore(DominioIndex enteCreditore) {
     this.enteCreditore = enteCreditore;
@@ -127,7 +127,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("soggettoPagatore")
   public Soggetto getSoggettoPagatore() {
-    return soggettoPagatore;
+    return this.soggettoPagatore;
   }
   public void setSoggettoPagatore(Soggetto soggettoPagatore) {
     this.soggettoPagatore = soggettoPagatore;
@@ -143,7 +143,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("applicazione")
   public String getApplicazione() {
-    return applicazione;
+    return this.applicazione;
   }
   public void setApplicazione(String applicazione) {
     this.applicazione = applicazione;
@@ -159,7 +159,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("identificativoPendenza")
   public String getIdentificativoPendenza() {
-    return identificativoPendenza;
+    return this.identificativoPendenza;
   }
   public void setIdentificativoPendenza(String identificativoPendenza) {
     this.identificativoPendenza = identificativoPendenza;
@@ -175,7 +175,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("numeroAvviso")
   public String getNumeroAvviso() {
-    return numeroAvviso;
+    return this.numeroAvviso;
   }
   public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
@@ -191,7 +191,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("numero")
   public BigDecimal getNumero() {
-    return numero;
+    return this.numero;
   }
   public void setNumero(BigDecimal numero) {
     this.numero = numero;
@@ -206,7 +206,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("richiesta")
   public Object getRichiesta() {
-    return richiesta;
+    return this.richiesta;
   }
   public void setRichiesta(Object richiesta) {
     this.richiesta = richiesta;
@@ -221,7 +221,7 @@ public class OperazionePendenza extends JSONSerializable {
 
   @JsonProperty("risposta")
   public EsitoOperazionePendenza getRisposta() {
-    return risposta;
+    return this.risposta;
   }
   public void setRisposta(EsitoOperazionePendenza risposta) {
     this.risposta = risposta;
@@ -232,30 +232,30 @@ public class OperazionePendenza extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     OperazionePendenza operazionePendenza = (OperazionePendenza) o;
-    return Objects.equals(tipoOperazione, operazionePendenza.tipoOperazione) &&
-        Objects.equals(stato, operazionePendenza.stato) &&
-        Objects.equals(descrizioneStato, operazionePendenza.descrizioneStato) &&
-        Objects.equals(enteCreditore, operazionePendenza.enteCreditore) &&
-        Objects.equals(soggettoPagatore, operazionePendenza.soggettoPagatore) &&
-        Objects.equals(applicazione, operazionePendenza.applicazione) &&
-        Objects.equals(identificativoPendenza, operazionePendenza.identificativoPendenza) &&
-        Objects.equals(numeroAvviso, operazionePendenza.numeroAvviso) &&
-        Objects.equals(numero, operazionePendenza.numero) &&
-        Objects.equals(richiesta, operazionePendenza.richiesta) &&
-        Objects.equals(risposta, operazionePendenza.risposta);
+    return Objects.equals(this.tipoOperazione, operazionePendenza.tipoOperazione) &&
+        Objects.equals(this.stato, operazionePendenza.stato) &&
+        Objects.equals(this.descrizioneStato, operazionePendenza.descrizioneStato) &&
+        Objects.equals(this.enteCreditore, operazionePendenza.enteCreditore) &&
+        Objects.equals(this.soggettoPagatore, operazionePendenza.soggettoPagatore) &&
+        Objects.equals(this.applicazione, operazionePendenza.applicazione) &&
+        Objects.equals(this.identificativoPendenza, operazionePendenza.identificativoPendenza) &&
+        Objects.equals(this.numeroAvviso, operazionePendenza.numeroAvviso) &&
+        Objects.equals(this.numero, operazionePendenza.numero) &&
+        Objects.equals(this.richiesta, operazionePendenza.richiesta) &&
+        Objects.equals(this.risposta, operazionePendenza.risposta);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipoOperazione, stato, descrizioneStato, enteCreditore, soggettoPagatore, applicazione, identificativoPendenza, numeroAvviso, numero, richiesta, risposta);
+    return Objects.hash(this.tipoOperazione, this.stato, this.descrizioneStato, this.enteCreditore, this.soggettoPagatore, this.applicazione, this.identificativoPendenza, this.numeroAvviso, this.numero, this.richiesta, this.risposta);
   }
 
   public static OperazionePendenza parse(String json) throws ServiceException, ValidationException {
-    return (OperazionePendenza) parse(json, OperazionePendenza.class);
+    return parse(json, OperazionePendenza.class);
   }
 
   @Override
@@ -268,17 +268,17 @@ public class OperazionePendenza extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class OperazionePendenza {\n");
     
-    sb.append("    tipoOperazione: ").append(toIndentedString(tipoOperazione)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
-    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
-    sb.append("    enteCreditore: ").append(toIndentedString(enteCreditore)).append("\n");
-    sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
-    sb.append("    applicazione: ").append(toIndentedString(applicazione)).append("\n");
-    sb.append("    identificativoPendenza: ").append(toIndentedString(identificativoPendenza)).append("\n");
-    sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
-    sb.append("    numero: ").append(toIndentedString(numero)).append("\n");
-    sb.append("    richiesta: ").append(toIndentedString(richiesta)).append("\n");
-    sb.append("    risposta: ").append(toIndentedString(risposta)).append("\n");
+    sb.append("    tipoOperazione: ").append(this.toIndentedString(this.tipoOperazione)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(this.toIndentedString(this.descrizioneStato)).append("\n");
+    sb.append("    enteCreditore: ").append(this.toIndentedString(this.enteCreditore)).append("\n");
+    sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
+    sb.append("    applicazione: ").append(this.toIndentedString(this.applicazione)).append("\n");
+    sb.append("    identificativoPendenza: ").append(this.toIndentedString(this.identificativoPendenza)).append("\n");
+    sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
+    sb.append("    numero: ").append(this.toIndentedString(this.numero)).append("\n");
+    sb.append("    richiesta: ").append(this.toIndentedString(this.richiesta)).append("\n");
+    sb.append("    risposta: ").append(this.toIndentedString(this.risposta)).append("\n");
     sb.append("}");
     return sb.toString();
   }

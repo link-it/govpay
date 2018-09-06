@@ -46,7 +46,6 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -80,17 +79,17 @@ public class RtUtils extends NdpValidationUtils {
 		public List<ErroreValidazione> errori;
 		
 		public EsitoValidazione() {
-			validato = true;
-			errori = new ArrayList<ErroreValidazione>();
+			this.validato = true;
+			this.errori = new ArrayList<>();
 		}
 		
 		public void addErrore(String errore, boolean fatal) {
-			errori.add(new ErroreValidazione(errore, fatal));
-			if(fatal) validato = false;
+			this.errori.add(new ErroreValidazione(errore, fatal));
+			if(fatal) this.validato = false;
 		}
 		
 		public String getFatal() {
-			for(ErroreValidazione errore : errori) {
+			for(ErroreValidazione errore : this.errori) {
 				if(errore.fatal) return errore.errore;
 			}
 			return "-";
@@ -98,7 +97,7 @@ public class RtUtils extends NdpValidationUtils {
 		
 		public String getDiagnostico() {
 			StringBuffer sb = new StringBuffer();
-			for(ErroreValidazione errore : errori) {
+			for(ErroreValidazione errore : this.errori) {
 				sb.append("\n");
 				sb.append(errore.fatal ? "[Fatal] " : "[Warning] ");
 				sb.append(errore.errore);
@@ -335,7 +334,7 @@ public class RtUtils extends NdpValidationUtils {
 				insert = false;
 			} catch (NotFoundException nfe){
 				pagamento = new Pagamento();
-				if(singoloVersamento.getIdTributo() != null && singoloVersamento.getTributo(bd).getCodTributo().equals(Tributo.BOLLOT)) {
+				if(singoloVersamento.getIdTributo() != null && singoloVersamento.getTributo(bd).getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)) {
 					pagamento.setTipo(TipoPagamento.MBT);
 				} else {
 					pagamento.setTipo(TipoPagamento.ENTRATA);
@@ -364,7 +363,7 @@ public class RtUtils extends NdpValidationUtils {
 				if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
 				    singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
 				else {
-					List<String> anomalie = new ArrayList<String>();
+					List<String> anomalie = new ArrayList<>();
 					
 					if(!singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO)) {
 						anomalie.add("La voce del versamento [CodVersamentoEnte:" + singoloVersamento.getVersamento(bd).getCodVersamentoEnte() + " CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento e' in stato [" + singoloVersamento.getStatoSingoloVersamento().toString() + "].");

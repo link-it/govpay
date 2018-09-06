@@ -1,3 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.pagamenti;
 
 import java.util.ArrayList;
@@ -147,7 +167,7 @@ public class TracciatiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			return listaTracciati(listaTracciatiDTO, bd);
+			return this.listaTracciati(listaTracciatiDTO, bd);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -189,7 +209,7 @@ public class TracciatiDAO extends BaseDAO{
 
 		long count = tracciatoBD.count(filter);
 
-		List<Tracciato> resList = new ArrayList<Tracciato>();
+		List<Tracciato> resList = new ArrayList<>();
 		if(count > 0) {
 			resList = tracciatoBD.findAll(filter);
 		} 
@@ -254,7 +274,7 @@ public class TracciatiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			return listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO, bd);
+			return this.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO, bd);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -281,7 +301,7 @@ public class TracciatiDAO extends BaseDAO{
 
 		long count = operazioniBD.count(filter);
 
-		List<Operazione> resList = new ArrayList<Operazione>();
+		List<Operazione> resList = new ArrayList<>();
 		if(count > 0) {
 			List<Operazione> resListTmp = operazioniBD.findAll(filter);
 			

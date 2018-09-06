@@ -52,7 +52,7 @@ public class CtDatiSingoloVersamento {
      *     
      */
     public String getIbanAccredito() {
-        return ibanAccredito;
+        return this.ibanAccredito;
     }
 
     /**
@@ -76,7 +76,7 @@ public class CtDatiSingoloVersamento {
      *     
      */
     public String getIbanAppoggio() {
-        return ibanAppoggio;
+        return this.ibanAppoggio;
     }
 
     /**

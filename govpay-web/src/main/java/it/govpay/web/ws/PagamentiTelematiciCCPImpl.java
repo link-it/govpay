@@ -160,7 +160,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			Utenza user = getUtenzaAutenticata();
+			Utenza user = this.getUtenzaAutenticata();
 			if(GovpayConfig.getInstance().isPddAuthEnable() && user.getPrincipal() == null) {
 				ctx.log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
@@ -313,7 +313,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				p.setDataRichiesta(rpt.getDataMsgRichiesta());
 				p.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
 
-				List<IdVersamento> idVersamentoList = new ArrayList<IdVersamento>();
+				List<IdVersamento> idVersamentoList = new ArrayList<>();
 
 				IdVersamento idVersamento = new IdVersamento();
 				idVersamento.setCodVersamentoEnte(rpt.getVersamento(bd).getCodVersamentoEnte());
@@ -390,12 +390,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			ctx.log("ccp.ricezioneAttivaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
-			response = buildRisposta(e, response);
+			response = this.buildRisposta(e, response);
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
 			ctx.log("ccp.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
-			response = buildRisposta(e, codDominio, response);
+			response = this.buildRisposta(e, codDominio, response);
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
 			ctx.log("ccp.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
@@ -467,7 +467,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			Utenza user = getUtenzaAutenticata();
+			Utenza user = this.getUtenzaAutenticata();
 			if(GovpayConfig.getInstance().isPddAuthEnable() && user.getPrincipal() == null) {
 				ctx.log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
@@ -631,12 +631,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			ctx.log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
-			response = buildRisposta(e, response);
+			response = this.buildRisposta(e, response);
 			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
 			ctx.log("ccp.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
-			response = buildRisposta(e, codDominio, response);
+			response = this.buildRisposta(e, codDominio, response);
 			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
 			ctx.log("ccp.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
@@ -665,7 +665,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 
 	private <T> T buildRisposta(Exception e, String codDominio, T risposta) {
-		return buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), risposta);
+		return this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), risposta);
 	}
 
 	private <T> T buildRisposta(NdpException e, T risposta) {
@@ -711,10 +711,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	private Utenza getUtenzaAutenticata() throws GovPayException {
 		Utenza user = null;
 		try {
-			HttpServletRequest request = (HttpServletRequest) wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
+			HttpServletRequest request = (HttpServletRequest) this.wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
 			user = CredentialUtils.getUser(request, log);
 		} catch (Exception e) {
-			throw new GovPayException(EsitoOperazione.AUT_001, wsCtxt.getUserPrincipal().getName());
+			throw new GovPayException(EsitoOperazione.AUT_001, this.wsCtxt.getUserPrincipal().getName());
 		}
 		return user;
 	}

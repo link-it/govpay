@@ -105,7 +105,7 @@ public class TracciatiBD extends BasicBD {
 
 	public List<Tracciato> findAll(TracciatoFilter filter) throws ServiceException {
 		try {
-			List<Tracciato> lst = new ArrayList<Tracciato>();
+			List<Tracciato> lst = new ArrayList<>();
 			List<it.govpay.orm.Tracciato> lstTracciatoVO = this.getTracciatoService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Tracciato tracciatoVO: lstTracciatoVO) {
 				lst.add(TracciatoConverter.toDTO(tracciatoVO));

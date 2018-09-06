@@ -67,7 +67,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("id")
   public BigDecimal getId() {
-    return id;
+    return this.id;
   }
   public void setId(BigDecimal id) {
     this.id = id;
@@ -83,7 +83,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("codDominio")
   public String getCodDominio() {
-    return codDominio;
+    return this.codDominio;
   }
   public void setCodDominio(String codDominio) {
     this.codDominio = codDominio;
@@ -99,7 +99,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("tipo")
   public String getTipo() {
-    return tipo;
+    return this.tipo;
   }
   public void setTipo(String tipo) {
     this.tipo = tipo;
@@ -115,7 +115,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("stato")
   public String getStato() {
-    return stato;
+    return this.stato;
   }
   public void setStato(String stato) {
     this.stato = stato;
@@ -131,7 +131,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("descrizioneStato")
   public String getDescrizioneStato() {
-    return descrizioneStato;
+    return this.descrizioneStato;
   }
   public void setDescrizioneStato(String descrizioneStato) {
     this.descrizioneStato = descrizioneStato;
@@ -147,7 +147,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("dataCaricamento")
   public Date getDataCaricamento() {
-    return dataCaricamento;
+    return this.dataCaricamento;
   }
   public void setDataCaricamento(Date dataCaricamento) {
     this.dataCaricamento = dataCaricamento;
@@ -163,7 +163,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("dataCompletamento")
   public Date getDataCompletamento() {
-    return dataCompletamento;
+    return this.dataCompletamento;
   }
   public void setDataCompletamento(Date dataCompletamento) {
     this.dataCompletamento = dataCompletamento;
@@ -180,7 +180,7 @@ public class Tracciato extends JSONSerializable {
   @JsonProperty("beanDati")
   @JsonRawValue
   public Object getBeanDati() {
-    return beanDati;
+    return this.beanDati;
   }
   public void setBeanDati(Object beanDati) {
     this.beanDati = beanDati;
@@ -196,7 +196,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("filenameRichiesta")
   public String getFilenameRichiesta() {
-    return filenameRichiesta;
+    return this.filenameRichiesta;
   }
   public void setFilenameRichiesta(String filenameRichiesta) {
     this.filenameRichiesta = filenameRichiesta;
@@ -212,7 +212,7 @@ public class Tracciato extends JSONSerializable {
 
   @JsonProperty("filenameEsito")
   public String getFilenameEsito() {
-    return filenameEsito;
+    return this.filenameEsito;
   }
   public void setFilenameEsito(String filenameEsito) {
     this.filenameEsito = filenameEsito;
@@ -223,29 +223,29 @@ public class Tracciato extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Tracciato tracciato = (Tracciato) o;
-    return Objects.equals(id, tracciato.id) &&
-        Objects.equals(codDominio, tracciato.codDominio) &&
-        Objects.equals(tipo, tracciato.tipo) &&
-        Objects.equals(stato, tracciato.stato) &&
-        Objects.equals(descrizioneStato, tracciato.descrizioneStato) &&
-        Objects.equals(dataCaricamento, tracciato.dataCaricamento) &&
-        Objects.equals(dataCompletamento, tracciato.dataCompletamento) &&
-        Objects.equals(beanDati, tracciato.beanDati) &&
-        Objects.equals(filenameRichiesta, tracciato.filenameRichiesta) &&
-        Objects.equals(filenameEsito, tracciato.filenameEsito);
+    return Objects.equals(this.id, tracciato.id) &&
+        Objects.equals(this.codDominio, tracciato.codDominio) &&
+        Objects.equals(this.tipo, tracciato.tipo) &&
+        Objects.equals(this.stato, tracciato.stato) &&
+        Objects.equals(this.descrizioneStato, tracciato.descrizioneStato) &&
+        Objects.equals(this.dataCaricamento, tracciato.dataCaricamento) &&
+        Objects.equals(this.dataCompletamento, tracciato.dataCompletamento) &&
+        Objects.equals(this.beanDati, tracciato.beanDati) &&
+        Objects.equals(this.filenameRichiesta, tracciato.filenameRichiesta) &&
+        Objects.equals(this.filenameEsito, tracciato.filenameEsito);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, codDominio, tipo, stato, descrizioneStato, dataCaricamento, dataCompletamento, beanDati, filenameRichiesta, filenameEsito);
+    return Objects.hash(this.id, this.codDominio, this.tipo, this.stato, this.descrizioneStato, this.dataCaricamento, this.dataCompletamento, this.beanDati, this.filenameRichiesta, this.filenameEsito);
   }
 
   public static Tracciato parse(String json) throws ServiceException, ValidationException {
-    return (Tracciato) parse(json, Tracciato.class);
+    return parse(json, Tracciato.class);
   }
 
   @Override
@@ -258,16 +258,16 @@ public class Tracciato extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Tracciato {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    codDominio: ").append(toIndentedString(codDominio)).append("\n");
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
-    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
-    sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
-    sb.append("    dataCompletamento: ").append(toIndentedString(dataCompletamento)).append("\n");
-    sb.append("    beanDati: ").append(toIndentedString(beanDati)).append("\n");
-    sb.append("    filenameRichiesta: ").append(toIndentedString(filenameRichiesta)).append("\n");
-    sb.append("    filenameEsito: ").append(toIndentedString(filenameEsito)).append("\n");
+    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
+    sb.append("    codDominio: ").append(this.toIndentedString(this.codDominio)).append("\n");
+    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(this.toIndentedString(this.descrizioneStato)).append("\n");
+    sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
+    sb.append("    dataCompletamento: ").append(this.toIndentedString(this.dataCompletamento)).append("\n");
+    sb.append("    beanDati: ").append(this.toIndentedString(this.beanDati)).append("\n");
+    sb.append("    filenameRichiesta: ").append(this.toIndentedString(this.filenameRichiesta)).append("\n");
+    sb.append("    filenameEsito: ").append(this.toIndentedString(this.filenameEsito)).append("\n");
     sb.append("}");
     return sb.toString();
   }

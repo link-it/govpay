@@ -13,7 +13,7 @@ public class BasicFindResponseDTO<T> {
 	}
 
 	public long getTotalResults() {
-		return totalResults;
+		return this.totalResults;
 	}
 
 	public void setTotalResults(long totalResults) {
@@ -21,7 +21,7 @@ public class BasicFindResponseDTO<T> {
 	}
 
 	public List<T> getResults() {
-		return results;
+		return this.results;
 	}
 
 	public void setResults(List<T> results) {

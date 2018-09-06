@@ -63,7 +63,7 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 				}
 			}
 		}
-		return domini;
+		return this.domini;
 	}
 
 	public List<Tributo> getTributi(BasicBD bd) throws ServiceException {
@@ -75,7 +75,7 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 				}
 			}
 		}
-		return tributi;
+		return this.tributi;
 	}
 
 

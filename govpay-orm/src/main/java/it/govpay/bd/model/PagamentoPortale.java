@@ -38,7 +38,7 @@ public class PagamentoPortale extends BasicModel {
 		}
 		
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static VersioneInterfacciaWISP toEnum(String codifica) throws ServiceException {
@@ -107,52 +107,52 @@ public class PagamentoPortale extends BasicModel {
 	
 	
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
 	}
 	public String getIdSessione() {
-		return idSessione;
+		return this.idSessione;
 	}
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
 	}
 	public String getIdSessionePortale() {
-		return idSessionePortale;
+		return this.idSessionePortale;
 	}
 	public void setIdSessionePortale(String idSessionePortale) {
 		this.idSessionePortale = idSessionePortale;
 	}
 	public String getIdSessionePsp() {
-		return idSessionePsp;
+		return this.idSessionePsp;
 	}
 	public void setIdSessionePsp(String idSessionePsp) {
 		this.idSessionePsp = idSessionePsp;
 	}
 	public STATO getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(STATO stato) {
 		this.stato = stato;
 	}
 	public String getPspRedirectUrl() {
-		return pspRedirectUrl;
+		return this.pspRedirectUrl;
 	}
 	public void setPspRedirectUrl(String pspRedirectUrl) {
 		this.pspRedirectUrl = pspRedirectUrl;
 	}
 	public String getJsonRequest() {
-		return jsonRequest;
+		return this.jsonRequest;
 	}
 	public void setJsonRequest(String jsonRequest) {
 		this.jsonRequest = jsonRequest;
 	}
 	public String getWispIdDominio() {
-		return wispIdDominio;
+		return this.wispIdDominio;
 	}
 	public List<IdVersamento> getIdVersamento() {
-		return idVersamento;
+		return this.idVersamento;
 	}
 	public void setIdVersamento(List<IdVersamento> idVersamento) {
 		this.idVersamento = idVersamento;
@@ -161,79 +161,80 @@ public class PagamentoPortale extends BasicModel {
 		this.wispIdDominio = wispIdDominio;
 	}
 	public String getWispHtml() {
-		return wispHtml;
+		return this.wispHtml;
 	}
 	public void setWispHtml(String wispHtml) {
 		this.wispHtml = wispHtml;
 	}
 	public Date getDataRichiesta() {
-		return dataRichiesta;
+		return this.dataRichiesta;
 	}
 	public void setDataRichiesta(Date dataRichiesta) {
 		this.dataRichiesta = dataRichiesta;
 	}
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getUrlRitorno() {
-		return urlRitorno;
+		return this.urlRitorno;
 	}
 	public void setUrlRitorno(String urlRitorno) {
 		this.urlRitorno = urlRitorno;
 	}
 	public String getPspEsito() {
-		return pspEsito;
+		return this.pspEsito;
 	}
 	public void setPspEsito(String pspEsito) {
 		this.pspEsito = pspEsito;
 	}
 	public String getWispKeyPA() {
-		return wispKeyPA;
+		return this.wispKeyPA;
 	}
 	public void setWispKeyPA(String wispKeyPA) {
 		this.wispKeyPA = wispKeyPA;
 	}
 	public String getWispKeyWisp() {
-		return wispKeyWisp;
+		return this.wispKeyWisp;
 	}
 	public void setWispKeyWisp(String wispKeyWisp) {
 		this.wispKeyWisp = wispKeyWisp;
 	}
 	public String getCodPsp() {
-		return codPsp;
+		return this.codPsp;
 	}
 	public void setCodPsp(String codPsp) {
 		this.codPsp = codPsp;
 	}
 	public String getTipoVersamento() {
-		return tipoVersamento;
+		return this.tipoVersamento;
 	}
 	public void setTipoVersamento(String tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 	public String getCodCanale() {
-		return codCanale;
+		return this.codCanale;
 	}
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
 	}
 	public String getNome() {
-		return nome;
+		return this.nome;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
 	public String getVersanteIdentificativo() {
-		return versanteIdentificativo;
+		return this.versanteIdentificativo;
 	}
 	public void setVersanteIdentificativo(String versanteIdentificativo) {
 		this.versanteIdentificativo = versanteIdentificativo;
 	}
 	public VersioneInterfacciaWISP getVersioneInterfacciaWISP() {
-		return versioneInterfacciaWISP;
+		return this.versioneInterfacciaWISP;
 	}
 	public void setVersioneInterfacciaWISP(VersioneInterfacciaWISP versioneInterfacciaWISP) {
 		this.versioneInterfacciaWISP = versioneInterfacciaWISP;
@@ -244,54 +245,54 @@ public class PagamentoPortale extends BasicModel {
 	private transient List<Versamento> versamenti;
 
 	public List<Versamento> getVersamenti(BasicBD bd) throws ServiceException {
-		if(versamenti != null)
-			return versamenti;
+		if(this.versamenti != null)
+			return this.versamenti;
 
 		if(this.idVersamento != null && this.idVersamento.size() > 0) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			VersamentoFilter filter = versamentiBD.newFilter();
-			List<Long> ids = new ArrayList<Long>();
+			List<Long> ids = new ArrayList<>();
 			for (IdVersamento idVs : this.idVersamento) {
 				ids.add(idVs.getId());
 			}
 			filter.setIdVersamento(ids);
 			this.versamenti = versamentiBD.findAll(filter );
 		}
-		return versamenti;
+		return this.versamenti;
 	}
 	public CODICE_STATO getCodiceStato() {
-		return codiceStato;
+		return this.codiceStato;
 	}
 	public void setCodiceStato(CODICE_STATO codiceStato) {
 		this.codiceStato = codiceStato;
 	}
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
 		this.descrizioneStato = descrizioneStato;
 	}
 	public Double getImporto() {
-		return importo;
+		return this.importo;
 	}
 	public void setImporto(Double importo) {
 		this.importo = importo;
 	}
 	public String getMultiBeneficiario() {
-		return multiBeneficiario;
+		return this.multiBeneficiario;
 	}
 	public void setMultiBeneficiario(String multiBeneficiario) {
 		this.multiBeneficiario = multiBeneficiario;
 	}
 	public boolean isAck() {
-		return ack;
+		return this.ack;
 	}
 	public void setAck(boolean ack) {
 		this.ack = ack;
 	}
 	public List<Nota> getNote() {
-		if(note == null) note = new ArrayList<>();
-		return note;
+		if(this.note == null) this.note = new ArrayList<>();
+		return this.note;
 	}
 
 	public String getNoteString() throws IOException {
@@ -315,7 +316,7 @@ public class PagamentoPortale extends BasicModel {
 		this.note = note;
 	}
 	public int getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 	public void setTipo(int tipo) {
 		this.tipo = tipo;

@@ -1,3 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.tracciati.operazioni;
 
 import java.io.UnsupportedEncodingException;
@@ -35,7 +55,7 @@ public class OperazioneFactory {
 			it.govpay.bd.model.Versamento versamentoModel = it.govpay.core.business.VersamentoUtils.toVersamentoModel(request.getVersamento(), basicBD);
 			CaricaVersamentoDTO caricaVersamentoDTO = new CaricaVersamentoDTO(request.getOperatore(), versamentoModel);
 			caricaVersamentoDTO.setAggiornaSeEsiste(true);
-			caricaVersamentoDTO.setGeneraIuv(true);
+			caricaVersamentoDTO.setGeneraIuv(versamentoModel.getNumeroAvviso() == null);
 
 			Versamento versamento = new Versamento(basicBD);
 			CaricaVersamentoDTOResponse caricaVersamento = versamento.caricaVersamento(caricaVersamentoDTO);
@@ -64,25 +84,7 @@ public class OperazioneFactory {
 			avviso.setBarcode(caricaVersamento.getBarCode() != null ? new String(caricaVersamento.getBarCode()) : null);
 			avviso.setQrcode(caricaVersamento.getQrCode() != null ? new String(caricaVersamento.getQrCode()) : null);
 			
-			StatoEnum statoPendenza = null;
-
-			switch(versamentoModel.getStatoVersamento()) {
-			case ANNULLATO: statoPendenza = StatoEnum.ANNULLATO;
-				break;
-			case ANOMALO: statoPendenza = StatoEnum.NON_PAGATO;
-				break;
-			case ESEGUITO: statoPendenza = StatoEnum.PAGATO;
-				break;
-			case ESEGUITO_SENZA_RPT:  statoPendenza = StatoEnum.PAGATO;
-				break;
-			case NON_ESEGUITO: if(versamentoModel.getDataScadenza() != null && versamentoModel.getDataScadenza().before(new Date())) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
-				break;
-			case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoEnum.PAGATO;
-				break;
-			default:
-				break;
-			
-			}
+			StatoEnum statoPendenza = this.getStatoPendenza(versamentoModel);
 
 			avviso.setStato(statoPendenza);
 			caricamentoResponse.setAvviso(avviso);
@@ -120,9 +122,43 @@ public class OperazioneFactory {
 			respKo.setDescrizione(e.getMessage());
 			respKo.setDettaglio(e.getDetails());
 			caricamentoResponse.setFaultBean(respKo);
+		} catch(Throwable e) {
+			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
+			caricamentoResponse.setDescrizioneEsito(e.getMessage());
+			
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("500000");
+			respKo.setDescrizione("Errore Interno");
+			respKo.setDettaglio("Errore Interno");
+			caricamentoResponse.setFaultBean(respKo);
 		}
 
 		return caricamentoResponse;
+	}
+
+	private StatoEnum getStatoPendenza(it.govpay.bd.model.Versamento versamentoModel) {
+		StatoEnum statoPendenza = null;
+
+		switch(versamentoModel.getStatoVersamento()) {
+		case ANNULLATO: statoPendenza = StatoEnum.ANNULLATO;
+			break;
+		case ANOMALO: statoPendenza = StatoEnum.NON_PAGATO;
+			break;
+		case ESEGUITO: statoPendenza = StatoEnum.PAGATO;
+			break;
+		case ESEGUITO_SENZA_RPT:  statoPendenza = StatoEnum.PAGATO;
+			break;
+		case NON_ESEGUITO: if(versamentoModel.getDataScadenza() != null && versamentoModel.getDataScadenza().before(new Date())) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
+			break;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoEnum.PAGATO;
+			break;
+		default:
+			break;
+		
+		}
+		return statoPendenza;
 	}
 	
 	public AnnullamentoResponse annullaVersamento(AnnullamentoRequest request, BasicBD basicBD) throws ServiceException {

@@ -13,31 +13,31 @@ public class PutPendenzaDTOResponse extends BasicCreateResponseDTO {
 	private String pdf;
 	
 	public Versamento getVersamento() {
-		return versamento;
+		return this.versamento;
 	}
 	public void setVersamento(Versamento versamento) {
 		this.versamento = versamento;
 	}
 	public Dominio getDominio() {
-		return dominio;
+		return this.dominio;
 	}
 	public void setDominio(Dominio dominio) {
 		this.dominio = dominio;
 	}
 	public String getQrCode() {
-		return qrCode;
+		return this.qrCode;
 	}
 	public void setQrCode(String qrCode) {
 		this.qrCode = qrCode;
 	}
 	public String getBarCode() {
-		return barCode;
+		return this.barCode;
 	}
 	public void setBarCode(String barCode) {
 		this.barCode = barCode;
 	}
 	public String getPdf() {
-		return pdf;
+		return this.pdf;
 	}
 	public void setPdf(String pdf) {
 		this.pdf = pdf;

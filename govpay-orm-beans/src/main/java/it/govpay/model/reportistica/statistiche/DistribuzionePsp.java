@@ -30,15 +30,15 @@ public class DistribuzionePsp {
 	}
 
 	public String getPsp() {
-		return psp;
+		return this.psp;
 	}
 
 	public long getTransazioni() {
-		return transazioni;
+		return this.transazioni;
 	}
 
 	public double getPercentuale() {
-		return percentuale;
+		return this.percentuale;
 	}
 
 	public void setPercentuale(double percentuale) {

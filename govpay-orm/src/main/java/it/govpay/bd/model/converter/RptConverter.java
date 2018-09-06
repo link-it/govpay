@@ -37,7 +37,7 @@ import it.govpay.orm.IdVersamento;
 public class RptConverter {
 
 	public static List<Rpt> toDTOList(List<it.govpay.orm.RPT> applicazioneLst) throws ServiceException {
-		List<Rpt> lstDTO = new ArrayList<Rpt>();
+		List<Rpt> lstDTO = new ArrayList<>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.RPT applicazione: applicazioneLst){
 				lstDTO.add(toDTO(applicazione));

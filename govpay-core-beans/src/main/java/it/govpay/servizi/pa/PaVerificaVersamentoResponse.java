@@ -56,7 +56,7 @@ public class PaVerificaVersamentoResponse {
      *     
      */
     public EsitoVerificaVersamento getCodEsito() {
-        return codEsito;
+        return this.codEsito;
     }
 
     /**
@@ -80,7 +80,7 @@ public class PaVerificaVersamentoResponse {
      *     
      */
     public String getDescrizioneEsito() {
-        return descrizioneEsito;
+        return this.descrizioneEsito;
     }
 
     /**
@@ -104,7 +104,7 @@ public class PaVerificaVersamentoResponse {
      *     
      */
     public Versamento getVersamento() {
-        return versamento;
+        return this.versamento;
     }
 
     /**

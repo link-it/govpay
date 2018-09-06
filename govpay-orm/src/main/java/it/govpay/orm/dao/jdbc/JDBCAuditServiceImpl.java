@@ -163,7 +163,7 @@ public class JDBCAuditServiceImpl extends JDBCAuditServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getAuditFieldConverter().toTable(Audit.model()));
 		boolean isUpdate_audit = true;
-		java.util.List<JDBCObject> lstObjects_audit = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_audit = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getAuditFieldConverter().toColumn(Audit.model().DATA,false), "?");
 		lstObjects_audit.add(new JDBCObject(audit.getData(), Audit.model().DATA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getAuditFieldConverter().toColumn(Audit.model().ID_OGGETTO,false), "?");
@@ -222,7 +222,7 @@ public class JDBCAuditServiceImpl extends JDBCAuditServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getAuditFieldConverter().toTable(Audit.model()), 
@@ -233,7 +233,7 @@ public class JDBCAuditServiceImpl extends JDBCAuditServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getAuditFieldConverter().toTable(Audit.model()), 
@@ -244,7 +244,7 @@ public class JDBCAuditServiceImpl extends JDBCAuditServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getAuditFieldConverter().toTable(Audit.model()), 

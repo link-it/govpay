@@ -27,7 +27,7 @@ public class StazionePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("password")
   public String getPassword() {
-    return password;
+    return this.password;
   }
   public void setPassword(String password) {
     this.password = password;
@@ -43,7 +43,7 @@ public class StazionePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -54,21 +54,21 @@ public class StazionePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     StazionePost stazionePost = (StazionePost) o;
-    return Objects.equals(password, stazionePost.password) &&
-        Objects.equals(abilitato, stazionePost.abilitato);
+    return Objects.equals(this.password, stazionePost.password) &&
+        Objects.equals(this.abilitato, stazionePost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(password, abilitato);
+    return Objects.hash(this.password, this.abilitato);
   }
 
   public static StazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (StazionePost) parse(json, StazionePost.class);
+    return parse(json, StazionePost.class);
   }
 
   @Override
@@ -81,8 +81,8 @@ public class StazionePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class StazionePost {\n");
     
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

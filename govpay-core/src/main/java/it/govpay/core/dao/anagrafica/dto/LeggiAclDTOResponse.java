@@ -16,7 +16,7 @@ public class LeggiAclDTOResponse {
 	private Acl acl;
 
 	public Acl getAcl() {
-		return acl;
+		return this.acl;
 	}
 
 	public void setAcl(Acl acl) {

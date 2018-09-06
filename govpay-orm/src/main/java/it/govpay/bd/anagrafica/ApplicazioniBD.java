@@ -70,7 +70,7 @@ public class ApplicazioniBD extends BasicBD {
 
 		try {
 			it.govpay.orm.Applicazione applicazioneVO = ((JDBCApplicazioneServiceSearch)this.getApplicazioneService()).get(id);
-			Applicazione applicazione = getApplicazione(applicazioneVO);
+			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 
 			return applicazione;
 		} catch (NotImplementedException e) {
@@ -92,7 +92,7 @@ public class ApplicazioniBD extends BasicBD {
 			IdApplicazione id = new IdApplicazione();
 			id.setCodApplicazione(codApplicazione);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().get(id);
-			Applicazione applicazione = getApplicazione(applicazioneVO);
+			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 			return applicazione;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -112,7 +112,7 @@ public class ApplicazioniBD extends BasicBD {
 			IExpression exp = this.getApplicazioneService().newExpression();
 			exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(exp);
-			Applicazione applicazione = getApplicazione(applicazioneVO);
+			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 
 			return applicazione;
 		} catch (NotImplementedException e) {
@@ -150,7 +150,7 @@ public class ApplicazioniBD extends BasicBD {
 			}
 			
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(expr);
-			Applicazione applicazione = getApplicazione(applicazioneVO);
+			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 
 			return applicazione;
 		} catch (NotImplementedException  | ExpressionNotImplementedException | ExpressionException e) { 
@@ -220,7 +220,7 @@ public class ApplicazioniBD extends BasicBD {
 				}
 			}
 
-			emitAudit(applicazione);
+			this.emitAudit(applicazione);
 			this.commit();
 			// ripristino l'autocommit.
 			this.setAutoCommit(true); 
@@ -286,7 +286,7 @@ public class ApplicazioniBD extends BasicBD {
 				}
 			}
 
-			emitAudit(applicazione);
+			this.emitAudit(applicazione);
 			
 			this.commit();
 			// ripristino l'autocommit.
@@ -322,9 +322,9 @@ public class ApplicazioniBD extends BasicBD {
 	public List<Applicazione> findAll(ApplicazioneFilter filter) throws ServiceException {
 		try {
 
-			List<Applicazione> dtoList = new ArrayList<Applicazione>();
+			List<Applicazione> dtoList = new ArrayList<>();
 			for(it.govpay.orm.Applicazione vo: this.getApplicazioneService().findAll(filter.toPaginatedExpression())) {
-				dtoList.add(getApplicazione(vo));
+				dtoList.add(this.getApplicazione(vo));
 			}
 			return dtoList;
 		} catch (NotImplementedException e) {

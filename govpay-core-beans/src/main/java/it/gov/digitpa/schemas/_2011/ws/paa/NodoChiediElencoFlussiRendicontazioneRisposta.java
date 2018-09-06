@@ -44,7 +44,7 @@ public class NodoChiediElencoFlussiRendicontazioneRisposta
      *     
      */
     public TipoElencoFlussiRendicontazione getElencoFlussiRendicontazione() {
-        return elencoFlussiRendicontazione;
+        return this.elencoFlussiRendicontazione;
     }
 
     /**

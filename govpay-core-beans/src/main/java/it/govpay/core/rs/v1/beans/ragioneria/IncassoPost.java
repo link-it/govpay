@@ -42,7 +42,7 @@ public class IncassoPost extends JSONSerializable {
 
   @JsonProperty("causale")
   public String getCausale() {
-    return causale;
+    return this.causale;
   }
   public void setCausale(String causale) {
     this.causale = causale;
@@ -57,7 +57,7 @@ public class IncassoPost extends JSONSerializable {
 
   @JsonProperty("importo")
   public Double getImporto() {
-    return importo;
+    return this.importo;
   }
   public void setImporto(Double importo) {
     this.importo = importo;
@@ -73,7 +73,7 @@ public class IncassoPost extends JSONSerializable {
 
   @JsonProperty("dataValuta")
   public Date getDataValuta() {
-    return dataValuta;
+    return this.dataValuta;
   }
   public void setDataValuta(Date dataValuta) {
     this.dataValuta = dataValuta;
@@ -89,7 +89,7 @@ public class IncassoPost extends JSONSerializable {
 
   @JsonProperty("dataContabile")
   public Date getDataContabile() {
-    return dataContabile;
+    return this.dataContabile;
   }
   public void setDataContabile(Date dataContabile) {
     this.dataContabile = dataContabile;
@@ -105,7 +105,7 @@ public class IncassoPost extends JSONSerializable {
 
   @JsonProperty("ibanAccredito")
   public String getIbanAccredito() {
-    return ibanAccredito;
+    return this.ibanAccredito;
   }
   public void setIbanAccredito(String ibanAccredito) {
     this.ibanAccredito = ibanAccredito;
@@ -116,24 +116,24 @@ public class IncassoPost extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     IncassoPost incassoPost = (IncassoPost) o;
-    return Objects.equals(causale, incassoPost.causale) &&
-        Objects.equals(importo, incassoPost.importo) &&
-        Objects.equals(dataValuta, incassoPost.dataValuta) &&
-        Objects.equals(dataContabile, incassoPost.dataContabile) &&
-        Objects.equals(ibanAccredito, incassoPost.ibanAccredito);
+    return Objects.equals(this.causale, incassoPost.causale) &&
+        Objects.equals(this.importo, incassoPost.importo) &&
+        Objects.equals(this.dataValuta, incassoPost.dataValuta) &&
+        Objects.equals(this.dataContabile, incassoPost.dataContabile) &&
+        Objects.equals(this.ibanAccredito, incassoPost.ibanAccredito);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(causale, importo, dataValuta, dataContabile, ibanAccredito);
+    return Objects.hash(this.causale, this.importo, this.dataValuta, this.dataContabile, this.ibanAccredito);
   }
 
   public static IncassoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (IncassoPost) parse(json, IncassoPost.class);
+    return parse(json, IncassoPost.class);
   }
 
   @Override
@@ -146,11 +146,11 @@ public class IncassoPost extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class IncassoPost {\n");
     
-    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
-    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
-    sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
-    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
+    sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
+    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
+    sb.append("    dataValuta: ").append(this.toIndentedString(this.dataValuta)).append("\n");
+    sb.append("    dataContabile: ").append(this.toIndentedString(this.dataContabile)).append("\n");
+    sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
     sb.append("}");
     return sb.toString();
   }

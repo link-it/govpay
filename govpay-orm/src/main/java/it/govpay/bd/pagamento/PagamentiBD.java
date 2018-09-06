@@ -101,7 +101,7 @@ public class PagamentiBD extends BasicBD {
 	
 	public Pagamento getPagamento(String codDominio, String iuv)
 			throws ServiceException, NotFoundException, MultipleResultException {
-		return getPagamento(codDominio, iuv, null, null);
+		return this.getPagamento(codDominio, iuv, null, null);
 	}
 
 	/**
@@ -174,9 +174,9 @@ public class PagamentiBD extends BasicBD {
 	}
 
 	public List<Pagamento> getPagamentiByRr(Long idRr) throws ServiceException {
-		PagamentoFilter filter = newFilter();
+		PagamentoFilter filter = this.newFilter();
 		filter.setIdRr(idRr);
-		return findAll(filter);
+		return this.findAll(filter);
 	}
 
 	public List<Pagamento> findAll(PagamentoFilter filter)

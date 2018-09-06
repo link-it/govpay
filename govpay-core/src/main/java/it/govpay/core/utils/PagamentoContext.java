@@ -31,76 +31,76 @@ public class PagamentoContext {
 	private VersamentoContext versamentoCtx;
 	
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
 	}
 	public boolean isPspRedirect() {
-		return pspRedirect;
+		return this.pspRedirect;
 	}
 	public void setPspRedirect(boolean pspRedirect) {
 		this.pspRedirect = pspRedirect;
 	}
 	public String getPspSessionId() {
-		return pspSessionId;
+		return this.pspSessionId;
 	}
 	public void setPspSessionId(String pspSessionId) {
 		this.pspSessionId = pspSessionId;
 	}
 	public String getCodSessionePortale() {
-		return codSessionePortale;
+		return this.codSessionePortale;
 	}
 	public void setCodSessionePortale(String codSessionePortale) {
 		this.codSessionePortale = codSessionePortale;
 	}
 	public boolean isCarrello() {
-		return carrello;
+		return this.carrello;
 	}
 	public void setCarrello(boolean carrello) {
 		this.carrello = carrello;
 	}
 	public String getCodCarrello() {
-		return codCarrello;
+		return this.codCarrello;
 	}
 	public void setCodCarrello(String codCarrello) {
 		this.codCarrello = codCarrello;
 	}
 	public Map<String,String> getIuvProps() {
-		return iuvProps;
+		return this.iuvProps;
 	}
 	public void setIuvProps(Map<String,String> iuvProps) {
 		this.iuvProps = iuvProps;
 	}
 	public VersamentoContext getVersamentoCtx() {
-		return versamentoCtx;
+		return this.versamentoCtx;
 	}
 	public void setVersamentoCtx(VersamentoContext versamentoCtx) {
 		this.versamentoCtx = versamentoCtx;
 	}
 	
 	private Map<String,String> getDefaultIuvProps(Applicazione applicazione) {
-		Map<String,String> props = new HashMap<String,String>();
+		Map<String,String> props = new HashMap<>();
 		
 		if(applicazione != null && applicazione.getCodApplicazioneIuv() != null) {
 			props.put(codApplicazioneIuvKey, applicazione.getCodApplicazioneIuv());
 		}
 		
-		if(versamentoCtx != null) {
-			if(versamentoCtx.getCodTributoIuv() != null)
-				props.put(codTributoIuvKey, versamentoCtx.getCodTributoIuv());
+		if(this.versamentoCtx != null) {
+			if(this.versamentoCtx.getCodTributoIuv() != null)
+				props.put(codTributoIuvKey, this.versamentoCtx.getCodTributoIuv());
 		}
 		
 		Calendar now = Calendar.getInstance(); 
@@ -113,10 +113,10 @@ public class PagamentoContext {
 	}
 
 	public Map<String,String> getAllIuvProps(Applicazione applicazione) {
-		Map<String,String> props = getDefaultIuvProps(applicazione);
+		Map<String,String> props = this.getDefaultIuvProps(applicazione);
 		
-		if(iuvProps != null)
-			props.putAll(iuvProps);
+		if(this.iuvProps != null)
+			props.putAll(this.iuvProps);
 		
 		return props;
 	}
@@ -124,14 +124,14 @@ public class PagamentoContext {
 	public String getAllIuvPropsString(Applicazione applicazione) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Custom Props { ");
-		if(iuvProps != null) {
-			for(String key : iuvProps.keySet()) {
-				sb.append("[" + key + "=" + iuvProps.get(key) + "] ");
+		if(this.iuvProps != null) {
+			for(String key : this.iuvProps.keySet()) {
+				sb.append("[" + key + "=" + this.iuvProps.get(key) + "] ");
 			}
 		}
 		sb.append("} Default Props { ");
 		
-		Map<String,String> props = getDefaultIuvProps(applicazione);
+		Map<String,String> props = this.getDefaultIuvProps(applicazione);
 		if(props != null) {
 			for(String key : props.keySet()) {
 				sb.append("[" + key + "=" + props.get(key) + "] ");
@@ -142,22 +142,22 @@ public class PagamentoContext {
 	}
 	
 	public void loadVersamentoContext(it.govpay.bd.model.Versamento versamento, BasicBD bd) throws ServiceException {
-		versamentoCtx = new VersamentoContext();
+		this.versamentoCtx = new VersamentoContext();
 		
-		versamentoCtx.setCodUoBeneficiaria(versamento.getUo(bd).getCodUo());
-		versamentoCtx.setCodUnivocoDebitore(versamento.getAnagraficaDebitore().getCodUnivoco());
+		this.versamentoCtx.setCodUoBeneficiaria(versamento.getUo(bd).getCodUo());
+		this.versamentoCtx.setCodUnivocoDebitore(versamento.getAnagraficaDebitore().getCodUnivoco());
 		
 		if(versamento.getSingoliVersamenti(bd).size() == 1){
 			SingoloVersamento sv = versamento.getSingoliVersamenti(bd).get(0);
 			
 			Tributo t = sv.getTributo(bd);
 			if(t != null) {
-				versamentoCtx.setCodContabilita(t.getCodContabilita());
-				versamentoCtx.setTipoContabilita(t.getTipoContabilita());
-				versamentoCtx.setCodTributoIuv(t.getCodTributoIuv());
+				this.versamentoCtx.setCodContabilita(t.getCodContabilita());
+				this.versamentoCtx.setTipoContabilita(t.getTipoContabilita());
+				this.versamentoCtx.setCodTributoIuv(t.getCodTributoIuv());
 			} else {
-				versamentoCtx.setCodContabilita(sv.getCodContabilita());
-				versamentoCtx.setTipoContabilita(sv.getTipoContabilita());
+				this.versamentoCtx.setCodContabilita(sv.getCodContabilita());
+				this.versamentoCtx.setTipoContabilita(sv.getTipoContabilita());
 			}
 		}
 	}

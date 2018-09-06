@@ -190,7 +190,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()));
 		boolean isUpdate_utenzaTributo = true;
-		java.util.List<JDBCObject> lstObjects_utenzaTributo = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_utenzaTributo = new java.util.ArrayList<>();
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_utenza","?");
 		}
@@ -247,7 +247,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 
@@ -258,7 +258,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 
@@ -269,7 +269,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 

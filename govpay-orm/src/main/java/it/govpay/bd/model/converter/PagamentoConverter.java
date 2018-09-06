@@ -38,7 +38,7 @@ import it.govpay.orm.IdSingoloVersamento;
 public class PagamentoConverter {
 
 	public static List<Pagamento> toDTO(List<it.govpay.orm.Pagamento> singoliPagamenti) throws ServiceException {
-		List<Pagamento> dto = new ArrayList<Pagamento>();
+		List<Pagamento> dto = new ArrayList<>();
 		for(it.govpay.orm.Pagamento vo : singoliPagamenti) {
 			dto.add(toDTO(vo));
 		}

@@ -12,7 +12,7 @@ public class GetDominioDTO extends BasicRequestDTO {
 	private String codDominio;
 	
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	
 }

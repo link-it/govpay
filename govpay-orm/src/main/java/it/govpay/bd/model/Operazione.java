@@ -33,10 +33,10 @@ public class Operazione extends it.govpay.model.Operazione{
 	private transient Dominio dominio;
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
-		if(dominio == null && this.getCodDominio() != null) {
-			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+		if(this.dominio == null && this.getCodDominio() != null) {
+			this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
 		} 
-		return dominio;
+		return this.dominio;
 	}
 
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {

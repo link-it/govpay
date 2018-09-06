@@ -34,7 +34,7 @@ public enum VersioneApiEnum {
 	@Override
 	@JsonValue
 	public String toString() {
-		return String.valueOf(value);
+		return String.valueOf(this.value);
 	}
 
 	public static VersioneApiEnum fromValue(String text) {

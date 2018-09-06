@@ -127,7 +127,7 @@ public class JDBCAvvisoServiceImpl extends JDBCAvvisoServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getAvvisoFieldConverter().toTable(Avviso.model()));
 		boolean isUpdate_avviso = true;
-		java.util.List<JDBCObject> lstObjects_avviso = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_avviso = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getAvvisoFieldConverter().toColumn(Avviso.model().COD_DOMINIO,false), "?");
 		lstObjects_avviso.add(new JDBCObject(avviso.getCodDominio(), Avviso.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getAvvisoFieldConverter().toColumn(Avviso.model().IUV,false), "?");
@@ -182,7 +182,7 @@ public class JDBCAvvisoServiceImpl extends JDBCAvvisoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getAvvisoFieldConverter().toTable(Avviso.model()), 
@@ -193,7 +193,7 @@ public class JDBCAvvisoServiceImpl extends JDBCAvvisoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getAvvisoFieldConverter().toTable(Avviso.model()), 
@@ -204,7 +204,7 @@ public class JDBCAvvisoServiceImpl extends JDBCAvvisoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getAvvisoFieldConverter().toTable(Avviso.model()), 

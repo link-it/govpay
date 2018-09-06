@@ -69,8 +69,8 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			if(this.idDominio != null){
-				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), idDominio);
+				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.idDominio);
 				addAnd = true;
 			}
 			
@@ -113,8 +113,8 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			
 			if(this.listaIdUo != null && this.listaIdUo.size() > 0){
 				if(addAnd) newExpression.and();
-				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
-				newExpression.in(new CustomField("id", Long.class, "id", fieldConverter.toTable(it.govpay.orm.Uo.model())), listaIdUo);				
+				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
+				newExpression.in(new CustomField("id", Long.class, "id", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.listaIdUo);				
 			}
 			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
@@ -136,8 +136,8 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.idDominio != null){
-				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), idDominio);
+				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.idDominio);
 				addAnd = true;
 			}
 			
@@ -167,7 +167,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	}
 
 	public List<Long> getListaIdUo() {
-		return listaIdUo;
+		return this.listaIdUo;
 	}
 
 	public void setListaIdUo(List<Long> listaIdUo) {
@@ -175,7 +175,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	}
 
 	public String getCodUo() {
-		return codUo;
+		return this.codUo;
 	}
 
 	public void setCodUo(String codUo) {
@@ -183,7 +183,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	}
 
 	public boolean isExcludeEC() {
-		return excludeEC;
+		return this.excludeEC;
 	}
 
 	public void setExcludeEC(boolean excludeEC) {
@@ -199,7 +199,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {

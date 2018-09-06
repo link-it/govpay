@@ -41,7 +41,7 @@ public enum StCodiceLingua {
     SL;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StCodiceLingua fromValue(String v) {

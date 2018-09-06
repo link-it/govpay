@@ -40,36 +40,36 @@ public class Incasso extends it.govpay.model.Incasso {
 
 
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
-		if(pagamenti == null && getId() != null){
+		if(this.pagamenti == null && this.getId() != null){
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			PagamentoFilter filter = pagamentiBD.newFilter();
-			filter.setIdIncasso(getId());
-			pagamenti = pagamentiBD.findAll(filter);
+			filter.setIdIncasso(this.getId());
+			this.pagamenti = pagamentiBD.findAll(filter);
 		}
-		return pagamenti;
+		return this.pagamenti;
 	}
 	
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(applicazione == null) {
-			applicazione = AnagraficaManager.getApplicazione(bd, getIdApplicazione());
+		if(this.applicazione == null) {
+			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
 		} 
-		return applicazione;
+		return this.applicazione;
 	}
 	
 	public void setApplicazione(long idApplicazione, BasicBD bd) throws ServiceException {
-		applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
-		this.setIdApplicazione(applicazione.getId());
+		this.applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
+		this.setIdApplicazione(this.applicazione.getId());
 	}
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
-		if(dominio == null) {
+		if(this.dominio == null) {
 			try{
-				dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
 			}catch (NotFoundException e) {
-				dominio = null;
+				this.dominio = null;
 			}
 		} 
-		return dominio;
+		return this.dominio;
 	}
 }
 

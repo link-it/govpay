@@ -52,7 +52,7 @@ public class CtDatiMarcaBolloDigitale {
      *     
      */
     public String getTipoBollo() {
-        return tipoBollo;
+        return this.tipoBollo;
     }
 
     /**
@@ -76,7 +76,7 @@ public class CtDatiMarcaBolloDigitale {
      *     
      */
     public String getHashDocumento() {
-        return hashDocumento;
+        return this.hashDocumento;
     }
 
     /**
@@ -100,7 +100,7 @@ public class CtDatiMarcaBolloDigitale {
      *     
      */
     public String getProvinciaResidenza() {
-        return provinciaResidenza;
+        return this.provinciaResidenza;
     }
 
     /**

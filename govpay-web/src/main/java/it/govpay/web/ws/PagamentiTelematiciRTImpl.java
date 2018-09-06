@@ -126,7 +126,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			Utenza user = getUtenzaAutenticata();
+			Utenza user = this.getUtenzaAutenticata();
 			if(GovpayConfig.getInstance().isPddAuthEnable() && user.getPrincipal() == null) {
 				ctx.log("er.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
@@ -188,12 +188,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			ctx.log("er.ricezioneOk");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
-			response = buildRisposta(e, response);
+			response = this.buildRisposta(e, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
 			ctx.log("er.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
-			response = buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, identificativoDominio, e.getMessage(), e), response);
+			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, identificativoDominio, e.getMessage(), e), response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
 			ctx.log("er.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 		} finally {
@@ -261,7 +261,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			Utenza user =  getUtenzaAutenticata();
+			Utenza user =  this.getUtenzaAutenticata();
 			if(GovpayConfig.getInstance().isPddAuthEnable() && user.getPrincipal() == null) {
 				ctx.log("rt.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
@@ -329,12 +329,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			ctx.log("rt.ricezioneOk");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
-			response = buildRisposta(e, response);
+			response = this.buildRisposta(e, response);
 			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
 			ctx.log("rt.ricezioneKo", response.getPaaInviaRTRisposta().getFault().getFaultCode(), response.getPaaInviaRTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
-			response = buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
+			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
 			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
 			ctx.log("rt.ricezioneKo", response.getPaaInviaRTRisposta().getFault().getFaultCode(), response.getPaaInviaRTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
@@ -403,10 +403,10 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 	private Utenza getUtenzaAutenticata() throws GovPayException {
 		Utenza user = null;
 		try {
-			HttpServletRequest request = (HttpServletRequest) wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
+			HttpServletRequest request = (HttpServletRequest) this.wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
 			user = CredentialUtils.getUser(request, log);
 		} catch (Exception e) {
-			throw new GovPayException(EsitoOperazione.AUT_001, wsCtxt.getUserPrincipal().getName());
+			throw new GovPayException(EsitoOperazione.AUT_001, this.wsCtxt.getUserPrincipal().getName());
 		}
 		return user;
 	}

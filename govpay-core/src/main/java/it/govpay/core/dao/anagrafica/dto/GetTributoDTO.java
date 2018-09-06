@@ -14,11 +14,11 @@ public class GetTributoDTO extends BasicRequestDTO {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public String getCodTributo() {
-		return codTributo;
+		return this.codTributo;
 	}
 
 }

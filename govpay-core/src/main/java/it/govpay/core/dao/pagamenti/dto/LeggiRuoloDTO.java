@@ -20,7 +20,7 @@ public class LeggiRuoloDTO extends BasicCreateRequestDTO {
 	}
 
 	public String getRuolo() {
-		return ruolo;
+		return this.ruolo;
 	}
 
 	public void setRuolo(String ruolo) {

@@ -63,7 +63,7 @@ public class NotificaClient extends BasicClient {
 	
 	public NotificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.NOTIFICA);
-		versione = applicazione.getConnettoreNotifica().getVersione();
+		this.versione = applicazione.getConnettoreNotifica().getVersione();
 		this.tipo = applicazione.getConnettoreNotifica().getTipo();
 		
 		if(objectFactory == null || log == null ){
@@ -90,9 +90,9 @@ public class NotificaClient extends BasicClient {
 	 */
 	public void invoke(Notifica notifica, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException {
 		
-		log.debug("Spedisco la notifica di " + notifica.getTipo() + ((notifica.getIdRr() == null) ? " PAGAMENTO" : " STORNO") + " della transazione (" + notifica.getRpt(null).getCodDominio() + ")(" + notifica.getRpt(null).getIuv() + ")(" + notifica.getRpt(null).getCcp() + ") in versione (" + versione.toString() + ") alla URL ("+url+")");
+		log.debug("Spedisco la notifica di " + notifica.getTipo() + ((notifica.getIdRr() == null) ? " PAGAMENTO" : " STORNO") + " della transazione (" + notifica.getRpt(null).getCodDominio() + ")(" + notifica.getRpt(null).getIuv() + ")(" + notifica.getRpt(null).getCcp() + ") in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
 		
-		switch (tipo) {
+		switch (this.tipo) {
 		case SOAP:
 			if(notifica.getIdRr() == null) {
 				Rpt rpt = notifica.getRpt(null);
@@ -103,7 +103,7 @@ public class NotificaClient extends BasicClient {
 				paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
 				
 				QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaTransazione");
-				sendSoap("paNotificaTransazione", new JAXBElement<PaNotificaTransazione>(qname, PaNotificaTransazione.class, paNotificaTransazione), null, false);
+				this.sendSoap("paNotificaTransazione", new JAXBElement<>(qname, PaNotificaTransazione.class, paNotificaTransazione), null, false);
 				return;
 			} else {
 				Rr rr = notifica.getRr(bd);
@@ -125,11 +125,11 @@ public class NotificaClient extends BasicClient {
 				richiestaStorno.setStato(StatoRevoca.valueOf(rr.getStato().toString()));
 				paNotificaStorno.setRichiestaStorno(richiestaStorno);
 				QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaStorno");
-				sendSoap("paNotificaStorno", new JAXBElement<PaNotificaStorno>(qname, PaNotificaStorno.class, paNotificaStorno), null, false);
+				this.sendSoap("paNotificaStorno", new JAXBElement<>(qname, PaNotificaStorno.class, paNotificaStorno), null, false);
 				return;
 			}
 			case REST:
-				List<Property> headerProperties = new ArrayList<Property>();
+				List<Property> headerProperties = new ArrayList<>();
 				headerProperties.add(new Property("Accept", "application/json"));
 				String jsonBody = "";
 				String path = "";
@@ -150,7 +150,7 @@ public class NotificaClient extends BasicClient {
 					}
 					// elenco pagamenti
 					if(rpt.getPagamenti(bd) != null && rpt.getPagamenti(bd).size() > 0) {
-						List<Riscossione> riscossioni = new ArrayList<Riscossione>();
+						List<Riscossione> riscossioni = new ArrayList<>();
 						int indice = 1;
 						String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(notifica.getApplicazione(bd).getCodApplicazione(), rpt.getVersamento(bd).getCodVersamentoEnte());
 						String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
@@ -166,7 +166,7 @@ public class NotificaClient extends BasicClient {
 				} else {
 					throw new ServiceException("Notifica Storno REST non implementata!");
 				}
-				sendJson(path, jsonBody, headerProperties);
+				this.sendJson(path, jsonBody, headerProperties);
 				break;
 		}
 		
@@ -177,13 +177,13 @@ public class NotificaClient extends BasicClient {
 		private int responseCode;
 		private String detail;
 		public int getResponseCode() {
-			return responseCode;
+			return this.responseCode;
 		}
 		public void setResponseCode(int responseCode) {
 			this.responseCode = responseCode;
 		}
 		public String getDetail() {
-			return detail;
+			return this.detail;
 		}
 		public void setDetail(String detail) {
 			this.detail = detail;

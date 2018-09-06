@@ -139,7 +139,7 @@ public class JDBCTipoTributoServiceImpl extends JDBCTipoTributoServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getTipoTributoFieldConverter().toTable(TipoTributo.model()));
 		boolean isUpdate_tipoTributo = true;
-		java.util.List<JDBCObject> lstObjects_tipoTributo = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_tipoTributo = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO,false), "?");
 		lstObjects_tipoTributo.add(new JDBCObject(tipoTributo.getCodTributo(), TipoTributo.model().COD_TRIBUTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().DESCRIZIONE,false), "?");
@@ -194,7 +194,7 @@ public class JDBCTipoTributoServiceImpl extends JDBCTipoTributoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTipoTributoFieldConverter().toTable(TipoTributo.model()), 
@@ -205,7 +205,7 @@ public class JDBCTipoTributoServiceImpl extends JDBCTipoTributoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTipoTributoFieldConverter().toTable(TipoTributo.model()), 
@@ -216,7 +216,7 @@ public class JDBCTipoTributoServiceImpl extends JDBCTipoTributoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTipoTributoFieldConverter().toTable(TipoTributo.model()), 

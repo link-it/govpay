@@ -55,7 +55,7 @@ public class CtIdentificazioneServizio {
      *     
      */
     public String getNomeServizio() {
-        return nomeServizio;
+        return this.nomeServizio;
     }
 
     /**
@@ -78,7 +78,7 @@ public class CtIdentificazioneServizio {
      *     byte[]
      */
     public byte[] getLogoServizio() {
-        return logoServizio;
+        return this.logoServizio;
     }
 
     /**
@@ -89,7 +89,7 @@ public class CtIdentificazioneServizio {
      *     byte[]
      */
     public void setLogoServizio(byte[] value) {
-        this.logoServizio = ((byte[]) value);
+        this.logoServizio = (value);
     }
 
 }

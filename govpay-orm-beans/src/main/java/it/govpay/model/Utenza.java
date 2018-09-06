@@ -18,13 +18,14 @@ public class Utenza extends BasicModel {
 	private boolean checkSubject;
 	
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
 
+	@Override
 	public Long getId() {
 		return this.id;
 	}
@@ -34,7 +35,7 @@ public class Utenza extends BasicModel {
 	}
 
 	public String getPrincipalOriginale() {
-		return principalOriginale;
+		return this.principalOriginale;
 	}
 
 	public void setPrincipalOriginale(String principalOriginale) {
@@ -50,7 +51,7 @@ public class Utenza extends BasicModel {
 	}
 
 	public List<Long> getIdTributi() {
-		return idTributi;
+		return this.idTributi;
 	}
 
 	public void setIdTributi(List<Long> idTributi) {
@@ -58,7 +59,7 @@ public class Utenza extends BasicModel {
 	}
 
 	public List<Long> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<Long> idDomini) {
@@ -66,7 +67,7 @@ public class Utenza extends BasicModel {
 	}
 
 	public boolean isCheckSubject() {
-		return checkSubject;
+		return this.checkSubject;
 	}
 
 	public void setCheckSubject(boolean checkSubject) {

@@ -95,7 +95,7 @@ public class Pagamento extends BasicBD {
 	public AvviaTransazioneDTOResponse avviaTransazione(AvviaTransazioneDTO dto) throws GovPayException, ServiceException {
 
 		GpContext ctx = GpThreadLocal.get();
-		List<Versamento> versamenti = new ArrayList<Versamento>();
+		List<Versamento> versamenti = new ArrayList<>();
 
 		for(Object v : dto.getVersamentoOrVersamentoRef()) {
 			Versamento versamentoModel = null;
@@ -103,7 +103,7 @@ public class Pagamento extends BasicBD {
 			if(v instanceof it.govpay.servizi.commons.Versamento) {
 				it.govpay.servizi.commons.Versamento versamento = (it.govpay.servizi.commons.Versamento) v;
 				ctx.log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
-				versamentoModel = VersamentoUtils.toVersamentoModel((it.govpay.servizi.commons.Versamento) versamento, this);
+				versamentoModel = VersamentoUtils.toVersamentoModel(versamento, this);
 				versamentoModel.setIuvProposto(versamento.getIuv());
 			} else {
 				it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
@@ -176,7 +176,7 @@ public class Pagamento extends BasicBD {
 
 		GpContext ctx = GpThreadLocal.get();
 		ctx.log("pendenti.avvio");
-		List<String> response = new ArrayList<String>();
+		List<String> response = new ArrayList<>();
 		try {
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
@@ -190,7 +190,7 @@ public class Pagamento extends BasicBD {
 				
 				Intermediario intermediario = stazione.getIntermediario(this);
 
-				closeConnection();
+				this.closeConnection();
 				ctx.log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
 				log.debug("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "]");
 				
@@ -205,18 +205,18 @@ public class Pagamento extends BasicBD {
 				Calendar inizioFinestra = (Calendar) fineFinestra.clone();
 				inizioFinestra.add(Calendar.DATE, -finestra);
 
-				Map<String, String> statiRptPendenti = acquisisciPendenti(client,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
+				Map<String, String> statiRptPendenti = this.acquisisciPendenti(client,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
 				
 				log.info("Identificate sul NodoSPC " + statiRptPendenti.size() + " RPT pendenti");
 				ctx.log("pendenti.listaPendentiOk", stazione.getCodStazione(), statiRptPendenti.size() + "");
 
 				// Ho acquisito tutti gli stati pendenti. 
 				// Tutte quelle in stato terminale, 
-				setupConnection(GpThreadLocal.get().getTransactionId());
+				this.setupConnection(GpThreadLocal.get().getTransactionId());
 
 				RptBD rptBD = new RptBD(this);
 
-				List<String> codDomini = new ArrayList<String>();
+				List<String> codDomini = new ArrayList<>();
 				for(Dominio d : lstDomini) {
 					codDomini.add(d.getCodDominio());
 				}
@@ -240,7 +240,7 @@ public class Pagamento extends BasicBD {
 					}
 					
 					// Aggiorno il batch
-					BatchManager.aggiornaEsecuzione(this, Operazioni.pnd);
+					BatchManager.aggiornaEsecuzione(this, Operazioni.PND);
 					
 					String stato = statiRptPendenti.get(rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null) {
@@ -310,7 +310,7 @@ public class Pagamento extends BasicBD {
 	 */
 	private Map<String, String> acquisisciPendenti(NodoClient client, Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) {
 		GpContext ctx = GpThreadLocal.get();
-		Map<String, String> statiRptPendenti = new HashMap<String, String>();
+		Map<String, String> statiRptPendenti = new HashMap<>();
 		
 		// Ciclo sui domini, ma ciclo veramente solo se perDominio == true,
 		// Altrimenti ci giro una sola volta
@@ -356,65 +356,67 @@ public class Pagamento extends BasicBD {
 				}
 			}
 	
-			if(risposta.getFault() != null) {
-				log.warn("Ricevuto errore durante la richiesta di lista pendenti: " + risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
-				
-				String fc = risposta.getFault().getFaultCode() != null ? risposta.getFault().getFaultCode() : "-";
-				String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
-				String fd = risposta.getFault().getDescription() != null ? risposta.getFault().getDescription() : "-";
-				if(perDominio) {
-					ctx.log("pendenti.listaPendentiDominioKo", dominio.getCodDominio(), fc, fs, fd);
-					continue;
-				} else {
-					ctx.log("pendenti.listaPendentiKo", stazione.getCodStazione(), fc, fs, fd);
-					break;
-				}
-			}
-	
-			if(risposta.getListaRPTPendenti() == null || risposta.getListaRPTPendenti().getRptPendente().isEmpty()) {
-				log.debug("Lista pendenti vuota.");
-				if(perDominio) {
-					ctx.log("pendenti.listaPendentiDominioVuota", dominio.getCodDominio());
-					continue;
-				} else {
-					ctx.log("pendenti.listaPendentiVuota", stazione.getCodStazione());					
-					break;
-				}
-			}
-			
-			
-			
-			if(risposta.getListaRPTPendenti().getTotRestituiti() >= soglia) {
-				
-				// Vedo quanto e' ampia la finestra per capire se dimezzarla o ciclare sui domini
-				int finestra = (int) TimeUnit.DAYS.convert((a.getTimeInMillis() - da.getTimeInMillis()), TimeUnit.MILLISECONDS);
-				
-				if(finestra > 1) {
-					ctx.log("pendenti.listaPendentiPiena", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));	
-					finestra = finestra/2;
-					Calendar mezzo = (Calendar) a.clone();
-					mezzo.add(Calendar.DATE, -finestra);
-					log.debug("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal " + dateFormat.format(da.getTime()) + " a " + dateFormat.format(a.getTime()) + ")");
-					statiRptPendenti.putAll(acquisisciPendenti(client, intermediario, stazione, lstDomini, false, da, mezzo, soglia));
-					mezzo.add(Calendar.DATE, 1);
-					statiRptPendenti.putAll(acquisisciPendenti(client, intermediario, stazione, lstDomini, false, mezzo, a, soglia));
-					return statiRptPendenti;
-				} else {
+			if(risposta != null) {
+				if(risposta.getFault() != null) {
+					log.warn("Ricevuto errore durante la richiesta di lista pendenti: " + risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
+					
+					String fc = risposta.getFault().getFaultCode() != null ? risposta.getFault().getFaultCode() : "-";
+					String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
+					String fd = risposta.getFault().getDescription() != null ? risposta.getFault().getDescription() : "-";
 					if(perDominio) {
-						ctx.log("pendenti.listaPendentiDominioDailyPiena", dominio.getCodDominio(), dateFormat.format(a.getTime()));
-						log.debug("Lista pendenti con troppi elementi, ma impossibile diminuire ulteriormente la finesta. Elenco accettato.");
+						ctx.log("pendenti.listaPendentiDominioKo", dominio.getCodDominio(), fc, fs, fd);
+						continue;
 					} else {
-						ctx.log("pendenti.listaPendentiDailyPiena", stazione.getCodStazione(), dateFormat.format(a.getTime()));
-						log.debug("Lista pendenti con troppi elementi, scalo a dominio.");
-						return acquisisciPendenti(client, intermediario, stazione, lstDomini, true, da, a, soglia);
+						ctx.log("pendenti.listaPendentiKo", stazione.getCodStazione(), fc, fs, fd);
+						break;
 					}
 				}
-			}
+		
+				if(risposta.getListaRPTPendenti() == null || risposta.getListaRPTPendenti().getRptPendente().isEmpty()) {
+					log.debug("Lista pendenti vuota.");
+					if(perDominio) {
+						ctx.log("pendenti.listaPendentiDominioVuota", dominio.getCodDominio());
+						continue;
+					} else {
+						ctx.log("pendenti.listaPendentiVuota", stazione.getCodStazione());					
+						break;
+					}
+				}
+				
+				
+				
+				if(risposta.getListaRPTPendenti().getTotRestituiti() >= soglia) {
+					
+					// Vedo quanto e' ampia la finestra per capire se dimezzarla o ciclare sui domini
+					int finestra = (int) TimeUnit.DAYS.convert((a.getTimeInMillis() - da.getTimeInMillis()), TimeUnit.MILLISECONDS);
+					
+					if(finestra > 1) {
+						ctx.log("pendenti.listaPendentiPiena", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));	
+						finestra = finestra/2;
+						Calendar mezzo = (Calendar) a.clone();
+						mezzo.add(Calendar.DATE, -finestra);
+						log.debug("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal " + dateFormat.format(da.getTime()) + " a " + dateFormat.format(a.getTime()) + ")");
+						statiRptPendenti.putAll(this.acquisisciPendenti(client, intermediario, stazione, lstDomini, false, da, mezzo, soglia));
+						mezzo.add(Calendar.DATE, 1);
+						statiRptPendenti.putAll(this.acquisisciPendenti(client, intermediario, stazione, lstDomini, false, mezzo, a, soglia));
+						return statiRptPendenti;
+					} else {
+						if(perDominio) {
+							ctx.log("pendenti.listaPendentiDominioDailyPiena", dominio.getCodDominio(), dateFormat.format(a.getTime()));
+							log.debug("Lista pendenti con troppi elementi, ma impossibile diminuire ulteriormente la finesta. Elenco accettato.");
+						} else {
+							ctx.log("pendenti.listaPendentiDailyPiena", stazione.getCodStazione(), dateFormat.format(a.getTime()));
+							log.debug("Lista pendenti con troppi elementi, scalo a dominio.");
+							return this.acquisisciPendenti(client, intermediario, stazione, lstDomini, true, da, a, soglia);
+						}
+					}
+				}
 			
-			// Qui ci arrivo o se ho meno di 500 risultati oppure se sono in *giornaliero per dominio*
-			for(TipoRPTPendente rptPendente : risposta.getListaRPTPendenti().getRptPendente()) {
-				String rptKey = rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
-				statiRptPendenti.put(rptKey, rptPendente.getStato());
+				// Qui ci arrivo o se ho meno di 500 risultati oppure se sono in *giornaliero per dominio*
+				for(TipoRPTPendente rptPendente : risposta.getListaRPTPendenti().getRptPendente()) {
+					String rptKey = rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
+					statiRptPendenti.put(rptKey, rptPendente.getStato());
+				}
 			}
 			
 			// Se sto ricercando per stazione, esco.
@@ -428,7 +430,7 @@ public class Pagamento extends BasicBD {
 	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 
-		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<it.govpay.bd.model.Pagamento>(); 
+		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<>(); 
 		Rpt rpt = null;
 		try {
 			RptBD rptBD = new RptBD(this);
@@ -471,7 +473,7 @@ public class Pagamento extends BasicBD {
 
 		ctx.log("rr.creazioneRr", rr.getCodDominio(), rr.getIuv(), rr.getCcp(), rr.getCodMsgRevoca());
 
-		setAutoCommit(false);
+		this.setAutoCommit(false);
 		rrBD.insertRr(rr);
 		notifica.setIdRr(rr.getId());
 		notificheBD.insertNotifica(notifica);
@@ -479,7 +481,7 @@ public class Pagamento extends BasicBD {
 			pagamento.setIdRr(rr.getId());
 			pagamentiBD.updatePagamento(pagamento);
 		}
-		commit();
+		this.commit();
 
 		ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, this));
 

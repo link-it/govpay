@@ -59,7 +59,7 @@ public class ListaAvvisiDigitali {
      *     
      */
     public String getVersioneOggetto() {
-        return versioneOggetto;
+        return this.versioneOggetto;
     }
 
     /**
@@ -97,8 +97,8 @@ public class ListaAvvisiDigitali {
      * 
      */
     public List<CtAvvisoDigitale> getAvvisoDigitale() {
-        if (avvisoDigitale == null) {
-            avvisoDigitale = new ArrayList<CtAvvisoDigitale>();
+        if (this.avvisoDigitale == null) {
+            this.avvisoDigitale = new ArrayList<>();
         }
         return this.avvisoDigitale;
     }

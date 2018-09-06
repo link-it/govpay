@@ -13,13 +13,13 @@ public class GetStazioneDTO extends BasicRequestDTO {
 	private String codStazione;
 	
 	public String getCodStazione() {
-		return codStazione;
+		return this.codStazione;
 	}
 	
 	private String codIntermediario;
 	
 	public String getCodIntermediario() {
-		return codIntermediario;
+		return this.codIntermediario;
 	}
 
 	public void setCodIntermediario(String codIntermediario) {

@@ -89,7 +89,7 @@ public class JaxbUtils {
         ByteArrayOutputStream baos = null;
         try {
         	baos = new ByteArrayOutputStream();
-	        JAXBElement<InformativaControparte> informativaj = new JAXBElement<InformativaControparte>(new QName("informativaControparte"), InformativaControparte.class, informativa);
+	        JAXBElement<InformativaControparte> informativaj = new JAXBElement<>(new QName("informativaControparte"), InformativaControparte.class, informativa);
 	        marshal(informativaj, baos);
 			return baos.toByteArray();
         } finally {

@@ -110,7 +110,7 @@ public class EsitiAvvisaturaBD extends BasicBD {
 
 	public List<EsitoAvvisatura> findAll(EsitoAvvisaturaFilter filter) throws ServiceException {
 		try {
-			List<EsitoAvvisatura> lst = new ArrayList<EsitoAvvisatura>();
+			List<EsitoAvvisatura> lst = new ArrayList<>();
 			List<it.govpay.orm.EsitoAvvisatura> lstEsitoAvvisaturaVO = this.getEsitoAvvisaturaService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.EsitoAvvisatura esitoAvvisaturaVO: lstEsitoAvvisaturaVO) {
 				lst.add(EsitoAvvisaturaConverter.toDTO(esitoAvvisaturaVO));

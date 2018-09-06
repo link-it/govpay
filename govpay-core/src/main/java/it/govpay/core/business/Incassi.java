@@ -126,7 +126,7 @@ public class Incassi extends BasicBD {
 			
 			Long idApplicazione = null;
 			Long idOperatore = null;
-			List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+			List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase
 			diritti.add(Diritti.SCRITTURA);
 			
 			
@@ -168,7 +168,7 @@ public class Incassi extends BasicBD {
 			
 			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
 			IncassoFilter incassoFilter = incassiBD.newFilter();
-			List<String> codDomini = new ArrayList<String>();
+			List<String> codDomini = new ArrayList<>();
 			codDomini.add(richiestaIncasso.getCodDominio());
 			incassoFilter.setCodDomini(codDomini);
 			if(idf != null)
@@ -216,9 +216,9 @@ public class Incassi extends BasicBD {
 			
 			// Sto selezionando i pagamenti per impostarli come Incassati.
 			this.enableSelectForUpdate();
-			setAutoCommit(false);
+			this.setAutoCommit(false);
 			
-			List<it.govpay.bd.model.Pagamento> pagamenti = new ArrayList<it.govpay.bd.model.Pagamento>();
+			List<it.govpay.bd.model.Pagamento> pagamenti = new ArrayList<>();
 			
 			// Riversamento singolo
 			if(iuv != null) {
@@ -375,12 +375,12 @@ public class Incassi extends BasicBD {
 					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
 				}
-				commit();
+				this.commit();
 			} catch(Exception e) {
-				rollback();
+				this.rollback();
 				throw new InternalException(e);
 			} finally {
-				setAutoCommit(true);
+				this.setAutoCommit(true);
 			}
 			
 			return richiestaIncassoResponse;
@@ -395,7 +395,7 @@ public class Incassi extends BasicBD {
 
 	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthorizedException, ServiceException {
 		List<String> domini = null;
-		List<Diritti> diritti = new ArrayList<Diritti>(); 
+		List<Diritti> diritti = new ArrayList<>(); 
 		diritti.add(Diritti.LETTURA);
 		domini = AclEngine.getDominiAutorizzati((Utenza) listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
 		if(domini == null) {
@@ -405,7 +405,7 @@ public class Incassi extends BasicBD {
 		IncassiBD incassiBD = new IncassiBD(this);
 		IncassoFilter newFilter = incassiBD.newFilter();
 		if(domini != null)
-			newFilter.setCodDomini(new ArrayList<String>(domini));
+			newFilter.setCodDomini(new ArrayList<>(domini));
 		newFilter.setDataInizio(listaIncassoDTO.getInizio());
 		newFilter.setDataFine(listaIncassoDTO.getFine());
 		newFilter.setOffset(listaIncassoDTO.getOffset());
@@ -428,7 +428,7 @@ public class Incassi extends BasicBD {
 		try {
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
 			
-			List<Diritti> diritti = new ArrayList<Diritti>();
+			List<Diritti> diritti = new ArrayList<>();
 			diritti.add(Diritti.LETTURA);
 			List<String> domini = AclEngine.getDominiAutorizzati((Utenza) leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
 			if(domini == null || (domini.size() > 0 && !domini.contains(incasso.getCodDominio()))) {

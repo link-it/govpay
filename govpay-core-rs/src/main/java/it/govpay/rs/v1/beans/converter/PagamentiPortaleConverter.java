@@ -9,6 +9,7 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
+import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.ContoAddebito;
 import it.govpay.core.rs.v1.beans.base.Nota;
 import it.govpay.core.rs.v1.beans.base.Pagamento;
@@ -47,7 +48,7 @@ public class PagamentiPortaleConverter {
 		PagamentoPost pagamentiPortaleRequest = null;
 		if(pagamentoPortale.getJsonRequest() != null) {
 			try {
-				pagamentiPortaleRequest = (PagamentoPost) PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
+				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
 			
 				if(pagamentiPortaleRequest.getContoAddebito()!=null) {
 					ContoAddebito contoAddebito = new ContoAddebito();
@@ -77,7 +78,7 @@ public class PagamentiPortaleConverter {
 			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
 		
 		if(dto.getListaRpp()!=null) {
-			List<Rpp> rpp = new ArrayList<Rpp>();
+			List<Rpp> rpp = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: dto.getListaRpp()) {
 				rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt()));
 			}
@@ -109,7 +110,7 @@ public class PagamentiPortaleConverter {
 		
 		if(pagamentoPortale.getJsonRequest() != null) {
 			try {
-				pagamentiPortaleRequest = PagamentoPost.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
+				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
 				if(pagamentiPortaleRequest.getContoAddebito()!=null) {
 					ContoAddebito contoAddebito = new ContoAddebito();
 					contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBic());

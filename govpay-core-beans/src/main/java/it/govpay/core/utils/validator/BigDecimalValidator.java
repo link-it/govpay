@@ -19,44 +19,44 @@ public class BigDecimalValidator {
 	}
 
 	public BigDecimalValidator notNull() throws ValidationException {
-		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " non deve essere vuoto.");
+		if(this.fieldValue == null) {
+			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator isNull() throws ValidationException {
-		if(fieldValue != null) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		if(this.fieldValue != null) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator max(BigDecimal max) throws ValidationException {
-		if(fieldValue != null && fieldValue.compareTo(max) > 0) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere inferiore a " + df.format(max) + ".");
+		if(this.fieldValue != null && this.fieldValue.compareTo(max) > 0) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere inferiore a " + this.df.format(max) + ".");
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator min(BigDecimal min) throws ValidationException {
-		if(fieldValue != null && fieldValue.compareTo(min) <= 0) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere superiore a " + df.format(min) + ".");
+		if(this.fieldValue != null && this.fieldValue.compareTo(min) <= 0) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore a " + this.df.format(min) + ".");
 		}
 		return this;
 	}
 
 	
 	public BigDecimalValidator maxOrEquals(BigDecimal max) throws ValidationException {
-		if(fieldValue != null && fieldValue.compareTo(max) >= 0) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere inferiore o uguale a " + df.format(max) + ".");
+		if(this.fieldValue != null && this.fieldValue.compareTo(max) >= 0) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere inferiore o uguale a " + this.df.format(max) + ".");
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator minOrEquals(BigDecimal min) throws ValidationException {
-		if(fieldValue != null && fieldValue.compareTo(min) <= 0) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere superiore o uguale a " + df.format(min) + ".");
+		if(this.fieldValue != null && this.fieldValue.compareTo(min) <= 0) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore o uguale a " + this.df.format(min) + ".");
 		}
 		return this;
 	}

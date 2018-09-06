@@ -60,7 +60,7 @@ public class RendicontazioneConverter {
 
 	public static List<Rendicontazione> toDTO(
 			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst) throws ServiceException {
-		List<Rendicontazione> dto = new ArrayList<Rendicontazione>();
+		List<Rendicontazione> dto = new ArrayList<>();
 		for(it.govpay.orm.Rendicontazione vo : rendicontazioneVOLst) {
 			dto.add(toDTO(vo));
 		}

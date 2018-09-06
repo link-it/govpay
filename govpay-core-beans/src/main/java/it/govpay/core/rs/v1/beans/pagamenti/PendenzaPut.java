@@ -77,7 +77,7 @@ public class PendenzaPut extends JSONSerializable {
   private String idUnitaOperativa = null;
   
   @JsonProperty("voci")
-  private List<VocePendenza> voci = new ArrayList<VocePendenza>();
+  private List<VocePendenza> voci = new ArrayList<>();
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -89,7 +89,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("nome")
   public String getNome() {
-    return nome;
+    return this.nome;
   }
   public void setNome(String nome) {
     this.nome = nome;
@@ -105,7 +105,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("causale")
   public String getCausale() {
-    return causale;
+    return this.causale;
   }
   public void setCausale(String causale) {
     this.causale = causale;
@@ -120,7 +120,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("soggettoPagatore")
   public Soggetto getSoggettoPagatore() {
-    return soggettoPagatore;
+    return this.soggettoPagatore;
   }
   public void setSoggettoPagatore(Soggetto soggettoPagatore) {
     this.soggettoPagatore = soggettoPagatore;
@@ -136,7 +136,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("importo")
   public BigDecimal getImporto() {
-    return importo;
+    return this.importo;
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
@@ -152,7 +152,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("numeroAvviso")
   public String getNumeroAvviso() {
-    return numeroAvviso;
+    return this.numeroAvviso;
   }
   public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
@@ -168,7 +168,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("dataCaricamento")
   public Date getDataCaricamento() {
-    return dataCaricamento;
+    return this.dataCaricamento;
   }
   public void setDataCaricamento(Date dataCaricamento) {
     this.dataCaricamento = dataCaricamento;
@@ -184,7 +184,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("dataValidita")
   public Date getDataValidita() {
-    return dataValidita;
+    return this.dataValidita;
   }
   public void setDataValidita(Date dataValidita) {
     this.dataValidita = dataValidita;
@@ -200,7 +200,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("dataScadenza")
   public Date getDataScadenza() {
-    return dataScadenza;
+    return this.dataScadenza;
   }
   public void setDataScadenza(Date dataScadenza) {
     this.dataScadenza = dataScadenza;
@@ -216,7 +216,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("annoRiferimento")
   public BigDecimal getAnnoRiferimento() {
-    return annoRiferimento;
+    return this.annoRiferimento;
   }
   public void setAnnoRiferimento(BigDecimal annoRiferimento) {
     this.annoRiferimento = annoRiferimento;
@@ -232,7 +232,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("cartellaPagamento")
   public String getCartellaPagamento() {
-    return cartellaPagamento;
+    return this.cartellaPagamento;
   }
   public void setCartellaPagamento(String cartellaPagamento) {
     this.cartellaPagamento = cartellaPagamento;
@@ -248,7 +248,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("datiAllegati")
   public String getDatiAllegati() {
-    return datiAllegati;
+    return this.datiAllegati;
   }
   public void setDatiAllegati(String datiAllegati) {
     this.datiAllegati = datiAllegati;
@@ -264,7 +264,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("tassonomia")
   public String getTassonomia() {
-    return tassonomia;
+    return this.tassonomia;
   }
   public void setTassonomia(String tassonomia) {
     this.tassonomia = tassonomia;
@@ -279,7 +279,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("tassonomiaAvviso")
   public TassonomiaAvviso getTassonomiaAvviso() {
-    return tassonomiaAvviso;
+    return this.tassonomiaAvviso;
   }
   public void setTassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
     this.tassonomiaAvviso = tassonomiaAvviso;
@@ -295,7 +295,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return idDominio;
+    return this.idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -311,7 +311,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("idUnitaOperativa")
   public String getIdUnitaOperativa() {
-    return idUnitaOperativa;
+    return this.idUnitaOperativa;
   }
   public void setIdUnitaOperativa(String idUnitaOperativa) {
     this.idUnitaOperativa = idUnitaOperativa;
@@ -326,7 +326,7 @@ public class PendenzaPut extends JSONSerializable {
 
   @JsonProperty("voci")
   public List<VocePendenza> getVoci() {
-    return voci;
+    return this.voci;
   }
   public void setVoci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -337,35 +337,35 @@ public class PendenzaPut extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     PendenzaPut pendenzaPut = (PendenzaPut) o;
-    return Objects.equals(nome, pendenzaPut.nome) &&
-        Objects.equals(causale, pendenzaPut.causale) &&
-        Objects.equals(soggettoPagatore, pendenzaPut.soggettoPagatore) &&
-        Objects.equals(importo, pendenzaPut.importo) &&
-        Objects.equals(numeroAvviso, pendenzaPut.numeroAvviso) &&
-        Objects.equals(dataCaricamento, pendenzaPut.dataCaricamento) &&
-        Objects.equals(dataValidita, pendenzaPut.dataValidita) &&
-        Objects.equals(dataScadenza, pendenzaPut.dataScadenza) &&
-        Objects.equals(annoRiferimento, pendenzaPut.annoRiferimento) &&
-        Objects.equals(cartellaPagamento, pendenzaPut.cartellaPagamento) &&
-        Objects.equals(datiAllegati, pendenzaPut.datiAllegati) &&
-        Objects.equals(tassonomia, pendenzaPut.tassonomia) &&
-        Objects.equals(tassonomiaAvviso, pendenzaPut.tassonomiaAvviso) &&
-        Objects.equals(idDominio, pendenzaPut.idDominio) &&
-        Objects.equals(idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
-        Objects.equals(voci, pendenzaPut.voci);
+    return Objects.equals(this.nome, pendenzaPut.nome) &&
+        Objects.equals(this.causale, pendenzaPut.causale) &&
+        Objects.equals(this.soggettoPagatore, pendenzaPut.soggettoPagatore) &&
+        Objects.equals(this.importo, pendenzaPut.importo) &&
+        Objects.equals(this.numeroAvviso, pendenzaPut.numeroAvviso) &&
+        Objects.equals(this.dataCaricamento, pendenzaPut.dataCaricamento) &&
+        Objects.equals(this.dataValidita, pendenzaPut.dataValidita) &&
+        Objects.equals(this.dataScadenza, pendenzaPut.dataScadenza) &&
+        Objects.equals(this.annoRiferimento, pendenzaPut.annoRiferimento) &&
+        Objects.equals(this.cartellaPagamento, pendenzaPut.cartellaPagamento) &&
+        Objects.equals(this.datiAllegati, pendenzaPut.datiAllegati) &&
+        Objects.equals(this.tassonomia, pendenzaPut.tassonomia) &&
+        Objects.equals(this.tassonomiaAvviso, pendenzaPut.tassonomiaAvviso) &&
+        Objects.equals(this.idDominio, pendenzaPut.idDominio) &&
+        Objects.equals(this.idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
+        Objects.equals(this.voci, pendenzaPut.voci);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idDominio, idUnitaOperativa, voci);
+    return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idDominio, this.idUnitaOperativa, this.voci);
   }
 
   public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (PendenzaPut) parse(json, PendenzaPut.class);
+    return parse(json, PendenzaPut.class);
   }
 
   @Override
@@ -378,22 +378,22 @@ public class PendenzaPut extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class PendenzaPut {\n");
     
-    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
-    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
-    sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
-    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
-    sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
-    sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
-    sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
-    sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
-    sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
-    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
-    sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
-    sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
-    sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
+    sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
+    sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
+    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
+    sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
+    sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
+    sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
+    sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
+    sb.append("    annoRiferimento: ").append(this.toIndentedString(this.annoRiferimento)).append("\n");
+    sb.append("    cartellaPagamento: ").append(this.toIndentedString(this.cartellaPagamento)).append("\n");
+    sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
+    sb.append("    tassonomia: ").append(this.toIndentedString(this.tassonomia)).append("\n");
+    sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
+    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    idUnitaOperativa: ").append(this.toIndentedString(this.idUnitaOperativa)).append("\n");
+    sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
     sb.append("}");
     return sb.toString();
   }

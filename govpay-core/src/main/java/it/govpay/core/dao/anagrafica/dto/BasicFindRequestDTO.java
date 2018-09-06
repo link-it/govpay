@@ -28,8 +28,8 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		super(user);
 		this.setLimit(50);
 		this.setPagina(1);
-		this.fieldsSort = new ArrayList<FilterSortWrapper>();
-		this.fieldMap = new HashMap<String, IField>();
+		this.fieldsSort = new ArrayList<>();
+		this.fieldMap = new HashMap<>();
 	}
 
 	public void addSortField(String key, IField value) {
@@ -48,18 +48,18 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	}
 
 	public int getLimit() {
-		return limit;
+		return this.limit;
 	}
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}
 
 	public String getSimpleSearch() {
-		return simpleSearch;
+		return this.simpleSearch;
 	}
 	
 	public boolean isSimpleSearch() {
-		return simpleSearch != null;
+		return this.simpleSearch != null;
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	}
 	
 	public FilterSortWrapper getDefaultSort() {
-		return defaultSort;
+		return this.defaultSort;
 	}
 
 	public void setDefaultSort(IField field, SortOrder sortOrder) {
@@ -86,7 +86,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	}
 	
 	public List<FilterSortWrapper> getFieldSortList(){
-		return (fieldsSort.size() == 0 && defaultSort != null) ? Arrays.asList(defaultSort) : fieldsSort;
+		return (this.fieldsSort.size() == 0 && this.defaultSort != null) ? Arrays.asList(this.defaultSort) : this.fieldsSort;
 	}
 
 	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {
@@ -110,7 +110,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 			try {
 				for (String key : this.fieldMap.keySet()) {
 					if(key.equals(fieldname)) {
-						addSort(this.fieldMap.get(key), sortOrder);
+						this.addSort(this.fieldMap.get(key), sortOrder);
 						added = true;
 						continue;
 					}

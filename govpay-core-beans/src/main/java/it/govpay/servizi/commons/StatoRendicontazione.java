@@ -30,7 +30,7 @@ public enum StatoRendicontazione {
     ALTRO_INTERMEDIARIO;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StatoRendicontazione fromValue(String v) {

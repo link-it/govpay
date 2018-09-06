@@ -62,7 +62,7 @@ public class IuvBD extends BasicBD {
 
 	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, String prefix) throws ServiceException {
 		
-		long prg = getNextPrgIuv(dominio.getCodDominio() + prefix, type);
+		long prg = this.getNextPrgIuv(dominio.getCodDominio() + prefix, type);
 		
 		String iuv = null;
 		
@@ -136,7 +136,7 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setAuxDigit(dominio.getAuxDigit());
 		iuvDTO.setApplicationCode(dominio.getStazione().getApplicationCode());
 		
-		return insertIuv(iuvDTO);
+		return this.insertIuv(iuvDTO);
 	}
 
 	public Iuv insertIuv(Iuv iuv) throws ServiceException{
@@ -174,11 +174,11 @@ public class IuvBD extends BasicBD {
 			java.sql.Connection con = null; 
 
 			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
-			if(!isAutoCommit()) {
+			if(!this.isAutoCommit()) {
 				bd = BasicBD.newInstance(this.getIdTransaction());
 				con = bd.getConnection();
 			} else {
-				con = getConnection();
+				con = this.getConnection();
 			}
 
 			return serialGenerator.buildIDAsNumber(params, con, this.getJdbcProperties().getDatabase(), log);
@@ -286,7 +286,7 @@ public class IuvBD extends BasicBD {
 
 	public List<Iuv> findAll(IuvFilter filter) throws ServiceException {
 		try {
-			List<Iuv> iuvLst = new ArrayList<Iuv>();
+			List<Iuv> iuvLst = new ArrayList<>();
 			List<it.govpay.orm.IUV> iuvVOLst = this.getIuvService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.IUV iuvVO: iuvVOLst) {
 				iuvLst.add(IuvConverter.toDTO(iuvVO));

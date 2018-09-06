@@ -66,7 +66,7 @@ public enum TipoVersamento {
     PO;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static TipoVersamento fromValue(String v) {

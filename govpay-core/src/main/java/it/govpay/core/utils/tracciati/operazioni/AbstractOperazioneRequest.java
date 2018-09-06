@@ -1,3 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.tracciati.operazioni;
 
 import it.govpay.bd.model.Operatore;
@@ -19,26 +39,26 @@ public abstract class AbstractOperazioneRequest {
 	}
 
 	public Long getLinea() {
-		return linea;
+		return this.linea;
 	}
 	public void setLinea(Long linea) {
 		this.linea = linea;
 	}
 	public byte[] getDati() {
-		return dati;
+		return this.dati;
 	}
 	public void setDati(byte[] dati) {
 		this.dati = dati;
 	}
 	public Long getIdTracciato() {
-		return idTracciato;
+		return this.idTracciato;
 	}
 	public void setIdTracciato(Long idTracciato) {
 		this.idTracciato = idTracciato;
 	}
 
 	public TipoOperazioneType getTipoOperazione() {
-		return tipoOperazione;
+		return this.tipoOperazione;
 	}
 
 	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
@@ -46,7 +66,7 @@ public abstract class AbstractOperazioneRequest {
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String codApplicazione) {
@@ -54,7 +74,7 @@ public abstract class AbstractOperazioneRequest {
 	}
 
 	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 
 	public void setCodVersamentoEnte(String codVersamentoEnte) {
@@ -62,7 +82,7 @@ public abstract class AbstractOperazioneRequest {
 	}
 
 	public Operatore getOperatore() {
-		return operatore;
+		return this.operatore;
 	}
 
 	public void setOperatore(Operatore operatore) {

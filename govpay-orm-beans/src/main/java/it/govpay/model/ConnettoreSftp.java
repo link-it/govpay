@@ -42,7 +42,7 @@ public class ConnettoreSftp extends BasicModel {
 	}
 
 	public String getIdConnettore() {
-		return idConnettore;
+		return this.idConnettore;
 	}
 
 	public void setIdConnettore(String idConnettore) {
@@ -50,7 +50,7 @@ public class ConnettoreSftp extends BasicModel {
 	}
 
 	public String getHttpUserIn() {
-		return httpUserIn;
+		return this.httpUserIn;
 	}
 
 	public void setHttpUserIn(String httpUserIn) {
@@ -58,7 +58,7 @@ public class ConnettoreSftp extends BasicModel {
 	}
 
 	public String getHttpPasswIn() {
-		return httpPasswIn;
+		return this.httpPasswIn;
 	}
 
 	public void setHttpPasswIn(String httpPasswIn) {
@@ -66,7 +66,7 @@ public class ConnettoreSftp extends BasicModel {
 	}
 
 	public String getUrlIn() {
-		return urlIn;
+		return this.urlIn;
 	}
 
 	public void setUrlIn(String urlIn) {
@@ -74,7 +74,7 @@ public class ConnettoreSftp extends BasicModel {
 	}
 
 	public String getHttpUserOut() {
-		return httpUserOut;
+		return this.httpUserOut;
 	}
 
 	public void setHttpUserOut(String httpUserOut) {
@@ -82,7 +82,7 @@ public class ConnettoreSftp extends BasicModel {
 	}
 
 	public String getHttpPasswOut() {
-		return httpPasswOut;
+		return this.httpPasswOut;
 	}
 
 	public void setHttpPasswOut(String httpPasswOut) {
@@ -90,7 +90,7 @@ public class ConnettoreSftp extends BasicModel {
 	}
 
 	public String getUrlOut() {
-		return urlOut;
+		return this.urlOut;
 	}
 
 	public void setUrlOut(String urlOut) {

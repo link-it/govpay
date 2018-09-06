@@ -52,21 +52,21 @@ public class EsitoAvvisaturaFetch extends AbstractJDBCFetch {
 
 			if(model.equals(EsitoAvvisatura.model())){
 				EsitoAvvisatura object = new EsitoAvvisatura();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodDominio", EsitoAvvisatura.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", EsitoAvvisatura.model().COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", EsitoAvvisatura.model().COD_DOMINIO.getFieldType()));
-				setParameter(object, "setIdentificativoAvvisatura", EsitoAvvisatura.model().IDENTIFICATIVO_AVVISATURA.getFieldType(),
+				this.setParameter(object, "setIdentificativoAvvisatura", EsitoAvvisatura.model().IDENTIFICATIVO_AVVISATURA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "identificativo_avvisatura", EsitoAvvisatura.model().IDENTIFICATIVO_AVVISATURA.getFieldType()));
-				setParameter(object, "setTipoCanale", EsitoAvvisatura.model().TIPO_CANALE.getFieldType(),
+				this.setParameter(object, "setTipoCanale", EsitoAvvisatura.model().TIPO_CANALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_canale", EsitoAvvisatura.model().TIPO_CANALE.getFieldType()));
-				setParameter(object, "setCodCanale", EsitoAvvisatura.model().COD_CANALE.getFieldType(),
+				this.setParameter(object, "setCodCanale", EsitoAvvisatura.model().COD_CANALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_canale", EsitoAvvisatura.model().COD_CANALE.getFieldType()));
-				setParameter(object, "setData", EsitoAvvisatura.model().DATA.getFieldType(),
+				this.setParameter(object, "setData", EsitoAvvisatura.model().DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data", EsitoAvvisatura.model().DATA.getFieldType()));
-				setParameter(object, "setCodEsito", EsitoAvvisatura.model().COD_ESITO.getFieldType(),
+				this.setParameter(object, "setCodEsito", EsitoAvvisatura.model().COD_ESITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_esito", EsitoAvvisatura.model().COD_ESITO.getFieldType()));
-				setParameter(object, "setDescrizioneEsito", EsitoAvvisatura.model().DESCRIZIONE_ESITO.getFieldType(),
+				this.setParameter(object, "setDescrizioneEsito", EsitoAvvisatura.model().DESCRIZIONE_ESITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "descrizione_esito", EsitoAvvisatura.model().DESCRIZIONE_ESITO.getFieldType()));
 				return object;
 			}
@@ -88,21 +88,21 @@ public class EsitoAvvisaturaFetch extends AbstractJDBCFetch {
 
 			if(model.equals(EsitoAvvisatura.model())){
 				EsitoAvvisatura object = new EsitoAvvisatura();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodDominio", EsitoAvvisatura.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", EsitoAvvisatura.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				setParameter(object, "setIdentificativoAvvisatura", EsitoAvvisatura.model().IDENTIFICATIVO_AVVISATURA.getFieldType(),
+				this.setParameter(object, "setIdentificativoAvvisatura", EsitoAvvisatura.model().IDENTIFICATIVO_AVVISATURA.getFieldType(),
 					this.getObjectFromMap(map,"identificativoAvvisatura"));
-				setParameter(object, "setTipoCanale", EsitoAvvisatura.model().TIPO_CANALE.getFieldType(),
+				this.setParameter(object, "setTipoCanale", EsitoAvvisatura.model().TIPO_CANALE.getFieldType(),
 					this.getObjectFromMap(map,"tipoCanale"));
-				setParameter(object, "setCodCanale", EsitoAvvisatura.model().COD_CANALE.getFieldType(),
+				this.setParameter(object, "setCodCanale", EsitoAvvisatura.model().COD_CANALE.getFieldType(),
 					this.getObjectFromMap(map,"codCanale"));
-				setParameter(object, "setData", EsitoAvvisatura.model().DATA.getFieldType(),
+				this.setParameter(object, "setData", EsitoAvvisatura.model().DATA.getFieldType(),
 					this.getObjectFromMap(map,"data"));
-				setParameter(object, "setCodEsito", EsitoAvvisatura.model().COD_ESITO.getFieldType(),
+				this.setParameter(object, "setCodEsito", EsitoAvvisatura.model().COD_ESITO.getFieldType(),
 					this.getObjectFromMap(map,"codEsito"));
-				setParameter(object, "setDescrizioneEsito", EsitoAvvisatura.model().DESCRIZIONE_ESITO.getFieldType(),
+				this.setParameter(object, "setDescrizioneEsito", EsitoAvvisatura.model().DESCRIZIONE_ESITO.getFieldType(),
 					this.getObjectFromMap(map,"descrizioneEsito"));
 				return object;
 			}

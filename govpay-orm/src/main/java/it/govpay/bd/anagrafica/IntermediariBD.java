@@ -66,7 +66,7 @@ public class IntermediariBD extends BasicBD {
 
 		try {
 			it.govpay.orm.Intermediario intermediarioVO = ((JDBCIntermediarioServiceSearch)this.getIntermediarioService()).get(id);
-			return getIntermediario(intermediarioVO);
+			return this.getIntermediario(intermediarioVO);
 
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -92,7 +92,7 @@ public class IntermediariBD extends BasicBD {
 			id.setCodIntermediario(codIntermediario);
 			it.govpay.orm.Intermediario intermediarioVO = this.getIntermediarioService().get(id);
 
-			return getIntermediario(intermediarioVO);
+			return this.getIntermediario(intermediarioVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -182,7 +182,7 @@ public class IntermediariBD extends BasicBD {
 				}
 			}
 
-			emitAudit(intermediario);
+			this.emitAudit(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -235,7 +235,7 @@ public class IntermediariBD extends BasicBD {
 				}
 			}
 
-			emitAudit(intermediario);
+			this.emitAudit(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -265,10 +265,10 @@ public class IntermediariBD extends BasicBD {
 
 	public List<Intermediario> findAll(IntermediarioFilter filter) throws ServiceException {
 		try {
-			List<Intermediario> lst = new ArrayList<Intermediario>();
+			List<Intermediario> lst = new ArrayList<>();
 			List<it.govpay.orm.Intermediario> lstIntermediarioVO = this.getIntermediarioService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Intermediario intermediarioVO: lstIntermediarioVO) {
-				lst.add(getIntermediario(intermediarioVO));
+				lst.add(this.getIntermediario(intermediarioVO));
 			}
 			return lst;
 		} catch (NotImplementedException e) {

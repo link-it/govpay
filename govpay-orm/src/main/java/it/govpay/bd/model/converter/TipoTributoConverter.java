@@ -30,7 +30,7 @@ import it.govpay.model.Tributo.TipoContabilita;
 public class TipoTributoConverter {
 
 	public static List<TipoTributo> toDTOList(List<it.govpay.orm.TipoTributo> lstVO) throws ServiceException {
-		List<TipoTributo> lst = new ArrayList<TipoTributo>();
+		List<TipoTributo> lst = new ArrayList<>();
 		if(lstVO != null && !lstVO.isEmpty()) {
 			for(it.govpay.orm.TipoTributo vo: lstVO) {
 				lst.add(toDTO(vo));

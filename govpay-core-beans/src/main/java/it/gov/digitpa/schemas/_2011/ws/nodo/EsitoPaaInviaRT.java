@@ -44,7 +44,7 @@ public class EsitoPaaInviaRT
      *     
      */
     public String getEsito() {
-        return esito;
+        return this.esito;
     }
 
     /**

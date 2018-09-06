@@ -17,19 +17,19 @@ public class LeggiPagamentoPortaleDTO extends BasicCreateRequestDTO {
 	private boolean risolviLink = false;
 	
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getIdSessione() {
-		return idSessione;
+		return this.idSessione;
 	}
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
 	}
 	public boolean isRisolviLink() {
-		return risolviLink;
+		return this.risolviLink;
 	}
 	public void setRisolviLink(boolean risolviLink) {
 		this.risolviLink = risolviLink;

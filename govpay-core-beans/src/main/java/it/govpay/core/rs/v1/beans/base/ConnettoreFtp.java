@@ -35,7 +35,7 @@ public class ConnettoreFtp extends JSONSerializable {
 
   @JsonProperty("serverurl")
   public String getServerurl() {
-    return serverurl;
+    return this.serverurl;
   }
   public void setServerurl(String serverurl) {
     this.serverurl = serverurl;
@@ -51,7 +51,7 @@ public class ConnettoreFtp extends JSONSerializable {
 
   @JsonProperty("username")
   public String getUsername() {
-    return username;
+    return this.username;
   }
   public void setUsername(String username) {
     this.username = username;
@@ -67,7 +67,7 @@ public class ConnettoreFtp extends JSONSerializable {
 
   @JsonProperty("password")
   public String getPassword() {
-    return password;
+    return this.password;
   }
   public void setPassword(String password) {
     this.password = password;
@@ -78,22 +78,22 @@ public class ConnettoreFtp extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     ConnettoreFtp connettoreFtp = (ConnettoreFtp) o;
-    return Objects.equals(serverurl, connettoreFtp.serverurl) &&
-        Objects.equals(username, connettoreFtp.username) &&
-        Objects.equals(password, connettoreFtp.password);
+    return Objects.equals(this.serverurl, connettoreFtp.serverurl) &&
+        Objects.equals(this.username, connettoreFtp.username) &&
+        Objects.equals(this.password, connettoreFtp.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(serverurl, username, password);
+    return Objects.hash(this.serverurl, this.username, this.password);
   }
 
   public static ConnettoreFtp parse(String json) throws ServiceException, ValidationException {
-    return (ConnettoreFtp) parse(json, ConnettoreFtp.class);
+    return parse(json, ConnettoreFtp.class);
   }
 
   @Override
@@ -106,9 +106,9 @@ public class ConnettoreFtp extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettoreFtp {\n");
     
-    sb.append("    serverurl: ").append(toIndentedString(serverurl)).append("\n");
-    sb.append("    username: ").append(toIndentedString(username)).append("\n");
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("    serverurl: ").append(this.toIndentedString(this.serverurl)).append("\n");
+    sb.append("    username: ").append(this.toIndentedString(this.username)).append("\n");
+    sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -59,7 +59,7 @@ public class CtErogazione {
      *     
      */
     public StTipoPeriodo getTipoPeriodo() {
-        return tipoPeriodo;
+        return this.tipoPeriodo;
     }
 
     /**
@@ -83,7 +83,7 @@ public class CtErogazione {
      *     
      */
     public String getGiorno() {
-        return giorno;
+        return this.giorno;
     }
 
     /**
@@ -121,8 +121,8 @@ public class CtErogazione {
      * 
      */
     public List<CtFasciaOraria> getFasciaOrarias() {
-        if (fasciaOrarias == null) {
-            fasciaOrarias = new ArrayList<CtFasciaOraria>();
+        if (this.fasciaOrarias == null) {
+            this.fasciaOrarias = new ArrayList<>();
         }
         return this.fasciaOrarias;
     }

@@ -67,7 +67,7 @@ public class AclPost extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static ServizioEnum fromValue(String text) {
@@ -112,7 +112,7 @@ public class AclPost extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static AutorizzazioniEnum fromValue(String text) {
@@ -127,7 +127,7 @@ public class AclPost extends JSONSerializable {
 
       
   @JsonProperty("autorizzazioni")
-  private List<String> autorizzazioni = new ArrayList<String>();
+  private List<String> autorizzazioni = new ArrayList<>();
   
   /**
    * ruolo a cui si applica l'acl
@@ -139,7 +139,7 @@ public class AclPost extends JSONSerializable {
 
   @JsonProperty("ruolo")
   public String getRuolo() {
-    return ruolo;
+    return this.ruolo;
   }
   public void setRuolo(String ruolo) {
     this.ruolo = ruolo;
@@ -155,7 +155,7 @@ public class AclPost extends JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return principal;
+    return this.principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
@@ -171,7 +171,7 @@ public class AclPost extends JSONSerializable {
 
   @JsonProperty("servizio")
   public ServizioEnum getServizio() {
-    return servizio;
+    return this.servizio;
   }
   public void setServizio(ServizioEnum servizio) {
     this.servizio = servizio;
@@ -186,7 +186,7 @@ public class AclPost extends JSONSerializable {
 
   @JsonProperty("autorizzazioni")
   public List<String> getAutorizzazioni() {
-    return autorizzazioni;
+    return this.autorizzazioni;
   }
   public void setAutorizzazioni(List<String> autorizzazioni) {
     this.autorizzazioni = autorizzazioni;
@@ -197,23 +197,23 @@ public class AclPost extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     AclPost aclPost = (AclPost) o;
-    return Objects.equals(ruolo, aclPost.ruolo) &&
-        Objects.equals(principal, aclPost.principal) &&
-        Objects.equals(servizio, aclPost.servizio) &&
-        Objects.equals(autorizzazioni, aclPost.autorizzazioni);
+    return Objects.equals(this.ruolo, aclPost.ruolo) &&
+        Objects.equals(this.principal, aclPost.principal) &&
+        Objects.equals(this.servizio, aclPost.servizio) &&
+        Objects.equals(this.autorizzazioni, aclPost.autorizzazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ruolo, principal, servizio, autorizzazioni);
+    return Objects.hash(this.ruolo, this.principal, this.servizio, this.autorizzazioni);
   }
 
   public static AclPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (AclPost) parse(json, AclPost.class);
+    return parse(json, AclPost.class);
   }
 
   @Override
@@ -226,10 +226,10 @@ public class AclPost extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class AclPost {\n");
     
-    sb.append("    ruolo: ").append(toIndentedString(ruolo)).append("\n");
-    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
-    sb.append("    servizio: ").append(toIndentedString(servizio)).append("\n");
-    sb.append("    autorizzazioni: ").append(toIndentedString(autorizzazioni)).append("\n");
+    sb.append("    ruolo: ").append(this.toIndentedString(this.ruolo)).append("\n");
+    sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
+    sb.append("    servizio: ").append(this.toIndentedString(this.servizio)).append("\n");
+    sb.append("    autorizzazioni: ").append(this.toIndentedString(this.autorizzazioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }

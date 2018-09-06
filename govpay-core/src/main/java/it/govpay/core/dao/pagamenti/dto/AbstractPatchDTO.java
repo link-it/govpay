@@ -23,7 +23,7 @@ public class AbstractPatchDTO extends BasicCreateRequestDTO {
 		super(user);
 	}
 	public List<PatchOp> getOp() {
-		return op;
+		return this.op;
 	}
 
 	public void setOp(List<PatchOp> op) {

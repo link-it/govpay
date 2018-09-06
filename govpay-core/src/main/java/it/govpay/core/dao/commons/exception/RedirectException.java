@@ -32,7 +32,7 @@ public class RedirectException extends Exception{
 	}
 	
 	public String getLocation() {
-		return location;
+		return this.location;
 	}
 	
 	public URI getURILocation() {

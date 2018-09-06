@@ -98,7 +98,7 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 	}
 
 	public StatoAvviso getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(StatoAvviso stato) {
@@ -106,7 +106,7 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -114,7 +114,7 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -122,7 +122,7 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 	}
 
 	public Long getIdTracciato() {
-		return idTracciato;
+		return this.idTracciato;
 	}
 
 	public void setIdTracciato(Long idTracciato) {
@@ -130,7 +130,7 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 	}
 
 	public StatoOperazioneType getStatoOperazione() {
-		return statoOperazione;
+		return this.statoOperazione;
 	}
 
 	public void setStatoOperazione(StatoOperazioneType statoOperazione) {
@@ -138,7 +138,7 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 	}
 
 	public TipoOperazioneType getTipoOperazione() {
-		return tipoOperazione;
+		return this.tipoOperazione;
 	}
 
 	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {

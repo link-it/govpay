@@ -83,7 +83,7 @@ public class OperazioneFilter extends AbstractFilter {
 	}
 
 	public Long getIdTracciato() {
-		return idTracciato;
+		return this.idTracciato;
 	}
 
 	public void setIdTracciato(Long idTracciato) {
@@ -91,7 +91,7 @@ public class OperazioneFilter extends AbstractFilter {
 	}
 
 	public StatoOperazioneType getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(StatoOperazioneType stato) {

@@ -77,7 +77,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return ragioneSociale;
+    return this.ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
@@ -93,7 +93,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("indirizzo")
   public String getIndirizzo() {
-    return indirizzo;
+    return this.indirizzo;
   }
   public void setIndirizzo(String indirizzo) {
     this.indirizzo = indirizzo;
@@ -109,7 +109,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("civico")
   public String getCivico() {
-    return civico;
+    return this.civico;
   }
   public void setCivico(String civico) {
     this.civico = civico;
@@ -125,7 +125,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("cap")
   public String getCap() {
-    return cap;
+    return this.cap;
   }
   public void setCap(String cap) {
     this.cap = cap;
@@ -141,7 +141,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("localita")
   public String getLocalita() {
-    return localita;
+    return this.localita;
   }
   public void setLocalita(String localita) {
     this.localita = localita;
@@ -157,7 +157,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("provincia")
   public String getProvincia() {
-    return provincia;
+    return this.provincia;
   }
   public void setProvincia(String provincia) {
     this.provincia = provincia;
@@ -173,7 +173,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("nazione")
   public String getNazione() {
-    return nazione;
+    return this.nazione;
   }
   public void setNazione(String nazione) {
     this.nazione = nazione;
@@ -189,7 +189,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("email")
   public String getEmail() {
-    return email;
+    return this.email;
   }
   public void setEmail(String email) {
     this.email = email;
@@ -205,7 +205,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("pec")
   public String getPec() {
-    return pec;
+    return this.pec;
   }
   public void setPec(String pec) {
     this.pec = pec;
@@ -221,7 +221,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("tel")
   public String getTel() {
-    return tel;
+    return this.tel;
   }
   public void setTel(String tel) {
     this.tel = tel;
@@ -237,7 +237,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("fax")
   public String getFax() {
-    return fax;
+    return this.fax;
   }
   public void setFax(String fax) {
     this.fax = fax;
@@ -253,7 +253,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("web")
   public String getWeb() {
-    return web;
+    return this.web;
   }
   public void setWeb(String web) {
     this.web = web;
@@ -269,7 +269,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("area")
   public String getArea() {
-    return area;
+    return this.area;
   }
   public void setArea(String area) {
     this.area = area;
@@ -285,7 +285,7 @@ public class UnitaOperativaPost extends JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -296,33 +296,33 @@ public class UnitaOperativaPost extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     UnitaOperativaPost unitaOperativaPost = (UnitaOperativaPost) o;
-    return Objects.equals(ragioneSociale, unitaOperativaPost.ragioneSociale) &&
-        Objects.equals(indirizzo, unitaOperativaPost.indirizzo) &&
-        Objects.equals(civico, unitaOperativaPost.civico) &&
-        Objects.equals(cap, unitaOperativaPost.cap) &&
-        Objects.equals(localita, unitaOperativaPost.localita) &&
-        Objects.equals(provincia, unitaOperativaPost.provincia) &&
-        Objects.equals(nazione, unitaOperativaPost.nazione) &&
-        Objects.equals(email, unitaOperativaPost.email) &&
-        Objects.equals(pec, unitaOperativaPost.pec) &&
-        Objects.equals(tel, unitaOperativaPost.tel) &&
-        Objects.equals(fax, unitaOperativaPost.fax) &&
-        Objects.equals(web, unitaOperativaPost.web) &&
-        Objects.equals(area, unitaOperativaPost.area) &&
-        Objects.equals(abilitato, unitaOperativaPost.abilitato);
+    return Objects.equals(this.ragioneSociale, unitaOperativaPost.ragioneSociale) &&
+        Objects.equals(this.indirizzo, unitaOperativaPost.indirizzo) &&
+        Objects.equals(this.civico, unitaOperativaPost.civico) &&
+        Objects.equals(this.cap, unitaOperativaPost.cap) &&
+        Objects.equals(this.localita, unitaOperativaPost.localita) &&
+        Objects.equals(this.provincia, unitaOperativaPost.provincia) &&
+        Objects.equals(this.nazione, unitaOperativaPost.nazione) &&
+        Objects.equals(this.email, unitaOperativaPost.email) &&
+        Objects.equals(this.pec, unitaOperativaPost.pec) &&
+        Objects.equals(this.tel, unitaOperativaPost.tel) &&
+        Objects.equals(this.fax, unitaOperativaPost.fax) &&
+        Objects.equals(this.web, unitaOperativaPost.web) &&
+        Objects.equals(this.area, unitaOperativaPost.area) &&
+        Objects.equals(this.abilitato, unitaOperativaPost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, area, abilitato);
+    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.area, this.abilitato);
   }
 
   public static UnitaOperativaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (UnitaOperativaPost) parse(json, UnitaOperativaPost.class);
+    return parse(json, UnitaOperativaPost.class);
   }
 
   @Override
@@ -335,20 +335,20 @@ public class UnitaOperativaPost extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class UnitaOperativaPost {\n");
     
-    sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
-    sb.append("    indirizzo: ").append(toIndentedString(indirizzo)).append("\n");
-    sb.append("    civico: ").append(toIndentedString(civico)).append("\n");
-    sb.append("    cap: ").append(toIndentedString(cap)).append("\n");
-    sb.append("    localita: ").append(toIndentedString(localita)).append("\n");
-    sb.append("    provincia: ").append(toIndentedString(provincia)).append("\n");
-    sb.append("    nazione: ").append(toIndentedString(nazione)).append("\n");
-    sb.append("    email: ").append(toIndentedString(email)).append("\n");
-    sb.append("    pec: ").append(toIndentedString(pec)).append("\n");
-    sb.append("    tel: ").append(toIndentedString(tel)).append("\n");
-    sb.append("    fax: ").append(toIndentedString(fax)).append("\n");
-    sb.append("    web: ").append(toIndentedString(web)).append("\n");
-    sb.append("    area: ").append(toIndentedString(area)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
+    sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
+    sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");
+    sb.append("    cap: ").append(this.toIndentedString(this.cap)).append("\n");
+    sb.append("    localita: ").append(this.toIndentedString(this.localita)).append("\n");
+    sb.append("    provincia: ").append(this.toIndentedString(this.provincia)).append("\n");
+    sb.append("    nazione: ").append(this.toIndentedString(this.nazione)).append("\n");
+    sb.append("    email: ").append(this.toIndentedString(this.email)).append("\n");
+    sb.append("    pec: ").append(this.toIndentedString(this.pec)).append("\n");
+    sb.append("    tel: ").append(this.toIndentedString(this.tel)).append("\n");
+    sb.append("    fax: ").append(this.toIndentedString(this.fax)).append("\n");
+    sb.append("    web: ").append(this.toIndentedString(this.web)).append("\n");
+    sb.append("    area: ").append(this.toIndentedString(this.area)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

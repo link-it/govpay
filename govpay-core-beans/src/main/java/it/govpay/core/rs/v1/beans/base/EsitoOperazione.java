@@ -21,7 +21,7 @@ public class EsitoOperazione extends JSONSerializable {
   private BigDecimal percentuale = null;
   
   @JsonProperty("descrizione")
-  private List<DominioIndex> descrizione = new ArrayList<DominioIndex>();
+  private List<DominioIndex> descrizione = new ArrayList<>();
   
   @JsonProperty("stato")
   private String stato = null;
@@ -36,7 +36,7 @@ public class EsitoOperazione extends JSONSerializable {
 
   @JsonProperty("percentuale")
   public BigDecimal getPercentuale() {
-    return percentuale;
+    return this.percentuale;
   }
   public void setPercentuale(BigDecimal percentuale) {
     this.percentuale = percentuale;
@@ -52,7 +52,7 @@ public class EsitoOperazione extends JSONSerializable {
 
   @JsonProperty("descrizione")
   public List<DominioIndex> getDescrizione() {
-    return descrizione;
+    return this.descrizione;
   }
   public void setDescrizione(List<DominioIndex> descrizione) {
     this.descrizione = descrizione;
@@ -68,7 +68,7 @@ public class EsitoOperazione extends JSONSerializable {
 
   @JsonProperty("stato")
   public String getStato() {
-    return stato;
+    return this.stato;
   }
   public void setStato(String stato) {
     this.stato = stato;
@@ -79,22 +79,22 @@ public class EsitoOperazione extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     EsitoOperazione esitoOperazione = (EsitoOperazione) o;
-    return Objects.equals(percentuale, esitoOperazione.percentuale) &&
-        Objects.equals(descrizione, esitoOperazione.descrizione) &&
-        Objects.equals(stato, esitoOperazione.stato);
+    return Objects.equals(this.percentuale, esitoOperazione.percentuale) &&
+        Objects.equals(this.descrizione, esitoOperazione.descrizione) &&
+        Objects.equals(this.stato, esitoOperazione.stato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(percentuale, descrizione, stato);
+    return Objects.hash(this.percentuale, this.descrizione, this.stato);
   }
 
   public static EsitoOperazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (EsitoOperazione) parse(json, EsitoOperazione.class);
+    return parse(json, EsitoOperazione.class);
   }
 
   @Override
@@ -107,9 +107,9 @@ public class EsitoOperazione extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class EsitoOperazione {\n");
     
-    sb.append("    percentuale: ").append(toIndentedString(percentuale)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    percentuale: ").append(this.toIndentedString(this.percentuale)).append("\n");
+    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

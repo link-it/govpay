@@ -41,7 +41,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
 
   @JsonProperty("idTracciato")
   public String getIdTracciato() {
-    return idTracciato;
+    return this.idTracciato;
   }
   public void setIdTracciato(String idTracciato) {
     this.idTracciato = idTracciato;
@@ -57,7 +57,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return idDominio;
+    return this.idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -72,7 +72,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
 
   @JsonProperty("inserimenti")
   public List<PendenzaPost> getInserimenti() {
-    return inserimenti;
+    return this.inserimenti;
   }
   public void setInserimenti(List<PendenzaPost> inserimenti) {
     this.inserimenti = inserimenti;
@@ -87,7 +87,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
 
   @JsonProperty("annullamenti")
   public List<AnnullamentoPendenza> getAnnullamenti() {
-    return annullamenti;
+    return this.annullamenti;
   }
   public void setAnnullamenti(List<AnnullamentoPendenza> annullamenti) {
     this.annullamenti = annullamenti;
@@ -98,23 +98,23 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     TracciatoPendenzePost tracciatoPendenzePost = (TracciatoPendenzePost) o;
-    return Objects.equals(idTracciato, tracciatoPendenzePost.idTracciato) &&
-        Objects.equals(idDominio, tracciatoPendenzePost.idDominio) &&
-        Objects.equals(inserimenti, tracciatoPendenzePost.inserimenti) &&
-        Objects.equals(annullamenti, tracciatoPendenzePost.annullamenti);
+    return Objects.equals(this.idTracciato, tracciatoPendenzePost.idTracciato) &&
+        Objects.equals(this.idDominio, tracciatoPendenzePost.idDominio) &&
+        Objects.equals(this.inserimenti, tracciatoPendenzePost.inserimenti) &&
+        Objects.equals(this.annullamenti, tracciatoPendenzePost.annullamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTracciato, idDominio, inserimenti, annullamenti);
+    return Objects.hash(this.idTracciato, this.idDominio, this.inserimenti, this.annullamenti);
   }
 
   public static TracciatoPendenzePost parse(String json) throws ServiceException, ValidationException {
-    return (TracciatoPendenzePost) parse(json, TracciatoPendenzePost.class);
+    return parse(json, TracciatoPendenzePost.class);
   }
 
   @Override
@@ -127,10 +127,10 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
     StringBuilder sb = new StringBuilder();
     sb.append("class TracciatoPendenzePost {\n");
     
-    sb.append("    idTracciato: ").append(toIndentedString(idTracciato)).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    inserimenti: ").append(toIndentedString(inserimenti)).append("\n");
-    sb.append("    annullamenti: ").append(toIndentedString(annullamenti)).append("\n");
+    sb.append("    idTracciato: ").append(this.toIndentedString(this.idTracciato)).append("\n");
+    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    inserimenti: ").append(this.toIndentedString(this.inserimenti)).append("\n");
+    sb.append("    annullamenti: ").append(this.toIndentedString(this.annullamenti)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -146,14 +146,15 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
     return o.toString().replace("\n", "\n    ");
   }
   
-  public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
+  @Override
+public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
-		vf.getValidator("idTracciato", idTracciato).notNull();
-		vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+		vf.getValidator("idTracciato", this.idTracciato).notNull();
+		vf.getValidator("idDominio", this.idDominio).notNull().minLength(1).maxLength(35);
 		
-		vf.getValidator("inserimenti", inserimenti).notNull().validateObjects();
-		vf.getValidator("annullamenti", annullamenti).notNull().validateObjects();
+		vf.getValidator("inserimenti", this.inserimenti).notNull().validateObjects();
+		vf.getValidator("annullamenti", this.annullamenti).notNull().validateObjects();
   }
 }
 

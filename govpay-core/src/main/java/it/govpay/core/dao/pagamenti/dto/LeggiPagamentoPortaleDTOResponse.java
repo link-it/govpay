@@ -11,7 +11,7 @@ public class LeggiPagamentoPortaleDTOResponse {
 	private List<LeggiPendenzaDTOResponse> listaPendenze = null;
 
 	public PagamentoPortale getPagamento() {
-		return pagamento;
+		return this.pagamento;
 	}
 
 	public void setPagamento(PagamentoPortale pagamento) {
@@ -19,7 +19,7 @@ public class LeggiPagamentoPortaleDTOResponse {
 	}
 
 	public List<LeggiRptDTOResponse> getListaRpp() {
-		return listaRpp;
+		return this.listaRpp;
 	}
 
 	public void setListaRpp(List<LeggiRptDTOResponse> listaRpp) {
@@ -27,7 +27,7 @@ public class LeggiPagamentoPortaleDTOResponse {
 	}
 
 	public List<LeggiPendenzaDTOResponse> getListaPendenze() {
-		return listaPendenze;
+		return this.listaPendenze;
 	}
 
 	public void setListaPendenze(List<LeggiPendenzaDTOResponse> listaPendenze) {

@@ -69,13 +69,13 @@ public class RiscossioniDAO extends BaseDAO{
 
 			long count = pagamentiBD.count(filter);
 
-			List<LeggiRiscossioneDTOResponse> resList = new ArrayList<LeggiRiscossioneDTOResponse>();
+			List<LeggiRiscossioneDTOResponse> resList = new ArrayList<>();
 			if(count > 0) {
 				List<Pagamento> findAll = pagamentiBD.findAll(filter);
 
 				for (Pagamento pagamento: findAll) {
 					LeggiRiscossioneDTOResponse elem = new LeggiRiscossioneDTOResponse();
-					populatePagamento(pagamento, bd);
+					this.populatePagamento(pagamento, bd);
 					elem.setPagamento(pagamento);
 					resList.add(elem);
 				}
@@ -102,7 +102,7 @@ public class RiscossioniDAO extends BaseDAO{
 			// controllo che il dominio sia autorizzato
 			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, flussoPagamento.getDominio(bd).getCodDominio(), null, bd);
 
-			populatePagamento(flussoPagamento, bd);
+			this.populatePagamento(flussoPagamento, bd);
 			response.setPagamento(flussoPagamento);
 
 		} catch (NotFoundException e) {

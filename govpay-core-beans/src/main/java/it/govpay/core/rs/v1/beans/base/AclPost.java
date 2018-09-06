@@ -44,7 +44,7 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     @Override
     @JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static AutorizzazioniEnum fromValue(String text) {
@@ -59,7 +59,7 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
       
   @JsonProperty("autorizzazioni")
-  private List<String> autorizzazioni = new ArrayList<String>();
+  private List<String> autorizzazioni = new ArrayList<>();
   
   /**
    * Servizio oggetto dell'autorizzazione. Elenco disponibile in /enumerazioni/serviziACL.
@@ -71,7 +71,7 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("servizio")
   public String getServizio() {
-    return servizio;
+    return this.servizio;
   }
   public void setServizio(String servizio) {
     this.servizio = servizio;
@@ -86,7 +86,7 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("autorizzazioni")
   public List<String> getAutorizzazioni() {
-    return autorizzazioni;
+    return this.autorizzazioni;
   }
   public void setAutorizzazioni(List<String> autorizzazioni) {
     this.autorizzazioni = autorizzazioni;
@@ -97,21 +97,21 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     AclPost aclPost = (AclPost) o;
-    return Objects.equals(servizio, aclPost.servizio) &&
-        Objects.equals(autorizzazioni, aclPost.autorizzazioni);
+    return Objects.equals(this.servizio, aclPost.servizio) &&
+        Objects.equals(this.autorizzazioni, aclPost.autorizzazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(servizio, autorizzazioni);
+    return Objects.hash(this.servizio, this.autorizzazioni);
   }
 
   public static AclPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (AclPost) parse(json, AclPost.class);
+    return parse(json, AclPost.class);
   }
 
   @Override
@@ -124,8 +124,8 @@ public class AclPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class AclPost {\n");
     
-    sb.append("    servizio: ").append(toIndentedString(servizio)).append("\n");
-    sb.append("    autorizzazioni: ").append(toIndentedString(autorizzazioni)).append("\n");
+    sb.append("    servizio: ").append(this.toIndentedString(this.servizio)).append("\n");
+    sb.append("    autorizzazioni: ").append(this.toIndentedString(this.autorizzazioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }

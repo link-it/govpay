@@ -83,7 +83,7 @@ public class DominioFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.in(cf, idDomini);
+				newExpression.in(this.cf, this.idDomini);
 				addAnd = true;
 			}
 			
@@ -145,7 +145,7 @@ public class DominioFilter extends AbstractFilter {
 	}
 
 	public String getCodStazione() {
-		return codStazione;
+		return this.codStazione;
 	}
 
 	public void setCodStazione(String codStazione) {
@@ -153,7 +153,7 @@ public class DominioFilter extends AbstractFilter {
 	}
 
 	public Collection<Long> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(Collection<Long> idDomini) {
@@ -161,7 +161,7 @@ public class DominioFilter extends AbstractFilter {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -177,7 +177,7 @@ public class DominioFilter extends AbstractFilter {
 	}
 
 	public Boolean getAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(Boolean abilitato) {

@@ -28,55 +28,55 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	private String idPagamento;
 	
 	public Date getDataA() {
-		return dataA;
+		return this.dataA;
 	}
 	public void setDataA(Date dataA) {
 		this.dataA = dataA;
 	}
 	public Date getDataDa() {
-		return dataDa;
+		return this.dataDa;
 	}
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
 	public StatoRpt getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(StatoRpt stato) {
 		this.stato = stato;
 	}
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
 	}
 	public String getIdA2A() {
-		return idA2A;
+		return this.idA2A;
 	}
 	public void setIdA2A(String idA2A) {
 		this.idA2A = idA2A;
 	}
 	public String getIdPendenza() {
-		return idPendenza;
+		return this.idPendenza;
 	}
 	public void setIdPendenza(String idPendenza) {
 		this.idPendenza = idPendenza;
 	}
 	public String getIdPagamento() {
-		return idPagamento;
+		return this.idPagamento;
 	}
 	public void setIdPagamento(String idPagamento) {
 		this.idPagamento = idPagamento;

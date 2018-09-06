@@ -68,7 +68,7 @@ public class NodoInviaRichiestaStorno {
      *     
      */
     public String getIdentificativoIntermediarioPA() {
-        return identificativoIntermediarioPA;
+        return this.identificativoIntermediarioPA;
     }
 
     /**
@@ -92,7 +92,7 @@ public class NodoInviaRichiestaStorno {
      *     
      */
     public String getIdentificativoStazioneIntermediarioPA() {
-        return identificativoStazioneIntermediarioPA;
+        return this.identificativoStazioneIntermediarioPA;
     }
 
     /**
@@ -116,7 +116,7 @@ public class NodoInviaRichiestaStorno {
      *     
      */
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -140,7 +140,7 @@ public class NodoInviaRichiestaStorno {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -164,7 +164,7 @@ public class NodoInviaRichiestaStorno {
      *     
      */
     public String getIdentificativoUnivocoVersamento() {
-        return identificativoUnivocoVersamento;
+        return this.identificativoUnivocoVersamento;
     }
 
     /**
@@ -188,7 +188,7 @@ public class NodoInviaRichiestaStorno {
      *     
      */
     public String getCodiceContestoPagamento() {
-        return codiceContestoPagamento;
+        return this.codiceContestoPagamento;
     }
 
     /**
@@ -211,7 +211,7 @@ public class NodoInviaRichiestaStorno {
      *     byte[]
      */
     public byte[] getRr() {
-        return rr;
+        return this.rr;
     }
 
     /**

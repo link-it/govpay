@@ -51,7 +51,7 @@ public class Evento extends BasicModel {
 			this.codifica = codifica;
 		}
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static CategoriaEvento toEnum(String codifica) throws ServiceException {
@@ -89,124 +89,125 @@ public class Evento extends BasicModel {
 	private String esito;
 	
 	public Evento() {
-		categoriaEvento = CategoriaEvento.INTERFACCIA;
-		dataRichiesta = new Date();
-		componente = COMPONENTE;
-		codPsp = Rpt.codPspWISP20;
-		codCanale = Rpt.codCanaleWISP20;
-		tipoVersamento = Rpt.tipoVersamentoWISP20;
+		this.categoriaEvento = CategoriaEvento.INTERFACCIA;
+		this.dataRichiesta = new Date();
+		this.componente = COMPONENTE;
+		this.codPsp = Rpt.codPspWISP20;
+		this.codCanale = Rpt.codCanaleWISP20;
+		this.tipoVersamento = Rpt.tipoVersamentoWISP20;
 	}
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public Date getDataRichiesta() {
-		return dataRichiesta;
+		return this.dataRichiesta;
 	}
 	public void setDataRichiesta(Date data_richiesta) {
 		this.dataRichiesta = data_richiesta;
 	}
 	public Date getDataRisposta() {
-		return dataRisposta;
+		return this.dataRisposta;
 	}
 	public void setDataRisposta(Date data_risposta) {
 		this.dataRisposta = data_risposta;
 	}
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
 	}
 	public String getCodPsp() {
-		return codPsp;
+		return this.codPsp;
 	}
 	public void setCodPsp(String codPsp) {
 		this.codPsp = codPsp;
 	}
 	public TipoVersamento getTipoVersamento() {
-		return tipoVersamento;
+		return this.tipoVersamento;
 	}
 	public void setTipoVersamento(TipoVersamento tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 	public String getComponente() {
-		return componente;
+		return this.componente;
 	}
 	public void setComponente(String componente) {
 		this.componente = componente;
 	}
 	public CategoriaEvento getCategoriaEvento() {
-		return categoriaEvento;
+		return this.categoriaEvento;
 	}
 	public void setCategoriaEvento(CategoriaEvento categoriaEvento) {
 		this.categoriaEvento = categoriaEvento;
 	}
 	public TipoEvento getTipoEvento() {
-		return tipoEvento;
+		return this.tipoEvento;
 	}
 	public void setTipoEvento(TipoEvento tipoEvento) {
 		this.tipoEvento = tipoEvento;
 	}
 	public String getSottotipoEvento() {
-		return sottotipoEvento;
+		return this.sottotipoEvento;
 	}
 	public void setSottotipoEvento(String sottotipoEvento) {
 		this.sottotipoEvento = sottotipoEvento;
 	}
 	public String getFruitore() {
-		return fruitore;
+		return this.fruitore;
 	}
 	public void setFruitore(String fruitore) {
 		this.fruitore = fruitore;
 	}
 	public String getErogatore() {
-		return erogatore;
+		return this.erogatore;
 	}
 	public void setErogatore(String erogatore) {
 		this.erogatore = erogatore;
 	}
 	public String getCodStazione() {
-		return codStazione;
+		return this.codStazione;
 	}
 	public void setCodStazione(String codStazione) {
 		this.codStazione = codStazione;
 	}
 	public String getCodCanale() {
-		return codCanale;
+		return this.codCanale;
 	}
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
 	}
 	public String getAltriParametriRichiesta() {
-		return altriParametriRichiesta;
+		return this.altriParametriRichiesta;
 	}
 	public void setAltriParametriRichiesta(String altriParametriRichiesta) {
 		this.altriParametriRichiesta = altriParametriRichiesta;
 	}
 	public String getAltriParametriRisposta() {
-		return altriParametriRisposta;
+		return this.altriParametriRisposta;
 	}
 	public void setAltriParametriRisposta(String altriParametriRisposta) {
 		this.altriParametriRisposta = altriParametriRisposta;
 	}
 	public String getEsito() {
-		return esito;
+		return this.esito;
 	}
 	public void setEsito(String esito) {
 		this.esito = esito;

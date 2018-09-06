@@ -41,18 +41,18 @@ public class DistribuzioneEsiti implements Serializable {
 	}
 
 	public Date getData() {
-		return data;
+		return this.data;
 	}
 
 	public long getEseguiti() {
-		return eseguiti;
+		return this.eseguiti;
 	}
 
 	public long getErrori() {
-		return errori;
+		return this.errori;
 	}
 
 	public long getIn_corso() {
-		return in_corso;
+		return this.in_corso;
 	}
 }

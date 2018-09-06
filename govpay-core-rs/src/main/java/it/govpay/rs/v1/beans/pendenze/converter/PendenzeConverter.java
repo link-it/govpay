@@ -75,7 +75,7 @@ public class PendenzeConverter {
 	rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 	rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 	
-	if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(Dominio.EC))
+	if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(it.govpay.model.Dominio.EC))
 		rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(versamento.getUo(null)));
 	
 	List<Rpt> rptLst = versamento.getRpt(null);
@@ -87,7 +87,7 @@ public class PendenzeConverter {
 		rsModel.setRpp(rppLst);
 	}
 	
-	List<VocePendenza> v = new ArrayList<VocePendenza>();
+	List<VocePendenza> v = new ArrayList<>();
 	int indice = 1;
 	for(SingoloVersamento s: versamento.getSingoliVersamenti(null)) {
 		v.add(toVocePendenzaRsModel(s, indice++));
@@ -147,7 +147,7 @@ public class PendenzeConverter {
 	rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 	rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 	
-	if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(Dominio.EC))
+	if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(it.govpay.model.Dominio.EC))
 		rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(versamento.getUo(null)));
 	
 	rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));

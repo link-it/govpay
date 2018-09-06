@@ -61,7 +61,7 @@ public class ListaEsitoAvvisiDigitali {
      *     
      */
     public String getVersioneOggetto() {
-        return versioneOggetto;
+        return this.versioneOggetto;
     }
 
     /**
@@ -85,7 +85,7 @@ public class ListaEsitoAvvisiDigitali {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**
@@ -123,8 +123,8 @@ public class ListaEsitoAvvisiDigitali {
      * 
      */
     public List<CtEsitoAvvisoDigitale> getEsitoAvvisoDigitale() {
-        if (esitoAvvisoDigitale == null) {
-            esitoAvvisoDigitale = new ArrayList<CtEsitoAvvisoDigitale>();
+        if (this.esitoAvvisoDigitale == null) {
+            this.esitoAvvisoDigitale = new ArrayList<>();
         }
         return this.esitoAvvisoDigitale;
     }

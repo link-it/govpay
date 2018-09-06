@@ -50,7 +50,7 @@ public class CtAllegatoRicevuta {
      *     
      */
     public StTipoAllegatoRicevuta getTipoAllegatoRicevuta() {
-        return tipoAllegatoRicevuta;
+        return this.tipoAllegatoRicevuta;
     }
 
     /**
@@ -73,7 +73,7 @@ public class CtAllegatoRicevuta {
      *     byte[]
      */
     public byte[] getTestoAllegato() {
-        return testoAllegato;
+        return this.testoAllegato;
     }
 
     /**

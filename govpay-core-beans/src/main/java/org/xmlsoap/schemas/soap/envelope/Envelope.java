@@ -52,7 +52,7 @@ public class Envelope {
     @XmlAnyElement(lax = true)
     protected List<Object> any;
     @XmlAnyAttribute
-    private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+    private Map<QName, String> otherAttributes = new HashMap<>();
 
     /**
      * Recupera il valore della proprietà header.
@@ -63,7 +63,7 @@ public class Envelope {
      *     
      */
     public Header getHeader() {
-        return header;
+        return this.header;
     }
 
     /**
@@ -87,7 +87,7 @@ public class Envelope {
      *     
      */
     public Body getBody() {
-        return body;
+        return this.body;
     }
 
     /**
@@ -126,8 +126,8 @@ public class Envelope {
      * 
      */
     public List<Object> getAny() {
-        if (any == null) {
-            any = new ArrayList<Object>();
+        if (this.any == null) {
+            this.any = new ArrayList<>();
         }
         return this.any;
     }
@@ -147,7 +147,7 @@ public class Envelope {
      *     always non-null
      */
     public Map<QName, String> getOtherAttributes() {
-        return otherAttributes;
+        return this.otherAttributes;
     }
 
 }

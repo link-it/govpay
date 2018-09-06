@@ -37,7 +37,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String idIntermediario = null;
   
   @JsonProperty("stazioni")
-  private List<StazioneIndex> stazioni = new ArrayList<StazioneIndex>();
+  private List<StazioneIndex> stazioni = new ArrayList<>();
   
   /**
    * Ragione sociale dell'intermediario PagoPA
@@ -49,7 +49,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("denominazione")
   public String getDenominazione() {
-    return denominazione;
+    return this.denominazione;
   }
   public void setDenominazione(String denominazione) {
     this.denominazione = denominazione;
@@ -65,7 +65,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("principalPagoPa")
   public String getPrincipalPagoPa() {
-    return principalPagoPa;
+    return this.principalPagoPa;
   }
   public void setPrincipalPagoPa(String principalPagoPa) {
     this.principalPagoPa = principalPagoPa;
@@ -80,7 +80,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("servizioPagoPa")
   public ConnettorePagopa getServizioPagoPa() {
-    return servizioPagoPa;
+    return this.servizioPagoPa;
   }
   public void setServizioPagoPa(ConnettorePagopa servizioPagoPa) {
     this.servizioPagoPa = servizioPagoPa;
@@ -95,7 +95,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("servizioFtp")
   public ServizioFtp getServizioFtp() {
-    return servizioFtp;
+    return this.servizioFtp;
   }
   public void setServizioFtp(ServizioFtp servizioFtp) {
     this.servizioFtp = servizioFtp;
@@ -111,7 +111,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -127,7 +127,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idIntermediario")
   public String getIdIntermediario() {
-    return idIntermediario;
+    return this.idIntermediario;
   }
   public void setIdIntermediario(String idIntermediario) {
     this.idIntermediario = idIntermediario;
@@ -143,7 +143,7 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("stazioni")
   public List<StazioneIndex> getStazioni() {
-    return stazioni;
+    return this.stazioni;
   }
   public void setStazioni(List<StazioneIndex> stazioni) {
     this.stazioni = stazioni;
@@ -154,26 +154,26 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Intermediario intermediario = (Intermediario) o;
-    return Objects.equals(denominazione, intermediario.denominazione) &&
-        Objects.equals(principalPagoPa, intermediario.principalPagoPa) &&
-        Objects.equals(servizioPagoPa, intermediario.servizioPagoPa) &&
-        Objects.equals(servizioFtp, intermediario.servizioFtp) &&
-        Objects.equals(abilitato, intermediario.abilitato) &&
-        Objects.equals(idIntermediario, intermediario.idIntermediario) &&
-        Objects.equals(stazioni, intermediario.stazioni);
+    return Objects.equals(this.denominazione, intermediario.denominazione) &&
+        Objects.equals(this.principalPagoPa, intermediario.principalPagoPa) &&
+        Objects.equals(this.servizioPagoPa, intermediario.servizioPagoPa) &&
+        Objects.equals(this.servizioFtp, intermediario.servizioFtp) &&
+        Objects.equals(this.abilitato, intermediario.abilitato) &&
+        Objects.equals(this.idIntermediario, intermediario.idIntermediario) &&
+        Objects.equals(this.stazioni, intermediario.stazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(denominazione, principalPagoPa, servizioPagoPa, servizioFtp, abilitato, idIntermediario, stazioni);
+    return Objects.hash(this.denominazione, this.principalPagoPa, this.servizioPagoPa, this.servizioFtp, this.abilitato, this.idIntermediario, this.stazioni);
   }
 
   public static Intermediario parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Intermediario) parse(json, Intermediario.class);
+    return parse(json, Intermediario.class);
   }
 
   @Override
@@ -186,13 +186,13 @@ public class Intermediario extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Intermediario {\n");
     
-    sb.append("    denominazione: ").append(toIndentedString(denominazione)).append("\n");
-    sb.append("    principalPagoPa: ").append(toIndentedString(principalPagoPa)).append("\n");
-    sb.append("    servizioPagoPa: ").append(toIndentedString(servizioPagoPa)).append("\n");
-    sb.append("    servizioFtp: ").append(toIndentedString(servizioFtp)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    idIntermediario: ").append(toIndentedString(idIntermediario)).append("\n");
-    sb.append("    stazioni: ").append(toIndentedString(stazioni)).append("\n");
+    sb.append("    denominazione: ").append(this.toIndentedString(this.denominazione)).append("\n");
+    sb.append("    principalPagoPa: ").append(this.toIndentedString(this.principalPagoPa)).append("\n");
+    sb.append("    servizioPagoPa: ").append(this.toIndentedString(this.servizioPagoPa)).append("\n");
+    sb.append("    servizioFtp: ").append(this.toIndentedString(this.servizioFtp)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    idIntermediario: ").append(this.toIndentedString(this.idIntermediario)).append("\n");
+    sb.append("    stazioni: ").append(this.toIndentedString(this.stazioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }

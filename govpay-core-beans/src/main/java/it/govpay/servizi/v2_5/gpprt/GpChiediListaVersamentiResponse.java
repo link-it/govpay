@@ -106,8 +106,8 @@ public class GpChiediListaVersamentiResponse
      * 
      */
     public List<GpChiediListaVersamentiResponse.Versamento> getVersamento() {
-        if (versamento == null) {
-            versamento = new ArrayList<GpChiediListaVersamentiResponse.Versamento>();
+        if (this.versamento == null) {
+            this.versamento = new ArrayList<>();
         }
         return this.versamento;
     }
@@ -208,7 +208,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public String getCodApplicazione() {
-            return codApplicazione;
+            return this.codApplicazione;
         }
 
         /**
@@ -232,7 +232,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public String getCodVersamentoEnte() {
-            return codVersamentoEnte;
+            return this.codVersamentoEnte;
         }
 
         /**
@@ -256,7 +256,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public String getCodDominio() {
-            return codDominio;
+            return this.codDominio;
         }
 
         /**
@@ -280,7 +280,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public String getIuv() {
-            return iuv;
+            return this.iuv;
         }
 
         /**
@@ -304,7 +304,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public String getNumeroAvviso() {
-            return numeroAvviso;
+            return this.numeroAvviso;
         }
 
         /**
@@ -327,7 +327,7 @@ public class GpChiediListaVersamentiResponse
          *     byte[]
          */
         public byte[] getQrCode() {
-            return qrCode;
+            return this.qrCode;
         }
 
         /**
@@ -349,7 +349,7 @@ public class GpChiediListaVersamentiResponse
          *     byte[]
          */
         public byte[] getBarCode() {
-            return barCode;
+            return this.barCode;
         }
 
         /**
@@ -372,7 +372,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public StatoVersamento getStato() {
-            return stato;
+            return this.stato;
         }
 
         /**
@@ -396,7 +396,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public BigDecimal getImportoTotale() {
-            return importoTotale;
+            return this.importoTotale;
         }
 
         /**
@@ -420,7 +420,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public String getCausale() {
-            return causale;
+            return this.causale;
         }
 
         /**
@@ -458,8 +458,8 @@ public class GpChiediListaVersamentiResponse
          * 
          */
         public List<String> getSpezzoneCausale() {
-            if (spezzoneCausale == null) {
-                spezzoneCausale = new ArrayList<String>();
+            if (this.spezzoneCausale == null) {
+                this.spezzoneCausale = new ArrayList<>();
             }
             return this.spezzoneCausale;
         }
@@ -487,8 +487,8 @@ public class GpChiediListaVersamentiResponse
          * 
          */
         public List<GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata> getSpezzoneCausaleStrutturata() {
-            if (spezzoneCausaleStrutturata == null) {
-                spezzoneCausaleStrutturata = new ArrayList<GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata>();
+            if (this.spezzoneCausaleStrutturata == null) {
+                this.spezzoneCausaleStrutturata = new ArrayList<>();
             }
             return this.spezzoneCausaleStrutturata;
         }
@@ -502,7 +502,7 @@ public class GpChiediListaVersamentiResponse
          *     
          */
         public Date getDataScadenza() {
-            return dataScadenza;
+            return this.dataScadenza;
         }
 
         /**
@@ -561,7 +561,7 @@ public class GpChiediListaVersamentiResponse
              *     
              */
             public String getCausale() {
-                return causale;
+                return this.causale;
             }
 
             /**
@@ -585,7 +585,7 @@ public class GpChiediListaVersamentiResponse
              *     
              */
             public BigDecimal getImporto() {
-                return importo;
+                return this.importo;
             }
 
             /**

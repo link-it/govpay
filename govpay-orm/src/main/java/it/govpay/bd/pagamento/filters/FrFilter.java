@@ -66,7 +66,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
-		List<Object> obj = new ArrayList<Object>();
+		List<Object> obj = new ArrayList<>();
 
 		if(this.idApplicazione != null){
 			obj.add(this.idApplicazione);
@@ -151,7 +151,7 @@ public class FrFilter extends AbstractFilter {
 				} else {
 					placeholderWhereIn += " WHERE ";
 				}
-				placeholderWhereIn += ilike("r.iuv") + " like ?";
+				placeholderWhereIn += this.ilike("r.iuv") + " like ?";
 				// join non necessaria, tabella r gia' inserita nella query principale
 			}
 
@@ -225,7 +225,7 @@ public class FrFilter extends AbstractFilter {
 				}
 				String field = "fr."+this.getColumn(FR.model().COD_FLUSSO);
 
-				String iLikefield = ilike(field);		
+				String iLikefield = this.ilike(field);		
 				
 				placeholderWhereIn += iLikefield +" like ?";
 			}
@@ -238,7 +238,7 @@ public class FrFilter extends AbstractFilter {
 				}
 				String field = "fr."+this.getColumn(FR.model().IUR);
 
-				String iLikefield = ilike(field);		
+				String iLikefield = this.ilike(field);		
 				
 				placeholderWhereIn += iLikefield +" like ?";
 
@@ -268,7 +268,7 @@ public class FrFilter extends AbstractFilter {
 						field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
 					}
 					
-					String iLikefield = ilike(field);		
+					String iLikefield = this.ilike(field);		
 					
 					placeholderWhereIn += iLikefield +" like ?";
 				}
@@ -314,7 +314,7 @@ public class FrFilter extends AbstractFilter {
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
-			IExpression newExpression = newExpression();
+			IExpression newExpression = this.newExpression();
 			
 			boolean addAnd = false;
 			// Filtro sullo stato pagamenti
@@ -371,7 +371,7 @@ public class FrFilter extends AbstractFilter {
 			if(this.idFr != null && !this.idFr.isEmpty()) {
 				if(addAnd)
 					newExpression.and();
-				CustomField baseField = new CustomField("id", Long.class, "id", getRootTable());
+				CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
 
 				newExpression.in(baseField, this.idFr);
 				addAnd = true;
@@ -388,7 +388,7 @@ public class FrFilter extends AbstractFilter {
 	}
 	
 	public String getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(String stato) {
@@ -396,7 +396,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public Date getDatainizio() {
-		return datainizio;
+		return this.datainizio;
 	}
 
 	public void setDatainizio(Date datainizio) {
@@ -404,7 +404,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -412,7 +412,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public String getCodPsp() {
-		return codPsp;
+		return this.codPsp;
 	}
 
 	public void setCodPsp(String codPsp) {
@@ -420,7 +420,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public Long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 
 	public void setIdApplicazione(long idApplicazione) {
@@ -428,14 +428,14 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public List<String> getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(List<String> codDominio) {
 		this.codDominio = codDominio;
 	}
 	public List<Long> getIdFr() {
-		return idFr;
+		return this.idFr;
 	}
 
 	public void setIdFr(List<Long> idFr) {
@@ -443,7 +443,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public String getCodFlusso() {
-		return codFlusso;
+		return this.codFlusso;
 	}
 
 	public void setCodFlusso(String codFlusso) {
@@ -451,7 +451,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public String getTnr() {
-		return tnr;
+		return this.tnr;
 	}
 
 	public void setTnr(String tnr) {
@@ -459,7 +459,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public boolean isNascondiSeSoloDiAltriIntermediari() {
-		return nascondiSeSoloDiAltriIntermediari;
+		return this.nascondiSeSoloDiAltriIntermediari;
 	}
 
 	public void setNascondiSeSoloDiAltriIntermediari(
@@ -468,7 +468,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {

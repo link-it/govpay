@@ -48,7 +48,7 @@ public class GpChiediFlussoRendicontazioneResponse
      *     
      */
     public FlussoRendicontazione getFlussoRendicontazione() {
-        return flussoRendicontazione;
+        return this.flussoRendicontazione;
     }
 
     /**

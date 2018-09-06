@@ -21,13 +21,13 @@ public class Profilo extends JSONSerializable {
   private String nome = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<DominioIndex>();
+  private List<DominioIndex> domini = new ArrayList<>();
   
   @JsonProperty("entrate")
-  private List<TipoEntrata> entrate = new ArrayList<TipoEntrata>();
+  private List<TipoEntrata> entrate = new ArrayList<>();
   
   @JsonProperty("acl")
-  private List<AclPost> acl = new ArrayList<AclPost>();
+  private List<AclPost> acl = new ArrayList<>();
   
   /**
    * Nome dell'utenza
@@ -39,7 +39,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("nome")
   public String getNome() {
-    return nome;
+    return this.nome;
   }
   public void setNome(String nome) {
     this.nome = nome;
@@ -55,7 +55,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("domini")
   public List<DominioIndex> getDomini() {
-    return domini;
+    return this.domini;
   }
   public void setDomini(List<DominioIndex> domini) {
     this.domini = domini;
@@ -71,7 +71,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("entrate")
   public List<TipoEntrata> getEntrate() {
-    return entrate;
+    return this.entrate;
   }
   public void setEntrate(List<TipoEntrata> entrate) {
     this.entrate = entrate;
@@ -86,7 +86,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return acl;
+    return this.acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -97,23 +97,23 @@ public class Profilo extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Profilo profilo = (Profilo) o;
-    return Objects.equals(nome, profilo.nome) &&
-        Objects.equals(domini, profilo.domini) &&
-        Objects.equals(entrate, profilo.entrate) &&
-        Objects.equals(acl, profilo.acl);
+    return Objects.equals(this.nome, profilo.nome) &&
+        Objects.equals(this.domini, profilo.domini) &&
+        Objects.equals(this.entrate, profilo.entrate) &&
+        Objects.equals(this.acl, profilo.acl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, domini, entrate, acl);
+    return Objects.hash(this.nome, this.domini, this.entrate, this.acl);
   }
 
   public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Profilo) parse(json, Profilo.class);
+    return parse(json, Profilo.class);
   }
 
   @Override
@@ -126,10 +126,10 @@ public class Profilo extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
     
-    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
-    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
-    sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
-    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
+    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
+    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
     sb.append("}");
     return sb.toString();
   }

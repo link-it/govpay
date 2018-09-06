@@ -31,7 +31,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class FrConverter {
 
 	public static List<Fr> toDTOList(List<it.govpay.orm.FR> lst) throws ServiceException {
-		List<Fr> lstDTO = new ArrayList<Fr>();
+		List<Fr> lstDTO = new ArrayList<>();
 		if(lst != null && !lst.isEmpty()) {
 			for(it.govpay.orm.FR vo: lst){
 				lstDTO.add(toDTO(vo));

@@ -28,7 +28,7 @@ import java.util.List;
 public class IbanAccreditoConverter {
 
 	public static List<IbanAccredito> toDTOList(List<it.govpay.orm.IbanAccredito> ibanAccreditoLst) {
-		List<IbanAccredito> lstDTO = new ArrayList<IbanAccredito>();
+		List<IbanAccredito> lstDTO = new ArrayList<>();
 		if(ibanAccreditoLst != null && !ibanAccreditoLst.isEmpty()) {
 			for(it.govpay.orm.IbanAccredito ibanAccredito: ibanAccreditoLst){
 				lstDTO.add(toDTO(ibanAccredito));

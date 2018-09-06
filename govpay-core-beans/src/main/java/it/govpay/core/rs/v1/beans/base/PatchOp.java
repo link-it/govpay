@@ -45,7 +45,7 @@ public class PatchOp extends JSONSerializable implements IValidable {
 		@Override
 		@com.fasterxml.jackson.annotation.JsonValue
 		public String toString() {
-			return String.valueOf(value);
+			return String.valueOf(this.value);
 		}
 
 		public static OpEnum fromValue(String text) {
@@ -79,7 +79,7 @@ public class PatchOp extends JSONSerializable implements IValidable {
 
 	@JsonProperty("op")
 	public OpEnum getOp() {
-		return op;
+		return this.op;
 	}
 	public void setOp(OpEnum op) {
 		this.op = op;
@@ -95,7 +95,7 @@ public class PatchOp extends JSONSerializable implements IValidable {
 
 	@JsonProperty("path")
 	public String getPath() {
-		return path;
+		return this.path;
 	}
 	public void setPath(String path) {
 		this.path = path;
@@ -111,7 +111,7 @@ public class PatchOp extends JSONSerializable implements IValidable {
 
 	@JsonProperty("value")
 	public Object getValue() {
-		return value;
+		return this.value;
 	}
 	public void setValue(Object value) {
 		this.value = value;
@@ -122,22 +122,22 @@ public class PatchOp extends JSONSerializable implements IValidable {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || this.getClass() != o.getClass()) {
 			return false;
 		}
 		PatchOp patchOp = (PatchOp) o;
-		return Objects.equals(op, patchOp.op) &&
-				Objects.equals(path, patchOp.path) &&
-				Objects.equals(value, patchOp.value);
+		return Objects.equals(this.op, patchOp.op) &&
+				Objects.equals(this.path, patchOp.path) &&
+				Objects.equals(this.value, patchOp.value);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(op, path, value);
+		return Objects.hash(this.op, this.path, this.value);
 	}
 
 	public static PatchOp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
-		return (PatchOp) parse(json, PatchOp.class);
+		return parse(json, PatchOp.class);
 	}
 
 	@Override
@@ -150,9 +150,9 @@ public class PatchOp extends JSONSerializable implements IValidable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("class PatchOp {\n");
 
-		sb.append("    op: ").append(toIndentedString(op)).append("\n");
-		sb.append("    path: ").append(toIndentedString(path)).append("\n");
-		sb.append("    value: ").append(toIndentedString(value)).append("\n");
+		sb.append("    op: ").append(this.toIndentedString(this.op)).append("\n");
+		sb.append("    path: ").append(this.toIndentedString(this.path)).append("\n");
+		sb.append("    value: ").append(this.toIndentedString(this.value)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
@@ -171,8 +171,8 @@ public class PatchOp extends JSONSerializable implements IValidable {
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		vf.getValidator("op", op).notNull();
-		vf.getValidator("path", path).notNull();
+		vf.getValidator("op", this.op).notNull();
+		vf.getValidator("path", this.path).notNull();
 	}
 }
 

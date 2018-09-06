@@ -52,7 +52,7 @@ public class UtenzaTributoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(UtenzaTributo.model())){
 				UtenzaTributo object = new UtenzaTributo();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				return object;
 			}
@@ -74,7 +74,7 @@ public class UtenzaTributoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(UtenzaTributo.model())){
 				UtenzaTributo object = new UtenzaTributo();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
 				return object;
 			}

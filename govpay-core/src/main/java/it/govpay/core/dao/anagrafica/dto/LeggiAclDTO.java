@@ -22,7 +22,7 @@ public class LeggiAclDTO extends BasicCreateRequestDTO {
 	private Long idAcl;
 
 	public Long getIdAcl() {
-		return idAcl;
+		return this.idAcl;
 	}
 
 	public void setIdAcl(Long idAcl) {

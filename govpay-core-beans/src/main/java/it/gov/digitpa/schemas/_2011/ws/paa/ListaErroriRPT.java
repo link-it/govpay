@@ -58,8 +58,8 @@ public class ListaErroriRPT {
      * 
      */
     public List<FaultBean> getFault() {
-        if (fault == null) {
-            fault = new ArrayList<FaultBean>();
+        if (this.fault == null) {
+            this.fault = new ArrayList<>();
         }
         return this.fault;
     }

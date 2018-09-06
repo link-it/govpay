@@ -65,7 +65,7 @@ public class CurrencyUtils {
 	
 	public String getCurrencyAsEuro(Double value) {
 		StringBuilder sb = new StringBuilder();
-		String currencyAsString = getCurrencyAsString(value,this.locale);
+		String currencyAsString = this.getCurrencyAsString(value,this.locale);
 		sb.append(currencyAsString);
 		if(StringUtils.isNotEmpty(currencyAsString));
 			sb.append(EURO);
@@ -74,15 +74,15 @@ public class CurrencyUtils {
 	}
 	
 	public String getCurrencyAsString(Double value) {
-		return getCurrencyAsString(value,this.locale);
+		return this.getCurrencyAsString(value,this.locale);
 	}
 	
 	public String getCurrencyAsString(Double value, Locale locale) {
-		return getCurrencyAsStringWithStringFormat(value, locale, this.mostraVirgole);
+		return this.getCurrencyAsStringWithStringFormat(value, locale, this.mostraVirgole);
 	}
 
 	public String getCurrencyAsString(Double value, boolean mostraVirgole) {
-		return getCurrencyAsStringWithStringFormat(value, this.locale, mostraVirgole);
+		return this.getCurrencyAsStringWithStringFormat(value, this.locale, mostraVirgole);
 	}
 
 	public String getCurrencyAsStringWithStringFormat(Double value, Locale locale, boolean mostraVirgole) {
@@ -91,9 +91,9 @@ public class CurrencyUtils {
 
 		try {
 		if(mostraVirgole)
-			return getCurrencyAsStringWithStringFormatConVirgole(value,locale);
+			return this.getCurrencyAsStringWithStringFormatConVirgole(value,locale);
 		else 
-			return getCurrencyAsStringWithStringFormatSenzaVirgole(value,locale);
+			return this.getCurrencyAsStringWithStringFormatSenzaVirgole(value,locale);
 		}catch(Exception e) {
 			this.log.error("Si e' verificato un errore durante la conversione del valore ["+value+"]: "+ e.getMessage(),e); 
 			return "";
@@ -145,28 +145,28 @@ public class CurrencyUtils {
 		if(value == null)
 			return "";
 		
-		return getCurrencyAsEuro(value.doubleValue());
+		return this.getCurrencyAsEuro(value.doubleValue());
 	}
 	
 	public String getCurrencyAsString(BigDecimal value) {
 		if(value == null)
 			return "";
 		
-		return getCurrencyAsString(value.doubleValue(),this.locale);
+		return this.getCurrencyAsString(value.doubleValue(),this.locale);
 	}
 	
 	public String getCurrencyAsString(BigDecimal value, Locale locale) {
 		if(value == null)
 			return "";
 		
-		return getCurrencyAsStringWithStringFormat(value.doubleValue(), locale, this.mostraVirgole);
+		return this.getCurrencyAsStringWithStringFormat(value.doubleValue(), locale, this.mostraVirgole);
 	}
 
 	public String getCurrencyAsString(BigDecimal value, boolean mostraVirgole) {
 		if(value == null)
 			return "";
 		
-		return getCurrencyAsStringWithStringFormat(value.doubleValue(), this.locale, mostraVirgole);
+		return this.getCurrencyAsStringWithStringFormat(value.doubleValue(), this.locale, mostraVirgole);
 	}
 	
 	

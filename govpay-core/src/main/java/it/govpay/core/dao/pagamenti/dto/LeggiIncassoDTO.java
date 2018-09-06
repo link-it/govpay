@@ -14,19 +14,19 @@ public class LeggiIncassoDTO extends BasicFindRequestDTO {
 	private String idIncasso;
 	
 	public String getPrincipal() {
-		return this.getUser() != null ? this.getUser().getPrincipal() : principal;
+		return this.getUser() != null ? this.getUser().getPrincipal() : this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
 	}
 	public String getIdIncasso() {
-		return idIncasso;
+		return this.idIncasso;
 	}
 	public void setIdIncasso(String idIncasso) {
 		this.idIncasso = idIncasso;

@@ -78,7 +78,7 @@ public class InformativaContoAccredito {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**
@@ -102,7 +102,7 @@ public class InformativaContoAccredito {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -126,7 +126,7 @@ public class InformativaContoAccredito {
      *     
      */
     public String getRagioneSociale() {
-        return ragioneSociale;
+        return this.ragioneSociale;
     }
 
     /**
@@ -150,7 +150,7 @@ public class InformativaContoAccredito {
      *     
      */
     public Date getDataPubblicazione() {
-        return dataPubblicazione;
+        return this.dataPubblicazione;
     }
 
     /**
@@ -174,7 +174,7 @@ public class InformativaContoAccredito {
      *     
      */
     public Date getDataInizioValidita() {
-        return dataInizioValidita;
+        return this.dataInizioValidita;
     }
 
     /**
@@ -198,7 +198,7 @@ public class InformativaContoAccredito {
      *     
      */
     public CtContiDiAccredito getContiDiAccredito() {
-        return contiDiAccredito;
+        return this.contiDiAccredito;
     }
 
     /**

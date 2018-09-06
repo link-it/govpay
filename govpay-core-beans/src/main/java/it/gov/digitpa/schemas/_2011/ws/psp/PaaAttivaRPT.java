@@ -54,7 +54,7 @@ public class PaaAttivaRPT {
      *     
      */
     public String getIdentificativoPSP() {
-        return identificativoPSP;
+        return this.identificativoPSP;
     }
 
     /**
@@ -78,7 +78,7 @@ public class PaaAttivaRPT {
      *     
      */
     public PaaTipoDatiPagamentoPSP getDatiPagamentoPSP() {
-        return datiPagamentoPSP;
+        return this.datiPagamentoPSP;
     }
 
     /**
@@ -102,7 +102,7 @@ public class PaaAttivaRPT {
      *     
      */
     public String getIdentificativoIntermediarioPSP() {
-        return identificativoIntermediarioPSP;
+        return this.identificativoIntermediarioPSP;
     }
 
     /**
@@ -126,7 +126,7 @@ public class PaaAttivaRPT {
      *     
      */
     public String getIdentificativoCanalePSP() {
-        return identificativoCanalePSP;
+        return this.identificativoCanalePSP;
     }
 
     /**

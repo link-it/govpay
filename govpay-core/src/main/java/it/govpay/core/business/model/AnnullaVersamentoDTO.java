@@ -44,23 +44,23 @@ public class AnnullaVersamentoDTO {
 	}
 	
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 	
 	public Operatore getOperatore() {
-		return operatore;
+		return this.operatore;
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 
 	public String getMotivoAnnullamento() {
-		return motivoAnnullamento;
+		return this.motivoAnnullamento;
 	}
 
 	public void setMotivoAnnullamento(String motivoAnnullamento) {

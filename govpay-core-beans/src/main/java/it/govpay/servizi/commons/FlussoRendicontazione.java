@@ -84,8 +84,8 @@ public class FlussoRendicontazione
      * 
      */
     public List<FlussoRendicontazione.Pagamento> getPagamento() {
-        if (pagamento == null) {
-            pagamento = new ArrayList<FlussoRendicontazione.Pagamento>();
+        if (this.pagamento == null) {
+            this.pagamento = new ArrayList<>();
         }
         return this.pagamento;
     }
@@ -158,7 +158,7 @@ public class FlussoRendicontazione
          *     
          */
         public String getCodApplicazione() {
-            return codApplicazione;
+            return this.codApplicazione;
         }
 
         /**
@@ -182,7 +182,7 @@ public class FlussoRendicontazione
          *     
          */
         public String getCodSingoloVersamentoEnte() {
-            return codSingoloVersamentoEnte;
+            return this.codSingoloVersamentoEnte;
         }
 
         /**
@@ -206,7 +206,7 @@ public class FlussoRendicontazione
          *     
          */
         public String getCodDominio() {
-            return codDominio;
+            return this.codDominio;
         }
 
         /**
@@ -230,7 +230,7 @@ public class FlussoRendicontazione
          *     
          */
         public String getIuv() {
-            return iuv;
+            return this.iuv;
         }
 
         /**
@@ -254,7 +254,7 @@ public class FlussoRendicontazione
          *     
          */
         public BigDecimal getImportoRendicontato() {
-            return importoRendicontato;
+            return this.importoRendicontato;
         }
 
         /**
@@ -278,7 +278,7 @@ public class FlussoRendicontazione
          *     
          */
         public String getIur() {
-            return iur;
+            return this.iur;
         }
 
         /**
@@ -302,7 +302,7 @@ public class FlussoRendicontazione
          *     
          */
         public Date getDataRendicontazione() {
-            return dataRendicontazione;
+            return this.dataRendicontazione;
         }
 
         /**
@@ -326,7 +326,7 @@ public class FlussoRendicontazione
          *     
          */
         public TipoRendicontazione getEsitoRendicontazione() {
-            return esitoRendicontazione;
+            return this.esitoRendicontazione;
         }
 
         /**

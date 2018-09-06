@@ -25,7 +25,7 @@ public class RuoloIndex extends JSONSerializable {
 
   @JsonProperty("id")
   public String getId() {
-    return id;
+    return this.id;
   }
   public void setId(String id) {
     this.id = id;
@@ -36,20 +36,20 @@ public class RuoloIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     RuoloIndex ruoloIndex = (RuoloIndex) o;
-    return Objects.equals(id, ruoloIndex.id);
+    return Objects.equals(this.id, ruoloIndex.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id);
+    return Objects.hash(this.id);
   }
 
   public static RuoloIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (RuoloIndex) parse(json, RuoloIndex.class);
+    return parse(json, RuoloIndex.class);
   }
 
   @Override
@@ -62,7 +62,7 @@ public class RuoloIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class RuoloIndex {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
     sb.append("}");
     return sb.toString();
   }

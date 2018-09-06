@@ -70,8 +70,8 @@ public class MetaInfo {
      * 
      */
     public List<MetaInfo.IuvProp> getIuvProp() {
-        if (iuvProp == null) {
-            iuvProp = new ArrayList<MetaInfo.IuvProp>();
+        if (this.iuvProp == null) {
+            this.iuvProp = new ArrayList<>();
         }
         return this.iuvProp;
     }
@@ -114,7 +114,7 @@ public class MetaInfo {
          *     
          */
         public String getValue() {
-            return value;
+            return this.value;
         }
 
         /**
@@ -138,7 +138,7 @@ public class MetaInfo {
          *     
          */
         public String getNome() {
-            return nome;
+            return this.nome;
         }
 
         /**

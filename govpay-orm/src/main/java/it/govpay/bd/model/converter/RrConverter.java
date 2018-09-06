@@ -80,7 +80,7 @@ public class RrConverter {
 	}
 
 	public static List<Rr> toDTOList(List<RR> findAll) {
-		List<Rr> listRr = new ArrayList<Rr>();
+		List<Rr> listRr = new ArrayList<>();
 		for(RR rr : findAll) {
 			listRr.add(toDTO(rr));
 		}

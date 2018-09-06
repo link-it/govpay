@@ -9,11 +9,13 @@ public class Adapter1
 {
 
 
-    public BigDecimal unmarshal(String value) {
+    @Override
+	public BigDecimal unmarshal(String value) {
         return (it.govpay.core.utils.adapter.DataTypeAdapter.parseImporto(value));
     }
 
-    public String marshal(BigDecimal value) {
+    @Override
+	public String marshal(BigDecimal value) {
         return (it.govpay.core.utils.adapter.DataTypeAdapter.printImporto(value));
     }
 

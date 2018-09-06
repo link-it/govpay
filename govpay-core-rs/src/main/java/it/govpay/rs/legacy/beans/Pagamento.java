@@ -37,49 +37,49 @@ public class Pagamento {
 	}
 	
 	public String getDominio() {
-		return dominio;
+		return this.dominio;
 	}
 	public void setDominio(String dominio) {
 		this.dominio = dominio;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public String getIur() {
-		return iur;
+		return this.iur;
 	}
 	public void setIur(String iur) {
 		this.iur = iur;
 	}
 	public BigDecimal getImporto() {
-		return importo;
+		return this.importo;
 	}
 	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
 	public Date getData_pagamento() {
-		return data_pagamento;
+		return this.data_pagamento;
 	}
 	public void setData_pagamento(Date data_pagamento) {
 		this.data_pagamento = data_pagamento;
 	}
 	public String getId_applicazione() {
-		return id_applicazione;
+		return this.id_applicazione;
 	}
 	public void setId_applicazione(String id_applicazione) {
 		this.id_applicazione = id_applicazione;
 	}
 	public String getId_versamento_ente() {
-		return id_versamento_ente;
+		return this.id_versamento_ente;
 	}
 	public void setId_versamento_ente(String id_versamento_ente) {
 		this.id_versamento_ente = id_versamento_ente;
 	}
 	public String getId_singolo_versamento_ente() {
-		return id_singolo_versamento_ente;
+		return this.id_singolo_versamento_ente;
 	}
 	public void setId_singolo_versamento_ente(String id_singolo_versamento_ente) {
 		this.id_singolo_versamento_ente = id_singolo_versamento_ente;

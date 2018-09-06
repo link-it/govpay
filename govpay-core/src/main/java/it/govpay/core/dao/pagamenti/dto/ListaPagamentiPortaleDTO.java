@@ -24,37 +24,37 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	private String idSessionePortale;
 	
 	public Date getDataA() {
-		return dataA;
+		return this.dataA;
 	}
 	public void setDataA(Date dataA) {
 		this.dataA = dataA;
 	}
 	public Date getDataDa() {
-		return dataDa;
+		return this.dataDa;
 	}
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
 	public String getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(String stato) {
 		this.stato = stato;
 	}
 	public String getVersante() {
-		return versante;
+		return this.versante;
 	}
 	public void setVersante(String versante) {
 		this.versante = versante;
 	}
 	public Boolean getVerificato() {
-		return verificato;
+		return this.verificato;
 	}
 	public void setVerificato(Boolean verificato) {
 		this.verificato = verificato;
 	}
 	public String getIdSessionePortale() {
-		return idSessionePortale;
+		return this.idSessionePortale;
 	}
 	public void setIdSessionePortale(String idSessionePortale) {
 		this.idSessionePortale = idSessionePortale;

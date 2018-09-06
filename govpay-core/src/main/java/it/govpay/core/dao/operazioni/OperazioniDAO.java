@@ -78,7 +78,7 @@ public class OperazioniDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaOperazioniDTO.getUser(), Servizio.CONFIGURAZIONE_E_MANUTENZIONE, Diritti.LETTURA, bd);
-			List<LeggiOperazioneDTOResponse> results = new ArrayList<LeggiOperazioneDTOResponse>();
+			List<LeggiOperazioneDTOResponse> results = new ArrayList<>();
 			
 			results.add(new LeggiOperazioneDTOResponse(AGGIORNAMENTO_REGISTRO_PSP));
 			results.add(new LeggiOperazioneDTOResponse(ACQUISIZIONE_RENDICONTAZIONI));

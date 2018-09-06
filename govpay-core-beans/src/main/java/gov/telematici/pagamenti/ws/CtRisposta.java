@@ -49,7 +49,7 @@ public class CtRisposta {
      *     
      */
     public CtFaultBean getFault() {
-        return fault;
+        return this.fault;
     }
 
     /**

@@ -96,7 +96,7 @@ public class IncassiBD extends BasicBD {
 
 	public List<Incasso> findAll(IncassoFilter filter) throws ServiceException {
 		try {
-			List<Incasso> incassoLst = new ArrayList<Incasso>();
+			List<Incasso> incassoLst = new ArrayList<>();
 
 			// if(filter.getCodDomini() != null && filter.getCodDomini().isEmpty()) return incassoLst;
 			List<it.govpay.orm.Incasso> incassoVOLst = this.getIncassoService().findAll(filter.toPaginatedExpression()); 

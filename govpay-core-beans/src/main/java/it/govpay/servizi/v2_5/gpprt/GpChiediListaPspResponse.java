@@ -100,8 +100,8 @@ public class GpChiediListaPspResponse
      * 
      */
     public List<GpChiediListaPspResponse.Psp> getPsp() {
-        if (psp == null) {
-            psp = new ArrayList<GpChiediListaPspResponse.Psp>();
+        if (this.psp == null) {
+            this.psp = new ArrayList<>();
         }
         return this.psp;
     }
@@ -182,7 +182,7 @@ public class GpChiediListaPspResponse
          *     
          */
         public String getCodPsp() {
-            return codPsp;
+            return this.codPsp;
         }
 
         /**
@@ -206,7 +206,7 @@ public class GpChiediListaPspResponse
          *     
          */
         public String getRagioneSociale() {
-            return ragioneSociale;
+            return this.ragioneSociale;
         }
 
         /**
@@ -230,7 +230,7 @@ public class GpChiediListaPspResponse
          *     
          */
         public String getUrlInfo() {
-            return urlInfo;
+            return this.urlInfo;
         }
 
         /**
@@ -250,7 +250,7 @@ public class GpChiediListaPspResponse
          * 
          */
         public boolean isStorno() {
-            return storno;
+            return this.storno;
         }
 
         /**
@@ -266,7 +266,7 @@ public class GpChiediListaPspResponse
          * 
          */
         public boolean isBollo() {
-            return bollo;
+            return this.bollo;
         }
 
         /**
@@ -285,7 +285,7 @@ public class GpChiediListaPspResponse
          *     byte[]
          */
         public byte[] getLogo() {
-            return logo;
+            return this.logo;
         }
 
         /**
@@ -322,8 +322,8 @@ public class GpChiediListaPspResponse
          * 
          */
         public List<GpChiediListaPspResponse.Psp.Canale> getCanale() {
-            if (canale == null) {
-                canale = new ArrayList<GpChiediListaPspResponse.Psp.Canale>();
+            if (this.canale == null) {
+                this.canale = new ArrayList<>();
             }
             return this.canale;
         }
@@ -393,7 +393,7 @@ public class GpChiediListaPspResponse
              *     
              */
             public String getCodCanale() {
-                return codCanale;
+                return this.codCanale;
             }
 
             /**
@@ -417,7 +417,7 @@ public class GpChiediListaPspResponse
              *     
              */
             public TipoVersamento getTipoVersamento() {
-                return tipoVersamento;
+                return this.tipoVersamento;
             }
 
             /**
@@ -441,7 +441,7 @@ public class GpChiediListaPspResponse
              *     
              */
             public ModelloPagamento getModelloPagamento() {
-                return modelloPagamento;
+                return this.modelloPagamento;
             }
 
             /**
@@ -465,7 +465,7 @@ public class GpChiediListaPspResponse
              *     
              */
             public String getDisponibilita() {
-                return disponibilita;
+                return this.disponibilita;
             }
 
             /**
@@ -489,7 +489,7 @@ public class GpChiediListaPspResponse
              *     
              */
             public String getDescrizione() {
-                return descrizione;
+                return this.descrizione;
             }
 
             /**
@@ -513,7 +513,7 @@ public class GpChiediListaPspResponse
              *     
              */
             public String getCondizioni() {
-                return condizioni;
+                return this.condizioni;
             }
 
             /**
@@ -537,7 +537,7 @@ public class GpChiediListaPspResponse
              *     
              */
             public String getUrlInfo() {
-                return urlInfo;
+                return this.urlInfo;
             }
 
             /**
@@ -560,7 +560,7 @@ public class GpChiediListaPspResponse
              *     byte[]
              */
             public byte[] getLogoServizio() {
-                return logoServizio;
+                return this.logoServizio;
             }
 
             /**

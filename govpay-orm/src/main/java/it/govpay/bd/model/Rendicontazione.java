@@ -36,7 +36,7 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 		this.pagamento = pagamento;
 	}
 	public boolean isPagamentoDaCreare() {
-		return pagamentoDaCreare;
+		return this.pagamentoDaCreare;
 	}
 	public void setPagamentoDaCreare(boolean pagamentoDaCreare) {
 		this.pagamentoDaCreare = pagamentoDaCreare;
@@ -44,8 +44,8 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
 		if(this.versamento == null) {
-			if(getPagamento(bd) != null)
-				this.versamento = getPagamento(bd).getSingoloVersamento(bd).getVersamento(bd);
+			if(this.getPagamento(bd) != null)
+				this.versamento = this.getPagamento(bd).getSingoloVersamento(bd).getVersamento(bd);
 		}
 		return this.versamento;
 	}

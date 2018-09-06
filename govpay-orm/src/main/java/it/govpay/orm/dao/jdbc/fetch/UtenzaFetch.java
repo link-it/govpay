@@ -52,13 +52,13 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Utenza.model())){
 				Utenza object = new Utenza();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
+				this.setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal", Utenza.model().PRINCIPAL.getFieldType()));
-				setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
+				this.setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal_originale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType()));
-				setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Utenza.model().ABILITATO.getFieldType()));
 				return object;
 			}
@@ -80,13 +80,13 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Utenza.model())){
 				Utenza object = new Utenza();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
+				this.setParameter(object, "setPrincipal", Utenza.model().PRINCIPAL.getFieldType(),
 					this.getObjectFromMap(map,"principal"));
-				setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
+				this.setParameter(object, "setPrincipalOriginale", Utenza.model().PRINCIPAL_ORIGINALE.getFieldType(),
 					this.getObjectFromMap(map,"principalOriginale"));
-				setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Utenza.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
 				return object;
 			}

@@ -63,7 +63,7 @@ public class CtFasciaOraria {
      *     
      */
     public Date getFasciaOrariaDa() {
-        return fasciaOrariaDa;
+        return this.fasciaOrariaDa;
     }
 
     /**
@@ -87,7 +87,7 @@ public class CtFasciaOraria {
      *     
      */
     public Date getFasciaOrariaA() {
-        return fasciaOrariaA;
+        return this.fasciaOrariaA;
     }
 
     /**

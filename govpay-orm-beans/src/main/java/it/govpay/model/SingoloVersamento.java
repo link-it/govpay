@@ -41,7 +41,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 			this.codifica = codifica;
 		}
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		public static TipoBollo toEnum(String codifica) throws ServiceException {
 			for(TipoBollo p : TipoBollo.values()){
@@ -69,8 +69,9 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String descrizione;
 	
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
@@ -78,7 +79,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public Long getIdTributo() {
-		return idTributo;
+		return this.idTributo;
 	}
 
 	public void setIdTributo(Long idTributo) {
@@ -86,7 +87,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public Long getIdVersamento() {
-		return idVersamento;
+		return this.idVersamento;
 	}
 
 	public void setIdVersamento(long idVersamento) {
@@ -94,7 +95,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public String getCodSingoloVersamentoEnte() {
-		return codSingoloVersamentoEnte;
+		return this.codSingoloVersamentoEnte;
 	}
 
 	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
@@ -102,7 +103,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public StatoSingoloVersamento getStatoSingoloVersamento() {
-		return statoSingoloVersamento;
+		return this.statoSingoloVersamento;
 	}
 
 	public void setStatoSingoloVersamento(
@@ -111,7 +112,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public BigDecimal getImportoSingoloVersamento() {
-		return importoSingoloVersamento;
+		return this.importoSingoloVersamento;
 	}
 
 	public void setImportoSingoloVersamento(BigDecimal importoSingoloVersamento) {
@@ -119,7 +120,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public TipoBollo getTipoBollo() {
-		return tipoBollo;
+		return this.tipoBollo;
 	}
 
 	public void setTipoBollo(TipoBollo tipoBollo) {
@@ -127,7 +128,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public String getHashDocumento() {
-		return hashDocumento;
+		return this.hashDocumento;
 	}
 
 	public void setHashDocumento(String hashDocumento) {
@@ -135,7 +136,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public String getProvinciaResidenza() {
-		return provinciaResidenza;
+		return this.provinciaResidenza;
 	}
 
 	public void setProvinciaResidenza(String provinciaResidenza) {
@@ -143,7 +144,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 	
 	public Long getIdIbanAccredito() {
-		return idIbanAccredito;
+		return this.idIbanAccredito;
 	}
 
 	public void setIdIbanAccredito(Long idIbanAccredito) {
@@ -151,7 +152,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public Tributo.TipoContabilita getTipoContabilita() {
-		return tipoContabilita;
+		return this.tipoContabilita;
 	}
 
 	public void setTipoContabilita(Tributo.TipoContabilita tipoContabilita) {
@@ -159,7 +160,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public String getCodContabilita() {
-		return codContabilita;
+		return this.codContabilita;
 	}
 
 	public void setCodContabilita(String codContabilita) {
@@ -167,7 +168,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 	
 	public String getDatiAllegati() {
-		return datiAllegati;
+		return this.datiAllegati;
 	}
 
 	public void setDatiAllegati(String datiAllegati) {
@@ -175,7 +176,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public String getDescrizione() {
-		return descrizione;
+		return this.descrizione;
 	}
 
 	public void setDescrizione(String descrizione) {
@@ -184,11 +185,11 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 
 	@Override
 	public int compareTo(SingoloVersamento sv) {
-		return codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
+		return this.codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
 	}
 
 	public Long getIdIbanAppoggio() {
-		return idIbanAppoggio;
+		return this.idIbanAppoggio;
 	}
 
 	public void setIdIbanAppoggio(Long idIbanAppoggio) {

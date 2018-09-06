@@ -11,7 +11,7 @@ public class GetEntrataDTOResponse {
 	}
 
 	public TipoTributo getTipoTributo() {
-		return tipoTributo;
+		return this.tipoTributo;
 	}
 
 }

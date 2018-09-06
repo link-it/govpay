@@ -138,7 +138,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "paaVerificaRPT")
     public JAXBElement<PaaVerificaRPT> createPaaVerificaRPT(PaaVerificaRPT value) {
-        return new JAXBElement<PaaVerificaRPT>(_PaaVerificaRPT_QNAME, PaaVerificaRPT.class, null, value);
+        return new JAXBElement<>(_PaaVerificaRPT_QNAME, PaaVerificaRPT.class, null, value);
     }
 
     /**
@@ -147,7 +147,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "paaVerificaRPTRisposta")
     public JAXBElement<PaaVerificaRPTRisposta> createPaaVerificaRPTRisposta(PaaVerificaRPTRisposta value) {
-        return new JAXBElement<PaaVerificaRPTRisposta>(_PaaVerificaRPTRisposta_QNAME, PaaVerificaRPTRisposta.class, null, value);
+        return new JAXBElement<>(_PaaVerificaRPTRisposta_QNAME, PaaVerificaRPTRisposta.class, null, value);
     }
 
     /**
@@ -156,7 +156,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "paaAttivaRPT")
     public JAXBElement<PaaAttivaRPT> createPaaAttivaRPT(PaaAttivaRPT value) {
-        return new JAXBElement<PaaAttivaRPT>(_PaaAttivaRPT_QNAME, PaaAttivaRPT.class, null, value);
+        return new JAXBElement<>(_PaaAttivaRPT_QNAME, PaaAttivaRPT.class, null, value);
     }
 
     /**
@@ -165,7 +165,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "paaAttivaRPTRisposta")
     public JAXBElement<PaaAttivaRPTRisposta> createPaaAttivaRPTRisposta(PaaAttivaRPTRisposta value) {
-        return new JAXBElement<PaaAttivaRPTRisposta>(_PaaAttivaRPTRisposta_QNAME, PaaAttivaRPTRisposta.class, null, value);
+        return new JAXBElement<>(_PaaAttivaRPTRisposta_QNAME, PaaAttivaRPTRisposta.class, null, value);
     }
 
 }

@@ -27,7 +27,7 @@ public class LeggiPendenzaDTOResponse {
 	private byte[] avvisoPdf;
 
 	public Versamento getVersamento() {
-		return versamento;
+		return this.versamento;
 	}
 
 	public void setVersamento(Versamento versamento) {
@@ -35,7 +35,7 @@ public class LeggiPendenzaDTOResponse {
 	}
 
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 
 	public void setApplicazione(Applicazione applicazione) {
@@ -43,7 +43,7 @@ public class LeggiPendenzaDTOResponse {
 	}
 
 	public Dominio getDominio() {
-		return dominio;
+		return this.dominio;
 	}
 
 	public void setDominio(Dominio dominio) {
@@ -51,7 +51,7 @@ public class LeggiPendenzaDTOResponse {
 	}
 
 	public UnitaOperativa getUnitaOperativa() {
-		return unitaOperativa;
+		return this.unitaOperativa;
 	}
 
 	public void setUnitaOperativa(UnitaOperativa unitaOperativa) {
@@ -59,7 +59,7 @@ public class LeggiPendenzaDTOResponse {
 	}
 
 	public List<SingoloVersamento> getLstSingoliVersamenti() {
-		return lstSingoliVersamenti;
+		return this.lstSingoliVersamenti;
 	}
 
 	public void setLstSingoliVersamenti(List<SingoloVersamento> lstSingoliVersamenti) {
@@ -67,7 +67,7 @@ public class LeggiPendenzaDTOResponse {
 	}
 
 	public byte[] getAvvisoPdf() {
-		return avvisoPdf;
+		return this.avvisoPdf;
 	}
 
 	public void setAvvisoPdf(byte[] avvisoPdf) {
