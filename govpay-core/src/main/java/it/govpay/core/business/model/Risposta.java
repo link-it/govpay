@@ -84,9 +84,13 @@ public class Risposta  {
 			
 			if(ids.size() == 1)
 				fbx.setId(codici.iterator().next());
+			else 
+				fbx.setId(this.listaErroriRPT.get(0).getId());
 			
 			if(codici.size() == 1)
 				fbx.setFaultCode(codici.iterator().next());
+			else
+				fbx.setFaultCode("PPT_ERROR");
 			
 			fbx.setDescription(descrizione);
 			return fbx;
