@@ -43,46 +43,46 @@ public class Fr extends it.govpay.model.Fr {
 	private transient long numAltroIntermediario;
 	
 	public long getNumOk() {
-		return numOk;
+		return this.numOk;
 	}
 	public void setNumOk(long numOk) {
 		this.numOk = numOk;
 	}
 	public long getNumAnomale() {
-		return numAnomale;
+		return this.numAnomale;
 	}
 	public void setNumAnomale(long numAnomale) {
 		this.numAnomale = numAnomale;
 	}
 	public long getNumAltroIntermediario() {
-		return numAltroIntermediario;
+		return this.numAltroIntermediario;
 	}
 	public void setNumAltroIntermediario(long numAltroIntermediario) {
 		this.numAltroIntermediario = numAltroIntermediario;
 	}
 	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
-		if(dominio == null){
-			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+		if(this.dominio == null){
+			this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
 		}
-		return dominio;
+		return this.dominio;
 	}
 	public void setDominio(Dominio dominio) {
 		this.dominio = dominio;
 	}
 
 	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
-		if(rendicontazioni == null) {
+		if(this.rendicontazioni == null) {
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
 			RendicontazioneFilter newFilter = rendicontazioniBD.newFilter();
-			newFilter.setIdFr(getId());
-			rendicontazioni = rendicontazioniBD.findAll(newFilter);
+			newFilter.setIdFr(this.getId());
+			this.rendicontazioni = rendicontazioniBD.findAll(newFilter);
 		}
-		return rendicontazioni;
+		return this.rendicontazioni;
 	}
 	
 	public void addRendicontazione(Rendicontazione rendicontazione) {
-		if(rendicontazioni == null) {
-			this.rendicontazioni = new ArrayList<Rendicontazione>();
+		if(this.rendicontazioni == null) {
+			this.rendicontazioni = new ArrayList<>();
 		}
 		this.rendicontazioni.add(rendicontazione);
 	}

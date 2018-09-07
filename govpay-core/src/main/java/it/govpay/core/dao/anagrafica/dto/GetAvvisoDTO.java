@@ -14,7 +14,7 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -22,7 +22,7 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {

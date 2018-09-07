@@ -32,7 +32,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class DominioConverter {
 
 	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst, BasicBD bd) throws ServiceException {
-		List<Dominio> lstDTO = new ArrayList<Dominio>();
+		List<Dominio> lstDTO = new ArrayList<>();
 		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
 			for(it.govpay.orm.Dominio anagrafica: anagraficaLst){
 				lstDTO.add(toDTO(anagrafica, bd));

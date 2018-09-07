@@ -24,7 +24,7 @@ public class LeggiRiscossioneDTO extends BasicCreateRequestDTO {
 	}
 
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(String idDominio) {
@@ -34,7 +34,7 @@ public class LeggiRiscossioneDTO extends BasicCreateRequestDTO {
 	private String idDominio;
 	private String iuv;
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -42,7 +42,7 @@ public class LeggiRiscossioneDTO extends BasicCreateRequestDTO {
 	}
 
 	public String getIur() {
-		return iur;
+		return this.iur;
 	}
 
 	public void setIur(String iur) {
@@ -50,7 +50,7 @@ public class LeggiRiscossioneDTO extends BasicCreateRequestDTO {
 	}
 
 	public Integer getIndice() {
-		return indice;
+		return this.indice;
 	}
 
 	public void setIndice(Integer indice) {

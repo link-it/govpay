@@ -50,7 +50,7 @@ public class NodoChiediCopiaRTRisposta
      *     
      */
     public String getTipoFirma() {
-        return tipoFirma;
+        return this.tipoFirma;
     }
 
     /**
@@ -74,7 +74,7 @@ public class NodoChiediCopiaRTRisposta
      *     
      */
     public DataHandler getRt() {
-        return rt;
+        return this.rt;
     }
 
     /**

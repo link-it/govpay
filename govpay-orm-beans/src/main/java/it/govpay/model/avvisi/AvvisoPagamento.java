@@ -34,37 +34,37 @@ public class AvvisoPagamento{
 	
 	
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public java.lang.String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(java.lang.String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public java.lang.String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(java.lang.String iuv) {
 		this.iuv = iuv;
 	}
 	public java.util.Date getDataCreazione() {
-		return dataCreazione;
+		return this.dataCreazione;
 	}
 	public void setDataCreazione(java.util.Date dataCreazione) {
 		this.dataCreazione = dataCreazione;
 	}
 	public StatoAvviso getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(StatoAvviso stato) {
 		this.stato = stato;
 	}
 	public byte[] getPdf() {
-		return pdf;
+		return this.pdf;
 	}
 	public void setPdf(byte[] pdf) {
 		this.pdf = pdf;

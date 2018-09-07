@@ -19,7 +19,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
   protected CLIENT = UtilService.TIPI_SSL.client;
   protected SERVER = UtilService.TIPI_SSL.server;
 
-  protected versioni: any[] = UtilService.TIPI_VERSIONE_API;
+  // protected versioni: any[] = UtilService.TIPI_VERSIONE_API;
   protected _isBasicAuth: boolean = false;
   protected _isSslAuth: boolean = false;
 
@@ -31,7 +31,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     this.fGroup.addControl('principalPagoPa_ctrl', new FormControl(''));
     this.fGroup.addControl('abilita_ctrl', new FormControl());
     this.fGroup.addControl('url_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('versioneApi_ctrl', new FormControl('', Validators.required));
+    // this.fGroup.addControl('versioneApi_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('auth_ctrl', new FormControl(''));
   }
 
@@ -46,12 +46,12 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
         this.fGroup.controls['auth_ctrl'].setValue('');
         if(this.json.servizioPagoPa) {
           this.fGroup.controls['url_ctrl'].setValue(this.json.servizioPagoPa.url);
-          this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.servizioPagoPa.versioneApi);
+          // this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.servizioPagoPa.versioneApi);
           if(this.json.servizioPagoPa.auth) {
             let _sppaa = this.json.servizioPagoPa.auth;
             if(_sppaa.hasOwnProperty('username')) {
-              this.fGroup.controls['auth_ctrl'].setValue(this.BASIC);
               this.addBasicControls();
+              this.fGroup.controls['auth_ctrl'].setValue(this.BASIC);
               this.fGroup.controls['username_ctrl'].setValue((_sppaa.username)?_sppaa.username:'');
               this.fGroup.controls['password_ctrl'].setValue((_sppaa.password)?_sppaa.password:'');
               this._isBasicAuth = true;
@@ -123,13 +123,13 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     let _info = this.fGroup.value;
     let _json:any = {};
     _json.idIntermediario = (!this.fGroup.controls['idIntermediario_ctrl'].disabled)?_info['idIntermediario_ctrl']:this.json.idIntermediario;
-    _json.abilitato = _info['abilita_ctrl'];
+    _json.abilitato = _info['abilita_ctrl'] || false;
     _json.denominazione = (_info['denominazione_ctrl'])?_info['denominazione_ctrl']:null;
     _json.principalPagoPa = (_info['principalPagoPa_ctrl'])?_info['principalPagoPa_ctrl']:null;
     _json.servizioPagoPa = {
       auth: null,
       url: _info['url_ctrl'],
-      versioneApi: _info['versioneApi_ctrl']
+      // versioneApi: _info['versioneApi_ctrl']
     };
     if(_info.hasOwnProperty('username_ctrl')) {
       _json.servizioPagoPa['auth'] = {

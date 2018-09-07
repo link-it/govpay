@@ -39,7 +39,7 @@ public class Tributo extends TipoTributo {
 			this.codifica = codifica;
 		}
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static TipoContabilita toEnum(String codifica) throws ServiceException {
@@ -61,50 +61,50 @@ public class Tributo extends TipoTributo {
 	private String codTributoIuvCustom;
 	
 	public Long getIdIbanAccredito() {
-		return idIbanAccredito;
+		return this.idIbanAccredito;
 	}
 	public void setIdIbanAccredito(Long idIbanAccredito) {
 		this.idIbanAccredito = idIbanAccredito;
 	}
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 	public long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(long idDominio) {
 		this.idDominio = idDominio;
 	}
 
 	public long getIdTipoTributo() {
-		return idTipoTributo;
+		return this.idTipoTributo;
 	}
 	public void setIdTipoTributo(long idTipoTributo) {
 		this.idTipoTributo = idTipoTributo;
 	}
 	public TipoContabilita getTipoContabilitaCustom() {
-		return tipoContabilitaCustom;
+		return this.tipoContabilitaCustom;
 	}
 	public void setTipoContabilitaCustom(TipoContabilita tipoContabilitaCustom) {
 		this.tipoContabilitaCustom = tipoContabilitaCustom;
 	}
 	public String getCodContabilitaCustom() {
-		return codContabilitaCustom;
+		return this.codContabilitaCustom;
 	}
 	public void setCodContabilitaCustom(String codContabilitaCustom) {
 		this.codContabilitaCustom = codContabilitaCustom;
 	}
 	public String getCodTributoIuvCustom() {
-		return codTributoIuvCustom;
+		return this.codTributoIuvCustom;
 	}
 	public void setCodTributoIuvCustom(String codTributoIuv) {
 		this.codTributoIuvCustom = codTributoIuv;
 	}
 	public Long getIdIbanAppoggio() {
-		return idIbanAppoggio;
+		return this.idIbanAppoggio;
 	}
 	public void setIdIbanAppoggio(Long idIbanAppoggio) {
 		this.idIbanAppoggio = idIbanAppoggio;

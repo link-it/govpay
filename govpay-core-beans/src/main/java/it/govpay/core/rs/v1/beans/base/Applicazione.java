@@ -56,7 +56,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idA2A")
   public String getIdA2A() {
-    return idA2A;
+    return this.idA2A;
   }
   public void setIdA2A(String idA2A) {
     this.idA2A = idA2A;
@@ -72,7 +72,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return principal;
+    return this.principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
@@ -88,7 +88,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("codificaAvvisi")
   public CodificaAvvisi getCodificaAvvisi() {
-    return codificaAvvisi;
+    return this.codificaAvvisi;
   }
   public void setCodificaAvvisi(CodificaAvvisi codificaAvvisi) {
     this.codificaAvvisi = codificaAvvisi;
@@ -104,7 +104,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("domini")
   public List<DominioIndex> getDomini() {
-    return domini;
+    return this.domini;
   }
   public void setDomini(List<DominioIndex> domini) {
     this.domini = domini;
@@ -120,7 +120,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("entrate")
   public List<TipoEntrata> getEntrate() {
-    return entrate;
+    return this.entrate;
   }
   public void setEntrate(List<TipoEntrata> entrate) {
     this.entrate = entrate;
@@ -136,7 +136,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return acl;
+    return this.acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -151,7 +151,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("servizioVerifica")
   public Connector getServizioVerifica() {
-    return servizioVerifica;
+    return this.servizioVerifica;
   }
   public void setServizioVerifica(Connector servizioVerifica) {
     this.servizioVerifica = servizioVerifica;
@@ -166,7 +166,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("servizioNotifica")
   public Connector getServizioNotifica() {
-    return servizioNotifica;
+    return this.servizioNotifica;
   }
   public void setServizioNotifica(Connector servizioNotifica) {
     this.servizioNotifica = servizioNotifica;
@@ -182,7 +182,7 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -193,28 +193,28 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Applicazione applicazione = (Applicazione) o;
-    return Objects.equals(idA2A, applicazione.idA2A) &&
-        Objects.equals(principal, applicazione.principal) &&
-        Objects.equals(codificaAvvisi, applicazione.codificaAvvisi) &&
-        Objects.equals(domini, applicazione.domini) &&
-        Objects.equals(entrate, applicazione.entrate) &&
-        Objects.equals(acl, applicazione.acl) &&
-        Objects.equals(servizioVerifica, applicazione.servizioVerifica) &&
-        Objects.equals(servizioNotifica, applicazione.servizioNotifica) &&
-        Objects.equals(abilitato, applicazione.abilitato);
+    return Objects.equals(this.idA2A, applicazione.idA2A) &&
+        Objects.equals(this.principal, applicazione.principal) &&
+        Objects.equals(this.codificaAvvisi, applicazione.codificaAvvisi) &&
+        Objects.equals(this.domini, applicazione.domini) &&
+        Objects.equals(this.entrate, applicazione.entrate) &&
+        Objects.equals(this.acl, applicazione.acl) &&
+        Objects.equals(this.servizioVerifica, applicazione.servizioVerifica) &&
+        Objects.equals(this.servizioNotifica, applicazione.servizioNotifica) &&
+        Objects.equals(this.abilitato, applicazione.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, principal, codificaAvvisi, domini, entrate, acl, servizioVerifica, servizioNotifica, abilitato);
+    return Objects.hash(this.idA2A, this.principal, this.codificaAvvisi, this.domini, this.entrate, this.acl, this.servizioVerifica, this.servizioNotifica, this.abilitato);
   }
 
   public static Applicazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Applicazione) parse(json, Applicazione.class);
+    return parse(json, Applicazione.class);
   }
 
   @Override
@@ -227,15 +227,15 @@ public class Applicazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Applicazione {\n");
     
-    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
-    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
-    sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
-    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
-    sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
-    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
-    sb.append("    servizioVerifica: ").append(toIndentedString(servizioVerifica)).append("\n");
-    sb.append("    servizioNotifica: ").append(toIndentedString(servizioNotifica)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
+    sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
+    sb.append("    codificaAvvisi: ").append(this.toIndentedString(this.codificaAvvisi)).append("\n");
+    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
+    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
+    sb.append("    servizioVerifica: ").append(this.toIndentedString(this.servizioVerifica)).append("\n");
+    sb.append("    servizioNotifica: ").append(this.toIndentedString(this.servizioNotifica)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

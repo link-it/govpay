@@ -14,11 +14,11 @@ public class GetUnitaOperativaDTO extends BasicRequestDTO {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public String getCodUnivocoUnitaOperativa() {
-		return codUnivocoUnitaOperativa;
+		return this.codUnivocoUnitaOperativa;
 	}
 
 }

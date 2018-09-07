@@ -21,7 +21,7 @@ public class LeggiRendicontazioneDTO extends BasicCreateRequestDTO {
 	}
 
 	public String getIdFlusso() {
-		return idFlusso;
+		return this.idFlusso;
 	}
 
 	public void setIdFlusso(String idFlusso) {

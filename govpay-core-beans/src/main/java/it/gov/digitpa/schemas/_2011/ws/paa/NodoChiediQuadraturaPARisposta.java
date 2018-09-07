@@ -47,7 +47,7 @@ public class NodoChiediQuadraturaPARisposta
      *     
      */
     public DataHandler getXmlQuadratura() {
-        return xmlQuadratura;
+        return this.xmlQuadratura;
     }
 
     /**

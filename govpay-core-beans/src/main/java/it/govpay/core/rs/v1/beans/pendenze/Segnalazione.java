@@ -32,7 +32,7 @@ public class Segnalazione extends JSONSerializable {
 
   @JsonProperty("codice")
   public String getCodice() {
-    return codice;
+    return this.codice;
   }
   public void setCodice(String codice) {
     this.codice = codice;
@@ -47,7 +47,7 @@ public class Segnalazione extends JSONSerializable {
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return descrizione;
+    return this.descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -62,7 +62,7 @@ public class Segnalazione extends JSONSerializable {
 
   @JsonProperty("dettaglio")
   public String getDettaglio() {
-    return dettaglio;
+    return this.dettaglio;
   }
   public void setDettaglio(String dettaglio) {
     this.dettaglio = dettaglio;
@@ -73,22 +73,22 @@ public class Segnalazione extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Segnalazione segnalazione = (Segnalazione) o;
-    return Objects.equals(codice, segnalazione.codice) &&
-        Objects.equals(descrizione, segnalazione.descrizione) &&
-        Objects.equals(dettaglio, segnalazione.dettaglio);
+    return Objects.equals(this.codice, segnalazione.codice) &&
+        Objects.equals(this.descrizione, segnalazione.descrizione) &&
+        Objects.equals(this.dettaglio, segnalazione.dettaglio);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(codice, descrizione, dettaglio);
+    return Objects.hash(this.codice, this.descrizione, this.dettaglio);
   }
 
   public static Segnalazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Segnalazione) parse(json, Segnalazione.class);
+    return parse(json, Segnalazione.class);
   }
 
   @Override
@@ -101,8 +101,8 @@ public class Segnalazione extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Segnalazione {\n");
     
-    sb.append("    codice: ").append(toIndentedString(codice)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    codice: ").append(this.toIndentedString(this.codice)).append("\n");
+    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("}");
     return sb.toString();
   }

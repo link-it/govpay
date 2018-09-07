@@ -77,7 +77,7 @@ public class NodoChiediListaPendentiRPT {
      *     
      */
     public String getIdentificativoIntermediarioPA() {
-        return identificativoIntermediarioPA;
+        return this.identificativoIntermediarioPA;
     }
 
     /**
@@ -101,7 +101,7 @@ public class NodoChiediListaPendentiRPT {
      *     
      */
     public String getIdentificativoStazioneIntermediarioPA() {
-        return identificativoStazioneIntermediarioPA;
+        return this.identificativoStazioneIntermediarioPA;
     }
 
     /**
@@ -125,7 +125,7 @@ public class NodoChiediListaPendentiRPT {
      *     
      */
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -149,7 +149,7 @@ public class NodoChiediListaPendentiRPT {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -173,7 +173,7 @@ public class NodoChiediListaPendentiRPT {
      *     
      */
     public Date getRangeDa() {
-        return rangeDa;
+        return this.rangeDa;
     }
 
     /**
@@ -197,7 +197,7 @@ public class NodoChiediListaPendentiRPT {
      *     
      */
     public Date getRangeA() {
-        return rangeA;
+        return this.rangeA;
     }
 
     /**
@@ -221,7 +221,7 @@ public class NodoChiediListaPendentiRPT {
      *     
      */
     public BigInteger getDimensioneLista() {
-        return dimensioneLista;
+        return this.dimensioneLista;
     }
 
     /**

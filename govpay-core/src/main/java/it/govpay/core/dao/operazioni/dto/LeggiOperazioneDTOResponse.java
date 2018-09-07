@@ -16,7 +16,7 @@ public class LeggiOperazioneDTOResponse {
 	}
 
 	public String getEsito() {
-		return esito;
+		return this.esito;
 	}
 
 	public void setEsito(String esito) {
@@ -24,7 +24,7 @@ public class LeggiOperazioneDTOResponse {
 	}
 
 	public String getNome() {
-		return nome;
+		return this.nome;
 	}
 
 	public void setNome(String nome) {
@@ -32,7 +32,7 @@ public class LeggiOperazioneDTOResponse {
 	}
 
 	public Integer getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(Integer stato) {
@@ -40,7 +40,7 @@ public class LeggiOperazioneDTOResponse {
 	}
 
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 
 	public void setDescrizioneStato(String descrizioneStato) {

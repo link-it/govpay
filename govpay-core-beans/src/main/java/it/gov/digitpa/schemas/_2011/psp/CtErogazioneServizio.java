@@ -71,8 +71,8 @@ public class CtErogazioneServizio {
      * 
      */
     public List<CtErogazione> getDisponibilitas() {
-        if (disponibilitas == null) {
-            disponibilitas = new ArrayList<CtErogazione>();
+        if (this.disponibilitas == null) {
+            this.disponibilitas = new ArrayList<>();
         }
         return this.disponibilitas;
     }
@@ -100,8 +100,8 @@ public class CtErogazioneServizio {
      * 
      */
     public List<CtErogazione> getIndisponibilitas() {
-        if (indisponibilitas == null) {
-            indisponibilitas = new ArrayList<CtErogazione>();
+        if (this.indisponibilitas == null) {
+            this.indisponibilitas = new ArrayList<>();
         }
         return this.indisponibilitas;
     }

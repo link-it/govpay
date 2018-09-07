@@ -65,41 +65,41 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			
-			if(dataInizio != null) {
-				newExpression.greaterEquals(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, dataInizio);
+			if(this.dataInizio != null) {
+				newExpression.greaterEquals(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, this.dataInizio);
 				addAnd = true;
 			}
-			if(dataFine != null) {
+			if(this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.lessEquals(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, dataFine);
+				newExpression.lessEquals(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, this.dataFine);
 				addAnd = true;
 			}
-			if(stato != null) {
+			if(this.stato != null) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().STATO, stato.toString());
+				newExpression.equals(it.govpay.orm.PagamentoPortale.model().STATO, this.stato.toString());
 				addAnd = true;
 			}
-			if(versante!= null) {
+			if(this.versante!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, versante);
+				newExpression.equals(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.versante);
 				addAnd = true;
 			}
-			if(idSessionePortale!= null) {
+			if(this.idSessionePortale!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PORTALE, idSessionePortale, LikeMode.ANYWHERE);
+				newExpression.ilike(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PORTALE, this.idSessionePortale, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
-			if(codDomini != null && codDomini.size() > 0) {
+			if(this.codDomini != null && this.codDomini.size() > 0) {
 				if(addAnd)
 					newExpression.and();
-				codDomini.removeAll(Collections.singleton(null));
+				this.codDomini.removeAll(Collections.singleton(null));
 				
 				newExpression.in(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO, this.codDomini);
 				newExpression.isNotNull(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO);
@@ -146,7 +146,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 
 	public Date getDataInizio() {
-		return dataInizio;
+		return this.dataInizio;
 	}
 
 	public void setDataInizio(Date dataInizio) {
@@ -154,7 +154,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -162,7 +162,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	}
 
 	public String getVersante() {
-		return versante;
+		return this.versante;
 	}
 
 	public void setVersante(String versante) {
@@ -170,7 +170,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	}
 
 	public STATO getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(STATO stato) {
@@ -178,7 +178,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	}
 
 	public List<String> getCodDomini() {
-		return codDomini;
+		return this.codDomini;
 	}
 
 	public void setCodDomini(List<String> codDomini) {
@@ -186,7 +186,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	}
 
 	public Boolean getAck() {
-		return ack;
+		return this.ack;
 	}
 
 	public void setAck(Boolean ack) {
@@ -194,7 +194,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	}
 
 	public String getIdSessionePortale() {
-		return idSessionePortale;
+		return this.idSessionePortale;
 	}
 
 	public void setIdSessionePortale(String idSessionePortale) {

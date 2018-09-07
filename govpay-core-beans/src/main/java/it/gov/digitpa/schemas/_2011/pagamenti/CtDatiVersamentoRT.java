@@ -67,7 +67,7 @@ public class CtDatiVersamentoRT {
      *     
      */
     public String getCodiceEsitoPagamento() {
-        return codiceEsitoPagamento;
+        return this.codiceEsitoPagamento;
     }
 
     /**
@@ -91,7 +91,7 @@ public class CtDatiVersamentoRT {
      *     
      */
     public BigDecimal getImportoTotalePagato() {
-        return importoTotalePagato;
+        return this.importoTotalePagato;
     }
 
     /**
@@ -115,7 +115,7 @@ public class CtDatiVersamentoRT {
      *     
      */
     public String getIdentificativoUnivocoVersamento() {
-        return identificativoUnivocoVersamento;
+        return this.identificativoUnivocoVersamento;
     }
 
     /**
@@ -139,7 +139,7 @@ public class CtDatiVersamentoRT {
      *     
      */
     public String getCodiceContestoPagamento() {
-        return codiceContestoPagamento;
+        return this.codiceContestoPagamento;
     }
 
     /**
@@ -177,8 +177,8 @@ public class CtDatiVersamentoRT {
      * 
      */
     public List<CtDatiSingoloPagamentoRT> getDatiSingoloPagamento() {
-        if (datiSingoloPagamento == null) {
-            datiSingoloPagamento = new ArrayList<CtDatiSingoloPagamentoRT>();
+        if (this.datiSingoloPagamento == null) {
+            this.datiSingoloPagamento = new ArrayList<>();
         }
         return this.datiSingoloPagamento;
     }

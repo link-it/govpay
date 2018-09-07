@@ -65,7 +65,7 @@ public class CtFaultBean {
      *     
      */
     public String getFaultCode() {
-        return faultCode;
+        return this.faultCode;
     }
 
     /**
@@ -89,7 +89,7 @@ public class CtFaultBean {
      *     
      */
     public String getFaultString() {
-        return faultString;
+        return this.faultString;
     }
 
     /**
@@ -113,7 +113,7 @@ public class CtFaultBean {
      *     
      */
     public String getId() {
-        return id;
+        return this.id;
     }
 
     /**
@@ -137,7 +137,7 @@ public class CtFaultBean {
      *     
      */
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     /**
@@ -161,7 +161,7 @@ public class CtFaultBean {
      *     
      */
     public Integer getSerial() {
-        return serial;
+        return this.serial;
     }
 
     /**

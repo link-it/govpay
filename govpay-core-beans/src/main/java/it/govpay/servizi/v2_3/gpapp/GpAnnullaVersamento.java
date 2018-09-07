@@ -50,7 +50,7 @@ public class GpAnnullaVersamento {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -74,7 +74,7 @@ public class GpAnnullaVersamento {
      *     
      */
     public String getCodVersamentoEnte() {
-        return codVersamentoEnte;
+        return this.codVersamentoEnte;
     }
 
     /**

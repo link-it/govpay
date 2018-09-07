@@ -59,7 +59,7 @@ public class CtEsitoPresaInCarico {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**
@@ -83,7 +83,7 @@ public class CtEsitoPresaInCarico {
      *     
      */
     public BigInteger getCodiceEsitoPresaInCarico() {
-        return codiceEsitoPresaInCarico;
+        return this.codiceEsitoPresaInCarico;
     }
 
     /**
@@ -107,7 +107,7 @@ public class CtEsitoPresaInCarico {
      *     
      */
     public String getDescrizioneEsitoPresaInCarico() {
-        return descrizioneEsitoPresaInCarico;
+        return this.descrizioneEsitoPresaInCarico;
     }
 
     /**

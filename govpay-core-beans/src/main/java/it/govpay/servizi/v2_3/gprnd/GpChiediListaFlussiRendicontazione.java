@@ -64,7 +64,7 @@ public class GpChiediListaFlussiRendicontazione {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -88,7 +88,7 @@ public class GpChiediListaFlussiRendicontazione {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -112,7 +112,7 @@ public class GpChiediListaFlussiRendicontazione {
      *     
      */
     public Date getDataInizio() {
-        return dataInizio;
+        return this.dataInizio;
     }
 
     /**
@@ -136,7 +136,7 @@ public class GpChiediListaFlussiRendicontazione {
      *     
      */
     public Date getDataFine() {
-        return dataFine;
+        return this.dataFine;
     }
 
     /**

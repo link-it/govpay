@@ -55,7 +55,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
 	@JsonProperty("principal")
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;
@@ -70,7 +70,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
 	@JsonProperty("codificaAvvisi")
 	public CodificaAvvisi getCodificaAvvisi() {
-		return codificaAvvisi;
+		return this.codificaAvvisi;
 	}
 	public void setCodificaAvvisi(CodificaAvvisi codificaAvvisi) {
 		this.codificaAvvisi = codificaAvvisi;
@@ -86,7 +86,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
 	@JsonProperty("domini")
 	public List<String> getDomini() {
-		return domini;
+		return this.domini;
 	}
 	public void setDomini(List<String> domini) {
 		this.domini = domini;
@@ -102,7 +102,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
 	@JsonProperty("entrate")
 	public List<String> getEntrate() {
-		return entrate;
+		return this.entrate;
 	}
 	public void setEntrate(List<String> entrate) {
 		this.entrate = entrate;
@@ -118,7 +118,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
 	@JsonProperty("acl")
 	public List<AclPost> getAcl() {
-		return acl;
+		return this.acl;
 	}
 	public void setAcl(List<AclPost> acl) {
 		this.acl = acl;
@@ -133,7 +133,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
 	@JsonProperty("servizioVerifica")
 	public Connector getServizioVerifica() {
-		return servizioVerifica;
+		return this.servizioVerifica;
 	}
 	public void setServizioVerifica(Connector servizioVerifica) {
 		this.servizioVerifica = servizioVerifica;
@@ -148,7 +148,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
 	@JsonProperty("servizioNotifica")
 	public Connector getServizioNotifica() {
-		return servizioNotifica;
+		return this.servizioNotifica;
 	}
 	public void setServizioNotifica(Connector servizioNotifica) {
 		this.servizioNotifica = servizioNotifica;
@@ -164,7 +164,7 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 
 	@JsonProperty("abilitato")
 	public Boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
@@ -175,27 +175,27 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || this.getClass() != o.getClass()) {
 			return false;
 		}
 		ApplicazionePost applicazionePost = (ApplicazionePost) o;
-		return Objects.equals(principal, applicazionePost.principal) &&
-				Objects.equals(codificaAvvisi, applicazionePost.codificaAvvisi) &&
-				Objects.equals(domini, applicazionePost.domini) &&
-				Objects.equals(entrate, applicazionePost.entrate) &&
-				Objects.equals(acl, applicazionePost.acl) &&
-				Objects.equals(servizioVerifica, applicazionePost.servizioVerifica) &&
-				Objects.equals(servizioNotifica, applicazionePost.servizioNotifica) &&
-				Objects.equals(abilitato, applicazionePost.abilitato);
+		return Objects.equals(this.principal, applicazionePost.principal) &&
+				Objects.equals(this.codificaAvvisi, applicazionePost.codificaAvvisi) &&
+				Objects.equals(this.domini, applicazionePost.domini) &&
+				Objects.equals(this.entrate, applicazionePost.entrate) &&
+				Objects.equals(this.acl, applicazionePost.acl) &&
+				Objects.equals(this.servizioVerifica, applicazionePost.servizioVerifica) &&
+				Objects.equals(this.servizioNotifica, applicazionePost.servizioNotifica) &&
+				Objects.equals(this.abilitato, applicazionePost.abilitato);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(principal, codificaAvvisi, domini, entrate, acl, servizioVerifica, servizioNotifica, abilitato);
+		return Objects.hash(this.principal, this.codificaAvvisi, this.domini, this.entrate, this.acl, this.servizioVerifica, this.servizioNotifica, this.abilitato);
 	}
 
 	public static ApplicazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
-		return (ApplicazionePost) parse(json, ApplicazionePost.class);
+		return parse(json, ApplicazionePost.class);
 	}
 
 	@Override
@@ -208,14 +208,14 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 		StringBuilder sb = new StringBuilder();
 		sb.append("class ApplicazionePost {\n");
 
-		sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
-		sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
-		sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
-		sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
-		sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
-		sb.append("    servizioVerifica: ").append(toIndentedString(servizioVerifica)).append("\n");
-		sb.append("    servizioNotifica: ").append(toIndentedString(servizioNotifica)).append("\n");
-		sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+		sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
+		sb.append("    codificaAvvisi: ").append(this.toIndentedString(this.codificaAvvisi)).append("\n");
+		sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
+		sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+		sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
+		sb.append("    servizioVerifica: ").append(this.toIndentedString(this.servizioVerifica)).append("\n");
+		sb.append("    servizioNotifica: ").append(this.toIndentedString(this.servizioNotifica)).append("\n");
+		sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
@@ -231,13 +231,14 @@ public class ApplicazionePost extends it.govpay.core.rs.v1.beans.JSONSerializabl
 		return o.toString().replace("\n", "\n    ");
 	}
 
+	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		vf.getValidator("principal", principal).notNull().minLength(1).maxLength(35);
-		vf.getValidator("codificaAvvisi", codificaAvvisi).notNull().validateFields();
-		vf.getValidator("servizioVerifica", servizioVerifica).validateFields();
-		vf.getValidator("servizioNotifica", servizioNotifica).validateFields();
-		vf.getValidator("abilitato", abilitato).notNull();
+		vf.getValidator("principal", this.principal).notNull().minLength(1).maxLength(35);
+		vf.getValidator("codificaAvvisi", this.codificaAvvisi).notNull().validateFields();
+		vf.getValidator("servizioVerifica", this.servizioVerifica).validateFields();
+		vf.getValidator("servizioNotifica", this.servizioNotifica).validateFields();
+		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }
 

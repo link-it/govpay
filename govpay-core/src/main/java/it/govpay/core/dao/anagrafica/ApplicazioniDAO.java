@@ -93,7 +93,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_APPLICAZIONI, Diritti.LETTURA,bd);
-			return new GetApplicazioneDTOResponse(useCacheData ? AnagraficaManager.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()) : AnagraficaManagerNoCache.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()));
+			return new GetApplicazioneDTOResponse(this.useCacheData ? AnagraficaManager.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()) : AnagraficaManagerNoCache.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new ApplicazioneNonTrovataException("Applicazione " + getApplicazioneDTO.getCodApplicazione() + " non censita in Anagrafica");
 		} finally {

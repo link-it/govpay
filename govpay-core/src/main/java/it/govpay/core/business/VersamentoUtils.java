@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -82,7 +82,7 @@ public class VersamentoUtils {
 		}
 		
 		try {
-			String codUnitaOperativa = (versamento.getCodUnitaOperativa() == null) ? Dominio.EC : versamento.getCodUnitaOperativa();
+			String codUnitaOperativa = (versamento.getCodUnitaOperativa() == null) ? it.govpay.model.Dominio.EC : versamento.getCodUnitaOperativa();
 			model.setUo(dominio.getId(), codUnitaOperativa, bd);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.UOP_000, versamento.getCodUnitaOperativa(), versamento.getCodDominio());
@@ -147,7 +147,7 @@ public class VersamentoUtils {
 			model.setTipoBollo(TipoBollo.toEnum(singoloVersamento.getBolloTelematico().getTipo()));
 		} 
 		
-		List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+		List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase
 		diritti.add(Diritti.SCRITTURA);
 		diritti.add(Diritti.ESECUZIONE);
 		if(singoloVersamento.getCodTributo() != null) {

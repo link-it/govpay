@@ -82,7 +82,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public BigDecimal getImportoSingoloVersamento() {
-        return importoSingoloVersamento;
+        return this.importoSingoloVersamento;
     }
 
     /**
@@ -106,7 +106,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public BigDecimal getCommissioneCaricoPA() {
-        return commissioneCaricoPA;
+        return this.commissioneCaricoPA;
     }
 
     /**
@@ -130,7 +130,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public String getIbanAccredito() {
-        return ibanAccredito;
+        return this.ibanAccredito;
     }
 
     /**
@@ -154,7 +154,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public String getBicAccredito() {
-        return bicAccredito;
+        return this.bicAccredito;
     }
 
     /**
@@ -178,7 +178,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public String getIbanAppoggio() {
-        return ibanAppoggio;
+        return this.ibanAppoggio;
     }
 
     /**
@@ -202,7 +202,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public String getBicAppoggio() {
-        return bicAppoggio;
+        return this.bicAppoggio;
     }
 
     /**
@@ -226,7 +226,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public String getCredenzialiPagatore() {
-        return credenzialiPagatore;
+        return this.credenzialiPagatore;
     }
 
     /**
@@ -250,7 +250,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public String getCausaleVersamento() {
-        return causaleVersamento;
+        return this.causaleVersamento;
     }
 
     /**
@@ -274,7 +274,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public String getDatiSpecificiRiscossione() {
-        return datiSpecificiRiscossione;
+        return this.datiSpecificiRiscossione;
     }
 
     /**
@@ -298,7 +298,7 @@ public class CtDatiSingoloVersamentoRPT {
      *     
      */
     public CtDatiMarcaBolloDigitale getDatiMarcaBolloDigitale() {
-        return datiMarcaBolloDigitale;
+        return this.datiMarcaBolloDigitale;
     }
 
     /**

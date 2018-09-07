@@ -48,7 +48,7 @@ public class GpChiediStatoTransazioneResponse
      *     
      */
     public Transazione getTransazione() {
-        return transazione;
+        return this.transazione;
     }
 
     /**

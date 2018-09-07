@@ -114,10 +114,10 @@ public class GovpayConfig {
 		try {
 
 			// Recupero il property all'interno dell'EAR
-			props = new Properties[2];
+			this.props = new Properties[2];
 			Properties props1 = new Properties();
 			props1.load(is);
-			props[1] = props1;
+			this.props[1] = props1;
 
 			// Recupero la configurazione della working dir
 			// Se e' configurata, la uso come prioritaria
@@ -148,18 +148,18 @@ public class GovpayConfig {
 		Logger log = LoggerWrapperFactory.getLogger("boot");
 		try {
 			Properties props0 = null;
-			props[0] = props0;
+			this.props[0] = props0;
 
 			File gpConfigFile = new File(this.resourceDir + File.separatorChar + "govpay.properties");
 			if(gpConfigFile.exists()) {
 				props0 = new Properties();
 				props0.load(new FileInputStream(gpConfigFile));
 				log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
-				props[0] = props0;
+				this.props[0] = props0;
 			}
 
 			try {
-				String versioneAvvisoProperty = getProperty("it.govpay.avviso.versione", props, false, log);
+				String versioneAvvisoProperty = getProperty("it.govpay.avviso.versione", this.props, false, log);
 				if(versioneAvvisoProperty != null && !versioneAvvisoProperty.trim().isEmpty()) {
 					try {
 						this.versioneAvviso = VersioneAvviso.valueOf(versioneAvvisoProperty.trim());
@@ -173,7 +173,7 @@ public class GovpayConfig {
 			}
 
 			try {
-				String dimensionePoolProperty = getProperty("it.govpay.thread.pool", props, false, log);
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool", this.props, false, log);
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
 						this.dimensionePool = Integer.parseInt(dimensionePoolProperty.trim());
@@ -186,7 +186,7 @@ public class GovpayConfig {
 				this.dimensionePool = 10;
 			}
 
-			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", props, false, log);
+			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", this.props, false, log);
 
 			if(urlPddVerificaProperty != null) {
 				try {
@@ -196,53 +196,53 @@ public class GovpayConfig {
 				}
 			}
 
-			String mLogClassString = getProperty("it.govpay.mlog.class", props, false, log);
+			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
 			if(mLogClassString != null && !mLogClassString.isEmpty()) 
 				this.mLogClass = mLogClassString;
 
-			String mLogOnLog4jString = getProperty("it.govpay.mlog.log4j", props, false, log);
+			String mLogOnLog4jString = getProperty("it.govpay.mlog.log4j", this.props, false, log);
 			if(mLogOnLog4jString != null && !Boolean.valueOf(mLogOnLog4jString))
 				this.mLogOnLog4j = false;
 
 
-			String mLogOnLevelString = getProperty("it.govpay.mlog.level", props, false, log);
+			String mLogOnLevelString = getProperty("it.govpay.mlog.level", this.props, false, log);
 			try {
 				this.mLogLevel = Severity.valueOf(mLogOnLevelString);
 			} catch (Exception e) {
 				log.warn("Valore ["+mLogOnLevelString+"] non consentito per la property \"it.govpay.mlog.level\". Assunto valore di default \"INFO\".");
 			}
 
-			String mLogOnDBString = getProperty("it.govpay.mlog.db", props, false, log);
+			String mLogOnDBString = getProperty("it.govpay.mlog.db", this.props, false, log);
 			if(mLogOnDBString != null && Boolean.valueOf(mLogOnDBString))
 				this.mLogOnDB = true;
 
 			if(this.mLogOnDB) {
-				String mLogDBTypeString = getProperty("it.govpay.mlog.db.type", props, true, log);
+				String mLogDBTypeString = getProperty("it.govpay.mlog.db.type", this.props, true, log);
 				try {
 					this.mLogDBType = TipiDatabase.valueOf(mLogDBTypeString);
 				} catch (IllegalArgumentException e) {
 					throw new Exception("Valore ["+mLogDBTypeString.trim()+"] non consentito per la property \"it.govpay.mlog.db.type\": " +e.getMessage());
 				}
 
-				this.mLogDS = getProperty("it.govpay.mlog.db.ds", props, true, log);
+				this.mLogDS = getProperty("it.govpay.mlog.db.ds", this.props, true, log);
 
-				String mLogSqlString = getProperty("it.govpay.mlog.showSql", props, false, log);
+				String mLogSqlString = getProperty("it.govpay.mlog.showSql", this.props, false, log);
 				if(mLogSqlString != null)
 					this.mLogOnLog4j = Boolean.valueOf(mLogSqlString);
 			}
 
-			String pddAuthEnableString = getProperty("it.govpay.pdd.auth", props, false, log);
+			String pddAuthEnableString = getProperty("it.govpay.pdd.auth", this.props, false, log);
 			if(pddAuthEnableString != null && pddAuthEnableString.equalsIgnoreCase("false"))
 				this.pddAuthEnable = false;
 
-			String listaHandlers = getProperty("it.govpay.integration.client.out", props, false, log);
+			String listaHandlers = getProperty("it.govpay.integration.client.out", this.props, false, log);
 
-			this.outHandlers = new ArrayList<String>();
+			this.outHandlers = new ArrayList<>();
 
 			if(listaHandlers != null && !listaHandlers.isEmpty()) {
 				String[] splitHandlers = listaHandlers.split(",");
 				for(String handler: splitHandlers) {
-					String handlerClass = getProperty("it.govpay.integration.client.out."+handler, props, true, log);
+					String handlerClass = getProperty("it.govpay.integration.client.out."+handler, this.props, true, log);
 					Class<?> c = null;
 					try {
 						c = this.getClass().getClassLoader().loadClass(handlerClass);
@@ -257,11 +257,11 @@ public class GovpayConfig {
 				}
 			}
 
-			String batchOnString = getProperty("it.govpay.batchOn", props, false, log);
+			String batchOnString = getProperty("it.govpay.batchOn", this.props, false, log);
 			if(batchOnString != null && batchOnString.equalsIgnoreCase("false"))
 				this.batchOn = false;
 
-			String clusterIdString = getProperty("it.govpay.clusterId", props, false, log);
+			String clusterIdString = getProperty("it.govpay.clusterId", this.props, false, log);
 			if(clusterIdString != null) {
 				try{
 					this.clusterId = Integer.parseInt(clusterIdString);
@@ -270,7 +270,7 @@ public class GovpayConfig {
 				}
 			}
 
-			String timeoutBatchString = getProperty("it.govpay.timeoutBatch", props, false, log);
+			String timeoutBatchString = getProperty("it.govpay.timeoutBatch", this.props, false, log);
 			try{
 				this.timeoutBatch = Integer.parseInt(timeoutBatchString) * 1000;
 			} catch(Throwable t) {
@@ -278,7 +278,7 @@ public class GovpayConfig {
 				this.timeoutBatch = 5 * 60 * 1000;
 			}
 			
-			String conservazionePluginString = getProperty("it.govpay.plugin.conservazione", props, false, log);
+			String conservazionePluginString = getProperty("it.govpay.plugin.conservazione", this.props, false, log);
 			
 			if(conservazionePluginString != null && !conservazionePluginString.isEmpty()) {
 				Class<?> c = null;
@@ -291,22 +291,22 @@ public class GovpayConfig {
 				if(!(instance instanceof IConservazione)) {
 					throw new Exception("La classe ["+conservazionePluginString+"] specificata per plugin di conservazione deve implementare l'interfaccia " + IConservazione.class.getName());
 				}
-				conservazionePlugin = (IConservazione) instance;
+				this.conservazionePlugin = (IConservazione) instance;
 			}
 			
-			this.urlGovpayWC = getProperty("it.govpay.wc.url", props, false, log);
-			this.urlWISP = getProperty("it.govpay.wisp.url", props, false, log);
+			this.urlGovpayWC = getProperty("it.govpay.wc.url", this.props, false, log);
+			this.urlWISP = getProperty("it.govpay.wisp.url", this.props, false, log);
 			
 
-			String batchAvvisiPagamentoStampaAvvisiString = getProperty("it.govpay.batch.avvisiPagamento.stampaAvvisiPagamento", props, false, log);
+			String batchAvvisiPagamentoStampaAvvisiString = getProperty("it.govpay.batch.avvisiPagamento.stampaAvvisiPagamento", this.props, false, log);
 			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
 				this.batchAvvisiPagamento = true;
 			
-			String validazioneAPIRestString = getProperty("it.govpay.rs.validazione.enabled", props, false, log);
+			String validazioneAPIRestString = getProperty("it.govpay.rs.validazione.enabled", this.props, false, log);
 			if(validazioneAPIRestString != null && Boolean.valueOf(validazioneAPIRestString))
 				this.validazioneAPIRest = true;
 			
-			String dumpAPIRestGETResponseMessageString = getProperty("it.govpay.rs.dumpGetResponse.enabled", props, false, log);
+			String dumpAPIRestGETResponseMessageString = getProperty("it.govpay.rs.dumpGetResponse.enabled", this.props, false, log);
 			if(dumpAPIRestGETResponseMessageString != null && Boolean.valueOf(dumpAPIRestGETResponseMessageString))
 				this.dumpAPIRestGETResponse = true;
 			
@@ -317,7 +317,7 @@ public class GovpayConfig {
 	}
 
 	public URL getUrlPddVerifica() {
-		return urlPddVerifica;
+		return this.urlPddVerifica;
 	}
 
 	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws Exception {
@@ -369,71 +369,71 @@ public class GovpayConfig {
 	}
 
 	public VersioneAvviso getVersioneAvviso() {
-		return versioneAvviso;
+		return this.versioneAvviso;
 	}
 
 	public URI getLog4j2Config() {
-		return log4j2Config;
+		return this.log4j2Config;
 	}
 
 	public int getDimensionePool() {
-		return dimensionePool;
+		return this.dimensionePool;
 	}
 
 	public String getKsLocation() {
-		return ksLocation;
+		return this.ksLocation;
 	}
 
 	public String getKsPassword() {
-		return ksPassword;
+		return this.ksPassword;
 	}
 
 	public String getKsAlias() {
-		return ksAlias;
+		return this.ksAlias;
 	}
 
 	public String getmLogClass() {
-		return mLogClass;
+		return this.mLogClass;
 	}
 
 	public String getmLogDS() {
-		return mLogDS;
+		return this.mLogDS;
 	}
 
 	public Severity getmLogLevel() {
-		return mLogLevel;
+		return this.mLogLevel;
 	}
 
 	public TipiDatabase getmLogDBType() {
-		return mLogDBType;
+		return this.mLogDBType;
 	}
 
 	public boolean ismLogOnLog4j() {
-		return mLogOnLog4j;
+		return this.mLogOnLog4j;
 	}
 
 	public boolean ismLogOnDB() {
-		return mLogOnDB;
+		return this.mLogOnDB;
 	}
 
 	public boolean ismLogSql() {
-		return mLogSql;
+		return this.mLogSql;
 	}
 
 	public boolean isPddAuthEnable() {
-		return pddAuthEnable;
+		return this.pddAuthEnable;
 	}
 
 	public List<String> getOutHandlers() {
-		return outHandlers;
+		return this.outHandlers;
 	}
 
 	public String getResourceDir() {
-		return resourceDir;
+		return this.resourceDir;
 	}
 
 	public boolean isBatchOn() {
-		return batchOn;
+		return this.batchOn;
 	}
 
 	public Integer getClusterId(){
@@ -445,7 +445,7 @@ public class GovpayConfig {
 	}
 	
 	public IConservazione getConservazionPlugin(){
-		return conservazionePlugin;
+		return this.conservazionePlugin;
 	}
 
 	public String getUrlGovpayWC() {
@@ -453,11 +453,11 @@ public class GovpayConfig {
 	}
 
 	public String getUrlWISP() {
-		return urlWISP;
+		return this.urlWISP;
 	}
 	
 	public boolean isBatchAvvisiPagamento() {
-		return batchAvvisiPagamento;
+		return this.batchAvvisiPagamento;
 	}
 	
 	public boolean isValidazioneAPIRestAbilitata() {
@@ -465,7 +465,7 @@ public class GovpayConfig {
 	}
 
 	public boolean isDumpAPIRestGETResponse() {
-		return dumpAPIRestGETResponse;
+		return this.dumpAPIRestGETResponse;
 	}
 
 	public Integer getCacheLogo() {

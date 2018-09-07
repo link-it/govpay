@@ -34,7 +34,7 @@ public enum EsitoTransazione {
     DECORRENZA_TERMINI_PARZIALE;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static EsitoTransazione fromValue(String v) {

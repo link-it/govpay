@@ -31,29 +31,30 @@ public class IbanAccredito extends BasicModel {
 	private boolean abilitato;
 	private Long idDominio;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public String getCodIban() {
-		return codIban;
+		return this.codIban;
 	}
 	public void setCodIban(String codIban) {
 		this.codIban = codIban;
 	}
 	public boolean isPostale() {
-		return postale;
+		return this.postale;
 	}
 	public void setPostale(boolean postale) {
 		this.postale = postale;
 	}
 	public boolean isAttivatoObep() {
-		return attivatoObep;
+		return this.attivatoObep;
 	}
 	public void setAttivatoObep(boolean attivatoObep) {
 		this.attivatoObep = attivatoObep;
 	}
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
@@ -62,13 +63,13 @@ public class IbanAccredito extends BasicModel {
 		this.id = id;
 	}
 	public Long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
 	}
 	public String getCodBic() {
-		return codBic;
+		return this.codBic;
 	}
 	public void setCodBic(String codBic) {
 		this.codBic = codBic;

@@ -5,7 +5,7 @@ public class RedirectDaPspDTOResponse {
 	String location = null;
 
 	public String getLocation() {
-		return location;
+		return this.location;
 	}
 
 	public void setLocation(String location) {

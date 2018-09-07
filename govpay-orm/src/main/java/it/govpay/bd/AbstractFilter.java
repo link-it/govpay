@@ -47,9 +47,9 @@ public abstract class AbstractFilter implements IFilter {
 	
 	public AbstractFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		this.expressionConstructor = expressionConstructor;
-		this.filterSortList = new ArrayList<FilterSortWrapper>();
+		this.filterSortList = new ArrayList<>();
 		this.simpleSearch = simpleSearch;
-		this.listaFieldSimpleSearch = new ArrayList<IField>();
+		this.listaFieldSimpleSearch = new ArrayList<>();
 	}
 	
 	private IExpressionConstructor expressionConstructor;
@@ -64,7 +64,7 @@ public abstract class AbstractFilter implements IFilter {
 	protected Boolean searchAbilitato = null;
 
 	public Integer getOffset() {
-		return offset;
+		return this.offset;
 	}
 
 	public void setOffset(Integer offset) {
@@ -72,7 +72,7 @@ public abstract class AbstractFilter implements IFilter {
 	}
 
 	public Integer getLimit() {
-		return limit;
+		return this.limit;
 	}
 
 	public void setLimit(Integer limit) {
@@ -80,7 +80,7 @@ public abstract class AbstractFilter implements IFilter {
 	}
 
 	public List<FilterSortWrapper> getFilterSortList() {
-		return filterSortList;
+		return this.filterSortList;
 	}
 
 	public void setFilterSortList(List<FilterSortWrapper> filterSortList) {
@@ -102,7 +102,7 @@ public abstract class AbstractFilter implements IFilter {
 					exp.addOrder(filterSort.getField(), filterSort.getSortOrder());
 				}
 			} else {
-				FilterSortWrapper filterSort = getDefaultFilterSortWrapper();
+				FilterSortWrapper filterSort = this.getDefaultFilterSortWrapper();
 				exp.addOrder(filterSort.getField(), filterSort.getSortOrder());
 			}
 			
@@ -130,9 +130,9 @@ public abstract class AbstractFilter implements IFilter {
 	@Override
 	public IExpression toExpression() throws ServiceException {
 		if(!this.simpleSearch)
-			return _toExpression();
+			return this._toExpression();
 		else 
-			return _toSimpleSearchExpression();
+			return this._toSimpleSearchExpression();
 	}
 	
 	public abstract IExpression _toExpression() throws ServiceException;
@@ -186,7 +186,7 @@ public abstract class AbstractFilter implements IFilter {
 	
 	protected FilterSortWrapper getDefaultFilterSortWrapper() throws ServiceException {
 		try {
-			CustomField baseField = new CustomField("id", Long.class, "id", getRootTable());
+			CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
 			FilterSortWrapper wrapper = new FilterSortWrapper();
 			wrapper.setField(baseField);
 			wrapper.setSortOrder(SortOrder.ASC);
@@ -209,7 +209,7 @@ public abstract class AbstractFilter implements IFilter {
 	}
 
 	public Boolean getSearchAbilitato() {
-		return searchAbilitato;
+		return this.searchAbilitato;
 	}
 
 	public void setSearchAbilitato(Boolean searchAbilitato) {
@@ -217,7 +217,7 @@ public abstract class AbstractFilter implements IFilter {
 	}
 
 	public boolean isSimpleSearch() {
-		return simpleSearch;
+		return this.simpleSearch;
 	}
 
 	public void setSimpleSearch(boolean simpleSearch) {
@@ -225,7 +225,7 @@ public abstract class AbstractFilter implements IFilter {
 	}
 
 	public String getSimpleSearchString() {
-		return simpleSearchString;
+		return this.simpleSearchString;
 	}
 
 	public void setSimpleSearchString(String simpleSearchString) {
@@ -233,7 +233,7 @@ public abstract class AbstractFilter implements IFilter {
 	}
 
 	public List<IField> getListaFieldSimpleSearch() {
-		return listaFieldSimpleSearch;
+		return this.listaFieldSimpleSearch;
 	}
 
 	public void setListaFieldSimpleSearch(List<IField> listaFieldSimpleSearch) {
@@ -241,7 +241,7 @@ public abstract class AbstractFilter implements IFilter {
 	}
 	
 	protected List<IExpression> getSimpleSearchExpression() throws ServiceException, ExpressionNotImplementedException, ExpressionException, NotImplementedException{
-		List<IExpression> expressions = new ArrayList<IExpression>();
+		List<IExpression> expressions = new ArrayList<>();
 		for (IField field : this.listaFieldSimpleSearch) {
 			IExpression expr = this.newExpression();
 			expr.ilike(field, this.simpleSearchString,LikeMode.ANYWHERE);

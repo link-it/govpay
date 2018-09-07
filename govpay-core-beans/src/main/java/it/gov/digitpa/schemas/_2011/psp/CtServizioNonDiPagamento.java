@@ -58,7 +58,7 @@ public class CtServizioNonDiPagamento {
      *     
      */
     public String getIdentificativoIntermediario() {
-        return identificativoIntermediario;
+        return this.identificativoIntermediario;
     }
 
     /**
@@ -82,7 +82,7 @@ public class CtServizioNonDiPagamento {
      *     
      */
     public String getIdentificativoCanale() {
-        return identificativoCanale;
+        return this.identificativoCanale;
     }
 
     /**
@@ -102,7 +102,7 @@ public class CtServizioNonDiPagamento {
      * 
      */
     public int getCodiceServizioNonDiPagamento() {
-        return codiceServizioNonDiPagamento;
+        return this.codiceServizioNonDiPagamento;
     }
 
     /**

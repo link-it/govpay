@@ -99,8 +99,8 @@ public class FlussoRendicontazione
      * 
      */
     public List<FlussoRendicontazione.Rendicontazione> getRendicontazione() {
-        if (rendicontazione == null) {
-            rendicontazione = new ArrayList<FlussoRendicontazione.Rendicontazione>();
+        if (this.rendicontazione == null) {
+            this.rendicontazione = new ArrayList<>();
         }
         return this.rendicontazione;
     }
@@ -187,7 +187,7 @@ public class FlussoRendicontazione
          *     
          */
         public String getIuv() {
-            return iuv;
+            return this.iuv;
         }
 
         /**
@@ -211,7 +211,7 @@ public class FlussoRendicontazione
          *     
          */
         public String getIur() {
-            return iur;
+            return this.iur;
         }
 
         /**
@@ -235,7 +235,7 @@ public class FlussoRendicontazione
          *     
          */
         public BigDecimal getImportoRendicontato() {
-            return importoRendicontato;
+            return this.importoRendicontato;
         }
 
         /**
@@ -259,7 +259,7 @@ public class FlussoRendicontazione
          *     
          */
         public EsitoRendicontazione getEsito() {
-            return esito;
+            return this.esito;
         }
 
         /**
@@ -283,7 +283,7 @@ public class FlussoRendicontazione
          *     
          */
         public Date getData() {
-            return data;
+            return this.data;
         }
 
         /**
@@ -307,7 +307,7 @@ public class FlussoRendicontazione
          *     
          */
         public StatoRendicontazione getStato() {
-            return stato;
+            return this.stato;
         }
 
         /**
@@ -345,8 +345,8 @@ public class FlussoRendicontazione
          * 
          */
         public List<Anomalia> getAnomalia() {
-            if (anomalia == null) {
-                anomalia = new ArrayList<Anomalia>();
+            if (this.anomalia == null) {
+                this.anomalia = new ArrayList<>();
             }
             return this.anomalia;
         }
@@ -360,7 +360,7 @@ public class FlussoRendicontazione
          *     
          */
         public FlussoRendicontazione.Rendicontazione.Pagamento getPagamento() {
-            return pagamento;
+            return this.pagamento;
         }
 
         /**
@@ -421,7 +421,7 @@ public class FlussoRendicontazione
              *     
              */
             public String getCodApplicazione() {
-                return codApplicazione;
+                return this.codApplicazione;
             }
 
             /**
@@ -445,7 +445,7 @@ public class FlussoRendicontazione
              *     
              */
             public String getCodVersamentoEnte() {
-                return codVersamentoEnte;
+                return this.codVersamentoEnte;
             }
 
             /**
@@ -469,7 +469,7 @@ public class FlussoRendicontazione
              *     
              */
             public String getCodSingoloVersamentoEnte() {
-                return codSingoloVersamentoEnte;
+                return this.codSingoloVersamentoEnte;
             }
 
             /**

@@ -18,43 +18,43 @@ public class RichiestaWebControllerDTO {
 
 
 	public String getIdSessione() {
-		return idSessione;
+		return this.idSessione;
 	}
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
 	}
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
 	public String getAction() {
-		return action;
+		return this.action;
 	}
 	public void setAction(String action) {
 		this.action = action;
 	}
 	public String getType() {
-		return type;
+		return this.type;
 	}
 	public void setType(String type) {
 		this.type = type;
 	}
 	public String getWispDominio() {
-		return wispDominio;
+		return this.wispDominio;
 	}
 	public void setWispDominio(String wispDominio) {
 		this.wispDominio = wispDominio;
 	}
 	public String getWispKeyPA() {
-		return wispKeyPA;
+		return this.wispKeyPA;
 	}
 	public void setWispKeyPA(String wispKeyPA) {
 		this.wispKeyPA = wispKeyPA;
 	}
 	public String getWispKeyWisp() {
-		return wispKeyWisp;
+		return this.wispKeyWisp;
 	}
 	public void setWispKeyWisp(String wispKeyWisp) {
 		this.wispKeyWisp = wispKeyWisp;
@@ -67,7 +67,7 @@ public class RichiestaWebControllerDTO {
 	
 	public void setParametriBody (List<NameValuePair> parametriBody) {
 		if(parametriBody != null && parametriBody.size() > 0) {
-			Map<String, String> map = new HashMap<String, String>();
+			Map<String, String> map = new HashMap<>();
 			for (NameValuePair nameValuePair : parametriBody) {
 				map.put(nameValuePair.getName(), nameValuePair.getValue());
 			}

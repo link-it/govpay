@@ -56,7 +56,7 @@ public enum StatoTransazione {
     RT_ESITO_SCONOSCIUTO_PA;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StatoTransazione fromValue(String v) {

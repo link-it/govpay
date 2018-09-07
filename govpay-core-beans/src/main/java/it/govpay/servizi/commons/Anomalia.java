@@ -45,7 +45,7 @@ public class Anomalia {
      *     
      */
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     /**
@@ -69,7 +69,7 @@ public class Anomalia {
      *     
      */
     public String getCodice() {
-        return codice;
+        return this.codice;
     }
 
     /**

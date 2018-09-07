@@ -15,7 +15,7 @@ public class PutUnitaOperativaDTO extends BasicCreateRequestDTO  {
 	}
 
 	public UnitaOperativa getUo() {
-		return uo;
+		return this.uo;
 	}
 
 	public void setUo(UnitaOperativa uo) {
@@ -23,7 +23,7 @@ public class PutUnitaOperativaDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdUo() {
-		return idUo;
+		return this.idUo;
 	}
 
 	public void setIdUo(String idUo) {
@@ -31,7 +31,7 @@ public class PutUnitaOperativaDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(String idDominio) {

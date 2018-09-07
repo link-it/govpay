@@ -49,6 +49,6 @@ public class Canale extends it.govpay.model.Canale {
 	private transient Psp psp;
 	
 	public Psp getPsp() {
-		return psp;
+		return this.psp;
 	}
 }

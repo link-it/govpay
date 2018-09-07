@@ -194,7 +194,7 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getRRFieldConverter().toTable(RR.model()));
 		boolean isUpdate_rr = true;
-		java.util.List<JDBCObject> lstObjects_rr = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_rr = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().COD_DOMINIO,false), "?");
 		lstObjects_rr.add(new JDBCObject(rr.getCodDominio(), RR.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().IUV,false), "?");
@@ -275,7 +275,7 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRRFieldConverter().toTable(RR.model()), 
@@ -286,7 +286,7 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRRFieldConverter().toTable(RR.model()), 
@@ -297,7 +297,7 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRRFieldConverter().toTable(RR.model()), 

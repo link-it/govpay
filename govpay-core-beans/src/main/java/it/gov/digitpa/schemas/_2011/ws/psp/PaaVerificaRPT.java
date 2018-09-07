@@ -44,7 +44,7 @@ public class PaaVerificaRPT {
      *     
      */
     public String getIdentificativoPSP() {
-        return identificativoPSP;
+        return this.identificativoPSP;
     }
 
     /**

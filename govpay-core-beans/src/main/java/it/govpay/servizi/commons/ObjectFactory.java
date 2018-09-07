@@ -205,7 +205,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.govpay.it/servizi/commons/", name = "metaInfo")
     public JAXBElement<MetaInfo> createMetaInfo(MetaInfo value) {
-        return new JAXBElement<MetaInfo>(_MetaInfo_QNAME, MetaInfo.class, null, value);
+        return new JAXBElement<>(_MetaInfo_QNAME, MetaInfo.class, null, value);
     }
 
     /**
@@ -214,7 +214,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "codApplicazione", scope = VersamentoKey.class)
     public JAXBElement<String> createVersamentoKeyCodApplicazione(String value) {
-        return new JAXBElement<String>(_VersamentoKeyCodApplicazione_QNAME, String.class, VersamentoKey.class, value);
+        return new JAXBElement<>(_VersamentoKeyCodApplicazione_QNAME, String.class, VersamentoKey.class, value);
     }
 
     /**
@@ -223,7 +223,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "codVersamentoEnte", scope = VersamentoKey.class)
     public JAXBElement<String> createVersamentoKeyCodVersamentoEnte(String value) {
-        return new JAXBElement<String>(_VersamentoKeyCodVersamentoEnte_QNAME, String.class, VersamentoKey.class, value);
+        return new JAXBElement<>(_VersamentoKeyCodVersamentoEnte_QNAME, String.class, VersamentoKey.class, value);
     }
 
     /**
@@ -232,7 +232,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "codDominio", scope = VersamentoKey.class)
     public JAXBElement<String> createVersamentoKeyCodDominio(String value) {
-        return new JAXBElement<String>(_VersamentoKeyCodDominio_QNAME, String.class, VersamentoKey.class, value);
+        return new JAXBElement<>(_VersamentoKeyCodDominio_QNAME, String.class, VersamentoKey.class, value);
     }
 
     /**
@@ -241,7 +241,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "codUnivocoDebitore", scope = VersamentoKey.class)
     public JAXBElement<String> createVersamentoKeyCodUnivocoDebitore(String value) {
-        return new JAXBElement<String>(_VersamentoKeyCodUnivocoDebitore_QNAME, String.class, VersamentoKey.class, value);
+        return new JAXBElement<>(_VersamentoKeyCodUnivocoDebitore_QNAME, String.class, VersamentoKey.class, value);
     }
 
     /**
@@ -250,7 +250,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "bundlekey", scope = VersamentoKey.class)
     public JAXBElement<String> createVersamentoKeyBundlekey(String value) {
-        return new JAXBElement<String>(_VersamentoKeyBundlekey_QNAME, String.class, VersamentoKey.class, value);
+        return new JAXBElement<>(_VersamentoKeyBundlekey_QNAME, String.class, VersamentoKey.class, value);
     }
 
     /**
@@ -259,7 +259,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "iuv", scope = VersamentoKey.class)
     public JAXBElement<String> createVersamentoKeyIuv(String value) {
-        return new JAXBElement<String>(_VersamentoKeyIuv_QNAME, String.class, VersamentoKey.class, value);
+        return new JAXBElement<>(_VersamentoKeyIuv_QNAME, String.class, VersamentoKey.class, value);
     }
 
 }

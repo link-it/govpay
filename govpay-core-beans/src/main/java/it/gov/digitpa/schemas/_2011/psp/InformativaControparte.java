@@ -81,7 +81,7 @@ public class InformativaControparte {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**
@@ -105,7 +105,7 @@ public class InformativaControparte {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -129,7 +129,7 @@ public class InformativaControparte {
      *     
      */
     public String getRagioneSociale() {
-        return ragioneSociale;
+        return this.ragioneSociale;
     }
 
     /**
@@ -153,7 +153,7 @@ public class InformativaControparte {
      *     
      */
     public Date getDataPubblicazione() {
-        return dataPubblicazione;
+        return this.dataPubblicazione;
     }
 
     /**
@@ -177,7 +177,7 @@ public class InformativaControparte {
      *     
      */
     public Date getDataInizioValidita() {
-        return dataInizioValidita;
+        return this.dataInizioValidita;
     }
 
     /**
@@ -197,7 +197,7 @@ public class InformativaControparte {
      * 
      */
     public int getPagamentiPressoPSP() {
-        return pagamentiPressoPSP;
+        return this.pagamentiPressoPSP;
     }
 
     /**
@@ -217,7 +217,7 @@ public class InformativaControparte {
      *     
      */
     public CtErogazioneServizio getErogazioneServizio() {
-        return erogazioneServizio;
+        return this.erogazioneServizio;
     }
 
     /**

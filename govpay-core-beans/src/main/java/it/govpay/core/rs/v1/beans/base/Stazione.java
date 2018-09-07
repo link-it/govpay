@@ -25,7 +25,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String idStazione = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<DominioIndex>();
+  private List<DominioIndex> domini = new ArrayList<>();
   
   /**
    * Ragione sociale dell'intermediario PagoPA
@@ -37,7 +37,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("password")
   public String getPassword() {
-    return password;
+    return this.password;
   }
   public void setPassword(String password) {
     this.password = password;
@@ -53,7 +53,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -69,7 +69,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idStazione")
   public String getIdStazione() {
-    return idStazione;
+    return this.idStazione;
   }
   public void setIdStazione(String idStazione) {
     this.idStazione = idStazione;
@@ -84,7 +84,7 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("domini")
   public List<DominioIndex> getDomini() {
-    return domini;
+    return this.domini;
   }
   public void setDomini(List<DominioIndex> domini) {
     this.domini = domini;
@@ -95,23 +95,23 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Stazione stazione = (Stazione) o;
-    return Objects.equals(password, stazione.password) &&
-        Objects.equals(abilitato, stazione.abilitato) &&
-        Objects.equals(idStazione, stazione.idStazione) &&
-        Objects.equals(domini, stazione.domini);
+    return Objects.equals(this.password, stazione.password) &&
+        Objects.equals(this.abilitato, stazione.abilitato) &&
+        Objects.equals(this.idStazione, stazione.idStazione) &&
+        Objects.equals(this.domini, stazione.domini);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(password, abilitato, idStazione, domini);
+    return Objects.hash(this.password, this.abilitato, this.idStazione, this.domini);
   }
 
   public static Stazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Stazione) parse(json, Stazione.class);
+    return parse(json, Stazione.class);
   }
 
   @Override
@@ -124,10 +124,10 @@ public class Stazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Stazione {\n");
     
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    idStazione: ").append(toIndentedString(idStazione)).append("\n");
-    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    idStazione: ").append(this.toIndentedString(this.idStazione)).append("\n");
+    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
     sb.append("}");
     return sb.toString();
   }

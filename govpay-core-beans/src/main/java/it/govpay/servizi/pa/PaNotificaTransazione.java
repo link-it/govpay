@@ -58,7 +58,7 @@ public class PaNotificaTransazione {
      *     
      */
     public String getCodSessionePortale() {
-        return codSessionePortale;
+        return this.codSessionePortale;
     }
 
     /**
@@ -82,7 +82,7 @@ public class PaNotificaTransazione {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -106,7 +106,7 @@ public class PaNotificaTransazione {
      *     
      */
     public String getCodVersamentoEnte() {
-        return codVersamentoEnte;
+        return this.codVersamentoEnte;
     }
 
     /**
@@ -130,7 +130,7 @@ public class PaNotificaTransazione {
      *     
      */
     public Transazione getTransazione() {
-        return transazione;
+        return this.transazione;
     }
 
     /**

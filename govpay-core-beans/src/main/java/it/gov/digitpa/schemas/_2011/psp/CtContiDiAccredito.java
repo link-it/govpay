@@ -73,8 +73,8 @@ public class CtContiDiAccredito {
      * 
      */
     public List<Object> getIbanAccreditosAndInfoContoDiAccreditoPairs() {
-        if (ibanAccreditosAndInfoContoDiAccreditoPairs == null) {
-            ibanAccreditosAndInfoContoDiAccreditoPairs = new ArrayList<Object>();
+        if (this.ibanAccreditosAndInfoContoDiAccreditoPairs == null) {
+            this.ibanAccreditosAndInfoContoDiAccreditoPairs = new ArrayList<>();
         }
         return this.ibanAccreditosAndInfoContoDiAccreditoPairs;
     }

@@ -72,7 +72,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public CtIdentificativoUnivoco getIdentificativoUnivocoMittente() {
-        return identificativoUnivocoMittente;
+        return this.identificativoUnivocoMittente;
     }
 
     /**
@@ -96,7 +96,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getDenominazioneMittente() {
-        return denominazioneMittente;
+        return this.denominazioneMittente;
     }
 
     /**
@@ -120,7 +120,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getCodiceUnitOperMittente() {
-        return codiceUnitOperMittente;
+        return this.codiceUnitOperMittente;
     }
 
     /**
@@ -144,7 +144,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getDenomUnitOperMittente() {
-        return denomUnitOperMittente;
+        return this.denomUnitOperMittente;
     }
 
     /**
@@ -168,7 +168,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getIndirizzoMittente() {
-        return indirizzoMittente;
+        return this.indirizzoMittente;
     }
 
     /**
@@ -192,7 +192,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getCivicoMittente() {
-        return civicoMittente;
+        return this.civicoMittente;
     }
 
     /**
@@ -216,7 +216,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getCapMittente() {
-        return capMittente;
+        return this.capMittente;
     }
 
     /**
@@ -240,7 +240,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getLocalitaMittente() {
-        return localitaMittente;
+        return this.localitaMittente;
     }
 
     /**
@@ -264,7 +264,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getProvinciaMittente() {
-        return provinciaMittente;
+        return this.provinciaMittente;
     }
 
     /**
@@ -288,7 +288,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getNazioneMittente() {
-        return nazioneMittente;
+        return this.nazioneMittente;
     }
 
     /**

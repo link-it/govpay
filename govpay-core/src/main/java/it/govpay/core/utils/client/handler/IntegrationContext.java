@@ -9,13 +9,13 @@ public class IntegrationContext {
 	private Applicazione applicazione;
 	
 	public byte[] getMsg() {
-		return msg;
+		return this.msg;
 	}
 	public void setMsg(byte[] msg) {
 		this.msg = msg;
 	}
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 	public void setApplicazione(Applicazione applicazione) {
 		this.applicazione = applicazione;

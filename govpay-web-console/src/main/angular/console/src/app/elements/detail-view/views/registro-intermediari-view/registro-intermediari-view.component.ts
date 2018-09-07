@@ -62,8 +62,8 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
     if(this.json.servizioPagoPa) {
       _dettaglio.connettori.push(new Dato({ label: Voce.URL, value: this.json.servizioPagoPa.url }));
       if(this.json.servizioPagoPa.auth) {
-        _dettaglio.connettori.push(new Dato({ label: Voce.TIPO_AUTH, value: '' }));
         if(this.json.servizioPagoPa.auth.username) {
+          _dettaglio.connettori.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.BASIC }));
           _dettaglio.connettori.push(new Dato({label: Voce.USERNAME, value: this.json.servizioPagoPa.auth.username }));
           _dettaglio.connettori.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioPagoPa.auth.password }));
         }
@@ -78,6 +78,8 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
             _dettaglio.connettori.push(new Dato({label: Voce.TRUST_STORE_PWD, value: this.json.servizioPagoPa.auth.tsPassword }));
           }
         }
+      } else {
+        _dettaglio.connettori.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
       }
     }
     this.elencoStazioni();
@@ -175,8 +177,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
           }
         break;
         case UtilService.INTERMEDIARIO:
-          this.json = json;
-          this.mapJsonDetail();
+          this.dettaglioRegistroIntermediari();
         break;
       }
     }

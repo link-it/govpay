@@ -139,7 +139,7 @@ public class RptBD extends BasicBD {
 	 */
 	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl) throws NotFoundException, ServiceException{
 		try {
-			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato!= null) 
 				lstUpdateFields.add(new UpdateField(RPT.model().STATO, stato.toString()));
 			lstUpdateFields.add(new UpdateField(RPT.model().DESCRIZIONE_STATO, descrizione));
@@ -206,7 +206,7 @@ public class RptBD extends BasicBD {
 
 	public List<Rpt> findAll(RptFilter filter) throws ServiceException {
 		try {
-			List<Rpt> rptLst = new ArrayList<Rpt>();
+			List<Rpt> rptLst = new ArrayList<>();
 			List<it.govpay.orm.RPT> rptVOLst = this.getRptService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.RPT rptVO: rptVOLst) {
 				rptLst.add(RptConverter.toDTO(rptVO));

@@ -28,10 +28,10 @@ public class GeneraIuvDTOResponse {
     private List<Iuv> iuvGenerato;
 
 	public List<Iuv> getIuvGenerato() {
-		if (iuvGenerato == null) {
-			iuvGenerato = new ArrayList<Iuv>();
+		if (this.iuvGenerato == null) {
+			this.iuvGenerato = new ArrayList<>();
         }
-		return iuvGenerato;
+		return this.iuvGenerato;
 	}
 
 }

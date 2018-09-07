@@ -54,8 +54,9 @@ public class Rr extends BasicModel{
 	private String idTransazioneRr;
 	private String idTransazioneEr;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
@@ -63,7 +64,7 @@ public class Rr extends BasicModel{
 	}
 
 	public long getIdRpt() {
-		return idRpt;
+		return this.idRpt;
 	}
 
 	public void setIdRpt(long idRpt) {
@@ -71,7 +72,7 @@ public class Rr extends BasicModel{
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -79,7 +80,7 @@ public class Rr extends BasicModel{
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -87,7 +88,7 @@ public class Rr extends BasicModel{
 	}
 
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 
 	public void setCcp(String ccp) {
@@ -95,7 +96,7 @@ public class Rr extends BasicModel{
 	}
 
 	public String getCodMsgRevoca() {
-		return codMsgRevoca;
+		return this.codMsgRevoca;
 	}
 
 	public void setCodMsgRevoca(String codMsgRevoca) {
@@ -103,7 +104,7 @@ public class Rr extends BasicModel{
 	}
 
 	public Date getDataMsgRevoca() {
-		return dataMsgRevoca;
+		return this.dataMsgRevoca;
 	}
 
 	public void setDataMsgRevoca(Date dataMsgRevoca) {
@@ -111,7 +112,7 @@ public class Rr extends BasicModel{
 	}
 
 	public BigDecimal getImportoTotaleRichiesto() {
-		return importoTotaleRichiesto;
+		return this.importoTotaleRichiesto;
 	}
 
 	public void setImportoTotaleRichiesto(BigDecimal importoTotaleRichiesto) {
@@ -119,7 +120,7 @@ public class Rr extends BasicModel{
 	}
 
 	public StatoRr getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(StatoRr stato) {
@@ -127,7 +128,7 @@ public class Rr extends BasicModel{
 	}
 
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 
 	public void setDescrizioneStato(String descrizioneStato) {
@@ -135,7 +136,7 @@ public class Rr extends BasicModel{
 	}
 
 	public String getCodMsgEsito() {
-		return codMsgEsito;
+		return this.codMsgEsito;
 	}
 
 	public void setCodMsgEsito(String codMsgEsito) {
@@ -143,7 +144,7 @@ public class Rr extends BasicModel{
 	}
 
 	public Date getDataMsgEsito() {
-		return dataMsgEsito;
+		return this.dataMsgEsito;
 	}
 
 	public void setDataMsgEsito(Date dataMsgEsito) {
@@ -151,7 +152,7 @@ public class Rr extends BasicModel{
 	}
 
 	public BigDecimal getImportoTotaleRevocato() {
-		return importoTotaleRevocato;
+		return this.importoTotaleRevocato;
 	}
 
 	public void setImportoTotaleRevocato(BigDecimal importoTotaleRevocato) {
@@ -159,7 +160,7 @@ public class Rr extends BasicModel{
 	}
 
 	public byte[] getXmlRr() {
-		return xmlRr;
+		return this.xmlRr;
 	}
 
 	public void setXmlRr(byte[] xmlRr) {
@@ -167,7 +168,7 @@ public class Rr extends BasicModel{
 	}
 
 	public byte[] getXmlEr() {
-		return xmlEr;
+		return this.xmlEr;
 	}
 
 	public void setXmlEr(byte[] xmlEr) {
@@ -175,7 +176,7 @@ public class Rr extends BasicModel{
 	}
 	
 	public String getIdTransazioneRr() {
-		return idTransazioneRr;
+		return this.idTransazioneRr;
 	}
 
 	public void setIdTransazioneRr(String idTransazioneRr) {
@@ -183,7 +184,7 @@ public class Rr extends BasicModel{
 	}
 
 	public String getIdTransazioneEr() {
-		return idTransazioneEr;
+		return this.idTransazioneEr;
 	}
 
 	public void setIdTransazioneEr(String idTransazioneEr) {

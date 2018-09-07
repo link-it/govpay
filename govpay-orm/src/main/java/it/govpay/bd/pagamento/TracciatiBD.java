@@ -31,7 +31,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.TracciatoConverter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.model.Tracciato;
+import it.govpay.bd.model.Tracciato;
 import it.govpay.orm.IdTracciato;
 import it.govpay.orm.dao.jdbc.JDBCTracciatoServiceSearch;
 
@@ -105,7 +105,7 @@ public class TracciatiBD extends BasicBD {
 
 	public List<Tracciato> findAll(TracciatoFilter filter) throws ServiceException {
 		try {
-			List<Tracciato> lst = new ArrayList<Tracciato>();
+			List<Tracciato> lst = new ArrayList<>();
 			List<it.govpay.orm.Tracciato> lstTracciatoVO = this.getTracciatoService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Tracciato tracciatoVO: lstTracciatoVO) {
 				lst.add(TracciatoConverter.toDTO(tracciatoVO));

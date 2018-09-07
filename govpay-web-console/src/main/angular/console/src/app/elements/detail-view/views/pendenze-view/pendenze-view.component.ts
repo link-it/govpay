@@ -208,7 +208,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
   refresh(mb: ModalBehavior) {
     this.modified = false;
     if(mb && mb.info && mb.info.viewModel) {
-      this.modified = true;
       let _service = UtilService.URL_PENDENZE+'/'+this.json.idA2A+'/'+this.json.idPendenza;
       let _json = [
         { op: mb.operation, path: '/stato', value: mb.info.viewModel.stato },
@@ -217,6 +216,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       this.gps.saveData(_service, _json, null, UtilService.METHODS.PATCH).subscribe(
         (response) => {
           if(mb.editMode && mb.info.templateName == UtilService.PENDENZA) {
+            this.json = response.body;
+            this.modified = true;
             this.mapJsonDetail(response.body);
           }
           this.gps.updateSpinner(false);

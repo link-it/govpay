@@ -95,3 +95,42 @@ end;
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('esito-avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
 
+CREATE SEQUENCE seq_operazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE operazioni
+(
+        tipo_operazione VARCHAR2(16 CHAR) NOT NULL,
+        linea_elaborazione NUMBER NOT NULL,
+        stato VARCHAR2(16 CHAR) NOT NULL,
+        dati_richiesta BLOB NOT NULL,
+        dati_risposta BLOB,
+        dettaglio_esito VARCHAR2(255 CHAR),
+        cod_versamento_ente VARCHAR2(255 CHAR),
+        cod_dominio VARCHAR2(35 CHAR),
+        iuv VARCHAR2(35 CHAR),
+        trn VARCHAR2(35 CHAR),
+        -- fk/pk columns
+        id NUMBER NOT NULL,
+        id_tracciato NUMBER NOT NULL,
+        id_applicazione NUMBER,
+        -- fk/pk keys constraints
+        CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+        CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+        CONSTRAINT pk_operazioni PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_operazioni
+BEFORE
+insert on operazioni
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_operazioni.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+

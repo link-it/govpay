@@ -54,7 +54,7 @@ public class Canale {
      *     
      */
     public String getCodPsp() {
-        return codPsp;
+        return this.codPsp;
     }
 
     /**
@@ -78,7 +78,7 @@ public class Canale {
      *     
      */
     public String getCodCanale() {
-        return codCanale;
+        return this.codCanale;
     }
 
     /**
@@ -102,7 +102,7 @@ public class Canale {
      *     
      */
     public TipoVersamento getTipoVersamento() {
-        return tipoVersamento;
+        return this.tipoVersamento;
     }
 
     /**

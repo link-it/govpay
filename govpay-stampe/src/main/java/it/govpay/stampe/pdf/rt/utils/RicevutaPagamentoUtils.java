@@ -237,7 +237,7 @@ public class RicevutaPagamentoUtils {
 //	}
 	
 	public static List<String> getPdfRicevutaPagamento(RicevutaPagamento ricevuta, OutputStream osAPPdf, Logger log) throws Exception {
-		List<String> msgs = new ArrayList<String>();
+		List<String> msgs = new ArrayList<>();
 		try{
 			// 1. Prelevo le properties
 			String codDominio = ricevuta.getDominioCreditore().getCodDominio();

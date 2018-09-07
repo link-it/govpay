@@ -26,7 +26,7 @@ public class TipoAutenticazioneBasic extends it.govpay.core.rs.v1.beans.JSONSeri
 
   @JsonProperty("username")
   public String getUsername() {
-    return username;
+    return this.username;
   }
   public void setUsername(String username) {
     this.username = username;
@@ -41,7 +41,7 @@ public class TipoAutenticazioneBasic extends it.govpay.core.rs.v1.beans.JSONSeri
 
   @JsonProperty("password")
   public String getPassword() {
-    return password;
+    return this.password;
   }
   public void setPassword(String password) {
     this.password = password;
@@ -52,21 +52,21 @@ public class TipoAutenticazioneBasic extends it.govpay.core.rs.v1.beans.JSONSeri
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     TipoAutenticazioneBasic tipoAutenticazioneBasic = (TipoAutenticazioneBasic) o;
-    return Objects.equals(username, tipoAutenticazioneBasic.username) &&
-        Objects.equals(password, tipoAutenticazioneBasic.password);
+    return Objects.equals(this.username, tipoAutenticazioneBasic.username) &&
+        Objects.equals(this.password, tipoAutenticazioneBasic.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(username, password);
+    return Objects.hash(this.username, this.password);
   }
 
   public static TipoAutenticazioneBasic parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (TipoAutenticazioneBasic) parse(json, TipoAutenticazioneBasic.class);
+    return parse(json, TipoAutenticazioneBasic.class);
   }
 
   @Override
@@ -79,8 +79,8 @@ public class TipoAutenticazioneBasic extends it.govpay.core.rs.v1.beans.JSONSeri
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneBasic {\n");
     
-    sb.append("    username: ").append(toIndentedString(username)).append("\n");
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("    username: ").append(this.toIndentedString(this.username)).append("\n");
+    sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
     sb.append("}");
     return sb.toString();
   }

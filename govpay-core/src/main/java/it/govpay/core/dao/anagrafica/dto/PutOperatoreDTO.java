@@ -18,7 +18,7 @@ public class PutOperatoreDTO extends BasicCreateRequestDTO  {
 	}
 
 	public Operatore getOperatore() {
-		return operatore;
+		return this.operatore;
 	}
 
 	public void setOperatore(Operatore operatore) {
@@ -26,7 +26,7 @@ public class PutOperatoreDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 
 	public void setPrincipal(String principal) {
@@ -34,7 +34,7 @@ public class PutOperatoreDTO extends BasicCreateRequestDTO  {
 	}
 
 	public List<String> getIdTributi() {
-		return idTributi;
+		return this.idTributi;
 	}
 
 	public void setIdTributi(List<String> idTributi) {
@@ -42,7 +42,7 @@ public class PutOperatoreDTO extends BasicCreateRequestDTO  {
 	}
 
 	public List<String> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<String> idDomini) {

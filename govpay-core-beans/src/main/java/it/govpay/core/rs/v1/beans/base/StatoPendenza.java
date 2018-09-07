@@ -41,7 +41,7 @@ public enum StatoPendenza {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(value);
+    return String.valueOf(this.value);
   }
 
   public static StatoPendenza fromValue(String text) {

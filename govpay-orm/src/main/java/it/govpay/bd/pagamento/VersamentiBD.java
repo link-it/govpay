@@ -179,7 +179,7 @@ public class VersamentiBD extends BasicBD {
 	 */
 	public void insertVersamento(Versamento versamento) throws ServiceException{
 		try {
-			if(isAutoCommit())
+			if(this.isAutoCommit())
 				throw new ServiceException("L'operazione insertVersamento deve essere completata in transazione singola");
 
 			String nextAvvisatura = this.getNextAvvisatura(versamento.getUo(this).getDominio(this).getCodDominio());
@@ -221,10 +221,10 @@ public class VersamentiBD extends BasicBD {
 
 	public void updateVersamento(Versamento versamento, boolean deep) throws NotFoundException, ServiceException {
 		try {
-			if(deep && isAutoCommit())
+			if(deep && this.isAutoCommit())
 				throw new ServiceException("L'operazione updateVersamento deve essere completata in transazione singola");
 
-			updateVersamento(versamento);
+			this.updateVersamento(versamento);
 
 			if(deep) {
 				for(SingoloVersamento singolo: versamento.getSingoliVersamenti(this)) {
@@ -244,7 +244,7 @@ public class VersamentiBD extends BasicBD {
 			IdVersamento idVO = new IdVersamento();
 			idVO.setId(idVersamento);
 
-			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, statoVersamento.toString()));
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DESCRIZIONE_STATO, descrizioneStato));
 
@@ -302,7 +302,7 @@ public class VersamentiBD extends BasicBD {
 
 	public int updateConLimit(long idDominio, long idTracciato, long limit) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 			lstReturnType.add(Long.class);
 			String nativeUpdate = NativeQueries.getInstance().getUpdateVersamentiPerDominioConLimit();
 			log.info("NATIVE: "+ nativeUpdate);
@@ -319,7 +319,7 @@ public class VersamentiBD extends BasicBD {
 
 	public List<Versamento> findAll(VersamentoFilter filter) throws ServiceException {
 		try {
-			List<Versamento> versamentoLst = new ArrayList<Versamento>();
+			List<Versamento> versamentoLst = new ArrayList<>();
 
 			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
 
@@ -383,7 +383,7 @@ public class VersamentiBD extends BasicBD {
 			IdSingoloVersamento idVO = new IdSingoloVersamento();
 			idVO.setId(idVersamento);
 
-			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO, statoSingoloVersamento.toString()));
 
 			this.getSingoloVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
@@ -407,7 +407,7 @@ public class VersamentiBD extends BasicBD {
 				versamento.setStatoVersamento(StatoVersamento.ANNULLATO);
 				versamento.setDescrizioneStato(descrizioneStato); 
 				this.updateVersamento(versamento);
-				emitAudit(versamento);
+				this.emitAudit(versamento);
 				return;
 			}
 			// Se non è ne ANNULLATO ne NON_ESEGUITO non lo posso annullare
@@ -416,7 +416,7 @@ public class VersamentiBD extends BasicBD {
 			// Versamento inesistente
 			throw new VersamentoException(versamento.getCodVersamentoEnte(),VersamentoException.VER_008);
 		} catch (Exception e) {
-			rollback();
+			this.rollback();
 			if(e instanceof ServiceException)
 				throw (ServiceException) e;
 			else if(e instanceof VersamentoException)
@@ -441,11 +441,11 @@ public class VersamentiBD extends BasicBD {
 			java.sql.Connection con = null; 
 
 			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
-			if(!isAutoCommit()) {
+			if(!this.isAutoCommit()) {
 				bd = BasicBD.newInstance(this.getIdTransaction());
 				con = bd.getConnection();
 			} else {
-				con = getConnection();
+				con = this.getConnection();
 			}
 
 			return ""+serialGenerator.buildIDAsNumber(params, con, this.getJdbcProperties().getDatabase(), log);

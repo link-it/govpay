@@ -37,10 +37,10 @@ public class IbanAccredito extends it.govpay.model.IbanAccredito {
 	private transient Dominio dominio;
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
-		if(dominio == null) {
-			dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+		if(this.dominio == null) {
+			this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
 		} 
-		return dominio;
+		return this.dominio;
 	}
 	
 }

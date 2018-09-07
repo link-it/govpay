@@ -31,7 +31,7 @@ import java.util.Map;
 public class UrlUtils {
 	
 	private static Map<String, List<String>> splitQuery(URL url) throws UnsupportedEncodingException {
-		final Map<String, List<String>> query_pairs = new LinkedHashMap<String, List<String>>();
+		final Map<String, List<String>> query_pairs = new LinkedHashMap<>();
 		final String[] pairs = url.getQuery().split("&");
 		for (String pair : pairs) {
 			final int idx = pair.indexOf("=");

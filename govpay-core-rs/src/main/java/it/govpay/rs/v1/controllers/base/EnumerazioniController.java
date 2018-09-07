@@ -1,6 +1,7 @@
 package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class EnumerazioniController extends BaseController {
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -47,17 +48,17 @@ public class EnumerazioniController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
-			List<String> results = new ArrayList<String>();
+			List<String> results = new ArrayList<>();
 			
 			for(ServizioEnum serv: ServizioEnum.values()) {
 				results.add(serv.toString());
 			}
 
-			this.logResponse(uriInfo, httpHeaders, methodName, toJsonArray(results), 200);
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(toJsonArray(results)),transactionId).build();
+			this.logResponse(uriInfo, httpHeaders, methodName, this.toJsonArray(results), 200);
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(this.toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -70,7 +71,7 @@ public class EnumerazioniController extends BaseController {
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -78,19 +79,19 @@ public class EnumerazioniController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
-			List<String> results = new ArrayList<String>();
+			List<String> results = new ArrayList<>();
 			
 			for(VersioneApiEnum serv: VersioneApiEnum.values()) {
 				results.add(serv.toString());
 			}
 
-			this.logResponse(uriInfo, httpHeaders, methodName, toJsonArray(results), 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, this.toJsonArray(results), 200);
 			
 			
-			this.log.info("Esecuzione " + methodName + " completata."); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(toJsonArray(results)),transactionId).build();
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(this.toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

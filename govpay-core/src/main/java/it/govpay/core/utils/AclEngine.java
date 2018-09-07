@@ -109,7 +109,7 @@ public class AclEngine {
 	}
 	
 	public static boolean isAuthorized(IAutorizzato user, Servizio servizio, Diritti diritto) {
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritto);
 		return isAuthorized(user, servizio, listaDiritti);
 	}
@@ -157,25 +157,25 @@ public class AclEngine {
 	}
 	
 	public static List<Long> getIdDominiAutorizzati(Utenza utenza, Servizio servizio, Diritti diritto) {
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritto);
 		return getIdDominiAutorizzati(utenza, servizio, listaDiritti);
 	}
 	
 	public static List<String> getDominiAutorizzati(Utenza utenza, Servizio servizio, Diritti diritto) {
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritto);
 		return getDominiAutorizzati(utenza, servizio, listaDiritti);
 	}
 
 	public static List<String> getTributiAutorizzati(Utenza utenza, Servizio servizio, Diritti diritto) {
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritto);
 		return getTributiAutorizzati(utenza, servizio, listaDiritti);
 	}
 
 	public static List<Long> getIdTributiAutorizzati(Utenza utenza, Servizio servizio, Diritti diritto) {
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritto);
 		return getIdTributiAutorizzati(utenza, servizio, listaDiritti);
 	}

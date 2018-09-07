@@ -53,7 +53,7 @@ public class GpResponse {
      *     
      */
     public String getCodOperazione() {
-        return codOperazione;
+        return this.codOperazione;
     }
 
     /**
@@ -77,7 +77,7 @@ public class GpResponse {
      *     
      */
     public EsitoOperazione getCodEsitoOperazione() {
-        return codEsitoOperazione;
+        return this.codEsitoOperazione;
     }
 
     /**
@@ -101,7 +101,7 @@ public class GpResponse {
      *     
      */
     public String getDescrizioneEsitoOperazione() {
-        return descrizioneEsitoOperazione;
+        return this.descrizioneEsitoOperazione;
     }
 
     /**

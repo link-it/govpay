@@ -47,7 +47,7 @@ public class CtDominio {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -71,7 +71,7 @@ public class CtDominio {
      *     
      */
     public String getIdentificativoStazioneRichiedente() {
-        return identificativoStazioneRichiedente;
+        return this.identificativoStazioneRichiedente;
     }
 
     /**

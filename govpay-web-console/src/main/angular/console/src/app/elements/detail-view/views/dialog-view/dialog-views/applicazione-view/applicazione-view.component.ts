@@ -149,7 +149,7 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
     _json.codificaAvvisi = {
       codificaIuv: (_info['codificaIuv_ctrl'])?_info['codificaIuv_ctrl']:null,
       regExpIuv: (_info['regExpIuv_ctrl'])?_info['regExpIuv_ctrl']:null,
-      generazioneIuvInterna: (_info['generazioneIuvInterna_ctrl'])?_info['generazioneIuvInterna_ctrl']:null
+      generazioneIuvInterna: (_info['generazioneIuvInterna_ctrl'])?_info['generazioneIuvInterna_ctrl']:false
     };
     this.services.forEach((item, index) => {
       _json[item.property] = {

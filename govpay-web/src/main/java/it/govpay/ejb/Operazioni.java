@@ -78,5 +78,30 @@ public class Operazioni{
     public static String esitoAvvisaturaDigitale(){
 		return it.govpay.core.business.Operazioni.esitoAvvisaturaDigitale("Batch");
 	}
+	
+	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
+	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
+	public static String elaborazioneTracciati(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+
+		if(!it.govpay.core.business.Operazioni.getEseguiElaborazioneTracciati()) {
+			return "";
+		}
+		String esito = it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
+		
+		it.govpay.core.business.Operazioni.resetEseguiElaborazioneTracciati();
+		return esito;
+	}
+
+	@Schedule(hour="*", minute="*/30", persistent=false)
+	@AccessTimeout(value=1, unit=TimeUnit.HOURS)
+	public static String recuperoTracciatiPendentiSchedule(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		return it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
+	}
 
 }

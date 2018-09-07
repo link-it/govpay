@@ -24,7 +24,7 @@ private static final long serialVersionUID = 1L;
 
 
 	public Utenza getUtenza() {
-		return utenza;
+		return this.utenza;
 	}
 
 

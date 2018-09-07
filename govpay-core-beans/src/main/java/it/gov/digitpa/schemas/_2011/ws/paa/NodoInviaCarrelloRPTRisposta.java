@@ -53,7 +53,7 @@ public class NodoInviaCarrelloRPTRisposta
      *     
      */
     public String getEsitoComplessivoOperazione() {
-        return esitoComplessivoOperazione;
+        return this.esitoComplessivoOperazione;
     }
 
     /**
@@ -77,7 +77,7 @@ public class NodoInviaCarrelloRPTRisposta
      *     
      */
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     /**
@@ -101,7 +101,7 @@ public class NodoInviaCarrelloRPTRisposta
      *     
      */
     public ListaErroriRPT getListaErroriRPT() {
-        return listaErroriRPT;
+        return this.listaErroriRPT;
     }
 
     /**

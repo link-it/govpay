@@ -36,13 +36,13 @@ public class FilterSortWrapper {
 	}
 
 	public IField getField() {
-		return field;
+		return this.field;
 	}
 	public void setField(IField field) {
 		this.field = field;
 	}
 	public SortOrder getSortOrder() {
-		return sortOrder;
+		return this.sortOrder;
 	}
 	public void setSortOrder(SortOrder sortOrder) {
 		this.sortOrder = sortOrder;

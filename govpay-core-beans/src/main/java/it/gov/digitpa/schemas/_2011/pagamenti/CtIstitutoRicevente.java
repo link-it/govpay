@@ -47,7 +47,7 @@ public class CtIstitutoRicevente {
      *     
      */
     public CtIdentificativoUnivocoPersonaG getIdentificativoUnivocoRicevente() {
-        return identificativoUnivocoRicevente;
+        return this.identificativoUnivocoRicevente;
     }
 
     /**
@@ -71,7 +71,7 @@ public class CtIstitutoRicevente {
      *     
      */
     public String getDenominazioneRicevente() {
-        return denominazioneRicevente;
+        return this.denominazioneRicevente;
     }
 
     /**

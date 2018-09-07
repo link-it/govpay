@@ -13,22 +13,22 @@ public class ObjectValidator {
 	}
 
 	public ObjectValidator notNull() throws ValidationException {
-		if(fieldValue == null) {
-			throw new ValidationException("Il campo " + fieldName + " non deve essere vuoto.");
+		if(this.fieldValue == null) {
+			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}
 	
 	public ObjectValidator validateFields() throws ValidationException {
-		if(fieldValue != null) {
-			fieldValue.validate();
+		if(this.fieldValue != null) {
+			this.fieldValue.validate();
 		}
 		return this;
 	}
 
 	public ObjectValidator isNull() throws ValidationException {
-		if(fieldValue != null) {
-			throw new ValidationException("Il campo " + fieldName + " deve essere vuoto.");
+		if(this.fieldValue != null) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
 		}
 		return this;
 	}

@@ -44,7 +44,7 @@ public class NodoInviaRichiestaStornoRisposta
      *     
      */
     public String getEsito() {
-        return esito;
+        return this.esito;
     }
 
     /**

@@ -37,7 +37,7 @@ public abstract class BaseExceptionV1 extends BaseException {
 	}
 	
 	public CategoriaEnum getCategoria() {
-		return categoria;
+		return this.categoria;
 	}
 	public void setCategoria(CategoriaEnum categoria) {
 		this.categoria = categoria;

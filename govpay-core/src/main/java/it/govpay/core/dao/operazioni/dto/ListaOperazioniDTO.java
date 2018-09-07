@@ -35,19 +35,19 @@ public class ListaOperazioniDTO extends BasicFindRequestDTO {
 	private String principal;
 
 	public Date getInizio() {
-		return inizio;
+		return this.inizio;
 	}
 	public void setInizio(Date inizio) {
 		this.inizio = inizio;
 	}
 	public Date getFine() {
-		return fine;
+		return this.fine;
 	}
 	public void setFine(Date fine) {
 		this.fine = fine;
 	}
 	public String getPrincipal() {
-		return this.getUser() != null ? this.getUser().getPrincipal() : principal;
+		return this.getUser() != null ? this.getUser().getPrincipal() : this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;

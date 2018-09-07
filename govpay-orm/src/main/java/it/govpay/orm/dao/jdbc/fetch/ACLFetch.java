@@ -52,15 +52,15 @@ public class ACLFetch extends AbstractJDBCFetch {
 
 			if(model.equals(ACL.model())){
 				ACL object = new ACL();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
+				this.setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ruolo", ACL.model().RUOLO.getFieldType()));
-				setParameter(object, "setPrincipal", ACL.model().PRINCIPAL.getFieldType(),
+				this.setParameter(object, "setPrincipal", ACL.model().PRINCIPAL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal", ACL.model().PRINCIPAL.getFieldType()));
-				setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
+				this.setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "servizio", ACL.model().SERVIZIO.getFieldType()));
-				setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
+				this.setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "diritti", ACL.model().DIRITTI.getFieldType()));
 				return object;
 			}
@@ -82,15 +82,15 @@ public class ACLFetch extends AbstractJDBCFetch {
 
 			if(model.equals(ACL.model())){
 				ACL object = new ACL();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
+				this.setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
 					this.getObjectFromMap(map,"ruolo"));
-				setParameter(object, "setPrincipal", ACL.model().PRINCIPAL.getFieldType(),
+				this.setParameter(object, "setPrincipal", ACL.model().PRINCIPAL.getFieldType(),
 					this.getObjectFromMap(map,"principal"));
-				setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
+				this.setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
 					this.getObjectFromMap(map,"servizio"));
-				setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
+				this.setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
 					this.getObjectFromMap(map,"diritti"));
 				return object;
 			}

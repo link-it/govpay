@@ -52,17 +52,17 @@ public class AvvisoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Avviso.model())){
 				Avviso object = new Avviso();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodDominio", Avviso.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Avviso.model().COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Avviso.model().COD_DOMINIO.getFieldType()));
-				setParameter(object, "setIuv", Avviso.model().IUV.getFieldType(),
+				this.setParameter(object, "setIuv", Avviso.model().IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv", Avviso.model().IUV.getFieldType()));
-				setParameter(object, "setDataCreazione", Avviso.model().DATA_CREAZIONE.getFieldType(),
+				this.setParameter(object, "setDataCreazione", Avviso.model().DATA_CREAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_creazione", Avviso.model().DATA_CREAZIONE.getFieldType()));
-				setParameter(object, "setStato", Avviso.model().STATO.getFieldType(),
+				this.setParameter(object, "setStato", Avviso.model().STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato", Avviso.model().STATO.getFieldType()));
-				setParameter(object, "setPdf", Avviso.model().PDF.getFieldType(),
+				this.setParameter(object, "setPdf", Avviso.model().PDF.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "pdf", Avviso.model().PDF.getFieldType()));
 				return object;
 			}
@@ -84,17 +84,17 @@ public class AvvisoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Avviso.model())){
 				Avviso object = new Avviso();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodDominio", Avviso.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Avviso.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				setParameter(object, "setIuv", Avviso.model().IUV.getFieldType(),
+				this.setParameter(object, "setIuv", Avviso.model().IUV.getFieldType(),
 					this.getObjectFromMap(map,"iuv"));
-				setParameter(object, "setDataCreazione", Avviso.model().DATA_CREAZIONE.getFieldType(),
+				this.setParameter(object, "setDataCreazione", Avviso.model().DATA_CREAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataCreazione"));
-				setParameter(object, "setStato", Avviso.model().STATO.getFieldType(),
+				this.setParameter(object, "setStato", Avviso.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
-				setParameter(object, "setPdf", Avviso.model().PDF.getFieldType(),
+				this.setParameter(object, "setPdf", Avviso.model().PDF.getFieldType(),
 					this.getObjectFromMap(map,"pdf"));
 				return object;
 			}

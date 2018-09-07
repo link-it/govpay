@@ -74,7 +74,7 @@ public class CtDatiSingoliPagamenti {
      *     
      */
     public String getIdentificativoUnivocoVersamento() {
-        return identificativoUnivocoVersamento;
+        return this.identificativoUnivocoVersamento;
     }
 
     /**
@@ -98,7 +98,7 @@ public class CtDatiSingoliPagamenti {
      *     
      */
     public String getIdentificativoUnivocoRiscossione() {
-        return identificativoUnivocoRiscossione;
+        return this.identificativoUnivocoRiscossione;
     }
 
     /**
@@ -122,7 +122,7 @@ public class CtDatiSingoliPagamenti {
      *     
      */
     public Integer getIndiceDatiSingoloPagamento() {
-        return indiceDatiSingoloPagamento;
+        return this.indiceDatiSingoloPagamento;
     }
 
     /**
@@ -146,7 +146,7 @@ public class CtDatiSingoliPagamenti {
      *     
      */
     public BigDecimal getSingoloImportoPagato() {
-        return singoloImportoPagato;
+        return this.singoloImportoPagato;
     }
 
     /**
@@ -170,7 +170,7 @@ public class CtDatiSingoliPagamenti {
      *     
      */
     public String getCodiceEsitoSingoloPagamento() {
-        return codiceEsitoSingoloPagamento;
+        return this.codiceEsitoSingoloPagamento;
     }
 
     /**
@@ -194,7 +194,7 @@ public class CtDatiSingoliPagamenti {
      *     
      */
     public Date getDataEsitoSingoloPagamento() {
-        return dataEsitoSingoloPagamento;
+        return this.dataEsitoSingoloPagamento;
     }
 
     /**

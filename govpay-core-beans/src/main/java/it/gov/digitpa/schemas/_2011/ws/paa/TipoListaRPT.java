@@ -60,8 +60,8 @@ public class TipoListaRPT {
      * 
      */
     public List<TipoElementoListaRPT> getElementoListaRPT() {
-        if (elementoListaRPT == null) {
-            elementoListaRPT = new ArrayList<TipoElementoListaRPT>();
+        if (this.elementoListaRPT == null) {
+            this.elementoListaRPT = new ArrayList<>();
         }
         return this.elementoListaRPT;
     }

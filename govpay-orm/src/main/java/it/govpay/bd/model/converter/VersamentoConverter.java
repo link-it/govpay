@@ -38,7 +38,7 @@ import it.govpay.orm.IdUo;
 public class VersamentoConverter {
 
 	public static List<Versamento> toDTOList(List<it.govpay.orm.Versamento> versamenti) throws ServiceException {
-		List<Versamento> lstDTO = new ArrayList<Versamento>();
+		List<Versamento> lstDTO = new ArrayList<>();
 		if(versamenti != null && !versamenti.isEmpty()) {
 			for(it.govpay.orm.Versamento versamento: versamenti){
 				lstDTO.add(toDTO(versamento));
@@ -98,7 +98,7 @@ public class VersamentoConverter {
 			dto.setCodBundlekey(vo.getCodBundlekey()); 
 			dto.setDatiAllegati(vo.getDatiAllegati());
 			if(vo.getIncasso() != null) {
-				dto.setIncasso(vo.getIncasso().equals(Versamento.INCASSO_TRUE) ? true : false);
+				dto.setIncasso(vo.getIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
 			}
 			dto.setAnomalie(vo.getAnomalie());
 			
@@ -182,7 +182,7 @@ public class VersamentoConverter {
 			vo.setDatiAllegati(dto.getDatiAllegati());
 			
 			if(dto.getIncasso()!=null) {
-				vo.setIncasso(dto.getIncasso() ? Versamento.INCASSO_TRUE : Versamento.INCASSO_FALSE);
+				vo.setIncasso(dto.getIncasso() ? it.govpay.model.Versamento.INCASSO_TRUE : it.govpay.model.Versamento.INCASSO_FALSE);
 			}
 			vo.setAnomalie(dto.getAnomalie());
 			

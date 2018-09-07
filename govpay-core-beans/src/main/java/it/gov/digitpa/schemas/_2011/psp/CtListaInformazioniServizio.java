@@ -67,8 +67,8 @@ public class CtListaInformazioniServizio {
      * 
      */
     public List<CtInformazioniServizio> getInformazioniServizios() {
-        if (informazioniServizios == null) {
-            informazioniServizios = new ArrayList<CtInformazioniServizio>();
+        if (this.informazioniServizios == null) {
+            this.informazioniServizios = new ArrayList<>();
         }
         return this.informazioniServizios;
     }

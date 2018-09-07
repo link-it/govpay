@@ -15,7 +15,7 @@ public class VersamentoContext {
 	private String codTributoIuv;
 
 	public String getCodUoBeneficiaria() {
-		return codUoBeneficiaria;
+		return this.codUoBeneficiaria;
 	}
 
 	public void setCodUoBeneficiaria(String codUoBeneficiaria) {
@@ -23,7 +23,7 @@ public class VersamentoContext {
 	}
 
 	public TipoContabilita getTipoContabilita() {
-		return tipoContabilita;
+		return this.tipoContabilita;
 	}
 
 	public void setTipoContabilita(TipoContabilita tipoContabilita) {
@@ -31,7 +31,7 @@ public class VersamentoContext {
 	}
 
 	public String getCodContabilita() {
-		return codContabilita;
+		return this.codContabilita;
 	}
 
 	public void setCodContabilita(String codContabilita) {
@@ -39,7 +39,7 @@ public class VersamentoContext {
 	}
 
 	public String getCodTributoIuv() {
-		return codTributoIuv;
+		return this.codTributoIuv;
 	}
 
 	public void setCodTributoIuv(String codTributoIuv) {
@@ -47,7 +47,7 @@ public class VersamentoContext {
 	}
 
 	public String getCodUnivocoDebitore() {
-		return codUnivocoDebitore;
+		return this.codUnivocoDebitore;
 	}
 
 	public void setCodUnivocoDebitore(String codUnivocoDebitore) {

@@ -64,7 +64,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("idFlusso")
   public String getIdFlusso() {
-    return idFlusso;
+    return this.idFlusso;
   }
   public void setIdFlusso(String idFlusso) {
     this.idFlusso = idFlusso;
@@ -80,7 +80,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("dataFlusso")
   public Date getDataFlusso() {
-    return dataFlusso;
+    return this.dataFlusso;
   }
   public void setDataFlusso(Date dataFlusso) {
     this.dataFlusso = dataFlusso;
@@ -96,7 +96,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("trn")
   public String getTrn() {
-    return trn;
+    return this.trn;
   }
   public void setTrn(String trn) {
     this.trn = trn;
@@ -112,7 +112,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("dataRegolamento")
   public Date getDataRegolamento() {
-    return dataRegolamento;
+    return this.dataRegolamento;
   }
   public void setDataRegolamento(Date dataRegolamento) {
     this.dataRegolamento = dataRegolamento;
@@ -127,7 +127,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("idPsp")
   public String getIdPsp() {
-    return idPsp;
+    return this.idPsp;
   }
   public void setIdPsp(String idPsp) {
     this.idPsp = idPsp;
@@ -143,7 +143,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("bicRiversamento")
   public String getBicRiversamento() {
-    return bicRiversamento;
+    return this.bicRiversamento;
   }
   public void setBicRiversamento(String bicRiversamento) {
     this.bicRiversamento = bicRiversamento;
@@ -158,7 +158,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return idDominio;
+    return this.idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -174,7 +174,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("numeroPagamenti")
   public BigDecimal getNumeroPagamenti() {
-    return numeroPagamenti;
+    return this.numeroPagamenti;
   }
   public void setNumeroPagamenti(BigDecimal numeroPagamenti) {
     this.numeroPagamenti = numeroPagamenti;
@@ -190,7 +190,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("importoTotale")
   public Double getImportoTotale() {
-    return importoTotale;
+    return this.importoTotale;
   }
   public void setImportoTotale(Double importoTotale) {
     this.importoTotale = importoTotale;
@@ -205,7 +205,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("segnalazioni")
   public List<Segnalazione> getSegnalazioni() {
-    return segnalazioni;
+    return this.segnalazioni;
   }
   public void setSegnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -216,29 +216,29 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     FlussoRendicontazioneIndex flussoRendicontazioneIndex = (FlussoRendicontazioneIndex) o;
-    return Objects.equals(idFlusso, flussoRendicontazioneIndex.idFlusso) &&
-        Objects.equals(dataFlusso, flussoRendicontazioneIndex.dataFlusso) &&
-        Objects.equals(trn, flussoRendicontazioneIndex.trn) &&
-        Objects.equals(dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
-        Objects.equals(idPsp, flussoRendicontazioneIndex.idPsp) &&
-        Objects.equals(bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
-        Objects.equals(idDominio, flussoRendicontazioneIndex.idDominio) &&
-        Objects.equals(numeroPagamenti, flussoRendicontazioneIndex.numeroPagamenti) &&
-        Objects.equals(importoTotale, flussoRendicontazioneIndex.importoTotale) &&
-        Objects.equals(segnalazioni, flussoRendicontazioneIndex.segnalazioni);
+    return Objects.equals(this.idFlusso, flussoRendicontazioneIndex.idFlusso) &&
+        Objects.equals(this.dataFlusso, flussoRendicontazioneIndex.dataFlusso) &&
+        Objects.equals(this.trn, flussoRendicontazioneIndex.trn) &&
+        Objects.equals(this.dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
+        Objects.equals(this.idPsp, flussoRendicontazioneIndex.idPsp) &&
+        Objects.equals(this.bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
+        Objects.equals(this.idDominio, flussoRendicontazioneIndex.idDominio) &&
+        Objects.equals(this.numeroPagamenti, flussoRendicontazioneIndex.numeroPagamenti) &&
+        Objects.equals(this.importoTotale, flussoRendicontazioneIndex.importoTotale) &&
+        Objects.equals(this.segnalazioni, flussoRendicontazioneIndex.segnalazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, segnalazioni);
+    return Objects.hash(this.idFlusso, this.dataFlusso, this.trn, this.dataRegolamento, this.idPsp, this.bicRiversamento, this.idDominio, this.numeroPagamenti, this.importoTotale, this.segnalazioni);
   }
 
   public static FlussoRendicontazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (FlussoRendicontazioneIndex) parse(json, FlussoRendicontazioneIndex.class);
+    return parse(json, FlussoRendicontazioneIndex.class);
   }
 
   @Override
@@ -251,16 +251,16 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class FlussoRendicontazioneIndex {\n");
     
-    sb.append("    idFlusso: ").append(toIndentedString(idFlusso)).append("\n");
-    sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
-    sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
-    sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
-    sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
-    sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
-    sb.append("    importoTotale: ").append(toIndentedString(importoTotale)).append("\n");
-    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
+    sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
+    sb.append("    dataFlusso: ").append(this.toIndentedString(this.dataFlusso)).append("\n");
+    sb.append("    trn: ").append(this.toIndentedString(this.trn)).append("\n");
+    sb.append("    dataRegolamento: ").append(this.toIndentedString(this.dataRegolamento)).append("\n");
+    sb.append("    idPsp: ").append(this.toIndentedString(this.idPsp)).append("\n");
+    sb.append("    bicRiversamento: ").append(this.toIndentedString(this.bicRiversamento)).append("\n");
+    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    numeroPagamenti: ").append(this.toIndentedString(this.numeroPagamenti)).append("\n");
+    sb.append("    importoTotale: ").append(this.toIndentedString(this.importoTotale)).append("\n");
+    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }

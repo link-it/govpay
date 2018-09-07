@@ -14,7 +14,7 @@ public class PutStazioneDTO extends BasicCreateRequestDTO  {
 	}
 
 	public Stazione getStazione() {
-		return stazione;
+		return this.stazione;
 	}
 
 	public void setStazione(Stazione stazione) {
@@ -22,7 +22,7 @@ public class PutStazioneDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdStazione() {
-		return idStazione;
+		return this.idStazione;
 	}
 
 	public void setIdStazione(String idStazione) {
@@ -30,7 +30,7 @@ public class PutStazioneDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdIntermediario() {
-		return idIntermediario;
+		return this.idIntermediario;
 	}
 
 	public void setIdIntermediario(String idIntermediario) {

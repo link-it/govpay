@@ -66,7 +66,7 @@ public class RrFilter extends AbstractFilter {
 	}
 	
 	public Long getIdRpt() {
-		return idRpt;
+		return this.idRpt;
 	}
 
 	public void setIdRpt(Long idRpt) {

@@ -72,7 +72,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 			DominiBD dominiBD = new DominiBD(bd);
-			List<Versamento> versamenti = new ArrayList<Versamento>();
+			List<Versamento> versamenti = new ArrayList<>();
 
 			// Aggiungo il codSessionePortale al PaymentContext
 			ctx.getPagamentoCtx().setCodSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
@@ -89,10 +89,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			String codDominio = null;
 			String nome = null;
-			List<IdVersamento> idVersamento = new ArrayList<IdVersamento>();
+			List<IdVersamento> idVersamento = new ArrayList<>();
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			StringBuilder sbNomeVersamenti = new StringBuilder();
-			List<String> listaMultibeneficiari = new ArrayList<String>();
+			List<String> listaMultibeneficiari = new ArrayList<>();
 			// 1. Lista Id_versamento
 			for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);

@@ -59,7 +59,7 @@ public class CtPeriodoRiferimento {
      *     
      */
     public XMLGregorianCalendar getAnnoDA() {
-        return annoDA;
+        return this.annoDA;
     }
 
     /**
@@ -83,7 +83,7 @@ public class CtPeriodoRiferimento {
      *     
      */
     public XMLGregorianCalendar getAnnoA() {
-        return annoA;
+        return this.annoA;
     }
 
     /**

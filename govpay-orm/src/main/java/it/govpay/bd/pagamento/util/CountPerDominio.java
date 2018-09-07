@@ -14,13 +14,13 @@ public class CountPerDominio {
 	private long idDominio;
 	private long count;
 	public long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(long idDominio) {
 		this.idDominio = idDominio;
 	}
 	public long getCount() {
-		return count;
+		return this.count;
 	}
 	public void setCount(long count) {
 		this.count = count;

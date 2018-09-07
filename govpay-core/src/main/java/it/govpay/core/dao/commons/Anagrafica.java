@@ -4,73 +4,73 @@ package it.govpay.core.dao.commons;
 public class Anagrafica {
 
     public String getCodUnivoco() {
-		return codUnivoco;
+		return this.codUnivoco;
 	}
 	public void setCodUnivoco(String codUnivoco) {
 		this.codUnivoco = codUnivoco;
 	}
 	public String getRagioneSociale() {
-		return ragioneSociale;
+		return this.ragioneSociale;
 	}
 	public void setRagioneSociale(String ragioneSociale) {
 		this.ragioneSociale = ragioneSociale;
 	}
 	public String getIndirizzo() {
-		return indirizzo;
+		return this.indirizzo;
 	}
 	public void setIndirizzo(String indirizzo) {
 		this.indirizzo = indirizzo;
 	}
 	public String getCivico() {
-		return civico;
+		return this.civico;
 	}
 	public void setCivico(String civico) {
 		this.civico = civico;
 	}
 	public String getCap() {
-		return cap;
+		return this.cap;
 	}
 	public void setCap(String cap) {
 		this.cap = cap;
 	}
 	public String getLocalita() {
-		return localita;
+		return this.localita;
 	}
 	public void setLocalita(String localita) {
 		this.localita = localita;
 	}
 	public String getProvincia() {
-		return provincia;
+		return this.provincia;
 	}
 	public void setProvincia(String provincia) {
 		this.provincia = provincia;
 	}
 	public String getNazione() {
-		return nazione;
+		return this.nazione;
 	}
 	public void setNazione(String nazione) {
 		this.nazione = nazione;
 	}
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
 	public String getTelefono() {
-		return telefono;
+		return this.telefono;
 	}
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 	public String getCellulare() {
-		return cellulare;
+		return this.cellulare;
 	}
 	public void setCellulare(String cellulare) {
 		this.cellulare = cellulare;
 	}
 	public String getFax() {
-		return fax;
+		return this.fax;
 	}
 	public void setFax(String fax) {
 		this.fax = fax;

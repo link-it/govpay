@@ -23,43 +23,43 @@ public class Avvisatura {
 	private String descrizioneEsitoPresaInCarico;
 
 	public String getIntermediario() {
-		return intermediario;
+		return this.intermediario;
 	}
 	public void setIntermediario(String intermediario) {
 		this.intermediario = intermediario;
 	}
 	public long getNumeroAvvisi() {
-		return numeroAvvisi;
+		return this.numeroAvvisi;
 	}
 	public void setNumeroAvvisi(long numeroAvvisi) {
 		this.numeroAvvisi = numeroAvvisi;
 	}
 	public String getStepElaborazione() {
-		return stepElaborazione;
+		return this.stepElaborazione;
 	}
 	public void setStepElaborazione(String stepElaborazione) {
 		this.stepElaborazione = stepElaborazione;
 	}
 	public String getDescrizioneStepElaborazione() {
-		return descrizioneStepElaborazione;
+		return this.descrizioneStepElaborazione;
 	}
 	public void setDescrizioneStepElaborazione(String descrizioneStepElaborazione) {
 		this.descrizioneStepElaborazione = descrizioneStepElaborazione;
 	}
 	public Date getDataUltimoAggiornamento() {
-		return dataUltimoAggiornamento;
+		return this.dataUltimoAggiornamento;
 	}
 	public void setDataUltimoAggiornamento(Date dataUltimoAggiornamento) {
 		this.dataUltimoAggiornamento = dataUltimoAggiornamento;
 	}
 	public int getPercentualeStep() {
-		return percentualeStep;
+		return this.percentualeStep;
 	}
 	public void setPercentualeStep(int percentualeStep) {
 		this.percentualeStep = percentualeStep;
 	}
 	public int getCodiceEsitoPresaInCarico() {
-		return codiceEsitoPresaInCarico;
+		return this.codiceEsitoPresaInCarico;
 	}
 	public void setCodiceEsitoPresaInCarico(int codiceEsitoPresaInCarico) {
 		this.codiceEsitoPresaInCarico = codiceEsitoPresaInCarico;
@@ -67,7 +67,7 @@ public class Avvisatura {
 			this.descrizioneEsitoPresaInCarico = null;
 	}
 	public String getDescrizioneEsitoPresaInCarico() {
-		return descrizioneEsitoPresaInCarico;
+		return this.descrizioneEsitoPresaInCarico;
 	}
 	public void setDescrizioneEsitoPresaInCarico(String descrizioneEsitoPresaInCarico) {
 		this.descrizioneEsitoPresaInCarico = descrizioneEsitoPresaInCarico;

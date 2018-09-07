@@ -1,5 +1,5 @@
 .b64-icon {
-  display: none;
+  display: block;
   position: absolute;
   top: 0;
   right: 5px;
@@ -10,8 +10,4 @@
 
 .b64-icon:hover {
   background: rgba(0, 0, 0, .1);
-}
-
-.b64-group:hover .b64-icon {
-  display: block;
 }

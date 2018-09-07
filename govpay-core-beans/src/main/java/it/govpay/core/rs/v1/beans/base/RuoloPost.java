@@ -15,7 +15,7 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 public class RuoloPost extends JSONSerializable {
   
   @JsonProperty("acl")
-  private List<AclPost> acl = new ArrayList<AclPost>();
+  private List<AclPost> acl = new ArrayList<>();
   
   /**
    **/
@@ -26,7 +26,7 @@ public class RuoloPost extends JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return acl;
+    return this.acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -37,20 +37,20 @@ public class RuoloPost extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     RuoloPost ruoloPost = (RuoloPost) o;
-    return Objects.equals(acl, ruoloPost.acl);
+    return Objects.equals(this.acl, ruoloPost.acl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(acl);
+    return Objects.hash(this.acl);
   }
 
   public static RuoloPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (RuoloPost) parse(json, RuoloPost.class);
+    return parse(json, RuoloPost.class);
   }
 
   @Override
@@ -63,7 +63,7 @@ public class RuoloPost extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class RuoloPost {\n");
     
-    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
     sb.append("}");
     return sb.toString();
   }

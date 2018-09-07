@@ -101,18 +101,18 @@ public class NotificheBD extends BasicBD {
 	}
 
 	public void updateSpedito(long id) throws ServiceException {
-		update(id,  StatoSpedizione.SPEDITO, null, null, null);
+		this.update(id,  StatoSpedizione.SPEDITO, null, null, null);
 	}
 
 	public void updateDaSpedire(Long id, String message, long tentativi, Date prossima) throws ServiceException {
 		// Non aggiorno il campo a DA_SPEDIRE. Se lo e' gia' tutto bene, se per concorrenza e' a spedito, non voglio sovrascriverlo. 
-		update(id, null, message, tentativi, prossima);
+		this.update(id, null, message, tentativi, prossima);
 	}
 
 	private void update(long id, StatoSpedizione stato, String descrizione, Long tentativi, Date prossimaSpedizione) throws ServiceException {
 		try {
 //			IdNotifica idVO = ((JDBCNotificaServiceSearch)this.getNotificaService()).findId(id, true);
-			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().STATO, stato.toString()));
 			if(descrizione != null)

@@ -52,35 +52,35 @@ public class UoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Uo.model())){
 				Uo object = new Uo();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodUo", Uo.model().COD_UO.getFieldType(),
+				this.setParameter(object, "setCodUo", Uo.model().COD_UO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_uo", Uo.model().COD_UO.getFieldType()));
-				setParameter(object, "setAbilitato", Uo.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Uo.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Uo.model().ABILITATO.getFieldType()));
-				setParameter(object, "setUoCodiceIdentificativo", Uo.model().UO_CODICE_IDENTIFICATIVO.getFieldType(),
+				this.setParameter(object, "setUoCodiceIdentificativo", Uo.model().UO_CODICE_IDENTIFICATIVO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_codice_identificativo", Uo.model().UO_CODICE_IDENTIFICATIVO.getFieldType()));
-				setParameter(object, "setUoDenominazione", Uo.model().UO_DENOMINAZIONE.getFieldType(),
+				this.setParameter(object, "setUoDenominazione", Uo.model().UO_DENOMINAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_denominazione", Uo.model().UO_DENOMINAZIONE.getFieldType()));
-				setParameter(object, "setUoIndirizzo", Uo.model().UO_INDIRIZZO.getFieldType(),
+				this.setParameter(object, "setUoIndirizzo", Uo.model().UO_INDIRIZZO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_indirizzo", Uo.model().UO_INDIRIZZO.getFieldType()));
-				setParameter(object, "setUoCivico", Uo.model().UO_CIVICO.getFieldType(),
+				this.setParameter(object, "setUoCivico", Uo.model().UO_CIVICO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_civico", Uo.model().UO_CIVICO.getFieldType()));
-				setParameter(object, "setUoCap", Uo.model().UO_CAP.getFieldType(),
+				this.setParameter(object, "setUoCap", Uo.model().UO_CAP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_cap", Uo.model().UO_CAP.getFieldType()));
-				setParameter(object, "setUoLocalita", Uo.model().UO_LOCALITA.getFieldType(),
+				this.setParameter(object, "setUoLocalita", Uo.model().UO_LOCALITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_localita", Uo.model().UO_LOCALITA.getFieldType()));
-				setParameter(object, "setUoProvincia", Uo.model().UO_PROVINCIA.getFieldType(),
+				this.setParameter(object, "setUoProvincia", Uo.model().UO_PROVINCIA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_provincia", Uo.model().UO_PROVINCIA.getFieldType()));
-				setParameter(object, "setUoNazione", Uo.model().UO_NAZIONE.getFieldType(),
+				this.setParameter(object, "setUoNazione", Uo.model().UO_NAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_nazione", Uo.model().UO_NAZIONE.getFieldType()));
-				setParameter(object, "setUoArea", Uo.model().UO_AREA.getFieldType(),
+				this.setParameter(object, "setUoArea", Uo.model().UO_AREA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_area", Uo.model().UO_AREA.getFieldType()));
-				setParameter(object, "setUoUrlSitoWeb", Uo.model().UO_URL_SITO_WEB.getFieldType(),
+				this.setParameter(object, "setUoUrlSitoWeb", Uo.model().UO_URL_SITO_WEB.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_url_sito_web", Uo.model().UO_URL_SITO_WEB.getFieldType()));
-				setParameter(object, "setUoEmail", Uo.model().UO_EMAIL.getFieldType(),
+				this.setParameter(object, "setUoEmail", Uo.model().UO_EMAIL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_email", Uo.model().UO_EMAIL.getFieldType()));
-				setParameter(object, "setUoPec", Uo.model().UO_PEC.getFieldType(),
+				this.setParameter(object, "setUoPec", Uo.model().UO_PEC.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_pec", Uo.model().UO_PEC.getFieldType()));
 				return object;
 			}
@@ -102,35 +102,35 @@ public class UoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Uo.model())){
 				Uo object = new Uo();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodUo", Uo.model().COD_UO.getFieldType(),
+				this.setParameter(object, "setCodUo", Uo.model().COD_UO.getFieldType(),
 					this.getObjectFromMap(map,"codUo"));
-				setParameter(object, "setAbilitato", Uo.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Uo.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
-				setParameter(object, "setUoCodiceIdentificativo", Uo.model().UO_CODICE_IDENTIFICATIVO.getFieldType(),
+				this.setParameter(object, "setUoCodiceIdentificativo", Uo.model().UO_CODICE_IDENTIFICATIVO.getFieldType(),
 					this.getObjectFromMap(map,"uoCodiceIdentificativo"));
-				setParameter(object, "setUoDenominazione", Uo.model().UO_DENOMINAZIONE.getFieldType(),
+				this.setParameter(object, "setUoDenominazione", Uo.model().UO_DENOMINAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"uoDenominazione"));
-				setParameter(object, "setUoIndirizzo", Uo.model().UO_INDIRIZZO.getFieldType(),
+				this.setParameter(object, "setUoIndirizzo", Uo.model().UO_INDIRIZZO.getFieldType(),
 					this.getObjectFromMap(map,"uoIndirizzo"));
-				setParameter(object, "setUoCivico", Uo.model().UO_CIVICO.getFieldType(),
+				this.setParameter(object, "setUoCivico", Uo.model().UO_CIVICO.getFieldType(),
 					this.getObjectFromMap(map,"uoCivico"));
-				setParameter(object, "setUoCap", Uo.model().UO_CAP.getFieldType(),
+				this.setParameter(object, "setUoCap", Uo.model().UO_CAP.getFieldType(),
 					this.getObjectFromMap(map,"uoCap"));
-				setParameter(object, "setUoLocalita", Uo.model().UO_LOCALITA.getFieldType(),
+				this.setParameter(object, "setUoLocalita", Uo.model().UO_LOCALITA.getFieldType(),
 					this.getObjectFromMap(map,"uoLocalita"));
-				setParameter(object, "setUoProvincia", Uo.model().UO_PROVINCIA.getFieldType(),
+				this.setParameter(object, "setUoProvincia", Uo.model().UO_PROVINCIA.getFieldType(),
 					this.getObjectFromMap(map,"uoProvincia"));
-				setParameter(object, "setUoNazione", Uo.model().UO_NAZIONE.getFieldType(),
+				this.setParameter(object, "setUoNazione", Uo.model().UO_NAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"uoNazione"));
-				setParameter(object, "setUoArea", Uo.model().UO_AREA.getFieldType(),
+				this.setParameter(object, "setUoArea", Uo.model().UO_AREA.getFieldType(),
 					this.getObjectFromMap(map,"uoArea"));
-				setParameter(object, "setUoUrlSitoWeb", Uo.model().UO_URL_SITO_WEB.getFieldType(),
+				this.setParameter(object, "setUoUrlSitoWeb", Uo.model().UO_URL_SITO_WEB.getFieldType(),
 					this.getObjectFromMap(map,"uoUrlSitoWeb"));
-				setParameter(object, "setUoEmail", Uo.model().UO_EMAIL.getFieldType(),
+				this.setParameter(object, "setUoEmail", Uo.model().UO_EMAIL.getFieldType(),
 					this.getObjectFromMap(map,"uoEmail"));
-				setParameter(object, "setUoPec", Uo.model().UO_PEC.getFieldType(),
+				this.setParameter(object, "setUoPec", Uo.model().UO_PEC.getFieldType(),
 					this.getObjectFromMap(map,"uoPec"));
 				return object;
 			}

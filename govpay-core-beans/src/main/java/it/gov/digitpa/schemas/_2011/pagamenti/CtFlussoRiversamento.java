@@ -100,7 +100,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public String getVersioneOggetto() {
-        return versioneOggetto;
+        return this.versioneOggetto;
     }
 
     /**
@@ -124,7 +124,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**
@@ -148,7 +148,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public Date getDataOraFlusso() {
-        return dataOraFlusso;
+        return this.dataOraFlusso;
     }
 
     /**
@@ -172,7 +172,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public String getIdentificativoUnivocoRegolamento() {
-        return identificativoUnivocoRegolamento;
+        return this.identificativoUnivocoRegolamento;
     }
 
     /**
@@ -196,7 +196,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public Date getDataRegolamento() {
-        return dataRegolamento;
+        return this.dataRegolamento;
     }
 
     /**
@@ -220,7 +220,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public CtIstitutoMittente getIstitutoMittente() {
-        return istitutoMittente;
+        return this.istitutoMittente;
     }
 
     /**
@@ -244,7 +244,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public String getCodiceBicBancaDiRiversamento() {
-        return codiceBicBancaDiRiversamento;
+        return this.codiceBicBancaDiRiversamento;
     }
 
     /**
@@ -268,7 +268,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public CtIstitutoRicevente getIstitutoRicevente() {
-        return istitutoRicevente;
+        return this.istitutoRicevente;
     }
 
     /**
@@ -292,7 +292,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public BigDecimal getNumeroTotalePagamenti() {
-        return numeroTotalePagamenti;
+        return this.numeroTotalePagamenti;
     }
 
     /**
@@ -316,7 +316,7 @@ public class CtFlussoRiversamento {
      *     
      */
     public BigDecimal getImportoTotalePagamenti() {
-        return importoTotalePagamenti;
+        return this.importoTotalePagamenti;
     }
 
     /**
@@ -354,8 +354,8 @@ public class CtFlussoRiversamento {
      * 
      */
     public List<CtDatiSingoliPagamenti> getDatiSingoliPagamenti() {
-        if (datiSingoliPagamenti == null) {
-            datiSingoliPagamenti = new ArrayList<CtDatiSingoliPagamenti>();
+        if (this.datiSingoliPagamenti == null) {
+            this.datiSingoliPagamenti = new ArrayList<>();
         }
         return this.datiSingoliPagamenti;
     }

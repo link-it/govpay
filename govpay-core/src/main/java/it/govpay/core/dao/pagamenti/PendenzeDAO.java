@@ -1,3 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.dao.pagamenti;
 
 import java.text.MessageFormat;
@@ -61,7 +81,7 @@ public class PendenzeDAO extends BaseDAO{
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return listaPendenze(listaPendenzaDTO, bd);
+			return this.listaPendenze(listaPendenzaDTO, bd);
 		}finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -120,7 +140,7 @@ public class PendenzeDAO extends BaseDAO{
 
 		long count = versamentiBD.count(filter);
 
-		List<LeggiPendenzaDTOResponse> resList = new ArrayList<LeggiPendenzaDTOResponse>();
+		List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
 		if(count > 0) {
 			List<Versamento> findAll = versamentiBD.findAll(filter);
 
@@ -206,11 +226,11 @@ public class PendenzeDAO extends BaseDAO{
 			for(PatchOp op: patchPendenzaDTO.getOp()) {
 				
 				if(PATH_STATO.equals(op.getPath())) {
-					patchStato(versamentoLetto, op);
+					this.patchStato(versamentoLetto, op);
 				}
 				
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
-					patchDescrizioneStato(versamentoLetto, op);
+					this.patchDescrizioneStato(versamentoLetto, op);
 				}
 			}
 			
@@ -243,7 +263,7 @@ public class PendenzeDAO extends BaseDAO{
 			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 		}
 		
-		StatoVersamento nuovoStato = getNuovoStatoVersamento(op);
+		StatoVersamento nuovoStato = this.getNuovoStatoVersamento(op);
 
 		switch (nuovoStato) {
 		case ANNULLATO:
@@ -282,7 +302,7 @@ public class PendenzeDAO extends BaseDAO{
 		return nuovoStato;
 	}
 	
-	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws PendenzaNonTrovataException, GovPayException, NotAuthorizedException, NotAuthenticatedException{ 
+	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws GovPayException, NotAuthorizedException, NotAuthenticatedException{ 
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		BasicBD bd = null;
 		try {
@@ -335,8 +355,6 @@ public class PendenzeDAO extends BaseDAO{
 
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
-		} catch (Exception e) {
-			throw new GovPayException(e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -344,4 +362,39 @@ public class PendenzeDAO extends BaseDAO{
 		return createOrUpdatePendenzaResponse;
 	}
 
+	public LeggiPendenzaDTOResponse leggiAvvisoPagamento(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
+		Versamento versamento;
+		BasicBD bd = null;
+		
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(leggiPendenzaDTO.getIdDominio(), leggiPendenzaDTO.getNumeroAvviso()); 
+			
+			Dominio dominio = versamento.getDominio(versamentiBD);
+			// controllo che il dominio sia autorizzato
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), null, bd);
+			
+			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
+			AvvisoPagamento avvisoPagamento = new AvvisoPagamento();
+			avvisoPagamento.setCodDominio(versamento.getDominio(bd).getCodDominio());
+			avvisoPagamento.setIuv(versamento.getIuvVersamento());
+			PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
+			printAvvisoDTO.setAvviso(avvisoPagamento);
+			AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, versamento);
+			printAvvisoDTO.setInput(input); 
+			PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
+			response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
+
+		} catch (NotFoundException e) {
+			throw new PendenzaNonTrovataException(e.getMessage(), e);
+		}  finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		return response;
+	}
 }

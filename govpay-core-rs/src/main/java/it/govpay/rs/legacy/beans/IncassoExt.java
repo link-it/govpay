@@ -38,9 +38,9 @@ public class IncassoExt extends Incasso{
 	
 	public IncassoExt(it.govpay.bd.model.Incasso i, BasicBD bd) throws ServiceException {
 		super(i);
-		this.pagamenti = new ArrayList<Pagamento>();
+		this.pagamenti = new ArrayList<>();
 		for(it.govpay.bd.model.Pagamento p : i.getPagamenti(bd)) {
-			pagamenti.add(toRsModel(p, bd));
+			this.pagamenti.add(toRsModel(p, bd));
 		}
 		this.riferimento_rendicontazione = IncassoUtils.getRiferimentoIncasso(this.getCausale());
 	}
@@ -61,14 +61,14 @@ public class IncassoExt extends Incasso{
 	}
 
 	public List<Pagamento> getPagamenti() {
-		return pagamenti;
+		return this.pagamenti;
 	}
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
 	}
 
 	public String getRiferimento_rendicontazione() {
-		return riferimento_rendicontazione;
+		return this.riferimento_rendicontazione;
 	}
 
 	public void setRiferimento_rendicontazione(String riferimento_rendicontazione) {

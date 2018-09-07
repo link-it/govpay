@@ -11,7 +11,7 @@ public class GetStazioneDTOResponse {
 	}
 
 	public Stazione getStazione() {
-		return stazione;
+		return this.stazione;
 	}
 
 	public void setStazione(Stazione stazione) {

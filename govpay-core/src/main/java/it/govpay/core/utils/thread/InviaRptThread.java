@@ -61,24 +61,24 @@ public class InviaRptThread implements Runnable {
 		GpContext ctx = null;
 		
 		try {
-			ctx = new GpContext(rpt.getIdTransazioneRpt());
+			ctx = new GpContext(this.rpt.getIdTransazioneRpt());
 			GpThreadLocal.set(ctx);
 			MDC.put("cmd", "InviaRptThread");
 			MDC.put("op", ctx.getTransactionId());
 			
-			ctx.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
+			ctx.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
 			
-			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
+			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + "]");
 			
-			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rpt.getIuv()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", this.rpt.getIuv()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", this.rpt.getCcp()));
 			
 			ctx.log("pagamento.invioRptAttivata");
 			
-			List<Rpt> rpts = new ArrayList<Rpt>();
-			rpts.add(rpt);
-			Risposta risposta = RptUtils.inviaCarrelloRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpts, bd);
+			List<Rpt> rpts = new ArrayList<>();
+			rpts.add(this.rpt);
+			Risposta risposta = RptUtils.inviaCarrelloRPT(this.rpt.getIntermediario(bd), this.rpt.getStazione(bd), rpts, bd);
 
 			if(bd == null) {
 				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -87,8 +87,8 @@ public class InviaRptThread implements Runnable {
 			RptBD rptBD = new RptBD(bd);
 			
 			// Prima di procedere allo'aggiornamento dello stato verifico che nel frattempo non sia arrivato una RT
-			this.rpt = rptBD.getRpt(rpt.getId());
-			if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
+			this.rpt = rptBD.getRpt(this.rpt.getId());
+			if(this.rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
 				// E' arrivata l'RT nel frattempo. Non aggiornare.
 				log.info("RPT inviata, ma nel frattempo e' arrivata l'RT. Non aggiorno lo stato");
 				ctx.log("pagamento.invioRptAttivataRTricevuta");
@@ -104,18 +104,18 @@ public class InviaRptThread implements Runnable {
 				String descrizione = null; 
 				if(fb != null)
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
-				rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
+				rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
 				log.error("RPT rifiutata dal nodo con fault " + descrizione);
 				ctx.log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 			} else {
 				// RPT accettata dal Nodo
 				// Invio la notifica e aggiorno lo stato
-				Notifica notifica = new Notifica(rpt, TipoNotifica.ATTIVAZIONE, bd);
+				Notifica notifica = new Notifica(this.rpt, TipoNotifica.ATTIVAZIONE, bd);
 				NotificheBD notificheBD = new NotificheBD(bd);
 				
 				
 				bd.setAutoCommit(false);
-				rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null);
+				rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null);
 				notificheBD.insertNotifica(notifica);
 				bd.commit();
 				

@@ -67,8 +67,8 @@ public class CtListaInformativaDetail {
      * 
      */
     public List<CtInformativaDetail> getInformativaDetails() {
-        if (informativaDetails == null) {
-            informativaDetails = new ArrayList<CtInformativaDetail>();
+        if (this.informativaDetails == null) {
+            this.informativaDetails = new ArrayList<>();
         }
         return this.informativaDetails;
     }

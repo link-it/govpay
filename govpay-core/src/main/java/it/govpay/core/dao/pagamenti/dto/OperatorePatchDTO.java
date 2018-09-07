@@ -20,7 +20,7 @@ public class OperatorePatchDTO extends AbstractPatchDTO {
 	}
 
 	public String getIdOperatore() {
-		return idOperatore;
+		return this.idOperatore;
 	}
 
 	public void setIdOperatore(String idOperatore) {

@@ -24,7 +24,7 @@ public abstract class JSONSerializable {
 		SerializationConfig serializationConfig = new SerializationConfig();
 		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
 		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
-		return toJSON(fields, serializationConfig);
+		return this.toJSON(fields, serializationConfig);
 	}
 	
 	public String toJSON(String fields,SerializationConfig serializationConfig) throws ServiceException {

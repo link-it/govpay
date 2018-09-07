@@ -72,7 +72,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public CtIdentificativoUnivocoPersonaG getIdentificativoUnivocoBeneficiario() {
-        return identificativoUnivocoBeneficiario;
+        return this.identificativoUnivocoBeneficiario;
     }
 
     /**
@@ -96,7 +96,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getDenominazioneBeneficiario() {
-        return denominazioneBeneficiario;
+        return this.denominazioneBeneficiario;
     }
 
     /**
@@ -120,7 +120,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getCodiceUnitOperBeneficiario() {
-        return codiceUnitOperBeneficiario;
+        return this.codiceUnitOperBeneficiario;
     }
 
     /**
@@ -144,7 +144,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getDenomUnitOperBeneficiario() {
-        return denomUnitOperBeneficiario;
+        return this.denomUnitOperBeneficiario;
     }
 
     /**
@@ -168,7 +168,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getIndirizzoBeneficiario() {
-        return indirizzoBeneficiario;
+        return this.indirizzoBeneficiario;
     }
 
     /**
@@ -192,7 +192,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getCivicoBeneficiario() {
-        return civicoBeneficiario;
+        return this.civicoBeneficiario;
     }
 
     /**
@@ -216,7 +216,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getCapBeneficiario() {
-        return capBeneficiario;
+        return this.capBeneficiario;
     }
 
     /**
@@ -240,7 +240,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getLocalitaBeneficiario() {
-        return localitaBeneficiario;
+        return this.localitaBeneficiario;
     }
 
     /**
@@ -264,7 +264,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getProvinciaBeneficiario() {
-        return provinciaBeneficiario;
+        return this.provinciaBeneficiario;
     }
 
     /**
@@ -288,7 +288,7 @@ public class CtEnteBeneficiario {
      *     
      */
     public String getNazioneBeneficiario() {
-        return nazioneBeneficiario;
+        return this.nazioneBeneficiario;
     }
 
     /**

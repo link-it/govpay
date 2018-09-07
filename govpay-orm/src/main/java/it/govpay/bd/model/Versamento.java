@@ -53,7 +53,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
-			this.singoliVersamenti = new ArrayList<SingoloVersamento>();
+			this.singoliVersamenti = new ArrayList<>();
 		}
 		
 		this.singoliVersamenti.add(singoloVersamento);
@@ -64,9 +64,9 @@ public class Versamento extends it.govpay.model.Versamento {
 	}
 	
 	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti(BasicBD bd) throws ServiceException {
-		if(this.singoliVersamenti == null && getId() != null) {
+		if(this.singoliVersamenti == null && this.getId() != null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			this.singoliVersamenti = versamentiBD.getSingoliVersamenti(getId());
+			this.singoliVersamenti = versamentiBD.getSingoliVersamenti(this.getId());
 		}
 		
 		if(this.singoliVersamenti != null)
@@ -76,56 +76,56 @@ public class Versamento extends it.govpay.model.Versamento {
 	}
 
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(applicazione == null) {
-			applicazione = AnagraficaManager.getApplicazione(bd, getIdApplicazione());
+		if(this.applicazione == null) {
+			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
 		} 
-		return applicazione;
+		return this.applicazione;
 	}
 	
 	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
-		applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
-		this.setIdApplicazione(applicazione.getId());
+		this.applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+		this.setIdApplicazione(this.applicazione.getId());
 	}
 
 	public UnitaOperativa getUo(BasicBD bd) throws ServiceException {
-		if(this.getIdUo() != null && uo == null) {
-			uo = AnagraficaManager.getUnitaOperativa(bd, getIdUo());
+		if(this.getIdUo() != null && this.uo == null) {
+			this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getIdUo());
 		}
-		return uo;
+		return this.uo;
 	}
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
-		if(dominio == null) {
-			dominio = AnagraficaManager.getDominio(bd, getIdDominio());
+		if(this.dominio == null) {
+			this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
 		} 
-		return dominio;
+		return this.dominio;
 	}
 	
 	public UnitaOperativa setUo(long idDominio, String codUo, BasicBD bd) throws ServiceException, NotFoundException {
-		uo = AnagraficaManager.getUnitaOperativa(bd, idDominio, codUo);
-		this.setIdUo(uo.getId());
-		return uo;
+		this.uo = AnagraficaManager.getUnitaOperativa(bd, idDominio, codUo);
+		this.setIdUo(this.uo.getId());
+		return this.uo;
 	}
 	
 	public List<Rpt> getRpt(BasicBD bd) throws ServiceException {
-		if(rpts == null) {
+		if(this.rpts == null) {
 			RptBD rptBD = new RptBD(bd);
 			RptFilter filter = rptBD.newFilter();
 			filter.setIdVersamento(this.getId());
-			rpts = rptBD.findAll(filter);
+			this.rpts = rptBD.findAll(filter);
 		}
-		return rpts;
+		return this.rpts;
 	}
 	
 	public Iuv getIuv(BasicBD bd) throws ServiceException {
-		if(iuv == null) {
+		if(this.iuv == null) {
 			IuvBD iuvBD = new IuvBD(bd);
 			try {
-				iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 			} catch (NotFoundException e) {
 				// Iuv non assegnato.
 			}
 		}
-		return iuv;
+		return this.iuv;
 	}
 }

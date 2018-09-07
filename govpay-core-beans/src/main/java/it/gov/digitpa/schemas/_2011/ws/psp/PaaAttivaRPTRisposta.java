@@ -44,7 +44,7 @@ public class PaaAttivaRPTRisposta {
      *     
      */
     public EsitoAttivaRPT getPaaAttivaRPTRisposta() {
-        return paaAttivaRPTRisposta;
+        return this.paaAttivaRPTRisposta;
     }
 
     /**

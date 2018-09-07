@@ -72,7 +72,7 @@ public class GpAvviaTransazionePagamentoResponse
      *     
      */
     public String getUrlRedirect() {
-        return urlRedirect;
+        return this.urlRedirect;
     }
 
     /**
@@ -96,7 +96,7 @@ public class GpAvviaTransazionePagamentoResponse
      *     
      */
     public String getPspSessionId() {
-        return pspSessionId;
+        return this.pspSessionId;
     }
 
     /**
@@ -134,8 +134,8 @@ public class GpAvviaTransazionePagamentoResponse
      * 
      */
     public List<GpAvviaTransazionePagamentoResponse.RifTransazione> getRifTransazione() {
-        if (rifTransazione == null) {
-            rifTransazione = new ArrayList<GpAvviaTransazionePagamentoResponse.RifTransazione>();
+        if (this.rifTransazione == null) {
+            this.rifTransazione = new ArrayList<>();
         }
         return this.rifTransazione;
     }
@@ -194,7 +194,7 @@ public class GpAvviaTransazionePagamentoResponse
          *     
          */
         public String getCodApplicazione() {
-            return codApplicazione;
+            return this.codApplicazione;
         }
 
         /**
@@ -218,7 +218,7 @@ public class GpAvviaTransazionePagamentoResponse
          *     
          */
         public String getCodVersamentoEnte() {
-            return codVersamentoEnte;
+            return this.codVersamentoEnte;
         }
 
         /**
@@ -242,7 +242,7 @@ public class GpAvviaTransazionePagamentoResponse
          *     
          */
         public String getCodDominio() {
-            return codDominio;
+            return this.codDominio;
         }
 
         /**
@@ -266,7 +266,7 @@ public class GpAvviaTransazionePagamentoResponse
          *     
          */
         public String getIuv() {
-            return iuv;
+            return this.iuv;
         }
 
         /**
@@ -290,7 +290,7 @@ public class GpAvviaTransazionePagamentoResponse
          *     
          */
         public String getCcp() {
-            return ccp;
+            return this.ccp;
         }
 
         /**

@@ -8,25 +8,25 @@ public class PagamentiPortaleDTOResponse {
 	private String redirectUrl;
 	
 	public String getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
 	public String getLocation() {
-		return location;
+		return this.location;
 	}
 	public void setLocation(String location) {
 		this.location = location;
 	}
 	public String getRedirectUrl() {
-		return redirectUrl;
+		return this.redirectUrl;
 	}
 	public void setRedirectUrl(String redirectUrl) {
 		this.redirectUrl = redirectUrl;
 	}
 	public String getIdSessione() {
-		return idSessione;
+		return this.idSessione;
 	}
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;

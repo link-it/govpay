@@ -59,7 +59,7 @@ public class CtNumeroAvviso {
      *     
      */
     public String getAuxDigit() {
-        return auxDigit;
+        return this.auxDigit;
     }
 
     /**
@@ -83,7 +83,7 @@ public class CtNumeroAvviso {
      *     
      */
     public String getApplicationCode() {
-        return applicationCode;
+        return this.applicationCode;
     }
 
     /**
@@ -107,7 +107,7 @@ public class CtNumeroAvviso {
      *     
      */
     public String getIUV() {
-        return iuv;
+        return this.iuv;
     }
 
     /**

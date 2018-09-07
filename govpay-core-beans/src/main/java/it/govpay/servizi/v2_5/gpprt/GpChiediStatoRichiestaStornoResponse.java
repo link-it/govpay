@@ -70,7 +70,7 @@ public class GpChiediStatoRichiestaStornoResponse
      *     
      */
     public GpChiediStatoRichiestaStornoResponse.Storno getStorno() {
-        return storno;
+        return this.storno;
     }
 
     /**
@@ -149,7 +149,7 @@ public class GpChiediStatoRichiestaStornoResponse
          *     
          */
         public String getCodDominio() {
-            return codDominio;
+            return this.codDominio;
         }
 
         /**
@@ -173,7 +173,7 @@ public class GpChiediStatoRichiestaStornoResponse
          *     
          */
         public String getIuv() {
-            return iuv;
+            return this.iuv;
         }
 
         /**
@@ -197,7 +197,7 @@ public class GpChiediStatoRichiestaStornoResponse
          *     
          */
         public String getCcp() {
-            return ccp;
+            return this.ccp;
         }
 
         /**
@@ -221,7 +221,7 @@ public class GpChiediStatoRichiestaStornoResponse
          *     
          */
         public StatoRevoca getStato() {
-            return stato;
+            return this.stato;
         }
 
         /**
@@ -245,7 +245,7 @@ public class GpChiediStatoRichiestaStornoResponse
          *     
          */
         public String getDescrizioneStato() {
-            return descrizioneStato;
+            return this.descrizioneStato;
         }
 
         /**
@@ -268,7 +268,7 @@ public class GpChiediStatoRichiestaStornoResponse
          *     byte[]
          */
         public byte[] getRr() {
-            return rr;
+            return this.rr;
         }
 
         /**
@@ -290,7 +290,7 @@ public class GpChiediStatoRichiestaStornoResponse
          *     byte[]
          */
         public byte[] getEr() {
-            return er;
+            return this.er;
         }
 
         /**
@@ -327,8 +327,8 @@ public class GpChiediStatoRichiestaStornoResponse
          * 
          */
         public List<Pagamento> getPagamento() {
-            if (pagamento == null) {
-                pagamento = new ArrayList<Pagamento>();
+            if (this.pagamento == null) {
+                this.pagamento = new ArrayList<>();
             }
             return this.pagamento;
         }

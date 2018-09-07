@@ -47,7 +47,7 @@ public class EsitoAttivaRPT
      *     
      */
     public String getEsito() {
-        return esito;
+        return this.esito;
     }
 
     /**
@@ -71,7 +71,7 @@ public class EsitoAttivaRPT
      *     
      */
     public PaaTipoDatiPagamentoPA getDatiPagamentoPA() {
-        return datiPagamentoPA;
+        return this.datiPagamentoPA;
     }
 
     /**

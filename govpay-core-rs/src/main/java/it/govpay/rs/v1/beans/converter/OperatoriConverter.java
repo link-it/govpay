@@ -56,7 +56,7 @@ public class OperatoriConverter {
 		
 		
 		if(operatore.getUtenza().getDomini(null) != null) {
-			List<DominioIndex> idDomini = new ArrayList<DominioIndex>();
+			List<DominioIndex> idDomini = new ArrayList<>();
 			for (Dominio dominio : operatore.getUtenza().getDomini(null)) {
 				idDomini.add(DominiConverter.toRsModelIndex(dominio));
 			}
@@ -64,7 +64,7 @@ public class OperatoriConverter {
 		}
 		
 		if(operatore.getUtenza().getTributi(null) != null) {
-			List<TipoEntrata> idTributi = new ArrayList<TipoEntrata>();
+			List<TipoEntrata> idTributi = new ArrayList<>();
 			for (Tributo tributo : operatore.getUtenza().getTributi(null)) {
 				TipoEntrata tEI = new TipoEntrata();
 				tEI.setIdEntrata(tributo.getCodTributo());

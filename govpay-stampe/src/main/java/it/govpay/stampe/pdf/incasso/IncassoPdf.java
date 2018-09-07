@@ -35,19 +35,19 @@ public class IncassoPdf {
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 		JasperReportBuilder report = report();
 
-		List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
+		List<ComponentBuilder<?, ?>> cl = new ArrayList<>();
 
-		List<String> errList = new ArrayList<String>();
+		List<String> errList = new ArrayList<>();
 		ComponentBuilder<?, ?> titleComponent = TemplateIncasso.createTitleComponent(incasso,log,errList, pathLoghi);
 		cl.add(titleComponent);
 
 		if(errList.size() > 0)
 			msg = errList.get(0);
 
-		List<Double> totale = new ArrayList<Double>();
+		List<Double> totale = new ArrayList<>();
 
 		// Scittura Intestazione
-		List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();
+		List<ColumnBuilder<?, ?>> colonne = new ArrayList<>();
 
 		TextColumnBuilder<String> creditoreColumn = col.column(Costanti.LABEL_CREDITORE, Costanti.CREDITORE_COL, type.stringType()).setStyle(TemplateBase.fontStyle9)
 				.setWidth(20).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);

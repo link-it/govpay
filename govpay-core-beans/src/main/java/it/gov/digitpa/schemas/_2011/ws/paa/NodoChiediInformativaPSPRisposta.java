@@ -47,7 +47,7 @@ public class NodoChiediInformativaPSPRisposta
      *     
      */
     public DataHandler getXmlInformativa() {
-        return xmlInformativa;
+        return this.xmlInformativa;
     }
 
     /**

@@ -36,7 +36,7 @@ public enum StatoVersamento {
     ESEGUITO_SENZA_RPT;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StatoVersamento fromValue(String v) {

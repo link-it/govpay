@@ -12,7 +12,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 public class Versamento {
 	
     public StatoVersamento getStatoVersamento() {
-		return statoVersamento;
+		return this.statoVersamento;
 	}
 
 	public void setStatoVersamento(StatoVersamento statoVersamento) {
@@ -20,7 +20,7 @@ public class Versamento {
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String codApplicazione) {
@@ -28,7 +28,7 @@ public class Versamento {
 	}
 
 	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 
 	public void setCodVersamentoEnte(String codVersamentoEnte) {
@@ -44,7 +44,7 @@ public class Versamento {
 //	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -52,7 +52,7 @@ public class Versamento {
 	}
 
 	public String getCodUnitaOperativa() {
-		return codUnitaOperativa;
+		return this.codUnitaOperativa;
 	}
 
 	public void setCodUnitaOperativa(String codUnitaOperativa) {
@@ -60,7 +60,7 @@ public class Versamento {
 	}
 
 	public Anagrafica getDebitore() {
-		return debitore;
+		return this.debitore;
 	}
 
 	public void setDebitore(Anagrafica debitore) {
@@ -68,7 +68,7 @@ public class Versamento {
 	}
 
 	public BigDecimal getImportoTotale() {
-		return importoTotale;
+		return this.importoTotale;
 	}
 
 	public void setImportoTotale(BigDecimal importoTotale) {
@@ -76,7 +76,7 @@ public class Versamento {
 	}
 
 	public Date getDataScadenza() {
-		return dataScadenza;
+		return this.dataScadenza;
 	}
 
 	public void setDataScadenza(Date dataScadenza) {
@@ -84,11 +84,11 @@ public class Versamento {
 	}
 
 	public Boolean getAggiornabile() {
-		return aggiornabile;
+		return this.aggiornabile;
 	}
 
 	public Boolean isAggiornabile() {
-		return aggiornabile;
+		return this.aggiornabile;
 	}
 
 	public void setAggiornabile(Boolean aggiornabile) {
@@ -96,7 +96,7 @@ public class Versamento {
 	}
 
 	public String getCodDebito() {
-		return codDebito;
+		return this.codDebito;
 	}
 
 	public void setCodDebito(String codDebito) {
@@ -104,7 +104,7 @@ public class Versamento {
 	}
 
 	public Integer getAnnoTributario() {
-		return annoTributario;
+		return this.annoTributario;
 	}
 
 	public void setAnnoTributario(Integer annoTributario) {
@@ -112,7 +112,7 @@ public class Versamento {
 	}
 
 	public String getBundlekey() {
-		return bundlekey;
+		return this.bundlekey;
 	}
 
 	public void setBundlekey(String bundlekey) {
@@ -120,7 +120,7 @@ public class Versamento {
 	}
 
 	public String getCausale() {
-		return causale;
+		return this.causale;
 	}
 
 	public void setCausale(String causale) {
@@ -128,7 +128,7 @@ public class Versamento {
 	}
 
 	public List<String> getSpezzoneCausale() {
-		return spezzoneCausale;
+		return this.spezzoneCausale;
 	}
 
 	public void setSpezzoneCausale(List<String> spezzoneCausale) {
@@ -136,7 +136,7 @@ public class Versamento {
 	}
 
 	public List<Versamento.SpezzoneCausaleStrutturata> getSpezzoneCausaleStrutturata() {
-		return spezzoneCausaleStrutturata;
+		return this.spezzoneCausaleStrutturata;
 	}
 
 	public void setSpezzoneCausaleStrutturata(List<Versamento.SpezzoneCausaleStrutturata> spezzoneCausaleStrutturata) {
@@ -144,8 +144,8 @@ public class Versamento {
 	}
 
 	public List<Versamento.SingoloVersamento> getSingoloVersamento() {
-		if(singoloVersamento == null) singoloVersamento = new ArrayList<Versamento.SingoloVersamento>();
-		return singoloVersamento;
+		if(this.singoloVersamento == null) this.singoloVersamento = new ArrayList<>();
+		return this.singoloVersamento;
 	}
 
 	public void setSingoloVersamento(List<Versamento.SingoloVersamento> singoloVersamento) {
@@ -153,7 +153,7 @@ public class Versamento {
 	}
 
 	public Date getDataValidita() {
-		return dataValidita;
+		return this.dataValidita;
 	}
 
 	public void setDataValidita(Date dataValidita) {
@@ -161,7 +161,7 @@ public class Versamento {
 	}
 
 	public String getNome() {
-		return nome;
+		return this.nome;
 	}
 
 	public void setNome(String nome) {
@@ -169,7 +169,7 @@ public class Versamento {
 	}
 
 	public String getCodLotto() {
-		return codLotto;
+		return this.codLotto;
 	}
 
 	public void setCodLotto(String codLotto) {
@@ -177,7 +177,7 @@ public class Versamento {
 	}
 
 	public String getCodVersamentoLotto() {
-		return codVersamentoLotto;
+		return this.codVersamentoLotto;
 	}
 
 	public void setCodVersamentoLotto(String codVersamentoLotto) {
@@ -185,7 +185,7 @@ public class Versamento {
 	}
 
 	public String getTassonomiaAvviso() {
-		return tassonomiaAvviso;
+		return this.tassonomiaAvviso;
 	}
 
 	public void setTassonomiaAvviso(String tassonomiaAvviso) {
@@ -193,7 +193,7 @@ public class Versamento {
 	}
 
 	public String getTassonomia() {
-		return tassonomia;
+		return this.tassonomia;
 	}
 
 	public void setTassonomia(String tassonomia) {
@@ -201,7 +201,7 @@ public class Versamento {
 	}
 
 	public TIPO getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 
 	public void setTipo(TIPO tipo) {
@@ -209,7 +209,7 @@ public class Versamento {
 	}
 
 	public Date getDataCaricamento() {
-		return dataCaricamento;
+		return this.dataCaricamento;
 	}
 
 	public void setDataCaricamento(Date dataCaricamento) {
@@ -217,7 +217,7 @@ public class Versamento {
 	}
 	
 	public String getDatiAllegati() {
-		return datiAllegati;
+		return this.datiAllegati;
 	}
 
 	public void setDatiAllegati(String datiAllegati) {
@@ -225,7 +225,7 @@ public class Versamento {
 	}
 
 	public Boolean getIncasso() {
-		return incasso;
+		return this.incasso;
 	}
 
 	public void setIncasso(Boolean incasso) {
@@ -233,7 +233,7 @@ public class Versamento {
 	}
 
 	public String getAnomalie() {
-		return anomalie;
+		return this.anomalie;
 	}
 
 	public void setAnomalie(String anomalie) {
@@ -241,7 +241,7 @@ public class Versamento {
 	}
 
 	public String getNumeroAvviso() {
-		return numeroAvviso;
+		return this.numeroAvviso;
 	}
 
 	public void setNumeroAvviso(String numeroAvviso) {
@@ -284,7 +284,7 @@ public class Versamento {
 
         private String codSingoloVersamentoEnte;
         public String getCodSingoloVersamentoEnte() {
-			return codSingoloVersamentoEnte;
+			return this.codSingoloVersamentoEnte;
 		}
 
 		public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
@@ -292,7 +292,7 @@ public class Versamento {
 		}
 
 		public BigDecimal getImporto() {
-			return importo;
+			return this.importo;
 		}
 
 		public void setImporto(BigDecimal importo) {
@@ -300,7 +300,7 @@ public class Versamento {
 		}
 
 		public String getDatiAllegati() {
-			return datiAllegati;
+			return this.datiAllegati;
 		}
 
 		public void setDatiAllegati(String datiAllegati) {
@@ -308,7 +308,7 @@ public class Versamento {
 		}
 
 		public String getCodTributo() {
-			return codTributo;
+			return this.codTributo;
 		}
 
 		public void setCodTributo(String codTributo) {
@@ -316,7 +316,7 @@ public class Versamento {
 		}
 
 		public Versamento.SingoloVersamento.BolloTelematico getBolloTelematico() {
-			return bolloTelematico;
+			return this.bolloTelematico;
 		}
 
 		public void setBolloTelematico(Versamento.SingoloVersamento.BolloTelematico bolloTelematico) {
@@ -324,7 +324,7 @@ public class Versamento {
 		}
 
 		public Versamento.SingoloVersamento.Tributo getTributo() {
-			return tributo;
+			return this.tributo;
 		}
 
 		public void setTributo(Versamento.SingoloVersamento.Tributo tributo) {
@@ -332,7 +332,7 @@ public class Versamento {
 		}
 
 		public String getDescrizione() {
-			return descrizione;
+			return this.descrizione;
 		}
 
 		public void setDescrizione(String descrizione) {
@@ -351,19 +351,19 @@ public class Versamento {
             private String tipo;
             private String hash;
             public String getTipo() {
-				return tipo;
+				return this.tipo;
 			}
 			public void setTipo(String tipo) {
 				this.tipo = tipo;
 			}
 			public String getHash() {
-				return hash;
+				return this.hash;
 			}
 			public void setHash(String hash) {
 				this.hash = hash;
 			}
 			public String getProvincia() {
-				return provincia;
+				return this.provincia;
 			}
 			public void setProvincia(String provincia) {
 				this.provincia = provincia;
@@ -382,7 +382,7 @@ public class Versamento {
         	    ALTRO;
 
         	    public String value() {
-        	        return name();
+        	        return this.name();
         	    }
 
         	    public static TipoContabilita fromValue(String v) {
@@ -395,19 +395,19 @@ public class Versamento {
             private TipoContabilita tipoContabilita;
             private String codContabilita;
 			public String getIbanAccredito() {
-				return ibanAccredito;
+				return this.ibanAccredito;
 			}
 			public void setIbanAccredito(String ibanAccredito) {
 				this.ibanAccredito = ibanAccredito;
 			}
 			public TipoContabilita getTipoContabilita() {
-				return tipoContabilita;
+				return this.tipoContabilita;
 			}
 			public void setTipoContabilita(TipoContabilita tipoContabilita) {
 				this.tipoContabilita = tipoContabilita;
 			}
 			public String getCodContabilita() {
-				return codContabilita;
+				return this.codContabilita;
 			}
 			public void setCodContabilita(String codContabilita) {
 				this.codContabilita = codContabilita;
@@ -421,13 +421,13 @@ public class Versamento {
 
         private String causale;
         public String getCausale() {
-			return causale;
+			return this.causale;
 		}
 		public void setCausale(String causale) {
 			this.causale = causale;
 		}
 		public BigDecimal getImporto() {
-			return importo;
+			return this.importo;
 		}
 		public void setImporto(BigDecimal importo) {
 			this.importo = importo;

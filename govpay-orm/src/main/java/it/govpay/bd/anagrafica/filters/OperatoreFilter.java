@@ -84,7 +84,7 @@ public class OperatoreFilter extends AbstractFilter {
 	}
 
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 
 	public void setPrincipal(String principal) {
@@ -92,7 +92,7 @@ public class OperatoreFilter extends AbstractFilter {
 	}
 	
 	public boolean isSearchModeEquals() {
-		return searchModeEquals;
+		return this.searchModeEquals;
 	}
 
 	public void setSearchModeEquals(boolean searchModeEquals) {

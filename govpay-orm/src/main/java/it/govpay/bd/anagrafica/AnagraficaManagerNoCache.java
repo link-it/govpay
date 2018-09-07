@@ -48,7 +48,23 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
 
 public class AnagraficaManagerNoCache {
-	private static boolean DEBUG = false;
+	
+	private static final String CACHE_KEY_GET_TIPO_TRIBUTO = "getTipoTributo";
+	private static final String CACHE_KEY_GET_TRIBUTO = "getTributo";
+	private static final String CACHE_KEY_GET_STAZIONE = "getStazione";
+	private static final String CACHE_KEY_GET_UTENZA = "getUtenza";
+	private static final String CACHE_KEY_GET_OPERATORE_BY_SUBJECT = "getOperatoreBySubject";
+	private static final String CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL = "getOperatoreByPrincipal";
+	private static final String CACHE_KEY_GET_OPERATORE = "getOperatore";
+	private static final String CACHE_KEY_GET_INTERMEDIARIO = "getIntermediario";
+	private static final String CACHE_KEY_GET_IBAN_ACCREDITO = "getIbanAccredito";
+	private static final String CACHE_KEY_GET_UNITA_OPERATIVA = "getUnitaOperativa";
+	private static final String CACHE_KEY_GET_DOMINIO = "getDominio";
+	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT = "getApplicazioneBySubject";
+	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL = "getApplicazioneByPrincipal";
+	private static final String CACHE_KEY_GET_APPLICAZIONE = "getApplicazione";
+
+	private static final boolean DEBUG = false;
 	
 	private static DominiBDCacheWrapper dominiBDCacheWrapper;
 	private static ApplicazioniBDCacheWrapper applicazioniBDCacheWrapper;
@@ -119,62 +135,62 @@ public class AnagraficaManagerNoCache {
 	}
 	
 	public static void removeFromCache(Applicazione applicazione) {
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazione", String.valueOf(applicazione.getId())));} catch (Exception e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazione", applicazione.getCodApplicazione()));} catch (Exception e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazioneByPrincipal", applicazione.getPrincipal()));} catch (Exception e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazioneBySubject", applicazione.getPrincipal()));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_APPLICAZIONE, String.valueOf(applicazione.getId())));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_APPLICAZIONE, applicazione.getCodApplicazione()));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL, applicazione.getPrincipal()));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT, applicazione.getPrincipal()));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Dominio dominio) {
-		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache("getDominio", String.valueOf(dominio.getId())));} catch (Exception e) {	}
-		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache("getDominio", dominio.getCodDominio()));} catch (Exception e) {	}
+		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_DOMINIO, String.valueOf(dominio.getId())));} catch (Exception e) {	}
+		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_DOMINIO, dominio.getCodDominio()));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(UnitaOperativa uo) {
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache("getUnitaOperativa", String.valueOf(uo.getId())));} catch (Exception e) {	}
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache("getUnitaOperativa", String.valueOf(uo.getCodUo() + "@" + uo.getIdDominio())));} catch (Exception e) {	}
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache("getUnitaOperativa", String.valueOf("ByCodUnivocoUo#" + uo.getCodUo() + "@" + uo.getIdDominio())));} catch (Exception e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA, String.valueOf(uo.getId())));} catch (Exception e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA, String.valueOf(uo.getCodUo() + "@" + uo.getIdDominio())));} catch (Exception e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA, String.valueOf("ByCodUnivocoUo#" + uo.getCodUo() + "@" + uo.getIdDominio())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(IbanAccredito iban) {
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache("getIbanAccredito", String.valueOf(iban.getId())));} catch (Exception e) {	}
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache("getIbanAccredito", String.valueOf(iban.getCodIban())));} catch (Exception e) {	}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_IBAN_ACCREDITO, String.valueOf(iban.getId())));} catch (Exception e) {	}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_IBAN_ACCREDITO, String.valueOf(iban.getCodIban())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Intermediario intermediario) {
-		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache("getIntermediario", String.valueOf(intermediario.getId())));} catch (Exception e) {	}
-		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache("getIntermediario", String.valueOf(intermediario.getCodIntermediario())));} catch (Exception e) {	}
+		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(CACHE_KEY_GET_INTERMEDIARIO, String.valueOf(intermediario.getId())));} catch (Exception e) {	}
+		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(CACHE_KEY_GET_INTERMEDIARIO, String.valueOf(intermediario.getCodIntermediario())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Operatore operatore) {
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatore", String.valueOf(operatore.getId())));} catch (Exception e) {	}
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatoreByPrincipal", String.valueOf(operatore.getUtenza().getPrincipal())));} catch (Exception e) {	}
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache("getOperatoreBySubject", String.valueOf(operatore.getUtenza().getPrincipal())));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(CACHE_KEY_GET_OPERATORE, String.valueOf(operatore.getId())));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL, String.valueOf(operatore.getUtenza().getPrincipal())));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(CACHE_KEY_GET_OPERATORE_BY_SUBJECT, String.valueOf(operatore.getUtenza().getPrincipal())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Utenza utenza) {
-		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache("getUtenza", String.valueOf(utenza.getId())));} catch (Exception e) {	}
-		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache("getUtenza", String.valueOf(utenza.getPrincipal())));} catch (Exception e) {	}
+		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UTENZA, String.valueOf(utenza.getId())));} catch (Exception e) {	}
+		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UTENZA, String.valueOf(utenza.getPrincipal())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Stazione stazione) {
-		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache("getStazione", String.valueOf(stazione.getId())));} catch (Exception e) {	}
-		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache("getStazione", String.valueOf(stazione.getCodStazione())));} catch (Exception e) {	}
+		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_STAZIONE, String.valueOf(stazione.getId())));} catch (Exception e) {	}
+		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_STAZIONE, String.valueOf(stazione.getCodStazione())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Tributo tributo) {
-		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache("getTributo", String.valueOf(tributo.getId())));} catch (Exception e) {	}
-		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache("getTributo", String.valueOf(tributo.getCodTributo() + "@" + tributo.getIdDominio())));} catch (Exception e) {	}
+		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TRIBUTO, String.valueOf(tributo.getId())));} catch (Exception e) {	}
+		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TRIBUTO, String.valueOf(tributo.getCodTributo() + "@" + tributo.getIdDominio())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(TipoTributo tipoTributo) {
-		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache("getTipoTributo", String.valueOf(tipoTributo.getId())));} catch (Exception e) {	}
-		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache("getTipoTributo", String.valueOf(tipoTributo.getCodTributo())));} catch (Exception e) {	}
+		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_TRIBUTO, String.valueOf(tipoTributo.getId())));} catch (Exception e) {	}
+		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_TRIBUTO, String.valueOf(tipoTributo.getCodTributo())));} catch (Exception e) {	}
 	}
 	
 	public static Dominio getDominio(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getDominio";
+			String method = CACHE_KEY_GET_DOMINIO;
 			Object dominio = dominiBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Dominio) dominio;
 		} catch (Throwable t) {
@@ -193,7 +209,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Dominio getDominio(BasicBD basicBD, String codDominio) throws ServiceException, NotFoundException {
 		try {
-			String method = "getDominio";
+			String method = CACHE_KEY_GET_DOMINIO;
 			Object dominio = dominiBDCacheWrapper.getObjectCache(basicBD, DEBUG, codDominio, method, codDominio);
 			return (Dominio) dominio;
 		} catch (Throwable t) {
@@ -212,7 +228,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Applicazione getApplicazione(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getApplicazione";
+			String method = CACHE_KEY_GET_APPLICAZIONE;
 			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
@@ -231,7 +247,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Applicazione getApplicazione(BasicBD basicBD, String codApplicazione) throws ServiceException, NotFoundException {
 		try {
-			String method = "getApplicazione";
+			String method = CACHE_KEY_GET_APPLICAZIONE;
 			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, codApplicazione, method, codApplicazione);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
@@ -250,7 +266,7 @@ public class AnagraficaManagerNoCache {
 	
 	public static Applicazione getApplicazioneBySubject(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
-			String method = "getApplicazioneBySubject";
+			String method = CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT;
 			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
@@ -269,7 +285,7 @@ public class AnagraficaManagerNoCache {
 	
 	public static Applicazione getApplicazioneByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
-			String method = "getApplicazioneByPrincipal";
+			String method = CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL;
 			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
@@ -289,7 +305,7 @@ public class AnagraficaManagerNoCache {
 
 	public static UnitaOperativa getUnitaOperativa(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getUnitaOperativa";
+			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
 			Object uo = uoBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
@@ -308,7 +324,7 @@ public class AnagraficaManagerNoCache {
 
 	public static UnitaOperativa getUnitaOperativa(BasicBD basicBD, long idDominio, String codUo) throws ServiceException, NotFoundException {
 		try {
-			String method = "getUnitaOperativa";
+			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
 			Object uo = uoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codUo + "@" + idDominio, method, idDominio, codUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
@@ -347,7 +363,7 @@ public class AnagraficaManagerNoCache {
 
 	public static IbanAccredito getIbanAccredito(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getIbanAccredito";
+			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
 			Object ibanAccredito = ibanAccreditoBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
@@ -366,7 +382,7 @@ public class AnagraficaManagerNoCache {
 
 	public static IbanAccredito getIbanAccredito(BasicBD basicBD, Long idDominio, String codIbanAccredito) throws ServiceException, NotFoundException {
 		try {
-			String method = "getIbanAccredito";
+			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
 			Object ibanAccredito = ibanAccreditoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codIbanAccredito + "@" + idDominio, method, idDominio, codIbanAccredito);
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
@@ -386,7 +402,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Intermediario getIntermediario(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getIntermediario";
+			String method = CACHE_KEY_GET_INTERMEDIARIO;
 			Object intermediario = intermediariBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
@@ -405,7 +421,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Intermediario getIntermediario(BasicBD basicBD, String codIntermediario) throws ServiceException, NotFoundException {
 		try {
-			String method = "getIntermediario";
+			String method = CACHE_KEY_GET_INTERMEDIARIO;
 			Object intermediario = intermediariBDCacheWrapper.getObjectCache(basicBD, DEBUG, codIntermediario, method, codIntermediario);
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
@@ -424,7 +440,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Operatore getOperatore(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getOperatore";
+			String method = CACHE_KEY_GET_OPERATORE;
 			Object operatore = operatoriBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Operatore) operatore;
 		} catch (Throwable t) {
@@ -444,7 +460,7 @@ public class AnagraficaManagerNoCache {
 	
 	public static Operatore getOperatoreByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
-			String method = "getOperatoreByPrincipal";
+			String method = CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL;
 			Object operatore = operatoriBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
@@ -463,7 +479,7 @@ public class AnagraficaManagerNoCache {
 	
 	public static Operatore getOperatoreBySubject(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
-			String method = "getOperatoreBySubject";
+			String method = CACHE_KEY_GET_OPERATORE_BY_SUBJECT;
 			Object operatore = operatoriBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
@@ -482,7 +498,7 @@ public class AnagraficaManagerNoCache {
 	
 	public static Utenza getUtenza(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getUtenza";
+			String method = CACHE_KEY_GET_UTENZA;
 			Object utenza = utenzeBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Utenza) utenza;
 		} catch (Throwable t) {
@@ -501,7 +517,7 @@ public class AnagraficaManagerNoCache {
 	
 	public static Utenza getUtenza(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
-			String method = "getUtenza";
+			String method = CACHE_KEY_GET_UTENZA;
 			Object utenza = utenzeBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Utenza) utenza;
 		} catch (Throwable t) {
@@ -522,7 +538,7 @@ public class AnagraficaManagerNoCache {
 	
 	public static Stazione getStazione(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getStazione";
+			String method = CACHE_KEY_GET_STAZIONE;
 			Object stazione = stazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Stazione) stazione;
 		} catch (Throwable t) {
@@ -541,7 +557,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Stazione getStazione(BasicBD basicBD, String codStazione) throws ServiceException, NotFoundException {
 		try {
-			String method = "getStazione";
+			String method = CACHE_KEY_GET_STAZIONE;
 			Object stazione = stazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, codStazione, method, codStazione);
 			return (Stazione) stazione;
 		} catch (Throwable t) {
@@ -561,7 +577,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Tributo getTributo(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getTributo";
+			String method = CACHE_KEY_GET_TRIBUTO;
 			Object tributo = tributiBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Tributo) tributo;
 		} catch (Throwable t) {
@@ -580,7 +596,7 @@ public class AnagraficaManagerNoCache {
 
 	public static Tributo getTributo(BasicBD basicBD, long idDominio, String codTributo) throws ServiceException, NotFoundException {
 		try {
-			String method = "getTributo";
+			String method = CACHE_KEY_GET_TRIBUTO;
 			Object tributo = tributiBDCacheWrapper.getObjectCache(basicBD, DEBUG, codTributo + "@" +  String.valueOf(idDominio), method, Long.valueOf(idDominio), codTributo);
 			return (Tributo) tributo;
 		} catch (Throwable t) {
@@ -599,7 +615,7 @@ public class AnagraficaManagerNoCache {
 
 	public static TipoTributo getTipoTributo(BasicBD basicBD, long id) throws ServiceException {
 		try {
-			String method = "getTipoTributo";
+			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
 			Object tipoTributo = tipiTributoBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (TipoTributo) tipoTributo;
 		} catch (Throwable t) {
@@ -618,7 +634,7 @@ public class AnagraficaManagerNoCache {
 
 	public static TipoTributo getTipoTributo(BasicBD basicBD, String codTributo) throws ServiceException, NotFoundException {
 		try {
-			String method = "getTipoTributo";
+			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
 			Object tributo = tipiTributoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codTributo, method, codTributo);
 			return (TipoTributo) tributo;
 		} catch (Throwable t) {

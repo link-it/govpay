@@ -128,7 +128,7 @@ public class AclFilter extends AbstractFilter {
 	}
 
 	public String getRuolo() {
-		return ruolo;
+		return this.ruolo;
 	}
 
 	public void setRuolo(String ruolo) {
@@ -136,7 +136,7 @@ public class AclFilter extends AbstractFilter {
 	}
 
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 
 	public void setPrincipal(String principal) {
@@ -144,7 +144,7 @@ public class AclFilter extends AbstractFilter {
 	}
 
 	public Boolean getForceRuolo() {
-		return forceRuolo;
+		return this.forceRuolo;
 	}
 
 	public void setForceRuolo(Boolean forceRuolo) {
@@ -152,7 +152,7 @@ public class AclFilter extends AbstractFilter {
 	}
 
 	public Boolean getForcePrincipal() {
-		return forcePrincipal;
+		return this.forcePrincipal;
 	}
 
 	public void setForcePrincipal(Boolean forcePrincipal) {
@@ -160,7 +160,7 @@ public class AclFilter extends AbstractFilter {
 	}
 
 	public String getServizio() {
-		return servizio;
+		return this.servizio;
 	}
 
 	public void setServizio(String servizio) {

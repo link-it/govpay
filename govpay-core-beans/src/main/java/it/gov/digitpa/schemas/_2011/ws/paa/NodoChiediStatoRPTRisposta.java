@@ -44,7 +44,7 @@ public class NodoChiediStatoRPTRisposta
      *     
      */
     public EsitoChiediStatoRPT getEsito() {
-        return esito;
+        return this.esito;
     }
 
     /**

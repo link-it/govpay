@@ -117,7 +117,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -141,7 +141,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public String getCodVersamentoEnte() {
-        return codVersamentoEnte;
+        return this.codVersamentoEnte;
     }
 
     /**
@@ -165,7 +165,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -189,7 +189,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public String getIuv() {
-        return iuv;
+        return this.iuv;
     }
 
     /**
@@ -213,7 +213,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public String getNumeroAvviso() {
-        return numeroAvviso;
+        return this.numeroAvviso;
     }
 
     /**
@@ -236,7 +236,7 @@ public class GpChiediStatoVersamentoResponse
      *     byte[]
      */
     public byte[] getQrCode() {
-        return qrCode;
+        return this.qrCode;
     }
 
     /**
@@ -258,7 +258,7 @@ public class GpChiediStatoVersamentoResponse
      *     byte[]
      */
     public byte[] getBarCode() {
-        return barCode;
+        return this.barCode;
     }
 
     /**
@@ -281,7 +281,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public StatoVersamento getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**
@@ -305,7 +305,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public BigDecimal getImportoTotale() {
-        return importoTotale;
+        return this.importoTotale;
     }
 
     /**
@@ -329,7 +329,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public String getCausale() {
-        return causale;
+        return this.causale;
     }
 
     /**
@@ -367,8 +367,8 @@ public class GpChiediStatoVersamentoResponse
      * 
      */
     public List<String> getSpezzoneCausale() {
-        if (spezzoneCausale == null) {
-            spezzoneCausale = new ArrayList<String>();
+        if (this.spezzoneCausale == null) {
+            this.spezzoneCausale = new ArrayList<>();
         }
         return this.spezzoneCausale;
     }
@@ -396,8 +396,8 @@ public class GpChiediStatoVersamentoResponse
      * 
      */
     public List<GpChiediStatoVersamentoResponse.SpezzoneCausaleStrutturata> getSpezzoneCausaleStrutturata() {
-        if (spezzoneCausaleStrutturata == null) {
-            spezzoneCausaleStrutturata = new ArrayList<GpChiediStatoVersamentoResponse.SpezzoneCausaleStrutturata>();
+        if (this.spezzoneCausaleStrutturata == null) {
+            this.spezzoneCausaleStrutturata = new ArrayList<>();
         }
         return this.spezzoneCausaleStrutturata;
     }
@@ -411,7 +411,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public Date getDataScadenza() {
-        return dataScadenza;
+        return this.dataScadenza;
     }
 
     /**
@@ -449,8 +449,8 @@ public class GpChiediStatoVersamentoResponse
      * 
      */
     public List<Transazione> getTransazione() {
-        if (transazione == null) {
-            transazione = new ArrayList<Transazione>();
+        if (this.transazione == null) {
+            this.transazione = new ArrayList<>();
         }
         return this.transazione;
     }
@@ -499,7 +499,7 @@ public class GpChiediStatoVersamentoResponse
          *     
          */
         public String getCausale() {
-            return causale;
+            return this.causale;
         }
 
         /**
@@ -523,7 +523,7 @@ public class GpChiediStatoVersamentoResponse
          *     
          */
         public BigDecimal getImporto() {
-            return importo;
+            return this.importo;
         }
 
         /**

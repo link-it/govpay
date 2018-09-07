@@ -82,7 +82,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://schemas.xmlsoap.org/soap/envelope/", name = "Envelope")
     public JAXBElement<Envelope> createEnvelope(Envelope value) {
-        return new JAXBElement<Envelope>(_Envelope_QNAME, Envelope.class, null, value);
+        return new JAXBElement<>(_Envelope_QNAME, Envelope.class, null, value);
     }
 
     /**
@@ -91,7 +91,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://schemas.xmlsoap.org/soap/envelope/", name = "Header")
     public JAXBElement<Header> createHeader(Header value) {
-        return new JAXBElement<Header>(_Header_QNAME, Header.class, null, value);
+        return new JAXBElement<>(_Header_QNAME, Header.class, null, value);
     }
 
     /**
@@ -100,7 +100,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://schemas.xmlsoap.org/soap/envelope/", name = "Body")
     public JAXBElement<Body> createBody(Body value) {
-        return new JAXBElement<Body>(_Body_QNAME, Body.class, null, value);
+        return new JAXBElement<>(_Body_QNAME, Body.class, null, value);
     }
 
     /**
@@ -109,7 +109,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://schemas.xmlsoap.org/soap/envelope/", name = "Fault")
     public JAXBElement<Fault> createFault(Fault value) {
-        return new JAXBElement<Fault>(_Fault_QNAME, Fault.class, null, value);
+        return new JAXBElement<>(_Fault_QNAME, Fault.class, null, value);
     }
 
 }

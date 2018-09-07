@@ -5,7 +5,7 @@ public abstract class BasicCreateResponseDTO {
 	private boolean created;
 
 	public boolean isCreated() {
-		return created;
+		return this.created;
 	}
 
 	public void setCreated(boolean created) {

@@ -64,7 +64,7 @@ public class IuvFilter extends AbstractFilter{
 	}
 	
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;

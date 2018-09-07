@@ -27,7 +27,7 @@ import it.govpay.model.Intermediario;
 public class IntermediarioConverter {
 
 	public static List<Intermediario> toDTOList(List<it.govpay.orm.Intermediario> intermediarioLst) {
-		List<Intermediario> lstDTO = new ArrayList<Intermediario>();
+		List<Intermediario> lstDTO = new ArrayList<>();
 		if(intermediarioLst != null && !intermediarioLst.isEmpty()) {
 			for(it.govpay.orm.Intermediario intermediario: intermediarioLst){
 				lstDTO.add(toDTO(intermediario));

@@ -25,7 +25,7 @@ public class AvviaRichiestaStornoDTOResponse {
 	private String codRichiestaStorno;
 
     public String getCodRichiestaStorno() {
-        return codRichiestaStorno;
+        return this.codRichiestaStorno;
     }
 
     public void setCodRichiestaStorno(String value) {

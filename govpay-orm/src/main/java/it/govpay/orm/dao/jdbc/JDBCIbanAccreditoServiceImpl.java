@@ -174,7 +174,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()));
 		boolean isUpdate_ibanAccredito = true;
-		java.util.List<JDBCObject> lstObjects_ibanAccredito = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_ibanAccredito = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().COD_IBAN,false), "?");
 		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getCodIban(), IbanAccredito.model().COD_IBAN.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().BIC_ACCREDITO,false), "?");
@@ -235,7 +235,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()), 
@@ -246,7 +246,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()), 
@@ -257,7 +257,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()), 

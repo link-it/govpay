@@ -49,7 +49,7 @@ public class GpChiediFlussoRendicontazione {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -73,7 +73,7 @@ public class GpChiediFlussoRendicontazione {
      *     
      */
     public String getCodFlusso() {
-        return codFlusso;
+        return this.codFlusso;
     }
 
     /**

@@ -56,7 +56,7 @@ public class TipoRPTPendente {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -80,7 +80,7 @@ public class TipoRPTPendente {
      *     
      */
     public String getIdentificativoUnivocoVersamento() {
-        return identificativoUnivocoVersamento;
+        return this.identificativoUnivocoVersamento;
     }
 
     /**
@@ -104,7 +104,7 @@ public class TipoRPTPendente {
      *     
      */
     public String getCodiceContestoPagamento() {
-        return codiceContestoPagamento;
+        return this.codiceContestoPagamento;
     }
 
     /**
@@ -128,7 +128,7 @@ public class TipoRPTPendente {
      *     
      */
     public String getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**

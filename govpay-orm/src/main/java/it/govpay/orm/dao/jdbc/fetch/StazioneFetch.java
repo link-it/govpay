@@ -52,23 +52,23 @@ public class StazioneFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Stazione.model())){
 				Stazione object = new Stazione();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
+				this.setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_stazione", Stazione.model().COD_STAZIONE.getFieldType()));
-				setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
+				this.setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "password", Stazione.model().PASSWORD.getFieldType()));
-				setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Stazione.model().ABILITATO.getFieldType()));
-				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
+				this.setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "application_code", Stazione.model().APPLICATION_CODE.getFieldType()));
-				setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
+				this.setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Stazione.model().NDP_STATO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
-				setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
+				this.setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_operazione", Stazione.model().NDP_OPERAZIONE.getFieldType()));
-				setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
+				this.setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_descrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType()));
-				setParameter(object, "setNdpData", Stazione.model().NDP_DATA.getFieldType(),
+				this.setParameter(object, "setNdpData", Stazione.model().NDP_DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_data", Stazione.model().NDP_DATA.getFieldType()));
 				return object;
 			}
@@ -90,23 +90,23 @@ public class StazioneFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Stazione.model())){
 				Stazione object = new Stazione();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
+				this.setParameter(object, "setCodStazione", Stazione.model().COD_STAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"codStazione"));
-				setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
+				this.setParameter(object, "setPassword", Stazione.model().PASSWORD.getFieldType(),
 					this.getObjectFromMap(map,"password"));
-				setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Stazione.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
-				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
+				this.setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"applicationCode"));
-				setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
+				this.setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
 					this.getObjectFromMap(map,"ndpStato"));
-				setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
+				this.setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"ndpOperazione"));
-				setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
+				this.setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"ndpDescrizione"));
-				setParameter(object, "setNdpData", Stazione.model().NDP_DATA.getFieldType(),
+				this.setParameter(object, "setNdpData", Stazione.model().NDP_DATA.getFieldType(),
 					this.getObjectFromMap(map,"ndpData"));
 				return object;
 			}

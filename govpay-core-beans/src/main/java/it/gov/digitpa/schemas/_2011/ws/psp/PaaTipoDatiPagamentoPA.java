@@ -71,7 +71,7 @@ public class PaaTipoDatiPagamentoPA {
      *     
      */
     public BigDecimal getImportoSingoloVersamento() {
-        return importoSingoloVersamento;
+        return this.importoSingoloVersamento;
     }
 
     /**
@@ -95,7 +95,7 @@ public class PaaTipoDatiPagamentoPA {
      *     
      */
     public String getIbanAccredito() {
-        return ibanAccredito;
+        return this.ibanAccredito;
     }
 
     /**
@@ -119,7 +119,7 @@ public class PaaTipoDatiPagamentoPA {
      *     
      */
     public String getBicAccredito() {
-        return bicAccredito;
+        return this.bicAccredito;
     }
 
     /**
@@ -143,7 +143,7 @@ public class PaaTipoDatiPagamentoPA {
      *     
      */
     public CtEnteBeneficiario getEnteBeneficiario() {
-        return enteBeneficiario;
+        return this.enteBeneficiario;
     }
 
     /**
@@ -167,7 +167,7 @@ public class PaaTipoDatiPagamentoPA {
      *     
      */
     public String getCredenzialiPagatore() {
-        return credenzialiPagatore;
+        return this.credenzialiPagatore;
     }
 
     /**
@@ -191,7 +191,7 @@ public class PaaTipoDatiPagamentoPA {
      *     
      */
     public String getCausaleVersamento() {
-        return causaleVersamento;
+        return this.causaleVersamento;
     }
 
     /**
@@ -215,7 +215,7 @@ public class PaaTipoDatiPagamentoPA {
      *     
      */
     public CtSpezzoniCausaleVersamento getSpezzoniCausaleVersamento() {
-        return spezzoniCausaleVersamento;
+        return this.spezzoniCausaleVersamento;
     }
 
     /**

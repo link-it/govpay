@@ -201,7 +201,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.digitpa.gov.it/schemas/2011/Pagamenti/", name = "RPT")
     public JAXBElement<CtRichiestaPagamentoTelematico> createRPT(CtRichiestaPagamentoTelematico value) {
-        return new JAXBElement<CtRichiestaPagamentoTelematico>(_RPT_QNAME, CtRichiestaPagamentoTelematico.class, null, value);
+        return new JAXBElement<>(_RPT_QNAME, CtRichiestaPagamentoTelematico.class, null, value);
     }
 
     /**
@@ -210,7 +210,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.digitpa.gov.it/schemas/2011/Pagamenti/", name = "RT")
     public JAXBElement<CtRicevutaTelematica> createRT(CtRicevutaTelematica value) {
-        return new JAXBElement<CtRicevutaTelematica>(_RT_QNAME, CtRicevutaTelematica.class, null, value);
+        return new JAXBElement<>(_RT_QNAME, CtRicevutaTelematica.class, null, value);
     }
 
     /**
@@ -219,7 +219,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.digitpa.gov.it/schemas/2011/Pagamenti/", name = "FlussoRiversamento")
     public JAXBElement<CtFlussoRiversamento> createFlussoRiversamento(CtFlussoRiversamento value) {
-        return new JAXBElement<CtFlussoRiversamento>(_FlussoRiversamento_QNAME, CtFlussoRiversamento.class, null, value);
+        return new JAXBElement<>(_FlussoRiversamento_QNAME, CtFlussoRiversamento.class, null, value);
     }
 
 }

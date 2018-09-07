@@ -12,7 +12,7 @@ public class GetApplicazioneDTO extends BasicRequestDTO {
 	private String codApplicazione;
 	
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 	
 }

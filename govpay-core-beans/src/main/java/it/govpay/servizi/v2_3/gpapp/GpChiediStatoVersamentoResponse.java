@@ -62,7 +62,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -86,7 +86,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public String getCodVersamentoEnte() {
-        return codVersamentoEnte;
+        return this.codVersamentoEnte;
     }
 
     /**
@@ -110,7 +110,7 @@ public class GpChiediStatoVersamentoResponse
      *     
      */
     public StatoVersamento getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**
@@ -148,8 +148,8 @@ public class GpChiediStatoVersamentoResponse
      * 
      */
     public List<Transazione> getTransazione() {
-        if (transazione == null) {
-            transazione = new ArrayList<Transazione>();
+        if (this.transazione == null) {
+            this.transazione = new ArrayList<>();
         }
         return this.transazione;
     }

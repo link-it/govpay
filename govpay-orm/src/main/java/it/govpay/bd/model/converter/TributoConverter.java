@@ -34,7 +34,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class TributoConverter {
 
 	public static List<Tributo> toDTOList(List<it.govpay.orm.Tributo> lstVO, BasicBD bd) throws ServiceException {
-		List<Tributo> lst = new ArrayList<Tributo>();
+		List<Tributo> lst = new ArrayList<>();
 		if(lstVO != null && !lstVO.isEmpty()) {
 			for(it.govpay.orm.Tributo vo: lstVO) {
 				lst.add(toDTO(vo, bd));

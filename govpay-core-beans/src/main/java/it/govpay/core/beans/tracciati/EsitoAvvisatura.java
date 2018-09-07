@@ -22,37 +22,37 @@ public class EsitoAvvisatura {
 	private String descrizioneEsitoPresaInCarico;
 
 	public long getNumeroEsiti() {
-		return numeroEsiti;
+		return this.numeroEsiti;
 	}
 	public void setNumeroEsiti(long numeroEsiti) {
 		this.numeroEsiti = numeroEsiti;
 	}
 	public String getStepElaborazione() {
-		return stepElaborazione;
+		return this.stepElaborazione;
 	}
 	public void setStepElaborazione(String stepElaborazione) {
 		this.stepElaborazione = stepElaborazione;
 	}
 	public String getDescrizioneStepElaborazione() {
-		return descrizioneStepElaborazione;
+		return this.descrizioneStepElaborazione;
 	}
 	public void setDescrizioneStepElaborazione(String descrizioneStepElaborazione) {
 		this.descrizioneStepElaborazione = descrizioneStepElaborazione;
 	}
 	public Date getDataUltimoAggiornamento() {
-		return dataUltimoAggiornamento;
+		return this.dataUltimoAggiornamento;
 	}
 	public void setDataUltimoAggiornamento(Date dataUltimoAggiornamento) {
 		this.dataUltimoAggiornamento = dataUltimoAggiornamento;
 	}
 	public int getPercentualeStep() {
-		return percentualeStep;
+		return this.percentualeStep;
 	}
 	public void setPercentualeStep(int percentualeStep) {
 		this.percentualeStep = percentualeStep;
 	}
 	public int getCodiceEsitoPresaInCarico() {
-		return codiceEsitoPresaInCarico;
+		return this.codiceEsitoPresaInCarico;
 	}
 	public void setCodiceEsitoPresaInCarico(int codiceEsitoPresaInCarico) {
 		this.codiceEsitoPresaInCarico = codiceEsitoPresaInCarico;
@@ -60,7 +60,7 @@ public class EsitoAvvisatura {
 			this.descrizioneEsitoPresaInCarico = null;
 	}
 	public String getDescrizioneEsitoPresaInCarico() {
-		return descrizioneEsitoPresaInCarico;
+		return this.descrizioneEsitoPresaInCarico;
 	}
 	public void setDescrizioneEsitoPresaInCarico(String descrizioneEsitoPresaInCarico) {
 		this.descrizioneEsitoPresaInCarico = descrizioneEsitoPresaInCarico;

@@ -24,11 +24,13 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class YearAdapter extends XmlAdapter<String, Integer> {
 
-    public Integer unmarshal(String value) {
+    @Override
+	public Integer unmarshal(String value) {
         return (it.govpay.core.utils.adapter.DataTypeAdapter.parseYear(value));
     }
 
-    public String marshal(Integer value) {
+    @Override
+	public String marshal(Integer value) {
         return (it.govpay.core.utils.adapter.DataTypeAdapter.printYear(value));
     }
 }

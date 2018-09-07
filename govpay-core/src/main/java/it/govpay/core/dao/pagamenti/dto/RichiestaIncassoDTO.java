@@ -45,61 +45,61 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	private String ibanAccredito;
 	
 	public String getTrn() {
-		return trn;
+		return this.trn;
 	}
 	public void setTrn(String trn) {
 		this.trn = trn;
 	}
 	public String getCausale() {
-		return causale;
+		return this.causale;
 	}
 	public void setCausale(String causale) {
 		this.causale = causale;
 	}
 	public BigDecimal getImporto() {
-		return importo;
+		return this.importo;
 	}
 	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
 	public String getDispositivo() {
-		return dispositivo;
+		return this.dispositivo;
 	}
 	public void setDispositivo(String dispositivo) {
 		this.dispositivo = dispositivo;
 	}
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public Date getDataContabile() {
-		return dataContabile;
+		return this.dataContabile;
 	}
 	public void setDataContabile(Date dataContabile) {
 		this.dataContabile = dataContabile;
 	}
 	public Date getDataValuta() {
-		return dataValuta;
+		return this.dataValuta;
 	}
 	public void setDataValuta(Date dataValuta) {
 		this.dataValuta = dataValuta;
 	}
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 	public void setApplicazione(Applicazione applicazione) {
 		this.applicazione = applicazione;
 	}
 	public Operatore getOperatore() {
-		return operatore;
+		return this.operatore;
 	}
 	public void setOperatore(Operatore operatore) {
 		this.operatore = operatore;
 	}
 	public String getIbanAccredito() {
-		return ibanAccredito;
+		return this.ibanAccredito;
 	}
 	public void setIbanAccredito(String ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;

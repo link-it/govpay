@@ -564,7 +564,7 @@ public enum EsitoOperazione {
 	
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static EsitoOperazione fromValue(String v) {

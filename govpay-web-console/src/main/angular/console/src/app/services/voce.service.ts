@@ -8,6 +8,7 @@ export class Voce {
   public static AUX: string = 'Aux';
   public static AVVISO: string = 'Avviso';
 
+  public static BASIC: string = 'HTTP Basic';
   public static BIC_RIVERSAMENTO: string = 'Codice Bic riversamento';
 
   public static CAP: string = 'Cap';
@@ -81,6 +82,7 @@ export class Voce {
   public static NO_PSP: string = 'PSP non pervenuto';
   public static NUMERO_PAY: string = 'Numero di pagamenti';
   public static NOME: string = 'Nome';
+  public static NESSUNA: string = 'Nessuna';
 
   public static OPERAZIONI: string = 'Operazioni';
 

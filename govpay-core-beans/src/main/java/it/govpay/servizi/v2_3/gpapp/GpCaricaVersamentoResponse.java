@@ -48,7 +48,7 @@ public class GpCaricaVersamentoResponse
      *     
      */
     public IuvGenerato getIuvGenerato() {
-        return iuvGenerato;
+        return this.iuvGenerato;
     }
 
     /**

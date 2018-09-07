@@ -53,7 +53,7 @@ public class MessageLoggingHandlerUtils {
 	Logger log = LoggerWrapperFactory.getLogger(MessageLoggingHandlerUtils.class);
 
 	public void logToSystemOut(boolean outboundProperty, Map<String, List<String>> httpHeaders, byte[] msg) {
-		if(log.isDebugEnabled()) {
+		if(this.log.isDebugEnabled()) {
 	
 			StringBuffer sb = new StringBuffer();
 	
@@ -67,9 +67,9 @@ public class MessageLoggingHandlerUtils {
 						}
 					}
 				}
-				log.trace(sb.toString() + "\n" + new String(msg));
+				this.log.trace(sb.toString() + "\n" + new String(msg));
 			} catch (Exception e) {
-				log.error("Exception in handler: " + e);
+				this.log.error("Exception in handler: " + e);
 			}
 		}
 	}

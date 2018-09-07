@@ -19,7 +19,7 @@ public class ConverterUtils {
 	private static JsonJacksonSerializer serializer; 
 	
 	static {
-		map = new HashMap<String, String>();
+		map = new HashMap<>();
 		map.put("http://www.digitpa.gov.it/schemas/2011/Pagamenti/", "");
 		serializer = new JsonJacksonSerializer();
 	}

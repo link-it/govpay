@@ -58,7 +58,7 @@ public class GpChiediStatoTransazione {
      *     
      */
     public String getCodPortale() {
-        return codPortale;
+        return this.codPortale;
     }
 
     /**
@@ -82,7 +82,7 @@ public class GpChiediStatoTransazione {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -106,7 +106,7 @@ public class GpChiediStatoTransazione {
      *     
      */
     public String getIuv() {
-        return iuv;
+        return this.iuv;
     }
 
     /**
@@ -130,7 +130,7 @@ public class GpChiediStatoTransazione {
      *     
      */
     public String getCcp() {
-        return ccp;
+        return this.ccp;
     }
 
     /**

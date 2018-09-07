@@ -82,7 +82,7 @@ public class CtDatiSingoloPagamentoRT {
      *     
      */
     public BigDecimal getSingoloImportoPagato() {
-        return singoloImportoPagato;
+        return this.singoloImportoPagato;
     }
 
     /**
@@ -106,7 +106,7 @@ public class CtDatiSingoloPagamentoRT {
      *     
      */
     public String getEsitoSingoloPagamento() {
-        return esitoSingoloPagamento;
+        return this.esitoSingoloPagamento;
     }
 
     /**
@@ -130,7 +130,7 @@ public class CtDatiSingoloPagamentoRT {
      *     
      */
     public Date getDataEsitoSingoloPagamento() {
-        return dataEsitoSingoloPagamento;
+        return this.dataEsitoSingoloPagamento;
     }
 
     /**
@@ -154,7 +154,7 @@ public class CtDatiSingoloPagamentoRT {
      *     
      */
     public String getIdentificativoUnivocoRiscossione() {
-        return identificativoUnivocoRiscossione;
+        return this.identificativoUnivocoRiscossione;
     }
 
     /**
@@ -178,7 +178,7 @@ public class CtDatiSingoloPagamentoRT {
      *     
      */
     public String getCausaleVersamento() {
-        return causaleVersamento;
+        return this.causaleVersamento;
     }
 
     /**
@@ -202,7 +202,7 @@ public class CtDatiSingoloPagamentoRT {
      *     
      */
     public String getDatiSpecificiRiscossione() {
-        return datiSpecificiRiscossione;
+        return this.datiSpecificiRiscossione;
     }
 
     /**
@@ -226,7 +226,7 @@ public class CtDatiSingoloPagamentoRT {
      *     
      */
     public BigDecimal getCommissioniApplicatePSP() {
-        return commissioniApplicatePSP;
+        return this.commissioniApplicatePSP;
     }
 
     /**
@@ -250,7 +250,7 @@ public class CtDatiSingoloPagamentoRT {
      *     
      */
     public CtAllegatoRicevuta getAllegatoRicevuta() {
-        return allegatoRicevuta;
+        return this.allegatoRicevuta;
     }
 
     /**

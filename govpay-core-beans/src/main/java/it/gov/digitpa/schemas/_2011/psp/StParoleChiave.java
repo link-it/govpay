@@ -69,11 +69,11 @@ public enum StParoleChiave {
     private final String value;
 
     StParoleChiave(String v) {
-        value = v;
+        this.value = v;
     }
 
     public String value() {
-        return value;
+        return this.value;
     }
 
     public static StParoleChiave fromValue(String v) {

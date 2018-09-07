@@ -46,7 +46,7 @@ public enum StTipoVersamento {
     OTH;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StTipoVersamento fromValue(String v) {

@@ -34,7 +34,7 @@ public class Nota extends JSONSerializable {
 
   @JsonProperty("autore")
   public String getAutore() {
-    return autore;
+    return this.autore;
   }
   public void setAutore(String autore) {
     this.autore = autore;
@@ -50,7 +50,7 @@ public class Nota extends JSONSerializable {
 
   @JsonProperty("data")
   public Date getData() {
-    return data;
+    return this.data;
   }
   public void setData(Date data) {
     this.data = data;
@@ -66,7 +66,7 @@ public class Nota extends JSONSerializable {
 
   @JsonProperty("testo")
   public String getTesto() {
-    return testo;
+    return this.testo;
   }
   public void setTesto(String testo) {
     this.testo = testo;
@@ -77,22 +77,22 @@ public class Nota extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Nota nota = (Nota) o;
-    return Objects.equals(autore, nota.autore) &&
-        Objects.equals(data, nota.data) &&
-        Objects.equals(testo, nota.testo);
+    return Objects.equals(this.autore, nota.autore) &&
+        Objects.equals(this.data, nota.data) &&
+        Objects.equals(this.testo, nota.testo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(autore, data, testo);
+    return Objects.hash(this.autore, this.data, this.testo);
   }
 
   public static Nota parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Nota) parse(json, Nota.class);
+    return parse(json, Nota.class);
   }
 
   @Override
@@ -105,9 +105,9 @@ public class Nota extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Nota {\n");
     
-    sb.append("    autore: ").append(toIndentedString(autore)).append("\n");
-    sb.append("    data: ").append(toIndentedString(data)).append("\n");
-    sb.append("    testo: ").append(toIndentedString(testo)).append("\n");
+    sb.append("    autore: ").append(this.toIndentedString(this.autore)).append("\n");
+    sb.append("    data: ").append(this.toIndentedString(this.data)).append("\n");
+    sb.append("    testo: ").append(this.toIndentedString(this.testo)).append("\n");
     sb.append("}");
     return sb.toString();
   }

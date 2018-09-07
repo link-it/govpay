@@ -14,7 +14,7 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 	private List<String> idTributi;
 	
 	public List<String> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<String> idDomini) {
@@ -22,7 +22,7 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 	}
 
 	public List<String> getIdTributi() {
-		return idTributi;
+		return this.idTributi;
 	}
 
 	public void setIdTributi(List<String> idTributi) {
@@ -34,7 +34,7 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 	}
 
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 
 	public void setApplicazione(Applicazione applicazione) {
@@ -42,7 +42,7 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 
 	public void setIdApplicazione(String idApplicazione) {
@@ -50,7 +50,7 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdUtenza() {
-		return idUtenza;
+		return this.idUtenza;
 	}
 
 	public void setIdUtenza(String idUtenza) {

@@ -284,7 +284,6 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
           _json.entrate = _json.entrate.map((e) => {
             return e.idEntrata;
           });
-          //TODO: Mappatura delle ACL come per domini ed entrate ?
           break;
         case UtilService.DOMINIO:
           _method = UtilService.METHODS.PATCH;
@@ -302,7 +301,8 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
           break;
         case UtilService.ACL:
           _method = UtilService.METHODS.PATCH;
-          _json = { op: mb.operation, path: UtilService.URL_ACLS, value: mb.info.viewModel };
+          _json = [];
+          _json.push({ op: mb.operation, path: UtilService.URL_ACLS, value: mb.info.viewModel });
           break;
       }
       this.gps.saveData(_service, _json, _query, _method).subscribe(
@@ -313,7 +313,7 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
                 mb.info.viewModel['principal'] = this.json['principal'];
                 mb.info.viewModel['domini'] = this.json.domini;
                 mb.info.viewModel['entrate'] = this.json.entrate;
-                //TODO: Ripristino delle ACL come per domini ed entrate ?
+                mb.info.viewModel['acl'] = this.json.acl;
               break;
               case UtilService.DOMINIO:
               case UtilService.ENTRATA:

@@ -36,29 +36,29 @@ public class Notifica extends it.govpay.model.Notifica {
 	}
 	
 	public Notifica(Rpt rpt, TipoNotifica tipoNotifica, BasicBD bd) throws ServiceException {
-		setApplicazione(rpt.getVersamento(bd).getApplicazione(bd));
+		this.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd));
 		long adesso = new Date().getTime();
-		setDataAggiornamento(new Date(adesso));
-		setDataCreazione(new Date(adesso));
-		setDataProssimaSpedizione(new Date(adesso + 60000 ));
-		setDescrizioneStato(null);
-		setRpt(rpt);
-		setStato(StatoSpedizione.DA_SPEDIRE);
-		setTentativiSpedizione(0l);
-		setTipo(tipoNotifica);
+		this.setDataAggiornamento(new Date(adesso));
+		this.setDataCreazione(new Date(adesso));
+		this.setDataProssimaSpedizione(new Date(adesso + 60000 ));
+		this.setDescrizioneStato(null);
+		this.setRpt(rpt);
+		this.setStato(StatoSpedizione.DA_SPEDIRE);
+		this.setTentativiSpedizione(0l);
+		this.setTipo(tipoNotifica);
 	}
 	
 	public Notifica(Rr rr, TipoNotifica tipoNotifica, BasicBD bd) throws ServiceException {
-		setApplicazione(rr.getRpt(bd).getVersamento(bd).getApplicazione(bd));
+		this.setApplicazione(rr.getRpt(bd).getVersamento(bd).getApplicazione(bd));
 		long adesso = new Date().getTime();
-		setDataAggiornamento(new Date(adesso));
-		setDataCreazione(new Date(adesso));
-		setDataProssimaSpedizione(new Date(adesso + 60000 ));
-		setDescrizioneStato(null);
-		setRr(rr);
-		setStato(StatoSpedizione.DA_SPEDIRE);
-		setTentativiSpedizione(0l);
-		setTipo(tipoNotifica);
+		this.setDataAggiornamento(new Date(adesso));
+		this.setDataCreazione(new Date(adesso));
+		this.setDataProssimaSpedizione(new Date(adesso + 60000 ));
+		this.setDescrizioneStato(null);
+		this.setRr(rr);
+		this.setStato(StatoSpedizione.DA_SPEDIRE);
+		this.setTentativiSpedizione(0l);
+		this.setTipo(tipoNotifica);
 	}
 	
 	private static final long serialVersionUID = 1L;
@@ -74,9 +74,9 @@ public class Notifica extends it.govpay.model.Notifica {
 	}
 	
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(applicazione == null)
-			applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
-		return applicazione;
+		if(this.applicazione == null)
+			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+		return this.applicazione;
 	}
 	
 	public void setRpt(Rpt rpt) {
@@ -85,24 +85,24 @@ public class Notifica extends it.govpay.model.Notifica {
 	}
 	
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
-		if(rpt == null) {
+		if(this.rpt == null) {
 			if(this.getIdRpt() != null) { 
 				RptBD rptBD = new RptBD(bd);
-				rpt = rptBD.getRpt(this.getIdRpt());
+				this.rpt = rptBD.getRpt(this.getIdRpt());
 			} else {
-				rpt = getRr(bd).getRpt(bd);
+				this.rpt = this.getRr(bd).getRpt(bd);
 			}
 		}
 			
-		return rpt;
+		return this.rpt;
 	}
 
 	public Rr getRr(BasicBD bd) throws ServiceException {
-		if(rr == null && this.getIdRr() != null) {
+		if(this.rr == null && this.getIdRr() != null) {
 			RrBD rrBD = new RrBD(bd);
-			rr = rrBD.getRr(this.getIdRr());
+			this.rr = rrBD.getRr(this.getIdRr());
 		}
-		return rr;
+		return this.rr;
 	}
 
 	public void setRr(Rr rr) {

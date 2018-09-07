@@ -24,13 +24,13 @@ public class AclCache {
 	
 	public AclCache(Logger log) {
 		this.log = log;
-		this.mapAclsRuoli = new HashMap<String,List<Acl>>();
-		this.mapAclsPrincipal = new HashMap<String,List<Acl>>();
+		this.mapAclsRuoli = new HashMap<>();
+		this.mapAclsPrincipal = new HashMap<>();
 
 		
-		inizializzaCacheAclsRuoli(); 
+		this.inizializzaCacheAclsRuoli(); 
 		
-		inizializzaCacheAclsPrincipal(); 
+		this.inizializzaCacheAclsPrincipal(); 
 	}
 
 	public void inizializzaCacheAclsRuoli() {
@@ -50,7 +50,7 @@ public class AclCache {
 					if(this.mapAclsRuoli.containsKey(ruolo)) {
 						listaAclI = this.mapAclsRuoli.remove(ruolo);
 					} else {
-						listaAclI = new ArrayList<Acl>();
+						listaAclI = new ArrayList<>();
 					}
 				
 					listaAclI.add(acl);
@@ -81,7 +81,7 @@ public class AclCache {
 					if(this.mapAclsPrincipal.containsKey(ruolo)) {
 						listaAclI = this.mapAclsPrincipal.remove(ruolo);
 					} else {
-						listaAclI = new ArrayList<Acl>();
+						listaAclI = new ArrayList<>();
 					}
 				
 					listaAclI.add(acl);
@@ -105,7 +105,7 @@ public class AclCache {
 	}
 	
 	public List<String> getListaRuoli(){
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 	
 	public Set<String> getChiaviRuoli(){

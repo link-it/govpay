@@ -36,7 +36,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class SingoloVersamentoConverter {
 
 	public static List<SingoloVersamento> toDTO(List<it.govpay.orm.SingoloVersamento> applicazioneLst) throws ServiceException {
-		List<SingoloVersamento> lstDTO = new ArrayList<SingoloVersamento>();
+		List<SingoloVersamento> lstDTO = new ArrayList<>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.SingoloVersamento vo: applicazioneLst){
 				lstDTO.add(toDTO(vo));

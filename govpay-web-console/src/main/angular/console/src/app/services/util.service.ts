@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Injectable()
 export class UtilService {
 
-  public static NEED_BASIC_AUTHORIZATION: boolean = false;
+  public static NEED_BASIC_AUTHORIZATION: boolean = true;
 
   public static ROOT_SERVICE: string = UtilService.HTTP_ROOT_SERVICE();
   public static LOGOUT_SERVICE: string = UtilService.HTTP_LOGOUT_SERVICE();
@@ -373,11 +373,11 @@ export class UtilService {
     let _msg = '';
     try {
       _msg = (!error.instance.error.dettaglio)?error.instance.error.descrizione:error.instance.error.descrizione+': '+error.instance.error.dettaglio;
+      if(_msg.length > 200) {
+        _msg = _msg.substring(0, 200);
+      }
     } catch(e) {
       _msg = error.message;
-    }
-    if(_msg.length > 200) {
-      _msg = _msg.substring(0, 200);
     }
     this.alert(_msg);
   }
@@ -489,6 +489,36 @@ export class UtilService {
     return Object.keys(object).filter(function(key) {
       return object[key] === value
     })[0];
+  }
+
+  desaturateColor(_color: string): string {
+    let col = this.hexToRgb(_color);
+    let sat = 0;
+    let gray = col.r * 0.3086 + col.g * 0.6094 + col.b * 0.0820;
+
+    col.r = Math.round(col.r * sat + gray * (1-sat));
+    col.g = Math.round(col.g * sat + gray * (1-sat));
+    col.b = Math.round(col.b * sat + gray * (1-sat));
+
+    return this.rgbToHex(col.r,col.g,col.b);
+  }
+
+  private componentToHex(c: any) {
+    let hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+
+  private rgbToHex(r, g, b) {
+    return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+  }
+
+  private hexToRgb(hex: string) {
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
   }
 
   /**

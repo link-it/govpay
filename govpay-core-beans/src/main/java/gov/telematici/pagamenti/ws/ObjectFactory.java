@@ -144,7 +144,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "listaEsitoAvvisiDigitali")
     public JAXBElement<ListaEsitoAvvisiDigitali> createListaEsitoAvvisiDigitali(ListaEsitoAvvisiDigitali value) {
-        return new JAXBElement<ListaEsitoAvvisiDigitali>(_ListaEsitoAvvisiDigitali_QNAME, ListaEsitoAvvisiDigitali.class, null, value);
+        return new JAXBElement<>(_ListaEsitoAvvisiDigitali_QNAME, ListaEsitoAvvisiDigitali.class, null, value);
     }
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ListaEsitoAvvisiDigitali }{@code >}}
@@ -152,7 +152,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "avvisoDigitale")
     public JAXBElement<CtAvvisoDigitale> createCtAvvisoDigitale(CtAvvisoDigitale value) {
-        return new JAXBElement<CtAvvisoDigitale>(_CtAvvisoDigitale_QNAME, CtAvvisoDigitale.class, null, value);
+        return new JAXBElement<>(_CtAvvisoDigitale_QNAME, CtAvvisoDigitale.class, null, value);
     }
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link CtEsitoPresaInCarico }{@code >}}
@@ -160,7 +160,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://ws.pagamenti.telematici.gov/", name = "esitoPresaInCarico")
     public JAXBElement<CtEsitoPresaInCarico> createEsitoPresaInCarico(CtEsitoPresaInCarico value) {
-        return new JAXBElement<CtEsitoPresaInCarico>(_EsitoPresaInCarico_QNAME, CtEsitoPresaInCarico.class, null, value);
+        return new JAXBElement<>(_EsitoPresaInCarico_QNAME, CtEsitoPresaInCarico.class, null, value);
     }
 
 }

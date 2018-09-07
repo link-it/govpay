@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -88,32 +90,45 @@
 			<artifactId>jettison</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>xerces</groupId>
-		    <artifactId>xercesImpl</artifactId>
-		    <version>2.11.0</version>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.11.0</version>
 		</dependency>
 
 		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-annotations</artifactId>
-		    <version>2.9.2</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.9.2</version>
 		</dependency>
-				
+
 		<dependency>
-		    <groupId>com.fasterxml.jackson.module</groupId>
-		    <artifactId>jackson-module-jaxb-annotations</artifactId>
-		    <version>2.9.2</version>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
+			<version>2.9.2</version>
 		</dependency>
-				
+
 		<dependency>
 			<groupId>eu.medsea.mimeutil</groupId>
 			<artifactId>mime-util</artifactId>
 			<version>2.1.1</version>
 		</dependency>
-
-
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-rest</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-openapi</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-xml2json</artifactId>
+		</dependency>
 
 	</dependencies>
 
@@ -128,14 +143,4 @@
 			</resource>
 		</resources>
 	</build>
-	<repositories>
-		<repository>
-			<id>openspcoop2-releases</id>
-			<url>http://maven.openspcoop.org/content/repositories/public/</url>
-		</repository>
-		<repository>
-			<id>openspcoop2-snapshot</id>
-			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
-		</repository>
-	</repositories>
 </project>

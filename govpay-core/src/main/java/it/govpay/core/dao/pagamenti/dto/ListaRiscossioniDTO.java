@@ -28,7 +28,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	private Stato stato;
 
 	public Date getDataRiscossioneDa() {
-		return dataRiscossioneDa;
+		return this.dataRiscossioneDa;
 	}
 
 	public void setDataRiscossioneDa(Date dataRiscossioneDa) {
@@ -36,7 +36,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	}
 
 	public Date getDataRiscossioneA() {
-		return dataRiscossioneA;
+		return this.dataRiscossioneA;
 	}
 
 	public void setDataRiscossioneA(Date dataRiscossioneA) {
@@ -44,7 +44,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	}
 
 	public TIPO_PAGAMENTO getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 
 	public void setTipo(TIPO_PAGAMENTO tipo) {
@@ -52,7 +52,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	}
 
 	public String getIdPendenza() {
-		return idPendenza;
+		return this.idPendenza;
 	}
 
 	public void setIdPendenza(String idPendenza) {
@@ -60,7 +60,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	}
 
 	public String getIdA2A() {
-		return idA2A;
+		return this.idA2A;
 	}
 
 	public void setIdA2A(String idA2A) {
@@ -68,7 +68,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	}
 
 	public String getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(String idDominio) {
@@ -76,7 +76,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	}
 
 	public Stato getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(Stato stato) {

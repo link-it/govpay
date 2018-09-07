@@ -61,7 +61,7 @@ public class Fault {
      *     
      */
     public QName getFaultcode() {
-        return faultcode;
+        return this.faultcode;
     }
 
     /**
@@ -85,7 +85,7 @@ public class Fault {
      *     
      */
     public String getFaultstring() {
-        return faultstring;
+        return this.faultstring;
     }
 
     /**
@@ -109,7 +109,7 @@ public class Fault {
      *     
      */
     public String getFaultactor() {
-        return faultactor;
+        return this.faultactor;
     }
 
     /**
@@ -133,7 +133,7 @@ public class Fault {
      *     
      */
     public Detail getDetail() {
-        return detail;
+        return this.detail;
     }
 
     /**

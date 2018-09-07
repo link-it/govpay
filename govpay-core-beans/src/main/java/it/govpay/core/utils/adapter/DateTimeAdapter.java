@@ -26,10 +26,12 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class DateTimeAdapter extends XmlAdapter<String, Date>
 {
+	@Override
 	public Date unmarshal(String value) {
 		return (it.govpay.core.utils.adapter.DataTypeAdapterCXF.parseDateTime(value));
 	}
 
+	@Override
 	public String marshal(Date value) {
 		return (it.govpay.core.utils.adapter.DataTypeAdapterCXF.printDateTime(value));
 	}

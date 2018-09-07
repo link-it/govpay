@@ -45,7 +45,7 @@ public class Notifica extends JSONSerializable {
 
   @JsonProperty("idA2A")
   public String getIdA2A() {
-    return idA2A;
+    return this.idA2A;
   }
   public void setIdA2A(String idA2A) {
     this.idA2A = idA2A;
@@ -61,7 +61,7 @@ public class Notifica extends JSONSerializable {
 
   @JsonProperty("idPendenza")
   public String getIdPendenza() {
-    return idPendenza;
+    return this.idPendenza;
   }
   public void setIdPendenza(String idPendenza) {
     this.idPendenza = idPendenza;
@@ -77,7 +77,7 @@ public class Notifica extends JSONSerializable {
 
   @JsonProperty("rpt")
   public CtRichiestaPagamentoTelematico getRpt() {
-    return rpt;
+    return this.rpt;
   }
   public void setRpt(CtRichiestaPagamentoTelematico rpt) {
     this.rpt = rpt;
@@ -93,7 +93,7 @@ public class Notifica extends JSONSerializable {
 
   @JsonProperty("rt")
   public CtRicevutaTelematica getRt() {
-    return rt;
+    return this.rt;
   }
   public void setRt(CtRicevutaTelematica rt) {
     this.rt = rt;
@@ -108,7 +108,7 @@ public class Notifica extends JSONSerializable {
 
   @JsonProperty("riscossioni")
   public List<Riscossione> getRiscossioni() {
-    return riscossioni;
+    return this.riscossioni;
   }
   public void setRiscossioni(List<Riscossione> riscossioni) {
     this.riscossioni = riscossioni;
@@ -119,24 +119,24 @@ public class Notifica extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Notifica notifica = (Notifica) o;
-    return Objects.equals(idA2A, notifica.idA2A) &&
-        Objects.equals(idPendenza, notifica.idPendenza) &&
-        Objects.equals(rpt, notifica.rpt) &&
-        Objects.equals(rt, notifica.rt) &&
-        Objects.equals(riscossioni, notifica.riscossioni);
+    return Objects.equals(this.idA2A, notifica.idA2A) &&
+        Objects.equals(this.idPendenza, notifica.idPendenza) &&
+        Objects.equals(this.rpt, notifica.rpt) &&
+        Objects.equals(this.rt, notifica.rt) &&
+        Objects.equals(this.riscossioni, notifica.riscossioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, rpt, rt, riscossioni);
+    return Objects.hash(this.idA2A, this.idPendenza, this.rpt, this.rt, this.riscossioni);
   }
 
   public static Notifica parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Notifica) parse(json, Notifica.class);
+    return parse(json, Notifica.class);
   }
 
   @Override
@@ -149,11 +149,11 @@ public class Notifica extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Notifica {\n");
     
-    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
-    sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
-    sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
-    sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
-    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
+    sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
+    sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
+    sb.append("    rpt: ").append(this.toIndentedString(this.rpt)).append("\n");
+    sb.append("    rt: ").append(this.toIndentedString(this.rt)).append("\n");
+    sb.append("    riscossioni: ").append(this.toIndentedString(this.riscossioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }

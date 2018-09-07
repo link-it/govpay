@@ -19,7 +19,7 @@ public class LeggiOperatoreDTO extends BasicCreateRequestDTO {
 	}
 	
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 
 	public void setPrincipal(String principal) {

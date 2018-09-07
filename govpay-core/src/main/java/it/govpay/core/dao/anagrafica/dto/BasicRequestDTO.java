@@ -11,6 +11,6 @@ public class BasicRequestDTO {
 	private IAutorizzato user;
 	
 	public IAutorizzato getUser() {
-		return user;
+		return this.user;
 	}
 }

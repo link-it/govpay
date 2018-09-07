@@ -16,7 +16,7 @@ public class LeggiStazioneDTOResponse {
 	private Canale canale;
 
 	public Canale getCanale() {
-		return canale;
+		return this.canale;
 	}
 
 	public void setCanale(Canale canale) {

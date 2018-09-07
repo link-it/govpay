@@ -12,7 +12,7 @@ public class GetEntrataDTO extends BasicRequestDTO {
 	}
 
 	public String getCodTipoTributo() {
-		return codTipoTributo;
+		return this.codTipoTributo;
 	}
 
 }

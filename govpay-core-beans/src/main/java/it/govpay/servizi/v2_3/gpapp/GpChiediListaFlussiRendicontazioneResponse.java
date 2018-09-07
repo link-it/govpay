@@ -64,8 +64,8 @@ public class GpChiediListaFlussiRendicontazioneResponse
      * 
      */
     public List<EstremiFlussoRendicontazione> getFlussoRendicontazione() {
-        if (flussoRendicontazione == null) {
-            flussoRendicontazione = new ArrayList<EstremiFlussoRendicontazione>();
+        if (this.flussoRendicontazione == null) {
+            this.flussoRendicontazione = new ArrayList<>();
         }
         return this.flussoRendicontazione;
     }

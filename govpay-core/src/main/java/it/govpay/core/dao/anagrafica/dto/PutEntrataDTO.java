@@ -14,7 +14,7 @@ public class PutEntrataDTO extends BasicCreateRequestDTO  {
 	}
 
 	public TipoTributo getTipoTributo() {
-		return tipoTributo;
+		return this.tipoTributo;
 	}
 
 	public void setTipoTributo(TipoTributo tipoTributo) {
@@ -22,7 +22,7 @@ public class PutEntrataDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getCodTributo() {
-		return codTributo;
+		return this.codTributo;
 	}
 
 	public void setCodTributo(String codTributo) {

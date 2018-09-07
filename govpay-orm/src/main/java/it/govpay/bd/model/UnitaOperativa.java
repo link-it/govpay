@@ -38,14 +38,14 @@ public class UnitaOperativa extends it.govpay.model.UnitaOperativa {
 	private transient Dominio dominio;
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
-		return getDominio(bd, true);
+		return this.getDominio(bd, true);
 	}
 	
 	public Dominio getDominio(BasicBD bd, boolean useCacheData) throws ServiceException {
-		if(dominio == null) {
-			dominio = useCacheData ? AnagraficaManager.getDominio(bd, this.getIdDominio()) : AnagraficaManagerNoCache.getDominio(bd, this.getIdDominio());
+		if(this.dominio == null) {
+			this.dominio = useCacheData ? AnagraficaManager.getDominio(bd, this.getIdDominio()) : AnagraficaManagerNoCache.getDominio(bd, this.getIdDominio());
 		} 
-		return dominio;
+		return this.dominio;
 	}
 	
 }

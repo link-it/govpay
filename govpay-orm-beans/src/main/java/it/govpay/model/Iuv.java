@@ -37,7 +37,7 @@ public class Iuv extends BasicModel {
 		}
 		
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static TipoIUV toEnum(String codifica) throws ServiceException {
@@ -62,62 +62,63 @@ public class Iuv extends BasicModel {
 	private Integer applicationCode;
 	private int auxDigit;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 	public void setIdApplicazione(long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
 	public long getPrg() {
-		return prg;
+		return this.prg;
 	}
 	public void setPrg(long prg) {
 		this.prg = prg;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public Date getDataGenerazione() {
-		return dataGenerazione;
+		return this.dataGenerazione;
 	}
 	public void setDataGenerazione(Date dataGenerazione) {
 		this.dataGenerazione = dataGenerazione;
 	}
 	public long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(long idDominio) {
 		this.idDominio = idDominio;
 	}
 	public TipoIUV getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 	public void setTipo(TipoIUV tipo) {
 		this.tipo = tipo;
 	}
 	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 	public void setCodVersamentoEnte(String codVersamentoEnte) {
 		this.codVersamentoEnte = codVersamentoEnte;
 	}
 	public int getApplicationCode() {
-		return applicationCode;
+		return this.applicationCode;
 	}
 	public void setApplicationCode(int applicationCode) {
 		this.applicationCode = applicationCode;
 	}
 	public int getAuxDigit() {
-		return auxDigit;
+		return this.auxDigit;
 	}
 	public void setAuxDigit(int auxDigit) {
 		this.auxDigit = auxDigit;

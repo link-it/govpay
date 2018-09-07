@@ -7,19 +7,19 @@ public class RedirectDaPspDTO {
 	private String principal = null;
 
 	public String getIdSession() {
-		return idSession;
+		return this.idSession;
 	}
 	public void setIdSession(String idSession) {
 		this.idSession = idSession;
 	}
 	public String getEsito() {
-		return esito;
+		return this.esito;
 	}
 	public void setEsito(String esito) {
 		this.esito = esito;
 	}
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;

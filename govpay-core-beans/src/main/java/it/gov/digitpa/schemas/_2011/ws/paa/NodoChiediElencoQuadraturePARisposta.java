@@ -44,7 +44,7 @@ public class NodoChiediElencoQuadraturePARisposta
      *     
      */
     public TipoListaQuadrature getListaQuadrature() {
-        return listaQuadrature;
+        return this.listaQuadrature;
     }
 
     /**

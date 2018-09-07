@@ -34,7 +34,7 @@ public class FindIntermediariDTO extends BasicFindRequestDTO {
 	}
 
 	public String getCodIntermediario() {
-		return codIntermediario;
+		return this.codIntermediario;
 	}
 
 	public void setCodIntermediario(String codIntermediario) {
@@ -42,7 +42,7 @@ public class FindIntermediariDTO extends BasicFindRequestDTO {
 	}
 
 	public Boolean getAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(Boolean abilitato) {

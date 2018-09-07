@@ -116,7 +116,7 @@ public class DominiBD extends BasicBD {
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
 			this.getDominioService().create(vo);
 			dominio.setId(vo.getId());
-			emitAudit(dominio);
+			this.emitAudit(dominio);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -138,7 +138,7 @@ public class DominiBD extends BasicBD {
 			}
 			this.getDominioService().update(id, vo);
 			dominio.setId(vo.getId());
-			emitAudit(dominio);
+			this.emitAudit(dominio);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -153,7 +153,7 @@ public class DominiBD extends BasicBD {
 	
 	public void setStatoNdp(long idDominio, Integer codice, String operazione, String descrizione) throws ServiceException{
 		try {
-			List<UpdateField> lst = new ArrayList<UpdateField>();
+			List<UpdateField> lst = new ArrayList<>();
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_STATO, codice));
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_OPERAZIONE, operazione));
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE, descrizione));
@@ -170,7 +170,7 @@ public class DominiBD extends BasicBD {
 	public StatoNdP getStatoNdp(long idDominio) throws NotFoundException, ServiceException {
 		try {
 			
-			List<IField> lst = new ArrayList<IField>();
+			List<IField> lst = new ArrayList<>();
 			lst.add(it.govpay.orm.Dominio.model().NDP_STATO);
 			lst.add(it.govpay.orm.Dominio.model().NDP_OPERAZIONE);
 			lst.add(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE);
@@ -278,7 +278,7 @@ public class DominiBD extends BasicBD {
 	 * @throws ServiceException 
 	 */
 	public List<Dominio> getDomini() throws ServiceException {
-		return findAll(newFilter());
+		return this.findAll(this.newFilter());
 	}
 
 }

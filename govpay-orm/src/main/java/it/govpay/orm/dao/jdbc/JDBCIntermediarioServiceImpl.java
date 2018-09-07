@@ -139,7 +139,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getIntermediarioFieldConverter().toTable(Intermediario.model()));
 		boolean isUpdate_intermediario = true;
-		java.util.List<JDBCObject> lstObjects_intermediario = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_intermediario = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_INTERMEDIARIO,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodIntermediario(), Intermediario.model().COD_INTERMEDIARIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_PDD,false), "?");
@@ -194,7 +194,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
@@ -205,7 +205,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
@@ -216,7 +216,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 

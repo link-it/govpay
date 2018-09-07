@@ -53,7 +53,7 @@ public class NodoInviaRPTRisposta
      *     
      */
     public String getEsito() {
-        return esito;
+        return this.esito;
     }
 
     /**
@@ -77,7 +77,7 @@ public class NodoInviaRPTRisposta
      *     
      */
     public Integer getRedirect() {
-        return redirect;
+        return this.redirect;
     }
 
     /**
@@ -101,7 +101,7 @@ public class NodoInviaRPTRisposta
      *     
      */
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     /**

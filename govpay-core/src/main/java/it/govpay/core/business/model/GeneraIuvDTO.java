@@ -34,7 +34,7 @@ public class GeneraIuvDTO {
 	private List<IuvRichiesto> iuvRichiesto;
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String value) {
@@ -42,7 +42,7 @@ public class GeneraIuvDTO {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String value) {
@@ -50,14 +50,14 @@ public class GeneraIuvDTO {
 	}
 
 	public List<IuvRichiesto> getIuvRichiesto() {
-		if (iuvRichiesto == null) {
-			iuvRichiesto = new ArrayList<IuvRichiesto>();
+		if (this.iuvRichiesto == null) {
+			this.iuvRichiesto = new ArrayList<>();
 		}
 		return this.iuvRichiesto;
 	}
 
 	public Applicazione getApplicazioneAutenticata() {
-		return applicazioneAutenticata;
+		return this.applicazioneAutenticata;
 	}
 
 	public void setApplicazioneAutenticata(Applicazione applicazioneAutenticata) {
@@ -71,7 +71,7 @@ public class GeneraIuvDTO {
 		private BigDecimal importoTotale;
 
 		public String getCodVersamentoEnte() {
-			return codVersamentoEnte;
+			return this.codVersamentoEnte;
 		}
 
 		public void setCodVersamentoEnte(String value) {
@@ -79,7 +79,7 @@ public class GeneraIuvDTO {
 		}
 
 		public BigDecimal getImportoTotale() {
-			return importoTotale;
+			return this.importoTotale;
 		}
 
 		public void setImportoTotale(BigDecimal value) {

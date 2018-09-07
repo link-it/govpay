@@ -17,7 +17,7 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 public class Ruolo extends JSONSerializable {
   
   @JsonProperty("acl")
-  private List<AclPost> acl = new ArrayList<AclPost>();
+  private List<AclPost> acl = new ArrayList<>();
   
   @JsonProperty("id")
   private String id = null;
@@ -31,7 +31,7 @@ public class Ruolo extends JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return acl;
+    return this.acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -47,7 +47,7 @@ public class Ruolo extends JSONSerializable {
 
   @JsonProperty("id")
   public String getId() {
-    return id;
+    return this.id;
   }
   public void setId(String id) {
     this.id = id;
@@ -58,21 +58,21 @@ public class Ruolo extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Ruolo ruolo = (Ruolo) o;
-    return Objects.equals(acl, ruolo.acl) &&
-        Objects.equals(id, ruolo.id);
+    return Objects.equals(this.acl, ruolo.acl) &&
+        Objects.equals(this.id, ruolo.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(acl, id);
+    return Objects.hash(this.acl, this.id);
   }
 
   public static Ruolo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Ruolo) parse(json, Ruolo.class);
+    return parse(json, Ruolo.class);
   }
 
   @Override
@@ -85,8 +85,8 @@ public class Ruolo extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Ruolo {\n");
     
-    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
+    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
     sb.append("}");
     return sb.toString();
   }

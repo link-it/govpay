@@ -66,7 +66,7 @@ public class IntestazioneCarrelloPPT {
      *     
      */
     public String getIdentificativoIntermediarioPA() {
-        return identificativoIntermediarioPA;
+        return this.identificativoIntermediarioPA;
     }
 
     /**
@@ -90,7 +90,7 @@ public class IntestazioneCarrelloPPT {
      *     
      */
     public String getIdentificativoStazioneIntermediarioPA() {
-        return identificativoStazioneIntermediarioPA;
+        return this.identificativoStazioneIntermediarioPA;
     }
 
     /**
@@ -114,7 +114,7 @@ public class IntestazioneCarrelloPPT {
      *     
      */
     public String getIdentificativoCarrello() {
-        return identificativoCarrello;
+        return this.identificativoCarrello;
     }
 
     /**
@@ -138,7 +138,7 @@ public class IntestazioneCarrelloPPT {
      *     
      */
     public String getActor() {
-        return actor;
+        return this.actor;
     }
 
     /**
@@ -162,7 +162,7 @@ public class IntestazioneCarrelloPPT {
      *     
      */
     public Boolean isMustUnderstand() {
-        return mustUnderstand;
+        return this.mustUnderstand;
     }
 
     /**

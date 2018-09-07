@@ -50,7 +50,7 @@ public class GpCaricaVersamento {
      * 
      */
     public boolean isGeneraIuv() {
-        return generaIuv;
+        return this.generaIuv;
     }
 
     /**
@@ -70,7 +70,7 @@ public class GpCaricaVersamento {
      *     
      */
     public Boolean isAggiornaSeEsiste() {
-        return aggiornaSeEsiste;
+        return this.aggiornaSeEsiste;
     }
 
     /**
@@ -94,7 +94,7 @@ public class GpCaricaVersamento {
      *     
      */
     public Versamento getVersamento() {
-        return versamento;
+        return this.versamento;
     }
 
     /**

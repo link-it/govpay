@@ -6,13 +6,13 @@ public class RichiestaWebControllerDTOResponse {
 	String location = null;
 	
 	public String getWispHtml() {
-		return wispHtml;
+		return this.wispHtml;
 	}
 	public void setWispHtml(String wispHtml) {
 		this.wispHtml = wispHtml;
 	}
 	public String getLocation() {
-		return location;
+		return this.location;
 	}
 	public void setLocation(String location) {
 		this.location = location;

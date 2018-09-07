@@ -14,11 +14,11 @@ public class GetIbanDTO extends BasicRequestDTO {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public String getCodIbanAccredito() {
-		return codIbanAccredito;
+		return this.codIbanAccredito;
 	}
 
 }

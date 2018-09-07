@@ -23,37 +23,37 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 	private List<T> risultati;
 	
 	public List<T> getRisultati() {
-		return risultati;
+		return this.risultati;
 	}
 	public void setRisultati(List<T> risultati) {
 		this.risultati = risultati;
 	}
 	public long getNumRisultati() {
-		return numRisultati;
+		return this.numRisultati;
 	}
 	public void setNumRisultati(long numRisultati) {
 		this.numRisultati = numRisultati;
 	}
 	public long getNumPagine() {
-		return numPagine;
+		return this.numPagine;
 	}
 	public void setNumPagine(long numPagine) {
 		this.numPagine = numPagine;
 	}
 	public long getRisultatiPerPagina() {
-		return risultatiPerPagina;
+		return this.risultatiPerPagina;
 	}
 	public void setRisultatiPerPagina(long risultatiPerPagina) {
 		this.risultatiPerPagina = risultatiPerPagina;
 	}
 	public long getPagina() {
-		return pagina;
+		return this.pagina;
 	}
 	public void setPagina(long pagina) {
 		this.pagina = pagina;
 	}
 	public String getProssimiRisultati() {
-		return prossimiRisultati;
+		return this.prossimiRisultati;
 	}
 	public void setProssimiRisultati(String prossimiRisultati) {
 		this.prossimiRisultati = prossimiRisultati;
@@ -72,7 +72,7 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		
-		for (T t : risultati) {
+		for (T t : this.risultati) {
 			if(sb.length() > 1)
 				sb.append(",");
 			

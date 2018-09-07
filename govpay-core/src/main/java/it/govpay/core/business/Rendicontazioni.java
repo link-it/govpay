@@ -95,7 +95,7 @@ public class Rendicontazioni extends BasicBD {
 
 	public String downloadRendicontazioni(boolean deep) throws GovPayException {
 		boolean errori = false;
-		List<String> response = new ArrayList<String>();
+		List<String> response = new ArrayList<>();
 		try {
 			GpThreadLocal.get().log("rendicontazioni.acquisizione");
 			DominiBD dominiBD = new DominiBD(this);
@@ -103,17 +103,17 @@ public class Rendicontazioni extends BasicBD {
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 
-			closeConnection();
+			this.closeConnection();
 
 			for(Stazione stazione : lstStazioni) {
 
 
-				List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<TipoIdRendicontazione>();
+				List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 
-				setupConnection(GpThreadLocal.get().getTransactionId());
+				this.setupConnection(GpThreadLocal.get().getTransactionId());
 				Intermediario intermediario = stazione.getIntermediario(this);
 				NodoClient client = new NodoClient(intermediario, this);
-				closeConnection();
+				this.closeConnection();
 
 				if(deep) {
 					DominioFilter filter = dominiBD.newFilter();
@@ -122,23 +122,23 @@ public class Rendicontazioni extends BasicBD {
 
 					for(Dominio dominio : lstDomini) { 
 						log.debug("Acquisizione dei flussi di rendicontazione per il dominio [" + dominio.getCodDominio() + "] in corso.");
-						flussiDaAcquisire.addAll(chiediListaFr(client, stazione, dominio));
+						flussiDaAcquisire.addAll(this.chiediListaFr(client, stazione, dominio));
 					}
 				} else {
 					log.debug("Acquisizione dei flussi di rendicontazione per la stazione [" + stazione.getCodStazione() + "] in corso.");
-					flussiDaAcquisire.addAll(chiediListaFr(client, stazione, null));
+					flussiDaAcquisire.addAll(this.chiediListaFr(client, stazione, null));
 				}
 
-				setupConnection(GpThreadLocal.get().getTransactionId());
+				this.setupConnection(GpThreadLocal.get().getTransactionId());
 				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
 				FrBD frBD = new FrBD(this);
-				Set<String> idfs = new HashSet<String>();
+				Set<String> idfs = new HashSet<>();
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()) || idfs.contains(idRendicontazione.getIdentificativoFlusso()))
 						flussiDaAcquisire.remove(idRendicontazione);
 					idfs.add(idRendicontazione.getIdentificativoFlusso());
 				}
-				closeConnection();
+				this.closeConnection();
 
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
@@ -200,7 +200,7 @@ public class Rendicontazioni extends BasicBD {
 
 							log.info("Ricevuto flusso rendicontazione per " + flussoRendicontazione.getDatiSingoliPagamenti().size() + " singoli pagamenti");
 
-							setupConnection(GpThreadLocal.get().getTransactionId());
+							this.setupConnection(GpThreadLocal.get().getTransactionId());
 
 							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlusso");
 							GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
@@ -314,7 +314,7 @@ public class Rendicontazioni extends BasicBD {
 									// Pagamento non trovato. Devo capire se ce' un errore.
 
 									// Controllo che sia per uno IUV generato da noi
-									if(!isInterno(dominio, iuv)) {
+									if(!this.isInterno(dominio, iuv)) {
 										rendicontazione.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
 										continue;
 									}
@@ -431,7 +431,7 @@ public class Rendicontazioni extends BasicBD {
 							RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(this);
 							
 							// Tutte le operazioni di salvataggio devono essere in transazione.
-							setAutoCommit(false);
+							this.setAutoCommit(false);
 							frBD.insertFr(fr);
 							for(Rendicontazione r : fr.getRendicontazioni(this)) {
 								r.setIdFr(fr.getId());
@@ -459,7 +459,7 @@ public class Rendicontazioni extends BasicBD {
 			throw new GovPayException(e);
 		} finally {
 			try {
-				if(isClosed()) setupConnection(GpThreadLocal.get().getTransactionId());
+				if(this.isClosed()) this.setupConnection(GpThreadLocal.get().getTransactionId());
 			} catch (Exception e) {
 				log.error("Errore nel ripristino della connessione", e);
 			}
@@ -527,7 +527,7 @@ public class Rendicontazioni extends BasicBD {
 
 	private List<TipoIdRendicontazione> chiediListaFr(NodoClient client, Stazione stazione, Dominio dominio){
 		String idTransaction = null;
-		List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<TipoIdRendicontazione>();
+		List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 		try {
 			idTransaction = GpThreadLocal.get().openTransaction();
 			GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
@@ -569,10 +569,10 @@ public class Rendicontazioni extends BasicBD {
 				// Per ogni flusso della lista, vedo se ce l'ho gia' in DB ed in caso lo archivio
 
 				for(TipoIdRendicontazione idRendicontazione : risposta.getElencoFlussiRendicontazione().getIdRendicontazione()) {
-					setupConnection(GpThreadLocal.get().getTransactionId());
+					this.setupConnection(GpThreadLocal.get().getTransactionId());
 					FrBD frBD = new FrBD(this);
 					boolean exists = frBD.exists(idRendicontazione.getIdentificativoFlusso());
-					closeConnection();
+					this.closeConnection();
 					if(exists){
 						GpThreadLocal.get().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
 						log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
@@ -612,10 +612,10 @@ public class Rendicontazioni extends BasicBD {
 	 */
 	public List<Fr> chiediListaRendicontazioni(Applicazione applicazione, String codDominio, String codApplicazione, Date da, Date a) throws GovPayException, ServiceException, NotFoundException {
 		
-		List<Diritti> diritti = new ArrayList<Diritti>(); 
+		List<Diritti> diritti = new ArrayList<>(); 
 		diritti.add(Diritti.LETTURA);
 		
-		List<String> domini = new ArrayList<String>();
+		List<String> domini = new ArrayList<>();
 		if(codDominio != null) {
 			if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, codDominio, null,diritti))
 				domini.add(codDominio);

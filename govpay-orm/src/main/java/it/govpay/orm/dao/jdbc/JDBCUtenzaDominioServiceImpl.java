@@ -191,7 +191,7 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getUtenzaDominioFieldConverter().toTable(UtenzaDominio.model()));
 		boolean isUpdate_utenzaDominio = true;
-		java.util.List<JDBCObject> lstObjects_utenzaDominio = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_utenzaDominio = new java.util.ArrayList<>();
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_utenza","?");
 		}
@@ -248,7 +248,7 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUtenzaDominioFieldConverter().toTable(UtenzaDominio.model()), 
@@ -259,7 +259,7 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUtenzaDominioFieldConverter().toTable(UtenzaDominio.model()), 
@@ -270,7 +270,7 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getUtenzaDominioFieldConverter().toTable(UtenzaDominio.model()), 

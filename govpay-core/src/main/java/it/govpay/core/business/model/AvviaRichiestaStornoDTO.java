@@ -37,7 +37,7 @@ public class AvviaRichiestaStornoDTO {
 	private Applicazione applicazione;
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String value) {
@@ -45,7 +45,7 @@ public class AvviaRichiestaStornoDTO {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String value) {
@@ -53,7 +53,7 @@ public class AvviaRichiestaStornoDTO {
 	}
 
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 
 	public void setCcp(String value) {
@@ -61,7 +61,7 @@ public class AvviaRichiestaStornoDTO {
 	}
 
 	public String getCausaleRevoca() {
-		return causaleRevoca;
+		return this.causaleRevoca;
 	}
 
 	public void setCausaleRevoca(String value) {
@@ -69,7 +69,7 @@ public class AvviaRichiestaStornoDTO {
 	}
 
 	public String getDatiAggiuntivi() {
-		return datiAggiuntivi;
+		return this.datiAggiuntivi;
 	}
 
 	public void setDatiAggiuntivi(String value) {
@@ -77,14 +77,14 @@ public class AvviaRichiestaStornoDTO {
 	}
 
 	public List<Pagamento> getPagamento() {
-		if (pagamento == null) {
-			pagamento = new ArrayList<Pagamento>();
+		if (this.pagamento == null) {
+			this.pagamento = new ArrayList<>();
 		}
 		return this.pagamento;
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String codApplicazione) {
@@ -92,7 +92,7 @@ public class AvviaRichiestaStornoDTO {
 	}
 
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 
 	public void setApplicazione(Applicazione applicazione) {
@@ -108,7 +108,7 @@ public class AvviaRichiestaStornoDTO {
 		private String datiAggiuntivi;
 
 		public String getIur() {
-			return iur;
+			return this.iur;
 		}
 
 		public void setIur(String value) {
@@ -116,7 +116,7 @@ public class AvviaRichiestaStornoDTO {
 		}
 
 		public String getCausaleRevoca() {
-			return causaleRevoca;
+			return this.causaleRevoca;
 		}
 
 		public void setCausaleRevoca(String value) {
@@ -124,7 +124,7 @@ public class AvviaRichiestaStornoDTO {
 		}
 
 		public String getDatiAggiuntivi() {
-			return datiAggiuntivi;
+			return this.datiAggiuntivi;
 		}
 
 		public void setDatiAggiuntivi(String value) {

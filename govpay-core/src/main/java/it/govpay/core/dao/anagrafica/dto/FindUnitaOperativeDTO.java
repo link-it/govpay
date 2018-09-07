@@ -34,11 +34,11 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 	}
 	
 	public String getCodDominio(){
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public String getCodIdentificativo() {
-		return codIdentificativo;
+		return this.codIdentificativo;
 	}
 
 	public void setCodIdentificativo(String codIdentificativo) {
@@ -46,7 +46,7 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 	}
 
 	public String getRagioneSociale() {
-		return ragioneSociale;
+		return this.ragioneSociale;
 	}
 
 	public void setRagioneSociale(String ragioneSociale) {
@@ -54,7 +54,7 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 	}
 
 	public Boolean getAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(Boolean abilitato) {

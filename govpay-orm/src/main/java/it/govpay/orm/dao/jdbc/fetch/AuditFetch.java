@@ -52,15 +52,15 @@ public class AuditFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Audit.model())){
 				Audit object = new Audit();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setData", Audit.model().DATA.getFieldType(),
+				this.setParameter(object, "setData", Audit.model().DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data", Audit.model().DATA.getFieldType()));
-				setParameter(object, "setIdOggetto", Audit.model().ID_OGGETTO.getFieldType(),
+				this.setParameter(object, "setIdOggetto", Audit.model().ID_OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "id_oggetto", Audit.model().ID_OGGETTO.getFieldType()));
-				setParameter(object, "setTipoOggetto", Audit.model().TIPO_OGGETTO.getFieldType(),
+				this.setParameter(object, "setTipoOggetto", Audit.model().TIPO_OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_oggetto", Audit.model().TIPO_OGGETTO.getFieldType()));
-				setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
+				this.setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "oggetto", Audit.model().OGGETTO.getFieldType()));
 				return object;
 			}
@@ -82,15 +82,15 @@ public class AuditFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Audit.model())){
 				Audit object = new Audit();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setData", Audit.model().DATA.getFieldType(),
+				this.setParameter(object, "setData", Audit.model().DATA.getFieldType(),
 					this.getObjectFromMap(map,"data"));
-				setParameter(object, "setIdOggetto", Audit.model().ID_OGGETTO.getFieldType(),
+				this.setParameter(object, "setIdOggetto", Audit.model().ID_OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"idOggetto"));
-				setParameter(object, "setTipoOggetto", Audit.model().TIPO_OGGETTO.getFieldType(),
+				this.setParameter(object, "setTipoOggetto", Audit.model().TIPO_OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"tipoOggetto"));
-				setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
+				this.setParameter(object, "setOggetto", Audit.model().OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"oggetto"));
 				return object;
 			}

@@ -67,8 +67,8 @@ public class CtListaParoleChiave {
      * 
      */
     public List<StParoleChiave> getParoleChiaves() {
-        if (paroleChiaves == null) {
-            paroleChiaves = new ArrayList<StParoleChiave>();
+        if (this.paroleChiaves == null) {
+            this.paroleChiaves = new ArrayList<>();
         }
         return this.paroleChiaves;
     }

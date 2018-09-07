@@ -92,7 +92,7 @@ public class AclBD extends BasicBD {
 	public List<Acl> findAll(AclFilter filter) throws ServiceException {
 		try {
 
-			List<Acl> dtoList = new ArrayList<Acl>();
+			List<Acl> dtoList = new ArrayList<>();
 			for(it.govpay.orm.ACL vo: this.getAclService().findAll(filter.toPaginatedExpression())) {
 				dtoList.add(AclConverter.toDTO(vo));
 			}
@@ -108,7 +108,7 @@ public class AclBD extends BasicBD {
 			
 			List<Object> select = this.getAclService().select(filter.toPaginatedExpression(), true, ACL.model().RUOLO);
 			
-			List<String> ruoli = new ArrayList<String>();
+			List<String> ruoli = new ArrayList<>();
 			for(Object obj: select) {
 				if(obj instanceof String)
 					ruoli.add((String) obj);
@@ -156,7 +156,7 @@ public class AclBD extends BasicBD {
 
 			this.getAclService().update(id, vo);
 			acl.setId(vo.getId());
-			emitAudit(acl);
+			this.emitAudit(acl);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -174,7 +174,7 @@ public class AclBD extends BasicBD {
 			it.govpay.orm.ACL vo = AclConverter.toVO(acl);
 			this.getAclService().create(vo);
 			acl.setId(vo.getId());
-			emitAudit(acl);
+			this.emitAudit(acl);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} 

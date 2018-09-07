@@ -105,7 +105,7 @@ public class UtenzaPatchUtils {
 		utenza.getDomini(bd);
 	}
 
-	public static void patchRuolo(PatchOp op, String idRuolo, BasicBD bd)
+	public static void patchRuolo(PatchOp op, String idRuolo, List<Acl> lstAclAttualiRuolo, BasicBD bd)
 			throws ValidationException, ServiceException, NotFoundException {
 		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
 		Acl acl = new Acl();
@@ -113,14 +113,25 @@ public class UtenzaPatchUtils {
 		setServizioAcl(map, acl);
 		setAutorizzazioniAcl(map, acl);
 		
+		boolean found = false;
+		for(Acl aclPresente : lstAclAttualiRuolo) {
+			if(aclPresente.getServizio().equals(acl.getServizio()) && (aclPresente.getRuolo() != null && acl.getRuolo().equals(aclPresente.getRuolo()))) {
+				found = true;
+				break;
+			}
+		}
+		
 		AclBD aclBD = new AclBD(bd);
 		switch(op.getOp()) {
 		case ADD: 
-			aclBD.insertAcl(acl);
+			if(!found)
+				aclBD.insertAcl(acl);
+			else
+				aclBD.updateAcl(acl);
 			break;
-		case REPLACE:
-			aclBD.updateAcl(acl);
-			break;
+//		case REPLACE:
+//			aclBD.updateAcl(acl);
+//			break;
 		case DELETE: 
 			aclBD.deleteAcl(acl);
 			break;

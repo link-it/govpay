@@ -9,11 +9,13 @@ public class Adapter4
 {
 
 
-    public Date unmarshal(String value) {
+    @Override
+	public Date unmarshal(String value) {
         return (it.govpay.core.utils.adapter.DataTypeAdapter.parseDate(value));
     }
 
-    public String marshal(Date value) {
+    @Override
+	public String marshal(Date value) {
         return (it.govpay.core.utils.adapter.DataTypeAdapter.printDate(value));
     }
 

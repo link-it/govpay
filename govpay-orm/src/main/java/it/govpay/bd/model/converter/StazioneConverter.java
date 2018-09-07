@@ -28,7 +28,7 @@ import java.util.List;
 public class StazioneConverter {
 
 	public static List<Stazione> toDTOList(List<it.govpay.orm.Stazione> stazioneLst) {
-		List<Stazione> lstDTO = new ArrayList<Stazione>();
+		List<Stazione> lstDTO = new ArrayList<>();
 		if(stazioneLst != null && !stazioneLst.isEmpty()) {
 			for(it.govpay.orm.Stazione stazione: stazioneLst){
 				lstDTO.add(toDTO(stazione));

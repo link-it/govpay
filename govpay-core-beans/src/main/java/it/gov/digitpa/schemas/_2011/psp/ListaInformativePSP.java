@@ -69,8 +69,8 @@ public class ListaInformativePSP {
      * 
      */
     public List<InformativaPSP> getInformativaPSPs() {
-        if (informativaPSPs == null) {
-            informativaPSPs = new ArrayList<InformativaPSP>();
+        if (this.informativaPSPs == null) {
+            this.informativaPSPs = new ArrayList<>();
         }
         return this.informativaPSPs;
     }

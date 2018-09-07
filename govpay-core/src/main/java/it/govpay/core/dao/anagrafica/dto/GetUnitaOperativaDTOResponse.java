@@ -11,7 +11,7 @@ public class GetUnitaOperativaDTOResponse {
 	}
 
 	public UnitaOperativa getUnitaOperativa() {
-		return unitaOperativa;
+		return this.unitaOperativa;
 	}
 
 }

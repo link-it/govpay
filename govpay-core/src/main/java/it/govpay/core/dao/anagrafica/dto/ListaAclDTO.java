@@ -17,7 +17,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 	private List<Diritti> diritti;
 	
 	public Boolean getForcePrincipal() {
-		return forcePrincipal;
+		return this.forcePrincipal;
 	}
 
 
@@ -27,7 +27,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 
 
 	public Boolean getForceRuolo() {
-		return forceRuolo;
+		return this.forceRuolo;
 	}
 
 
@@ -37,7 +37,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 
 
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 
 
@@ -47,7 +47,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 
 
 	public String getRuolo() {
-		return ruolo;
+		return this.ruolo;
 	}
 
 
@@ -57,7 +57,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 
 
 	public String getServizio() {
-		return servizio;
+		return this.servizio;
 	}
 
 
@@ -67,7 +67,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 
 
 	public List<Diritti> getDiritti() {
-		return diritti;
+		return this.diritti;
 	}
 
 
@@ -85,7 +85,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 
 
 	public Boolean getForceServizio() {
-		return forceServizio;
+		return this.forceServizio;
 	}
 
 

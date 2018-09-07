@@ -194,7 +194,7 @@ public class OracleNativeQueries extends NativeQueries {
 			break;
 		}	
 		
-		List<Object> valori = new ArrayList<Object>();
+		List<Object> valori = new ArrayList<>();
 		valori.add(data);
 		valori.add(limit);
 		valori.add(date_trunc);
@@ -239,7 +239,7 @@ public class OracleNativeQueries extends NativeQueries {
 			break;
 		}	
 		
-		List<Object> valori = new ArrayList<Object>();
+		List<Object> valori = new ArrayList<>();
 		valori.add(date_trunc);
 		valori.add(date_trunc);
 		valori.add(data);

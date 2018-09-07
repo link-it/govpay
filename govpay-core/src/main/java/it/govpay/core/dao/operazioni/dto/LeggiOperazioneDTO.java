@@ -12,7 +12,7 @@ public class LeggiOperazioneDTO extends BasicFindRequestDTO {
 	private String idOperazione = null;
 	
 	public String getIdOperazione() {
-		return idOperazione;
+		return this.idOperazione;
 	}
 
 	public void setIdOperazione(String idOperazione) {

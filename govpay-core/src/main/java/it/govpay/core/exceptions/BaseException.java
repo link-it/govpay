@@ -51,15 +51,16 @@ public abstract class BaseException extends Exception {
 	}
 
 	public String getCode() {
-		return code;
+		return this.code;
 	}
 
+	@Override
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
 	public String getDetails() {
-		return details;
+		return this.details;
 	}
 
 	public abstract int getTransportErrorCode();

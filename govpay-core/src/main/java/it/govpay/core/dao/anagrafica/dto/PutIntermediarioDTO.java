@@ -13,7 +13,7 @@ public class PutIntermediarioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public Intermediario getIntermediario() {
-		return intermediario;
+		return this.intermediario;
 	}
 
 	public void setIntermediario(Intermediario intermediario) {
@@ -21,7 +21,7 @@ public class PutIntermediarioDTO extends BasicCreateRequestDTO  {
 	}
 
 	public String getIdIntermediario() {
-		return idIntermediario;
+		return this.idIntermediario;
 	}
 
 	public void setIdIntermediario(String idIntermediario) {

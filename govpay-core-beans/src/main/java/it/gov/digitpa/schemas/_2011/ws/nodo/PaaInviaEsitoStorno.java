@@ -64,7 +64,7 @@ public class PaaInviaEsitoStorno {
      *     
      */
     public String getIdentificativoIntermediarioPA() {
-        return identificativoIntermediarioPA;
+        return this.identificativoIntermediarioPA;
     }
 
     /**
@@ -88,7 +88,7 @@ public class PaaInviaEsitoStorno {
      *     
      */
     public String getIdentificativoStazioneIntermediarioPA() {
-        return identificativoStazioneIntermediarioPA;
+        return this.identificativoStazioneIntermediarioPA;
     }
 
     /**
@@ -112,7 +112,7 @@ public class PaaInviaEsitoStorno {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -136,7 +136,7 @@ public class PaaInviaEsitoStorno {
      *     
      */
     public String getIdentificativoUnivocoVersamento() {
-        return identificativoUnivocoVersamento;
+        return this.identificativoUnivocoVersamento;
     }
 
     /**
@@ -160,7 +160,7 @@ public class PaaInviaEsitoStorno {
      *     
      */
     public String getCodiceContestoPagamento() {
-        return codiceContestoPagamento;
+        return this.codiceContestoPagamento;
     }
 
     /**
@@ -183,7 +183,7 @@ public class PaaInviaEsitoStorno {
      *     byte[]
      */
     public byte[] getEr() {
-        return er;
+        return this.er;
     }
 
     /**

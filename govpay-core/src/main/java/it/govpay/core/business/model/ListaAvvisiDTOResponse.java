@@ -10,11 +10,11 @@ public class ListaAvvisiDTOResponse {
 	private List<AvvisoPagamento> avvisi;
 	
 	public ListaAvvisiDTOResponse() {
-		this.avvisi = new ArrayList<AvvisoPagamento>();
+		this.avvisi = new ArrayList<>();
 	}
 
 	public List<AvvisoPagamento> getAvvisi() {
-		return avvisi;
+		return this.avvisi;
 	}
 
 	public void setAvvisi(List<AvvisoPagamento> avvisi) {

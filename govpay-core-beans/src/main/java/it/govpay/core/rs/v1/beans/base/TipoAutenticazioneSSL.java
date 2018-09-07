@@ -41,7 +41,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
     @Override
     @JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static TipoEnum fromValue(String text) {
@@ -80,7 +80,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
 
   @JsonProperty("tipo")
   public TipoEnum getTipo() {
-    return tipo;
+    return this.tipo;
   }
   public void setTipo(TipoEnum tipo) {
     this.tipo = tipo;
@@ -96,7 +96,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
 
   @JsonProperty("ksLocation")
   public String getKsLocation() {
-    return ksLocation;
+    return this.ksLocation;
   }
   public void setKsLocation(String ksLocation) {
     this.ksLocation = ksLocation;
@@ -112,7 +112,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
 
   @JsonProperty("ksPassword")
   public String getKsPassword() {
-    return ksPassword;
+    return this.ksPassword;
   }
   public void setKsPassword(String ksPassword) {
     this.ksPassword = ksPassword;
@@ -128,7 +128,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
 
   @JsonProperty("tsLocation")
   public String getTsLocation() {
-    return tsLocation;
+    return this.tsLocation;
   }
   public void setTsLocation(String tsLocation) {
     this.tsLocation = tsLocation;
@@ -144,7 +144,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
 
   @JsonProperty("tsPassword")
   public String getTsPassword() {
-    return tsPassword;
+    return this.tsPassword;
   }
   public void setTsPassword(String tsPassword) {
     this.tsPassword = tsPassword;
@@ -155,24 +155,24 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     TipoAutenticazioneSSL tipoAutenticazioneSSL = (TipoAutenticazioneSSL) o;
-    return Objects.equals(tipo, tipoAutenticazioneSSL.tipo) &&
-        Objects.equals(ksLocation, tipoAutenticazioneSSL.ksLocation) &&
-        Objects.equals(ksPassword, tipoAutenticazioneSSL.ksPassword) &&
-        Objects.equals(tsLocation, tipoAutenticazioneSSL.tsLocation) &&
-        Objects.equals(tsPassword, tipoAutenticazioneSSL.tsPassword);
+    return Objects.equals(this.tipo, tipoAutenticazioneSSL.tipo) &&
+        Objects.equals(this.ksLocation, tipoAutenticazioneSSL.ksLocation) &&
+        Objects.equals(this.ksPassword, tipoAutenticazioneSSL.ksPassword) &&
+        Objects.equals(this.tsLocation, tipoAutenticazioneSSL.tsLocation) &&
+        Objects.equals(this.tsPassword, tipoAutenticazioneSSL.tsPassword);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, ksLocation, ksPassword, tsLocation, tsPassword);
+    return Objects.hash(this.tipo, this.ksLocation, this.ksPassword, this.tsLocation, this.tsPassword);
   }
 
   public static TipoAutenticazioneSSL parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (TipoAutenticazioneSSL) parse(json, TipoAutenticazioneSSL.class);
+    return parse(json, TipoAutenticazioneSSL.class);
   }
 
   @Override
@@ -185,11 +185,11 @@ public class TipoAutenticazioneSSL extends it.govpay.core.rs.v1.beans.JSONSerial
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneSSL {\n");
     
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
-    sb.append("    ksLocation: ").append(toIndentedString(ksLocation)).append("\n");
-    sb.append("    ksPassword: ").append(toIndentedString(ksPassword)).append("\n");
-    sb.append("    tsLocation: ").append(toIndentedString(tsLocation)).append("\n");
-    sb.append("    tsPassword: ").append(toIndentedString(tsPassword)).append("\n");
+    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
+    sb.append("    ksLocation: ").append(this.toIndentedString(this.ksLocation)).append("\n");
+    sb.append("    ksPassword: ").append(this.toIndentedString(this.ksPassword)).append("\n");
+    sb.append("    tsLocation: ").append(this.toIndentedString(this.tsLocation)).append("\n");
+    sb.append("    tsPassword: ").append(this.toIndentedString(this.tsPassword)).append("\n");
     sb.append("}");
     return sb.toString();
   }

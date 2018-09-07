@@ -37,7 +37,7 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 	}
 
 	public String getCodStazione() {
-		return codStazione;
+		return this.codStazione;
 	}
 
 	public void setCodStazione(String codStazione) {
@@ -45,7 +45,7 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -53,7 +53,7 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 	}
 
 	public String getRagioneSociale() {
-		return ragioneSociale;
+		return this.ragioneSociale;
 	}
 
 	public void setRagioneSociale(String ragioneSociale) {
@@ -61,7 +61,7 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 	}
 
 	public Boolean getAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(Boolean abilitato) {

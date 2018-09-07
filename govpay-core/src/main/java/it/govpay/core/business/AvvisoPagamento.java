@@ -1,5 +1,6 @@
 package it.govpay.core.business;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -96,6 +97,10 @@ public class AvvisoPagamento extends BasicBD {
 	}
 
 	public PrintAvvisoDTOResponse printAvviso(PrintAvvisoDTO printAvviso) {
+		return this.printAvviso(printAvviso, false);
+	}
+
+	public PrintAvvisoDTOResponse printAvviso(PrintAvvisoDTO printAvviso, boolean update) {
 		PrintAvvisoDTOResponse response = new PrintAvvisoDTOResponse();
 
 		it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento = printAvviso.getAvviso();
@@ -105,12 +110,14 @@ public class AvvisoPagamento extends BasicBD {
 		try {
 			it.govpay.model.avvisi.AvvisoPagamento avvisoPagamentoResponse  = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, avvisoPagamento, avProperties);
 			
-			log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db in corso...");
-			// aggiornamento della entry sul db
-			AvvisiPagamentoBD avvisiBD = new AvvisiPagamentoBD(this);
-			avvisoPagamentoResponse.setStato(StatoAvviso.STAMPATO); 
-			avvisiBD.updateAvviso(avvisoPagamentoResponse);
-			log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db completato.");
+			if(update) {
+				log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db in corso...");
+				// aggiornamento della entry sul db
+				AvvisiPagamentoBD avvisiBD = new AvvisiPagamentoBD(this);
+				avvisoPagamentoResponse.setStato(StatoAvviso.STAMPATO); 
+				avvisiBD.updateAvviso(avvisoPagamentoResponse);
+				log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db completato.");
+			}
 			response.setAvviso(avvisoPagamentoResponse);
 		} catch (Exception e) {
 			log.error("Creazione Pdf Avviso Pagamento fallito", e);
@@ -119,41 +126,12 @@ public class AvvisoPagamento extends BasicBD {
 		return response;
 	}
 
-	public AvvisoPagamentoInput fromVersamento(it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento, it.govpay.bd.model.Versamento versamento) throws Exception {
+	public AvvisoPagamentoInput fromVersamento(it.govpay.model.avvisi.AvvisoPagamento avvisoPagamento, it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 
-		Dominio dominio = versamento.getUo(this).getDominio(this);
-		String codDominio = dominio.getCodDominio();
-		Anagrafica anagraficaDominio = dominio.getAnagrafica();
-		
-		input.setEnteDenominazione(dominio.getRagioneSociale());
-		input.setEnteIdentificativo(codDominio);
-		input.setEnteIdentificativoSplit(this.splitString(codDominio));
-		input.setEnteCbill(dominio.getCbill());
-		
-		if(anagraficaDominio != null) {
-			input.setEnteArea(anagraficaDominio.getArea());
-			input.setEnteUrl(anagraficaDominio.getUrlSitoWeb());
-			input.setEntePeo(anagraficaDominio.getEmail());
-			input.setEntePec(anagraficaDominio.getPec());
-		}
-		
+		Dominio dominio = this.impostaAnagraficaEnteCreditore(versamento, input);
 
-		Anagrafica anagraficaDebitore = versamento.getAnagraficaDebitore();
-		if(anagraficaDebitore != null) {
-			String indirizzoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getIndirizzo()) ? anagraficaDebitore.getIndirizzo() : "";
-			String civicoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCivico()) ? anagraficaDebitore.getCivico() : "";
-			String capDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCap()) ? anagraficaDebitore.getCap() : "";
-			String localitaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getLocalita()) ? anagraficaDebitore.getLocalita() : "";
-			String provinciaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getProvincia()) ? (" (" +anagraficaDebitore.getProvincia() +")" ) : "";
-			String indirizzoCivicoDebitore = indirizzoDebitore + " " + civicoDebitore;
-			String capCittaDebitore = capDebitore + " " + localitaDebitore + provinciaDebitore;
-			
-			input.setIntestatarioDenominazione(anagraficaDebitore.getRagioneSociale());
-			input.setIntestatarioIdentificativo(anagraficaDebitore.getCodUnivoco());
-			input.setIntestatarioIndirizzo1(indirizzoCivicoDebitore);
-			input.setIntestatarioIndirizzo2(capCittaDebitore);
-		}
+		this.impostaAnagraficaDebitore(versamento, input);
 
 		Intermediario intermediario = dominio.getStazione().getIntermediario(this);
 		if(intermediario != null) {
@@ -166,8 +144,13 @@ public class AvvisoPagamento extends BasicBD {
 				IuvUtils.toIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), 
 						versamento.getIuv(this), versamento.getImportoTotale());
 
-		if(versamento.getCausaleVersamento() != null)
-			input.setAvvisoCausale(versamento.getCausaleVersamento().getSimple());
+		if(versamento.getCausaleVersamento() != null) {
+			try {
+				input.setAvvisoCausale(versamento.getCausaleVersamento().getSimple());
+			}catch (UnsupportedEncodingException e) {
+				throw new ServiceException(e);
+			}
+		}
 		
 		// avviso_mav 
 		input.setAvvisoMav(false);
@@ -195,6 +178,44 @@ public class AvvisoPagamento extends BasicBD {
 		input.setAvvisoQrcode(new String(iuvGenerato.getQrCode()));
 
 		return input;
+	}
+
+	private Dominio impostaAnagraficaEnteCreditore(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input)
+			throws ServiceException {
+		Dominio dominio = versamento.getUo(this).getDominio(this);
+		String codDominio = dominio.getCodDominio();
+		Anagrafica anagraficaDominio = dominio.getAnagrafica();
+		
+		input.setEnteDenominazione(dominio.getRagioneSociale());
+		input.setEnteIdentificativo(codDominio);
+		input.setEnteIdentificativoSplit(this.splitString(codDominio));
+		input.setEnteCbill(dominio.getCbill());
+		
+		if(anagraficaDominio != null) {
+			input.setEnteArea(anagraficaDominio.getArea());
+			input.setEnteUrl(anagraficaDominio.getUrlSitoWeb());
+			input.setEntePeo(anagraficaDominio.getEmail());
+			input.setEntePec(anagraficaDominio.getPec());
+		}
+		return dominio;
+	}
+
+	private void impostaAnagraficaDebitore(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input) {
+		Anagrafica anagraficaDebitore = versamento.getAnagraficaDebitore();
+		if(anagraficaDebitore != null) {
+			String indirizzoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getIndirizzo()) ? anagraficaDebitore.getIndirizzo() : "";
+			String civicoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCivico()) ? anagraficaDebitore.getCivico() : "";
+			String capDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCap()) ? anagraficaDebitore.getCap() : "";
+			String localitaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getLocalita()) ? anagraficaDebitore.getLocalita() : "";
+			String provinciaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getProvincia()) ? (" (" +anagraficaDebitore.getProvincia() +")" ) : "";
+			String indirizzoCivicoDebitore = indirizzoDebitore + " " + civicoDebitore;
+			String capCittaDebitore = capDebitore + " " + localitaDebitore + provinciaDebitore;
+			
+			input.setIntestatarioDenominazione(anagraficaDebitore.getRagioneSociale());
+			input.setIntestatarioIdentificativo(anagraficaDebitore.getCodUnivoco());
+			input.setIntestatarioIndirizzo1(indirizzoCivicoDebitore);
+			input.setIntestatarioIndirizzo2(capCittaDebitore);
+		}
 	}
 	
 	public String splitString(String start) {

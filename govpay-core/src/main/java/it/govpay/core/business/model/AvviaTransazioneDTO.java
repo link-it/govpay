@@ -37,49 +37,49 @@ public class AvviaTransazioneDTO {
 	private Canale canale;
 	
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 	public void setApplicazione(Applicazione applicazione) {
 		this.applicazione = applicazione;
 	}
 	public List<Object> getVersamentoOrVersamentoRef() {
-		return versamentoOrVersamentoRef;
+		return this.versamentoOrVersamentoRef;
 	}
 	public void setVersamentoOrVersamentoRef(List<Object> versamentoOrVersamentoRef) {
 		this.versamentoOrVersamentoRef = versamentoOrVersamentoRef;
 	}
 	public it.govpay.servizi.commons.Anagrafica getVersante() {
-		return versante;
+		return this.versante;
 	}
 	public void setVersante(it.govpay.servizi.commons.Anagrafica versante) {
 		this.versante = versante;
 	}
 	public String getIbanAddebito() {
-		return ibanAddebito;
+		return this.ibanAddebito;
 	}
 	public void setIbanAddebito(String ibanAddebito) {
 		this.ibanAddebito = ibanAddebito;
 	}
 	public String getAutenticazione() {
-		return autenticazione;
+		return this.autenticazione;
 	}
 	public void setAutenticazione(String autenticazione) {
 		this.autenticazione = autenticazione;
 	}
 	public String getUrlRitorno() {
-		return urlRitorno;
+		return this.urlRitorno;
 	}
 	public void setUrlRitorno(String urlRitorno) {
 		this.urlRitorno = urlRitorno;
 	}
 	public Boolean getAggiornaSeEsisteB() {
-		return aggiornaSeEsisteB;
+		return this.aggiornaSeEsisteB;
 	}
 	public void setAggiornaSeEsisteB(Boolean aggiornaSeEsisteB) {
 		this.aggiornaSeEsisteB = aggiornaSeEsisteB;
 	}
 	public Canale getCanale() {
-		return canale;
+		return this.canale;
 	}
 	public void setCanale(Canale canale) {
 		this.canale = canale;

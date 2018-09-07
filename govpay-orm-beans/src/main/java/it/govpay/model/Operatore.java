@@ -28,20 +28,21 @@ public class Operatore extends BasicModel {
 	private Long id;
 	private String nome;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getNome() {
-		return nome;
+		return this.nome;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
 	public long getIdUtenza() {
-		return idUtenza;
+		return this.idUtenza;
 	}
 	public void setIdUtenza(long idUtenza) {
 		this.idUtenza = idUtenza;

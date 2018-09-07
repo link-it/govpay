@@ -44,7 +44,7 @@ public class EntrataPost extends JSONSerializable {
 
   @JsonProperty("contoAccredito")
   public String getContoAccredito() {
-    return contoAccredito;
+    return this.contoAccredito;
   }
   public void setContoAccredito(String contoAccredito) {
     this.contoAccredito = contoAccredito;
@@ -59,7 +59,7 @@ public class EntrataPost extends JSONSerializable {
 
   @JsonProperty("contoAppoggio")
   public String getContoAppoggio() {
-    return contoAppoggio;
+    return this.contoAppoggio;
   }
   public void setContoAppoggio(String contoAppoggio) {
     this.contoAppoggio = contoAppoggio;
@@ -74,7 +74,7 @@ public class EntrataPost extends JSONSerializable {
 
   @JsonProperty("tipoContabilita")
   public TipoContabilita getTipoContabilita() {
-    return tipoContabilita;
+    return this.tipoContabilita;
   }
   public void setTipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
@@ -90,7 +90,7 @@ public class EntrataPost extends JSONSerializable {
 
   @JsonProperty("codiceContabilita")
   public String getCodiceContabilita() {
-    return codiceContabilita;
+    return this.codiceContabilita;
   }
   public void setCodiceContabilita(String codiceContabilita) {
     this.codiceContabilita = codiceContabilita;
@@ -106,7 +106,7 @@ public class EntrataPost extends JSONSerializable {
 
   @JsonProperty("codificaIUV")
   public String getCodificaIUV() {
-    return codificaIUV;
+    return this.codificaIUV;
   }
   public void setCodificaIUV(String codificaIUV) {
     this.codificaIUV = codificaIUV;
@@ -122,7 +122,7 @@ public class EntrataPost extends JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -133,25 +133,25 @@ public class EntrataPost extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     EntrataPost entrataPost = (EntrataPost) o;
-    return Objects.equals(contoAccredito, entrataPost.contoAccredito) &&
-        Objects.equals(contoAppoggio, entrataPost.contoAppoggio) &&
-        Objects.equals(tipoContabilita, entrataPost.tipoContabilita) &&
-        Objects.equals(codiceContabilita, entrataPost.codiceContabilita) &&
-        Objects.equals(codificaIUV, entrataPost.codificaIUV) &&
-        Objects.equals(abilitato, entrataPost.abilitato);
+    return Objects.equals(this.contoAccredito, entrataPost.contoAccredito) &&
+        Objects.equals(this.contoAppoggio, entrataPost.contoAppoggio) &&
+        Objects.equals(this.tipoContabilita, entrataPost.tipoContabilita) &&
+        Objects.equals(this.codiceContabilita, entrataPost.codiceContabilita) &&
+        Objects.equals(this.codificaIUV, entrataPost.codificaIUV) &&
+        Objects.equals(this.abilitato, entrataPost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(contoAccredito, contoAppoggio, tipoContabilita, codiceContabilita, codificaIUV, abilitato);
+    return Objects.hash(this.contoAccredito, this.contoAppoggio, this.tipoContabilita, this.codiceContabilita, this.codificaIUV, this.abilitato);
   }
 
   public static EntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (EntrataPost) parse(json, EntrataPost.class);
+    return parse(json, EntrataPost.class);
   }
 
   @Override
@@ -164,12 +164,12 @@ public class EntrataPost extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class EntrataPost {\n");
     
-    sb.append("    contoAccredito: ").append(toIndentedString(contoAccredito)).append("\n");
-    sb.append("    contoAppoggio: ").append(toIndentedString(contoAppoggio)).append("\n");
-    sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
-    sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
-    sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    contoAccredito: ").append(this.toIndentedString(this.contoAccredito)).append("\n");
+    sb.append("    contoAppoggio: ").append(this.toIndentedString(this.contoAppoggio)).append("\n");
+    sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
+    sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
+    sb.append("    codificaIUV: ").append(this.toIndentedString(this.codificaIUV)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

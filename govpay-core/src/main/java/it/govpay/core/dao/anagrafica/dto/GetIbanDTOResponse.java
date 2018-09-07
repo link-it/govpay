@@ -11,7 +11,7 @@ public class GetIbanDTOResponse {
 	}
 
 	public IbanAccredito getIbanAccredito() {
-		return ibanAccredito;
+		return this.ibanAccredito;
 	}
 
 }

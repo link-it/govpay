@@ -74,7 +74,7 @@ public class CtInformativaMaster {
      *     
      */
     public Date getDataPubblicazione() {
-        return dataPubblicazione;
+        return this.dataPubblicazione;
     }
 
     /**
@@ -98,7 +98,7 @@ public class CtInformativaMaster {
      *     
      */
     public Date getDataInizioValidita() {
-        return dataInizioValidita;
+        return this.dataInizioValidita;
     }
 
     /**
@@ -122,7 +122,7 @@ public class CtInformativaMaster {
      *     
      */
     public String getUrlInformazioniPSP() {
-        return urlInformazioniPSP;
+        return this.urlInformazioniPSP;
     }
 
     /**
@@ -142,7 +142,7 @@ public class CtInformativaMaster {
      * 
      */
     public int getStornoPagamento() {
-        return stornoPagamento;
+        return this.stornoPagamento;
     }
 
     /**
@@ -158,7 +158,7 @@ public class CtInformativaMaster {
      * 
      */
     public int getMarcaBolloDigitale() {
-        return marcaBolloDigitale;
+        return this.marcaBolloDigitale;
     }
 
     /**
@@ -177,7 +177,7 @@ public class CtInformativaMaster {
      *     byte[]
      */
     public byte[] getLogoPSP() {
-        return logoPSP;
+        return this.logoPSP;
     }
 
     /**
@@ -188,7 +188,7 @@ public class CtInformativaMaster {
      *     byte[]
      */
     public void setLogoPSP(byte[] value) {
-        this.logoPSP = ((byte[]) value);
+        this.logoPSP = (value);
     }
 
 }

@@ -86,7 +86,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.govpay.it/servizi/pa/", name = "paNotificaTransazioneResponse")
     public JAXBElement<String> createPaNotificaTransazioneResponse(String value) {
-        return new JAXBElement<String>(_PaNotificaTransazioneResponse_QNAME, String.class, null, value);
+        return new JAXBElement<>(_PaNotificaTransazioneResponse_QNAME, String.class, null, value);
     }
 
     /**
@@ -95,7 +95,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.govpay.it/servizi/pa/", name = "paNotificaStornoResponse")
     public JAXBElement<String> createPaNotificaStornoResponse(String value) {
-        return new JAXBElement<String>(_PaNotificaStornoResponse_QNAME, String.class, null, value);
+        return new JAXBElement<>(_PaNotificaStornoResponse_QNAME, String.class, null, value);
     }
 
     /**
@@ -104,7 +104,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "codApplicazione", scope = PaVerificaVersamento.class)
     public JAXBElement<String> createPaVerificaVersamentoCodApplicazione(String value) {
-        return new JAXBElement<String>(_PaVerificaVersamentoCodApplicazione_QNAME, String.class, PaVerificaVersamento.class, value);
+        return new JAXBElement<>(_PaVerificaVersamentoCodApplicazione_QNAME, String.class, PaVerificaVersamento.class, value);
     }
 
     /**
@@ -113,7 +113,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "codVersamentoEnte", scope = PaVerificaVersamento.class)
     public JAXBElement<String> createPaVerificaVersamentoCodVersamentoEnte(String value) {
-        return new JAXBElement<String>(_PaVerificaVersamentoCodVersamentoEnte_QNAME, String.class, PaVerificaVersamento.class, value);
+        return new JAXBElement<>(_PaVerificaVersamentoCodVersamentoEnte_QNAME, String.class, PaVerificaVersamento.class, value);
     }
 
     /**
@@ -122,7 +122,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "codDominio", scope = PaVerificaVersamento.class)
     public JAXBElement<String> createPaVerificaVersamentoCodDominio(String value) {
-        return new JAXBElement<String>(_PaVerificaVersamentoCodDominio_QNAME, String.class, PaVerificaVersamento.class, value);
+        return new JAXBElement<>(_PaVerificaVersamentoCodDominio_QNAME, String.class, PaVerificaVersamento.class, value);
     }
 
     /**
@@ -131,7 +131,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "iuv", scope = PaVerificaVersamento.class)
     public JAXBElement<String> createPaVerificaVersamentoIuv(String value) {
-        return new JAXBElement<String>(_PaVerificaVersamentoIuv_QNAME, String.class, PaVerificaVersamento.class, value);
+        return new JAXBElement<>(_PaVerificaVersamentoIuv_QNAME, String.class, PaVerificaVersamento.class, value);
     }
 
     /**
@@ -140,7 +140,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "bundlekey", scope = PaVerificaVersamento.class)
     public JAXBElement<String> createPaVerificaVersamentoBundlekey(String value) {
-        return new JAXBElement<String>(_PaVerificaVersamentoBundlekey_QNAME, String.class, PaVerificaVersamento.class, value);
+        return new JAXBElement<>(_PaVerificaVersamentoBundlekey_QNAME, String.class, PaVerificaVersamento.class, value);
     }
 
     /**
@@ -149,7 +149,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "codUnivocoDebitore", scope = PaVerificaVersamento.class)
     public JAXBElement<String> createPaVerificaVersamentoCodUnivocoDebitore(String value) {
-        return new JAXBElement<String>(_PaVerificaVersamentoCodUnivocoDebitore_QNAME, String.class, PaVerificaVersamento.class, value);
+        return new JAXBElement<>(_PaVerificaVersamentoCodUnivocoDebitore_QNAME, String.class, PaVerificaVersamento.class, value);
     }
 
 }

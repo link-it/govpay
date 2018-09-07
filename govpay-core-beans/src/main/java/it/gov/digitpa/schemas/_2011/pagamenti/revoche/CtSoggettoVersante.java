@@ -70,7 +70,7 @@ public class CtSoggettoVersante {
      *     
      */
     public CtIdentificativoUnivocoPersonaFG getIdentificativoUnivocoVersante() {
-        return identificativoUnivocoVersante;
+        return this.identificativoUnivocoVersante;
     }
 
     /**
@@ -94,7 +94,7 @@ public class CtSoggettoVersante {
      *     
      */
     public String getAnagraficaVersante() {
-        return anagraficaVersante;
+        return this.anagraficaVersante;
     }
 
     /**
@@ -118,7 +118,7 @@ public class CtSoggettoVersante {
      *     
      */
     public String getIndirizzoVersante() {
-        return indirizzoVersante;
+        return this.indirizzoVersante;
     }
 
     /**
@@ -142,7 +142,7 @@ public class CtSoggettoVersante {
      *     
      */
     public String getCivicoVersante() {
-        return civicoVersante;
+        return this.civicoVersante;
     }
 
     /**
@@ -166,7 +166,7 @@ public class CtSoggettoVersante {
      *     
      */
     public String getCapVersante() {
-        return capVersante;
+        return this.capVersante;
     }
 
     /**
@@ -190,7 +190,7 @@ public class CtSoggettoVersante {
      *     
      */
     public String getLocalitaVersante() {
-        return localitaVersante;
+        return this.localitaVersante;
     }
 
     /**
@@ -214,7 +214,7 @@ public class CtSoggettoVersante {
      *     
      */
     public String getProvinciaVersante() {
-        return provinciaVersante;
+        return this.provinciaVersante;
     }
 
     /**
@@ -238,7 +238,7 @@ public class CtSoggettoVersante {
      *     
      */
     public String getNazioneVersante() {
-        return nazioneVersante;
+        return this.nazioneVersante;
     }
 
     /**
@@ -262,7 +262,7 @@ public class CtSoggettoVersante {
      *     
      */
     public String getEMailVersante() {
-        return eMailVersante;
+        return this.eMailVersante;
     }
 
     /**

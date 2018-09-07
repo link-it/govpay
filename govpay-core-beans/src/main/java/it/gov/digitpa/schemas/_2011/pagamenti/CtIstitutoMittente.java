@@ -47,7 +47,7 @@ public class CtIstitutoMittente {
      *     
      */
     public CtIdentificativoUnivoco getIdentificativoUnivocoMittente() {
-        return identificativoUnivocoMittente;
+        return this.identificativoUnivocoMittente;
     }
 
     /**
@@ -71,7 +71,7 @@ public class CtIstitutoMittente {
      *     
      */
     public String getDenominazioneMittente() {
-        return denominazioneMittente;
+        return this.denominazioneMittente;
     }
 
     /**

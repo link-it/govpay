@@ -36,11 +36,11 @@ public enum StAutenticazioneSoggetto {
     private final String value;
 
     StAutenticazioneSoggetto(String v) {
-        value = v;
+        this.value = v;
     }
 
     public String value() {
-        return value;
+        return this.value;
     }
     
     /* (non-Javadoc)

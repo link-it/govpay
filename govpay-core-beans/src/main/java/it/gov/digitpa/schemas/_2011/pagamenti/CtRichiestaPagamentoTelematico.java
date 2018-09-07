@@ -82,7 +82,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public String getVersioneOggetto() {
-        return versioneOggetto;
+        return this.versioneOggetto;
     }
 
     /**
@@ -106,7 +106,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public CtDominio getDominio() {
-        return dominio;
+        return this.dominio;
     }
 
     /**
@@ -130,7 +130,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public String getIdentificativoMessaggioRichiesta() {
-        return identificativoMessaggioRichiesta;
+        return this.identificativoMessaggioRichiesta;
     }
 
     /**
@@ -154,7 +154,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public Date getDataOraMessaggioRichiesta() {
-        return dataOraMessaggioRichiesta;
+        return this.dataOraMessaggioRichiesta;
     }
 
     /**
@@ -178,7 +178,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public StAutenticazioneSoggetto getAutenticazioneSoggetto() {
-        return autenticazioneSoggetto;
+        return this.autenticazioneSoggetto;
     }
 
     /**
@@ -202,7 +202,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public CtSoggettoVersante getSoggettoVersante() {
-        return soggettoVersante;
+        return this.soggettoVersante;
     }
 
     /**
@@ -226,7 +226,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public CtSoggettoPagatore getSoggettoPagatore() {
-        return soggettoPagatore;
+        return this.soggettoPagatore;
     }
 
     /**
@@ -250,7 +250,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public CtEnteBeneficiario getEnteBeneficiario() {
-        return enteBeneficiario;
+        return this.enteBeneficiario;
     }
 
     /**
@@ -274,7 +274,7 @@ public class CtRichiestaPagamentoTelematico {
      *     
      */
     public CtDatiVersamentoRPT getDatiVersamento() {
-        return datiVersamento;
+        return this.datiVersamento;
     }
 
     /**

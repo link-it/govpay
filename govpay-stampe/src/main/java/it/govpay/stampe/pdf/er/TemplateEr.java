@@ -30,7 +30,7 @@ public class TemplateEr {
 	public static ComponentBuilder<?, ?> createTitleComponent(String pathLoghi, CtEsitoRevoca er,Dominio dominio, Anagrafica anagraficaDominio, List<String> errList,Logger log) {
 		try{
 			StringBuilder errMsg = new StringBuilder();
-			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
+			List<ComponentBuilder<?, ?>> lst = new ArrayList<>();
 			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(Costanti.logoPagoPa));
 			String denominazioneDominio = dominio.getRagioneSociale();
 			

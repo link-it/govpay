@@ -152,7 +152,7 @@ public class BasicBD {
 	BasicBD father;
 	
 	public BasicBD(BasicBD basicBD) {
-		father = basicBD;
+		this.father = basicBD;
 	}
 	
 	public static BasicBD newInstance(String idTransaction) throws ServiceException {
@@ -162,23 +162,23 @@ public class BasicBD {
 	private BasicBD(String idTransaction) throws ServiceException {
 		this.isClosed = true;
 		this.idTransaction = idTransaction;
-		this.idModulo = getCaller();
+		this.idModulo = this.getCaller();
 		if(log == null)
 			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
-		this.setupConnection(idTransaction, idModulo);
+		this.setupConnection(idTransaction, this.idModulo);
 	}
 	
 	public void setupConnection(String idTransaction) throws ServiceException {
-		this.idModulo = getCaller();
-		this.setupConnection(idTransaction, idModulo);
+		this.idModulo = this.getCaller();
+		this.setupConnection(idTransaction, this.idModulo);
 	}
 
 	private void setupConnection(String idTransaction, String idModulo) throws ServiceException {
-		if(father != null) {
-			father.setupConnection(idTransaction);
+		if(this.father != null) {
+			this.father.setupConnection(idTransaction);
 			return;
 		}
-		if(isClosed) {
+		if(this.isClosed) {
 			this.connection = ConnectionManager.getConnection(idTransaction, idModulo);
 			this.serviceManager = new JDBCServiceManager(this.connection, ConnectionManager.getJDBCServiceManagerProperties(), log);
 			this.jdbcProperties = this.serviceManager.getJdbcProperties();
@@ -318,256 +318,256 @@ public class BasicBD {
 	}
 	
 	public String getIdTransaction() {
-		return idTransaction;
+		return this.idTransaction;
 	}
 	
 	public String getIdModulo() {
-		return idModulo;
+		return this.idModulo;
 	}
 	
 	
 	public IIntermediarioService getIntermediarioService() {
-		if(father != null) {
-			return father.getIntermediarioService();
+		if(this.father != null) {
+			return this.father.getIntermediarioService();
 		}
 		return this.intermediarioService;
 	}
 	
 	public IStazioneService getStazioneService() {
-		if(father != null) {
-			return father.getStazioneService();
+		if(this.father != null) {
+			return this.father.getStazioneService();
 		}
 		return this.stazioneService;
 	}
 	
 	public IDominioService getDominioService() {
-		if(father != null) {
-			return father.getDominioService();
+		if(this.father != null) {
+			return this.father.getDominioService();
 		}
 		return this.dominioService;
 	}
 	
 	public IIbanAccreditoService getIbanAccreditoService() {
-		if(father != null) {
-			return father.getIbanAccreditoService();
+		if(this.father != null) {
+			return this.father.getIbanAccreditoService();
 		}
 		return this.ibanAccreditoService;
 	}
 	
 	public ITipoTributoService getTipoTributoService() {
-		if(father != null) {
-			return father.getTipoTributoService();
+		if(this.father != null) {
+			return this.father.getTipoTributoService();
 		}
 		return this.tipoTributoService;
 	}
 	
 	public ITributoService getTributoService() {
-		if(father != null) {
-			return father.getTributoService();
+		if(this.father != null) {
+			return this.father.getTributoService();
 		}
 		return this.tributoService;
 	}
 	
 	public IUtenzaService getUtenzaService() {
-		if(father != null) {
-			return father.getUtenzaService();
+		if(this.father != null) {
+			return this.father.getUtenzaService();
 		}
 		return this.utenzaService;
 	}
 	
 	public IUtenzaDominioService getUtenzaDominioService() {
-		if(father != null) {
-			return father.getUtenzaDominioService();
+		if(this.father != null) {
+			return this.father.getUtenzaDominioService();
 		}
 		return this.utenzaDominioService;
 	}
 	
 	public IUtenzaTributoService getUtenzaTributoService() {
-		if(father != null) {
-			return father.getUtenzaTributoService();
+		if(this.father != null) {
+			return this.father.getUtenzaTributoService();
 		}
 		return this.utenzaTributoService;
 	}
 	
 	public IApplicazioneService getApplicazioneService() {
-		if(father != null) {
-			return father.getApplicazioneService();
+		if(this.father != null) {
+			return this.father.getApplicazioneService();
 		}
 		return this.applicazioneService;
 	}
 	
 	public IUoService getUoService() {
-		if(father != null) {
-			return father.getUoService();
+		if(this.father != null) {
+			return this.father.getUoService();
 		}
 		return this.uoService;
 	}
 	
 	public IOperatoreService getOperatoreService() {
-		if(father != null) {
-			return father.getOperatoreService();
+		if(this.father != null) {
+			return this.father.getOperatoreService();
 		}
 		return this.operatoreService;
 	}
 	
 	public IConnettoreService getConnettoreService() {
-		if(father != null) {
-			return father.getConnettoreService();
+		if(this.father != null) {
+			return this.father.getConnettoreService();
 		}
 		return this.connettoreService;
 	}
 	
 	public IACLService getAclService() {
-		if(father != null) {
-			return father.getAclService();
+		if(this.father != null) {
+			return this.father.getAclService();
 		}
 		return this.aclService;
 	}
 	
 	public IVersamentoService getVersamentoService() {
-		if(father != null) {
-			return father.getVersamentoService();
+		if(this.father != null) {
+			return this.father.getVersamentoService();
 		}
 		return this.versamentoService;
 	}
 	
 	public ISingoloVersamentoService getSingoloVersamentoService() {
-		if(father != null) {
-			return father.getSingoloVersamentoService();
+		if(this.father != null) {
+			return this.father.getSingoloVersamentoService();
 		}
 		return this.singoloVersamentoService;
 	}
 	
 	public IPagamentoPortaleService getPagamentoPortaleService() {
-		if(father != null) {
-			return father.getPagamentoPortaleService();
+		if(this.father != null) {
+			return this.father.getPagamentoPortaleService();
 		}
 		return this.pagamentoPortaleService;
 	}
 	
 	public IPagamentoPortaleVersamentoService getPagamentoPortaleVersamentoService() {
-		if(father != null) {
-			return father.getPagamentoPortaleVersamentoService();
+		if(this.father != null) {
+			return this.father.getPagamentoPortaleVersamentoService();
 		}
 		return this.pagamentoPortaleVersamentoService;
 	}
 	
 	public IRPTService getRptService() {
-		if(father != null) {
-			return father.getRptService();
+		if(this.father != null) {
+			return this.father.getRptService();
 		}
 		return this.rptService;
 	}
 	
 	public IRRService getRrService() {
-		if(father != null) {
-			return father.getRrService();
+		if(this.father != null) {
+			return this.father.getRrService();
 		}
 		return this.rrService;
 	}
 	
 	public INotificaService getNotificaService() {
-		if(father != null) {
-			return father.getNotificaService();
+		if(this.father != null) {
+			return this.father.getNotificaService();
 		}
 		return this.notificaService;
 	}
 	
 	public IIUVService getIuvService() {
-		if(father != null) {
-			return father.getIuvService();
+		if(this.father != null) {
+			return this.father.getIuvService();
 		}
 		return this.iuvService;
 	}
 	
 	public IFRService getFrService() {
-		if(father != null) {
-			return father.getFrService();
+		if(this.father != null) {
+			return this.father.getFrService();
 		}
 		return this.frService;
 	}
 	
 	public IIncassoService getIncassoService() {
-		if(father != null) {
-			return father.getIncassoService();
+		if(this.father != null) {
+			return this.father.getIncassoService();
 		}
 		return this.incassoService;
 	}
 	
 	public IPagamentoService getPagamentoService() {
-		if(father != null) {
-			return father.getPagamentoService();
+		if(this.father != null) {
+			return this.father.getPagamentoService();
 		}
 		return this.pagamentoService;
 	}
 	
 	public IRendicontazioneService getRendicontazioneService() {
-		if(father != null) {
-			return father.getRendicontazioneService();
+		if(this.father != null) {
+			return this.father.getRendicontazioneService();
 		}
 		return this.rendicontazioneService;
 	}
 	
 	public IEventoService getEventoService() {
-		if(father != null) {
-			return father.getEventoService();
+		if(this.father != null) {
+			return this.father.getEventoService();
 		}
 		return this.eventoService;
 	}
 	
 	public IBatchService getBatchService() {
-		if(father != null) {
-			return father.getBatchService();
+		if(this.father != null) {
+			return this.father.getBatchService();
 		}
 		return this.batchService;
 	}
 	
 	public ITracciatoService getTracciatoService() {
-		if(father != null) {
-			return father.getTracciatoService();
+		if(this.father != null) {
+			return this.father.getTracciatoService();
 		}
 		return this.tracciatoService;
 	}
 	
 	public IEsitoAvvisaturaService getEsitoAvvisaturaService() {
-		if(father != null) {
-			return father.getEsitoAvvisaturaService();
+		if(this.father != null) {
+			return this.father.getEsitoAvvisaturaService();
 		}
 		return this.esitoAvvisaturaService;
 	}
 	
 	public IOperazioneService getOperazioneService() {
-		if(father != null) {
-			return father.getOperazioneService();
+		if(this.father != null) {
+			return this.father.getOperazioneService();
 		}
 		return this.operazioneService;
 	}
 	
 	public IAuditService getAuditService() {
-		if(father != null) {
-			return father.getAuditService();
+		if(this.father != null) {
+			return this.father.getAuditService();
 		}
 		return this.auditService;
 	}
 	
 	public IAvvisoService getAvvisoService() {
-		if(father != null) {
-			return father.getAvvisoService();
+		if(this.father != null) {
+			return this.father.getAvvisoService();
 		}
 		return this.avvisoService;
 	}
 	
 
 	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
-		if(father != null) {
-			return father.getRendicontazionePagamentoServiceSearch();
+		if(this.father != null) {
+			return this.father.getRendicontazionePagamentoServiceSearch();
 		}
 		return this.rendicontazionePagamentoServiceSearch;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {
-		if(father != null) {
-			father.setAutoCommit(autoCommit);
+		if(this.father != null) {
+			this.father.setAutoCommit(autoCommit);
 			return;
 		}
 		
@@ -590,15 +590,15 @@ public class BasicBD {
 	}
 
 	public void closeConnection() {
-		if(father != null) {
-			father.closeConnection();
+		if(this.father != null) {
+			this.father.closeConnection();
 			return;
 		}
 		
 		try {
-			if(this.connection != null && !isClosed) {
+			if(this.connection != null && !this.isClosed) {
 				this.connection.close();
-				isClosed = true;
+				this.isClosed = true;
 			}
 		} catch (Throwable e) {
 			log.error("Errore durante la chiusura della connessione.", e);
@@ -606,8 +606,8 @@ public class BasicBD {
 	}
 	
 	public void commit() throws ServiceException{
-		if(father != null) {
-			father.commit();
+		if(this.father != null) {
+			this.father.commit();
 			return;
 		}
 		
@@ -620,13 +620,13 @@ public class BasicBD {
 	}
 	
 	public void rollback() {
-		if(father != null) {
-			father.rollback();
+		if(this.father != null) {
+			this.father.rollback();
 			return;
 		}
 		
 		try {
-			if(this.connection != null && !this.connection.getAutoCommit() && !isClosed)
+			if(this.connection != null && !this.connection.getAutoCommit() && !this.isClosed)
 				this.connection.rollback();
 		} catch (Throwable e) {
 			log.error("Errore durante la rollback.", e);
@@ -634,47 +634,47 @@ public class BasicBD {
 	}
 
 	public Connection getConnection() {
-		if(father != null) {
-			return father.getConnection();
+		if(this.father != null) {
+			return this.father.getConnection();
 		}
 		return this.connection;
 	}
 
 	public JDBCServiceManagerProperties getJdbcProperties() {
-		if(father != null) {
-			return father.getJdbcProperties();
+		if(this.father != null) {
+			return this.father.getJdbcProperties();
 		}
-		return jdbcProperties;
+		return this.jdbcProperties;
 	}
 
 	public boolean isAutoCommit() throws ServiceException {
 		try {
-			return getConnection().getAutoCommit();
+			return this.getConnection().getAutoCommit();
 		} catch (SQLException e) {
 			throw new ServiceException("Errore nell'identificazione dello stato di autocommit.", e);
 		}
 	}
 	
 	public boolean isClosed() throws ServiceException {
-		if(father != null) {
-			return father.isClosed();
+		if(this.father != null) {
+			return this.father.isClosed();
 		}
-		return isClosed;
+		return this.isClosed;
 	}
 	
 	protected void emitAudit(BasicModel model){
-		if(father != null) {
-			father.emitAudit(model);
+		if(this.father != null) {
+			this.father.emitAudit(model);
 		} else {
-			if(idOperatore != null) {
+			if(this.idOperatore != null) {
 				AuditBD db = new AuditBD(this);
-				db.insertAudit(getIdOperatore(), model);
+				db.insertAudit(this.getIdOperatore(), model);
 			}
 		}
 	}
 
 	public long getIdOperatore() {
-		return idOperatore;
+		return this.idOperatore;
 	}
 
 	public void setIdOperatore(long idOperatore) {

@@ -12,7 +12,7 @@ public class GetIntermediarioDTO extends BasicRequestDTO {
 	private String codIntermediario;
 	
 	public String getCodIntermediario() {
-		return codIntermediario;
+		return this.codIntermediario;
 	}
 	
 }

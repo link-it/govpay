@@ -34,11 +34,11 @@ public enum Mittente {
     private final String value;
 
     Mittente(String v) {
-        value = v;
+        this.value = v;
     }
 
     public String value() {
-        return value;
+        return this.value;
     }
 
     public static Mittente fromValue(String v) {

@@ -42,7 +42,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String ibanAccredito = null;
   
   @JsonProperty("riscossioni")
-  private List<Riscossione> riscossioni = new ArrayList<Riscossione>();
+  private List<Riscossione> riscossioni = new ArrayList<>();
   
   /**
    * Identificativo ente creditore
@@ -54,7 +54,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return idDominio;
+    return this.idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -70,7 +70,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idIncasso")
   public String getIdIncasso() {
-    return idIncasso;
+    return this.idIncasso;
   }
   public void setIdIncasso(String idIncasso) {
     this.idIncasso = idIncasso;
@@ -86,7 +86,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("causale")
   public String getCausale() {
-    return causale;
+    return this.causale;
   }
   public void setCausale(String causale) {
     this.causale = causale;
@@ -101,7 +101,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("importo")
   public Double getImporto() {
-    return importo;
+    return this.importo;
   }
   public void setImporto(Double importo) {
     this.importo = importo;
@@ -117,7 +117,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("dataValuta")
   public Date getDataValuta() {
-    return dataValuta;
+    return this.dataValuta;
   }
   public void setDataValuta(Date dataValuta) {
     this.dataValuta = dataValuta;
@@ -133,7 +133,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("dataContabile")
   public Date getDataContabile() {
-    return dataContabile;
+    return this.dataContabile;
   }
   public void setDataContabile(Date dataContabile) {
     this.dataContabile = dataContabile;
@@ -149,7 +149,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("ibanAccredito")
   public String getIbanAccredito() {
-    return ibanAccredito;
+    return this.ibanAccredito;
   }
   public void setIbanAccredito(String ibanAccredito) {
     this.ibanAccredito = ibanAccredito;
@@ -164,7 +164,7 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("riscossioni")
   public List<Riscossione> getRiscossioni() {
-    return riscossioni;
+    return this.riscossioni;
   }
   public void setRiscossioni(List<Riscossione> riscossioni) {
     this.riscossioni = riscossioni;
@@ -175,27 +175,27 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Incasso incasso = (Incasso) o;
-    return Objects.equals(idDominio, incasso.idDominio) &&
-        Objects.equals(idIncasso, incasso.idIncasso) &&
-        Objects.equals(causale, incasso.causale) &&
-        Objects.equals(importo, incasso.importo) &&
-        Objects.equals(dataValuta, incasso.dataValuta) &&
-        Objects.equals(dataContabile, incasso.dataContabile) &&
-        Objects.equals(ibanAccredito, incasso.ibanAccredito) &&
-        Objects.equals(riscossioni, incasso.riscossioni);
+    return Objects.equals(this.idDominio, incasso.idDominio) &&
+        Objects.equals(this.idIncasso, incasso.idIncasso) &&
+        Objects.equals(this.causale, incasso.causale) &&
+        Objects.equals(this.importo, incasso.importo) &&
+        Objects.equals(this.dataValuta, incasso.dataValuta) &&
+        Objects.equals(this.dataContabile, incasso.dataContabile) &&
+        Objects.equals(this.ibanAccredito, incasso.ibanAccredito) &&
+        Objects.equals(this.riscossioni, incasso.riscossioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idIncasso, causale, importo, dataValuta, dataContabile, ibanAccredito, riscossioni);
+    return Objects.hash(this.idDominio, this.idIncasso, this.causale, this.importo, this.dataValuta, this.dataContabile, this.ibanAccredito, this.riscossioni);
   }
 
   public static Incasso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Incasso) parse(json, Incasso.class);
+    return parse(json, Incasso.class);
   }
 
   @Override
@@ -207,15 +207,15 @@ public class Incasso extends it.govpay.core.rs.v1.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Incasso {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
-    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
-    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
-    sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
-    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
-    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
+    sb.append("    ").append(this.toIndentedString(super.toString())).append("\n");
+    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    idIncasso: ").append(this.toIndentedString(this.idIncasso)).append("\n");
+    sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
+    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
+    sb.append("    dataValuta: ").append(this.toIndentedString(this.dataValuta)).append("\n");
+    sb.append("    dataContabile: ").append(this.toIndentedString(this.dataContabile)).append("\n");
+    sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
+    sb.append("    riscossioni: ").append(this.toIndentedString(this.riscossioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }

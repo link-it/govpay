@@ -82,7 +82,7 @@ public abstract class BasicModel implements Serializable {
 		for(Method method : methods) {
 			if((method.getName().startsWith("get") || method.getName().startsWith("is")) && method.getParameterTypes().length == 0) {
 				if(method.getReturnType().isAssignableFrom(List.class)) {
-					String diff = diff((List<?>) method.invoke(a), (List<?>) method.invoke(b));
+					String diff = diff(method.invoke(a), method.invoke(b));
 					if(diff != null) return diff;
 				} else {
 					if(!equals(method.invoke(a), method.invoke(b))) {
@@ -117,6 +117,7 @@ public abstract class BasicModel implements Serializable {
 	}
 	
 	
+	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE, false);
 	}

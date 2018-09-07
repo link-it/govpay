@@ -32,7 +32,7 @@ public enum ModelloPagamento {
     ATTIVATO_PRESSO_PSP;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static ModelloPagamento fromValue(String v) {

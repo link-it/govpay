@@ -33,7 +33,7 @@ import it.govpay.bd.model.PagamentoPortale.STATO;
 public class PagamentoPortaleConverter {
 
 	public static List<PagamentoPortale> toDTO(List<it.govpay.orm.PagamentoPortale> singoliPagamenti) throws ServiceException {
-		List<PagamentoPortale> dto = new ArrayList<PagamentoPortale>();
+		List<PagamentoPortale> dto = new ArrayList<>();
 		for(it.govpay.orm.PagamentoPortale vo : singoliPagamenti) {
 			dto.add(toDTO(vo));
 		}

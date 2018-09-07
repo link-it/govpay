@@ -44,7 +44,7 @@ public class TipoInviaEsitoStornoRisposta
      *     
      */
     public String getEsito() {
-        return esito;
+        return this.esito;
     }
 
     /**

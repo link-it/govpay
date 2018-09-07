@@ -54,9 +54,9 @@ public class Risposta  {
 			} 
 				
 			if(r.getListaErroriRPT() != null) {
-				faultMap = new HashMap<Integer, FaultBean>();
+				this.faultMap = new HashMap<>();
 				for(FaultBean fb : r.getListaErroriRPT().getFault()) {
-					faultMap.put(fb.getSerial(), fb);
+					this.faultMap.put(fb.getSerial(), fb);
 				}
 			}
 		}
@@ -91,20 +91,20 @@ public class Risposta  {
 	
 	public String getFaultBeanString(int pos) {
 		if(this.faultBean != null)
-			return toString(this.faultBean);
+			return this.toString(this.faultBean);
 		
 		if(this.faultMap != null && this.faultMap.get(new Integer(pos)) != null)
-			return toString(this.faultMap.get(new Integer(pos)));
+			return this.toString(this.faultMap.get(new Integer(pos)));
 			
 		return null;
 	}
 
 	public String getLog() {
 		String log = "Ricevuto esito " + this.esito;
-		if(this.faultBean != null) log += " con FaultBean " + toString(this.faultBean);
+		if(this.faultBean != null) log += " con FaultBean " + this.toString(this.faultBean);
 		if(this.faultMap != null) {
 			for(FaultBean fb : this.faultMap.values())
-				log += "\nFaultBean " + toString(fb);
+				log += "\nFaultBean " + this.toString(fb);
 		}
 		return log;
 	}

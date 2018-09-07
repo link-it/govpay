@@ -45,7 +45,7 @@ public class TipoListaRPTPendenti {
      * 
      */
     public int getTotRestituiti() {
-        return totRestituiti;
+        return this.totRestituiti;
     }
 
     /**
@@ -79,8 +79,8 @@ public class TipoListaRPTPendenti {
      * 
      */
     public List<TipoRPTPendente> getRptPendente() {
-        if (rptPendente == null) {
-            rptPendente = new ArrayList<TipoRPTPendente>();
+        if (this.rptPendente == null) {
+            this.rptPendente = new ArrayList<>();
         }
         return this.rptPendente;
     }

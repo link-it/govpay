@@ -11,7 +11,7 @@ public class Iuv {
 	private byte[] barCode;
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String value) {
@@ -19,7 +19,7 @@ public class Iuv {
 	}
 
 	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 
 	public void setCodVersamentoEnte(String value) {
@@ -27,7 +27,7 @@ public class Iuv {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String value) {
@@ -35,7 +35,7 @@ public class Iuv {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String value) {
@@ -43,7 +43,7 @@ public class Iuv {
 	}
 
 	public String getNumeroAvviso() {
-		return numeroAvviso;
+		return this.numeroAvviso;
 	}
 
 	public void setNumeroAvviso(String value) {
@@ -51,7 +51,7 @@ public class Iuv {
 	}
 
 	public byte[] getQrCode() {
-		return qrCode;
+		return this.qrCode;
 	}
 
 	public void setQrCode(byte[] value) {
@@ -59,7 +59,7 @@ public class Iuv {
 	}
 
 	public byte[] getBarCode() {
-		return barCode;
+		return this.barCode;
 	}
 
 	public void setBarCode(byte[] value) {

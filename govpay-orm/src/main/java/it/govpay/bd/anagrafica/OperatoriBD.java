@@ -69,7 +69,7 @@ public class OperatoriBD extends BasicBD {
 
 		try {
 			it.govpay.orm.Operatore operatoreVO = ((JDBCOperatoreServiceSearch)this.getOperatoreService()).get(id);
-			return getOperatore(operatoreVO);
+			return this.getOperatore(operatoreVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -90,7 +90,7 @@ public class OperatoriBD extends BasicBD {
 			expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, principal);
 			
 			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
-			return getOperatore(operatoreVO);
+			return this.getOperatore(operatoreVO);
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
@@ -123,7 +123,7 @@ public class OperatoriBD extends BasicBD {
 			}
 			
 			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
-			return getOperatore(operatoreVO);
+			return this.getOperatore(operatoreVO);
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
@@ -161,7 +161,7 @@ public class OperatoriBD extends BasicBD {
 				expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE, principal);
 			
 			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
-			return getOperatore(operatoreVO);
+			return this.getOperatore(operatoreVO);
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
@@ -204,7 +204,7 @@ public class OperatoriBD extends BasicBD {
 			}
 			this.getOperatoreService().update(idOperatore, vo);
 			operatore.setId(vo.getId());
-			emitAudit(operatore);
+			this.emitAudit(operatore);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -234,7 +234,7 @@ public class OperatoriBD extends BasicBD {
 			this.commit();
 			// ripristino l'autocommit.
 			this.setAutoCommit(true); 
-			emitAudit(operatore);
+			this.emitAudit(operatore);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -258,11 +258,11 @@ public class OperatoriBD extends BasicBD {
 
 	public List<Operatore> findAll(OperatoreFilter filter) throws ServiceException {
 		try {
-			List<Operatore> lst = new ArrayList<Operatore>();
+			List<Operatore> lst = new ArrayList<>();
 			List<it.govpay.orm.Operatore> lstVO = this.getOperatoreService().findAll(filter.toPaginatedExpression());
 
 			for(it.govpay.orm.Operatore operatoreVO : lstVO) {
-				lst.add(getOperatore(operatoreVO));
+				lst.add(this.getOperatore(operatoreVO));
 			}
 			return lst;
 		} catch (NotImplementedException e) {

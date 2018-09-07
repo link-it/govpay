@@ -16,7 +16,7 @@ public class ListaNote {
 	private List<Nota> lista;
 
 	public List<Nota> getLista() {
-		return lista;
+		return this.lista;
 	}
 
 	public void setLista(List<Nota> lista) {

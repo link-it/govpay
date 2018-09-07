@@ -68,7 +68,7 @@ public class CtEsitoAvvisatura {
      *     
      */
     public String getTipoCanaleEsito() {
-        return tipoCanaleEsito;
+        return this.tipoCanaleEsito;
     }
 
     /**
@@ -92,7 +92,7 @@ public class CtEsitoAvvisatura {
      *     
      */
     public String getIdentificativoCanale() {
-        return identificativoCanale;
+        return this.identificativoCanale;
     }
 
     /**
@@ -116,7 +116,7 @@ public class CtEsitoAvvisatura {
      *     
      */
     public XMLGregorianCalendar getDataEsito() {
-        return dataEsito;
+        return this.dataEsito;
     }
 
     /**
@@ -136,7 +136,7 @@ public class CtEsitoAvvisatura {
      * 
      */
     public int getCodiceEsito() {
-        return codiceEsito;
+        return this.codiceEsito;
     }
 
     /**
@@ -156,7 +156,7 @@ public class CtEsitoAvvisatura {
      *     
      */
     public String getDescrizioneEsito() {
-        return descrizioneEsito;
+        return this.descrizioneEsito;
     }
 
     /**

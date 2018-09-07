@@ -35,11 +35,11 @@ public enum TipoAutenticazione {
     private final String value;
 
     TipoAutenticazione(String v) {
-        value = v;
+        this.value = v;
     }
 
     public String value() {
-        return value;
+        return this.value;
     }
 
     public static TipoAutenticazione fromValue(String v) {

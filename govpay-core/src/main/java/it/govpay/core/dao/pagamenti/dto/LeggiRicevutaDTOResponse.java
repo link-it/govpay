@@ -20,7 +20,7 @@ public class LeggiRicevutaDTOResponse {
 	private Versamento versamento;
 
 	public Dominio getDominio() {
-		return dominio;
+		return this.dominio;
 	}
 
 	public void setDominio(Dominio dominio) {
@@ -28,7 +28,7 @@ public class LeggiRicevutaDTOResponse {
 	}
 
 	public Versamento getVersamento() {
-		return versamento;
+		return this.versamento;
 	}
 
 	public void setVersamento(Versamento versamento) {
@@ -36,7 +36,7 @@ public class LeggiRicevutaDTOResponse {
 	}
 
 	public Rpt getRpt() {
-		return rpt;
+		return this.rpt;
 	}
 
 	public void setRpt(Rpt rpt) {

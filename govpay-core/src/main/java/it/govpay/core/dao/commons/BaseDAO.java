@@ -55,12 +55,12 @@ public class BaseDAO {
 			throw AclEngine.toNotAuthenticatedException(user);
 
 		try {
-			Applicazione applicazione = getApplicazioneFromUser(user, bd);
+			Applicazione applicazione = this.getApplicazioneFromUser(user, bd);
 			user.merge(applicazione.getUtenza());
 			return applicazione.getPrincipal();
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {
-				Operatore operatore = getOperatoreFromUser(user, bd);
+				Operatore operatore = this.getOperatoreFromUser(user, bd);
 				user.merge(operatore.getUtenza());
 				return operatore.getNome();
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
@@ -70,7 +70,7 @@ public class BaseDAO {
 	}
 
 	public Applicazione getApplicazioneFromUser(IAutorizzato user, BasicBD bd) throws ServiceException, NotFoundException {
-		if(useCacheData) {
+		if(this.useCacheData) {
 			return user.isCheckSubject() ? AnagraficaManager.getApplicazioneBySubject(bd, user.getPrincipal())
 					: AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
 		} else {
@@ -80,7 +80,7 @@ public class BaseDAO {
 	}
 	
 	public Operatore getOperatoreFromUser(IAutorizzato user, BasicBD bd) throws ServiceException, NotFoundException {
-		if(useCacheData) {
+		if(this.useCacheData) {
 			return user.isCheckSubject() ? AnagraficaManager.getOperatoreBySubject(bd, user.getPrincipal())
 				: AnagraficaManager.getOperatoreByPrincipal(bd, user.getPrincipal());
 		} else {
@@ -90,19 +90,19 @@ public class BaseDAO {
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti);
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, Diritti diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti, bd);
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user, List<Servizio> servizio, Diritti diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti, bd);
 	}
@@ -149,13 +149,13 @@ public class BaseDAO {
 
 
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti, String codDominio, String codTributo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti, codDominio, codTributo);
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, Diritti diritti, String codDominio, String codTributo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
-		List<Diritti> listaDiritti = new ArrayList<Diritti>();
+		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(user, servizio, listaDiritti, codDominio, codTributo, bd); 
 	}

@@ -16,7 +16,7 @@ public class LeggiOperatoreDTOResponse {
 	private Operatore operatore;
 
 	public Operatore getOperatore() {
-		return operatore;
+		return this.operatore;
 	}
 
 	public void setOperatore(Operatore operatore) {

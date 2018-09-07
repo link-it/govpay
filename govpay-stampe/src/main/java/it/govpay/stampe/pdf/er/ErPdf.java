@@ -34,9 +34,9 @@ public class ErPdf {
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 		JasperReportBuilder report = report();
 
-		List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
+		List<ComponentBuilder<?, ?>> cl = new ArrayList<>();
 
-		List<String> errList = new ArrayList<String>();
+		List<String> errList = new ArrayList<>();
 		cl.add(TemplateEr.createTitleComponent(pathLoghi,er,dominio,anagraficaDominio,errList,log));
 		
 		if(errList.size() > 0)

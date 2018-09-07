@@ -51,7 +51,7 @@ public class Iban extends JSONSerializable {
 	  }
 
 	  public String getHref() {
-	          return href;
+	          return this.href;
 	  }
 
 	  public void setHref(String href) {
@@ -59,7 +59,7 @@ public class Iban extends JSONSerializable {
 	  }
 
 	  public String getIban() {
-	          return iban;
+	          return this.iban;
 	  }
 
 	  public void setIban(String iban) {
@@ -67,7 +67,7 @@ public class Iban extends JSONSerializable {
 	  }
 
 	  public String getBic() {
-	          return bic;
+	          return this.bic;
 	  }
 
 	  public void setBic(String bic) {
@@ -75,7 +75,7 @@ public class Iban extends JSONSerializable {
 	  }
 
 	  public String getIbanAppoggio() {
-	          return ibanAppoggio;
+	          return this.ibanAppoggio;
 	  }
 
 	  public void setIbanAppoggio(String ibanAppoggio) {
@@ -83,7 +83,7 @@ public class Iban extends JSONSerializable {
 	  }
 
 	  public String getBicAppoggio() {
-	          return bicAppoggio;
+	          return this.bicAppoggio;
 	  }
 
 	  public void setBicAppoggio(String bicAppoggio) {
@@ -91,7 +91,7 @@ public class Iban extends JSONSerializable {
 	  }
 
 	  public boolean isAbilitato() {
-	          return abilitato;
+	          return this.abilitato;
 	  }
 
 	  public void setAbilitato(boolean abilitato) {

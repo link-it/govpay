@@ -45,7 +45,7 @@ public class Rpt extends it.govpay.model.Rpt{
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
 		if(this.versamento == null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			this.versamento = versamentiBD.getVersamento(getIdVersamento());
+			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}
 		return this.versamento;
 	}
@@ -57,7 +57,7 @@ public class Rpt extends it.govpay.model.Rpt{
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null) {
 			try {
-				this.dominio = AnagraficaManager.getDominio(bd, getCodDominio());
+				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
 			} catch (NotFoundException e) {
 				throw new ServiceException(e);
 			}
@@ -66,15 +66,15 @@ public class Rpt extends it.govpay.model.Rpt{
 	}
 	
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
-		if(pagamenti == null) {
+		if(this.pagamenti == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			pagamenti = pagamentiBD.getPagamenti(getId());
+			this.pagamenti = pagamentiBD.getPagamenti(this.getId());
 		}
-		return pagamenti;
+		return this.pagamenti;
 	}
 	
 	public Pagamento getPagamento(String iur, BasicBD bd) throws ServiceException, NotFoundException {
-		List<Pagamento> pagamenti = getPagamenti(bd);
+		List<Pagamento> pagamenti = this.getPagamenti(bd);
 		for(Pagamento pagamento : pagamenti) {
 			if(pagamento.getIur().equals(iur))
 				return pagamento;
@@ -87,12 +87,12 @@ public class Rpt extends it.govpay.model.Rpt{
 	}
 
 	public Stazione getStazione(BasicBD bd) throws ServiceException {
-		return getDominio(bd).getStazione();
+		return this.getDominio(bd).getStazione();
 	}
 
 
 	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
-		return getDominio(bd).getStazione().getIntermediario(bd);
+		return this.getDominio(bd).getStazione().getIntermediario(bd);
 	}
 
 	public PagamentoPortale getPagamentoPortale(BasicBD bd) throws ServiceException, NotFoundException  {

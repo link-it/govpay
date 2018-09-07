@@ -50,12 +50,14 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * @since 2.0
  */
 public class ZeroOneBooleanAdapter extends XmlAdapter<String,Boolean> {
-    public Boolean unmarshal(String v) {
+    @Override
+	public Boolean unmarshal(String v) {
         if(v==null)     return null;
         return DatatypeConverter.parseBoolean(v);
     }
 
-    public String marshal(Boolean v) {
+    @Override
+	public String marshal(Boolean v) {
         if(v==null)     return null;
         if(v) {
             return "1";

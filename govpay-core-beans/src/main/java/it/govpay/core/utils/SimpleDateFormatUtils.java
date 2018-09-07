@@ -12,7 +12,7 @@ public class SimpleDateFormatUtils {
 	public static List<String> datePatterns = null;
 	static {
 
-		datePatterns = new ArrayList<String>();
+		datePatterns = new ArrayList<>();
 		datePatterns.add(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
 		datePatterns.add(DateFormatUtils.ISO_DATETIME_FORMAT.getPattern());
 		datePatterns.add(DateFormatUtils.ISO_DATE_TIME_ZONE_FORMAT.getPattern());

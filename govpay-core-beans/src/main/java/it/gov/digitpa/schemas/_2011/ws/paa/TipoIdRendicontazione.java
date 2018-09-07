@@ -54,7 +54,7 @@ public class TipoIdRendicontazione {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**
@@ -78,7 +78,7 @@ public class TipoIdRendicontazione {
      *     
      */
     public Date getDataOraFlusso() {
-        return dataOraFlusso;
+        return this.dataOraFlusso;
     }
 
     /**

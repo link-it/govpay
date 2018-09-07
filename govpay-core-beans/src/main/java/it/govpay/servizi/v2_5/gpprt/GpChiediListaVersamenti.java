@@ -73,7 +73,7 @@ public class GpChiediListaVersamenti {
      *     
      */
     public String getCodPortale() {
-        return codPortale;
+        return this.codPortale;
     }
 
     /**
@@ -97,7 +97,7 @@ public class GpChiediListaVersamenti {
      *     
      */
     public String getCodUnivocoDebitore() {
-        return codUnivocoDebitore;
+        return this.codUnivocoDebitore;
     }
 
     /**
@@ -135,8 +135,8 @@ public class GpChiediListaVersamenti {
      * 
      */
     public List<StatoVersamento> getStato() {
-        if (stato == null) {
-            stato = new ArrayList<StatoVersamento>();
+        if (this.stato == null) {
+            this.stato = new ArrayList<>();
         }
         return this.stato;
     }
@@ -150,7 +150,7 @@ public class GpChiediListaVersamenti {
      *     
      */
     public String getOrdinamento() {
-        return ordinamento;
+        return this.ordinamento;
     }
 
     /**

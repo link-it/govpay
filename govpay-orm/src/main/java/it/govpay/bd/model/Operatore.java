@@ -44,7 +44,7 @@ public class Operatore extends it.govpay.model.Operatore{
 
 
 	public Utenza getUtenza() {
-		return utenza;
+		return this.utenza;
 	}
 
 	public void setUtenza(Utenza utenza) {

@@ -65,7 +65,7 @@ public class InformazioniVersamento {
      *     
      */
     public String getCodiceIdentificativoEnte() {
-        return codiceIdentificativoEnte;
+        return this.codiceIdentificativoEnte;
     }
 
     /**
@@ -89,7 +89,7 @@ public class InformazioniVersamento {
      *     
      */
     public CtNumeroAvviso getNumeroAvviso() {
-        return numeroAvviso;
+        return this.numeroAvviso;
     }
 
     /**
@@ -113,7 +113,7 @@ public class InformazioniVersamento {
      *     
      */
     public BigDecimal getImportoVersamento() {
-        return importoVersamento;
+        return this.importoVersamento;
     }
 
     /**

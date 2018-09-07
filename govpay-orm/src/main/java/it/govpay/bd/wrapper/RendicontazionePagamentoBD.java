@@ -46,7 +46,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 
 	public long count(RendicontazionePagamentoFilter filter) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 			lstReturnType.add(Long.class);
 			String nativeCount = NativeQueries.getInstance().getRendicontazionePagamentoCountQuery();
 			String sqlFilterString = filter.getSQLFilterString(nativeCount);
@@ -69,7 +69,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 	public List<RendicontazionePagamento> findAll(RendicontazionePagamentoFilter filter) throws ServiceException {
 		try {
 			
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 			
 			lstReturnType.add(FR.model().COD_FLUSSO.getFieldType());
 			lstReturnType.add(FR.model().STATO.getFieldType());
@@ -181,16 +181,16 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			}
 
 			List<List<Object>> lstRecords = this.getRendicontazionePagamentoServiceSearch().nativeQuery(nativeQueryString, lstReturnType, array);
-			List<RendicontazionePagamento> lstNonFiltrata = new ArrayList<RendicontazionePagamento>();
+			List<RendicontazionePagamento> lstNonFiltrata = new ArrayList<>();
 
 			for(List<Object> record: lstRecords) {
-				lstNonFiltrata.add(getRendicontazionePagamento(record));
+				lstNonFiltrata.add(this.getRendicontazionePagamento(record));
 			}
 			return lstNonFiltrata;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
-			return new ArrayList<RendicontazionePagamento>();
+			return new ArrayList<>();
 		}
 	}
 

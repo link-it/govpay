@@ -54,7 +54,7 @@ public class TipoIdQuadratura {
      *     
      */
     public String getIdentificativoFlusso() {
-        return identificativoFlusso;
+        return this.identificativoFlusso;
     }
 
     /**
@@ -78,7 +78,7 @@ public class TipoIdQuadratura {
      *     
      */
     public Date getDataOraFlusso() {
-        return dataOraFlusso;
+        return this.dataOraFlusso;
     }
 
     /**

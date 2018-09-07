@@ -296,7 +296,7 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model()));
 		boolean isUpdate_singoloVersamento = true;
-		java.util.List<JDBCObject> lstObjects_singoloVersamento = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_singoloVersamento = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,false), "?");
 		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getCodSingoloVersamentoEnte(), SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO,false), "?");
@@ -386,7 +386,7 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model()), 
@@ -397,7 +397,7 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model()), 
@@ -408,7 +408,7 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model()), 

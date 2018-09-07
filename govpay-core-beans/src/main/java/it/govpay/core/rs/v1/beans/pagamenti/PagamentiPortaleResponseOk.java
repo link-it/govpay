@@ -10,25 +10,25 @@ public class PagamentiPortaleResponseOk extends JSONSerializable {
 	private String idSession;
 	
 	public String getIdSession() {
-		return idSession;
+		return this.idSession;
 	}
 	public void setIdSession(String idSession) {
 		this.idSession = idSession;
 	}
 	public String getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
 	public String getLocation() {
-		return location;
+		return this.location;
 	}
 	public void setLocation(String location) {
 		this.location = location;
 	}
 	public String getRedirect() {
-		return redirect;
+		return this.redirect;
 	}
 	public void setRedirect(String redirect) {
 		this.redirect = redirect;

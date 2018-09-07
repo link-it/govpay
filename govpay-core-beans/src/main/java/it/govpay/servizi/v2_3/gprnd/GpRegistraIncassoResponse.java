@@ -48,7 +48,7 @@ public class GpRegistraIncassoResponse
      *     
      */
     public Incasso getIncasso() {
-        return incasso;
+        return this.incasso;
     }
 
     /**

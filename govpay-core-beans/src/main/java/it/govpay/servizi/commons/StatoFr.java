@@ -35,7 +35,7 @@ public enum StatoFr {
     RIFIUTATA;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StatoFr fromValue(String v) {

@@ -16,13 +16,13 @@ public class CheckSonda {
 	private String name;
 	private boolean coda;
 	public String getName() {
-		return name;
+		return this.name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
 	public boolean isCoda() {
-		return coda;
+		return this.coda;
 	}
 	public void setCoda(boolean coda) {
 		this.coda = coda;
@@ -41,22 +41,22 @@ public class CheckSonda {
 	
 
 	public static List<CheckSonda> getListaCheckSonda() {
-		List<CheckSonda> check = new ArrayList<CheckSonda>();
+		List<CheckSonda> check = new ArrayList<>();
 		CheckSonda sondaUpdateRnd = new CheckSonda();
-		sondaUpdateRnd.setName(it.govpay.core.business.Operazioni.rnd);
+		sondaUpdateRnd.setName(it.govpay.core.business.Operazioni.RND);
 		check.add(sondaUpdateRnd);
 		CheckSonda sondaUpdatePnd = new CheckSonda();
-		sondaUpdatePnd.setName(it.govpay.core.business.Operazioni.pnd);
+		sondaUpdatePnd.setName(it.govpay.core.business.Operazioni.PND);
 		check.add(sondaUpdatePnd);
 		CheckSonda sondaUpdateNtfy = new CheckSonda();
-		sondaUpdateNtfy.setName(it.govpay.core.business.Operazioni.ntfy);
+		sondaUpdateNtfy.setName(it.govpay.core.business.Operazioni.NTFY);
 		check.add(sondaUpdateNtfy);
 		CheckSonda sondaCheckNtfy = new CheckSonda();
-		sondaCheckNtfy.setName(it.govpay.core.business.Operazioni.check_ntfy);
+		sondaCheckNtfy.setName(it.govpay.core.business.Operazioni.CHECK_NTFY);
 		sondaCheckNtfy.setCoda(true);
 		check.add(sondaCheckNtfy);
 		CheckSonda sondaBatchStampaAvvisi = new CheckSonda();
-		sondaBatchStampaAvvisi.setName(it.govpay.core.business.Operazioni.batch_generazione_avvisi);
+		sondaBatchStampaAvvisi.setName(it.govpay.core.business.Operazioni.BATCH_GENERAZIONE_AVVISI);
 		check.add(sondaBatchStampaAvvisi);
 		return check;
 	}

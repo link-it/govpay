@@ -116,7 +116,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getIdentificativoDominio() {
-        return identificativoDominio;
+        return this.identificativoDominio;
     }
 
     /**
@@ -140,7 +140,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getAnagraficaBeneficiario() {
-        return anagraficaBeneficiario;
+        return this.anagraficaBeneficiario;
     }
 
     /**
@@ -164,7 +164,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getIdentificativoMessaggioRichiesta() {
-        return identificativoMessaggioRichiesta;
+        return this.identificativoMessaggioRichiesta;
     }
 
     /**
@@ -188,7 +188,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getTassonomiaAvviso() {
-        return tassonomiaAvviso;
+        return this.tassonomiaAvviso;
     }
 
     /**
@@ -212,7 +212,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getCodiceAvviso() {
-        return codiceAvviso;
+        return this.codiceAvviso;
     }
 
     /**
@@ -236,7 +236,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public CtSoggettoPagatore getSoggettoPagatore() {
-        return soggettoPagatore;
+        return this.soggettoPagatore;
     }
 
     /**
@@ -260,7 +260,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public XMLGregorianCalendar getDataScadenzaPagamento() {
-        return dataScadenzaPagamento;
+        return this.dataScadenzaPagamento;
     }
 
     /**
@@ -284,7 +284,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public XMLGregorianCalendar getDataScadenzaAvviso() {
-        return dataScadenzaAvviso;
+        return this.dataScadenzaAvviso;
     }
 
     /**
@@ -308,7 +308,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public BigDecimal getImportoAvviso() {
-        return importoAvviso;
+        return this.importoAvviso;
     }
 
     /**
@@ -332,7 +332,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getEMailSoggetto() {
-        return eMailSoggetto;
+        return this.eMailSoggetto;
     }
 
     /**
@@ -356,7 +356,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getCellulareSoggetto() {
-        return cellulareSoggetto;
+        return this.cellulareSoggetto;
     }
 
     /**
@@ -380,7 +380,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getDescrizionePagamento() {
-        return descrizionePagamento;
+        return this.descrizionePagamento;
     }
 
     /**
@@ -404,7 +404,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getUrlAvviso() {
-        return urlAvviso;
+        return this.urlAvviso;
     }
 
     /**
@@ -442,8 +442,8 @@ public class CtAvvisoDigitale {
      * 
      */
     public List<CtDatiSingoloVersamento> getDatiSingoloVersamento() {
-        if (datiSingoloVersamento == null) {
-            datiSingoloVersamento = new ArrayList<CtDatiSingoloVersamento>();
+        if (this.datiSingoloVersamento == null) {
+            this.datiSingoloVersamento = new ArrayList<>();
         }
         return this.datiSingoloVersamento;
     }
@@ -457,7 +457,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public String getTipoPagamento() {
-        return tipoPagamento;
+        return this.tipoPagamento;
     }
 
     /**
@@ -481,7 +481,7 @@ public class CtAvvisoDigitale {
      *     
      */
     public StTipoOperazione getTipoOperazione() {
-        return tipoOperazione;
+        return this.tipoOperazione;
     }
 
     /**

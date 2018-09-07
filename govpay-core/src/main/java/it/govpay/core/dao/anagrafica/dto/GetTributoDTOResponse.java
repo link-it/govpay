@@ -16,11 +16,11 @@ public class GetTributoDTOResponse {
 	}
 
 	public Tributo getTributo() {
-		return tributo;
+		return this.tributo;
 	}
 
 	public IbanAccredito getIbanAccredito() {
-		return ibanAccredito;
+		return this.ibanAccredito;
 	}
 
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
@@ -28,7 +28,7 @@ public class GetTributoDTOResponse {
 	}
 
 	public IbanAccredito getIbanAppoggio() {
-		return ibanAppoggio;
+		return this.ibanAppoggio;
 	}
 
 	public void setIbanAppoggio(IbanAccredito ibanAppoggio) {

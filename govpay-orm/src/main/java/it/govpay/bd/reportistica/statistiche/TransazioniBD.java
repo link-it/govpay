@@ -29,7 +29,7 @@ public class TransazioniBD extends BasicBD {
 
 	public List<DistribuzioneEsiti> getDistribuzioneEsiti(TransazioniFilter filtro) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 
 			lstReturnType.add(Date.class);
 			lstReturnType.add(Long.class);
@@ -47,7 +47,7 @@ public class TransazioniBD extends BasicBD {
 
 			List<List<Object>> lstRecords = this.getRptService().nativeQuery(nativeQueryString, lstReturnType, array);
 
-			List<DistribuzioneEsiti> distribuzioni = new ArrayList<DistribuzioneEsiti>();
+			List<DistribuzioneEsiti> distribuzioni = new ArrayList<>();
 
 			for(List<Object> record: lstRecords) {
 				distribuzioni.add(new DistribuzioneEsiti((Date) record.get(0), (Long) record.get(1), (Long) record.get(2), (Long) record.get(3)));
@@ -56,13 +56,13 @@ public class TransazioniBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
-			return new ArrayList<DistribuzioneEsiti>();
+			return new ArrayList<>();
 		}
 	}
 	
 	public List<DistribuzionePsp> getDistribuzionePsp(TransazioniFilter filtro) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 
 			lstReturnType.add(String.class);
 			lstReturnType.add(Long.class);
@@ -78,8 +78,8 @@ public class TransazioniBD extends BasicBD {
 
 			List<List<Object>> lstRecords = this.getRptService().nativeQuery(nativeQueryString, lstReturnType, array);
 
-			List<DistribuzionePsp> distribuzioniTmp = new ArrayList<DistribuzionePsp>();
-			List<DistribuzionePsp> distribuzioniFinal = new ArrayList<DistribuzionePsp>();
+			List<DistribuzionePsp> distribuzioniTmp = new ArrayList<>();
+			List<DistribuzionePsp> distribuzioniFinal = new ArrayList<>();
 
 			long totale = 0;
 			for(List<Object> record: lstRecords) {
@@ -111,7 +111,7 @@ public class TransazioniBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
-			return new ArrayList<DistribuzionePsp>();
+			return new ArrayList<>();
 		}
 	}
 }

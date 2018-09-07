@@ -20,7 +20,7 @@ public class ApplicazionePatchDTO extends AbstractPatchDTO {
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String codApplicazione) {

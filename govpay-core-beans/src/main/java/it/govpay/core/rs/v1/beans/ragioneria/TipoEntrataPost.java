@@ -36,7 +36,7 @@ public class TipoEntrataPost extends JSONSerializable {
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return descrizione;
+    return this.descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -51,7 +51,7 @@ public class TipoEntrataPost extends JSONSerializable {
 
   @JsonProperty("tipoContabilita")
   public TipoContabilita getTipoContabilita() {
-    return tipoContabilita;
+    return this.tipoContabilita;
   }
   public void setTipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
@@ -67,7 +67,7 @@ public class TipoEntrataPost extends JSONSerializable {
 
   @JsonProperty("codiceContabilita")
   public String getCodiceContabilita() {
-    return codiceContabilita;
+    return this.codiceContabilita;
   }
   public void setCodiceContabilita(String codiceContabilita) {
     this.codiceContabilita = codiceContabilita;
@@ -83,7 +83,7 @@ public class TipoEntrataPost extends JSONSerializable {
 
   @JsonProperty("codificaIUV")
   public String getCodificaIUV() {
-    return codificaIUV;
+    return this.codificaIUV;
   }
   public void setCodificaIUV(String codificaIUV) {
     this.codificaIUV = codificaIUV;
@@ -94,23 +94,23 @@ public class TipoEntrataPost extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     TipoEntrataPost tipoEntrataPost = (TipoEntrataPost) o;
-    return Objects.equals(descrizione, tipoEntrataPost.descrizione) &&
-        Objects.equals(tipoContabilita, tipoEntrataPost.tipoContabilita) &&
-        Objects.equals(codiceContabilita, tipoEntrataPost.codiceContabilita) &&
-        Objects.equals(codificaIUV, tipoEntrataPost.codificaIUV);
+    return Objects.equals(this.descrizione, tipoEntrataPost.descrizione) &&
+        Objects.equals(this.tipoContabilita, tipoEntrataPost.tipoContabilita) &&
+        Objects.equals(this.codiceContabilita, tipoEntrataPost.codiceContabilita) &&
+        Objects.equals(this.codificaIUV, tipoEntrataPost.codificaIUV);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipoContabilita, codiceContabilita, codificaIUV);
+    return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita, this.codificaIUV);
   }
 
   public static TipoEntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (TipoEntrataPost) parse(json, TipoEntrataPost.class);
+    return parse(json, TipoEntrataPost.class);
   }
 
   @Override
@@ -123,10 +123,10 @@ public class TipoEntrataPost extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoEntrataPost {\n");
     
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
-    sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
-    sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
+    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
+    sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
+    sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
+    sb.append("    codificaIUV: ").append(this.toIndentedString(this.codificaIUV)).append("\n");
     sb.append("}");
     return sb.toString();
   }

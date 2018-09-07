@@ -3,6 +3,7 @@ package it.govpay.rs.v1.controllers.gateway;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -25,6 +26,10 @@ import it.govpay.rs.BaseRsService;
 
 public class GatewayController extends BaseController {
 
+	private static final String LOG_MSG_ESECUZIONE_0_COMPLETATA_HTML_GENERATO_CORRETTAMENTE = "Esecuzione {0} completata, html generato correttamente.";
+	private static final String LOG_MSG_ESECUZIONE_0_COMPLETATA_CON_REDIRECT_VERSO_LA_URL_1 = "Esecuzione {0} completata con redirect verso la URL [{1}].";
+
+
 	public GatewayController(String nomeServizio, Logger log) {
 		super(nomeServizio, log, null, false);
 	}
@@ -34,7 +39,7 @@ public class GatewayController extends BaseController {
 		String methodName = "post_GW";  
 		GpContext ctx = null;
 		String transactionId = null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		ByteArrayOutputStream baos= null;
 		try{
 			baos = new ByteArrayOutputStream();
@@ -65,14 +70,14 @@ public class GatewayController extends BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTOResponse, 200);
 			
 			if(aggiornaPagamentiPortaleDTOResponse.getLocation() != null) {
-				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ aggiornaPagamentiPortaleDTOResponse.getLocation() +"].");	
+				this.log.info(MessageFormat.format(LOG_MSG_ESECUZIONE_0_COMPLETATA_CON_REDIRECT_VERSO_LA_URL_1, methodName, aggiornaPagamentiPortaleDTOResponse.getLocation()));	
 				return this.handleResponseOk(Response.seeOther(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())),transactionId).build();
 			} else {
-				this.log.info("Esecuzione " + methodName + " completata, html generato correttamente.");	
+				this.log.info(MessageFormat.format(LOG_MSG_ESECUZIONE_0_COMPLETATA_HTML_GENERATO_CORRETTAMENTE, methodName));	
 				return this.handleResponseOk(Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()),transactionId).build();
 			}
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}
@@ -84,7 +89,7 @@ public class GatewayController extends BaseController {
 		String methodName = "get_GW";  
 		GpContext ctx = null;
 		String transactionId = null;
-		this.log.info("Esecuzione " + methodName + " in corso..."); 
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			String principal = user != null ? user.getPrincipal() : null;
 			
@@ -109,14 +114,14 @@ public class GatewayController extends BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, aggiornaPagamentiPortaleDTOResponse, 200);
 			
 			if(aggiornaPagamentiPortaleDTOResponse.getLocation() != null) {
-				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ aggiornaPagamentiPortaleDTOResponse.getLocation() +"].");	
+				this.log.info(MessageFormat.format(LOG_MSG_ESECUZIONE_0_COMPLETATA_CON_REDIRECT_VERSO_LA_URL_1, methodName, aggiornaPagamentiPortaleDTOResponse.getLocation()));	
 				return this.handleResponseOk(Response.seeOther(new URI(aggiornaPagamentiPortaleDTOResponse.getLocation())),transactionId).build();
 			} else {
-				this.log.info("Esecuzione " + methodName + " completata, html generato correttamente.");	
+				this.log.info(MessageFormat.format(LOG_MSG_ESECUZIONE_0_COMPLETATA_HTML_GENERATO_CORRETTAMENTE, methodName));	
 				return this.handleResponseOk(Response.ok(aggiornaPagamentiPortaleDTOResponse.getWispHtml()),transactionId).build();
 			}
 		}catch (Exception e) {
-			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
 		}

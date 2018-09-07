@@ -14,7 +14,7 @@ public class Utils {
 	
 	public static void loadMetaInfo(GpContext ctx, MetaInfo metaInfo) {
 		if(metaInfo != null){
-			Map<String, String> iuvProps = new HashMap<String, String>();
+			Map<String, String> iuvProps = new HashMap<>();
 			for(IuvProp prop : metaInfo.getIuvProp()){
 				iuvProps.put(prop.getNome(), prop.getValue());
 			}

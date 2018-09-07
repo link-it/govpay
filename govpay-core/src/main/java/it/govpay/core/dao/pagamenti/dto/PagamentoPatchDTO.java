@@ -20,7 +20,7 @@ public class PagamentoPatchDTO extends AbstractPatchDTO {
 	}
 
 	public String getIdSessione() {
-		return idSessione;
+		return this.idSessione;
 	}
 
 	public void setIdSessione(String idSessione) {

@@ -38,7 +38,7 @@ public enum TipoAllegato {
     BD;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static TipoAllegato fromValue(String v) {

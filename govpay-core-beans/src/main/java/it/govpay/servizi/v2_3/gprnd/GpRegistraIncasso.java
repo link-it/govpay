@@ -81,7 +81,7 @@ public class GpRegistraIncasso {
      *     
      */
     public String getTrn() {
-        return trn;
+        return this.trn;
     }
 
     /**
@@ -105,7 +105,7 @@ public class GpRegistraIncasso {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -129,7 +129,7 @@ public class GpRegistraIncasso {
      *     
      */
     public String getCausale() {
-        return causale;
+        return this.causale;
     }
 
     /**
@@ -153,7 +153,7 @@ public class GpRegistraIncasso {
      *     
      */
     public BigDecimal getImporto() {
-        return importo;
+        return this.importo;
     }
 
     /**
@@ -177,7 +177,7 @@ public class GpRegistraIncasso {
      *     
      */
     public Date getDataValuta() {
-        return dataValuta;
+        return this.dataValuta;
     }
 
     /**
@@ -201,7 +201,7 @@ public class GpRegistraIncasso {
      *     
      */
     public Date getDataContabile() {
-        return dataContabile;
+        return this.dataContabile;
     }
 
     /**
@@ -225,7 +225,7 @@ public class GpRegistraIncasso {
      *     
      */
     public String getDispositivo() {
-        return dispositivo;
+        return this.dispositivo;
     }
 
     /**

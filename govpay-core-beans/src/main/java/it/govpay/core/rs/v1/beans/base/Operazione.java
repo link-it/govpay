@@ -53,7 +53,7 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return value;
+      return this.value;
     }
 
     public static StatoEnum fromValue(String text) {
@@ -86,7 +86,7 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idOperazione")
   public String getIdOperazione() {
-    return idOperazione;
+    return this.idOperazione;
   }
   public void setIdOperazione(String idOperazione) {
     this.idOperazione = idOperazione;
@@ -101,7 +101,7 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return descrizione;
+    return this.descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -116,7 +116,7 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("location")
   public String getLocation() {
-    return location;
+    return this.location;
   }
   public void setLocation(String location) {
     this.location = location;
@@ -131,7 +131,7 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("stato")
   public StatoEnum getStato() {
-    return stato;
+    return this.stato;
   }
   public void setStato(StatoEnum stato) {
     this.stato = stato;
@@ -147,7 +147,7 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("esito")
   public String getEsito() {
-    return esito;
+    return this.esito;
   }
   public void setEsito(String esito) {
     this.esito = esito;
@@ -162,7 +162,7 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("dettaglio")
   public String getDettaglio() {
-    return dettaglio;
+    return this.dettaglio;
   }
   public void setDettaglio(String dettaglio) {
     this.dettaglio = dettaglio;
@@ -173,25 +173,25 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Operazione operazione = (Operazione) o;
-    return Objects.equals(idOperazione, operazione.idOperazione) &&
-        Objects.equals(descrizione, operazione.descrizione) &&
-        Objects.equals(location, operazione.location) &&
-        Objects.equals(stato, operazione.stato) &&
-        Objects.equals(esito, operazione.esito) &&
-        Objects.equals(dettaglio, operazione.dettaglio);
+    return Objects.equals(this.idOperazione, operazione.idOperazione) &&
+        Objects.equals(this.descrizione, operazione.descrizione) &&
+        Objects.equals(this.location, operazione.location) &&
+        Objects.equals(this.stato, operazione.stato) &&
+        Objects.equals(this.esito, operazione.esito) &&
+        Objects.equals(this.dettaglio, operazione.dettaglio);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idOperazione, descrizione, location, stato, esito, dettaglio);
+    return Objects.hash(this.idOperazione, this.descrizione, this.location, this.stato, this.esito, this.dettaglio);
   }
 
   public static Operazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Operazione) parse(json, Operazione.class);
+    return parse(json, Operazione.class);
   }
 
   @Override
@@ -203,13 +203,13 @@ public class Operazione extends it.govpay.core.rs.v1.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Operazione {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    idOperazione: ").append(toIndentedString(idOperazione)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    location: ").append(toIndentedString(location)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
-    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
-    sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");
+    sb.append("    ").append(this.toIndentedString(super.toString())).append("\n");
+    sb.append("    idOperazione: ").append(this.toIndentedString(this.idOperazione)).append("\n");
+    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
+    sb.append("    location: ").append(this.toIndentedString(this.location)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    esito: ").append(this.toIndentedString(this.esito)).append("\n");
+    sb.append("    dettaglio: ").append(this.toIndentedString(this.dettaglio)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -68,8 +68,8 @@ public class CtSpezzoniCausaleVersamento {
      * 
      */
     public List<Object> getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento() {
-        if (spezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento == null) {
-            spezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento = new ArrayList<Object>();
+        if (this.spezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento == null) {
+            this.spezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento = new ArrayList<>();
         }
         return this.spezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento;
     }

@@ -107,7 +107,7 @@ public class IbanAccreditoBD extends BasicBD {
 			}
 			this.getIbanAccreditoService().update(id, vo);
 			ibanAccredito.setId(vo.getId());
-			emitAudit(ibanAccredito);
+			this.emitAudit(ibanAccredito);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -126,7 +126,7 @@ public class IbanAccreditoBD extends BasicBD {
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
 			this.getIbanAccreditoService().create(vo);
 			ibanAccredito.setId(vo.getId());
-			emitAudit(ibanAccredito);
+			this.emitAudit(ibanAccredito);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

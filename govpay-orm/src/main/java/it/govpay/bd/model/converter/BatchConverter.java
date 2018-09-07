@@ -37,7 +37,7 @@ public class BatchConverter {
 	}
 
 	public static List<it.govpay.orm.Batch> toVO(List<Batch> lstDTO) {
-		List<it.govpay.orm.Batch> lst = new ArrayList<it.govpay.orm.Batch>();
+		List<it.govpay.orm.Batch> lst = new ArrayList<>();
 		if(lstDTO != null && !lstDTO.isEmpty()) {
 			for(Batch vo: lstDTO) {
 				lst.add(toVO(vo));
@@ -48,7 +48,7 @@ public class BatchConverter {
 	}
 
 	public static List<Batch> toDTO(List<it.govpay.orm.Batch> lstDTO) {
-		List<Batch> lst = new ArrayList<Batch>();
+		List<Batch> lst = new ArrayList<>();
 		if(lstDTO != null && !lstDTO.isEmpty()) {
 			for(it.govpay.orm.Batch vo: lstDTO) {
 				lst.add(toDTO(vo));

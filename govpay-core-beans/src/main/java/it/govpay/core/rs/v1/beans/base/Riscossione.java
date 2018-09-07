@@ -80,7 +80,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return idDominio;
+    return this.idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -96,7 +96,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("iuv")
   public String getIuv() {
-    return iuv;
+    return this.iuv;
   }
   public void setIuv(String iuv) {
     this.iuv = iuv;
@@ -112,7 +112,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("iur")
   public String getIur() {
-    return iur;
+    return this.iur;
   }
   public void setIur(String iur) {
     this.iur = iur;
@@ -128,7 +128,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("indice")
   public BigDecimal getIndice() {
-    return indice;
+    return this.indice;
   }
   public void setIndice(BigDecimal indice) {
     this.indice = indice;
@@ -144,7 +144,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("pendenza")
   public String getPendenza() {
-    return pendenza;
+    return this.pendenza;
   }
   public void setPendenza(String pendenza) {
     this.pendenza = pendenza;
@@ -160,7 +160,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("idVocePendenza")
   public String getIdVocePendenza() {
-    return idVocePendenza;
+    return this.idVocePendenza;
   }
   public void setIdVocePendenza(String idVocePendenza) {
     this.idVocePendenza = idVocePendenza;
@@ -176,7 +176,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("rpp")
   public String getRpp() {
-    return rpp;
+    return this.rpp;
   }
   public void setRpp(String rpp) {
     this.rpp = rpp;
@@ -191,7 +191,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("stato")
   public StatoRiscossione getStato() {
-    return stato;
+    return this.stato;
   }
   public void setStato(StatoRiscossione stato) {
     this.stato = stato;
@@ -206,7 +206,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("tipo")
   public TipoRiscossione getTipo() {
-    return tipo;
+    return this.tipo;
   }
   public void setTipo(TipoRiscossione tipo) {
     this.tipo = tipo;
@@ -222,7 +222,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("importo")
   public BigDecimal getImporto() {
-    return importo;
+    return this.importo;
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
@@ -238,7 +238,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("data")
   public Date getData() {
-    return data;
+    return this.data;
   }
   public void setData(Date data) {
     this.data = data;
@@ -254,7 +254,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("commissioni")
   public BigDecimal getCommissioni() {
-    return commissioni;
+    return this.commissioni;
   }
   public void setCommissioni(BigDecimal commissioni) {
     this.commissioni = commissioni;
@@ -269,7 +269,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("allegato")
   public Allegato getAllegato() {
-    return allegato;
+    return this.allegato;
   }
   public void setAllegato(Allegato allegato) {
     this.allegato = allegato;
@@ -285,7 +285,7 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("incasso")
   public String getIncasso() {
-    return incasso;
+    return this.incasso;
   }
   public void setIncasso(String incasso) {
     this.incasso = incasso;
@@ -296,33 +296,33 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Riscossione riscossione = (Riscossione) o;
-    return Objects.equals(idDominio, riscossione.idDominio) &&
-        Objects.equals(iuv, riscossione.iuv) &&
-        Objects.equals(iur, riscossione.iur) &&
-        Objects.equals(indice, riscossione.indice) &&
-        Objects.equals(pendenza, riscossione.pendenza) &&
-        Objects.equals(idVocePendenza, riscossione.idVocePendenza) &&
-        Objects.equals(rpp, riscossione.rpp) &&
-        Objects.equals(stato, riscossione.stato) &&
-        Objects.equals(tipo, riscossione.tipo) &&
-        Objects.equals(importo, riscossione.importo) &&
-        Objects.equals(data, riscossione.data) &&
-        Objects.equals(commissioni, riscossione.commissioni) &&
-        Objects.equals(allegato, riscossione.allegato) &&
-        Objects.equals(incasso, riscossione.incasso);
+    return Objects.equals(this.idDominio, riscossione.idDominio) &&
+        Objects.equals(this.iuv, riscossione.iuv) &&
+        Objects.equals(this.iur, riscossione.iur) &&
+        Objects.equals(this.indice, riscossione.indice) &&
+        Objects.equals(this.pendenza, riscossione.pendenza) &&
+        Objects.equals(this.idVocePendenza, riscossione.idVocePendenza) &&
+        Objects.equals(this.rpp, riscossione.rpp) &&
+        Objects.equals(this.stato, riscossione.stato) &&
+        Objects.equals(this.tipo, riscossione.tipo) &&
+        Objects.equals(this.importo, riscossione.importo) &&
+        Objects.equals(this.data, riscossione.data) &&
+        Objects.equals(this.commissioni, riscossione.commissioni) &&
+        Objects.equals(this.allegato, riscossione.allegato) &&
+        Objects.equals(this.incasso, riscossione.incasso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
+    return Objects.hash(this.idDominio, this.iuv, this.iur, this.indice, this.pendenza, this.idVocePendenza, this.rpp, this.stato, this.tipo, this.importo, this.data, this.commissioni, this.allegato, this.incasso);
   }
 
   public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Riscossione) parse(json, Riscossione.class);
+    return parse(json, Riscossione.class);
   }
 
   @Override
@@ -335,20 +335,20 @@ public class Riscossione extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Riscossione {\n");
     
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
-    sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
-    sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
-    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
-    sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
-    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
-    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    data: ").append(toIndentedString(data)).append("\n");
-    sb.append("    commissioni: ").append(toIndentedString(commissioni)).append("\n");
-    sb.append("    allegato: ").append(toIndentedString(allegato)).append("\n");
-    sb.append("    incasso: ").append(toIndentedString(incasso)).append("\n");
+    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
+    sb.append("    iur: ").append(this.toIndentedString(this.iur)).append("\n");
+    sb.append("    indice: ").append(this.toIndentedString(this.indice)).append("\n");
+    sb.append("    pendenza: ").append(this.toIndentedString(this.pendenza)).append("\n");
+    sb.append("    idVocePendenza: ").append(this.toIndentedString(this.idVocePendenza)).append("\n");
+    sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
+    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
+    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
+    sb.append("    data: ").append(this.toIndentedString(this.data)).append("\n");
+    sb.append("    commissioni: ").append(this.toIndentedString(this.commissioni)).append("\n");
+    sb.append("    allegato: ").append(this.toIndentedString(this.allegato)).append("\n");
+    sb.append("    incasso: ").append(this.toIndentedString(this.incasso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

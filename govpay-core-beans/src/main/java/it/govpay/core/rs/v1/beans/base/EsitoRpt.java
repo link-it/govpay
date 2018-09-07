@@ -47,7 +47,7 @@ public enum EsitoRpt {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(value);
+    return String.valueOf(this.value);
   }
 
   public static EsitoRpt fromValue(String text) {

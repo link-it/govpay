@@ -74,7 +74,7 @@ public class UtenzeBD extends BasicBD {
 
 		try {
 			it.govpay.orm.Utenza utenzaVO = ((JDBCUtenzaServiceSearch)this.getUtenzaService()).get(id);
-			return getUtenza(utenzaVO);
+			return this.getUtenza(utenzaVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -110,7 +110,7 @@ public class UtenzeBD extends BasicBD {
 	 * @throws ServiceException
 	 */
 	public Utenza getUtenza(String principal) throws NotFoundException, MultipleResultException, ServiceException {
-		return getUtenza(principal, false);
+		return this.getUtenza(principal, false);
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class UtenzeBD extends BasicBD {
 				expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, principal);
 
 			it.govpay.orm.Utenza utenzaVO = this.getUtenzaService().find(expr);
-			return getUtenza(utenzaVO);
+			return this.getUtenza(utenzaVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -203,7 +203,7 @@ public class UtenzeBD extends BasicBD {
 			this.updateUtenzeDominio(vo.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(vo.getId(), utenza.getIdTributi());
 			utenza.setId(vo.getId());
-			emitAudit(utenza);
+			this.emitAudit(utenza);
 		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
@@ -213,7 +213,7 @@ public class UtenzeBD extends BasicBD {
 
 	private void updateUtenzeDominio(Long utenza, List<Long> idDomini) throws ServiceException {
 		try {
-			deleteUtenzeDominio(utenza);
+			this.deleteUtenzeDominio(utenza);
 
 			if(idDomini != null) {
 				for(Long domini: idDomini) {
@@ -250,7 +250,7 @@ public class UtenzeBD extends BasicBD {
 
 	private void updateUtenzeTributo(Long utenza, List<Long> idTributi) throws ServiceException {
 		try {
-			deleteUtenzeTributo(utenza);
+			this.deleteUtenzeTributo(utenza);
 
 			if(idTributi != null) {
 				for(Long tributo: idTributi) {
@@ -331,7 +331,7 @@ public class UtenzeBD extends BasicBD {
 			utenza.setId(vo.getId());
 			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(utenza.getId(), utenza.getIdTributi());
-			emitAudit(utenza);
+			this.emitAudit(utenza);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} 
@@ -365,7 +365,7 @@ public class UtenzeBD extends BasicBD {
 			if(!commitParent)
 				this.commit();
 
-			emitAudit(utenza);
+			this.emitAudit(utenza);
 		} catch (NotImplementedException | UtilsException  e) {
 			if(!commitParent)
 				this.rollback();

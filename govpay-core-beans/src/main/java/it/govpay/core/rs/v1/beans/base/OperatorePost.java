@@ -40,7 +40,7 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return ragioneSociale;
+    return this.ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
@@ -56,7 +56,7 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("domini")
   public List<String> getDomini() {
-    return domini;
+    return this.domini;
   }
   public void setDomini(List<String> domini) {
     this.domini = domini;
@@ -72,7 +72,7 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("entrate")
   public List<String> getEntrate() {
-    return entrate;
+    return this.entrate;
   }
   public void setEntrate(List<String> entrate) {
     this.entrate = entrate;
@@ -88,7 +88,7 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return acl;
+    return this.acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -104,7 +104,7 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return abilitato;
+    return this.abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -115,24 +115,24 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     OperatorePost operatorePost = (OperatorePost) o;
-    return Objects.equals(ragioneSociale, operatorePost.ragioneSociale) &&
-        Objects.equals(domini, operatorePost.domini) &&
-        Objects.equals(entrate, operatorePost.entrate) &&
-        Objects.equals(acl, operatorePost.acl) &&
-        Objects.equals(abilitato, operatorePost.abilitato);
+    return Objects.equals(this.ragioneSociale, operatorePost.ragioneSociale) &&
+        Objects.equals(this.domini, operatorePost.domini) &&
+        Objects.equals(this.entrate, operatorePost.entrate) &&
+        Objects.equals(this.acl, operatorePost.acl) &&
+        Objects.equals(this.abilitato, operatorePost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, domini, entrate, acl, abilitato);
+    return Objects.hash(this.ragioneSociale, this.domini, this.entrate, this.acl, this.abilitato);
   }
 
   public static OperatorePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (OperatorePost) parse(json, OperatorePost.class);
+    return parse(json, OperatorePost.class);
   }
 
   @Override
@@ -145,11 +145,11 @@ public class OperatorePost extends it.govpay.core.rs.v1.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class OperatorePost {\n");
     
-    sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
-    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
-    sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
-    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
+    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
+    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

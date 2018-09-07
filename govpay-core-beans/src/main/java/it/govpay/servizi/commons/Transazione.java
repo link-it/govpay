@@ -97,7 +97,7 @@ public class Transazione {
      *     
      */
     public Date getData() {
-        return data;
+        return this.data;
     }
 
     /**
@@ -121,7 +121,7 @@ public class Transazione {
      *     
      */
     public ModelloPagamento getModello() {
-        return modello;
+        return this.modello;
     }
 
     /**
@@ -145,7 +145,7 @@ public class Transazione {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -169,7 +169,7 @@ public class Transazione {
      *     
      */
     public String getIuv() {
-        return iuv;
+        return this.iuv;
     }
 
     /**
@@ -193,7 +193,7 @@ public class Transazione {
      *     
      */
     public String getCcp() {
-        return ccp;
+        return this.ccp;
     }
 
     /**
@@ -217,7 +217,7 @@ public class Transazione {
      *     
      */
     public Canale getCanale() {
-        return canale;
+        return this.canale;
     }
 
     /**
@@ -241,7 +241,7 @@ public class Transazione {
      *     
      */
     public StatoTransazione getStato() {
-        return stato;
+        return this.stato;
     }
 
     /**
@@ -265,7 +265,7 @@ public class Transazione {
      *     
      */
     public String getDescrizioneStato() {
-        return descrizioneStato;
+        return this.descrizioneStato;
     }
 
     /**
@@ -289,7 +289,7 @@ public class Transazione {
      *     
      */
     public EsitoTransazione getEsito() {
-        return esito;
+        return this.esito;
     }
 
     /**
@@ -312,7 +312,7 @@ public class Transazione {
      *     byte[]
      */
     public byte[] getRpt() {
-        return rpt;
+        return this.rpt;
     }
 
     /**
@@ -334,7 +334,7 @@ public class Transazione {
      *     byte[]
      */
     public byte[] getRt() {
-        return rt;
+        return this.rt;
     }
 
     /**
@@ -371,8 +371,8 @@ public class Transazione {
      * 
      */
     public List<RichiestaStorno> getRichiestaStorno() {
-        if (richiestaStorno == null) {
-            richiestaStorno = new ArrayList<RichiestaStorno>();
+        if (this.richiestaStorno == null) {
+            this.richiestaStorno = new ArrayList<>();
         }
         return this.richiestaStorno;
     }
@@ -400,8 +400,8 @@ public class Transazione {
      * 
      */
     public List<Pagamento> getPagamento() {
-        if (pagamento == null) {
-            pagamento = new ArrayList<Pagamento>();
+        if (this.pagamento == null) {
+            this.pagamento = new ArrayList<>();
         }
         return this.pagamento;
     }

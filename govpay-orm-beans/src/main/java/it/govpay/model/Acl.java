@@ -39,7 +39,7 @@ public class Acl extends BasicModel {
 		}
 		
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static Diritti toEnum(String codifica) throws ServiceException {
@@ -93,7 +93,7 @@ public class Acl extends BasicModel {
 		}
 		
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static Servizio toEnum(String codifica) throws ServiceException {
@@ -105,31 +105,31 @@ public class Acl extends BasicModel {
 		}
 	}
 	public String getRuolo() {
-		return ruolo;
+		return this.ruolo;
 	}
 	public void setRuolo(String ruolo) {
 		this.ruolo = ruolo;
 	}
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
 	public String getDiritti() {
-		return diritti;
+		return this.diritti;
 	}
 	public void setDiritti(String diritti) {
 		this.diritti = diritti;
 	}
 	public Servizio getServizio() {
-		return servizio;
+		return this.servizio;
 	}
 	public void setServizio(Servizio servizio) {
 		this.servizio = servizio;
 	}
 	public Set<Diritti> getListaDiritti() {
-		return listaDiritti;
+		return this.listaDiritti;
 	}
 	public String getListaDirittiString() {
 		StringBuffer sb = new StringBuffer();
@@ -146,7 +146,7 @@ public class Acl extends BasicModel {
 		this.listaDiritti = listaDiritti;
 	}
 	public void setListaDiritti(String diritti) {
-		this.listaDiritti = new HashSet<Acl.Diritti>();
+		this.listaDiritti = new HashSet<>();
 		
 		if(StringUtils.isNotEmpty(diritti)) {
 			for(Diritti p : Diritti.values()){
@@ -158,7 +158,7 @@ public class Acl extends BasicModel {
 	
 	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(long id) {
 		this.id = id;

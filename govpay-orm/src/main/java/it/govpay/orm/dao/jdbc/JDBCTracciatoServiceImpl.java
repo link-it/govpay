@@ -150,7 +150,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getTracciatoFieldConverter().toTable(Tracciato.model()));
 		boolean isUpdate_tracciato = true;
-		java.util.List<JDBCObject> lstObjects_tracciato = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_tracciato = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().COD_DOMINIO,false), "?");
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getCodDominio(), Tracciato.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO,false), "?");
@@ -217,7 +217,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 
@@ -228,7 +228,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 
@@ -239,7 +239,7 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTracciatoFieldConverter().toTable(Tracciato.model()), 

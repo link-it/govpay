@@ -41,7 +41,7 @@
 	<properties>
 		<javaVersion>1.8</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.version>3.0.3-SNAPSHOT</openspcoop2.version>
+		<openspcoop2.version>3.0.3</openspcoop2.version>
 		<logger.version>2.6.2</logger.version>
 		<rel-to-parent>.</rel-to-parent>
 	</properties>
@@ -244,16 +244,140 @@
 				<version>2.4.2</version>
 			</dependency>
 
+			<!-- dipendenze openspcoop -->
 			<dependency>
 				<groupId>org.openspcoop2</groupId>
 				<artifactId>openspcoop2_generic-project</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
+			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger
+				transport csv sonde rest openapi xml2json date resources jmx
+			-->
 			<dependency>
-				<groupId>org.openspcoop2</groupId>
-				<artifactId>openspcoop2_utils</artifactId>
-				<version>${openspcoop2.version}</version>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-core</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency> 
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-beans</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency> 
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-json</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency> 
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-serialization</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-jaxb</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency> 
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-cache</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency> 
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-sql</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-jdbc</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency> 
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-datasource</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-xml</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-id</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-logger</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-transport</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-csv</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-sonde</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-rest</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-openapi</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-xml2json</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-date</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-resources</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-jmx</artifactId>
+			    <version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
@@ -275,13 +399,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
-			<!-- dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-mapper-asl</artifactId>
-				<version>1.9.2</version>
-				<scope>provided</scope>
-			</dependency-->
 
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
@@ -325,8 +442,6 @@
 				<artifactId>json-schema-validator</artifactId>
 				<version>2.2.6</version>
 			</dependency>
-
-
 		</dependencies>
 	</dependencyManagement>
 
@@ -390,5 +505,14 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<repositories>
+		<repository>
+			<id>openspcoop2-releases</id>
+			<url>http://maven.openspcoop.org/content/repositories/public/</url>
+		</repository>
+		<repository>
+			<id>openspcoop2-snapshot</id>
+			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
 </project>

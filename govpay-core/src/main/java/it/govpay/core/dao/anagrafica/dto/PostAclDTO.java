@@ -12,7 +12,7 @@ public class PostAclDTO extends BasicCreateRequestDTO  {
 	}
 
 	public Acl getAcl() {
-		return acl;
+		return this.acl;
 	}
 
 	public void setAcl(Acl acl) {

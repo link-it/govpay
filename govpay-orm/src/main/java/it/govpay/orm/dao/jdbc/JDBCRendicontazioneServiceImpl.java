@@ -216,7 +216,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()));
 		boolean isUpdate_rendicontazione = true;
-		java.util.List<JDBCObject> lstObjects_rendicontazione = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_rendicontazione = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IUV,false), "?");
 		lstObjects_rendicontazione.add(new JDBCObject(rendicontazione.getIuv(), Rendicontazione.model().IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IUR,false), "?");
@@ -288,7 +288,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()), 
@@ -299,7 +299,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()), 
@@ -310,7 +310,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()), 

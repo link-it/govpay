@@ -97,7 +97,7 @@ public class RptFilter extends AbstractFilter {
 			}
 
 			if(this.idDomini != null){
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(RPT.model().COD_DOMINIO, this.idDomini);
@@ -211,7 +211,7 @@ public class RptFilter extends AbstractFilter {
 
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				newExpressionDomini.in(Pagamento.model().COD_DOMINIO, this.idDomini);
 				newExpression.and(newExpressionDomini);
 			}
@@ -227,7 +227,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public Long getIdVersamento() {
-		return idVersamento;
+		return this.idVersamento;
 	}
 
 	public void setIdVersamento(Long idVersamento) {
@@ -235,14 +235,14 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 
 	public List<String> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<String> idDomini) {
@@ -250,18 +250,18 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public void setStato(StatoRpt stato) {
-		this.stato = new ArrayList<String>();
+		this.stato = new ArrayList<>();
 		if(stato!= null)
 			this.stato.add(stato.name());
 	}
 	
 	public void setStato(List<String> stato) {
-		this.stato = new ArrayList<String>();
+		this.stato = new ArrayList<>();
 		this.stato.addAll(stato);
 	}
 
 	public Boolean getConservato() {
-		return conservato;
+		return this.conservato;
 	}
 
 	public void setConservato(Boolean conservato) {
@@ -269,7 +269,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdRpt() {
-		return idRpt;
+		return this.idRpt;
 	}
 
 	public void setIdRpt(List<Long> idRpt) {
@@ -277,7 +277,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 
 	public void setCcp(String ccp) {
@@ -285,14 +285,14 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public Long getIdPagamentoPortale() {
-		return idPagamentoPortale;
+		return this.idPagamentoPortale;
 	}
 
 	public void setIdPagamentoPortale(Long idPagamentoPortale) {
 		this.idPagamentoPortale = idPagamentoPortale;
 	}
 	public Date getDataInizio() {
-		return dataInizio;
+		return this.dataInizio;
 	}
 
 	public void setDataInizio(Date dataInizio) {
@@ -300,7 +300,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -308,7 +308,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public String getCodPagamentoPortale() {
-		return codPagamentoPortale;
+		return this.codPagamentoPortale;
 	}
 
 	public void setCodPagamentoPortale(String codPagamentoPortale) {
@@ -316,7 +316,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String codApplicazione) {
@@ -324,7 +324,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public String getIdPendenza() {
-		return idPendenza;
+		return this.idPendenza;
 	}
 
 	public void setIdPendenza(String idPendenza) {

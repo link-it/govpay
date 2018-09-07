@@ -42,6 +42,191 @@ tags:
 security:
   - basicAuth: []    
 paths:
+  '/pendenze/tracciati':
+    get:
+      tags:
+        - Pendenze
+      summary: Elenco dei Tracciati caricati
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: idDominio
+          in: query
+          description: filtro per dominio creditore
+          required: false
+          schema:
+            type: string
+        - name: stato
+          in: query
+          description: filtro sullo stato della pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoTracciatoPendenza'
+      responses:
+        '200':
+          description: Lista paginata dei tracciati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/tracciatoPendenzeIndex'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'  
+  '/pendenze/tracciati/{id}':
+    get:
+      tags:
+        - Pendenze
+      summary: Dettaglio di un Tracciato
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tracciato ricercato
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/tracciatoPendenze'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '404':
+          $ref: '#/components/responses/404'          
+        '500':
+          $ref: '#/components/responses/500'
+  '/pendenze/tracciati/{id}/esito':
+    get:
+      tags:
+        - Pendenze
+      summary: Dettaglio esito di un Tracciato
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Esito elaborazione del tracciato ricercato
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/tracciatoPendenzeEsito'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '404':
+          $ref: '#/components/responses/404'          
+        '500':
+          $ref: '#/components/responses/500'
+  '/pendenze/tracciati/{id}/stampe':
+    get:
+      tags:
+        - Pendenze
+      summary: Avvisi di pagamento relativi al Tracciato
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zip contenente i pdf degli avvisi del tracciato
+          content:
+            application/zip:
+              schema:
+               type: object
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '404':
+          $ref: '#/components/responses/404'          
+        '500':
+          $ref: '#/components/responses/500'
+  '/pendenze/tracciati/{id}/operazioni':
+    get:
+      tags:
+        - Pendenze
+      summary: Elenco delle Operazioni relative ad un Tracciato
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+      responses:
+        '200':
+          description: Lista paginata dei tracciati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/operazionePendenza'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
   '/tracciati':
     get:
       tags:
@@ -1591,6 +1776,28 @@ paths:
         '500':
           $ref: '#/components/responses/500'
   '/pendenze':
+    post:
+      tags:
+        - Pendenze
+      summary: Aggiunge un nuovo Tracciato di Pendenze
+      requestBody:
+        content:
+          application/json:
+              schema:
+                $ref: '#/components/schemas/tracciatoPendenzePost'
+        description: Tracciato Pendenze in formato JSON
+        required: true
+      responses:
+        '201':
+          description: Tracciato aggiunto con successo
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
     get:
       summary: Elenco delle pendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
@@ -4866,3 +5073,237 @@ components:
           type: object
           description: valore del'oggetto dell'operazione
           example: "01234567890"
+    statoTracciatoPendenza:
+      example: ESEGUITO
+      type: string
+      enum:
+        - IN_ATTESA
+        - IN_ELABORAZIONE
+        - ESEGUITO
+        - ESEGUITO_CON_ERRORI
+        - SCARTATO
+    statoOperazionePendenza:
+      example: ESEGUITO
+      type: string
+      enum:
+        - ESEGUITO
+        - SCARTATO
+        - NON_VALIDO
+    tipoOperazionePendenza:
+      example: ADD
+      type: string
+      enum:
+        - ADD
+        - DEL
+        - NON_VALIDA
+    tracciatoPendenzeIndex:
+      type: object
+      required:
+        - id
+        - nomeFile
+        - dataOraCaricamento
+        - stato
+      properties:
+        id:
+          type: number
+          description: 
+            Identificativo numerico del tracciato
+          example:
+            123456
+        nomeFile:
+          type: string
+          description: Nome del file tracciato
+          example: "pendenze_0000000001.json"
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
+        dataOraCaricamento:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data di caricamento del tracciato
+        stato:
+          $ref: '#/components/schemas/statoTracciatoPendenza'
+        numeroOperazioniTotali:
+          type: number
+          description: Numero totale di operazioni previste
+          example: 100
+        numeroOperazioniEseguite:
+          type: number
+          description: Numero totale di operazioni eseguite con successo
+          example: 100
+        numeroOperazioniFallite:
+          type: number
+          description: Numero totale di operazioni fallite
+          example: 0
+        operatoreMittente:
+          type: string
+          description: Nome operatore del cruscotto che ha effettuato l'operazione di caricamento
+          example: "Marco Rossi"
+        dataOraUltimoAggiornamento:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:01'
+          description: Data ultimo aggiornamento stato elaborazione del tracciato
+    tracciatoPendenze:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - contenuto
+          properties:
+            contenuto:
+              $ref: '#/components/schemas/tracciatoPendenzePost'
+        - $ref: '#/components/schemas/tracciatoPendenzeIndex'
+    tracciatoPendenzeEsito:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - esito
+          properties:
+            esito:
+              $ref: '#/components/schemas/dettaglioTracciatoPendenzeEsito'
+        - $ref: '#/components/schemas/tracciatoPendenzeIndex'
+    operazionePendenza:
+      type: object
+      required:
+        - numero
+        - tipoOperazione
+        - stato
+      properties:
+        tipoOperazione:
+          $ref: '#/components/schemas/tipoOperazionePendenza'
+        stato:
+          $ref: '#/components/schemas/statoOperazionePendenza'
+        descrizioneStato:
+          type: string
+          description: Descrizione dello stato operazione
+          example: "Elaborazione completata con successo"
+        enteCreditore:
+          $ref: '#/components/schemas/dominioIndex'
+        soggettoPagatore:
+          $ref: '#/components/schemas/soggetto'
+        applicazione:
+          type: string
+          description: Applicazione che ha effettuato l'operazione
+          example: "Applicazione"
+        identificativoPendenza:
+          type: string
+          description: Identificativo della pendenza associata all'operazione
+          example: "1528380303573"
+        numeroAvviso:
+          type: string
+          description: Numero Avviso generato
+          example: "1528380303573122"
+        numero:
+          type: number
+          description: Progressivo Operazione
+          example: 1
+        richiesta:
+          oneOf:
+            - $ref: '#/components/schemas/pendenzaPost'
+            - $ref: '#/components/schemas/annullamentoPendenza'
+        risposta:
+          $ref: '#/components/schemas/esitoOperazionePendenza'
+          
+    tracciatoPendenzePost:
+      type: object
+      required:
+        - idTracciato
+      properties:
+        idTracciato:
+          type: string
+          description: Identificativo del tracciato
+          example: "1528380303573122"
+        idDominio:
+          type: string
+          description: Identificativo del Dominio
+          example: "01234567890"
+        inserimenti:
+          type: array
+          items:
+            $ref: '#/components/schemas/pendenzaPost'
+        annullamenti:
+          type: array
+          items:
+            $ref: '#/components/schemas/annullamentoPendenza'
+    dettaglioTracciatoPendenzeEsito:
+      type: object
+      required:
+        - idTracciato
+      properties:
+        idTracciato:
+          type: string
+          description: Identificativo del tracciato
+          example: "1528380303573122"
+        idDominio:
+          type: string
+          description: Identificativo del Dominio
+          example: "01234567890"
+        inserimenti:
+          type: array
+          items:
+            $ref: '#/components/schemas/esitoOperazionePendenza'
+        annullamenti:
+          type: array
+          items:
+            $ref: '#/components/schemas/esitoOperazionePendenza'
+    annullamentoPendenza:
+      type: object
+      required:
+        - idA2A
+        - idPendenza
+        - motivoAnnullamento
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A_12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        motivoAnnullamento:
+          type: string
+          description: Descrizione dell'operazione
+          example: Pendenza non piu' valida
+    esitoOperazionePendenza:
+      type: object
+      required:
+        - stato
+        - tipoOperazione
+        - esito
+        - descrizioneEsito
+        - dati
+        - numero
+        - idA2A
+        - idPendenza
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A_12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        tipoOperazione:
+          $ref: '#/components/schemas/tipoOperazionePendenza'
+        stato:
+          $ref: '#/components/schemas/statoOperazionePendenza'
+        esito:
+          type: string
+          description: Esito Operazione
+          example: "ADD_OK"
+        descrizioneEsito:
+          type: string
+          description: Descrizione Esito Operazione
+          example: "Operazione Completata con successo"
+        numero:
+          type: number
+          description: Progressivo Operazione
+          example: 1
+        dati:
+          oneOf:
+            - $ref: '#/components/schemas/avviso'
+            - $ref: '#/components/schemas/faultBean'

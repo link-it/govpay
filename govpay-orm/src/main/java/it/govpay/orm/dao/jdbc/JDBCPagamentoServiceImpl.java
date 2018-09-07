@@ -309,7 +309,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getPagamentoFieldConverter().toTable(Pagamento.model()));
 		boolean isUpdate_pagamento = true;
-		java.util.List<JDBCObject> lstObjects_pagamento = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_pagamento = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_DOMINIO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getCodDominio(), Pagamento.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUV,false), "?");
@@ -414,7 +414,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoFieldConverter().toTable(Pagamento.model()), 
@@ -425,7 +425,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoFieldConverter().toTable(Pagamento.model()), 
@@ -436,7 +436,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoFieldConverter().toTable(Pagamento.model()), 

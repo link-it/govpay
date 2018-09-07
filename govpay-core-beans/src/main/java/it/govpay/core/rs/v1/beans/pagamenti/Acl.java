@@ -68,7 +68,7 @@ public class Acl extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static ServizioEnum fromValue(String text) {
@@ -113,7 +113,7 @@ public class Acl extends JSONSerializable {
     @Override
     @com.fasterxml.jackson.annotation.JsonValue
     public String toString() {
-      return String.valueOf(value);
+      return String.valueOf(this.value);
     }
 
     public static AutorizzazioniEnum fromValue(String text) {
@@ -128,7 +128,7 @@ public class Acl extends JSONSerializable {
 
       
   @JsonProperty("autorizzazioni")
-  private List<String> autorizzazioni = new ArrayList<String>();
+  private List<String> autorizzazioni = new ArrayList<>();
   
   @JsonProperty("id")
   private String id = null;
@@ -143,7 +143,7 @@ public class Acl extends JSONSerializable {
 
   @JsonProperty("ruolo")
   public String getRuolo() {
-    return ruolo;
+    return this.ruolo;
   }
   public void setRuolo(String ruolo) {
     this.ruolo = ruolo;
@@ -159,7 +159,7 @@ public class Acl extends JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return principal;
+    return this.principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
@@ -175,7 +175,7 @@ public class Acl extends JSONSerializable {
 
   @JsonProperty("servizio")
   public ServizioEnum getServizio() {
-    return servizio;
+    return this.servizio;
   }
   public void setServizio(ServizioEnum servizio) {
     this.servizio = servizio;
@@ -190,7 +190,7 @@ public class Acl extends JSONSerializable {
 
   @JsonProperty("autorizzazioni")
   public List<String> getAutorizzazioni() {
-    return autorizzazioni;
+    return this.autorizzazioni;
   }
   public void setAutorizzazioni(List<String> autorizzazioni) {
     this.autorizzazioni = autorizzazioni;
@@ -206,7 +206,7 @@ public class Acl extends JSONSerializable {
 
   @JsonProperty("id")
   public String getId() {
-    return id;
+    return this.id;
   }
   public void setId(String id) {
     this.id = id;
@@ -217,24 +217,24 @@ public class Acl extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
     Acl acl = (Acl) o;
-    return Objects.equals(ruolo, acl.ruolo) &&
-        Objects.equals(principal, acl.principal) &&
-        Objects.equals(servizio, acl.servizio) &&
-        Objects.equals(autorizzazioni, acl.autorizzazioni) &&
-        Objects.equals(id, acl.id);
+    return Objects.equals(this.ruolo, acl.ruolo) &&
+        Objects.equals(this.principal, acl.principal) &&
+        Objects.equals(this.servizio, acl.servizio) &&
+        Objects.equals(this.autorizzazioni, acl.autorizzazioni) &&
+        Objects.equals(this.id, acl.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ruolo, principal, servizio, autorizzazioni, id);
+    return Objects.hash(this.ruolo, this.principal, this.servizio, this.autorizzazioni, this.id);
   }
 
   public static Acl parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Acl) parse(json, Acl.class);
+    return parse(json, Acl.class);
   }
 
   @Override
@@ -247,11 +247,11 @@ public class Acl extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Acl {\n");
     
-    sb.append("    ruolo: ").append(toIndentedString(ruolo)).append("\n");
-    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
-    sb.append("    servizio: ").append(toIndentedString(servizio)).append("\n");
-    sb.append("    autorizzazioni: ").append(toIndentedString(autorizzazioni)).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    ruolo: ").append(this.toIndentedString(this.ruolo)).append("\n");
+    sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
+    sb.append("    servizio: ").append(this.toIndentedString(this.servizio)).append("\n");
+    sb.append("    autorizzazioni: ").append(this.toIndentedString(this.autorizzazioni)).append("\n");
+    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
     sb.append("}");
     return sb.toString();
   }

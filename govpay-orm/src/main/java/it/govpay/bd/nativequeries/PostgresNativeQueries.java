@@ -182,7 +182,7 @@ public class PostgresNativeQueries extends NativeQueries {
 		
 		Date start = calendar.getTime();
 		
-		List<Object> valori = new ArrayList<Object>();
+		List<Object> valori = new ArrayList<>();
 		valori.add(start);
 		valori.add(data);
 		valori.add("1 " + date_trunc);
@@ -230,7 +230,7 @@ public class PostgresNativeQueries extends NativeQueries {
 			break;
 		}	
 		
-		List<Object> valori = new ArrayList<Object>();
+		List<Object> valori = new ArrayList<>();
 		valori.add(date_trunc);
 		valori.add(date_trunc);
 		valori.add(data);

@@ -47,7 +47,7 @@ public class GpAvviaRichiestaStornoResponse
      *     
      */
     public String getCodRichiestaStorno() {
-        return codRichiestaStorno;
+        return this.codRichiestaStorno;
     }
 
     /**

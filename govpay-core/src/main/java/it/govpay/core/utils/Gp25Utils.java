@@ -131,7 +131,7 @@ public class Gp25Utils {
 	}
 
 	public static List<GpAvviaTransazionePagamentoResponse.RifTransazione> toRifTransazione(List<it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione> rifTransazioniModel) {
-		List<GpAvviaTransazionePagamentoResponse.RifTransazione> rifTransazioni = new ArrayList<GpAvviaTransazionePagamentoResponse.RifTransazione>();
+		List<GpAvviaTransazionePagamentoResponse.RifTransazione> rifTransazioni = new ArrayList<>();
 
 		for(it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione rifTransazioneModel : rifTransazioniModel) {
 			GpAvviaTransazionePagamentoResponse.RifTransazione rifTransazione = new GpAvviaTransazionePagamentoResponse.RifTransazione();
@@ -218,7 +218,7 @@ public class Gp25Utils {
 	}
 	
 	public static List<it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto> toIuvRichiesto(List<it.govpay.servizi.v2_3.gpapp.GpGeneraIuv.IuvRichiesto> iuvRichiesti) {
-		List<it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto> iuvRichiestiModel = new ArrayList<it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto>();
+		List<it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto> iuvRichiestiModel = new ArrayList<>();
 		for (it.govpay.servizi.v2_3.gpapp.GpGeneraIuv.IuvRichiesto iuvRichiesto : iuvRichiesti) {
 			it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto iuvRichiestoModel = new it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto();
 			iuvRichiestoModel.setCodVersamentoEnte(iuvRichiesto.getCodVersamentoEnte());
@@ -229,7 +229,7 @@ public class Gp25Utils {
 	}
 	
 	public static List<it.govpay.core.business.model.CaricaIuvDTO.Iuv> toIuvDaCaricare(List<it.govpay.servizi.v2_3.gpapp.GpCaricaIuv.IuvGenerato> iuvRichiesti) {
-		List<it.govpay.core.business.model.CaricaIuvDTO.Iuv> iuvRichiestiModel = new ArrayList<it.govpay.core.business.model.CaricaIuvDTO.Iuv>();
+		List<it.govpay.core.business.model.CaricaIuvDTO.Iuv> iuvRichiestiModel = new ArrayList<>();
 		for (it.govpay.servizi.v2_3.gpapp.GpCaricaIuv.IuvGenerato iuvRichiesto : iuvRichiesti) {
 			it.govpay.core.business.model.CaricaIuvDTO.Iuv iuvRichiestoModel = new it.govpay.core.business.model.CaricaIuvDTO.Iuv();
 			iuvRichiestoModel.setCodVersamentoEnte(iuvRichiesto.getCodVersamentoEnte());
@@ -241,7 +241,7 @@ public class Gp25Utils {
 	}
 	
 	public static List<IuvGenerato> toIuvGenerato(List<it.govpay.core.business.model.Iuv> iuvGeneratiModel) {
-		List<IuvGenerato> iuvGenerati = new ArrayList<IuvGenerato>();
+		List<IuvGenerato> iuvGenerati = new ArrayList<>();
 		for (it.govpay.core.business.model.Iuv iuvGeneratoModel : iuvGeneratiModel) {
 			iuvGenerati.add(toIuvGenerato(iuvGeneratoModel));
 		}
@@ -261,7 +261,7 @@ public class Gp25Utils {
 	}
 
 	public static Collection<? extends IuvGenerato> toIuvCaricato(List<it.govpay.core.business.model.Iuv> iuvCaricatiModel) {
-		List<IuvGenerato> iuvCaricati = new ArrayList<IuvGenerato>();
+		List<IuvGenerato> iuvCaricati = new ArrayList<>();
 		for (it.govpay.core.business.model.Iuv iuvCaricatoModel : iuvCaricatiModel) {
 			IuvGenerato iuvCaricato = new IuvGenerato();
 			iuvCaricato.setBarCode(iuvCaricatoModel.getBarCode());

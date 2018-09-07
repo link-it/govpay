@@ -59,7 +59,7 @@ public class CtCostiServizio {
      * 
      */
     public int getTipoCostoTransazione() {
-        return tipoCostoTransazione;
+        return this.tipoCostoTransazione;
     }
 
     /**
@@ -75,7 +75,7 @@ public class CtCostiServizio {
      * 
      */
     public int getTipoCommissione() {
-        return tipoCommissione;
+        return this.tipoCommissione;
     }
 
     /**
@@ -95,7 +95,7 @@ public class CtCostiServizio {
      *     
      */
     public Integer getTipoCanaleServizio() {
-        return tipoCanaleServizio;
+        return this.tipoCanaleServizio;
     }
 
     /**
@@ -119,7 +119,7 @@ public class CtCostiServizio {
      *     
      */
     public Integer getPlateaErogazioneServizio() {
-        return plateaErogazioneServizio;
+        return this.plateaErogazioneServizio;
     }
 
     /**
@@ -143,7 +143,7 @@ public class CtCostiServizio {
      *     
      */
     public CtListaFasceCostoServizio getListaFasceCostoServizio() {
-        return listaFasceCostoServizio;
+        return this.listaFasceCostoServizio;
     }
 
     /**

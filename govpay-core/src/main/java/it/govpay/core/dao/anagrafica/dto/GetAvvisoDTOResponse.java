@@ -11,7 +11,7 @@ public class GetAvvisoDTOResponse {
 	}
 
 	public AvvisoPagamento getIbanAccredito() {
-		return avviso;
+		return this.avviso;
 	}
 
 }

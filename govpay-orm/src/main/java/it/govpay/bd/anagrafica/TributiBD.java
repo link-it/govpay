@@ -116,7 +116,7 @@ public class TributiBD extends BasicBD {
 			}
 			this.getTributoService().update(idVO, vo);
 			tributo.setId(vo.getId());
-			emitAudit(tributo);
+			this.emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
@@ -139,7 +139,7 @@ public class TributiBD extends BasicBD {
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
 			this.getTributoService().create(vo);
 			tributo.setId(vo.getId());
-			emitAudit(tributo);
+			this.emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -170,7 +170,7 @@ public class TributiBD extends BasicBD {
 	}
 
 	public List<Long> getIdTipiTributiDefinitiPerDominio(Long idDominio) throws ServiceException {
-		List<Long> lstIdTipiTributi = new ArrayList<Long>();
+		List<Long> lstIdTipiTributi = new ArrayList<>();
 
 		try {
 			IPaginatedExpression pagExpr = this.getTributoService().newPaginatedExpression();
@@ -191,7 +191,7 @@ public class TributiBD extends BasicBD {
 		}catch(ServiceException e){
 			throw e;
 		} catch (NotFoundException e) {
-			return new ArrayList<Long>();
+			return new ArrayList<>();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {

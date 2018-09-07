@@ -72,7 +72,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public CtIdentificativoUnivoco getIdentificativoUnivocoAttestante() {
-        return identificativoUnivocoAttestante;
+        return this.identificativoUnivocoAttestante;
     }
 
     /**
@@ -96,7 +96,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getDenominazioneAttestante() {
-        return denominazioneAttestante;
+        return this.denominazioneAttestante;
     }
 
     /**
@@ -120,7 +120,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getCodiceUnitOperAttestante() {
-        return codiceUnitOperAttestante;
+        return this.codiceUnitOperAttestante;
     }
 
     /**
@@ -144,7 +144,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getDenomUnitOperAttestante() {
-        return denomUnitOperAttestante;
+        return this.denomUnitOperAttestante;
     }
 
     /**
@@ -168,7 +168,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getIndirizzoAttestante() {
-        return indirizzoAttestante;
+        return this.indirizzoAttestante;
     }
 
     /**
@@ -192,7 +192,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getCivicoAttestante() {
-        return civicoAttestante;
+        return this.civicoAttestante;
     }
 
     /**
@@ -216,7 +216,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getCapAttestante() {
-        return capAttestante;
+        return this.capAttestante;
     }
 
     /**
@@ -240,7 +240,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getLocalitaAttestante() {
-        return localitaAttestante;
+        return this.localitaAttestante;
     }
 
     /**
@@ -264,7 +264,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getProvinciaAttestante() {
-        return provinciaAttestante;
+        return this.provinciaAttestante;
     }
 
     /**
@@ -288,7 +288,7 @@ public class CtIstitutoAttestante {
      *     
      */
     public String getNazioneAttestante() {
-        return nazioneAttestante;
+        return this.nazioneAttestante;
     }
 
     /**

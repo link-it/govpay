@@ -83,7 +83,7 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
 
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
 				newExpressionDomini.in(cf, this.idDomini);
@@ -140,7 +140,7 @@ public class VersamentoFilter extends AbstractFilter {
 
 			// Filtro sullo stato pagamenti
 			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
-				newExpression.in(Versamento.model().STATO_VERSAMENTO, toString(this.statiVersamento));
+				newExpression.in(Versamento.model().STATO_VERSAMENTO, this.toString(this.statiVersamento));
 				addAnd = true;
 			}
 
@@ -179,7 +179,7 @@ public class VersamentoFilter extends AbstractFilter {
 //			}
 			
 			if(this.idDomini != null){
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
@@ -203,7 +203,7 @@ public class VersamentoFilter extends AbstractFilter {
 						newExpression.and();
 
 					IExpression orExpr = this.newExpression();
-					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
+					List<IExpression> lstOrExpr = new ArrayList<>();
 					
 					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
 					
@@ -259,7 +259,7 @@ public class VersamentoFilter extends AbstractFilter {
 				}
 			}
 			
-			if(daAvvisare!=null) {
+			if(this.daAvvisare!=null) {
 				newExpression.equals(Versamento.model().DA_AVVISARE, this.daAvvisare);
 			}
 
@@ -275,7 +275,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	private List<String> toString(List<StatoVersamento> statiVersamento) {
-		List<String> stati = new ArrayList<String>();
+		List<String> stati = new ArrayList<>();
 		for(StatoVersamento stato : statiVersamento)
 			stati.add(stato.toString());
 		return stati;
@@ -330,7 +330,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<StatoVersamento> getStatiVersamento() {
-		return statiVersamento;
+		return this.statiVersamento;
 	}
 
 	public void setStatiPagamento(List<StatoVersamento> statiVersamento) {
@@ -338,7 +338,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodUnivocoDebitore() {
-		return codUnivocoDebitore;
+		return this.codUnivocoDebitore;
 	}
 
 	public void setCodUnivocoDebitore(String codUnivocoDebitore) {
@@ -346,7 +346,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdVersamento() {
-		return idVersamento;
+		return this.idVersamento;
 	}
 
 	public void setIdVersamento(List<Long> idVersamento) {
@@ -354,7 +354,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodVersamento() {
-		return codVersamento;
+		return this.codVersamento;
 	}
 
 	public void setCodVersamento(String codVersamento) {
@@ -362,7 +362,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<Long> idDomini) {
@@ -370,14 +370,14 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public void setStatoVersamento(StatoVersamento stato) {
-		this.statiVersamento = new ArrayList<StatoVersamento>();
+		this.statiVersamento = new ArrayList<>();
 		if(stato != null) {
 			this.statiVersamento.add(stato);
 		}
 	}
 
 	public List<String> getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 
 	public void setCodVersamentoEnte(List<String> codVersamentoEnte) {
@@ -385,7 +385,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 
 	public void setIdApplicazione(List<Long> idApplicazione) {
@@ -393,7 +393,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public Long getIdPagamentoPortale() {
-		return idPagamentoPortale;
+		return this.idPagamentoPortale;
 	}
 
 	public void setIdPagamentoPortale(Long idPagamentoPortale) {
@@ -401,7 +401,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodPagamentoPortale() {
-		return codPagamentoPortale;
+		return this.codPagamentoPortale;
 	}
 
 	public void setCodPagamentoPortale(String codPagamentoPortale) {
@@ -409,7 +409,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public Date getDataInizio() {
-		return dataInizio;
+		return this.dataInizio;
 	}
 
 	public void setDataInizio(Date dataInizio) {
@@ -417,7 +417,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -425,7 +425,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String codApplicazione) {
@@ -433,7 +433,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -441,7 +441,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public Long getIdTracciato() {
-		return idTracciato;
+		return this.idTracciato;
 	}
 
 	public void setIdTracciato(Long idTracciato) {
@@ -449,7 +449,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public Boolean getTracciatoNull() {
-		return tracciatoNull;
+		return this.tracciatoNull;
 	}
 
 	public void setTracciatoNull(Boolean tracciatoNull) {
@@ -457,7 +457,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public Boolean getDaAvvisare() {
-		return daAvvisare;
+		return this.daAvvisare;
 	}
 
 	public void setDaAvvisare(Boolean daAvvisare) {

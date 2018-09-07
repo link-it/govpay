@@ -295,7 +295,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getTributoFieldConverter().toTable(Tributo.model()));
 		boolean isUpdate_tributo = true;
-		java.util.List<JDBCObject> lstObjects_tributo = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_tributo = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().ABILITATO,false), "?");
 		lstObjects_tributo.add(new JDBCObject(tributo.getAbilitato(), Tributo.model().ABILITATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().TIPO_CONTABILITA,false), "?");
@@ -372,7 +372,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTributoFieldConverter().toTable(Tributo.model()), 
@@ -383,7 +383,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTributoFieldConverter().toTable(Tributo.model()), 
@@ -394,7 +394,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getTributoFieldConverter().toTable(Tributo.model()), 

@@ -62,7 +62,7 @@ public class NodoInviaRPT {
      *     
      */
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -86,7 +86,7 @@ public class NodoInviaRPT {
      *     
      */
     public String getIdentificativoPSP() {
-        return identificativoPSP;
+        return this.identificativoPSP;
     }
 
     /**
@@ -110,7 +110,7 @@ public class NodoInviaRPT {
      *     
      */
     public String getIdentificativoIntermediarioPSP() {
-        return identificativoIntermediarioPSP;
+        return this.identificativoIntermediarioPSP;
     }
 
     /**
@@ -134,7 +134,7 @@ public class NodoInviaRPT {
      *     
      */
     public String getIdentificativoCanale() {
-        return identificativoCanale;
+        return this.identificativoCanale;
     }
 
     /**
@@ -158,7 +158,7 @@ public class NodoInviaRPT {
      *     
      */
     public String getTipoFirma() {
-        return tipoFirma;
+        return this.tipoFirma;
     }
 
     /**
@@ -181,7 +181,7 @@ public class NodoInviaRPT {
      *     byte[]
      */
     public byte[] getRpt() {
-        return rpt;
+        return this.rpt;
     }
 
     /**

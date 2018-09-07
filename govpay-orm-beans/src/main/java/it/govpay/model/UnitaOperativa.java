@@ -33,32 +33,33 @@ public class UnitaOperativa extends BasicModel {
 	private boolean abilitato;
 	private Anagrafica anagrafica;
 
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(long idDominio) {
 		this.idDominio = idDominio;
 	}
 	public String getCodUo() {
-		return codUo;
+		return this.codUo;
 	}
 	public void setCodUo(String codUo) {
 		this.codUo = codUo;
 	}
 	public Anagrafica getAnagrafica() {
-		return anagrafica;
+		return this.anagrafica;
 	}
 	public void setAnagrafica(Anagrafica anagrafica) {
 		this.anagrafica = anagrafica;
 	}
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;

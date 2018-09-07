@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +14,7 @@
 	<packaging>jar</packaging>
 
 	<name>GovPay ORM</name>
-	
+
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
@@ -24,42 +25,42 @@
 			<artifactId>govpay-orm-beans</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-core-beans</artifactId>
 			<type>jar</type>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 
 		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-core</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
 		</dependency>
 
 		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-api</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
 		</dependency>
 
 		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-jcl</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-jcl</artifactId>
 		</dependency>
-		
-	<dependency>
-	    <groupId>org.apache.logging.log4j</groupId>
-	    <artifactId>log4j-slf4j-impl</artifactId>
-	</dependency>
 
-	<dependency>
-	    <groupId>org.apache.logging.log4j</groupId>
-	    <artifactId>log4j-1.2-api</artifactId>
-	</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-1.2-api</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -81,6 +82,52 @@
 			<groupId>concurrent</groupId>
 			<artifactId>concurrent</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.openspcoop2</groupId>
+			<artifactId>openspcoop2_generic-project</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-jaxb</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-cache</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-sql</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-jdbc</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-datasource</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-xml</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-id</artifactId>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-jmx</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -94,14 +141,4 @@
 			</resource>
 		</resources>
 	</build>
-	<repositories>
-		<repository>
-			<id>openspcoop2-releases</id>
-			<url>http://maven.openspcoop.org/content/repositories/public/</url>
-		</repository>
-		<repository>
-			<id>openspcoop2-snapshot</id>
-			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
-		</repository>
-	</repositories>
 </project>

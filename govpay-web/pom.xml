@@ -73,6 +73,7 @@
 				<configuration>
 					<webXml>src/main/resources/web-${govpay-api-pagopa-auth}.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 					<archive>
 						<manifestEntries>
 							<Class-Path>properties/</Class-Path>

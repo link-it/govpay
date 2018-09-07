@@ -31,32 +31,33 @@ public class Intermediario extends BasicModel{
     
     public Intermediario() {}
         
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCodIntermediario() {
-		return codIntermediario;
+		return this.codIntermediario;
 	}
 	public void setCodIntermediario(String codIntermediario) {
 		this.codIntermediario = codIntermediario;
 	}
 	public Connettore getConnettorePdd() {
-		return connettorePdd;
+		return this.connettorePdd;
 	}
 	public void setConnettorePdd(Connettore connettorePdd) {
 		this.connettorePdd = connettorePdd;
 	}
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 	public String getDenominazione() {
-		return denominazione;
+		return this.denominazione;
 	}
 	public void setDenominazione(String nomeSPC) {
 		this.denominazione = nomeSPC;
@@ -72,17 +73,17 @@ public class Intermediario extends BasicModel{
 		}
 		
 		boolean equal = 
-				equals(codIntermediario, intermediario.getCodIntermediario()) &&
-				equals(denominazione, intermediario.getDenominazione()) &&
-				equals(connettorePdd, intermediario.getConnettorePdd()) &&
-				equals(connettoreSftp, intermediario.getConnettoreSftp()) &&
-				abilitato == intermediario.isAbilitato();
+				equals(this.codIntermediario, intermediario.getCodIntermediario()) &&
+				equals(this.denominazione, intermediario.getDenominazione()) &&
+				equals(this.connettorePdd, intermediario.getConnettorePdd()) &&
+				equals(this.connettoreSftp, intermediario.getConnettoreSftp()) &&
+				this.abilitato == intermediario.isAbilitato();
 		
 		return equal;
 	}
 
 	public ConnettoreSftp getConnettoreSftp() {
-		return connettoreSftp;
+		return this.connettoreSftp;
 	}
 
 	public void setConnettoreSftp(ConnettoreSftp connettoreSftp) {

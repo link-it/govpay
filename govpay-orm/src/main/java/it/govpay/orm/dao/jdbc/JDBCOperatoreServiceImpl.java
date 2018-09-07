@@ -161,7 +161,7 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
 		boolean isUpdate_operatore = true;
-		java.util.List<JDBCObject> lstObjects_operatore = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_operatore = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().NOME,false), "?");
 		lstObjects_operatore.add(new JDBCObject(operatore.getNome(), Operatore.model().NOME.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
@@ -214,7 +214,7 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getOperatoreFieldConverter().toTable(Operatore.model()), 
@@ -225,7 +225,7 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getOperatoreFieldConverter().toTable(Operatore.model()), 
@@ -236,7 +236,7 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getOperatoreFieldConverter().toTable(Operatore.model()), 

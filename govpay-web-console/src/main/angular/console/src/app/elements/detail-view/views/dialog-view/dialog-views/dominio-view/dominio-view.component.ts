@@ -2,6 +2,14 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { FormInput } from '../../../../../../classes/view/form-input';
+import { DomSanitizer } from '@angular/platform-browser';
+import { UtilService } from '../../../../../../services/util.service';
+
+declare global {
+  interface String {
+    multiReplace(find: string[], replace: string[]): string;
+  }
+}
 
 @Component({
   selector: 'link-dominio-view',
@@ -14,11 +22,20 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
   @Input() fGroup: FormGroup;
   @Input() json: any;
 
+  protected SVG: string = 'data:image/svg+xml;base64,';
   protected _jsonFormInput: boolean = false;
   protected _name: string = '';
-  protected _base64File: string = null;
+  protected _base64File: any = null;
 
-  constructor() { }
+  constructor(private _sanitizer: DomSanitizer, public us: UtilService) {
+    String.prototype.multiReplace = function(find: string[], replace: string[]): string {
+      let replaceString = this;
+      for (let i = 0; i < find.length; i++) {
+        replaceString = replaceString.replace(find[i], replace[i]);
+      }
+      return replaceString;
+    };
+  }
 
   ngOnInit() {
     if(this.json instanceof FormInput) {
@@ -111,29 +128,35 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
 
   protected _readFile(_file: any) {
     let fr = new FileReader();
+
     fr.onload = function() {
-      this._base64File = fr.result;
+      this._reloadFile(fr.result);
     }.bind(this);
 
     fr.readAsDataURL(_file);
   }
 
   protected _reloadFile(_url: string) {
-    let img = new Image();
-    img.onload = function() {
-      try {
-        let canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-        this._base64File = canvas.toDataURL();
-      } catch (e) {
-        this._base64File = null;
-      }
-    }.bind(this);
+    let _result = _url;
 
-    img.src = window['hostname']()+window['rootService']()+_url;
+    if(_url.indexOf('svg') != -1 && _url.indexOf('base64,') != -1) {
+      let _bsvg = _url.split('base64,')[1];
+      let _xsvg = atob(_bsvg).replace(/[\n\r]/g, '');
+      let re = RegExp('(#[a-z0-9]{6})','gmi');
+      let _tmp;
+      let _results = [];
+      while ((_tmp = re.exec(_xsvg)) !== null) {
+        _results.push(_tmp[0]);
+      }
+      let _map_results = _results.map((_color) => {
+        return this.us.desaturateColor(_color);
+      }, this);
+      if(_results && _results.length != 0 && _map_results && _map_results.length != 0) {
+        _result = _xsvg.multiReplace(_results, _map_results);
+      }
+      _result = this.SVG+btoa(_result);
+    }
+    this._base64File = this._sanitizer.bypassSecurityTrustUrl(_result);
   }
 
   mapToJson(): any {
@@ -168,7 +191,12 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       _json.iuvPrefix = (_info['iuvPrefix_ctrl'])?_info['iuvPrefix_ctrl']:null;
       _json.auxDigit = (_info['auxDigit_ctrl'])?_info['auxDigit_ctrl']:null;
       _json.segregationCode = (_info['segregationCode_ctrl'])?_info['segregationCode_ctrl']:null;
-      _json.logo = this._base64File || null;//_info['logo_ctrl'];
+      //Sanitizer
+      if(this._base64File && this._base64File.hasOwnProperty('changingThisBreaksApplicationSecurity')) {
+        _json.logo = this._base64File['changingThisBreaksApplicationSecurity'] || null;//_info['logo_ctrl'];
+      } else {
+        _json.logo = this._base64File || null;//_info['logo_ctrl'];
+      }
 
       // PUT: Non serve passare le liste contiAccredito, entrate, unitaOperative
       // _json.contiAccredito = (!this.fGroup.controls['idDominio_ctrl'].disabled)?(this.json?this.json.contiAccredito:[]):[];

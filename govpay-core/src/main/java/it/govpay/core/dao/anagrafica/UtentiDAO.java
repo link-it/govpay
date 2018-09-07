@@ -232,26 +232,20 @@ public class UtentiDAO extends BaseDAO{
 
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			Operatore operatore = operatoriBD.getOperatore(patchDTO.getIdOperatore());
-			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
-			response.setOperatore(operatore);
-
-			LeggiOperatoreDTOResponse getOperatoreDTOResponse = new LeggiOperatoreDTOResponse();
-			
-			getOperatoreDTOResponse.setOperatore(operatore);
-
+			LeggiOperatoreDTOResponse leggiOperatoreDTOResponse = new LeggiOperatoreDTOResponse();
 			for(PatchOp op: patchDTO.getOp()) {
-				UtenzaPatchUtils.patchUtenza(op, getOperatoreDTOResponse.getOperatore().getUtenza(), bd);
+				UtenzaPatchUtils.patchUtenza(op, operatore.getUtenza(), bd);
 			}
 			
-			operatoriBD.updateOperatore(getOperatoreDTOResponse.getOperatore());
+			operatoriBD.updateOperatore(operatore);
 			
-			AnagraficaManager.removeFromCache(getOperatoreDTOResponse.getOperatore());
-			AnagraficaManager.removeFromCache(getOperatoreDTOResponse.getOperatore().getUtenza()); 
+			AnagraficaManager.removeFromCache(operatore);
+			AnagraficaManager.removeFromCache(operatore.getUtenza()); 
 			
 			operatore = operatoriBD.getOperatore(patchDTO.getIdOperatore());
-			response.setOperatore(operatore);
+			leggiOperatoreDTOResponse.setOperatore(operatore);
 			
-			return getOperatoreDTOResponse;
+			return leggiOperatoreDTOResponse;
 		}catch(NotFoundException e) {
 			throw new PagamentoPortaleNonTrovatoException("Non esiste un operatore associato al principal ["+patchDTO.getIdOperatore()+"]");
 		}finally {

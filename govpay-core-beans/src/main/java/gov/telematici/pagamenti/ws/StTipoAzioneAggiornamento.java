@@ -36,7 +36,7 @@ public enum StTipoAzioneAggiornamento {
     D;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StTipoAzioneAggiornamento fromValue(String v) {

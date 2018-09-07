@@ -78,7 +78,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
-		List<Object> obj = new ArrayList<Object>();
+		List<Object> obj = new ArrayList<>();
 
 		if(this.dataPagamentoMin != null){
 			obj.add(this.dataPagamentoMin);
@@ -293,7 +293,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	}
 
 	public Long getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(Long codApplicazione) {
@@ -301,7 +301,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	}
 
 	public Date getDataPagamentoMin() {
-		return dataPagamentoMin;
+		return this.dataPagamentoMin;
 	}
 
 	public void setDataPagamentoMin(Date dataPagamentoMin) {
@@ -309,7 +309,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	}
 
 	public Date getDataPagamentoMax() {
-		return dataPagamentoMax;
+		return this.dataPagamentoMax;
 	}
 
 	public void setDataPagamentoMax(Date dataPagamentoMax) {
@@ -317,7 +317,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodFlusso() {
-		return codFlusso;
+		return this.codFlusso;
 	}
 
 	public void setCodFlusso(String codFlusso) {

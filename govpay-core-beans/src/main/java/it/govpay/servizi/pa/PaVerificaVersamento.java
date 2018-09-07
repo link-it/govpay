@@ -98,8 +98,8 @@ public class PaVerificaVersamento {
      * 
      */
     public List<JAXBElement<String>> getContent() {
-        if (content == null) {
-            content = new ArrayList<JAXBElement<String>>();
+        if (this.content == null) {
+            this.content = new ArrayList<>();
         }
         return this.content;
     }

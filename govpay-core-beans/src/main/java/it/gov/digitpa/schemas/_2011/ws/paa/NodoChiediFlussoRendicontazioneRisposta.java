@@ -47,7 +47,7 @@ public class NodoChiediFlussoRendicontazioneRisposta
      *     
      */
     public DataHandler getXmlRendicontazione() {
-        return xmlRendicontazione;
+        return this.xmlRendicontazione;
     }
 
     /**

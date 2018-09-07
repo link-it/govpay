@@ -48,7 +48,7 @@ public class PaaInviaRT {
      *     
      */
     public String getTipoFirma() {
-        return tipoFirma;
+        return this.tipoFirma;
     }
 
     /**
@@ -71,7 +71,7 @@ public class PaaInviaRT {
      *     byte[]
      */
     public byte[] getRt() {
-        return rt;
+        return this.rt;
     }
 
     /**

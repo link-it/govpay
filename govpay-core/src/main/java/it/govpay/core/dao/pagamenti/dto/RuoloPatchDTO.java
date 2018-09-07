@@ -20,7 +20,7 @@ public class RuoloPatchDTO extends AbstractPatchDTO {
 	}
 
 	public String getIdRuolo() {
-		return idRuolo;
+		return this.idRuolo;
 	}
 
 	public void setIdRuolo(String idRuolo) {

@@ -36,7 +36,7 @@ public class ProfiloConverter {
 		
 		IAutorizzato user = leggiProfilo.getUtente();
 		if(user.getAcls()!=null) {
-			List<AclPost> aclLst = new ArrayList<AclPost>();
+			List<AclPost> aclLst = new ArrayList<>();
 			for(Acl acl: user.getAcls()) {
 				aclLst.add(AclConverter.toRsModel(acl));
 

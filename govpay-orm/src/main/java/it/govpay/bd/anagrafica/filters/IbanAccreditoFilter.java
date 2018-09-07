@@ -68,7 +68,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 			if(this.getIdDominio() != null){
 				if(addAnd) expr.and();
 				IbanAccreditoFieldConverter fieldConverter = new IbanAccreditoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.IbanAccredito.model())), getIdDominio());
+				expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.IbanAccredito.model())), this.getIdDominio());
 				addAnd = true;
 			}
 			
@@ -112,7 +112,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -120,7 +120,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	}
 
 	public Long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(Long idDominio) {
@@ -132,7 +132,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	}
 
 	public Boolean getPostale() {
-		return postale;
+		return this.postale;
 	}
 
 	public void setPostale(Boolean postale) {

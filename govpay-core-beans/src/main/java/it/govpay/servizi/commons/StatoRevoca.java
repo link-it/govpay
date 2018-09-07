@@ -36,7 +36,7 @@ public enum StatoRevoca {
     ER_RIFIUTATA_PA;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StatoRevoca fromValue(String v) {

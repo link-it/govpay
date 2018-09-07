@@ -7,7 +7,7 @@ public class LeggiAvvisoDTOResponse {
 	private AvvisoPagamento avviso;
 
 	public AvvisoPagamento getAvviso() {
-		return avviso;
+		return this.avviso;
 	}
 
 	public void setAvviso(AvvisoPagamento avviso) {

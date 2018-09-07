@@ -38,7 +38,7 @@ public enum StTipoOperazione {
     D;
 
     public String value() {
-        return name();
+        return this.name();
     }
 
     public static StTipoOperazione fromValue(String v) {

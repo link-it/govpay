@@ -45,7 +45,6 @@ import it.govpay.core.rs.v1.beans.pagamenti.PendenzaPost;
 import it.govpay.core.rs.v1.beans.pagamenti.Segnalazione;
 import it.govpay.core.rs.v1.beans.pagamenti.Soggetto;
 import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza;
-import it.govpay.core.rs.v1.beans.pagamenti.VocePendenza.TipoBolloEnum;
 import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
@@ -81,7 +80,7 @@ public class VersamentoUtils {
 		}
 		
 		BigDecimal somma = BigDecimal.ZERO;
-		List<String> codSingoliVersamenti = new ArrayList<String>();
+		List<String> codSingoliVersamenti = new ArrayList<>();
 		for(SingoloVersamento sv : versamento.getSingoliVersamenti(bd)) {
 			if(codSingoliVersamenti.contains(sv.getCodSingoloVersamentoEnte()))
 				throw new GovPayException(EsitoOperazione.VER_001, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte(), sv.getCodSingoloVersamentoEnte());
@@ -179,7 +178,7 @@ public class VersamentoUtils {
 			model.setTipoBollo(TipoBollo.toEnum(singoloVersamento.getBolloTelematico().getTipo()));
 		} 
 		
-		List<Diritti> diritti = new ArrayList<Diritti>(); // TODO controllare quale diritto serve in questa fase
+		List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase
 		diritti.add(Diritti.SCRITTURA);
 		diritti.add(Diritti.ESECUZIONE);
 		if(singoloVersamento.getCodTributo() != null) {

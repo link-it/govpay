@@ -64,8 +64,8 @@ public class GpCaricaIuvResponse
      * 
      */
     public List<IuvGenerato> getIuvCaricato() {
-        if (iuvCaricato == null) {
-            iuvCaricato = new ArrayList<IuvGenerato>();
+        if (this.iuvCaricato == null) {
+            this.iuvCaricato = new ArrayList<>();
         }
         return this.iuvCaricato;
     }

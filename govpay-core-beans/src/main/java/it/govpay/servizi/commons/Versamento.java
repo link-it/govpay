@@ -167,7 +167,7 @@ public class Versamento {
      *     
      */
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     /**
@@ -191,7 +191,7 @@ public class Versamento {
      *     
      */
     public String getCodVersamentoEnte() {
-        return codVersamentoEnte;
+        return this.codVersamentoEnte;
     }
 
     /**
@@ -215,7 +215,7 @@ public class Versamento {
      *     
      */
     public String getIuv() {
-        return iuv;
+        return this.iuv;
     }
 
     /**
@@ -239,7 +239,7 @@ public class Versamento {
      *     
      */
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     /**
@@ -263,7 +263,7 @@ public class Versamento {
      *     
      */
     public String getCodUnitaOperativa() {
-        return codUnitaOperativa;
+        return this.codUnitaOperativa;
     }
 
     /**
@@ -287,7 +287,7 @@ public class Versamento {
      *     
      */
     public Anagrafica getDebitore() {
-        return debitore;
+        return this.debitore;
     }
 
     /**
@@ -311,7 +311,7 @@ public class Versamento {
      *     
      */
     public BigDecimal getImportoTotale() {
-        return importoTotale;
+        return this.importoTotale;
     }
 
     /**
@@ -335,7 +335,7 @@ public class Versamento {
      *     
      */
     public Date getDataScadenza() {
-        return dataScadenza;
+        return this.dataScadenza;
     }
 
     /**
@@ -359,7 +359,7 @@ public class Versamento {
      *     
      */
     public Boolean isAggiornabile() {
-        return aggiornabile;
+        return this.aggiornabile;
     }
 
     /**
@@ -383,7 +383,7 @@ public class Versamento {
      *     
      */
     public String getCodDebito() {
-        return codDebito;
+        return this.codDebito;
     }
 
     /**
@@ -407,7 +407,7 @@ public class Versamento {
      *     
      */
     public Integer getAnnoTributario() {
-        return annoTributario;
+        return this.annoTributario;
     }
 
     /**
@@ -431,7 +431,7 @@ public class Versamento {
      *     
      */
     public String getBundlekey() {
-        return bundlekey;
+        return this.bundlekey;
     }
 
     /**
@@ -455,7 +455,7 @@ public class Versamento {
      *     
      */
     public String getCausale() {
-        return causale;
+        return this.causale;
     }
 
     /**
@@ -493,8 +493,8 @@ public class Versamento {
      * 
      */
     public List<String> getSpezzoneCausale() {
-        if (spezzoneCausale == null) {
-            spezzoneCausale = new ArrayList<String>();
+        if (this.spezzoneCausale == null) {
+            this.spezzoneCausale = new ArrayList<>();
         }
         return this.spezzoneCausale;
     }
@@ -522,8 +522,8 @@ public class Versamento {
      * 
      */
     public List<Versamento.SpezzoneCausaleStrutturata> getSpezzoneCausaleStrutturata() {
-        if (spezzoneCausaleStrutturata == null) {
-            spezzoneCausaleStrutturata = new ArrayList<Versamento.SpezzoneCausaleStrutturata>();
+        if (this.spezzoneCausaleStrutturata == null) {
+            this.spezzoneCausaleStrutturata = new ArrayList<>();
         }
         return this.spezzoneCausaleStrutturata;
     }
@@ -551,8 +551,8 @@ public class Versamento {
      * 
      */
     public List<Versamento.SingoloVersamento> getSingoloVersamento() {
-        if (singoloVersamento == null) {
-            singoloVersamento = new ArrayList<Versamento.SingoloVersamento>();
+        if (this.singoloVersamento == null) {
+            this.singoloVersamento = new ArrayList<>();
         }
         return this.singoloVersamento;
     }
@@ -645,7 +645,7 @@ public class Versamento {
          *     
          */
         public String getCodSingoloVersamentoEnte() {
-            return codSingoloVersamentoEnte;
+            return this.codSingoloVersamentoEnte;
         }
 
         /**
@@ -669,7 +669,7 @@ public class Versamento {
          *     
          */
         public BigDecimal getImporto() {
-            return importo;
+            return this.importo;
         }
 
         /**
@@ -693,7 +693,7 @@ public class Versamento {
          *     
          */
         public String getNote() {
-            return note;
+            return this.note;
         }
 
         /**
@@ -717,7 +717,7 @@ public class Versamento {
          *     
          */
         public String getCodTributo() {
-            return codTributo;
+            return this.codTributo;
         }
 
         /**
@@ -741,7 +741,7 @@ public class Versamento {
          *     
          */
         public Versamento.SingoloVersamento.BolloTelematico getBolloTelematico() {
-            return bolloTelematico;
+            return this.bolloTelematico;
         }
 
         /**
@@ -765,7 +765,7 @@ public class Versamento {
          *     
          */
         public Versamento.SingoloVersamento.Tributo getTributo() {
-            return tributo;
+            return this.tributo;
         }
 
         /**
@@ -826,7 +826,7 @@ public class Versamento {
              *     
              */
             public String getTipo() {
-                return tipo;
+                return this.tipo;
             }
 
             /**
@@ -850,7 +850,7 @@ public class Versamento {
              *     
              */
             public String getHash() {
-                return hash;
+                return this.hash;
             }
 
             /**
@@ -874,7 +874,7 @@ public class Versamento {
              *     
              */
             public String getProvincia() {
-                return provincia;
+                return this.provincia;
             }
 
             /**
@@ -944,7 +944,7 @@ public class Versamento {
              *     
              */
             public String getIbanAccredito() {
-                return ibanAccredito;
+                return this.ibanAccredito;
             }
 
             /**
@@ -968,7 +968,7 @@ public class Versamento {
              *     
              */
             public TipoContabilita getTipoContabilita() {
-                return tipoContabilita;
+                return this.tipoContabilita;
             }
 
             /**
@@ -992,7 +992,7 @@ public class Versamento {
              *     
              */
             public String getCodContabilita() {
-                return codContabilita;
+                return this.codContabilita;
             }
 
             /**
@@ -1055,7 +1055,7 @@ public class Versamento {
          *     
          */
         public String getCausale() {
-            return causale;
+            return this.causale;
         }
 
         /**
@@ -1079,7 +1079,7 @@ public class Versamento {
          *     
          */
         public BigDecimal getImporto() {
-            return importo;
+            return this.importo;
         }
 
         /**

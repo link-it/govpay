@@ -126,7 +126,7 @@ public class IntermediarioFilter extends AbstractFilter {
 		case COD_INTERMEDIARIO: filterSortWrapper.setField(Intermediario.model().COD_INTERMEDIARIO);
 		break;
 		case ID_INTERMEDIARIO: 
-			filterSortWrapper.setField(cf);
+			filterSortWrapper.setField(this.cf);
 			break;
 		default:
 			break;
@@ -137,7 +137,7 @@ public class IntermediarioFilter extends AbstractFilter {
 	}
 
 	public String getIdIntermediario() {
-		return idIntermediario;
+		return this.idIntermediario;
 	}
 
 	public void setIdIntermediario(String idIntermediario) {
@@ -145,7 +145,7 @@ public class IntermediarioFilter extends AbstractFilter {
 	}
 
 	public String getDenominazione() {
-		return denominazione;
+		return this.denominazione;
 	}
 
 	public void setDenominazione(String denominazione) {
@@ -153,7 +153,7 @@ public class IntermediarioFilter extends AbstractFilter {
 	}
 
 	public String getCodIntermediario() {
-		return codIntermediario;
+		return this.codIntermediario;
 	}
 
 	public void setCodIntermediario(String codIntermediario) {

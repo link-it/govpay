@@ -44,7 +44,7 @@ public class AvvisiPagamentoBD extends BasicBD{
 
 	public List<AvvisoPagamento> findAll(AvvisoPagamentoFilter filter) throws ServiceException {
 		try {
-			List<AvvisoPagamento> avvisoLst = new ArrayList<AvvisoPagamento>();
+			List<AvvisoPagamento> avvisoLst = new ArrayList<>();
 
 			List<it.govpay.orm.Avviso> avvisoVOLst = this.getAvvisoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Avviso incassoVO: avvisoVOLst) {

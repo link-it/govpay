@@ -97,7 +97,7 @@ public class SingoliVersamentiBD extends BasicBD {
 		try {
 			IdSingoloVersamento idVO = ((JDBCSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).findId(idVersamento, true);
 	
-			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO, statoSingoloVersamento.toString()));
 	
 			this.getSingoloVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));

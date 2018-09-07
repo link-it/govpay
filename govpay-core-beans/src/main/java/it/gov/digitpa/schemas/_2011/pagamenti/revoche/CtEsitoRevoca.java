@@ -88,7 +88,7 @@ public class CtEsitoRevoca {
      *     
      */
     public String getVersioneOggetto() {
-        return versioneOggetto;
+        return this.versioneOggetto;
     }
 
     /**
@@ -112,7 +112,7 @@ public class CtEsitoRevoca {
      *     
      */
     public CtDominio getDominio() {
-        return dominio;
+        return this.dominio;
     }
 
     /**
@@ -136,7 +136,7 @@ public class CtEsitoRevoca {
      *     
      */
     public String getIdentificativoMessaggioEsito() {
-        return identificativoMessaggioEsito;
+        return this.identificativoMessaggioEsito;
     }
 
     /**
@@ -160,7 +160,7 @@ public class CtEsitoRevoca {
      *     
      */
     public Date getDataOraMessaggioEsito() {
-        return dataOraMessaggioEsito;
+        return this.dataOraMessaggioEsito;
     }
 
     /**
@@ -184,7 +184,7 @@ public class CtEsitoRevoca {
      *     
      */
     public String getRiferimentoMessaggioRevoca() {
-        return riferimentoMessaggioRevoca;
+        return this.riferimentoMessaggioRevoca;
     }
 
     /**
@@ -208,7 +208,7 @@ public class CtEsitoRevoca {
      *     
      */
     public Date getRiferimentoDataRevoca() {
-        return riferimentoDataRevoca;
+        return this.riferimentoDataRevoca;
     }
 
     /**
@@ -232,7 +232,7 @@ public class CtEsitoRevoca {
      *     
      */
     public CtIstitutoAttestante getIstitutoAttestante() {
-        return istitutoAttestante;
+        return this.istitutoAttestante;
     }
 
     /**
@@ -256,7 +256,7 @@ public class CtEsitoRevoca {
      *     
      */
     public CtSoggettoVersante getSoggettoVersante() {
-        return soggettoVersante;
+        return this.soggettoVersante;
     }
 
     /**
@@ -280,7 +280,7 @@ public class CtEsitoRevoca {
      *     
      */
     public CtSoggettoPagatore getSoggettoPagatore() {
-        return soggettoPagatore;
+        return this.soggettoPagatore;
     }
 
     /**
@@ -304,7 +304,7 @@ public class CtEsitoRevoca {
      *     
      */
     public CtDatiEsitoRevoca getDatiRevoca() {
-        return datiRevoca;
+        return this.datiRevoca;
     }
 
     /**
