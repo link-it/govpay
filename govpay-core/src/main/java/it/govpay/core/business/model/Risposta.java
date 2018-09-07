@@ -44,7 +44,7 @@ public class Risposta  {
 	public Risposta(NodoInviaCarrelloRPTRisposta r) {
 		this.esito = r.getEsitoComplessivoOperazione();
 		this.url = r.getUrl();
-		this.listaErroriRPT = r.getListaErroriRPT().getFault();
+		this.listaErroriRPT = r.getListaErroriRPT() != null ? r.getListaErroriRPT().getFault() : null;
 		this.faultBean = r.getFault();
 	}
 	
