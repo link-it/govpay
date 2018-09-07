@@ -83,7 +83,7 @@ public class Pendenze extends BaseRsServiceV1{
 
     @POST
     @Path("/")
-    @Consumes({ "application/json" })
+    @Consumes({ "application/json", "multipart/form-data" })
     
     public Response pendenzePOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);

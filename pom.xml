@@ -252,7 +252,7 @@
 			</dependency>
 
 			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger
-				transport csv sonde rest openapi xml2json date resources jmx
+				transport csv sonde rest openapi xml2json date resources jmx mime
 			-->
 			<dependency>
 			    <groupId>org.openspcoop2.utils</groupId>
@@ -377,6 +377,12 @@
 			<dependency>
 			    <groupId>org.openspcoop2.utils</groupId>
 			    <artifactId>openspcoop2_utils-jmx</artifactId>
+			    <version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.openspcoop2.utils</groupId>
+			    <artifactId>openspcoop2_utils-mime</artifactId>
 			    <version>${openspcoop2.version}</version>
 			</dependency>
 

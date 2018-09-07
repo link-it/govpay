@@ -2,6 +2,7 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.mail.BodyPart;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -16,6 +18,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.mime.MimeMultipart;
+import org.openspcoop2.utils.transport.http.ContentTypeUtilities;
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.Operazione;
@@ -108,11 +112,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
 		GpContext ctx = null;
 		String transactionId = null;
-		
+
 		String methodName = "pendenzeGET";
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-			
+
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -173,10 +177,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
-		
+
 		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			
+
 			// salvo il json ricevuto
 			BaseRsService.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -251,13 +255,41 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzePOST";  
 		GpContext ctx = null;
 		String transactionId = null;
-		
+
 		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			
+
+			String contentTypeBody = null;
+			if(httpHeaders.getRequestHeaders().containsKey("Content-Type")) {
+				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0).toLowerCase();
+			}
+
+			this.log.info(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
+
 			// salvo il json ricevuto
 			BaseRsService.copy(is, baos);
+
+			String fileName = null;
+			InputStream fileInputStream = null;
+			// controllo se sono in una richiesta multipart
+			if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
+				MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
+
+				for(int i = 0 ; i < mimeMultipart.countBodyParts() ;  i ++) {
+					BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+					fileName = getBodyPartFileName(bodyPart);
+					
+					if(fileName != null) {
+						fileInputStream = bodyPart.getInputStream();
+						break;
+					}
+				}
+				
+				if(fileInputStream != null) {
+					BaseRsService.copy(fileInputStream, baos);
+				}
+			}
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -295,11 +327,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	public Response pendenzeTracciatiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
 		GpContext ctx = null;
 		String transactionId = null;
-		
+
 		String methodName = "pendenzeTracciatiGET";
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-			
+
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -353,11 +385,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzeTracciatiIdEsitoGET";  
 		GpContext ctx = null;
 		String transactionId = null;
-		
+
 		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			
+
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -388,11 +420,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzeTracciatiIdGET";  
 		GpContext ctx = null;
 		String transactionId = null;
-		
+
 		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			
+
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -418,11 +450,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	public Response pendenzeTracciatiIdOperazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
 		GpContext ctx = null;
 		String transactionId = null;
-		
+
 		String methodName = "pendenzeTracciatiGET";
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			
+
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -472,11 +504,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		String methodName = "pendenzeTracciatiIdStampeGET";  
 		GpContext ctx = null;
 		String transactionId = null;
-		
+
 		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			
+
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -561,6 +593,26 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			zos.closeEntry();
 		}
 	}
+	
+	private String getBodyPartFileName (BodyPart bodyPart) throws Exception{
+        String partName =  null;
+        String[] headers = bodyPart.getHeader(it.govpay.rs.BaseController.PARAMETRO_CONTENT_DISPOSITION);
+        if(headers != null && headers.length > 0){
+                String header = headers[0];
+
+                // in due parti perche il suffisso con solo " imbrogliava il controllo
+                int prefixIndex = header.indexOf(it.govpay.rs.BaseController.PREFIX_FILENAME);
+                if(prefixIndex > -1){
+                        partName = header.substring(prefixIndex + it.govpay.rs.BaseController.PREFIX_FILENAME.length());
+
+                        int suffixIndex = partName.indexOf(it.govpay.rs.BaseController.SUFFIX_FILENAME);
+                        partName = partName.substring(0,suffixIndex);
+                }
+        }
+
+        return partName;
+}
+
 }
 
 

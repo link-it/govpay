@@ -22,7 +22,6 @@ package it.govpay.core.utils;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -33,10 +32,10 @@ import org.xml.sax.SAXException;
 
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.CtNumeroAvviso;
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
-import it.govpay.core.business.model.Iuv;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.business.model.Iuv;
 
 public class IuvUtils {
 
@@ -106,11 +105,9 @@ public class IuvUtils {
 		return iuvGenerato;
 	}
 	
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("ddMMyyyyHHmmSSsss");
-	
 	public static String buildCCP(){
 		 Date today = new Date();
-		 return DATE_FORMAT.format(today);
+		 return SimpleDateFormatUtils.newSimpleDateFormatIuvUtils().format(today);
 	}
 
 	public static boolean checkIuvNumerico(String iuv, int auxDigit, int applicationCode) {

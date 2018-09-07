@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 "importo",
 "modello",
 "stato",
+"descrizioneStato",
 "pspRedirectUrl",
 "urlRitorno",
 "contoAddebito",
@@ -98,6 +99,9 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("stato")
   private StatoPagamento stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
   
   @JsonProperty("pspRedirectUrl")
   private String pspRedirectUrl = null;
@@ -357,6 +361,22 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Descrizione estesa dello stato del pagamento
+   **/
+  public Pagamento descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return this.descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
+  /**
    * Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
    **/
   public Pagamento pspRedirectUrl(String pspRedirectUrl) {
@@ -546,6 +566,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(this.importo, pagamento.importo) &&
         Objects.equals(this.modello, pagamento.modello) &&
         Objects.equals(this.stato, pagamento.stato) &&
+	Objects.equals(this.descrizioneStato, pagamento.descrizioneStato) &&
         Objects.equals(this.pspRedirectUrl, pagamento.pspRedirectUrl) &&
         Objects.equals(this.urlRitorno, pagamento.urlRitorno) &&
         Objects.equals(this.contoAddebito, pagamento.contoAddebito) &&
@@ -561,7 +582,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.nome, this.dataRichiestaPagamento, this.idSessionePortale, this.idSessionePsp, this.importo, this.modello, this.stato, this.pspRedirectUrl, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua, this.rpp, this.verificato, this.note);
+    return Objects.hash(this.id, this.nome, this.dataRichiestaPagamento, this.idSessionePortale, this.idSessionePsp, this.importo, this.modello, this.stato, this.descrizioneStato, this.pspRedirectUrl, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua, this.rpp, this.verificato, this.note);
   }
 
   public static Pagamento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -586,6 +607,7 @@ public class Pagamento extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
     sb.append("    modello: ").append(this.toIndentedString(this.modello)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(this.toIndentedString(this.descrizioneStato)).append("\n");
     sb.append("    pspRedirectUrl: ").append(this.toIndentedString(this.pspRedirectUrl)).append("\n");
     sb.append("    urlRitorno: ").append(this.toIndentedString(this.urlRitorno)).append("\n");
     sb.append("    contoAddebito: ").append(this.toIndentedString(this.contoAddebito)).append("\n");

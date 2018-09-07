@@ -19,6 +19,7 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "idSessionePsp",
 "importo",
 "stato",
+"descrizioneStato",
 "modello",
 "pspRedirectUrl",
 "urlRitorno",
@@ -55,6 +56,9 @@ public class PagamentoIndex extends JSONSerializable {
   
   @JsonProperty("stato")
   private StatoPagamento stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
   
     
   /**
@@ -342,6 +346,22 @@ public class PagamentoIndex extends JSONSerializable {
   }
 
   /**
+   * Descrizione estesa dello stato del pagamento
+   **/
+  public PagamentoIndex descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
+  /**
    * Modello di pagamento
    **/
   public PagamentoIndex modello(ModelloEnum modello) {
@@ -546,6 +566,7 @@ public class PagamentoIndex extends JSONSerializable {
         Objects.equals(this.idSessionePsp, pagamentoIndex.idSessionePsp) &&
         Objects.equals(this.importo, pagamentoIndex.importo) &&
         Objects.equals(this.stato, pagamentoIndex.stato) &&
+	Objects.equals(descrizioneStato, pagamentoIndex.descrizioneStato) &&
         Objects.equals(this.modello, pagamentoIndex.modello) &&
         Objects.equals(this.pspRedirectUrl, pagamentoIndex.pspRedirectUrl) &&
         Objects.equals(this.urlRitorno, pagamentoIndex.urlRitorno) &&
@@ -562,7 +583,7 @@ public class PagamentoIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.nome, this.dataRichiestaPagamento, this.idSessionePortale, this.idSessionePsp, this.importo, this.stato, this.modello, this.pspRedirectUrl, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua, this.rpp, this.verificato, this.note);
+    return Objects.hash(this.id, this.nome, this.dataRichiestaPagamento, this.idSessionePortale, this.idSessionePsp, this.importo, this.stato, this,descrizioneStato, this.modello, this.pspRedirectUrl, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua, this.rpp, this.verificato, this.note);
   }
 
   public static PagamentoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -586,6 +607,7 @@ public class PagamentoIndex extends JSONSerializable {
     sb.append("    idSessionePsp: ").append(this.toIndentedString(this.idSessionePsp)).append("\n");
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("    modello: ").append(this.toIndentedString(this.modello)).append("\n");
     sb.append("    pspRedirectUrl: ").append(this.toIndentedString(this.pspRedirectUrl)).append("\n");
     sb.append("    urlRitorno: ").append(this.toIndentedString(this.urlRitorno)).append("\n");

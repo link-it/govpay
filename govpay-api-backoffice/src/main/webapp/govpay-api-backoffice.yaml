@@ -1783,8 +1783,14 @@ paths:
       requestBody:
         content:
           application/json:
-              schema:
-                $ref: '#/components/schemas/tracciatoPendenzePost'
+            schema:
+              $ref: '#/components/schemas/tracciatoPendenzePost'
+          multipart/form-data:
+            schema:
+              properties:
+                fileName:
+                  type: string
+                  format: binary
         description: Tracciato Pendenze in formato JSON
         required: true
       responses:
@@ -1796,6 +1802,8 @@ paths:
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403' 
+        '415':
+          $ref: '#/components/responses/415'
         '500':
           $ref: '#/components/responses/500'
     get:
@@ -2918,6 +2926,8 @@ components:
       description: Richiesta non autorizzata
     '404':
       description: Risorsa inesistente
+    '415':
+      description: Formato del messaggio non valido
     '500':
       description: Servizio non disponibile
       content:
@@ -3682,6 +3692,10 @@ components:
             Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
         stato:
           $ref: '#/components/schemas/statoPagamento'
+        descrizioneStato:
+          type: string
+          example: 'Pagamento Eseguito Correttamente'
+          description: Descrizione estesa dello stato del pagamento
         modello:
           type: string
           description: Modello di pagamento
@@ -3783,6 +3797,10 @@ components:
             - Pagamento ad iniziativa PSP
         stato:
           $ref: '#/components/schemas/statoPagamento'
+        descrizioneStato:
+          type: string
+          example: 'Pagamento Eseguito Correttamente'
+          description: Descrizione estesa dello stato del pagamento
         pspRedirectUrl:
           type: string
           example: 'https://www.psp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'

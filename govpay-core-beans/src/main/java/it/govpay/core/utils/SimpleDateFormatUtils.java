@@ -33,6 +33,18 @@ public class SimpleDateFormatUtils {
 		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_JSON_YYYY_MM_DD);
 	}
 	
+	private static final String PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS = "ddMMyyyyHHmmSSsss";
+	public static SimpleDateFormat newSimpleDateFormatIuvUtils() {
+		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS);
+		return sdf;
+	}
+	
+	private static final String PATTERN_DATA_YYYY = "yyyy";
+	public static SimpleDateFormat newSimpleDateFormatSoloAnno() {
+		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY);
+		return sdf;
+	}
+	
 	public static SimpleDateFormat newSimpleDateFormat(String pattern) {
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		sdf.setTimeZone(TimeZone.getTimeZone("CET"));

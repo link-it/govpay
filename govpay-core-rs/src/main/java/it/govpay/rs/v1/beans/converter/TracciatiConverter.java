@@ -223,6 +223,8 @@ public class TracciatiConverter {
 	private static void popolaOperazioneDel(it.govpay.bd.model.Operazione operazione, OperazionePendenza rsModel)
 			throws ServiceException {
 		rsModel.setTipoOperazione(TipoOperazionePendenza.DEL);
+		rsModel.setIdentificativoPendenza(operazione.getCodVersamentoEnte());
+		
 		OperazioneAnnullamento opAnnullamento = (OperazioneAnnullamento) operazione;
 		rsModel.setDescrizioneStato(opAnnullamento.getMotivoAnnullamento());
 		

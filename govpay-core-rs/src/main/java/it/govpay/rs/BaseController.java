@@ -56,6 +56,12 @@ import it.govpay.rs.v1.BaseRsServiceV1;
  */
 public abstract class BaseController {
 
+	public final static String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
+	public final static String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";
+	public final static String SUFFIX_CONTENT_DISPOSITION = "\"";
+	public final static String PREFIX_FILENAME = "filename=\"";
+	public final static String SUFFIX_FILENAME = "\"";
+
 	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
 	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
 	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";

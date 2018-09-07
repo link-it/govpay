@@ -20,7 +20,6 @@
 package it.govpay.core.utils;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -111,7 +110,7 @@ public class Gp21Utils {
 	public static FlussoRendicontazione toFr(Fr frModel, List<Rendicontazione> rends, BasicBD bd) throws ServiceException {
 		
 		FlussoRendicontazione fr = new FlussoRendicontazione();
-		int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(frModel.getDataFlusso()));
+		int annoFlusso = Integer.parseInt(SimpleDateFormatUtils.newSimpleDateFormatSoloAnno().format(frModel.getDataFlusso()));
 		fr.setAnnoRiferimento(annoFlusso);
 		fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
 		fr.setCodFlusso(frModel.getCodFlusso());
@@ -188,8 +187,6 @@ public class Gp21Utils {
 		return null;
 	}
 
-	public static SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
-	
 	public static List<IuvGenerato> toIuvGenerato(List<it.govpay.core.business.model.Iuv> iuvGeneratiModel) {
 		List<IuvGenerato> iuvGenerati = new ArrayList<>();
 		for (it.govpay.core.business.model.Iuv iuvGeneratoModel : iuvGeneratiModel) {

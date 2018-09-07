@@ -151,7 +151,7 @@ public class Versamento extends BasicBD {
 									versamentoFromDominioNumeroAvviso.getApplicazione(this).getCodApplicazione(), versamentoFromDominioNumeroAvviso.getCodVersamentoEnte(),versamento.getNumeroAvviso());
 						
 					}catch(NotFoundException e2) {
-						// ingore
+						// ignore
 					}
 				}
 				
@@ -191,8 +191,8 @@ public class Versamento extends BasicBD {
 		CaricaVersamentoDTOResponse response = new CaricaVersamentoDTOResponse();
 		
 		try {
-			it.govpay.model.Iuv iuv = this.caricaVersamento(versamento, generaIuv, aggiornaSeEsiste);
-			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), iuv, versamento.getImportoTotale());
+			this.caricaVersamento(versamento, generaIuv, aggiornaSeEsiste);
+			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento,versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
 			response.setBarCode(iuvGenerato.getBarCode());
 			response.setCodApplicazione(iuvGenerato.getCodApplicazione());
 			response.setCodDominio(iuvGenerato.getCodDominio());

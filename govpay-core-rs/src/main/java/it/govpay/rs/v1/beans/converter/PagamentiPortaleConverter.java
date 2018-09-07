@@ -70,6 +70,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
 		rsModel.setNome(pagamentoPortale.getNome());
 		rsModel.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
+		rsModel.setDescrizioneStato(pagamentoPortale.getDescrizioneStato()); 
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
@@ -130,6 +131,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
 		rsModel.setNome(pagamentoPortale.getNome());
 		rsModel.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
+		rsModel.setDescrizioneStato(pagamentoPortale.getDescrizioneStato());
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());

@@ -25,8 +25,11 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.Versamento;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
 import it.govpay.core.business.model.CaricaVersamentoDTO;
@@ -42,6 +45,8 @@ import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 
 public class OperazioneFactory {
+	
+	private static Logger log = LoggerWrapperFactory.getLogger(Tracciati.class);
 
 	public CaricamentoResponse caricaVersamento(CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
 
@@ -90,6 +95,7 @@ public class OperazioneFactory {
 			caricamentoResponse.setAvviso(avviso);
 			
 		} catch(GovPayException e) {
+			log.debug("Impossibile eseguire il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
 			caricamentoResponse.setEsito(e.getCodEsito().name());
@@ -112,6 +118,7 @@ public class OperazioneFactory {
 			
 			
 		} catch(NotAuthorizedException e) {
+			log.debug("Impossibile eseguire il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
 			caricamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
@@ -123,6 +130,7 @@ public class OperazioneFactory {
 			respKo.setDettaglio(e.getDetails());
 			caricamentoResponse.setFaultBean(respKo);
 		} catch(Throwable e) {
+			log.error("Si e' verificato un errore durante il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
 			caricamentoResponse.setDescrizioneEsito(e.getMessage());
@@ -181,6 +189,7 @@ public class OperazioneFactory {
 			annullamentoResponse.setEsito("DEL_OK");
 			annullamentoResponse.setDescrizioneEsito("Versamento [CodApplicazione:" + request.getCodApplicazione() + " Id:" + request.getCodVersamentoEnte() + "] eliminato con successo");
 		} catch(GovPayException e) {
+			log.debug("Impossibile eseguire l'annullamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			annullamentoResponse.setEsito("DEL_KO");
 			annullamentoResponse.setEsito(e.getCodEsito().name());
@@ -202,6 +211,7 @@ public class OperazioneFactory {
 			annullamentoResponse.setFaultBean(respKo);
 			
 		} catch(NotAuthorizedException e) {
+			log.debug("Impossibile eseguire l'annullamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
 			annullamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			annullamentoResponse.setEsito("DEL_KO");
 			annullamentoResponse.setEsito(CostantiCaricamento.NOT_AUTHORIZED);
