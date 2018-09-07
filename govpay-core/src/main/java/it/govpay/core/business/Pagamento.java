@@ -507,7 +507,7 @@ public class Pagamento extends BasicBD {
 				// RR rifiutata dal Nodo
 				// Aggiorno lo stato e ritorno l'errore
 
-				FaultBean fb = risposta.getFaultBean(0);
+				FaultBean fb = risposta.getFaultBean();
 				String descrizione = null; 
 				if(fb != null)
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
@@ -515,7 +515,7 @@ public class Pagamento extends BasicBD {
 				rrBD.updateRr(rr.getId(), StatoRr.RR_RIFIUTATA_NODO, descrizione);
 
 				log.warn(risposta.getLog());
-				throw new GovPayException(risposta.getFaultBean(0));
+				throw new GovPayException(risposta.getFaultBean());
 			} else {
 				ctx.log("rr.invioRrOk");
 				// RPT accettata dal Nodo

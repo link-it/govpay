@@ -246,22 +246,35 @@ public class Rpt extends BasicBD{
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
 					try {
-						for(int i=0; i<rpts.size(); i++) {
-							it.govpay.bd.model.Rpt rpt = rpts.get(i);
-							FaultBean fb = risposta.getFaultBean(i);
+						
+						for(FaultBean fb : risposta.getListaErroriRPT()) {
+							it.govpay.bd.model.Rpt rpt = rpts.get(fb.getSerial() - 1);
 							String descrizione = null; 
 							if(fb != null) {
-								descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
+								descrizione = "[" + fb.getFaultCode() + "] " + fb.getFaultString();
+								descrizione = fb.getDescription() != null ? descrizione + ": " + fb.getDescription() : descrizione;
 							}
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
 						}
+						
 					} catch (Exception e) {
 						// Se uno o piu' aggiornamenti vanno male, non importa. 
 						// si risolvera' poi nella verifica pendenti
 					} 
+					// Potrebbero rimanere escluse delle RPT dall'aggiornamento:
+					for(it.govpay.bd.model.Rpt rpt : rpts) {
+						if(!rpt.getStato().equals(StatoRpt.RPT_RIFIUTATA_NODO)) {
+							try {
+								rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, "Richiesta di pagamento rifiutata per errori rilevati in altre RPT del carrello", null, null);
+							} catch (NotFoundException e) {
+								// Se uno o piu' aggiornamenti vanno male, non importa. 
+								// si risolvera' poi nella verifica pendenti
+							}
+						}
+					}
 					ctx.log("rpt.invioKo", risposta.getLog());
 					log.info("RPT rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
-					throw new GovPayException(risposta.getFaultBean(0));
+					throw new GovPayException(risposta.getFaultBean());
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
 					// RPT accettata dal Nodo
