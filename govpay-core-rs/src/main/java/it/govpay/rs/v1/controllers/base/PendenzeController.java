@@ -262,7 +262,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			String contentTypeBody = null;
 			if(httpHeaders.getRequestHeaders().containsKey("Content-Type")) {
-				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0).toLowerCase();
+				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0);
 			}
 
 			this.log.info(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
@@ -270,8 +270,13 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			String fileName = null;
 			InputStream fileInputStream = null;
+			try{
 			// controllo se sono in una richiesta multipart
 			if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
+
+				javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
+				this.log.info(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+
 				MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
 
 				for(int i = 0 ; i < mimeMultipart.countBodyParts() ;  i ++) {
@@ -287,6 +292,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 				if(fileInputStream != null) {
 					BaseRsService.copy(fileInputStream, baos);
 				}
+			}
+						}catch(Exception e) {
+				this.log.error(e.getMessage(),e);
 			}
 
 			if(fileInputStream == null) {
