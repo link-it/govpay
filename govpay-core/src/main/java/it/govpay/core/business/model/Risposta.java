@@ -19,8 +19,9 @@
  */
 package it.govpay.core.business.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPTRisposta;
@@ -30,45 +31,26 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStornoRisposta;
 public class Risposta  {
 
 	private String esito;
-	private Map<Integer, FaultBean> faultMap;
 	private FaultBean faultBean;
+	private List<FaultBean> listaErroriRPT;
 	private String url;
 	
 	public Risposta(NodoInviaRPTRisposta r) {
 		this.esito = r.getEsito();
 		this.url = r.getUrl();
-		
-		if(r.getFault() != null) {
-			this.esito = "KO";
-			this.faultBean = r.getFault();
-		}
+		this.faultBean = r.getFault();
 	}
 	
 	public Risposta(NodoInviaCarrelloRPTRisposta r) {
 		this.esito = r.getEsitoComplessivoOperazione();
 		this.url = r.getUrl();
-		
-		if(!this.esito.equals("OK")) {
-			if(r.getFault() != null) {
-				this.faultBean = r.getFault();
-			} 
-				
-			if(r.getListaErroriRPT() != null) {
-				faultMap = new HashMap<Integer, FaultBean>();
-				for(FaultBean fb : r.getListaErroriRPT().getFault()) {
-					faultMap.put(fb.getSerial(), fb);
-				}
-			}
-		}
+		this.listaErroriRPT = r.getListaErroriRPT().getFault();
+		this.faultBean = r.getFault();
 	}
 	
 	public Risposta(NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStorno) {
 		this.esito = nodoInviaRichiestaStorno.getEsito();
-		
-		if(nodoInviaRichiestaStorno.getFault() != null) {
-			this.esito = "KO";
-			this.faultBean = nodoInviaRichiestaStorno.getFault();
-		}
+		this.faultBean = nodoInviaRichiestaStorno.getFault();
 	}
 
 	public String getEsito() {
@@ -79,32 +61,53 @@ public class Risposta  {
 		return this.url;
 	}
 	
-	public FaultBean getFaultBean(int pos) {
+	public FaultBean getFaultBean() {
 		if(this.faultBean != null)
 			return this.faultBean;
 		
-		if(this.faultMap != null && this.faultMap.get(new Integer(pos)) != null)
-			return this.faultMap.get(new Integer(pos));
+		if(this.listaErroriRPT != null && this.listaErroriRPT.size() > 0) {
 			
+			if(this.listaErroriRPT.size() == 1)
+				return this.listaErroriRPT.get(0);
+		
+			Set<String> codici = new HashSet<String>();
+			Set<String> ids = new HashSet<String>();
+			String descrizione = "";
+			
+			for(FaultBean fb : this.listaErroriRPT) {
+				codici.add(fb.getFaultCode());
+				ids.add(fb.getFaultString());
+				descrizione += toString(fb);
+			}
+				
+			FaultBean fbx = new FaultBean();
+			
+			if(ids.size() == 1)
+				fbx.setId(codici.iterator().next());
+			
+			if(codici.size() == 1)
+				fbx.setFaultCode(codici.iterator().next());
+			
+			fbx.setDescription(descrizione);
+			return fbx;
+		}		
+		
 		return null;
 	}
 	
-	public String getFaultBeanString(int pos) {
-		if(this.faultBean != null)
-			return toString(this.faultBean);
-		
-		if(this.faultMap != null && this.faultMap.get(new Integer(pos)) != null)
-			return toString(this.faultMap.get(new Integer(pos)));
-			
-		return null;
-	}
-
 	public String getLog() {
 		String log = "Ricevuto esito " + this.esito;
-		if(this.faultBean != null) log += " con FaultBean " + toString(this.faultBean);
-		if(this.faultMap != null) {
-			for(FaultBean fb : this.faultMap.values())
-				log += "\nFaultBean " + toString(fb);
+		
+		if(this.faultBean != null || this.listaErroriRPT != null) {
+			log += " con FaultBean ";
+		}
+		
+		if(this.faultBean != null)
+			log += "\n" + toString(this.faultBean);
+		
+		if(this.listaErroriRPT != null) {
+			for(FaultBean fb : this.listaErroriRPT)
+				log += "\n" + toString(fb);
 		}
 		return log;
 	}
@@ -112,20 +115,23 @@ public class Risposta  {
 	private String toString(FaultBean faultBean) {
 		StringBuffer sb = new StringBuffer();
 		if(faultBean != null) {
-			sb.append(this.faultBean.getFaultCode());
-			if(this.faultBean.getFaultString() != null)
-				sb.append(": " + this.faultBean.getFaultString());
 			
-			if(this.faultBean.getSerial() != null)
-				sb.append(" per l'elemento " + this.faultBean.getSerial());
+			if(faultBean.getSerial() != null)
+				sb.append("#" + faultBean.getSerial() + " ");
 			
-			if(this.faultBean.getDescription() != null)
-				sb.append(" \"" +  this.faultBean.getDescription() + "\"");
+			sb.append("["+faultBean.getFaultCode()+"]");
+			
+			if(faultBean.getFaultString() != null)
+				sb.append(" " + faultBean.getFaultString());
+			
+			if(faultBean.getDescription() != null)
+				sb.append(": " +  faultBean.getDescription() + " ");
 		}
-		if(sb.length() >= 500)
-			return sb.substring(0, 500);
-		else
-			return sb.toString();
+		return sb.toString();
 	}
-	
+
+	public List<FaultBean> getListaErroriRPT() {
+		return listaErroriRPT;
+	}
+
 }

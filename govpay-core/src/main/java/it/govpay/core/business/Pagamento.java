@@ -397,12 +397,13 @@ public class Pagamento extends BasicBD {
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
 					try {
-						for(int i=0; i<rpts.size(); i++) {
-							Rpt rpt = rpts.get(i);
-							FaultBean fb = risposta.getFaultBean(i);
+						
+						for(FaultBean fb : risposta.getListaErroriRPT()) {
+							Rpt rpt = rpts.get(fb.getSerial() - 1);
 							String descrizione = null; 
 							if(fb != null) {
-								descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
+								descrizione = "[" + fb.getFaultCode() + "] " + fb.getFaultString();
+								descrizione = fb.getDescription() != null ? descrizione + ": " + fb.getDescription() : descrizione;
 							}
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
 						}
@@ -412,7 +413,7 @@ public class Pagamento extends BasicBD {
 					} 
 					ctx.log("rpt.invioKo", risposta.getLog());
 					log.info("RPT rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
-					throw new GovPayException(risposta.getFaultBean(0));
+					throw new GovPayException(risposta.getFaultBean());
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
 					// RPT accettata dal Nodo
@@ -877,7 +878,7 @@ public class Pagamento extends BasicBD {
 				// RR rifiutata dal Nodo
 				// Aggiorno lo stato e ritorno l'errore
 
-				FaultBean fb = risposta.getFaultBean(0);
+				FaultBean fb = risposta.getFaultBean();
 				String descrizione = null; 
 				if(fb != null)
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
@@ -885,7 +886,7 @@ public class Pagamento extends BasicBD {
 				rrBD.updateRr(rr.getId(), StatoRr.RR_RIFIUTATA_NODO, descrizione);
 
 				log.warn(risposta.getLog());
-				throw new GovPayException(risposta.getFaultBean(0));
+				throw new GovPayException(risposta.getFaultBean());
 			} else {
 				ctx.log("rr.invioRrOk");
 				// RPT accettata dal Nodo
