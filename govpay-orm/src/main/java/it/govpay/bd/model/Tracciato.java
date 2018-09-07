@@ -25,9 +25,7 @@ public class Tracciato extends it.govpay.model.Tracciato {
 			try {
 				if(this.getIdOperatore()!=null)
 					this.operatore = new OperatoriBD(bd).getOperatore(this.getIdOperatore());
-			} catch(NotFoundException e) {
-				throw new ServiceException(e);
-			} catch(MultipleResultException e) {
+			} catch(NotFoundException | MultipleResultException e) {
 				throw new ServiceException(e);
 			}
 		}

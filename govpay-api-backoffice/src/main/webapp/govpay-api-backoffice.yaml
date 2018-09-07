@@ -5307,6 +5307,3 @@ components:
           oneOf:
             - $ref: '#/components/schemas/avviso'
             - $ref: '#/components/schemas/faultBean'
-          
-        
-  

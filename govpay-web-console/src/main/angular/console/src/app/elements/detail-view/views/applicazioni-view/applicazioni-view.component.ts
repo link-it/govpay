@@ -194,6 +194,9 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
           case this.ENTRATA:
             _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_ENTRATE, value: _ivm.jsonP.idEntrata }];
           break;
+          case this.ACL:
+            _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_ACLS, value: _ivm.jsonP } ];
+            break;
         }
       if(_json) {
         this.updateElements(type, _json);
@@ -215,6 +218,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
         switch(type) {
           case this.DOMINIO:
           case this.ENTRATA:
+          case this.ACL:
             this.json = response.body;
             this.mapJsonDetail();
             this.us.alert('Operazione completata.');
@@ -337,7 +341,6 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
           _json.entrate = _json.entrate.map((e) => {
             return e.idEntrata;
           });
-          //TODO: Mappatura delle ACL come per domini ed entrate ?
           delete _json.idA2A;
           break;
         case UtilService.DOMINIO:
@@ -356,7 +359,8 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
         break;
         case UtilService.ACL:
           _method = UtilService.METHODS.PATCH;
-          _json = { op: mb.operation, path: UtilService.URL_ACLS, value: mb.info.viewModel };
+          _json = [];
+          _json.push({ op: mb.operation, path: UtilService.URL_ACLS, value: mb.info.viewModel });
           break;
       }
       this.gps.saveData(_service, _json, _query, _method).subscribe(
@@ -367,7 +371,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
                 mb.info.viewModel['idA2A'] = this.json['idA2A'];
                 mb.info.viewModel['domini'] = this.json.domini;
                 mb.info.viewModel['entrate'] = this.json.entrate;
-                //TODO: Ripristino delle ACL come per domini ed entrate ?
+                mb.info.viewModel['acl'] = this.json.acl;
               break;
               case UtilService.DOMINIO:
               case UtilService.ENTRATA:

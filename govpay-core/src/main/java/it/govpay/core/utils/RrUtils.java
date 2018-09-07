@@ -375,7 +375,7 @@ public class RrUtils extends NdpValidationUtils {
 				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.ANOMALO);
 				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.ANOMALO.toString());
 			}
-			versamentiBD.updateStatoVersamento(sv.getIdVersamento(), StatoVersamento.ANOMALO, "Pagamenti stornati");
+			versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.ANOMALO, "Pagamenti stornati");
 			v.setStatoVersamento(StatoVersamento.ANOMALO);
 		}
 		
@@ -421,9 +421,11 @@ public class RrUtils extends NdpValidationUtils {
 				esito.addErrore("Ricevuto esito di revoca non richiesta", true);
 			}
 			
-			pagamento.setDatiEsitoRevoca(singolaRevoca.getDatiAggiuntiviEsito());
-			pagamento.setEsitoRevoca(singolaRevoca.getCausaleEsito());
-			pagamento.setImportoRevocato(singolaRevoca.getSingoloImportoRevocato());
+			if(pagamento != null) {
+				pagamento.setDatiEsitoRevoca(singolaRevoca.getDatiAggiuntiviEsito());
+				pagamento.setEsitoRevoca(singolaRevoca.getCausaleEsito());
+				pagamento.setImportoRevocato(singolaRevoca.getSingoloImportoRevocato());
+			}
 			indiceDati++;
 		}
 		

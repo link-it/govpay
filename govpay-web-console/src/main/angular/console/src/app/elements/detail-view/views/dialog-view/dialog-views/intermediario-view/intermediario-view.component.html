@@ -17,18 +17,17 @@
   <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
     <input matInput placeholder="Url" formControlName="url_ctrl" autocomplete="off" required>
   </mat-form-field>
-  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-    <!--<input matInput placeholder="Versione API" formControlName="versioneApi_ctrl" autocomplete="off">-->
+  <!--<mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
     <mat-select placeholder="Versione API" formControlName="versioneApi_ctrl" required>
       <mat-option *ngFor="let ver of versioni" [value]="ver">{{ver}}</mat-option>
     </mat-select>
-  </mat-form-field>
+  </mat-form-field>-->
   <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
     <mat-select #authentication placeholder="Tipo autenticazione" formControlName="auth_ctrl"
                 (selectionChange)="_onAuthChange(authentication)">
       <mat-option value="">Nessuna</mat-option>
       <mat-option [value]="BASIC">HTTP Basic</mat-option>
-      <mat-option [value]="SSL">SSL</mat-option>
+      <!--<mat-option [value]="SSL">SSL</mat-option>-->
     </mat-select>
   </mat-form-field>
   <div *ngIf="_isBasicAuth">

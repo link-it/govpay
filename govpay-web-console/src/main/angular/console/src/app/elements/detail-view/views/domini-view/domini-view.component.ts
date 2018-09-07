@@ -8,6 +8,7 @@ import { Voce } from '../../../../services/voce.service';
 import { Dato } from '../../../../classes/view/dato';
 import { Parameters } from '../../../../classes/parameters';
 import { Standard } from '../../../../classes/view/standard';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'link-domini-view',
@@ -25,7 +26,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   @Input() modified: boolean = false;
   @Input() parent: any;
 
-  protected logo: string;
+  protected NO_LOGO: string = 'no-logo';
+  protected logo: any = null;
   protected logoError: boolean = false;
 
   protected _IBAN = UtilService.IBAN_ACCREDITO;
@@ -34,7 +36,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected _PLUS_CREDIT = UtilService.USER_ACL.hasCreditore;
 
 
-  constructor(public gps: GovpayService, public us: UtilService) { }
+  constructor(private _sanitizer: DomSanitizer, public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
     this.dettaglioDominio();
@@ -47,7 +49,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     let _url = UtilService.URL_DOMINI+'/'+encodeURIComponent(this.json.idDominio);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
-        // this.json = _response.body;
+        this.json = _response.body;
         //Riepilogo
         this.mapJsonDetail(_response.body);
         this.gps.updateSpinner(false);
@@ -82,7 +84,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     _dettaglio.info.push(new Dato({ label: Voce.SECRET_CODE, value: UtilService.defaultDisplay({ value: json.segregationCode }) }));
     _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[json.abilitato.toString()] }));
 
-    this.logo = this.json.logo?window['hostname']()+window['rootService']()+this.json.logo:'no-logo';
+    this.logoError = false;
+    this.logo = json.logo?this._sanitizer.bypassSecurityTrustUrl(json.logo):'no-logo';
+
     this.informazioni = _dettaglio.info.slice(0);
 
     this.elencoUnitaOperative(json);
@@ -125,7 +129,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
 
   protected _onError() {
     this.logoError = true;
-    console.warn('Cannot load png image.')
+    console.warn('Image not available.')
   }
 
   protected _editDominio(event: any) {
@@ -315,7 +319,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
             json['entrate'] = j.e;
             json['contiAccredito'] = j.ia;
             json['unitaOperative'] = j.uo;
-            this.mapJsonDetail(json);
+            // this.mapJsonDetail(json);
+            this.dettaglioDominio();
           }
         break;
         case this._ENTRATA_DOMINIO:

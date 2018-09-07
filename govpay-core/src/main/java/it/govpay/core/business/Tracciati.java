@@ -252,7 +252,7 @@ public class Tracciati extends BasicBD {
 		if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
 			beanDati.setNumDelOk(beanDati.getNumDelOk()+1);
 		} else {
-			if(!annullamentoResponse.getEsito().equals(CostantiCaricamento.EMPTY.toString()))
+			if(!annullamentoResponse.getEsito().equals(CostantiCaricamento.EMPTY))
 				beanDati.setNumDelKo(beanDati.getNumDelKo()+1);
 		}
 	}

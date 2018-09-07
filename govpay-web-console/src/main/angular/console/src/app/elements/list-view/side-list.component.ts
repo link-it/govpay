@@ -284,7 +284,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       case UtilService.URL_OPERATORI:
       case UtilService.URL_DOMINI:
       case UtilService.URL_RUOLI:
-      case UtilService.URL_INCASSI:
         _fabAction = true;
         break;
       default:
@@ -451,7 +450,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     return _map;
   }
 
-  //TODO: Decidere se aggiungere un item alle liste in base allo switch o ricaricare i dati
+  //TODO: low priority - Decidere se aggiungere un item alle liste in base allo switch o ricaricare i dati
   protected refresh(mb: ModalBehavior) {
     if(mb && mb.info.viewModel) {
       let json = mb.info.viewModel;

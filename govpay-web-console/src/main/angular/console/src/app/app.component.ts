@@ -263,6 +263,7 @@ export class AppComponent implements AfterContentChecked {
         case UtilService.PENDENZA:
           if(_componentRef) {
             _mb.closure = _componentRef.instance.refresh.bind(_componentRef.instance);
+            _mb.editMode = true;
             _mb.info = {
               parent: _rsc.data.info,
               dialogTitle: 'Modifica stato pendenza',

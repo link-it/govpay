@@ -1065,7 +1065,7 @@ public class Operazioni{
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
 				Tracciati tracciatiBusiness = new Tracciati(bd);
 				
-				while(tracciati.size() != 0) {
+				while(!tracciati.isEmpty()) {
 					log.info("Trovati ["+tracciati.size()+"] tracciati da elaborare...");
 					
 					for(Tracciato tracciato: tracciati) {

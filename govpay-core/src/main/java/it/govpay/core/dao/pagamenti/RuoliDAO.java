@@ -18,8 +18,6 @@ import it.govpay.core.dao.pagamenti.dto.PatchRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RuoloPatchDTO;
-import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
-import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.base.PatchOp;
@@ -33,7 +31,7 @@ public class RuoliDAO extends BaseDAO{
 	public RuoliDAO() {
 	}
 
-	public LeggiRuoloDTOResponse leggiRuoli(LeggiRuoloDTO leggiRuoliDTO) throws ServiceException,RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiRuoloDTOResponse leggiRuoli(LeggiRuoloDTO leggiRuoliDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 
 		BasicBD bd = null;
 		LeggiRuoloDTOResponse response = null;
@@ -121,7 +119,7 @@ public class RuoliDAO extends BaseDAO{
 
 	}
 	
-	public PatchRuoloDTOResponse patch(RuoloPatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public PatchRuoloDTOResponse patch(RuoloPatchDTO patchDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		PatchRuoloDTOResponse patchRuoloDTOResponse = new PatchRuoloDTOResponse();
 		
 		BasicBD bd = null;
@@ -130,8 +128,13 @@ public class RuoliDAO extends BaseDAO{
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA, bd);
 			
+			AclBD aclBD = new AclBD(bd);
+			AclFilter filter = aclBD.newFilter();
+			filter.setRuolo(patchDTO.getIdRuolo());
+			List<Acl> lst = aclBD.findAll(filter); 
+			
 			for(PatchOp op: patchDTO.getOp()) {
-				UtenzaPatchUtils.patchRuolo(op, patchDTO.getIdRuolo(), bd);
+				UtenzaPatchUtils.patchRuolo(op, patchDTO.getIdRuolo(), lst, bd);
 			}
 
 			return patchRuoloDTOResponse;

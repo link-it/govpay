@@ -255,9 +255,7 @@ public class TracciatiDAO extends BaseDAO{
 			return new PostTracciatoDTOResponse();
 
 			
-		} catch (ServiceException e) {
-			throw new GovPayException(e);
-		} catch (IOException e) {
+		} catch (ServiceException | IOException e) {
 			throw new GovPayException(e);
 		} catch (NotFoundException e) {
 			throw AclEngine.toNotAuthorizedException(postTracciatoDTO.getUser());

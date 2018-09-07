@@ -59,6 +59,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 MIT
 MIT
 
+@angular/platform-browser@5.2.8
+MIT
+MIT
+
 @angular/cdk@5.2.4
 MIT
 The MIT License
@@ -88,10 +92,6 @@ MIT
 MIT
 
 @angular/animations@5.2.8
-MIT
-MIT
-
-@angular/platform-browser@5.2.8
 MIT
 MIT
 

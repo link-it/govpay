@@ -135,6 +135,7 @@ export class RuoliViewComponent implements OnInit, IModalDialog {
     if(mb && mb.info.viewModel) {
       //Non è previsto l'edit di un ruolo
       let _json;
+      let _query = null;
       let _method = null;
       let _service = UtilService.URL_RUOLI+'/';
       switch(mb.info.templateName) {
@@ -153,7 +154,7 @@ export class RuoliViewComponent implements OnInit, IModalDialog {
           _json.acl.push(_tmpAuth);
           break;
       }
-      this.gps.saveData(_service, _json).subscribe(
+      this.gps.saveData(_service, _json, _query, _method).subscribe(
         () => {
           this.gps.updateSpinner(false);
           responseService.next(true);

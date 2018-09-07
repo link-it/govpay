@@ -139,7 +139,7 @@ public class AvvisaturaUtils {
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 		
 		gregorianCalendar.set(Calendar.YEAR, 9999);
-		gregorianCalendar.set(Calendar.MONTH, 12);
+		gregorianCalendar.set(Calendar.MONTH, 11);
 		gregorianCalendar.set(Calendar.DAY_OF_MONTH, 31);
 		gregorianCalendar.set(Calendar.HOUR, 23);
 		gregorianCalendar.set(Calendar.MINUTE, 59);

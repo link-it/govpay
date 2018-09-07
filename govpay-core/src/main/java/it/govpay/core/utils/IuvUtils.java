@@ -106,7 +106,7 @@ public class IuvUtils {
 		return iuvGenerato;
 	}
 	
-	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("ddMMyyyyHHmmSSsss");
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("ddMMyyyyHHmmSSsss");
 	
 	public static String buildCCP(){
 		 Date today = new Date();

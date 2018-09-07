@@ -26,11 +26,11 @@ public class Connettore extends Versionabile {
 	public static final String P_TIPOSSL_NAME = "TIPOSSL";
 	public static final String P_SSLKSTYPE_NAME = "SSLKSTYPE";
 	public static final String P_SSLKSLOCATION_NAME = "SSLKSLOCATION";
-	public static final String P_SSLKSPASSWD_NAME = "SSLKSPASSWD";
-	public static final String P_SSLPKEYPASSWD_NAME = "SSLPKEYPASSWD";
+	public static final String P_SSLKSPASS_WORD_NAME = "SSLKSPASSWD";
+	public static final String P_SSLPKEYPASS_WORD_NAME = "SSLPKEYPASSWD";
 	public static final String P_SSLTSTYPE_NAME = "SSLTSTYPE";
 	public static final String P_SSLTSLOCATION_NAME = "SSLTSLOCATION";
-	public static final String P_SSLTSPASSWD_NAME = "SSLTSPASSWD";
+	public static final String P_SSLTSPASS_WORD_NAME = "SSLTSPASSWD";
 	public static final String P_SSLTYPE_NAME = "SSLTYPE";
 	public static final String P_HTTPUSER_NAME = "HTTPUSER";
 	public static final String P_HTTPPASSW_NAME = "HTTPPASSW";

@@ -369,7 +369,9 @@ public class GpContext {
 	
 	public void log(String string, String...params) {
 		try {
-			this.getActiveLogger().log(string, params);
+			ILogger activeLogger = this.getActiveLogger();
+			if(activeLogger != null)
+				activeLogger.log(string, params);
 		} catch (Exception e) {
 			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione del diagnostico", e);
 		}
@@ -380,14 +382,16 @@ public class GpContext {
 			try {
 				l.log();
 			} catch (UtilsException e) {
-				e.printStackTrace();
+				LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione della transazione", e);
 			}
 		}
 	}
 	
 	public void log(Message m) {
 		try {
-			this.getActiveLogger().log(m);
+			ILogger activeLogger = this.getActiveLogger();
+			if(activeLogger != null)
+				activeLogger.log(m);
 		} catch (Exception e) {
 			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione della transazione", e);
 		}

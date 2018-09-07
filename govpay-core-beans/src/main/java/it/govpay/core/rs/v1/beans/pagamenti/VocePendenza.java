@@ -115,7 +115,6 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		public String getCodifica() {
 			switch (this) {
 			case IMPOSTA_DI_BOLLO:
-				return "01";
 			default:
 				return "01";
 			}
