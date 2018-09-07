@@ -11,6 +11,7 @@
 		<module>govpay-orm-beans</module>
 		<module>govpay-orm</module>
 		<module>govpay-core-beans</module>
+		<module>govpay-stampe-fonts-TitilliumWeb</module>
 		<module>govpay-stampe</module>
 		<module>govpay-core-rs</module>
 		<module>govpay-core</module>
