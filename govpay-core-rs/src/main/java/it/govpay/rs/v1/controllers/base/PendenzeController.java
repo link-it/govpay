@@ -267,8 +267,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			this.log.info(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
 
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
 
 			String fileName = null;
 			InputStream fileInputStream = null;
@@ -290,6 +288,12 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 					BaseRsService.copy(fileInputStream, baos);
 				}
 			}
+
+			if(fileInputStream == null) {
+				// salvo il json ricevuto
+				BaseRsService.copy(is, baos);
+			}
+
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
