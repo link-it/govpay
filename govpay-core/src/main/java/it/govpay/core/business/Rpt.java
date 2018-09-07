@@ -254,6 +254,8 @@ public class Rpt extends BasicBD{
 								descrizione = "[" + fb.getFaultCode() + "] " + fb.getFaultString();
 								descrizione = fb.getDescription() != null ? descrizione + ": " + fb.getDescription() : descrizione;
 							}
+							rpt.setStato(StatoRpt.RPT_RIFIUTATA_NODO);
+							rpt.setDescrizioneStato(descrizione);
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
 						}
 						
