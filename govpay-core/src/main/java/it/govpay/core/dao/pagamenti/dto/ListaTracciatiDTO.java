@@ -10,6 +10,7 @@ import it.govpay.model.IAutorizzato;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.Tracciato;
+import it.govpay.orm.constants.StatoTracciatoType;
 
 public class ListaTracciatiDTO extends BasicFindRequestDTO{
 
@@ -19,6 +20,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	private STATO_ELABORAZIONE statoTracciato = null;
 	private StatoTracciatoPendenza statoTracciatoPendenza = null;
 	private String idDominio;
+	private String dettaglioStato = null;
 	
 	public ListaTracciatiDTO(IAutorizzato user) {
 		super(user);
@@ -42,11 +44,49 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	}
 
 	public STATO_ELABORAZIONE getStatoTracciato() {
+		if(this.statoTracciatoPendenza != null) {
+			switch (this.statoTracciatoPendenza) {
+			case ESEGUITO:
+			case ESEGUITO_CON_ERRORI:
+				this.statoTracciato = STATO_ELABORAZIONE.COMPLETATO;
+				break;
+			case IN_ATTESA:
+			case IN_ELABORAZIONE:
+				this.statoTracciato = STATO_ELABORAZIONE.ELABORAZIONE;
+				break;
+			case SCARTATO:
+			default:
+				this.statoTracciato = STATO_ELABORAZIONE.SCARTATO;
+				break;
+			}
+		}
+		
 		return this.statoTracciato;
 	}
-
-	public void setStatoTracciato(STATO_ELABORAZIONE statoTracciato) {
-		this.statoTracciato = statoTracciato;
+	
+	public String getDettaglioStato() {
+		if(this.statoTracciatoPendenza != null) {
+			switch (this.statoTracciatoPendenza) {
+			case ESEGUITO:
+				this.dettaglioStato = StatoTracciatoType.CARICAMENTO_OK.getValue();
+				break;
+			case ESEGUITO_CON_ERRORI:
+				this.dettaglioStato =  StatoTracciatoType.CARICAMENTO_KO.getValue();
+				break;
+			case IN_ATTESA:
+				this.dettaglioStato = StatoTracciatoType.NUOVO.getValue();
+				break;
+			case IN_ELABORAZIONE:
+				this.dettaglioStato = StatoTracciatoType.IN_CARICAMENTO.getValue();
+				break;
+			case SCARTATO:
+			default:
+				this.dettaglioStato = null;
+				break;
+			}
+		}
+		
+		return dettaglioStato;
 	}
 
 	public StatoTracciatoPendenza getStatoTracciatoPendenza() {

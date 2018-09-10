@@ -200,6 +200,7 @@ public class TracciatiDAO extends BaseDAO{
 		filter.setLimit(listaTracciatiDTO.getLimit());
 		filter.setOperatore(listaTracciatiDTO.getOperatore());
 		filter.setStato(listaTracciatiDTO.getStatoTracciato()); 
+		filter.setDettaglioStato(listaTracciatiDTO.getDettaglioStato()); 
 		
 		List<FilterSortWrapper> filterSortList = new ArrayList<>();
 		FilterSortWrapper fsw = new FilterSortWrapper();

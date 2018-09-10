@@ -302,8 +302,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				Rpt oldrpt = rptBD.getRpt(codDominio, iuv, ccp);
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "RTP attivata in data " + oldrpt.getDataMsgRichiesta() + " [idMsgRichiesta: " + oldrpt.getCodMsgRichiesta() + "]");
 			} catch (NotFoundException e2) {
-				// L'RPT non esiste, procedo
-				rptBD.insertRpt(rpt);
+
 				
 				PagamentoPortale p = new PagamentoPortale();
 				p.setCodApplicazione(AnagraficaManager.getApplicazione(bd, rpt.getVersamento(bd).getIdApplicazione()).getCodApplicazione());
@@ -342,6 +341,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				PagamentiPortaleBD ppbd = new PagamentiPortaleBD(bd);
 				
 				ppbd.insertPagamento(p);
+				
+				// imposto l'id pagamento all'rpt
+				rpt.setIdPagamentoPortale(p.getId());
+				
+				// L'RPT non esiste, procedo
+				rptBD.insertRpt(rpt);
 
 				RptUtils.inviaRPTAsync(rpt, bd);
 			}

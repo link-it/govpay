@@ -39,6 +39,7 @@ public class TracciatoFilter extends AbstractFilter {
 	private String filenameRichiesta;
 	private List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo;
 	private it.govpay.model.Tracciato.STATO_ELABORAZIONE stato;
+	private String dettaglioStato;
 	private List<String> domini;
 	private String operatore;
 
@@ -84,7 +85,12 @@ public class TracciatoFilter extends AbstractFilter {
 			if(this.stato != null){
 				if(addAnd)
 					exp.and();
+				
 				exp.equals(Tracciato.model().STATO, this.stato.toString());
+				
+				if(this.getDettaglioStato() != null) {
+					exp.like(Tracciato.model().BEAN_DATI, this.dettaglioStato,LikeMode.ANYWHERE);
+				}
 				
 				addAnd = true;
 			}
@@ -145,6 +151,14 @@ public class TracciatoFilter extends AbstractFilter {
 
 	public void setOperatore(String operatore) {
 		this.operatore = operatore;
+	}
+
+	public String getDettaglioStato() {
+		return dettaglioStato;
+	}
+
+	public void setDettaglioStato(String dettaglioStato) {
+		this.dettaglioStato = dettaglioStato;
 	}
 
 
