@@ -38,7 +38,9 @@ CREATE TABLE tracciati
 	raw_esito BYTEA NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
+	id_operatore BIGINT,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 );
 

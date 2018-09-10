@@ -52,6 +52,7 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 		this.RAW_RICHIESTA = new Field("rawRichiesta",byte[].class,"Tracciato",Tracciato.class);
 		this.FILE_NAME_ESITO = new Field("fileNameEsito",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.RAW_ESITO = new Field("rawEsito",byte[].class,"Tracciato",Tracciato.class);
+		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new Field("idOperatore",it.govpay.orm.IdOperatore.class,"Tracciato",Tracciato.class));
 	
 	}
 	
@@ -70,6 +71,7 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 		this.RAW_RICHIESTA = new ComplexField(father,"rawRichiesta",byte[].class,"Tracciato",Tracciato.class);
 		this.FILE_NAME_ESITO = new ComplexField(father,"fileNameEsito",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.RAW_ESITO = new ComplexField(father,"rawEsito",byte[].class,"Tracciato",Tracciato.class);
+		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new ComplexField(father,"idOperatore",it.govpay.orm.IdOperatore.class,"Tracciato",Tracciato.class));
 	
 	}
 	
@@ -96,6 +98,8 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 	public IField FILE_NAME_ESITO = null;
 	 
 	public IField RAW_ESITO = null;
+	 
+	public it.govpay.orm.model.IdOperatoreModel ID_OPERATORE = null;
 	 
 
 	@Override

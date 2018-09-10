@@ -46,6 +46,7 @@ import java.io.Serializable;
  * 			&lt;element name="rawRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="fileNameEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="rawEsito" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -70,7 +71,8 @@ import java.io.Serializable;
   	"fileNameRichiesta",
   	"rawRichiesta",
   	"fileNameEsito",
-  	"rawEsito"
+  	"rawEsito",
+  	"idOperatore"
   }
 )
 
@@ -182,6 +184,14 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
     this.rawEsito = rawEsito;
   }
 
+  public IdOperatore getIdOperatore() {
+    return this.idOperatore;
+  }
+
+  public void setIdOperatore(IdOperatore idOperatore) {
+    this.idOperatore = idOperatore;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -246,5 +256,8 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="rawEsito",required=false,nillable=false)
   protected byte[] rawEsito;
+
+  @XmlElement(name="idOperatore",required=false,nillable=false)
+  protected IdOperatore idOperatore;
 
 }

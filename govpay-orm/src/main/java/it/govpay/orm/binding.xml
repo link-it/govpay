@@ -733,6 +733,7 @@
     <value name="rawRichiesta" field="rawRichiesta" usage="optional"/>
     <value name="fileNameEsito" field="fileNameEsito" usage="optional"/>
     <value name="rawEsito" field="rawEsito" usage="optional"/>
+    <structure name="idOperatore" field="idOperatore" usage="required" map-as="_IdOperatore_Type"/>
   </mapping>
   <mapping name="EsitoAvvisatura" class="it.govpay.orm.EsitoAvvisatura">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

@@ -144,6 +144,13 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 				return "raw_esito";
 			}
 		}
+		if(field.equals(Tracciato.model().ID_OPERATORE.PRINCIPAL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal";
+			}else{
+				return "principal";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -190,6 +197,9 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tracciato.model().RAW_ESITO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
+		if(field.equals(Tracciato.model().ID_OPERATORE.PRINCIPAL)){
+			return this.toTable(Tracciato.model().ID_OPERATORE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -205,6 +215,9 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Tracciato.model())){
 			return "tracciati";
+		}
+		if(model.equals(Tracciato.model().ID_OPERATORE)){
+			return "operatori";
 		}
 
 

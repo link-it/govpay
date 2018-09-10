@@ -483,7 +483,9 @@ CREATE TABLE tracciati
 	raw_esito BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_operatore NUMBER,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 );
 

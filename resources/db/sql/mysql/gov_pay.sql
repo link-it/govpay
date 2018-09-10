@@ -318,7 +318,9 @@ CREATE TABLE tracciati
 	raw_esito MEDIUMBLOB,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
+	id_operatore BIGINT,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 

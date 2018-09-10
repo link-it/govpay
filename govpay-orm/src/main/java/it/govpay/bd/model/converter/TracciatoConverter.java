@@ -3,6 +3,7 @@ package it.govpay.bd.model.converter;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
+import it.govpay.orm.IdOperatore;
 
 public class TracciatoConverter {
 
@@ -20,6 +21,11 @@ public class TracciatoConverter {
 		dto.setRawRichiesta(vo.getRawRichiesta());
 		dto.setFileNameEsito(vo.getFileNameEsito());
 		dto.setRawEsito(vo.getRawEsito());
+		if(dto.getIdOperatore() != null) {
+			IdOperatore idOperatore = new IdOperatore();
+			idOperatore.setId(dto.getIdOperatore());
+			vo.setIdOperatore(idOperatore);
+		}
 
 		return dto;
 	}
@@ -39,6 +45,10 @@ public class TracciatoConverter {
 		vo.setRawRichiesta(dto.getRawRichiesta());
 		vo.setFileNameEsito(dto.getFileNameEsito());
 		vo.setRawEsito(dto.getRawEsito());
+
+		if(vo.getIdOperatore() != null) {
+			dto.setIdOperatore(vo.getIdOperatore().getId());
+		}
 
 		return vo;
 	}
