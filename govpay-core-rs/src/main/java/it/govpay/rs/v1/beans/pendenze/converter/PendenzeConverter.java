@@ -8,18 +8,17 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.core.rs.v1.beans.pendenze.Avviso;
+import it.govpay.core.rs.v1.beans.pendenze.Avviso.StatoEnum;
 import it.govpay.core.rs.v1.beans.pendenze.Pendenza;
 import it.govpay.core.rs.v1.beans.pendenze.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.pendenze.RppIndex;
-import it.govpay.core.rs.v1.beans.pendenze.VocePendenza;
-import it.govpay.core.rs.v1.beans.pendenze.Avviso;
-import it.govpay.core.rs.v1.beans.pendenze.Avviso.StatoEnum;
 import it.govpay.core.rs.v1.beans.pendenze.StatoPendenza;
 import it.govpay.core.rs.v1.beans.pendenze.TassonomiaAvviso;
 import it.govpay.core.rs.v1.beans.pendenze.TipoContabilita;
+import it.govpay.core.rs.v1.beans.pendenze.VocePendenza;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {

@@ -147,7 +147,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   }
   
   @Override
-public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
+public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
 		vf.getValidator("idTracciato", this.idTracciato).notNull();

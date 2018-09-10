@@ -88,6 +88,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
+			tracciato.getOperatore(bd);
 			return tracciato;
 
 		} catch (NotFoundException e) {
@@ -116,6 +117,7 @@ public class TracciatiDAO extends BaseDAO{
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
+			tracciato.getOperatore(bd);
 			byte[] rawRichiesta = tracciato.getRawRichiesta();
 			if(rawRichiesta == null)
 				throw new NotFoundException("File di richiesta non salvato");
@@ -147,6 +149,7 @@ public class TracciatiDAO extends BaseDAO{
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
+			tracciato.getOperatore(bd);
 			byte[] rawEsito = tracciato.getRawEsito();
 			if(rawEsito == null)
 				throw new NotFoundException("File di esito non salvato");
@@ -211,7 +214,16 @@ public class TracciatiDAO extends BaseDAO{
 
 		List<Tracciato> resList = new ArrayList<>();
 		if(count > 0) {
-			resList = tracciatoBD.findAll(filter);
+			List<Tracciato> resListTmp = new ArrayList<>();
+			
+			resListTmp = tracciatoBD.findAll(filter);
+			
+			if(!resListTmp.isEmpty()) {
+				for (Tracciato tracciato : resListTmp) {
+					tracciato.getOperatore(bd);
+					resList.add(tracciato);
+				}
+			}
 		} 
 
 		return new ListaTracciatiDTOResponse(count, resList);
@@ -234,7 +246,6 @@ public class TracciatiDAO extends BaseDAO{
 			
 			Operatore operatoreFromUser = this.getOperatoreFromUser(postTracciatoDTO.getUser(),bd);
 			it.govpay.core.beans.tracciati.Pendenza beanDati = new Pendenza();
-			beanDati.setOperatore(operatoreFromUser.getPrincipal());
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
 			
 			Tracciato tracciato = new Tracciato();
@@ -247,6 +258,7 @@ public class TracciatiDAO extends BaseDAO{
 			tracciato.setIdOperatore(operatoreFromUser.getId());
 			tracciato.setTipo(TIPO_TRACCIATO.PENDENZA);
 			tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+			tracciato.setIdOperatore(operatoreFromUser.getId()); 
 			
 			tracciatoBD.insertTracciato(tracciato);
 			

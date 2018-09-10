@@ -2,7 +2,7 @@ package it.govpay.core.utils.validator;
 
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ValidationException;
+import org.openspcoop2.utils.json.ValidationException;
 
 public class ObjectListValidator {
 

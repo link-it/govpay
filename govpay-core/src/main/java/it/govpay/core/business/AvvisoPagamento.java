@@ -140,9 +140,7 @@ public class AvvisoPagamento extends BasicBD {
 				input.setEntePartner(intermediario.getDenominazione());
 		}
 
-		it.govpay.core.business.model.Iuv iuvGenerato = 
-				IuvUtils.toIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), 
-						versamento.getIuv(this), versamento.getImportoTotale());
+		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
 
 		if(versamento.getCausaleVersamento() != null) {
 			try {

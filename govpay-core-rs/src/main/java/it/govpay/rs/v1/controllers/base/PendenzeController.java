@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -19,7 +20,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.mime.MimeMultipart;
-import org.openspcoop2.utils.transport.http.ContentTypeUtilities;
+import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.Operazione;
@@ -64,6 +65,7 @@ import it.govpay.core.rs.v1.beans.base.TracciatoPendenzePost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
@@ -73,9 +75,15 @@ import it.govpay.rs.v1.beans.converter.TracciatiConverter;
 
 
 public class PendenzeController extends it.govpay.rs.BaseController {
+	
+	private SerializationConfig serializationConfig  = null;
 
 	public PendenzeController(String nomeServizio,Logger log) {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
+		
+		this.serializationConfig = new SerializationConfig();
+		this.serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 	}
 
 	public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
@@ -273,7 +281,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			try{
 			// controllo se sono in una richiesta multipart
 			if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
-
 				javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
 				this.log.info(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
 
@@ -380,9 +387,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			ListaTracciatiPendenza response = new ListaTracciatiPendenza(results, this.getServicePath(uriInfo),
 					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null,this.serializationConfig), 200);
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -417,8 +424,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 				throw new NonTrovataException("Tracciato di Esito non presente: elaborazione ancora in corso");
 
 			TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
+			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), 200);
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null,this.serializationConfig)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -449,7 +457,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
 
 			TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
-			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null)),transactionId).build();
+			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), 200);
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null,this.serializationConfig)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -499,9 +509,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			ListaOperazioniPendenza response = new ListaOperazioniPendenza(results, this.getServicePath(uriInfo),
 					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null,this.serializationConfig), 200);
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

@@ -2,7 +2,7 @@ package it.govpay.core.rs.v1.beans.pagamenti;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ValidationException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

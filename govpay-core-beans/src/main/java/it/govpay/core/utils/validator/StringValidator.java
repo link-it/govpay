@@ -3,7 +3,7 @@ package it.govpay.core.utils.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openspcoop2.generic_project.exception.ValidationException;
+import org.openspcoop2.utils.json.ValidationException;
 
 public class StringValidator {
 

@@ -17,7 +17,6 @@ public class Pendenza {
 	private Date dataUltimoAggiornamento;
 	private String stepElaborazione;
 	private String descrizioneStepElaborazione;
-	private String operatore;
 	
 	public String getStepElaborazione() {
 		return this.stepElaborazione;
@@ -36,12 +35,6 @@ public class Pendenza {
 	}
 	public void setDataUltimoAggiornamento(Date dataUltimoAggiornamento) {
 		this.dataUltimoAggiornamento = dataUltimoAggiornamento;
-	}
-	public String getOperatore() {
-		return this.operatore;
-	}
-	public void setOperatore(String operatore) {
-		this.operatore = operatore;
 	}
 	public long getNumAddTotali() {
 		return this.numAddTotali;

@@ -639,8 +639,6 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		// Object _operatore
 		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
 		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA));
-
-		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA));
 		sqlQueryObjectGet.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ID_UTENZA.PRINCIPAL,true));
 
 		sqlQueryObjectGet.setANDLogicOperator(true);

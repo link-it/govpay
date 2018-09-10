@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.exception.ValidationException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;

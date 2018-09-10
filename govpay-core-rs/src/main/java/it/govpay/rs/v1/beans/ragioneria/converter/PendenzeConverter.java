@@ -6,12 +6,11 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.core.rs.v1.beans.ragioneria.TipoContabilita;
 import it.govpay.core.rs.v1.beans.ragioneria.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.ragioneria.StatoPendenza;
 import it.govpay.core.rs.v1.beans.ragioneria.TassonomiaAvviso;
+import it.govpay.core.rs.v1.beans.ragioneria.TipoContabilita;
 import it.govpay.core.rs.v1.beans.ragioneria.VocePendenza;
 import it.govpay.rs.v1.controllers.ragioneria.AnagraficaConverter;
 import it.govpay.rs.v1.controllers.ragioneria.UnitaOperativaConverter;

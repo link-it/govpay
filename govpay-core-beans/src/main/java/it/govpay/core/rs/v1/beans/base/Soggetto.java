@@ -337,7 +337,7 @@ public class Soggetto extends it.govpay.core.rs.v1.beans.JSONSerializable implem
   }
   
   @Override
-public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
+public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		 ValidatorFactory vf = ValidatorFactory.newInstance();
 		 vf.getValidator("tipo", this.tipo).notNull();
 		 vf.getValidator("identificativo", this.identificativo).notNull().minLength(1).maxLength(35);

@@ -126,7 +126,7 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
   }
   
   @Override
-	public void validate() throws org.openspcoop2.generic_project.exception.ValidationException {
+	public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
 		vf.getValidator("idA2A", this.idA2A).notNull().minLength(1).maxLength(35);
