@@ -71,11 +71,27 @@ public class Operazioni{
 	
 	@Schedule(hour="*", persistent=false)
     public static String avvisaturaDigitale(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		
+		if(!GovpayConfig.getInstance().isBatchAvvisaturaDigitale()) {
+			return "Batch Avvisatura Digitale non attivo";
+		}
+		
 		return it.govpay.core.business.Operazioni.avvisaturaDigitale("Batch");
 	}
 	
 	@Schedule(hour="*", persistent=false)
     public static String esitoAvvisaturaDigitale(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		
+		if(!GovpayConfig.getInstance().isBatchAvvisaturaDigitale()) {
+			return "Batch Avvisatura Digitale non attivo";
+		}
+		
 		return it.govpay.core.business.Operazioni.esitoAvvisaturaDigitale("Batch");
 	}
 	
@@ -84,6 +100,10 @@ public class Operazioni{
 	public static String elaborazioneTracciati(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
+		}
+		
+		if(!GovpayConfig.getInstance().isBatchAvvisiPagamento()) {
+			return "Batch Elaborazione Tracciati non attivo";
 		}
 
 		if(!it.govpay.core.business.Operazioni.getEseguiElaborazioneTracciati()) {
@@ -101,6 +121,11 @@ public class Operazioni{
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
 		}
+		
+		if(!GovpayConfig.getInstance().isBatchAvvisiPagamento()) {
+			return "Batch Elaborazione Tracciati non attivo";
+		}
+		
 		return it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
 	}
 

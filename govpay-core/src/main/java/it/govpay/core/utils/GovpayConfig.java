@@ -80,6 +80,8 @@ public class GovpayConfig {
 	private long timeoutBatch;
 
 	private boolean batchAvvisiPagamento;
+	private boolean batchAvvisaturaDigitale;
+	private boolean batchCaricamentoTracciati;
 
 	private Properties[] props;
 	private IConservazione conservazionePlugin;
@@ -110,6 +112,8 @@ public class GovpayConfig {
 		this.pddAuthEnable = true;
 		this.validazioneAPIRest = false;
 		this.dumpAPIRestGETResponse = false;
+		this.batchAvvisaturaDigitale = false;
+		this.batchCaricamentoTracciati = false;
 
 		try {
 
@@ -302,6 +306,14 @@ public class GovpayConfig {
 			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
 				this.batchAvvisiPagamento = true;
 			
+			String batchAvvisaturaDigitaleString = getProperty("it.govpay.batch.avvisaturaDigitale.enabled", this.props, false, log);
+			if(batchAvvisaturaDigitaleString != null && Boolean.valueOf(batchAvvisaturaDigitaleString))
+				this.batchAvvisaturaDigitale = true;
+			
+			String batchCaricamentoTracciatiString = getProperty("it.govpay.batch.caricamentoTracciati.enabled", this.props, false, log);
+			if(batchCaricamentoTracciatiString != null && Boolean.valueOf(batchCaricamentoTracciatiString))
+				this.batchCaricamentoTracciati = true;
+			
 			String validazioneAPIRestString = getProperty("it.govpay.rs.validazione.enabled", this.props, false, log);
 			if(validazioneAPIRestString != null && Boolean.valueOf(validazioneAPIRestString))
 				this.validazioneAPIRest = true;
@@ -471,4 +483,13 @@ public class GovpayConfig {
 	public Integer getCacheLogo() {
 		return 2 * 60 * 60;
 	}
+
+	public boolean isBatchAvvisaturaDigitale() {
+		return batchAvvisaturaDigitale;
+	}
+
+	public boolean isBatchCaricamentoTracciati() {
+		return batchCaricamentoTracciati;
+	}
+	
 }
