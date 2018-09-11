@@ -8,7 +8,7 @@ INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Re
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Pagamenti e Pendenze','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Giornale degli Eventi','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Configurazione e manutenzione','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Statistiche','RWX');
+--INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Statistiche','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Anagrafica PagoPA','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Anagrafica Ruoli','RWX');
 -- Censimento del ruolo amministratore
@@ -19,7 +19,7 @@ INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Pagamenti e Pendenze','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Giornale degli Eventi','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Configurazione e manutenzione','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Statistiche','RWX');
+--INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Statistiche','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica PagoPA','RWX');
 INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Ruoli','RWX');
 
