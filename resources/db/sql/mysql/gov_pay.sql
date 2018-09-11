@@ -625,7 +625,7 @@ CREATE TABLE iuv
 	prg BIGINT NOT NULL,
 	iuv VARCHAR(35) NOT NULL,
 	application_code INT NOT NULL,
-	data_generazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	data_generazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	tipo_iuv VARCHAR(1) NOT NULL,
 	cod_versamento_ente VARCHAR(35),
 	aux_digit INT NOT NULL DEFAULT 0,
@@ -661,7 +661,7 @@ CREATE TABLE fr
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_regolamento TIMESTAMP(3),
-	data_acquisizione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	numero_pagamenti BIGINT,
 	importo_totale_pagamenti DOUBLE,
 	cod_bic_riversamento VARCHAR(35),
@@ -685,8 +685,8 @@ CREATE TABLE incassi
 	cod_dominio VARCHAR(35) NOT NULL,
 	causale VARCHAR(512) NOT NULL,
 	importo DOUBLE NOT NULL,
-	data_valuta TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-	data_contabile TIMESTAMP DEFAULT  CURRENT_TIMESTAMP(3),
+	data_valuta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
+	data_contabile TIMESTAMP(3) DEFAULT  CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3),
 	nome_dispositivo VARCHAR(512),
