@@ -51,7 +51,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setOffset(listaRendicontazioniDTO.getOffset());
 			filter.setLimit(listaRendicontazioniDTO.getLimit());
 			if(listaRendicontazioniDTO.getIdDominio() != null) {
-				listaDominiFiltro.add(listaRendicontazioniDTO.getIdDominio());
+				filter.setCodDominioFiltro(listaRendicontazioniDTO.getIdDominio());
 			}
 			if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
 				filter.setCodDominio(listaDominiFiltro);

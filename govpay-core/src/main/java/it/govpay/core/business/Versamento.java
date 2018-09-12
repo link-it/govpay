@@ -179,11 +179,11 @@ public class Versamento extends BasicBD {
 			throw new NotAuthorizedException("Applicazione ["+caricaVersamentoDTO.getApplicazione().getCodApplicazione()+"] non autorizzata a caricare il Versamento ["+caricaVersamentoDTO.getVersamento().getCodVersamentoEnte()+"]");
 		}
 		
-		
-		if(caricaVersamentoDTO.getOperatore() != null && 
-				!AclEngine.isAuthorized(caricaVersamentoDTO.getOperatore().getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null, Arrays.asList(Diritti.SCRITTURA,Diritti.ESECUZIONE))){
-			throw new NotAuthorizedException("Operatore chiamante [" + caricaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio());
-		}
+		// Il controllo sul dominio disponibile per l'operatore riferito delle pendenze del tracciato e' gia' stato fatto durante l'operazione di caricamento tracciato.
+//		if(caricaVersamentoDTO.getOperatore() != null && 
+//				!AclEngine.isAuthorized(caricaVersamentoDTO.getOperatore().getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null, Arrays.asList(Diritti.SCRITTURA,Diritti.ESECUZIONE))){
+//			throw new NotAuthorizedException("Operatore chiamante [" + caricaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio());
+//		}
 		
 		it.govpay.bd.model.Versamento versamento = caricaVersamentoDTO.getVersamento();
 		boolean generaIuv = caricaVersamentoDTO.isGeneraIuv();
@@ -279,10 +279,11 @@ public class Versamento extends BasicBD {
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
 			
-				if(annullaVersamentoDTO.getOperatore() != null && 
-						!AclEngine.isAuthorized(annullaVersamentoDTO.getOperatore().getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamentoLetto.getUo(this).getDominio(this).getCodDominio(), null, Arrays.asList(Diritti.SCRITTURA,Diritti.ESECUZIONE))){
-					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
-				}
+				// Il controllo sul dominio disponibile per l'operatore riferito delle pendenze del tracciato e' gia' stato fatto durante l'operazione di caricamento tracciato.
+//				if(annullaVersamentoDTO.getOperatore() != null && 
+//						!AclEngine.isAuthorized(annullaVersamentoDTO.getOperatore().getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamentoLetto.getUo(this).getDominio(this).getCodDominio(), null, Arrays.asList(Diritti.SCRITTURA,Diritti.ESECUZIONE))){
+//					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
+//				}
 				// Se è già annullato non devo far nulla.
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") gia' annullato. Aggiornamento non necessario.");

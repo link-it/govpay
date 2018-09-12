@@ -23,6 +23,13 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 
 public class AclDAO extends BaseDAO{
+	
+	public ListaAclDTOResponse leggiAclRuoloRegistratoSistema(String ruolo) throws ServiceException {
+		ListaAclDTO listaAclDTO = new ListaAclDTO(null);
+		listaAclDTO.setForceRuolo(true);
+		listaAclDTO.setRuolo(ruolo);
+		return this._listaAcl(listaAclDTO);
+	}
 
 	public ListaAclDTOResponse leggiAclRuoloRegistrateSistema() throws ServiceException {
 		ListaAclDTO listaAclDTO = new ListaAclDTO(null);

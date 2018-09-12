@@ -12,6 +12,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
+import it.govpay.core.cache.AclCache;
 import it.govpay.core.dao.pagamenti.RuoliDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTOResponse;
@@ -177,6 +178,9 @@ public class RuoliController extends BaseController {
 			RuoliDAO ruoliDAO = new RuoliDAO();
 			ruoliDAO.patch(ruoloPatchDTO);
 			
+			// reload ruolo nella cache
+			AclCache.getInstance().reloadRuolo(idRuolo); 
+			
 			LeggiRuoloDTO leggiRuoliDTO = new LeggiRuoloDTO(user);
 			leggiRuoliDTO.setRuolo(idRuolo);
 			LeggiRuoloDTOResponse leggiRuoloDTOResponse = ruoliDAO.leggiRuoli(leggiRuoliDTO);
@@ -220,6 +224,11 @@ public class RuoliController extends BaseController {
 			RuoliDAO applicazioniDAO = new RuoliDAO();
 			
 			PutRuoloDTOResponse putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putRuoloDTO);
+			
+			if(!putApplicazioneDTOResponse.isCreated()) {
+				// 	reload ruolo nella cache
+				AclCache.getInstance().reloadRuolo(idRuolo);
+			}
 			
 			Status responseStatus = putApplicazioneDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			

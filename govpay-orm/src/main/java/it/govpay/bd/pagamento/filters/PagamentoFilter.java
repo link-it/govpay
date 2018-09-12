@@ -48,6 +48,7 @@ public class PagamentoFilter extends AbstractFilter {
 	private Long idRr;
 	private Long idRpt;
 	private List<String> idDomini;
+	private String codDominio;
 	private Date dataInizio;
 	private Date dataFine;
 	private Date dataPagamentoRitardoIncasso;
@@ -137,6 +138,13 @@ public class PagamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(Pagamento.model().COD_DOMINIO, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(Pagamento.model().COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
 
@@ -399,6 +407,14 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setTipo(TIPO_PAGAMENTO tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
 
 }

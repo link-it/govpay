@@ -1,5 +1,6 @@
 package it.govpay.bd.pagamento.filters;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 public class EventiFilter extends AbstractFilter{
 	
 	private String codDominio= null;
+	private List<String> codDomini;
 	private String iuv;
 	private String ccp;
 	private Long idApplicazione;
@@ -52,6 +54,16 @@ public class EventiFilter extends AbstractFilter{
 				newExpression.equals(Evento.model().COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
+			
+			if(this.codDomini != null){
+				this.codDomini.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.in(Evento.model().COD_DOMINIO, this.codDomini);
+				addAnd = true;
+			}
+
 			
 			if(this.iuv != null && StringUtils.isNotEmpty(this.iuv)) {
 				if(addAnd)
@@ -174,6 +186,14 @@ public class EventiFilter extends AbstractFilter{
 
 	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
+	}
+
+	public List<String> getCodDomini() {
+		return codDomini;
+	}
+
+	public void setCodDomini(List<String> codDomini) {
+		this.codDomini = codDomini;
 	}
 
 	

@@ -51,7 +51,7 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setOffset(listaRiscossioniDTO.getOffset());
 			filter.setLimit(listaRiscossioniDTO.getLimit());
 			if(listaRiscossioniDTO.getIdDominio() != null) {
-				listaDominiFiltro.add(listaRiscossioniDTO.getIdDominio());
+				filter.setCodDominio(listaRiscossioniDTO.getIdDominio());
 			}
 			if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
 				filter.setIdDomini(listaDominiFiltro);

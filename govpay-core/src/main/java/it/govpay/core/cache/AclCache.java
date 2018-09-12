@@ -123,4 +123,39 @@ public class AclCache {
 	public List<Acl> getAclsRuolo(String key){
 		return this.mapAclsRuoli.get(key);
 	}
+	
+	public void reloadRuolo(String ruolo) {
+		AclDAO aclDAO = new AclDAO();
+		
+		try {
+			this.log.info("Aggiornamento della entry in cache per il Ruolo ["+ruolo+"] in corso... "); 
+			ListaAclDTOResponse leggiAclRuoloRegistrateSistema = aclDAO.leggiAclRuoloRegistratoSistema(ruolo);
+			
+			// reset della entry
+			this.mapAclsRuoli.remove(ruolo);
+			this.mapAclsRuoli.put(ruolo,new ArrayList<>());
+			
+			this.log.info("Aggiornamento della entry in cache per il Ruolo ["+ruolo+"]  trovate ["+leggiAclRuoloRegistrateSistema.getTotalResults()+"] Acl.");
+			List<Acl> results = leggiAclRuoloRegistrateSistema.getResults();
+			if (results != null && results.size() >0) {
+				for (Acl acl : results) {
+					List<Acl> listaAclI = null;
+					
+					String ruoloTmp = acl.getRuolo();
+					if(this.mapAclsRuoli.containsKey(ruoloTmp)) {
+						listaAclI = this.mapAclsRuoli.remove(ruoloTmp);
+					} else {
+						listaAclI = new ArrayList<>();
+					}
+				
+					listaAclI.add(acl);
+					this.mapAclsRuoli.put(ruoloTmp,listaAclI);
+				}
+			}
+			
+			this.log.info("Aggiornamento della entry in cache per il Ruolo ["+ruolo+"] completato"); 
+		} catch (ServiceException e) {
+			this.log.error("Aggiornamento della entry in cache per il Ruolo ["+ruolo+"] completato con errori: " + e.getMessage(),e); 
+		}
+	}
 }
