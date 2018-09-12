@@ -196,21 +196,39 @@ public class OperatoriBD extends BasicBD {
 	 */
 	public void updateOperatore(Operatore operatore) throws NotFoundException, ServiceException {
 		try {
+			
+			UtenzeBD utenzeBD = new UtenzeBD(this);
+			// autocommit false		
+			this.setAutoCommit(false);
+			
+			if(!utenzeBD.exists(operatore.getUtenza())) {
+				utenzeBD.insertUtenza(operatore.getUtenza());
+			} else {
+				try {
+					utenzeBD.updateUtenza(operatore.getUtenza());
+				} catch(NotFoundException e) {
+					throw new ServiceException(e);
+				}
+			}
+			operatore.setIdUtenza(operatore.getUtenza().getId());
 
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
 			IdOperatore idOperatore = this.getOperatoreService().convertToId(vo);
 			if(!this.getOperatoreService().exists(idOperatore)) {
 				throw new NotFoundException("Operatore con id ["+idOperatore.toJson()+"] non trovato");
 			}
+			
 			this.getOperatoreService().update(idOperatore, vo);
 			operatore.setId(vo.getId());
+			
 			this.emitAudit(operatore);
-		} catch (NotImplementedException e) {
+			this.commit();
+		} catch (NotImplementedException | MultipleResultException | UtilsException e) {
+			this.rollback();
 			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
+		} finally {
+			// ripristino l'autocommit.
+			this.setAutoCommit(true); 
 		}
 	}
 
@@ -265,11 +283,7 @@ public class OperatoriBD extends BasicBD {
 				lst.add(this.getOperatore(operatoreVO));
 			}
 			return lst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | NotFoundException | MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
