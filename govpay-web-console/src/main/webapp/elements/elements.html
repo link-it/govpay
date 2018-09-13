@@ -36633,8 +36633,12 @@ Polymer.AppLocalizeBehavior = {
       },
 
       _onTapAdvSearch: function(){
-        var _lsv = this.querySelector('link-search-view');
-        _lsv.toggleAdvancedSearch(!_lsv.advSearch);
+        var _lsv = this.querySelectorAll('link-search-view');
+        _lsv.forEach(function(view) {
+          if(!view._showAdvancedSearch(view.numResults, view.obj)) {
+            view.toggleAdvancedSearch(!view.advSearch);
+          }
+        });
       },
 
       classeValore: function(voce){
@@ -41189,7 +41193,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         },
 
         setResponse: function(_response){
-          this.buildForm(_response.infoRicerca, this.$.filterForm);
+          if(this._viewChanged || (this.$.filterForm && this.$.filterForm.children.length == 0)) {
+            this._viewChanged = false;
+            this.buildForm(_response.infoRicerca, this.$.filterForm);
+          }
 
           this._hideChart = false;
           this._hideDatepicker = !_response.attivaDate;

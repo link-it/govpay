@@ -54,6 +54,7 @@ public class Tributo extends TipoTributo {
 	private long idTipoTributo;
 	private long idDominio;
 	private Long idIbanAccredito;
+	private Long idIbanAppoggio;
 	private boolean abilitato;
 	private TipoContabilta tipoContabilitaCustom;
 	private String codContabilitaCustom;
@@ -101,5 +102,11 @@ public class Tributo extends TipoTributo {
 	}
 	public void setCodTributoIuvCustom(String codTributoIuv) {
 		this.codTributoIuvCustom = codTributoIuv;
+	}
+	public Long getIdIbanAppoggio() {
+		return idIbanAppoggio;
+	}
+	public void setIdIbanAppoggio(Long idIbanAppoggio) {
+		this.idIbanAppoggio = idIbanAppoggio;
 	}
 }

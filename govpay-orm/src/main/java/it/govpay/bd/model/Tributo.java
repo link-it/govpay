@@ -55,6 +55,8 @@ public class Tributo extends it.govpay.model.Tributo {
 	public boolean isCodContabilitaCustom(){return getCodContabilitaCustom() != null;}
 	public boolean isCodTributoIuvCustom(){return getCodTributoIuvCustom() != null;}
 	
+	private transient IbanAccredito ibanAccredito;
+	
 	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
 		if(ibanAccredito == null && this.getIdIbanAccredito() != null) {
 			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
@@ -64,7 +66,17 @@ public class Tributo extends it.govpay.model.Tributo {
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
 	}
+	
+	private transient IbanAccredito ibanAppoggio;
+	public IbanAccredito getIbanAppoggio(BasicBD bd) throws ServiceException {
+		if(ibanAppoggio == null && this.getIdIbanAppoggio() != null) {
+			ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAppoggio());
+		}
+		return ibanAppoggio;
+	}
+	public void setIbanAccreditoPostale(IbanAccredito ibanAccreditoPostale) {
+		this.ibanAppoggio = ibanAccreditoPostale;
+	}
 
-	private transient IbanAccredito ibanAccredito;
 	
 }

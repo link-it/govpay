@@ -80,9 +80,9 @@ public class SingoloVersamentoConverter {
 		}
 		
 		if(dto.getIdIbanAppoggio() != null) {
-			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
-			idIbanAccredito.setId(dto.getIdIbanAppoggio());
-			vo.setIdIbanAppoggio(idIbanAccredito);
+			IdIbanAccredito idIbanAppoggio = new IdIbanAccredito();
+			idIbanAppoggio.setId(dto.getIdIbanAppoggio());
+			vo.setIdIbanAppoggio(idIbanAppoggio);
 		}
 		
 		if(dto.getIdTributo() != null) {

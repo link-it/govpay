@@ -179,6 +179,14 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   public void setIdIbanAccredito(IdIbanAccredito idIbanAccredito) {
     this.idIbanAccredito = idIbanAccredito;
   }
+  
+  public IdIbanAccredito getIdIbanAppoggio() {
+    return this.idIbanAppoggio;
+  }
+
+  public void setIdIbanAppoggio(IdIbanAccredito idIbanAppoggio) {
+    this.idIbanAppoggio = idIbanAppoggio;
+  }
 
   public IdIbanAccredito getIdIbanAppoggio() {
     return this.idIbanAppoggio;
@@ -267,6 +275,9 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
 
   @XmlElement(name="idIbanAccredito",required=false,nillable=false)
   protected IdIbanAccredito idIbanAccredito;
+  
+  @XmlElement(name="idIbanAppoggio",required=false,nillable=false)
+  protected IdIbanAccredito idIbanAppoggio;
 
   @XmlElement(name="idIbanAppoggio",required=false,nillable=false)
   protected IdIbanAccredito idIbanAppoggio;

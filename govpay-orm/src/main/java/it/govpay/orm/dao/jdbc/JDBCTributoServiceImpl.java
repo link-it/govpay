@@ -104,6 +104,23 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			}
 		}
 
+		// Object _ibanAccreditoInstance2
+		Long id_ibanAccreditoInstance2 = null;
+		it.govpay.orm.IdIbanAccredito idLogic_ibanAccreditoInstance2 = null;
+		idLogic_ibanAccreditoInstance2 = tributo.getIdIbanAccreditoPostale();
+		if(idLogic_ibanAccreditoInstance2!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_ibanAccreditoInstance2 = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findTableId(idLogic_ibanAccreditoInstance2, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_ibanAccreditoInstance2 = idLogic_ibanAccreditoInstance2.getId();
+				if(id_ibanAccreditoInstance2==null || id_ibanAccreditoInstance2<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 		// Object _tipoTributo
 		Long id_tipoTributo = null;
 		it.govpay.orm.IdTipoTributo idLogic_tipoTributo = new it.govpay.orm.IdTipoTributo();
@@ -131,6 +148,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_iban_accredito","?");
+		sqlQueryObjectInsert.addInsertField("id_iban_accredito_postale","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
 
 		// Insert tributo
@@ -142,6 +160,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodTributoIuv(),Tributo.model().COD_TRIBUTO_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccredito,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccreditoInstance2,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoTributo,Long.class)
 		);
 		tributo.setId(id);
@@ -223,6 +242,22 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			}
 		}
 
+		// Object _tributo_ibanAccreditoInstance2
+		Long id_tributo_ibanAccreditoInstance2 = null;
+		it.govpay.orm.IdIbanAccredito idLogic_tributo_ibanAccreditoInstance2 = null;
+		idLogic_tributo_ibanAccreditoInstance2 = tributo.getIdIbanAccreditoPostale();
+		if(idLogic_tributo_ibanAccreditoInstance2!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_tributo_ibanAccreditoInstance2 = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findTableId(idLogic_tributo_ibanAccreditoInstance2, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_tributo_ibanAccreditoInstance2 = idLogic_tributo_ibanAccreditoInstance2.getId();
+				if(id_tributo_ibanAccreditoInstance2==null || id_tributo_ibanAccreditoInstance2<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 		// Object _tributo_tipoTributo
 		Long id_tributo_tipoTributo = null;
 		it.govpay.orm.IdTipoTributo idLogic_tributo_tipoTributo = new it.govpay.orm.IdTipoTributo();
@@ -275,6 +310,9 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_iban_accredito","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_iban_accredito_postale","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_tributo","?");
 		}
 		if(setIdMappingResolutionBehaviour){
@@ -282,6 +320,9 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_tributo.add(new JDBCObject(id_tributo_ibanAccredito, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_tributo.add(new JDBCObject(id_tributo_ibanAccreditoInstance2, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_tributo.add(new JDBCObject(id_tributo_tipoTributo, Long.class));

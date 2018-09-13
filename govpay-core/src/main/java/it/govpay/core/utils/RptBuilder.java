@@ -302,10 +302,13 @@ public class RptBuilder {
 		
 		if(singoloVersamento.getIbanAccredito(bd) != null) {
 			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
-			datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBicAccredito()));
-			datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
-			datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
 			datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
+			datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBic()));
+			
+			if(singoloVersamento.getIbanAppoggio(bd) != null) {
+				datiSingoloVersamento.setIbanAppoggio(getNotEmpty(singoloVersamento.getIbanAccredito(bd).getCodIban()));
+				datiSingoloVersamento.setBicAppoggio(getNotEmpty(singoloVersamento.getIbanAppoggio(bd).getCodBic()));
+			}
 		} else {
 			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
 			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
