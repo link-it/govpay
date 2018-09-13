@@ -52,6 +52,8 @@ public class TributoConverter {
 		dto.setIdTipoTributo(vo.getTipoTributo().getId()); 
 		if(vo.getIdIbanAccredito() != null)
 			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
+		if(vo.getIdIbanAccreditoPostale() != null)
+			dto.setIdIbanAppoggio(vo.getIdIbanAccreditoPostale().getId());
 		
 		if(vo.getTipoContabilita() != null)
 			dto.setTipoContabilitaCustom(TipoContabilta.toEnum(vo.getTipoContabilita()));
@@ -97,6 +99,12 @@ public class TributoConverter {
 			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
 			idIbanAccredito.setId(dto.getIdIbanAccredito());
 			vo.setIdIbanAccredito(idIbanAccredito);
+		}
+		
+		if(dto.getIdIbanAppoggio() != null) {
+			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
+			idIbanAccredito.setId(dto.getIdIbanAppoggio());
+			vo.setIdIbanAccreditoPostale(idIbanAccredito);
 		}
 		
 		return vo;

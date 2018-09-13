@@ -247,12 +247,14 @@ CREATE TABLE tributi
 	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	id_iban_accredito BIGINT,
+	id_iban_accredito_postale BIGINT,
 	id_tipo_tributo BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trb_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_trb_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_trb_id_iban_accredito_postale FOREIGN KEY (id_iban_accredito_postale) REFERENCES iban_accredito(id),
 	CONSTRAINT fk_trb_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
 );

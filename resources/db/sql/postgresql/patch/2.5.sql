@@ -21,4 +21,3 @@ SET
 
 ALTER TABLE rpt DROP COLUMN id_canale;
 ALTER TABLE rpt DROP COLUMN firma_ricevuta;
-

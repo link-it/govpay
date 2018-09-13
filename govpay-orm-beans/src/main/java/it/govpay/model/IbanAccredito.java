@@ -25,9 +25,7 @@ public class IbanAccredito extends BasicModel {
 
 	private Long id; 
 	private String codIban;
-	private String codBicAccredito;
-	private String codIbanAppoggio;
-	private String codBicAppoggio;
+	private String codBic;
 	private String idSellerBank;
 	private String idNegozio;
 	private boolean postale;
@@ -77,23 +75,11 @@ public class IbanAccredito extends BasicModel {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getCodBicAccredito() {
-		return codBicAccredito;
+	public String getCodBic() {
+		return this.codBic;
 	}
-	public void setCodBicAccredito(String codBicAccredito) {
-		this.codBicAccredito = codBicAccredito;
-	}
-	public String getCodIbanAppoggio() {
-		return codIbanAppoggio;
-	}
-	public void setCodIbanAppoggio(String codIbanAppoggio) {
-		this.codIbanAppoggio = codIbanAppoggio;
-	}
-	public String getCodBicAppoggio() {
-		return codBicAppoggio;
-	}
-	public void setCodBicAppoggio(String codBicAppoggio) {
-		this.codBicAppoggio = codBicAppoggio;
+	public void setCodBic(String codBic) {
+		this.codBic = codBic;
 	}
 	public Long getIdDominio() {
 		return idDominio;

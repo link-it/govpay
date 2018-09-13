@@ -111,6 +111,16 @@
 				<xsd:sequence>
 					<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
 					<xsd:element name="importoPagato" type="com:importo" />
+					<xsd:element name="ibanAccredito" type="com:cod35" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Presente dalla versione 2.5</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="ibanAppoggio" type="com:cod35" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Presente dalla versione 2.6</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="iur" type="com:cod35" />
 					<xsd:element name="dataPagamento" type="xsd:date" />
 					<xsd:element name="dataAcquisizione" type="xsd:date" minOccurs="0"/>
@@ -234,6 +244,7 @@
 										<xsd:complexType>
 											<xsd:sequence>
 												<xsd:element name="ibanAccredito" type="com:cod35"></xsd:element>
+												<xsd:element name="ibanAppoggio" type="com:cod35" minOccurs="0"></xsd:element>
 												<xsd:element name="tipoContabilita" type="com:tipoContabilita"></xsd:element>
 												<xsd:element name="codContabilita">
 													<xsd:simpleType>

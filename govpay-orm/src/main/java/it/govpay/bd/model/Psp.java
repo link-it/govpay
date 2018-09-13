@@ -26,5 +26,5 @@ public class Psp extends it.govpay.model.Psp {
 	public Psp(String codIntermediarioPsp, String codPsp, String ragioneSociale) {
 		super(codIntermediarioPsp, codPsp, ragioneSociale);
 	}
-	 
+
 }

@@ -72,6 +72,7 @@ import java.io.Serializable;
   	"hashDocumento",
   	"provinciaResidenza",
   	"idIbanAccredito",
+  	"idIbanAppoggio",
   	"tipoContabilita",
   	"codiceContabilita",
   	"note"
@@ -177,6 +178,14 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   public void setIdIbanAccredito(IdIbanAccredito idIbanAccredito) {
     this.idIbanAccredito = idIbanAccredito;
   }
+  
+  public IdIbanAccredito getIdIbanAppoggio() {
+    return this.idIbanAppoggio;
+  }
+
+  public void setIdIbanAppoggio(IdIbanAccredito idIbanAppoggio) {
+    this.idIbanAppoggio = idIbanAppoggio;
+  }
 
   public java.lang.String getTipoContabilita() {
     return this.tipoContabilita;
@@ -257,6 +266,9 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
 
   @XmlElement(name="idIbanAccredito",required=false,nillable=false)
   protected IdIbanAccredito idIbanAccredito;
+  
+  @XmlElement(name="idIbanAppoggio",required=false,nillable=false)
+  protected IdIbanAccredito idIbanAppoggio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoContabilita",required=false,nillable=false)

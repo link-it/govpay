@@ -35,6 +35,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	private transient Versamento versamento;
 	private transient Tributo tributo;
 	private transient IbanAccredito ibanAccredito;
+	private transient IbanAccredito ibanAppoggio;
 	
 	public Tributo getTributo(BasicBD bd) throws ServiceException {
 		if(tributo == null && this.getIdTributo() != null) {
@@ -78,10 +79,29 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 		return ibanAccredito;
 	}
 	
+	public IbanAccredito getIbanAppoggio(BasicBD bd) throws ServiceException {
+		
+		if(ibanAppoggio == null && this.getIdIbanAppoggio() != null) {
+			ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAppoggio());
+		}
+		
+		if(ibanAppoggio == null && this.getIdIbanAccredito() == null) {
+			ibanAppoggio = getTributo(bd).getIbanAppoggio(bd);
+		}
+		
+		return ibanAppoggio;
+	}
+	
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
 		if(ibanAccredito.getId() != null)
 			this.setIdIbanAccredito(ibanAccredito.getId());
+	}
+	
+	public void setIbanAppoggio(IbanAccredito ibanAppoggio) {
+		this.ibanAppoggio = ibanAppoggio;
+		if(ibanAppoggio.getId() != null)
+			this.setIdIbanAppoggio(ibanAppoggio.getId());
 	}
 	
 	public Tributo.TipoContabilta getTipoContabilita(BasicBD bd) throws ServiceException {
@@ -98,6 +118,9 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			return getTributo(bd).getCodContabilita();
 	}
 
+	public IbanAccredito getIbanAppoggio() {
+		return ibanAppoggio;
+	}
 
 }
 
