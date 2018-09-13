@@ -37,4 +37,9 @@ public class Psp extends it.govpay.model.Psp {
 	public void setCanalis(List<Canale> canali) {
 		this.listaCanali = canali;
 	}
+
+	public boolean isPostale() {
+		return super.getCodPsp().equals("BPPIITRRXXX");
+	}
+
 }

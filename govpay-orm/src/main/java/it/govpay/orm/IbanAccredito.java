@@ -63,8 +63,6 @@ import java.io.Serializable;
   	"idSellerBank",
   	"idNegozio",
   	"bicAccredito",
-  	"ibanAppoggio",
-  	"bicAppoggio",
   	"postale",
   	"attivato",
   	"abilitato",

@@ -23,7 +23,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Psp;
+import it.govpay.bd.model.Psp;
 
 public class Canale extends it.govpay.model.Canale {
 	

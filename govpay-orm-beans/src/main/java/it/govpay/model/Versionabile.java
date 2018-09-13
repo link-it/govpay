@@ -17,7 +17,7 @@ public abstract class Versionabile extends BasicModel {
 		GP_02_02_00("2.2"),
 		GP_02_02_01("2.2.1"),
 		GP_02_03_00("2.3"),
-		GP_02_05_00("3");
+		GP_02_05_00("2.5");
 		private String label;
 		
 		Versione(String label){
