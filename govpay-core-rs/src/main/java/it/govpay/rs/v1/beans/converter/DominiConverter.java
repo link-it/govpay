@@ -173,6 +173,7 @@ public class DominiConverter {
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
+		rsModel.setCbill(dominio.getCbill());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
 		if(dominio.getSegregationCode() != null)
 			rsModel.setSegregationCode("" + dominio.getSegregationCode());
@@ -205,6 +206,7 @@ public class DominiConverter {
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
+		rsModel.setCbill(dominio.getCbill());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
 		if(dominio.getSegregationCode() != null)
 			rsModel.setSegregationCode("" + dominio.getSegregationCode());

@@ -109,7 +109,7 @@ public class Versamento extends BasicBD {
 					iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 					// imposto iuv calcolato
 					versamento.setIuvVersamento(iuv.getIuv());
-					versamento.setIuvProposto(iuv.getIuv()); 
+//					versamento.setIuvProposto(iuv.getIuv()); 
 					// calcolo il numero avviso
 					it.govpay.core.business.model.Iuv iuv2 = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
 					versamento.setNumeroAvviso(iuv2.getNumeroAvviso());
@@ -123,7 +123,12 @@ public class Versamento extends BasicBD {
 				
 				versamento.setCodAvvisatura(versamentoLetto.getCodAvvisatura());
 				versamento.setDaAvvisare(versamentoLetto.isDaAvvisare());
-
+				
+				// riporto iuv e numero avviso che sono gia' stati assegnati
+				if(versamento.getIuvVersamento() == null) {
+					versamento.setIuvVersamento(versamentoLetto.getIuvVersamento());
+					versamento.setNumeroAvviso(versamentoLetto.getNumeroAvviso());
+				}
 				
 				if(!aggiornaSeEsiste)
 					throw new GovPayException(EsitoOperazione.VER_015, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());

@@ -123,7 +123,7 @@ public class Iuv extends BasicBD {
 					Long.parseLong(prefix);
 				} catch (NumberFormatException e) {
 					GpThreadLocal.get().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' numerico", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
-					throw new ServiceException("Il prefisso generato [" + prefix + "] non e' numerico.");
+					throw new GovPayException(EsitoOperazione.VER_028,prefix, applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), dominio.getIuvPrefix());
 				}
 			}
 			iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.NUMERICO, prefix);
@@ -133,7 +133,7 @@ public class Iuv extends BasicBD {
 				iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, TipoIUV.ISO11694, prefix);
 			else {
 				GpThreadLocal.get().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), "Il prefisso generato non e' alfanumerico", GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
-				throw new ServiceException("Il prefisso generato [" + prefix + "] non e' alfanumerico.");
+				throw new GovPayException(EsitoOperazione.VER_029,prefix, applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), dominio.getIuvPrefix());
 			}
 		}
 		
@@ -141,7 +141,7 @@ public class Iuv extends BasicBD {
 		Pattern patternIuv = Pattern.compile(applicazione.getRegExp());
 		Matcher matcher = patternIuv.matcher(iuv.getIuv()); 
 		if(!matcher.matches())
-			throw new ServiceException("Lo iuv generato [" + prefix + "] non rispetta il pattern previsto dall'applicazione ["+applicazione.getCodApplicazione()+"].");
+			throw new GovPayException(EsitoOperazione.VER_030, prefix ,applicazione.getCodApplicazione()); 
 		
 		GpThreadLocal.get().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
 		

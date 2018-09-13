@@ -560,8 +560,22 @@ public enum EsitoOperazione {
      * Iuv da caricare non conforme alle specifiche AgID segregation code errato
      * 
      */
-    VER_027;
-	
+    VER_027,
+    /**
+     * Iuv da caricare non valido, formato del prefisso per uno IUV di tipo NUMERICO non valido
+     * 
+     */
+    VER_028,
+    /**
+     * Iuv da caricare non valido, formato del prefisso per uno IUV di tipo ISO11694 non valido
+     * 
+     */
+    VER_029,
+    /**
+     * Iuv generato non rispetta il pattern previsto per l'applicazione 
+     * 
+     */
+    VER_030;
 
     public String value() {
         return this.name();

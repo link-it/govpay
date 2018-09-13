@@ -312,9 +312,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getIdSessione());
 
-			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
-				versamento.getDominio(bd);
-				versamento.getSingoliVersamenti(bd);
+			if(pagamentoPortale.getVersamenti(bd) != null && pagamentoPortale.getVersamenti(bd).size() > 0) {
+				for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
+					versamento.getDominio(bd);
+					versamento.getSingoliVersamenti(bd);
+				}
 			}
 			if(pagamentoPortale.getMultiBeneficiario() != null) {
 				// controllo che il dominio sia autorizzato

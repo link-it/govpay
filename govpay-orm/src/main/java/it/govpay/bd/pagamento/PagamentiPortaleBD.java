@@ -61,9 +61,15 @@ public class PagamentiPortaleBD extends BasicBD{
 	}
 
 	public void insertPagamento(PagamentoPortale pagamentoPortale) throws ServiceException {
+		this.insertPagamento(pagamentoPortale,false); 
+	}
+
+	public void insertPagamento(PagamentoPortale pagamentoPortale, boolean commitParent) throws ServiceException {
 		boolean oldAutocomit = this.isAutoCommit();
 		try {
-			this.setAutoCommit(false);
+			if(!commitParent)
+				this.setAutoCommit(false);
+			
 			it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamentoPortale);
 			try {
 				this.getPagamentoPortaleService().create(vo);
@@ -73,12 +79,15 @@ public class PagamentiPortaleBD extends BasicBD{
 			} catch (NotImplementedException e) {
 				throw new ServiceException();
 			}
-			this.commit();
+			if(!commitParent)
+				this.commit();
 		} catch (ServiceException e) {
-			this.rollback();
+			if(!commitParent)
+				this.rollback();
 			throw e;
 		} finally {
-			this.setAutoCommit(oldAutocomit);
+			if(!commitParent)
+				this.setAutoCommit(oldAutocomit);
 		}
 
 	}

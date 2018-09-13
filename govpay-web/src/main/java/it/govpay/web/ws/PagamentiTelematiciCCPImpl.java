@@ -35,6 +35,7 @@ import javax.xml.ws.handler.MessageContext;
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
@@ -304,13 +305,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (NotFoundException e2) {
 
 				
-				PagamentoPortale p = new PagamentoPortale();
-				p.setCodApplicazione(AnagraficaManager.getApplicazione(bd, rpt.getVersamento(bd).getIdApplicazione()).getCodApplicazione());
-				p.setCodCanale(rpt.getCodCanale());
-				p.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
-				p.setCodPsp(rpt.getCodPsp());
-				p.setDataRichiesta(rpt.getDataMsgRichiesta());
-				p.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
+				PagamentoPortale pagamentoPortale = new PagamentoPortale();
+				pagamentoPortale.setCodApplicazione(AnagraficaManager.getApplicazione(bd, rpt.getVersamento(bd).getIdApplicazione()).getCodApplicazione());
+				pagamentoPortale.setCodCanale(rpt.getCodCanale());
+				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
+				pagamentoPortale.setCodPsp(rpt.getCodPsp());
+				pagamentoPortale.setDataRichiesta(rpt.getDataMsgRichiesta());
+				pagamentoPortale.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
 
 				List<IdVersamento> idVersamentoList = new ArrayList<>();
 
@@ -319,35 +320,47 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				idVersamento.setId(rpt.getVersamento(bd).getId());
 				
 				idVersamentoList.add(idVersamento);
-				p.setIdVersamento(idVersamentoList);
+				pagamentoPortale.setIdVersamento(idVersamentoList);
 				
-				p.setImporto(rpt.getVersamento(bd).getImportoTotale().doubleValue());
-				p.setMultiBeneficiario(rpt.getCodDominio());
+				pagamentoPortale.setImporto(rpt.getVersamento(bd).getImportoTotale().doubleValue());
+				pagamentoPortale.setMultiBeneficiario(rpt.getCodDominio());
 				
 				if(rpt.getVersamento(bd).getNome()!=null) {
-					p.setNome(rpt.getVersamento(bd).getNome());
+					pagamentoPortale.setNome(rpt.getVersamento(bd).getNome());
 				} else {
 					try {
-						p.setNome(rpt.getVersamento(bd).getCausaleVersamento().getSimple());
+						pagamentoPortale.setNome(rpt.getVersamento(bd).getCausaleVersamento().getSimple());
 					} catch(UnsupportedEncodingException e) {}
 				}
 
-				p.setStato(STATO.IN_CORSO);
-				p.setTipo(3);
+				pagamentoPortale.setStato(STATO.IN_CORSO);
+				pagamentoPortale.setTipo(3);
 				
 				if(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante() != null)
-					p.setVersanteIdentificativo(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante().getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
+					pagamentoPortale.setVersanteIdentificativo(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante().getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
 
 				PagamentiPortaleBD ppbd = new PagamentiPortaleBD(bd);
 				
-				ppbd.insertPagamento(p);
+				ppbd.insertPagamento(pagamentoPortale);
 				
 				// imposto l'id pagamento all'rpt
-				rpt.setIdPagamentoPortale(p.getId());
+				rpt.setIdPagamentoPortale(pagamentoPortale.getId());
 				
-				// L'RPT non esiste, procedo
-				rptBD.insertRpt(rpt);
-
+				try {
+					// 	L'RPT non esiste, procedo
+					rptBD.insertRpt(rpt);
+				}catch(ServiceException e) {
+					bd.rollback();
+					bd.disableSelectForUpdate();
+					// update della entry pagamento portale
+					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
+					pagamentoPortale.setStato(STATO.FALLITO);
+					pagamentoPortale.setDescrizioneStato(e.getMessage());
+					ppbd.updatePagamento(pagamentoPortale, true);
+					ppbd.commit();
+					throw e;
+				}
+				
 				RptUtils.inviaRPTAsync(rpt, bd);
 			}
 

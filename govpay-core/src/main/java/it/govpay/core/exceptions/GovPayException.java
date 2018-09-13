@@ -198,6 +198,9 @@ public class GovPayException extends Exception {
 		case VER_025: return "Il versamento (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") ha un numero avviso ("+this.params[4]+") gia' utilizzato dal versamento (IdA2A:" + this.params[2] + ", Id:" + this.params[3] + ").";
 		case VER_026: return "Lo IUV (" + this.params[0] + ") non e' conforme alle specifiche agid, application code (" + this.params[1] + ") non valido per la stazione (" + this.params[2] + ")";
 		case VER_027: return "Lo IUV (" + this.params[0] + ") non e' conforme alle specifiche agid, segregaton code (" + this.params[1] + ") non valido per il dominio (" + this.params[2] + ")";
+		case VER_028: return "Il prefisso IUV di tipo numerico generato ("+this.params[0]+") per il versamento (IdA2A:"+this.params[1]+" Id:"+this.params[2]+") non e' valido rispetto alla configurazione prevista per il dominio ("+this.params[3]+", prefix:"+this.params[4]+").";
+		case VER_029: return "Il prefisso IUV di tipo ISO11694 generato ("+this.params[0]+") per il versamento (IdA2A:"+this.params[1]+" Id:"+this.params[2]+") non e' valido rispetto alla configurazione prevista per il dominio ("+this.params[3]+", prefix:"+this.params[4]+").";
+		case VER_030: return "Lo IUV generato (" + this.params[0] + ") non rispetta il pattern previsto dall'applicazione (IdA2A:"+this.params[1]+").";
 		}
 		
 		return "";
@@ -330,6 +333,9 @@ public class GovPayException extends Exception {
 		case VER_025: return "Richiesta non valida";
 		case VER_026: return "Richiesta non valida";
 		case VER_027: return "Richiesta non valida";
+		case VER_028: return "Richiesta non valida";
+		case VER_029: return "Richiesta non valida";
+		case VER_030: return "Richiesta non valida";
 		}
 		
 		return "";
