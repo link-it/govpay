@@ -21,8 +21,6 @@
 					<linkit:sql>
 						<linkit:sql-script generate="true">
 							<linkit:sql-table-list>
-								<linkit:sql-table object-name="Psp" object-type="Psp"/>
-								<linkit:sql-table object-name="Canale" object-type="Canale"/>
 								<linkit:sql-table object-name="Intermediario"
 									object-type="Intermediario"/>
 								<linkit:sql-table object-name="Stazione" object-type="Stazione"/>
@@ -1273,6 +1271,17 @@
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="IbanAccredito"
 								object-type="IbanAccredito" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idIbanAppoggio" type="id-iban-accredito" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="IbanAccredito"
+								object-type="IbanAccredito" relationship="reversed"/>
+							<linkit:sql-column-mapping name="id_iban_appoggio"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>

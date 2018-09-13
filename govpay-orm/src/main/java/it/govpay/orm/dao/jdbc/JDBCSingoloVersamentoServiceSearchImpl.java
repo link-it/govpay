@@ -190,6 +190,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(SingoloVersamento.model().NOTE);
 
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
+			fields.add(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_tributo", Long.class, "id_tributo", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
         
@@ -208,6 +209,8 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				if(idIbanAccreditoObj instanceof Long) {
 					idIbanAccredito = (Long) idIbanAccreditoObj;
 				}
+				
+				Object idIbanAppoggioObj = map.remove("id_iban_appoggio");
 				
 				
 				Long idVersamento = (Long)map.remove("id_versamento");
@@ -234,6 +237,19 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 					}
 					id_singoloVersamento_ibanAccredito.setId(idIbanAccredito);
 					singoloVersamento.setIdIbanAccredito(id_singoloVersamento_ibanAccredito);
+				}
+
+				if(idIbanAppoggioObj instanceof Long) {
+					Long idIbanAppoggio = (Long) idIbanAppoggioObj;
+
+					it.govpay.orm.IdIbanAccredito id_singoloVersamento_ibanAccredito = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_singoloVersamento_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAppoggio, false);
+					}else{
+						id_singoloVersamento_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
+					}
+					id_singoloVersamento_ibanAccredito.setId(idIbanAppoggio);
+					singoloVersamento.setIdIbanAppoggio(id_singoloVersamento_ibanAccredito);
 				}
 
 				it.govpay.orm.IdVersamento id_singoloVersamento_versamento = null;

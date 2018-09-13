@@ -52,6 +52,8 @@ public class SingoloVersamentoConverter {
 			dto.setIdTributo(vo.getIdTributo().getId());
 		if(vo.getIdIbanAccredito() != null)
 			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
+		if(vo.getIdIbanAppoggio() != null)
+			dto.setIdIbanAppoggio(vo.getIdIbanAppoggio().getId());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
 		dto.setImportoSingoloVersamento(BigDecimal.valueOf(vo.getImportoSingoloVersamento()));
 		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
@@ -75,6 +77,12 @@ public class SingoloVersamentoConverter {
 			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
 			idIbanAccredito.setId(dto.getIdIbanAccredito());
 			vo.setIdIbanAccredito(idIbanAccredito);
+		}
+		
+		if(dto.getIdIbanAppoggio() != null) {
+			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
+			idIbanAccredito.setId(dto.getIdIbanAppoggio());
+			vo.setIdIbanAppoggio(idIbanAccredito);
 		}
 		
 		if(dto.getIdTributo() != null) {

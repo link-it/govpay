@@ -45,6 +45,7 @@ import java.io.Serializable;
  * 			&lt;element name="hashDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="provinciaResidenza" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idIbanAppoggio" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -72,6 +73,7 @@ import java.io.Serializable;
   	"hashDocumento",
   	"provinciaResidenza",
   	"idIbanAccredito",
+  	"idIbanAppoggio",
   	"tipoContabilita",
   	"codiceContabilita",
   	"note"
@@ -178,6 +180,14 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.idIbanAccredito = idIbanAccredito;
   }
 
+  public IdIbanAccredito getIdIbanAppoggio() {
+    return this.idIbanAppoggio;
+  }
+
+  public void setIdIbanAppoggio(IdIbanAccredito idIbanAppoggio) {
+    this.idIbanAppoggio = idIbanAppoggio;
+  }
+
   public java.lang.String getTipoContabilita() {
     return this.tipoContabilita;
   }
@@ -257,6 +267,9 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
 
   @XmlElement(name="idIbanAccredito",required=false,nillable=false)
   protected IdIbanAccredito idIbanAccredito;
+
+  @XmlElement(name="idIbanAppoggio",required=false,nillable=false)
+  protected IdIbanAccredito idIbanAppoggio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoContabilita",required=false,nillable=false)
