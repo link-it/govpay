@@ -44,7 +44,6 @@ import it.govpay.bd.pagamento.FrBD;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.Gp21Utils;
-import it.govpay.core.utils.Gp23Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Servizio;
@@ -55,7 +54,6 @@ import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazione;
 import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazioneResponse;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazione;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
-import it.govpay.servizi.v2_3.commons.Mittente;
 
 @WebService(serviceName = "PagamentiTelematiciGPRndService",
 endpointInterface = "it.govpay.servizi.PagamentiTelematiciGPRnd",
