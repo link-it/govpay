@@ -113,7 +113,8 @@ public class BasicClient {
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
-	protected TipoDestinatario tipoDestinatario;
+	
+	protected IntegrationContext integrationCtx;
 
 	public enum TipoConnettore {
 		VERIFICA, NOTIFICA;
@@ -125,18 +126,26 @@ public class BasicClient {
 	
 	protected BasicClient(Intermediario intermediario) throws ClientException {
 		this("I_" + intermediario.getCodIntermediario(), intermediario.getConnettorePdd());
-		GpThreadLocal.get().getIntegrationCtx().setApplicazione(null);
-		this.errMsg = "Pdd dell'intermediario (" + intermediario.getCodIntermediario() + ")";
-		this.mittente = intermediario.getDenominazione();
-		this.destinatario = "NodoDeiPagamentiDellaPA";
+		errMsg = "Pdd dell'intermediario (" + intermediario.getCodIntermediario() + ")";
+		mittente = intermediario.getDenominazione();
+		destinatario = "NodoDeiPagamentiDellaPA";
+		integrationCtx = new IntegrationContext();
+		integrationCtx.setApplicazione(null);
+		integrationCtx.setIntermediario(intermediario);
+		integrationCtx.setTipoConnettore(null);
+		integrationCtx.setTipoDestinatario(TipoDestinatario.INTERMEDIARIO);
 	}
 	
 	protected BasicClient(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
 		this("A_" + tipoConnettore + applicazione.getCodApplicazione(), tipoConnettore == TipoConnettore.NOTIFICA ? applicazione.getConnettoreNotifica() : applicazione.getConnettoreVerifica());
-		GpThreadLocal.get().getIntegrationCtx().setApplicazione(applicazione);
-		this.errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
-		this.mittente = "GovPay";
-		this.destinatario = applicazione.getCodApplicazione();
+		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
+		mittente = "GovPay";
+		destinatario = applicazione.getCodApplicazione();
+		integrationCtx = new IntegrationContext();
+		integrationCtx.setApplicazione(applicazione);
+		integrationCtx.setIntermediario(null);
+		integrationCtx.setTipoConnettore(tipoConnettore);
+		integrationCtx.setTipoDestinatario(TipoDestinatario.APPLICAZIONE);
 	}
 	
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
@@ -219,14 +228,12 @@ public class BasicClient {
 		try {
 			List<String> outHandlers = GovpayConfig.getInstance().getOutHandlers();
 			if(outHandlers!= null && !outHandlers.isEmpty()) {
-				IntegrationContext ic = GpThreadLocal.get().getIntegrationCtx();
-	
 				log.debug("Applicazione al messaggio degli handlers configurati...");
 				for(String handler: outHandlers) {
 					Class<?> c = Class.forName(handler);
 					IntegrationOutHandler instance = (IntegrationOutHandler) c.newInstance();
 					log.debug("Applicazione al messaggio dell'handler ["+handler+"]...");
-					instance.invoke(ic);
+					instance.invoke(integrationCtx);
 					log.debug("Applicazione al messaggio dell'handler ["+handler+"] completata con successo");
 				}
 				log.debug("Applicazione al messaggio degli handlers configurati completata con successo");
@@ -297,7 +304,7 @@ public class BasicClient {
 				JaxbUtils.marshal(body, baos);
 			}
 
-			ctx.getIntegrationCtx().setMsg(baos.toByteArray());
+			integrationCtx.setMsg(baos.toByteArray());
 			this.invokeOutHandlers();
 			
 			if(log.isTraceEnabled()) {
@@ -305,17 +312,17 @@ public class BasicClient {
 				for(String key : connection.getRequestProperties().keySet()) {
 					sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
 				}
-				sb.append("\n" + new String(ctx.getIntegrationCtx().getMsg()));
+				sb.append("\n" + new String(integrationCtx.getMsg()));
 				log.trace(sb.toString());
 			}
 			
-			requestMsg.setContent(ctx.getIntegrationCtx().getMsg());
+			requestMsg.setContent(integrationCtx.getMsg());
 			
 			ctx.getContext().getRequest().setOutDate(new Date());
-			ctx.getContext().getRequest().setOutSize(Long.valueOf(ctx.getIntegrationCtx().getMsg().length));
+			ctx.getContext().getRequest().setOutSize(Long.valueOf(integrationCtx.getMsg().length));
 			ctx.log(requestMsg);
 			
-			connection.getOutputStream().write(ctx.getIntegrationCtx().getMsg());
+			connection.getOutputStream().write(integrationCtx.getMsg());
 	
 		} catch (Exception e) {
 			throw new ClientException(e);
@@ -463,7 +470,7 @@ public class BasicClient {
 			}
 			
 			
-			ctx.getIntegrationCtx().setMsg(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
+			integrationCtx.setMsg(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
 			this.invokeOutHandlers();
 			
 			if(log.isTraceEnabled()) {
@@ -471,14 +478,14 @@ public class BasicClient {
 				for(String key : connection.getRequestProperties().keySet()) {
 					sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
 				}
-				sb.append("\n" + new String(ctx.getIntegrationCtx().getMsg()));
+				sb.append("\n" + new String(integrationCtx.getMsg()));
 				log.trace(sb.toString());
 			}
 			
-			requestMsg.setContent(ctx.getIntegrationCtx().getMsg());
+			requestMsg.setContent(integrationCtx.getMsg());
 			
 			ctx.getContext().getRequest().setOutDate(new Date());
-			ctx.getContext().getRequest().setOutSize(Long.valueOf(ctx.getIntegrationCtx().getMsg().length));
+			ctx.getContext().getRequest().setOutSize(Long.valueOf(integrationCtx.getMsg().length));
 			
 			requestMsg.addHeader(new Property("HTTP-Method", httpMethod));
 			requestMsg.addHeader(new Property("RequestPath", this.url.toString()));
@@ -486,7 +493,7 @@ public class BasicClient {
 			ctx.log(requestMsg);
 			
 			if(httpMethod.equals("POST"))
-				connection.getOutputStream().write(ctx.getIntegrationCtx().getMsg());
+				connection.getOutputStream().write(integrationCtx.getMsg());
 	
 		} catch (Exception e) {
 			throw new ClientException(e);

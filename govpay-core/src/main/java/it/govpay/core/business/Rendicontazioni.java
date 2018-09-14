@@ -331,14 +331,10 @@ public class Rendicontazioni extends BasicBD {
 												it.govpay.model.Iuv iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 												versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 											} catch (NotFoundException nfe) {
+												// Non e' su sistema. Individuo l'applicativo gestore
 												codApplicazione = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv).getCodApplicazione();
-												if(codApplicazione == null) {
-													response.add(idRendicontazione.getIdentificativoFlusso() + "#Acquisizione flusso fallita. Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].");
-													log.error("Errore durante il processamento del flusso di Rendicontazione [Flusso:" + idRendicontazione.getIdentificativoFlusso() + "]: Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "]. Flusso non acquisito.");
-													GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
-													throw new GovPayException(EsitoOperazione.INTERNAL, "Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
-												}
-												versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, this);
+												if(codApplicazione != null)
+													versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, this);
 											}
 										} catch (VersamentoScadutoException e1) {
 											erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' SCADUTO.";

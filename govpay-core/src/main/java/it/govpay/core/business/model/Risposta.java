@@ -72,11 +72,15 @@ public class Risposta  {
 		
 			Set<String> codici = new HashSet<String>();
 			Set<String> ids = new HashSet<String>();
+			Set<String> faultStrings = new HashSet<String>();
+			Set<String> descrizioni = new HashSet<String>();
 			String descrizione = "";
 			
 			for(FaultBean fb : this.listaErroriRPT) {
 				codici.add(fb.getFaultCode());
+				faultStrings.add(fb.getFaultString());
 				ids.add(fb.getFaultString());
+				descrizioni.add(fb.getDescription());
 				descrizione += toString(fb);
 			}
 				
@@ -90,9 +94,18 @@ public class Risposta  {
 			if(codici.size() == 1)
 				fbx.setFaultCode(codici.iterator().next());
 			else
-				fbx.setFaultCode("PPT_ERROR");
+				fbx.setFaultCode("PPT_ERRORE_GENERICO");
 			
-			fbx.setDescription(descrizione);
+			if(faultStrings.size() == 1)
+				fbx.setFaultString(faultStrings.iterator().next());
+			else
+				fbx.setFaultString("RPT rifiutate per errori eterogenei");
+			
+			if(descrizioni.size() == 1)
+				fbx.setDescription(descrizioni.iterator().next());
+			else
+				fbx.setDescription(descrizione);
+			
 			return fbx;
 		}		
 		

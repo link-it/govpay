@@ -33,7 +33,6 @@ import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTe
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.PagamentiTelematiciPAService;
@@ -45,7 +44,6 @@ public class GpContext {
 	private List<Context> contexts;
 	
 	private PagamentoContext pagamentoCtx;
-	private IntegrationContext integrationCtx;
 	
 	public static final String NOT_SET = "<Non valorizzato>";
 	
@@ -397,13 +395,6 @@ public class GpContext {
 		}
 	}
 	
-	public IntegrationContext getIntegrationCtx() {
-		if(this.integrationCtx == null) 
-			this.integrationCtx=new IntegrationContext();
-		
-		return this.integrationCtx;
-	}
-
 	public PagamentoContext getPagamentoCtx() {
 		if(this.pagamentoCtx == null) 
 			this.pagamentoCtx = new PagamentoContext();
