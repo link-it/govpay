@@ -154,15 +154,15 @@ public class Pagamento extends BasicBD {
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(this);
 				versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
 			}
-			
+
 			if(!versamentoModel.getUo(this).isAbilitato()) {
 				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+versamentoModel.getUo(this).getCodUo()+"].", EsitoOperazione.UOP_001, versamentoModel.getUo(this).getCodUo());
 			}
-			
+
 			if(!versamentoModel.getUo(this).getDominio(this).isAbilitato()) {
 				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+versamentoModel.getUo(this).getDominio(this).getCodDominio()+"].", EsitoOperazione.DOM_001, versamentoModel.getUo(this).getDominio(this).getCodDominio());
 			}
-			
+
 			versamenti.add(versamentoModel);
 		}
 
@@ -265,46 +265,46 @@ public class Pagamento extends BasicBD {
 
 				ctx.log("rpt.validazioneSemanticaOk", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 			}
-			
+
 			// Aggiornamento WISP2.0
 			it.govpay.bd.model.Psp psp = null;
 			if(canale != null) {
 				psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
-	
+
 				ctx.log("rpt.validazioneSemanticaPsp", psp.getCodPsp(), canale.getCodCanale());
-	
+
 				if(isBollo && !psp.isBolloGestito()){
 					throw new GovPayException(EsitoOperazione.PAG_003);
 				}
-	
+
 				// Verifico che il canale sia compatibile con la richiesta
 				if(!canale.isAbilitato())
 					throw new GovPayException(EsitoOperazione.PSP_001, psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().toString());
-	
+
 				if(versamenti.size() > 1 && !canale.getModelloPagamento().equals(ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO)) {
 					throw new GovPayException(EsitoOperazione.PAG_001);
 				}
-	
+
 				if(canale.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP)){
 					throw new GovPayException(EsitoOperazione.PAG_002);
 				}
-	
+
 				if(canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO) && ibanAddebito == null){
 					throw new GovPayException(EsitoOperazione.PAG_004);
 				} 
-	
+
 				// Se non sono in Addebito Diretto, ignoro l'iban di addebito
 				if(!canale.getTipoVersamento().equals(TipoVersamento.ADDEBITO_DIRETTO)) {
 					ibanAddebito = null;
 				}
-	
+
 				if(canale.getTipoVersamento().equals(TipoVersamento.MYBANK) && (versamenti.size() > 1 || versamenti.get(0).getSingoliVersamenti(this).size() > 1)){
 					throw new GovPayException(EsitoOperazione.PAG_005);
 				}
-	
+
 				ctx.log("rpt.validazioneSemanticaPspOk", psp.getCodPsp(), canale.getCodCanale());
 			}
-			
+
 			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
 
 			Iuv iuvBusiness = new Iuv(this);
@@ -397,22 +397,37 @@ public class Pagamento extends BasicBD {
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
 					try {
-						for(int i=0; i<rpts.size(); i++) {
-							Rpt rpt = rpts.get(i);
-							FaultBean fb = risposta.getFaultBean(i);
+
+						for(FaultBean fb : risposta.getListaErroriRPT()) {
+							Rpt rpt = rpts.get(fb.getSerial() - 1);
 							String descrizione = null; 
 							if(fb != null) {
-								descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
+								descrizione = "[" + fb.getFaultCode() + "] " + fb.getFaultString();
+								descrizione = fb.getDescription() != null ? descrizione + ": " + fb.getDescription() : descrizione;
 							}
+							rpt.setStato(StatoRpt.RPT_RIFIUTATA_NODO);
+							rpt.setDescrizioneStato(descrizione);
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
 						}
 					} catch (Exception e) {
 						// Se uno o piu' aggiornamenti vanno male, non importa. 
 						// si risolvera' poi nella verifica pendenti
 					} 
+
+					// Gestisco eventuali RPT che non hanno avuto un fault
+					for(Rpt rpt : rpts) {
+						if(!rpt.getStato().equals(StatoRpt.RPT_RIFIUTATA_NODO))
+							try {
+								rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, "RPT rifiutata dal Nodo per errori in altre RPT del carrello.", null, null);
+							} catch (Exception e) {
+								// Se uno o piu' aggiornamenti vanno male, non importa. 
+								// si risolvera' poi nella verifica pendenti
+							} 
+					}
+
 					ctx.log("rpt.invioKo", risposta.getLog());
 					log.info("RPT rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
-					throw new GovPayException(risposta.getFaultBean(0));
+					throw new GovPayException(risposta.getFaultBean());
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
 					// RPT accettata dal Nodo
@@ -553,19 +568,19 @@ public class Pagamento extends BasicBD {
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 			DominiBD dominiBD = new DominiBD(this);
-			
+
 			for(Stazione stazione : lstStazioni) {
-			
+
 				DominioFilter filter = dominiBD.newFilter();
 				filter.setCodStazione(stazione.getCodStazione());
 				List<Dominio> lstDomini = dominiBD.findAll(filter);
-				
+
 				Intermediario intermediario = stazione.getIntermediario(this);
 
 				closeConnection();
 				ctx.log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
 				log.debug("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "]");
-				
+
 				// Costruisco una mappa di tutti i pagamenti pendenti sul nodo
 				// La chiave di lettura e' iuv@ccp
 
@@ -578,7 +593,7 @@ public class Pagamento extends BasicBD {
 				inizioFinestra.add(Calendar.DATE, -finestra);
 
 				Map<String, String> statiRptPendenti = acquisisciPendenti(client,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
-				
+
 				log.info("Identificate sul NodoSPC " + statiRptPendenti.size() + " RPT pendenti");
 				ctx.log("pendenti.listaPendentiOk", stazione.getCodStazione(), statiRptPendenti.size() + "");
 
@@ -598,25 +613,27 @@ public class Pagamento extends BasicBD {
 				ctx.log("pendenti.listaPendentiGovPayOk", rpts.size() + "");
 
 				// Scorro le transazioni. Se non risulta pendente sul nodo (quindi non e' pendente) la mando in aggiornamento.
-				
+
 				Date mezzorafa = new Date(new Date().getTime() - (30 * 60 * 1000));
-				
+
 				for(Rpt rpt : rpts) {
-					
+
 					// WORKAROUND CONCORRENZA CON INVIO RT DAL NODO
 					// SKIPPO LE RPT PENDENTI CREATE MENO DI MEZZ'ORA FA
-					
+
 					if(rpt.getDataMsgRichiesta().after(mezzorafa)) {
-						log.debug("Rpt recente [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: aggiornamento non necessario");
+						log.info("Rpt recente [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] aggiornamento non necessario");
 						continue;
+					} else {
+						log.info("Rpt pendente su GovPay [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + rpt.getStato().name());
 					}
-					
+
 					// Aggiorno il batch
 					BatchManager.aggiornaEsecuzione(this, Operazioni.pnd);
-					
-					String stato = statiRptPendenti.get(rpt.getIuv() + "@" + rpt.getCcp());
+
+					String stato = statiRptPendenti.get(rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null) {
-						log.debug("Rpt confermata pendente dal nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: stato " + stato);
+						log.info("Rpt confermata pendente dal nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
 						ctx.log("pendenti.confermaPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato);
 						StatoRpt statoRpt = StatoRpt.toEnum(stato);
 						if(!rpt.getStato().equals(statoRpt)) {
@@ -624,7 +641,7 @@ public class Pagamento extends BasicBD {
 							rptBD.updateRpt(rpt.getId(), statoRpt, null, null, null);
 						}
 					} else {
-						log.debug("Rpt non pendente sul nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
+						log.info("Rpt non pendente sul nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
 						ctx.log("pendenti.confermaNonPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 						// Accedo alle entita che serviranno in seguito prima di chiudere la connessione;
 						rpt.getStazione(this).getIntermediario(this);
@@ -642,10 +659,10 @@ public class Pagamento extends BasicBD {
 
 						if(rpt.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP) && (rpt.getStato().equals(StatoRpt.RPT_ATTIVATA) || rpt.getStato().equals(StatoRpt.RPT_ERRORE_INVIO_A_NODO))) {
 							ctx.log("pendenti.rptAttivata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
-							log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt in stato " + rpt.getStato().toString() + ". Avviata rispedizione al Nodo.");
+							log.info("Rpt attivata ma non consegnata [" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]: avviata rispedizione al Nodo.");
 						} else {
 							ctx.log("pendenti.rptAggiornata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rpt.getStato().toString());
-							log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
+							log.info("Processo di aggiornamento completato [" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]: nuovo stato " + rpt.getStato().toString());
 							response.add("[" + rpt.getCodDominio() + " " + rpt.getIuv() + " " + rpt.getCcp() + "]# Aggiornamento in stato " + rpt.getStato().toString());
 						}
 					}
@@ -663,7 +680,7 @@ public class Pagamento extends BasicBD {
 		}
 
 	}
-	
+
 	/**
 	 * La logica prevede di cercare i pendenti per stazione nell'intervallo da >> a.
 	 * Se nella risposta ci sono 500+ pendenti si dimezza l'intervallo.
@@ -683,10 +700,10 @@ public class Pagamento extends BasicBD {
 	private Map<String, String> acquisisciPendenti(NodoClient client, Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) {
 		GpContext ctx = GpThreadLocal.get();
 		Map<String, String> statiRptPendenti = new HashMap<String, String>();
-		
+
 		// Ciclo sui domini, ma ciclo veramente solo se perDominio == true,
 		// Altrimenti ci giro una sola volta
-		
+
 		for(Dominio dominio : lstDomini) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			NodoChiediListaPendentiRPT richiesta = new NodoChiediListaPendentiRPT();
@@ -696,7 +713,7 @@ public class Pagamento extends BasicBD {
 			richiesta.setDimensioneLista(BigInteger.valueOf(soglia));
 			richiesta.setRangeA(a.getTime());
 			richiesta.setRangeDa(da.getTime());
-	
+
 			if(perDominio) {
 				richiesta.setIdentificativoDominio(dominio.getCodDominio());
 				log.debug("Richiedo la lista delle RPT pendenti (Dominio " + dominio.getCodDominio() + " dal " + dateFormat.format(da.getTime()) + " al " + dateFormat.format(a.getTime()) + ")");
@@ -705,7 +722,7 @@ public class Pagamento extends BasicBD {
 				log.debug("Richiedo la lista delle RPT pendenti (Stazione " + stazione.getCodStazione() + " dal " + dateFormat.format(da.getTime()) + " al " + dateFormat.format(a.getTime()) + ")");
 				ctx.log("pendenti.listaPendenti", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
 			}
-	
+
 			NodoChiediListaPendentiRPTRisposta risposta = null;
 			String transactionId = null;
 			try {
@@ -727,10 +744,10 @@ public class Pagamento extends BasicBD {
 					GpThreadLocal.get().closeTransaction(transactionId);
 				}
 			}
-	
+
 			if(risposta.getFault() != null) {
 				log.warn("Ricevuto errore durante la richiesta di lista pendenti: " + risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
-				
+
 				String fc = risposta.getFault().getFaultCode() != null ? risposta.getFault().getFaultCode() : "-";
 				String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
 				String fd = risposta.getFault().getDescription() != null ? risposta.getFault().getDescription() : "-";
@@ -742,7 +759,7 @@ public class Pagamento extends BasicBD {
 					break;
 				}
 			}
-	
+
 			if(risposta.getListaRPTPendenti() == null || risposta.getListaRPTPendenti().getRptPendente().isEmpty()) {
 				log.debug("Lista pendenti vuota.");
 				if(perDominio) {
@@ -753,14 +770,14 @@ public class Pagamento extends BasicBD {
 					break;
 				}
 			}
-			
-			
-			
+
+
+
 			if(risposta.getListaRPTPendenti().getTotRestituiti() >= soglia) {
-				
+
 				// Vedo quanto e' ampia la finestra per capire se dimezzarla o ciclare sui domini
 				int finestra = (int) TimeUnit.DAYS.convert((a.getTimeInMillis() - da.getTimeInMillis()), TimeUnit.MILLISECONDS);
-				
+
 				if(finestra > 1) {
 					ctx.log("pendenti.listaPendentiPiena", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));	
 					finestra = finestra/2;
@@ -782,13 +799,13 @@ public class Pagamento extends BasicBD {
 					}
 				}
 			}
-			
+
 			// Qui ci arrivo o se ho meno di 500 risultati oppure se sono in *giornaliero per dominio*
 			for(TipoRPTPendente rptPendente : risposta.getListaRPTPendenti().getRptPendente()) {
-				String rptKey = rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
+				String rptKey = rptPendente.getIdentificativoDominio() + "@" + rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
 				statiRptPendenti.put(rptKey, rptPendente.getStato());
 			}
-			
+
 			// Se sto ricercando per stazione, esco.
 			if(!perDominio) {
 				return statiRptPendenti;
@@ -875,7 +892,7 @@ public class Pagamento extends BasicBD {
 				// RR rifiutata dal Nodo
 				// Aggiorno lo stato e ritorno l'errore
 
-				FaultBean fb = risposta.getFaultBean(0);
+				FaultBean fb = risposta.getFaultBean();
 				String descrizione = null; 
 				if(fb != null)
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
@@ -883,7 +900,7 @@ public class Pagamento extends BasicBD {
 				rrBD.updateRr(rr.getId(), StatoRr.RR_RIFIUTATA_NODO, descrizione);
 
 				log.warn(risposta.getLog());
-				throw new GovPayException(risposta.getFaultBean(0));
+				throw new GovPayException(risposta.getFaultBean());
 			} else {
 				ctx.log("rr.invioRrOk");
 				// RPT accettata dal Nodo

@@ -181,8 +181,9 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 				
 				rends = rendsFiltrato;
 			}
-			
+			response.setFlussoRendicontazione(Gp21Utils.toFr(frModel, rends, applicazione.getVersione(), bd));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			response.setCodOperazione(ThreadContext.get("op"));
 			ctx.log("gprnd.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
