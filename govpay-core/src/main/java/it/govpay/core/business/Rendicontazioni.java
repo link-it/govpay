@@ -111,7 +111,7 @@ public class Rendicontazioni extends BasicBD {
 
 				setupConnection(GpThreadLocal.get().getTransactionId());
 				Intermediario intermediario = stazione.getIntermediario(this);
-				NodoClient client = new NodoClient(intermediario, this);
+				NodoClient nodoClient = new NodoClient(intermediario, this);
 				closeConnection();
 
 				if(deep) {
@@ -156,7 +156,7 @@ public class Rendicontazioni extends BasicBD {
 
 						NodoChiediFlussoRendicontazioneRisposta risposta;
 						try {
-							risposta = client.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
+							risposta = nodoClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
 						} catch (Exception e) {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + e + ".");
@@ -330,14 +330,10 @@ public class Rendicontazioni extends BasicBD {
 												it.govpay.model.Iuv iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 												versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 											} catch (NotFoundException nfe) {
+												// Non e' su sistema. Individuo l'applicativo gestore
 												codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(this));
-												if(codApplicazione == null) {
-													response.add(idRendicontazione.getIdentificativoFlusso() + "#Acquisizione flusso fallita. Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].");
-													log.error("Errore durante il processamento del flusso di Rendicontazione [Flusso:" + idRendicontazione.getIdentificativoFlusso() + "]: Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "]. Flusso non acquisito.");
-													GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
-													throw new GovPayException(EsitoOperazione.INTERNAL, "Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
-												}
-												versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, this);
+												if(codApplicazione != null)
+													versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, this);
 											}
 										} catch (VersamentoScadutoException e1) {
 											erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' SCADUTO.";
