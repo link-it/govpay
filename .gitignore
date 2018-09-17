@@ -3,3 +3,7 @@
 /.classpath
 /.project
 /.settings/
+pom.xml.versionsBackup
+/govpay-wc/
+/govpay-stampe-fonts-TitilliumWeb/
+/resources/filters/*.filter.properties
