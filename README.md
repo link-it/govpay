@@ -1,7 +1,10 @@
 # GovPay - Porta di accesso al sistema pagoPA
 GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nodo dei Pagamenti SPC del progetto PagoPa per l'integrazione degli enti pubblici con la rete interbancaria.
 
-## Ultimi rilasci
+| Versione | Documentazione | Novità principali |
+|:--------:|----------------|-------------------|
+| [3.0-RC1](https://github.com/link-it/GovPay/releases/latest) | [Manuale di Installazione](./resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf) | Nuove API di integrazione REST e cruscotto di monitoraggio.<br/> Supporto al avvisatura digitale push.  
+| [2.5.7](https://github.com/link-it/GovPay/releases/tag/2.5.7) | [Manuale di Installazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeUtente.pdf) | Supporto WISP 2.0
 
 ### GovPay 3.x 
 
