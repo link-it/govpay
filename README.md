@@ -5,7 +5,12 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 
 ### GovPay 3.x 
 
-Ultimo rilascio: [GovPay v3.0-RC1](https://github.com/link-it/GovPay/releases/latest)
+Ultimo rilascio: [v3.0-RC1](https://github.com/link-it/GovPay/releases/latest)
+
+Documentazione: 
+* [Manuale di Intallazione](./resources/doc/pdf/GovPay-ManualeInstallazione.pdf)
+* [Manuale di Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)
+* [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
 
 Questa versione rivede le API di integrazione a valle delle esperienze maturate nei vari scenari d'uso di GovPay ed introduce il paradigma REST come protocollo di comunicazione con gli applicativi dell'Ente.
 Inoltre realizza una profonda riorganizzazione dell'informazione nella console di gestione e monitoraggio per rendere immediata e semplice la diagnosi dei vari casi d'uso.
@@ -14,39 +19,39 @@ Inoltre realizza una profonda riorganizzazione dell'informazione nella console d
 
 Ultimo rilascio: [GovPay v2.5.7](https://github.com/link-it/GovPay/releases/tag/2.5.7)
 
-## Documentazione
-
-* [Manuale di Intallazione](./resources/doc/pdf/GovPay-ManualeInstallazione.pdf)
-* [Manuale di Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)
-* [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
+Documentazione: 
+* [Manuale di Intallazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeInstallazione.pdf)
+* [Manuale di Integrazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)
+* [Manuale Utente](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeUtente.pdf)
 
 ## Contatti
 
 - Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
 - Mailing list: [Utenti GovPay](http://www.gov4j.it/mailman/listinfo/utenti-govpay)
 
-## Conformità con la specifica pagoPA
+## Principali funzionalità
 
+Implementazione delle ultime specifiche pagoPA:
 * Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3.1 
 * Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.1  
 * Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
 * Avviso di pagamento analogico nel sistema pagoPA, v1.2.3
 
-## Configurabilità
+### Configurabilità
 
 * Supporto per tutte le modalità di adesione: diretta, intermediario tecnologico e partner tecnologico
 * Multitenant: possibilità di ospitare più domini, intermediari e partner sulla stessa installazione
 * Supporto alla generazione di IUV conformi alla specifica, in accordo a politiche configurabili da utente
 * Integrazione utenze e ruoli da Sistemi esterni di Identity Management
 
-## API per l'integrazione applicativa
+### API per l'integrazione applicativa
 
 * API orientata ai portali per l'attivazione dei pagamenti
 * API orientata ai Gestionali per la gestione delle posizioni debitorie
 * API orientata agli Uffici contabili per le operazioni di riconciliazione
 * Profilazione degli applicativi interni al dominio, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
 
-## Cruscotto di gestione e monitoraggio dei pagamenti
+### Cruscotto di gestione e monitoraggio dei pagamenti
 
 * Implementazione delle funzionalita di Tavolo Operativo richieste dalla specifica AgID
 * Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
