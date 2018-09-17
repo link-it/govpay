@@ -64,21 +64,6 @@
     <value name="idAnagrafica" field="idAnagrafica" usage="required"/>
     <value name="codUnivoco" field="codUnivoco" usage="optional"/>
   </mapping>
-  <mapping name="idPsp" class="it.govpay.orm.IdPsp" abstract="false">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codPsp" field="codPsp" usage="required"/>
-  </mapping>
-
-  <mapping type-name="_IdPsp_Type" class="it.govpay.orm.IdPsp" abstract="true">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codPsp" field="codPsp" usage="required"/>
-  </mapping>
-  <mapping name="id-canale" class="it.govpay.orm.IdCanale">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idPsp" field="idPsp" usage="required" map-as="_IdPsp_Type"/>
-    <value name="codCanale" field="codCanale" usage="required"/>
-    <value name="tipoVersamento" field="tipoVersamento" usage="required"/>
-  </mapping>
   <mapping name="idOperatore" class="it.govpay.orm.IdOperatore" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="principal" field="principal" usage="required"/>
