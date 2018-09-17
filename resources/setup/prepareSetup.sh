@@ -1,4 +1,4 @@
-VERSION=3.1.0
+VERSION=3.0
 
 mvn -f ../../pom.xml -Denv=installer_template clean install
 
@@ -63,12 +63,6 @@ then
         exit 5
 fi 
 cp ${DOC}/GovPay-ManualeUtente.pdf core.template/doc/
-if [ ! -e "${DOC}/GovPay-PagoPA.pdf" ]
-then
-        echo "Manuale di Introduzione a GovPay non esistente"
-        exit 5
-fi
-cp ${DOC}/GovPay-PagoPA.pdf core.template/doc/
 if [ ! -e "${COPYING_FILE}" ]
 then
         echo "Copying file non esistente"

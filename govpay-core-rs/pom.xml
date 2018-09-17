@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.1.0</version>
+		<version>3.0.0-RC1</version>
 	</parent>
 
 	<artifactId>govpay-core-rs</artifactId>

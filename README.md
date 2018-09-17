@@ -13,11 +13,10 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 
 ## Conformità con la specifica pagoPA
 
-* Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3 
-* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v1.7.1  
+* Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3.1 
+* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.1  
 * Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
 * Avviso di pagamento analogico nel sistema pagoPA, v1.2.3
-* Transazioni MyBank attraverso il Nodo dei Pagamenti-SPC, v1.2.1
 
 ## Configurabilità
 
@@ -48,7 +47,7 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
 http://www.gov4j.it/govpay
 
-Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
