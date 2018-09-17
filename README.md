@@ -5,11 +5,17 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 
 ### GovPay 3.x 
 
+Ultimo rilascio: [GovPay v3.0-RC1](https://github.com/link-it/GovPay/releases/latest)
+
 La versione 3.x rivede le API di integrazione a valle delle esperienze maturate nei vari scenari d'uso di GovPay ed introduce il paradigma REST come protocollo di comunicazione con gli applicativi dell'Ente.
+Inoltre realizza una profonda riorganizzazione della console di gestione e monitoraggio per semplificare le operazioni diagnostiche richieste agli operatori di backoffice
 
 ### GovPay 2.x
 
-Versione consolidata.... 
+Ultimo rilascio: [GovPay v2.5.7](https://github.com/link-it/GovPay/releases/tag/2.5.7)
+
+Versione consolidata.... [TODO]
+
 
 ## Documentazione
 
