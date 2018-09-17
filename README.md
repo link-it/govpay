@@ -1,6 +1,16 @@
 # GovPay - Porta di accesso al sistema pagoPA
 GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nodo dei Pagamenti SPC del progetto PagoPa per l'integrazione degli enti pubblici con la rete interbancaria.
 
+## Versionamento
+
+### GovPay 3.x 
+
+La versione 3.x rivede le API di integrazione a valle delle esperienze maturate nei vari scenari d'uso di GovPay ed introduce il paradigma REST come protocollo di comunicazione con gli applicativi dell'Ente.
+
+### GovPay 2.x
+
+Versione consolidata.... 
+
 ## Documentazione
 
 * [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)
@@ -37,10 +47,10 @@ GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nod
 * Implementazione delle funzionalita di Tavolo Operativo richieste dalla specifica AgID
 * Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
 * Gestione archivio pagamenti in attesa (APA)
-* Consultazione dei pagamenti effettuati
-* Consultazione dati di riconciliazione
+* Consultazione delle pendenze e dei pagamenti eseguiti
+* Gestione della riconciliazione
 * Reportistica nei formati PDF e CSV
-* Giornale degli Eventi
+* Registrazione e consultazione del Giornale degli Eventi
 
 ## Licenza
 
