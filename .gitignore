@@ -1,0 +1,16 @@
+/target/
+/bin/
+/.classpath
+/.project
+/.settings/
+/govpay-api-backoffice/
+/govpay-api-pagamento/
+/govpay-api-pendenze/
+/govpay-api-ragioneria/
+/govpay-rs/
+/govpay-wc/
+/resources/setup/target/
+/resources/filters/*properties
+/govpay-stampe-fonts-TitilliumWeb/
+/govpay-core-rs/
+pom.xml.versionsBackup
