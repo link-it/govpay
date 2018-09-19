@@ -152,6 +152,12 @@ public class Gp21Utils {
 			p.setDataAcquisizione(pagamento.getDataAcquisizione());
 			p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
 		}
+		if(versione.compareTo(Versione.GP_02_05_00) >= 0) {
+			if(pagamento.getSingoloVersamento(bd) != null && pagamento.getSingoloVersamento(bd).getIbanAccredito(bd) != null)
+				p.setIbanAccredito(pagamento.getSingoloVersamento(bd).getIbanAccredito(bd).getCodIban());
+			if(pagamento.getSingoloVersamento(bd) != null && pagamento.getSingoloVersamento(bd).getIbanAppoggio(bd) != null)	
+				p.setIbanAppoggio(pagamento.getSingoloVersamento(bd).getIbanAppoggio(bd).getCodIban());
+		}
 		return p;
 	}
 

@@ -121,11 +121,11 @@ public class Rendicontazioni extends BasicBD {
 
 					for(Dominio dominio : lstDomini) { 
 						log.debug("Acquisizione dei flussi di rendicontazione per il dominio [" + dominio.getCodDominio() + "] in corso.");
-						flussiDaAcquisire.addAll(chiediListaFr(client, stazione, dominio));
+						flussiDaAcquisire.addAll(chiediListaFr(nodoClient, stazione, dominio));
 					}
 				} else {
 					log.debug("Acquisizione dei flussi di rendicontazione per la stazione [" + stazione.getCodStazione() + "] in corso.");
-					flussiDaAcquisire.addAll(chiediListaFr(client, stazione, null));
+					flussiDaAcquisire.addAll(chiediListaFr(nodoClient, stazione, null));
 				}
 
 				setupConnection(GpThreadLocal.get().getTransactionId());

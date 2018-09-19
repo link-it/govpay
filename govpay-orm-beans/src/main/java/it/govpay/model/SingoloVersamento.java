@@ -186,12 +186,5 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		return codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
 	}
 
-	public Long getIdIbanAppoggio() {
-		return idIbanAppoggio;
-	}
-
-	public void setIdIbanAppoggio(Long idIbanAppoggio) {
-		this.idIbanAppoggio = idIbanAppoggio;
-	}
 }
 
