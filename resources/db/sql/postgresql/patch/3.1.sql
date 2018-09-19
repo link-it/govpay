@@ -99,7 +99,7 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracci
 alter table versamenti add column ack BOOLEAN;
 update versamenti set ack = FALSE;
 alter table versamenti alter column ack set NOT NULL;
-alter table aversamenti add column note TEXT; 
+alter table versamenti add column note TEXT; 
 alter table versamenti add column anomalo BOOLEAN;
 update versamenti set anomalo = FALSE;
 alter table versamenti alter column anomalo set NOT NULL;
