@@ -4861,9 +4861,17 @@ components:
       description: > 
         Tipologia della Nota
          * NOTA_UTENTE: Nota utente
+         * SISTEMA_INFO: Nota di info
+         * SISTEMA_WARN: Nota di warning
+         * SISTEMA_FATAL: Nota di errore
+         * ANOMALIA: Registrazione di una anomalia
       type: string
       enum:
         - NOTA_UTENTE
+        - SISTEMA_INFO
+        - SISTEMA_WARN
+        - SISTEMA_FATAL
+        - ANOMALIA
     nota:
       type: object
       required:

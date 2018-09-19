@@ -41,6 +41,7 @@ import it.govpay.bd.viste.model.VersamentoIncasso.StatoPagamento;
 import it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.VersamentoIncassoFieldConverter;
 
 public class VersamentoIncassoFilter extends AbstractFilter {
 
@@ -113,7 +114,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			
-			VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			VersamentoIncassoFieldConverter converter = new VersamentoIncassoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 
 			// Filtro sullo stato pagamenti
 			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
@@ -261,7 +262,6 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			if(this.daAvvisare!=null) {
 				newExpression.equals(VersamentoIncasso.model().DA_AVVISARE, this.daAvvisare);
 			}
-
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -455,7 +455,4 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	public void setDaAvvisare(Boolean daAvvisare) {
 		this.daAvvisare = daAvvisare;
 	}
-
-	
-
 }

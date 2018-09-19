@@ -19,8 +19,10 @@ public class Nota implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L; 
 	
+	public static final String UTENTE_SISTEMA = "SISTEMA";
+	
 	public enum TipoNota {
-		NOTA_UTENTE
+		NOTA_UTENTE, SISTEMA_FATAL, SISTEMA_WARN, SISTEMA_INFO, ANOMALIA
 	}
 	
 	private String principal = null;

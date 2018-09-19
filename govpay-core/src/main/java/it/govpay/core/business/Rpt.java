@@ -1,6 +1,7 @@
 package it.govpay.core.business;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -15,11 +16,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -257,6 +260,17 @@ public class Rpt extends BasicBD{
 							rpt.setStato(StatoRpt.RPT_RIFIUTATA_NODO);
 							rpt.setDescrizioneStato(descrizione);
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
+							
+							if(pagamentoPortale != null) {
+								Nota nota = new Nota();
+								nota.setAutore(Nota.UTENTE_SISTEMA);
+								nota.setData(new Date());
+								nota.setOggetto("RPT rifiutata dal Nodo");
+								nota.setTipo(TipoNota.SISTEMA_FATAL);
+								nota.setTesto(descrizione); 
+								pagamentoPortale.getNote().add(0, nota);
+								pagamentoPortale.setAck(false);
+							}
 						}
 						
 					} catch (Exception e) {
@@ -267,7 +281,19 @@ public class Rpt extends BasicBD{
 					for(it.govpay.bd.model.Rpt rpt : rpts) {
 						if(!rpt.getStato().equals(StatoRpt.RPT_RIFIUTATA_NODO)) {
 							try {
-								rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, "Richiesta di pagamento rifiutata per errori rilevati in altre RPT del carrello", null, null);
+								String descrizione = "Richiesta di pagamento rifiutata per errori rilevati in altre RPT del carrello";
+								rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
+								
+								if(pagamentoPortale != null) {
+									Nota nota = new Nota();
+									nota.setAutore(Nota.UTENTE_SISTEMA);
+									nota.setData(new Date());
+									nota.setOggetto("RPT rifiutata dal Nodo");
+									nota.setTipo(TipoNota.SISTEMA_FATAL);
+									nota.setTesto(descrizione); 
+									pagamentoPortale.getNote().add(0, nota);
+									pagamentoPortale.setAck(false);
+								}
 							} catch (NotFoundException e) {
 								// Se uno o piu' aggiornamenti vanno male, non importa. 
 								// si risolvera' poi nella verifica pendenti
@@ -288,7 +314,7 @@ public class Rpt extends BasicBD{
 						log.debug("Nessuna URL di redirect");
 						ctx.log("rpt.invioOkNoRedirect");
 					}
-					return this.updateStatoRpt(rpts, StatoRpt.RPT_ACCETTATA_NODO, risposta.getUrl(), null);
+					return this.updateStatoRpt(rpts, StatoRpt.RPT_ACCETTATA_NODO, risposta.getUrl(), pagamentoPortale, null);
 				}
 			} catch (ClientException e) {
 				// ClientException: tento una chiedi stato RPT per recuperare lo stato effettivo.
@@ -307,7 +333,7 @@ public class Rpt extends BasicBD{
 				} catch (ClientException ee) {
 					ctx.log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
 					log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");
-					this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), null);
+					this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), pagamentoPortale, null);
 					throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
 				} finally {
 					ctx.closeTransaction(idTransaction2);
@@ -339,7 +365,7 @@ public class Rpt extends BasicBD{
 						log.info("Processo di pagamento recuperato. Nessuna URL di redirect.");
 						ctx.log("rpt.invioRecoveryStatoRPTOk");
 					}
-					return this.updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), e);
+					return this.updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), pagamentoPortale, e);
 				}
 			} finally {
 				ctx.closeTransaction(idTransaction);
@@ -353,7 +379,7 @@ public class Rpt extends BasicBD{
 		} 
 	}
 	
-	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, Exception e) throws ServiceException, GovPayException { 
+	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, PagamentoPortale pagamentoPortale, Exception e) throws ServiceException, GovPayException { 
 		GpContext ctx = GpThreadLocal.get();
 		this.setupConnection(ctx.getTransactionId());
 		String sessionId = null;
@@ -382,9 +408,21 @@ public class Rpt extends BasicBD{
 		}
 
 		switch (statoRpt) {
+		case RPT_RIFIUTATA_NODO:
+			if(pagamentoPortale != null) {
+				Nota nota = new Nota();
+				nota.setAutore(Nota.UTENTE_SISTEMA);
+				nota.setData(new Date());
+				nota.setOggetto("RPT rifiutata dal Nodo");
+				nota.setTipo(TipoNota.SISTEMA_FATAL);
+				nota.setTesto(e.getMessage()); 
+				pagamentoPortale.getNote().add(0, nota);
+				pagamentoPortale.setAck(false);
+			}
+			// Casi di rifiuto. Rendo l'errore
+			throw new GovPayException(EsitoOperazione.NDP_000, e);
 		case RPT_ERRORE_INVIO_A_NODO:
 		case RPT_ERRORE_INVIO_A_PSP:
-		case RPT_RIFIUTATA_NODO:
 		case RPT_RIFIUTATA_PSP:
 			// Casi di rifiuto. Rendo l'errore
 			throw new GovPayException(EsitoOperazione.NDP_000, e);

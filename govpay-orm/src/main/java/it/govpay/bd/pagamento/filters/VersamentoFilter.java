@@ -263,7 +263,6 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.equals(Versamento.model().DA_AVVISARE, this.daAvvisare);
 			}
 
-
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -463,7 +462,4 @@ public class VersamentoFilter extends AbstractFilter {
 	public void setDaAvvisare(Boolean daAvvisare) {
 		this.daAvvisare = daAvvisare;
 	}
-
-	
-
 }

@@ -14,8 +14,10 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.bd.viste.filters.VersamentoIncassoFilter;
 import it.govpay.bd.viste.model.VersamentoIncasso;
@@ -190,12 +192,17 @@ public class VersamentiIncassiBD  extends BasicBD {
 
 			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
 
-			List<it.govpay.orm.VersamentoIncasso> versamentoVOLst = this.getVersamentoIncassoServiceSearch().findAll(filter.toPaginatedExpression()); 
+			IPaginatedExpression paginatedExpression = filter.toPaginatedExpression();
+			FilterSortWrapper fsw = filter.getDefaultFilterSortWrapperDesc();
+			if(fsw != null)
+				paginatedExpression.addOrder(fsw.getField(), fsw.getSortOrder());
+			
+			List<it.govpay.orm.VersamentoIncasso> versamentoVOLst = this.getVersamentoIncassoServiceSearch().findAll(paginatedExpression); 
 			for(it.govpay.orm.VersamentoIncasso versamentoVO: versamentoVOLst) {
 				versamentoLst.add(VersamentoIncassoConverter.toDTO(versamentoVO));
 			}
 			return versamentoLst;
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}

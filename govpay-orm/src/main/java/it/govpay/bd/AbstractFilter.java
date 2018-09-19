@@ -37,6 +37,9 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 
+import it.govpay.orm.Versamento;
+import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+
 public abstract class AbstractFilter implements IFilter {
 	
 	public static final String ALIAS_ID = "id";
@@ -194,6 +197,12 @@ public abstract class AbstractFilter implements IFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	public FilterSortWrapper getDefaultFilterSortWrapperDesc() throws ExpressionException, ServiceException {
+		CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
+		FilterSortWrapper fsw = new FilterSortWrapper(baseField, SortOrder.DESC);
+		return fsw;
 	}
 	
 	protected boolean setFiltroAbilitato(IExpression newExpression, boolean addAnd) throws ExpressionNotImplementedException, ExpressionException {
