@@ -74,6 +74,9 @@ public class GovpayConfig {
 	private Integer clusterId;
 	private long timeoutBatch;
 
+	private boolean timeoutPendenti;
+	private Integer timeoutPendentiMins;
+	
 	private boolean batchEstrattoConto, batchEstrattoContoPdf;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
 	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
@@ -103,6 +106,8 @@ public class GovpayConfig {
 		this.batchEstrattoContoPdf = false;
 		this.batchOn=true;
 		this.pddAuthEnable = true;
+		this.timeoutPendenti = false;
+		this.timeoutPendentiMins = null;
 
 		try {
 
@@ -373,7 +378,17 @@ public class GovpayConfig {
 				conservazionePlugin = (IConservazione) instance;
 			}
 			
-
+			
+			String timeoutPendentiString = getProperty("it.govpay.modello3.timeoutPagamento", props, false, log);
+			if(timeoutPendentiString != null && !timeoutPendentiString.equalsIgnoreCase("false")) {
+				try{
+					this.timeoutPendentiMins = Integer.parseInt(timeoutPendentiString);
+					this.timeoutPendenti = true;
+				} catch(NumberFormatException nfe) {
+					log.warn("La proprieta \"it.govpay.modello3.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
+				}
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -543,4 +558,13 @@ public class GovpayConfig {
 	public IConservazione getConservazionPlugin(){
 		return conservazionePlugin;
 	}
+
+	public boolean isTimeoutPendenti() {
+		return timeoutPendenti;
+	}
+
+	public Integer getTimeoutPendentiMins() {
+		return timeoutPendentiMins;
+	}
+
 }
