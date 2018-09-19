@@ -17,7 +17,6 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Nota;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
@@ -27,6 +26,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
+import it.govpay.core.dao.anagrafica.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
@@ -55,7 +55,6 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.IAutorizzato;
 import it.govpay.orm.IdVersamento;
 import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.v2_5.gpprt.GpAvviaTransazionePagamentoResponse;
@@ -486,7 +485,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				if(PATH_NOTA.equals(op.getPath())) {
 					switch(op.getOp()) {
 					case ADD: 
-						this.patchNota(patchDTO.getUser(), pagamentoPortale, op);
+						Nota nota = UtenzaPatchUtils.getNotaFromPatch(patchDTO.getUser(), this.getOperatoreFromUser(patchDTO.getUser(), bd), op, bd); 
+						pagamentoPortale.getNote().add(0,nota);
 						break;
 					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
 					}
@@ -514,20 +514,5 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(bd != null)
 				bd.closeConnection();
 		}
-	}
-	
-	private void patchNota(IAutorizzato user, PagamentoPortale pagamentoPortale, PatchOp op) throws ValidationException, ServiceException { 
-		String notaVersamento = (String) op.getValue();
-		it.govpay.core.rs.v1.beans.base.Nota notaFromJson = it.govpay.core.rs.v1.beans.base.Nota.parse(notaVersamento);
-		
-		
-		Nota nota = new Nota();
-		nota.setAutore(notaFromJson.getAutore() != null ? notaFromJson.getAutore() : user.getPrincipal());
-		nota.setData(new Date());
-		nota.setTesto(notaFromJson.getTesto());
-		nota.setOggetto(notaFromJson.getOggetto());
-		nota.setTipo(TipoNota.valueOf(notaFromJson.getTipo().toString()));
-				
-		pagamentoPortale.getNote().add(nota);
 	}
 }

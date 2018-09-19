@@ -23,6 +23,7 @@ public class Nota implements Serializable{
 		NOTA_UTENTE
 	}
 	
+	private String principal = null;
 	private String autore = null;
 	private Date data = null;
 	private String testo = null;
@@ -59,4 +60,11 @@ public class Nota implements Serializable{
 	public void setOggetto(String oggetto) {
 		this.oggetto = oggetto;
 	}
+	public String getPrincipal() {
+		return principal;
+	}
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
+	
 }

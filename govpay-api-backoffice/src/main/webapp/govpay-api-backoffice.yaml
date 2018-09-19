@@ -4859,18 +4859,25 @@ components:
     nota:
       type: object
       required:
+        - principal
         - autore
         - data
         - testo
         - oggetto
         - tipo
       properties:
-        autore:
+        principal:
           type: string
           description: 
             Username dell'operatore che ha inserito la nota
           example:
-            aaa12345
+            user1234
+        autore:
+          type: string
+          description: 
+            Denominazione dell'operatore che ha inserito la nota
+          example:
+            Mario Rossi
         data:
           type: string
           format: date-time

@@ -4,6 +4,7 @@
 package it.govpay.core.dao.anagrafica;
 
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,11 +17,15 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Nota.TipoNota;
+import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.IAutorizzato;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -43,6 +48,13 @@ public class UtenzaPatchUtils {
 	public static final String SERVIZIO_KEY = "servizio";
 	public static final String ACL_NON_VALIDA_ATTESA_STRINGA_COME_VALORE_DI_SERVIZIO = "ACL non valida: attesa stringa come valore di `servizio`";
 	public static final String ACL_NON_VALIDA_ATTESO_CAMPO_SERVIZIO = "ACL non valida: atteso campo `servizio`";
+	
+	public static final String PRINCIPAL_NOTA_KEY = "principal";
+	public static final String AUTORE_NOTA_KEY = "autore";
+	public static final String TIPO_NOTA_KEY = "tipo";
+	public static final String DATA_NOTA_KEY = "data";
+	public static final String OGGETTO_NOTA_KEY = "oggetto";
+	public static final String TESTO_NOTA_KEY = "testo";
 
 	
 	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BasicBD bd) throws ServiceException, NotFoundException, ValidationException {
@@ -205,4 +217,17 @@ public class UtenzaPatchUtils {
 		
 	}
 
+	public static Nota getNotaFromPatch(IAutorizzato user, Operatore operatore, PatchOp op, BasicBD bd) throws ValidationException, ServiceException { 
+		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
+		
+		Nota nota = new Nota();
+		nota.setPrincipal(user.getPrincipal());
+		nota.setAutore(operatore.getNome());
+		nota.setData(new Date());
+		nota.setTesto((String)map.get(TESTO_NOTA_KEY));
+		nota.setOggetto((String)map.get(OGGETTO_NOTA_KEY));
+		nota.setTipo(TipoNota.valueOf((String) map.get(TIPO_NOTA_KEY)));
+				
+		return nota;
+	}
 }

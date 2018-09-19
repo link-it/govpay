@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"principal",
 "autore",
 "data",
 "testo",
@@ -16,6 +17,9 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "tipo",
 })
 public class Nota extends JSONSerializable {
+  
+  @JsonProperty("principal")
+  private String principal = null;
   
   @JsonProperty("autore")
   private String autore = null;
@@ -34,6 +38,22 @@ public class Nota extends JSONSerializable {
   
   /**
    * Username dell'operatore che ha inserito la nota
+   **/
+  public Nota principal(String principal) {
+    this.principal = principal;
+    return this;
+  }
+
+  @JsonProperty("principal")
+  public String getPrincipal() {
+    return principal;
+  }
+  public void setPrincipal(String principal) {
+    this.principal = principal;
+  }
+
+  /**
+   * Denominazione dell'operatore che ha inserito la nota
    **/
   public Nota autore(String autore) {
     this.autore = autore;
@@ -120,7 +140,8 @@ public class Nota extends JSONSerializable {
       return false;
     }
     Nota nota = (Nota) o;
-    return Objects.equals(autore, nota.autore) &&
+    return Objects.equals(principal, nota.principal) &&
+        Objects.equals(autore, nota.autore) &&
         Objects.equals(data, nota.data) &&
         Objects.equals(testo, nota.testo) &&
         Objects.equals(oggetto, nota.oggetto) &&
@@ -129,7 +150,7 @@ public class Nota extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(autore, data, testo, oggetto, tipo);
+    return Objects.hash(principal, autore, data, testo, oggetto, tipo);
   }
 
   public static Nota parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -146,6 +167,7 @@ public class Nota extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Nota {\n");
     
+    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    autore: ").append(toIndentedString(autore)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    testo: ").append(toIndentedString(testo)).append("\n");

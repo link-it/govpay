@@ -4,6 +4,7 @@
 package it.govpay.rs.v1.beans.converter;
 
 import it.govpay.core.rs.v1.beans.base.Nota;
+import it.govpay.core.rs.v1.beans.base.TipoNota;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -22,6 +23,9 @@ public class NoteConverter {
 		rsModel.setAutore(nota.getAutore());
 		rsModel.setData(nota.getData());
 		rsModel.setTesto(nota.getTesto());
+		rsModel.setPrincipal(nota.getPrincipal());
+		rsModel.setOggetto(nota.getOggetto());
+		rsModel.setTipo(TipoNota.fromValue(nota.getTipo().toString()));
 		return rsModel;
 	}
 

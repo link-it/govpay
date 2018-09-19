@@ -34,7 +34,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Nota;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
@@ -66,9 +65,9 @@ import it.govpay.core.rs.v1.beans.base.StatoPendenza;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.IAutorizzato;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.model.avvisi.AvvisoPagamentoInput;
@@ -373,7 +372,7 @@ public class PendenzeDAO extends BaseDAO{
 				}
 				
 				if(PATH_NOTA.equals(op.getPath())) {
-					this.patchNota(patchPendenzaDTO.getUser(), versamentoLetto, op);
+					this.patchNota(patchPendenzaDTO.getUser(), versamentoLetto, op, bd);
 				}
 			}
 			
@@ -437,23 +436,13 @@ public class PendenzeDAO extends BaseDAO{
 		versamentoLetto.setAck(ackVersamento != null ? ackVersamento.booleanValue() : false);
 	}
 	
-	private void patchNota(IAutorizzato user, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op) throws ValidationException, ServiceException { 
-		if(!op.getOp().equals(OpEnum.REPLACE)) {
+	private void patchNota(IAutorizzato user, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, BasicBD bd) throws ValidationException, ServiceException, NotFoundException { 
+		if(!op.getOp().equals(OpEnum.ADD)) {
 			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 		}
 		
-		String notaVersamento = (String) op.getValue();
-		it.govpay.core.rs.v1.beans.base.Nota notaFromJson = it.govpay.core.rs.v1.beans.base.Nota.parse(notaVersamento);
-		
-		
-		Nota nota = new Nota();
-		nota.setAutore(notaFromJson.getAutore() != null ? notaFromJson.getAutore() : user.getPrincipal());
-		nota.setData(new Date());
-		nota.setTesto(notaFromJson.getTesto());
-		nota.setOggetto(notaFromJson.getOggetto());
-		nota.setTipo(TipoNota.valueOf(notaFromJson.getTipo().toString()));
-				
-		versamentoLetto.getNote().add(nota);
+	 	Nota nota = UtenzaPatchUtils.getNotaFromPatch(user, this.getOperatoreFromUser(user, bd), op, bd); 
+	 	versamentoLetto.getNote().add(0,nota);
 	}
 
 	private StatoVersamento getNuovoStatoVersamento(PatchOp op) throws ValidationException {
