@@ -1227,9 +1227,13 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			Boolean abilitaModificaLogo = false;
 			JSONArray jsonArrayFile =  null;
-			if(jsonObjectDominio.getBoolean(abilitaModificaLogoId)){
-				jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
-				abilitaModificaLogo = true;
+			try {
+				if(jsonObjectDominio.getBoolean(abilitaModificaLogoId)){
+					jsonArrayFile = jsonObjectDominio.getJSONArray(logoId);
+					abilitaModificaLogo = true;
+				}
+			} catch (Exception e) {
+				
 			}
 
 			jsonObjectDominio.remove(logoId);
