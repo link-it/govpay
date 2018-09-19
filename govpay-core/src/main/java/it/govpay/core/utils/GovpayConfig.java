@@ -82,7 +82,9 @@ public class GovpayConfig {
 	private boolean batchAvvisiPagamento;
 	private boolean batchAvvisaturaDigitale;
 	private boolean batchCaricamentoTracciati;
-
+	private boolean timeoutPendenti;
+	private Integer timeoutPendentiMins;
+	
 	private Properties[] props;
 	private IConservazione conservazionePlugin;
 	
@@ -114,6 +116,8 @@ public class GovpayConfig {
 		this.dumpAPIRestGETResponse = false;
 		this.batchAvvisaturaDigitale = false;
 		this.batchCaricamentoTracciati = false;
+		this.timeoutPendenti = false;
+		this.timeoutPendentiMins = null;
 
 		try {
 
@@ -322,6 +326,16 @@ public class GovpayConfig {
 			if(dumpAPIRestGETResponseMessageString != null && Boolean.valueOf(dumpAPIRestGETResponseMessageString))
 				this.dumpAPIRestGETResponse = true;
 			
+			String timeoutPendentiString = getProperty("it.govpay.modello3.timeoutPagamento", props, false, log);
+			if(timeoutPendentiString != null && !timeoutPendentiString.equalsIgnoreCase("false")) {
+				try{
+					this.timeoutPendentiMins = Integer.parseInt(timeoutPendentiString);
+					this.timeoutPendenti = true;
+				} catch(NumberFormatException nfe) {
+					log.warn("La proprieta \"it.govpay.modello3.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
+				}
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -492,4 +506,12 @@ public class GovpayConfig {
 		return batchCaricamentoTracciati;
 	}
 	
+	public boolean isTimeoutPendenti() {
+		return timeoutPendenti;
+	}
+
+	public Integer getTimeoutPendentiMins() {
+		return timeoutPendentiMins;
+	}
+
 }

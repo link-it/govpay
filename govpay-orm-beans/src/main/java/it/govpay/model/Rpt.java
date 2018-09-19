@@ -20,7 +20,9 @@
 package it.govpay.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -40,6 +42,22 @@ public class Rpt extends BasicModel{
 	public static final int VERSIONE_ENCODED = 060200;
 	
 	public static final String CCP_NA = "n/a";
+	
+	public static final List<StatoRpt> stati_pendenti;
+	
+	static {
+		stati_pendenti = new ArrayList<Rpt.StatoRpt>();
+		stati_pendenti.add(StatoRpt.RPT_ATTIVATA);
+		stati_pendenti.add(StatoRpt.RPT_RICEVUTA_NODO);
+		stati_pendenti.add(StatoRpt.RPT_ACCETTATA_NODO);
+		stati_pendenti.add(StatoRpt.RPT_INVIATA_A_PSP);
+		stati_pendenti.add(StatoRpt.RPT_ACCETTATA_PSP);
+		stati_pendenti.add(StatoRpt.RT_RICEVUTA_NODO);
+		stati_pendenti.add(StatoRpt.RT_RIFIUTATA_NODO);
+		stati_pendenti.add(StatoRpt.RT_ACCETTATA_NODO);
+		stati_pendenti.add(StatoRpt.RT_RIFIUTATA_PA);
+		stati_pendenti.add(StatoRpt.RT_ESITO_SCONOSCIUTO_PA);
+	}
 	
 	public enum FirmaRichiesta {
 	    CA_DES("1"),

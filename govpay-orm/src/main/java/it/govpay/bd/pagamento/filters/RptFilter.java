@@ -255,9 +255,10 @@ public class RptFilter extends AbstractFilter {
 			this.stato.add(stato.name());
 	}
 	
-	public void setStato(List<String> stato) {
-		this.stato = new ArrayList<>();
-		this.stato.addAll(stato);
+	public void setStato(List<StatoRpt> stati) {
+		this.stato = new ArrayList<String>();
+		for(StatoRpt s : stati)
+			this.stato.add(s.name());
 	}
 
 	public Boolean getConservato() {
