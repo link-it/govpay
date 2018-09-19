@@ -19,8 +19,8 @@
  */
 package it.govpay.orm.dao;
 
-import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
 
 
 /**	
@@ -906,6 +906,24 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IAvvisoService getAvvisoService() throws ServiceException,NotImplementedException;
+	
+		
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VersamentoIncasso type:VersamentoIncasso
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VersamentoIncasso}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VersamentoIncasso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() throws ServiceException,NotImplementedException;
+	
 	
 	
 	

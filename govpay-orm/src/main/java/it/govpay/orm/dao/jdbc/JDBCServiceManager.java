@@ -94,6 +94,7 @@ import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaServiceSearch;
 import it.govpay.orm.dao.IUtenzaTributoService;
 import it.govpay.orm.dao.IUtenzaTributoServiceSearch;
+import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
 import it.govpay.orm.dao.IEsitoAvvisaturaServiceSearch;
@@ -1282,6 +1283,25 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IAvvisoService getAvvisoService() throws ServiceException,NotImplementedException{
 		return new JDBCAvvisoService(this);
+	}
+
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VersamentoIncasso type:VersamentoIncasso
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VersamentoIncasso}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VersamentoIncasso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVersamentoIncassoServiceSearch(this);
 	}
 	
 	

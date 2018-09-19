@@ -19,9 +19,16 @@ public class Nota implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L; 
 	
+	public enum TipoNota {
+		NOTA_UTENTE
+	}
+	
 	private String autore = null;
 	private Date data = null;
 	private String testo = null;
+	private TipoNota tipo =null;
+	private String oggetto = null;
+	
 	public String getAutore() {
 		return this.autore;
 	}
@@ -40,6 +47,16 @@ public class Nota implements Serializable{
 	public void setTesto(String testo) {
 		this.testo = testo;
 	}
-
-
+	public TipoNota getTipo() {
+		return tipo;
+	}
+	public void setTipo(TipoNota tipo) {
+		this.tipo = tipo;
+	}
+	public String getOggetto() {
+		return oggetto;
+	}
+	public void setOggetto(String oggetto) {
+		this.oggetto = oggetto;
+	}
 }

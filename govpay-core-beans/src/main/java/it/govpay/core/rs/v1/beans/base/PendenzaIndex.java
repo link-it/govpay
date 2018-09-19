@@ -30,6 +30,9 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "unitaOperativa",
 "stato",
 "segnalazioni",
+"anomalo",
+"verificato",
+"note",
 "rpp",
 "pagamenti",
 })
@@ -91,6 +94,15 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
+  
+  @JsonProperty("anomalo")
+  private Boolean anomalo = null;
+  
+  @JsonProperty("verificato")
+  private Boolean verificato = null;
+  
+  @JsonProperty("note")
+  private List<Nota> note = null;
   
   @JsonProperty("rpp")
   private String rpp = null;
@@ -397,6 +409,53 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   * indicazione se sono presenti eventuali anomalie
+   **/
+  public PendenzaIndex anomalo(Boolean anomalo) {
+    this.anomalo = anomalo;
+    return this;
+  }
+
+  @JsonProperty("anomalo")
+  public Boolean Anomalo() {
+    return anomalo;
+  }
+  public void setAnomalo(Boolean anomalo) {
+    this.anomalo = anomalo;
+  }
+
+  /**
+   * indicazione se eventuali anomalie sono state verificate da un operatore
+   **/
+  public PendenzaIndex verificato(Boolean verificato) {
+    this.verificato = verificato;
+    return this;
+  }
+
+  @JsonProperty("verificato")
+  public Boolean Verificato() {
+    return verificato;
+  }
+  public void setVerificato(Boolean verificato) {
+    this.verificato = verificato;
+  }
+
+  /**
+   **/
+  public PendenzaIndex note(List<Nota> note) {
+    this.note = note;
+    return this;
+  }
+
+  @JsonProperty("note")
+  public List<Nota> getNote() {
+    return note;
+  }
+  public void setNote(List<Nota> note) {
+    this.note = note;
+  }
+
+  /**
    * Url per l'elenco delle rpp emesse per la pendenza
    **/
   public PendenzaIndex rpp(String rpp) {
@@ -456,13 +515,16 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(this.unitaOperativa, pendenzaIndex.unitaOperativa) &&
         Objects.equals(this.stato, pendenzaIndex.stato) &&
         Objects.equals(this.segnalazioni, pendenzaIndex.segnalazioni) &&
+        Objects.equals(anomalo, pendenzaIndex.anomalo) &&
+        Objects.equals(verificato, pendenzaIndex.verificato) &&
+        Objects.equals(note, pendenzaIndex.note) &&
         Objects.equals(this.rpp, pendenzaIndex.rpp) &&
         Objects.equals(this.pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idA2A, this.idPendenza, this.dominio, this.unitaOperativa, this.stato, this.segnalazioni, this.rpp, this.pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, anomalo, verificato, note, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -498,6 +560,9 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    unitaOperativa: ").append(this.toIndentedString(this.unitaOperativa)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
+    sb.append("    anomalo: ").append(toIndentedString(anomalo)).append("\n");
+    sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
+    sb.append("    note: ").append(toIndentedString(note)).append("\n");
     sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
     sb.append("    pagamenti: ").append(this.toIndentedString(this.pagamenti)).append("\n");
     sb.append("}");

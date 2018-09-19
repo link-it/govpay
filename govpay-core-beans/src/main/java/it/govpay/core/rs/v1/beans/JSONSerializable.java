@@ -29,6 +29,10 @@ public abstract class JSONSerializable {
 	
 	public String toJSON(String fields,SerializationConfig serializationConfig) throws ServiceException {
 		try {
+			if(fields != null && !fields.isEmpty()) {
+				serializationConfig.setIncludes(Arrays.asList(fields.split(",")));
+				serializationConfig.setExcludes(null); 
+			}
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			return serializer.getObject(this);
 		} catch(org.openspcoop2.utils.serialization.IOException e) {

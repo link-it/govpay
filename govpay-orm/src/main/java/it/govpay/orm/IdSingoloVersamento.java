@@ -37,6 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idTributo" type="{http://www.govpay.it/orm}id-tributo" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="statoSingoloVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -57,6 +58,7 @@ import java.io.Serializable;
   propOrder = {
   	"idVersamento",
   	"codSingoloVersamentoEnte",
+  	"indiceDati",
   	"idTributo",
   	"note",
   	"statoSingoloVersamento",
@@ -98,6 +100,14 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
 
   public void setCodSingoloVersamentoEnte(java.lang.String codSingoloVersamentoEnte) {
     this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
+  }
+
+  public java.lang.Integer getIndiceDati() {
+    return this.indiceDati;
+  }
+
+  public void setIndiceDati(java.lang.Integer indiceDati) {
+    this.indiceDati = indiceDati;
   }
 
   public IdTributo getIdTributo() {
@@ -145,6 +155,10 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codSingoloVersamentoEnte;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @XmlElement(name="indiceDati",required=true,nillable=false)
+  protected java.lang.Integer indiceDati;
 
   @XmlElement(name="idTributo",required=false,nillable=false)
   protected IdTributo idTributo;

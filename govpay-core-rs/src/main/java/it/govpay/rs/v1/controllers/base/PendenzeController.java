@@ -87,6 +87,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	}
 
 	public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
+		return pendenzeIdA2AIdPendenzaGET(user, uriInfo, httpHeaders, idA2A, idPendenza, false);
+	}
+
+	public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -100,6 +104,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
 
+			leggiPendenzaDTO.setInfoIncasso(addInfoIncasso);
 			leggiPendenzaDTO.setCodA2A(idA2A);
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
 
@@ -107,7 +112,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
+			Pendenza pendenza = addInfoIncasso ? 
+					PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti())
+					: PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
@@ -118,6 +125,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 	}
 
 	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
+		return pendenzeGET(user, uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, false);
+	}
+
+	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, boolean addInfoIncasso) {
 		GpContext ctx = null;
 		String transactionId = null;
 
@@ -132,7 +143,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			// Parametri - > DTO Input
 
-			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
+			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user,addInfoIncasso);
 
 			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
@@ -153,6 +164,8 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			// INIT DAO
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			
+			listaPendenzeDTO.setInfoIncasso(addInfoIncasso); 
 
 			// CHIAMATA AL DAO
 
@@ -162,7 +175,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			List<PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento());
+				PendenzaIndex rsModel = addInfoIncasso ? PendenzeConverter.toRsModelIndexConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso()) : PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento()); 
 				results.add(rsModel);
 			}
 
@@ -180,8 +193,12 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+		return pendenzeIdA2AIdPendenzaPATCH(user, uriInfo, httpHeaders, idA2A, idPendenza, is, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, boolean addInfoIncasso) {
 		String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -231,10 +248,14 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			leggiPendenzaDTO.setCodA2A(idA2A);
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
+			leggiPendenzaDTO.setInfoIncasso(addInfoIncasso);
 
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza = PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
+			Pendenza pendenza = 
+					addInfoIncasso ? 
+					PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti())
+					: PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		} catch(GovPayException e) {

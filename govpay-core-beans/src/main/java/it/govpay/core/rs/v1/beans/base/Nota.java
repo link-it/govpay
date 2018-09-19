@@ -12,6 +12,8 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "autore",
 "data",
 "testo",
+"oggetto",
+"tipo",
 })
 public class Nota extends JSONSerializable {
   
@@ -23,6 +25,12 @@ public class Nota extends JSONSerializable {
   
   @JsonProperty("testo")
   private String testo = null;
+  
+  @JsonProperty("oggetto")
+  private String oggetto = null;
+  
+  @JsonProperty("tipo")
+  private TipoNota tipo = null;
   
   /**
    * Username dell'operatore che ha inserito la nota
@@ -72,6 +80,37 @@ public class Nota extends JSONSerializable {
     this.testo = testo;
   }
 
+  /**
+   * Oggetto della nota
+   **/
+  public Nota oggetto(String oggetto) {
+    this.oggetto = oggetto;
+    return this;
+  }
+
+  @JsonProperty("oggetto")
+  public String getOggetto() {
+    return oggetto;
+  }
+  public void setOggetto(String oggetto) {
+    this.oggetto = oggetto;
+  }
+
+  /**
+   **/
+  public Nota tipo(TipoNota tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+
+  @JsonProperty("tipo")
+  public TipoNota getTipo() {
+    return tipo;
+  }
+  public void setTipo(TipoNota tipo) {
+    this.tipo = tipo;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -81,14 +120,16 @@ public class Nota extends JSONSerializable {
       return false;
     }
     Nota nota = (Nota) o;
-    return Objects.equals(this.autore, nota.autore) &&
-        Objects.equals(this.data, nota.data) &&
-        Objects.equals(this.testo, nota.testo);
+    return Objects.equals(autore, nota.autore) &&
+        Objects.equals(data, nota.data) &&
+        Objects.equals(testo, nota.testo) &&
+        Objects.equals(oggetto, nota.oggetto) &&
+        Objects.equals(tipo, nota.tipo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.autore, this.data, this.testo);
+    return Objects.hash(autore, data, testo, oggetto, tipo);
   }
 
   public static Nota parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -105,9 +146,11 @@ public class Nota extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Nota {\n");
     
-    sb.append("    autore: ").append(this.toIndentedString(this.autore)).append("\n");
-    sb.append("    data: ").append(this.toIndentedString(this.data)).append("\n");
-    sb.append("    testo: ").append(this.toIndentedString(this.testo)).append("\n");
+    sb.append("    autore: ").append(toIndentedString(autore)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
+    sb.append("    testo: ").append(toIndentedString(testo)).append("\n");
+    sb.append("    oggetto: ").append(toIndentedString(oggetto)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("}");
     return sb.toString();
   }

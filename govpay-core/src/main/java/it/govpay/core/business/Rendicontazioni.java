@@ -57,6 +57,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IuvBD;
@@ -268,7 +269,7 @@ public class Rendicontazioni extends BasicBD {
 								rendicontazione.setImporto(dsp.getSingoloImportoPagato());
 								rendicontazione.setIndiceDati(indiceDati);
 								
-								totaleImportiRendicontati = totaleImportiRendicontati.add(importoRendicontato);
+								totaleImportiRendicontati = totaleImportiRendicontati.add(importoRendicontato);	
 
 								// Cerco il pagamento riferito
 								it.govpay.bd.model.Pagamento pagamento = null;
@@ -277,6 +278,10 @@ public class Rendicontazioni extends BasicBD {
 
 									// Pagamento trovato. Faccio i controlli semantici
 									rendicontazione.setIdPagamento(pagamento.getId());
+									
+									// imposto l'id singolo versamento
+									SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(this);
+									rendicontazione.setIdSingoloVersamento(singoloVersamento.getId());
 
 									// Verifico l'importo
 									if(rendicontazione.getEsito().equals(EsitoRendicontazione.REVOCATO)) {
@@ -365,6 +370,15 @@ public class Rendicontazioni extends BasicBD {
 												log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
 												rendicontazione.addAnomalia("007114", "Il versamento presenta piu' singoli versamenti");
 												continue;
+											}
+											
+											// inserisco l'id singolo versamento corrispondente alla posizione											
+											for (SingoloVersamento sv : versamento.getSingoliVersamenti(this)) {
+												if(sv.getIndiceDati().intValue() == rendicontazione.getIndiceDati().intValue()) {
+													rendicontazione.setIdSingoloVersamento(sv.getId());
+													break;
+												}
+												
 											}
 											
 											// Trovato versamento.

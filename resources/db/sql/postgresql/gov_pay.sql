@@ -376,6 +376,9 @@ CREATE TABLE versamenti
 	tipo_pagamento INT,
 	da_avvisare BOOLEAN NOT NULL,
 	cod_avvisatura VARCHAR(20),
+	ack BOOLEAN NOT NULL,
+	note TEXT,
+	anomalo BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_dominio BIGINT NOT NULL,
@@ -413,6 +416,7 @@ CREATE TABLE singoli_versamenti
 	codice_contabilita VARCHAR(255),
 	descrizione VARCHAR(256),
 	dati_allegati TEXT,
+	indice_dati INT NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_singoli_versamenti') NOT NULL,
 	id_versamento BIGINT NOT NULL,
@@ -420,7 +424,7 @@ CREATE TABLE singoli_versamenti
 	id_iban_accredito BIGINT,
 	id_iban_appoggio BIGINT,
 	-- unique constraints
-	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
+	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
@@ -754,9 +758,11 @@ CREATE TABLE rendicontazioni
 	id BIGINT DEFAULT nextval('seq_rendicontazioni') NOT NULL,
 	id_fr BIGINT NOT NULL,
 	id_pagamento BIGINT,
+	id_singolo_versamento BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
 	CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
+	CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 );
 
@@ -929,4 +935,61 @@ CREATE TABLE sonde
 	-- fk/pk keys constraints
 	CONSTRAINT pk_sonde PRIMARY KEY (nome)
 );
+
+-- Sezione Viste
+
+CREATE VIEW versamenti_incassi AS SELECT
+versamenti.id as id,
+MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,          
+MAX(versamenti.nome) as nome,                         
+MAX(versamenti.importo_totale) as importo_totale,               
+MAX(versamenti.stato_versamento) as stato_versamento,             
+MAX(versamenti.descrizione_stato) as descrizione_stato,           
+MAX(CASE WHEN versamenti.aggiornabile = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
+MAX(versamenti.data_creazione) as data_creazione,               
+MAX(versamenti.data_validita) as data_validita,                
+MAX(versamenti.data_scadenza) as data_scadenza,                
+MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
+MAX(versamenti.causale_versamento) as causale_versamento,           
+MAX(versamenti.debitore_tipo) as debitore_tipo,                
+MAX(versamenti.debitore_identificativo) as debitore_identificativo,      
+MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,          
+MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,           
+MAX(versamenti.debitore_civico) as debitore_civico,              
+MAX(versamenti.debitore_cap) as debitore_cap,                 
+MAX(versamenti.debitore_localita) as debitore_localita,            
+MAX(versamenti.debitore_provincia) as debitore_provincia,           
+MAX(versamenti.debitore_nazione) as debitore_nazione,             
+MAX(versamenti.debitore_email) as debitore_email,               
+MAX(versamenti.debitore_telefono) as debitore_telefono,            
+MAX(versamenti.debitore_cellulare) as debitore_cellulare,           
+MAX(versamenti.debitore_fax) as debitore_fax,                 
+MAX(versamenti.tassonomia_avviso) as tassonomia_avviso,            
+MAX(versamenti.tassonomia) as tassonomia,                   
+MAX(versamenti.cod_lotto) as cod_lotto,                    
+MAX(versamenti.cod_versamento_lotto) as cod_versamento_lotto,         
+MAX(versamenti.cod_anno_tributario) as cod_anno_tributario,          
+MAX(versamenti.cod_bundlekey) as cod_bundlekey,                
+MAX(versamenti.dati_allegati) as dati_allegati,                
+MAX(versamenti.incasso) as incasso,                      
+MAX(versamenti.anomalie) as anomalie,                     
+MAX(versamenti.iuv_versamento) as iuv_versamento,               
+MAX(versamenti.numero_avviso) as numero_avviso,                
+MAX(versamenti.avvisatura) as avvisatura,                   
+MAX(versamenti.tipo_pagamento) as tipo_pagamento,               
+MAX(versamenti.id_dominio) as id_dominio,                   
+MAX(versamenti.id_uo) as id_uo,                        
+MAX(versamenti.id_applicazione) as id_applicazione,             
+MAX(CASE WHEN versamenti.da_avvisare = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS da_avvisare,
+MAX(versamenti.cod_avvisatura) as cod_avvisatura,               
+MAX(versamenti.id_tracciato) as id_tracciato,      
+MAX(CASE WHEN versamenti.ack = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS ack,
+MAX(versamenti.note) as note,
+MAX(CASE WHEN versamenti.anomalo = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS anomalo,
+MAX(pagamenti.data_pagamento) as data_pagamento,            
+SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
+SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
+MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento
+FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
+GROUP BY versamenti.id;
 

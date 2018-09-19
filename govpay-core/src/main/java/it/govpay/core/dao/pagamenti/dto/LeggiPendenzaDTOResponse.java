@@ -9,6 +9,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.bd.model.Applicazione;
 
 /**
@@ -19,6 +20,7 @@ import it.govpay.bd.model.Applicazione;
  */
 public class LeggiPendenzaDTOResponse {
 
+	private VersamentoIncasso versamentoIncasso;
 	private Versamento versamento;
 	private List<SingoloVersamento> lstSingoliVersamenti;
 	private UnitaOperativa unitaOperativa;
@@ -72,6 +74,14 @@ public class LeggiPendenzaDTOResponse {
 
 	public void setAvvisoPdf(byte[] avvisoPdf) {
 		this.avvisoPdf = avvisoPdf;
+	}
+
+	public VersamentoIncasso getVersamentoIncasso() {
+		return versamentoIncasso;
+	}
+
+	public void setVersamentoIncasso(VersamentoIncasso versamentoIncasso) {
+		this.versamentoIncasso = versamentoIncasso;
 	}
 	
 }

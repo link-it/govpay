@@ -54,7 +54,7 @@ import java.io.Serializable;
  * 			&lt;element name="wispKeyWisp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="wispHtml" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataRichiesta" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="urlRitorno" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="urlRitorno" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="multiBeneficiario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -433,7 +433,7 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   protected java.util.Date dataRichiesta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="urlRitorno",required=true,nillable=false)
+  @XmlElement(name="urlRitorno",required=false,nillable=false)
   protected java.lang.String urlRitorno;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")

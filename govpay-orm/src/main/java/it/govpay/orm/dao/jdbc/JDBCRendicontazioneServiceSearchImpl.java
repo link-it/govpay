@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -46,6 +45,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.Rendicontazione;
@@ -154,6 +154,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Rendicontazione.model())));
 			fields.add(new CustomField("id_fr", Long.class, "id_fr", this.getFieldConverter().toTable(Rendicontazione.model())));
 			fields.add(new CustomField("id_pagamento", Long.class, "id_pagamento", this.getFieldConverter().toTable(Rendicontazione.model())));
+			fields.add(new CustomField("id_singolo_versamento", Long.class, "id_singolo_versamento", this.getFieldConverter().toTable(Rendicontazione.model())));
 			fields.add(Rendicontazione.model().IUV);
 			fields.add(Rendicontazione.model().IUR);
 			fields.add(Rendicontazione.model().INDICE_DATI);
@@ -174,6 +175,12 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 
 				if(idPagamentoObj instanceof Long)
 					id_pagamento = (Long) idPagamentoObj;
+				
+				Long id_singolo_versamento = null;
+				Object idSingoloVersamentoObj = map.remove("id_singolo_versamento");
+
+				if(idSingoloVersamentoObj instanceof Long)
+					id_singolo_versamento = (Long) idSingoloVersamentoObj;
 
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
@@ -201,6 +208,21 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 							id_rendicontazione_pagamento.setId(id_pagamento);
 							rendicontazione.setIdPagamento(id_rendicontazione_pagamento);
 						}
+				}
+				
+				if(id_singolo_versamento != null){
+					if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+							){
+						it.govpay.orm.IdSingoloVersamento id_pagamento_singoloVersamento = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_pagamento_singoloVersamento = ((JDBCSingoloVersamentoServiceSearch)(this.getServiceManager().getSingoloVersamentoServiceSearch())).findId(id_singolo_versamento, false);
+						}else{
+							id_pagamento_singoloVersamento = new it.govpay.orm.IdSingoloVersamento();
+						}
+						id_pagamento_singoloVersamento.setId(id_singolo_versamento);
+						rendicontazione.setIdSingoloVersamento(id_pagamento_singoloVersamento);
+					}
 				}
 				
 				list.add(rendicontazione);
@@ -590,6 +612,67 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 
 		}
 		
+		String tableSingoliVersamenti = this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){
+			String tableVersamenti = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			String tableApplicazioni = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableVersamenti+".id_applicazione="+tableApplicazioni+".id");
+
+			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableSingoliVersamenti);
+
+				String tablePagamenti = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
+				sqlQueryObject.addWhereCondition(tablePagamenti+".id_versamento="+tableSingoliVersamenti+".id");
+
+			}
+
+			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableVersamenti);
+				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+
+			}
+
+		}
+
+
+
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)){
+			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
+			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_singolo_versamento="+tableName2+".id");
+
+			if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+				if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)==false){
+					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+				}
+				String tableName3 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_versamento");
+
+			}
+
+			if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
+				if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)==false){
+					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+				}
+				String tableName3 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_tributo");
+
+			}
+
+		}
+
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+		}
+
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
+			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
+		}
+		
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRendicontazione id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -625,6 +708,55 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO))
 			));
 
+		// Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO))
+			));
+
+		// Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO))
+			));
+
+ 
         return mapTableToPKColumn;		
 	}
 	

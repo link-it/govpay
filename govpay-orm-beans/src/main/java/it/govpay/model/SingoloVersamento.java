@@ -67,6 +67,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String codContabilita;
 	private String datiAllegati;
 	private String descrizione;
+	private Integer indiceDati;
 	
 	
 	@Override
@@ -195,5 +196,14 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	public void setIdIbanAppoggio(Long idIbanAppoggio) {
 		this.idIbanAppoggio = idIbanAppoggio;
 	}
+
+	public Integer getIndiceDati() {
+		return indiceDati;
+	}
+
+	public void setIndiceDati(Integer indiceDati) {
+		this.indiceDati = indiceDati;
+	}
+	
 }
 

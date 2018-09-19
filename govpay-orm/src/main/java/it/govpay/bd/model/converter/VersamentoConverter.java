@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
@@ -118,6 +119,16 @@ public class VersamentoConverter {
 			if(vo.getIdTracciatoAvvisatura()!=null)
 				dto.setIdTracciatoAvvisatura(vo.getIdTracciatoAvvisatura().getId());
 			
+			dto.setAck(vo.isAck());
+			if(vo.getNote()!=null)
+				try {
+					dto.setNote(vo.getNote());
+				} catch(IOException e) {
+					throw new ServiceException(e);
+				}
+			
+			dto.setAnomalo(vo.isAnomalo());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -199,7 +210,16 @@ public class VersamentoConverter {
 				idTracciato.setIdTracciato(dto.getIdTracciatoAvvisatura());
 				vo.setIdTracciatoAvvisatura(idTracciato);
 			}
+			
+			vo.setAck(dto.isAck());
+			if(dto.getNote()!=null && !dto.getNote().isEmpty())
+				try {
+					vo.setNote(dto.getNoteString());
+				} catch(IOException e) {
+					throw new ServiceException(e);
+				}
 
+			vo.setAnomalo(dto.isAnomalo());
 			return vo;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

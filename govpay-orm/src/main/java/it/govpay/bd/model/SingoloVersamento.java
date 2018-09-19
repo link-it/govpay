@@ -100,7 +100,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
-		if(ibanAccredito.getId() != null)
+		if(ibanAccredito != null && ibanAccredito.getId() != null)
 			this.setIdIbanAccredito(ibanAccredito.getId());
 	}
 	
@@ -117,7 +117,6 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 		else
 			return this.getTributo(bd).getCodContabilita();
 	}
-
 
 }
 

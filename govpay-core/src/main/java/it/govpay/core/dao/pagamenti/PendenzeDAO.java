@@ -33,11 +33,16 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.bd.viste.VersamentiIncassiBD;
+import it.govpay.bd.viste.filters.VersamentoIncassoFilter;
+import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
@@ -61,6 +66,7 @@ import it.govpay.core.rs.v1.beans.base.StatoPendenza;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.model.IAutorizzato;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -72,6 +78,8 @@ public class PendenzeDAO extends BaseDAO{
 	private static final String NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0 = "Non e'' consentito aggiornare lo stato di una pendenza ad {0}";
 	private static final String PATH_DESCRIZIONE_STATO = "/descrizioneStato";
 	private static final String PATH_STATO = "/stato";
+	private static final String PATH_ACK = "/ack";
+	public static final String PATH_NOTA = "/nota";
 
 	public PendenzeDAO() {
 	}
@@ -81,7 +89,7 @@ public class PendenzeDAO extends BaseDAO{
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return this.listaPendenze(listaPendenzaDTO, bd);
+			return listaPendenzaDTO.isInfoIncasso() ? this.listaPendenzeConInformazioniIncasso(listaPendenzaDTO, bd) : this.listaPendenze(listaPendenzaDTO, bd);
 		}finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -166,9 +174,98 @@ public class PendenzeDAO extends BaseDAO{
 
 		return new ListaPendenzeDTOResponse(count, resList);
 	}
+	
+	public ListaPendenzeDTOResponse listaPendenzeConInformazioniIncasso(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+		// Autorizzazione sui domini
+		List<Long> idDomini = AclEngine.getIdDominiAutorizzati((Utenza) listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		if(idDomini == null) {
+			throw new NotAuthorizedException("L'utenza autenticata ["+listaPendenzaDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+		}
+		
+		VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
+		VersamentoIncassoFilter filter = versamentiBD.newFilter();
+		
+		if(idDomini != null && idDomini.size() > 0)
+			filter.setIdDomini(idDomini);
+
+		filter.setOffset(listaPendenzaDTO.getOffset());
+		filter.setLimit(listaPendenzaDTO.getLimit());
+		filter.setDataInizio(listaPendenzaDTO.getDataDa());
+		filter.setDataFine(listaPendenzaDTO.getDataA());
+		if(listaPendenzaDTO.getStato()!=null) {
+			try {
+				it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento statoVersamento = null;
+				StatoPendenza statoPendenza = StatoPendenza.valueOf(listaPendenzaDTO.getStato());
+				
+				//TODO mapping...piu' stati?
+				switch(statoPendenza) {
+				case ANNULLATA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.ANNULLATO;
+					break;
+				case ESEGUITA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.ESEGUITO;
+					break;
+				case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.PARZIALMENTE_ESEGUITO;
+					break;
+				case NON_ESEGUITA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO;
+					break;
+				case SCADUTA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO; //TODO aggiungere data scadenza < ora
+					break;
+				case INCASSATA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.INCASSATO;
+				default:
+					break;
+				
+				}
+				filter.setStatoVersamento(statoVersamento);
+			} catch(Exception e) {
+				return new ListaPendenzeDTOResponse(0, new ArrayList<LeggiPendenzaDTOResponse>());
+			}
+		}
+		filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
+		filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
+		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
+		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
+		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
+
+		long count = versamentiBD.count(filter);
+
+		List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
+		if(count > 0) {
+			List<VersamentoIncasso> findAll = versamentiBD.findAll(filter);
+
+			for (VersamentoIncasso versamentoIncasso : findAll) {
+				LeggiPendenzaDTOResponse elem = new LeggiPendenzaDTOResponse();
+				elem.setVersamentoIncasso(versamentoIncasso);
+				elem.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
+				elem.setDominio(versamentoIncasso.getDominio(versamentiBD));
+				elem.setUnitaOperativa(versamentoIncasso.getUo(versamentiBD));
+				List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
+				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+					singoloVersamento.getCodContabilita(bd);
+					singoloVersamento.getIbanAccredito(bd);
+					singoloVersamento.getTipoContabilita(bd);
+					singoloVersamento.getTributo(bd);
+					
+				}
+				elem.setLstSingoliVersamenti(singoliVersamenti);
+
+				resList.add(elem);
+			}
+		} 
+
+		return new ListaPendenzeDTOResponse(count, resList);
+	}
 
 	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
+		if(leggiPendenzaDTO.isInfoIncasso())
+			_leggiPendenzaConInfromazionIncasso(leggiPendenzaDTO, response);
+		else 
+			_leggiPendenza(leggiPendenzaDTO, response);
+		return response;
+	}
+
+	private void _leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO, LeggiPendenzaDTOResponse response)
+			throws ServiceException, NotAuthenticatedException, NotAuthorizedException, PendenzaNonTrovataException {
 		Versamento versamento;
 		BasicBD bd = null;
 		
@@ -204,7 +301,45 @@ public class PendenzeDAO extends BaseDAO{
 			if(bd != null)
 				bd.closeConnection();
 		}
-		return response;
+	}
+	
+	private void _leggiPendenzaConInfromazionIncasso(LeggiPendenzaDTO leggiPendenzaDTO, LeggiPendenzaDTOResponse response)
+			throws ServiceException, NotAuthenticatedException, NotAuthorizedException, PendenzaNonTrovataException {
+		VersamentoIncasso versamentoIncasso;
+		BasicBD bd = null;
+		
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+
+			VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
+			versamentoIncasso = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
+			
+			Dominio dominio = versamentoIncasso.getDominio(versamentiBD);
+			// controllo che il dominio sia autorizzato
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), null, bd);
+			
+			response.setVersamentoIncasso(versamentoIncasso);
+			response.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
+		
+			response.setDominio(dominio);
+			response.setUnitaOperativa(versamentoIncasso.getUo(versamentiBD));
+			List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
+			response.setLstSingoliVersamenti(singoliVersamenti);
+			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+				singoloVersamento.getCodContabilita(bd);
+				singoloVersamento.getIbanAccredito(bd);
+				singoloVersamento.getTipoContabilita(bd);
+				singoloVersamento.getTributo(bd);
+				
+			}
+
+		} catch (NotFoundException e) {
+			throw new PendenzaNonTrovataException(e.getMessage(), e);
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
 	}
 	
 	
@@ -231,6 +366,14 @@ public class PendenzeDAO extends BaseDAO{
 				
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
 					this.patchDescrizioneStato(versamentoLetto, op);
+				}
+				
+				if(PATH_ACK.equals(op.getPath())) {
+					this.patchAck(versamentoLetto, op);
+				}
+				
+				if(PATH_NOTA.equals(op.getPath())) {
+					this.patchNota(patchPendenzaDTO.getUser(), versamentoLetto, op);
 				}
 			}
 			
@@ -283,6 +426,34 @@ public class PendenzeDAO extends BaseDAO{
 		default:
 			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, nuovoStato.name()));
 		}
+	}
+	
+	private void patchAck(it.govpay.bd.model.Versamento versamentoLetto, PatchOp op) throws ValidationException {
+		if(!op.getOp().equals(OpEnum.REPLACE)) {
+			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
+		}
+
+		Boolean ackVersamento = (Boolean) op.getValue();
+		versamentoLetto.setAck(ackVersamento != null ? ackVersamento.booleanValue() : false);
+	}
+	
+	private void patchNota(IAutorizzato user, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op) throws ValidationException, ServiceException { 
+		if(!op.getOp().equals(OpEnum.REPLACE)) {
+			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
+		}
+		
+		String notaVersamento = (String) op.getValue();
+		it.govpay.core.rs.v1.beans.base.Nota notaFromJson = it.govpay.core.rs.v1.beans.base.Nota.parse(notaVersamento);
+		
+		
+		Nota nota = new Nota();
+		nota.setAutore(notaFromJson.getAutore() != null ? notaFromJson.getAutore() : user.getPrincipal());
+		nota.setData(new Date());
+		nota.setTesto(notaFromJson.getTesto());
+		nota.setOggetto(notaFromJson.getOggetto());
+		nota.setTipo(TipoNota.valueOf(notaFromJson.getTipo().toString()));
+				
+		versamentoLetto.getNote().add(nota);
 	}
 
 	private StatoVersamento getNuovoStatoVersamento(PatchOp op) throws ValidationException {

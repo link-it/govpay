@@ -389,6 +389,27 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "id_tracciato";
 			}
 		}
+		if(field.equals(Versamento.model().ACK)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ack";
+			}else{
+				return "ack";
+			}
+		}
+		if(field.equals(Versamento.model().NOTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".note";
+			}else{
+				return "note";
+			}
+		}
+		if(field.equals(Versamento.model().ANOMALO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".anomalo";
+			}else{
+				return "anomalo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -539,6 +560,15 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Versamento.model().ID_TRACCIATO_AVVISATURA.ID_TRACCIATO)){
 			return this.toTable(Versamento.model().ID_TRACCIATO_AVVISATURA, returnAlias);
+		}
+		if(field.equals(Versamento.model().ACK)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().NOTE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().ANOMALO)){
+			return this.toTable(Versamento.model(), returnAlias);
 		}
 
 

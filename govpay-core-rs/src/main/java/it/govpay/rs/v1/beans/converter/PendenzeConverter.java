@@ -10,6 +10,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.rs.v1.beans.base.Avviso;
+import it.govpay.core.rs.v1.beans.base.Nota;
 import it.govpay.core.rs.v1.beans.base.Avviso.StatoEnum;
 import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaIndex;
@@ -21,6 +22,49 @@ import it.govpay.core.rs.v1.beans.base.VocePendenza;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {
+	
+	public static Pendenza toRsModelConInfoIncasso(it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
+		Pendenza rsModel = toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti);
+		
+		StatoPendenza statoPendenza = null;
+
+		switch(versamento.getStatoVersamento()) {
+		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
+			break;
+		case ANOMALO: statoPendenza = StatoPendenza.NON_ESEGUITA;
+			break;
+		case ESEGUITO: 
+		case ESEGUITO_SENZA_RPT:  
+			statoPendenza = StatoPendenza.ESEGUITA;
+			if(versamento.getStatoPagamento() != null) {
+				switch (versamento.getStatoPagamento()) {
+				case INCASSATO:
+					statoPendenza = StatoPendenza.INCASSATA;
+					break;
+				case NON_PAGATO:
+				case PAGATO:
+				default:
+					break;
+				}
+			}
+			break;
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+			break;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
+			break;
+		default:
+			break;
+		
+		}
+
+		rsModel.setStato(statoPendenza);
+		rsModel.setDataPagamento(versamento.getDataPagamento());
+		rsModel.setImportoIncassato(versamento.getImportoIncassato());
+		rsModel.setImportoPagato(versamento.getImportoPagato()); 
+		
+		return rsModel;
+	}
 	
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
 			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
@@ -82,11 +126,21 @@ public class PendenzeConverter {
 			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModel(unitaOperativa));
 
 		List<VocePendenza> v = new ArrayList<>();
-		int indice = 1;
 		for(SingoloVersamento s: singoliVersamenti) {
-			v.add(toVocePendenzaRsModel(s, indice++));
+			v.add(toVocePendenzaRsModel(s));
 		}
 		rsModel.setVoci(v);
+		
+		if(versamento.getNote()!=null && !versamento.getNote().isEmpty()) {
+			List<Nota> note = new ArrayList<>();
+			for(it.govpay.bd.model.Nota nota: versamento.getNote()) {
+				note.add(NoteConverter.toRsModel(nota));
+			}
+			rsModel.setNote(note);
+		}
+		
+		rsModel.setVerificato(versamento.isAck());
+		rsModel.setAnomalo(versamento.isAnomalo());
 
 		return rsModel;
 	}
@@ -105,6 +159,45 @@ public class PendenzeConverter {
 			list.add(a);
 		}
 		return list;
+	}
+
+	public static PendenzaIndex toRsModelIndexConInfoIncasso(it.govpay.bd.viste.model.VersamentoIncasso versamento) throws ServiceException {
+		PendenzaIndex pIndex = toRsModelIndex(versamento);
+		
+		StatoPendenza statoPendenza = null;
+
+		switch(versamento.getStatoVersamento()) {
+		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
+			break;
+		case ANOMALO: statoPendenza = StatoPendenza.NON_ESEGUITA;
+			break;
+		case ESEGUITO: 
+		case ESEGUITO_SENZA_RPT:  
+			statoPendenza = StatoPendenza.ESEGUITA;
+			if(versamento.getStatoPagamento() != null) {
+				switch (versamento.getStatoPagamento()) {
+				case INCASSATO:
+					statoPendenza = StatoPendenza.INCASSATA;
+					break;
+				case NON_PAGATO:
+				case PAGATO:
+				default:
+					break;
+				}
+			}
+			break;
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+			break;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
+			break;
+		default:
+			break;
+		
+		}
+
+		pIndex.setStato(statoPendenza);
+		
+		return pIndex;
 	}
 
 	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento) throws ServiceException {
@@ -164,17 +257,29 @@ public class PendenzeConverter {
 		rsModel.setPagamenti(UriBuilderUtils.getPagamentiByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
 		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
 
+		
+		if(versamento.getNote()!=null && !versamento.getNote().isEmpty()) {
+			List<Nota> note = new ArrayList<>();
+			for(it.govpay.bd.model.Nota nota: versamento.getNote()) {
+				note.add(NoteConverter.toRsModel(nota));
+			}
+			rsModel.setNote(note);
+		}
+		
+		rsModel.setVerificato(versamento.isAck());
+		rsModel.setAnomalo(versamento.isAnomalo());
+		
 		return rsModel;
 	}
 	
-	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice) throws ServiceException {
+	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
 		rsModel.setDatiAllegati(singoloVersamento.getDatiAllegati());
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 		
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
-		rsModel.setIndice(new BigDecimal(indice));
+		rsModel.setIndice(BigDecimal.valueOf(singoloVersamento.getIndiceDati().longValue())); 
 		switch(singoloVersamento.getStatoSingoloVersamento()) {
 		case ANOMALO: rsModel.setStato(VocePendenza.StatoEnum.ANOMALO);
 			break;

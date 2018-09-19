@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
+import org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType;
 
 import it.govpay.orm.SingoloVersamento;
 
@@ -76,6 +77,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione", SingoloVersamento.model().DESCRIZIONE.getFieldType()));
 				this.setParameter(object, "setDatiAllegati", SingoloVersamento.model().DATI_ALLEGATI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_allegati", SingoloVersamento.model().DATI_ALLEGATI.getFieldType()));
+				setParameter(object, "setIndiceDati", SingoloVersamento.model().INDICE_DATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "indice_dati", SingoloVersamento.model().INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				return object;
 			}
 			
@@ -120,6 +123,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"descrizione"));
 				this.setParameter(object, "setDatiAllegati", SingoloVersamento.model().DATI_ALLEGATI.getFieldType(),
 					this.getObjectFromMap(map,"datiAllegati"));
+				setParameter(object, "setIndiceDati", SingoloVersamento.model().INDICE_DATI.getFieldType(),
+					this.getObjectFromMap(map,"indiceDati"));
 				return object;
 			}
 			

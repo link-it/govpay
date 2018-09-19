@@ -20,7 +20,6 @@
 package it.govpay.core.business;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -123,6 +122,8 @@ public class Versamento extends BasicBD {
 				
 				versamento.setCodAvvisatura(versamentoLetto.getCodAvvisatura());
 				versamento.setDaAvvisare(versamentoLetto.isDaAvvisare());
+				versamento.setAck(versamentoLetto.isAck());
+				versamento.setNote(versamentoLetto.getNote());
 				
 				// riporto iuv e numero avviso che sono gia' stati assegnati
 				if(versamento.getIuvVersamento() == null) {

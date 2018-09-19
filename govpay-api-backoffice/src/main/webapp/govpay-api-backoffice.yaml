@@ -3923,7 +3923,7 @@ components:
           example: ABC00000001
         datiAllegati:
           type: string
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.  
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
@@ -3999,7 +3999,17 @@ components:
             segnalazioni:
               type: array
               items: 
-                $ref: '#/components/schemas/segnalazione'          
+                $ref: '#/components/schemas/segnalazione'
+            anomalo:
+              type: boolean
+              description: indicazione se sono presenti eventuali anomalie
+            verificato:
+              type: boolean
+              description: indicazione se eventuali anomalie sono state verificate da un operatore
+            note:
+              type: array
+              items:
+                $ref: '#/components/schemas/nota'
         - $ref: '#/components/schemas/pendenzaBase'   
         - type: object
           required:
@@ -4038,10 +4048,42 @@ components:
               $ref: '#/components/schemas/unitaOperativa'
             stato:
               $ref: '#/components/schemas/statoPendenza'
+            descrizioneStato:
+              type: string
+              description: Descrizione estesa dello stato di elaborazione della pendenza
+              example: 'Pendenza in stato...'
             segnalazioni:
               type: array
               items: 
-                $ref: '#/components/schemas/segnalazione'          
+                $ref: '#/components/schemas/segnalazione'
+            dataUltimoAggiornamento:
+              type: string
+              format: date
+              description: Data di ultimo aggiornamento della pendenza
+              example: '2018-12-31'
+            dataPagamento:
+              type: string
+              format: date
+              description: Data di pagamento della pendenza
+              example: '2018-12-31'
+            importoPagato:
+              type: number
+              description: Importo Pagato.
+              example: 10.01
+            importoIncassato:
+              type: number
+              description: Importo Incassato.
+              example: 10.01
+            anomalo:
+              type: boolean
+              description: indicazione se sono presenti eventuali anomalie
+            verificato:
+              type: boolean
+              description: indicazione se eventuali anomalie sono state verificate da un operatore
+            note:
+              type: array
+              items:
+                $ref: '#/components/schemas/nota'
         - $ref: '#/components/schemas/pendenzaBase'   
         - type: object
           required:
@@ -4654,6 +4696,7 @@ components:
         - ESEGUITA_PARZIALE
         - ANNULLATA
         - SCADUTA
+        - INCASSATA
       description: >-
         Stato della pendenza: 
          * ESEGUITA: Pagata
@@ -4661,6 +4704,7 @@ components:
          * ESEGUITA_PARZIALE: Pagata parzialmente
          * ANNULLATA: Annullata
          * SCADUTA: Scaduta
+         * INCASSATA: Riconciliata
     statoPagamento:
       type: string
       example: ESEGUITO
@@ -4805,12 +4849,21 @@ components:
             Nome del file di esito del tracciato
           example:
             80002870923_02315520920_20180710_00_AV_ACK.zip
+    tipoNota:
+      description: > 
+        Tipologia della Nota
+         * NOTA_UTENTE: Nota utente
+      type: string
+      enum:
+        - NOTA_UTENTE
     nota:
       type: object
       required:
         - autore
         - data
         - testo
+        - oggetto
+        - tipo
       properties:
         autore:
           type: string
@@ -4827,6 +4880,12 @@ components:
           type: string
           description: Testo della nota
           example: 'Verifica pagamento'
+        oggetto:
+          type: string
+          description: Oggetto della nota
+          example: 'Verifica pagamento'
+        tipo:
+          $ref: '#/components/schemas/tipoNota'
     evento:
       type: object
       required:
