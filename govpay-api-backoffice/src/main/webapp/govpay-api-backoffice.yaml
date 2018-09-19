@@ -4140,6 +4140,14 @@ components:
             datiAllegati:
               type: string
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            riscossioni:
+              type: array
+              items: 
+                $ref: '#/components/schemas/riscossione'
+            rendicontazioni:
+              type: array
+              items: 
+                $ref: '#/components/schemas/rendicontazione'
         - oneOf:
             - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
               type: object

@@ -34,6 +34,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
@@ -330,7 +332,23 @@ public class PendenzeDAO extends BaseDAO{
 				singoloVersamento.getIbanAccredito(bd);
 				singoloVersamento.getTipoContabilita(bd);
 				singoloVersamento.getTributo(bd);
+				List<Pagamento> pagamenti = singoloVersamento.getPagamenti(bd);
+				for (Pagamento pagamento: pagamenti) {
+					this.populatePagamento(pagamento, bd);
+				}
 				
+				List<Rendicontazione> rendicontazioni = singoloVersamento.getRendicontazioni(bd); 
+				if(rendicontazioni != null) {
+					for(Rendicontazione rend: rendicontazioni) {
+						Pagamento pagamento = rend.getPagamento(bd);
+						if(pagamento != null) {
+							pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+							pagamento.getDominio(bd);
+							pagamento.getRpt(bd);
+							pagamento.getIncasso(bd);
+						}
+					}
+				}
 			}
 
 		} catch (NotFoundException e) {
@@ -339,6 +357,15 @@ public class PendenzeDAO extends BaseDAO{
 			if(bd != null)
 				bd.closeConnection();
 		}
+	}
+	
+	private void populatePagamento(Pagamento pagamento, BasicBD bd) throws ServiceException, NotFoundException {
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
+		pagamento.getRpt(bd);
+		pagamento.getDominio(bd);
+		pagamento.getRendicontazioni(bd);
+		pagamento.getIncasso(bd);
 	}
 	
 	

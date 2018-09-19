@@ -21,16 +21,21 @@ package it.govpay.bd.pagamento;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 import it.govpay.orm.IdRendicontazione;
+import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
 
 public class RendicontazioniBD extends BasicBD {
 
@@ -109,5 +114,21 @@ public class RendicontazioniBD extends BasicBD {
 		}
 	}
 	
+	public List<Rendicontazione> getRendicontazioniBySingoloVersamento(long idSingoloVersamento) throws ServiceException {
+		try {
+			IPaginatedExpression exp = this.getRendicontazioneService()
+					.newPaginatedExpression();
+			RendicontazioneFieldConverter fieldConverter = new RendicontazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.equals(new CustomField("id_singolo_versamento", Long.class, "id_singolo_versamento",fieldConverter.toTable(it.govpay.orm.Rendicontazione.model())),	idSingoloVersamento);
+			List<it.govpay.orm.Rendicontazione> singoliPagamenti = this.getRendicontazioneService().findAll(exp);
+			return RendicontazioneConverter.toDTO(singoliPagamenti);
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
+		}
+	}
 	
 }

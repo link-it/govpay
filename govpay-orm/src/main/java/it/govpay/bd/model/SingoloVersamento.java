@@ -19,11 +19,15 @@
  */
 package it.govpay.bd.model;
 
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.model.IbanAccredito;
 
@@ -36,6 +40,8 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	private transient Tributo tributo;
 	private transient IbanAccredito ibanAccredito;
 	private transient IbanAccredito ibanAppoggio;
+	private transient List<Pagamento> pagamenti;
+	private transient List<Rendicontazione> rendicontazioni;
 
 	
 	public Tributo getTributo(BasicBD bd) throws ServiceException {
@@ -118,5 +124,28 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			return this.getTributo(bd).getCodContabilita();
 	}
 
+	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException  {
+		if(this.pagamenti == null) {
+			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			this.pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(this.getId());
+		}
+		return pagamenti;
+	}
+
+	public void setPagamenti(List<Pagamento> pagamenti) {
+		this.pagamenti = pagamenti;
+	}
+
+	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException  {
+		if(this.rendicontazioni == null) {
+			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
+			this.rendicontazioni = rendicontazioniBD.getRendicontazioniBySingoloVersamento(this.getId());
+		}
+		return rendicontazioni;
+	}
+
+	public void setRendicontazioni(List<Rendicontazione> rendicontazioni) {
+		this.rendicontazioni = rendicontazioni;
+	}
 }
 

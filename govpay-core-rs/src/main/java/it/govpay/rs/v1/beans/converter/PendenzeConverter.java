@@ -8,12 +8,15 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.rs.v1.beans.base.Avviso;
-import it.govpay.core.rs.v1.beans.base.Nota;
 import it.govpay.core.rs.v1.beans.base.Avviso.StatoEnum;
+import it.govpay.core.rs.v1.beans.base.Nota;
 import it.govpay.core.rs.v1.beans.base.Pendenza;
 import it.govpay.core.rs.v1.beans.base.PendenzaIndex;
+import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.core.rs.v1.beans.base.Segnalazione;
 import it.govpay.core.rs.v1.beans.base.StatoPendenza;
 import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
@@ -25,7 +28,7 @@ public class PendenzeConverter {
 	
 	public static Pendenza toRsModelConInfoIncasso(it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
 			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
-		Pendenza rsModel = toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti);
+		Pendenza rsModel = toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti,true);
 		
 		StatoPendenza statoPendenza = null;
 
@@ -68,6 +71,11 @@ public class PendenzeConverter {
 	
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
 			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
+		return toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti, false);
+	}
+	
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti, boolean addInfoIncasso) throws ServiceException {
 		Pendenza rsModel = new Pendenza();
 		
 		if(versamento.getCodAnnoTributario()!= null)
@@ -127,7 +135,7 @@ public class PendenzeConverter {
 
 		List<VocePendenza> v = new ArrayList<>();
 		for(SingoloVersamento s: singoliVersamenti) {
-			v.add(toVocePendenzaRsModel(s));
+			v.add(toVocePendenzaRsModel(s,addInfoIncasso));
 		}
 		rsModel.setVoci(v);
 		
@@ -272,7 +280,7 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 	
-	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
+	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, boolean addInfoIncasso) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
 		rsModel.setDatiAllegati(singoloVersamento.getDatiAllegati());
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
@@ -303,6 +311,31 @@ public class PendenzeConverter {
 			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
+		}
+		
+		if(addInfoIncasso) {
+			List<Rendicontazione> rendicontazioni = singoloVersamento.getRendicontazioni(null);
+
+			
+			if(rendicontazioni != null && !rendicontazioni.isEmpty()) {
+				List<it.govpay.core.rs.v1.beans.base.Rendicontazione> rendicontazioniRsModel = new ArrayList<>();
+				for (Rendicontazione rendicontazione : rendicontazioni) {
+					it.govpay.core.rs.v1.beans.base.Rendicontazione rendicontazioneRsModel = FlussiRendicontazioneConverter.toRendicontazioneRsModel(rendicontazione);
+					rendicontazioniRsModel.add(rendicontazioneRsModel);
+				}
+				rsModel.setRendicontazioni(rendicontazioniRsModel);
+			}
+			
+			List<Pagamento> riscossioni = singoloVersamento.getPagamenti(null);
+			
+			if(riscossioni != null && !riscossioni.isEmpty()) {
+				List<it.govpay.core.rs.v1.beans.base.Riscossione> riscossioniRsModel = new ArrayList<>();
+				for (Pagamento pagamento : riscossioni) {
+					Riscossione riscossioneRsModel = RiscossioniConverter.toRsModel(pagamento);
+					riscossioniRsModel.add(riscossioneRsModel);
+				}
+				rsModel.setRiscossioni(riscossioniRsModel);
+			}
 		}
 		
 		

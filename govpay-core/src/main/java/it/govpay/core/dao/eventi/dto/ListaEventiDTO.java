@@ -1,12 +1,16 @@
 package it.govpay.core.dao.eventi.dto;
 
+import org.openspcoop2.generic_project.expression.SortOrder;
+
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.IAutorizzato;
+import it.govpay.orm.Evento;
 
 public class ListaEventiDTO extends BasicFindRequestDTO{
 
 	public ListaEventiDTO(IAutorizzato user) {
 		super(user);
+		this.addSort(Evento.model().DATA_1, SortOrder.ASC);
 	}
 
 	private String idDominio;
