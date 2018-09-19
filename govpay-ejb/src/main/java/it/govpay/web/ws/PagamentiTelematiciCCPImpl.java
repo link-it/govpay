@@ -62,6 +62,7 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -261,6 +262,28 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante l'attivazione del versamento: " + e1, e1);
 			}
 			
+			
+			RptBD rptBD = new RptBD(bd);
+			if(GovpayConfig.getInstance().isTimeoutPendenti()) {
+				// Controllo che non ci sia un pagamento in corso
+				// Prendo tutte le RPT pendenti
+				RptFilter filter = rptBD.newFilter();
+				filter.setStato(Rpt.stati_pendenti);
+				filter.setIdVersamento(versamento.getId());
+				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
+				
+				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
+				// Altrimenti lancio il fault
+				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiMins() * 60000);
+				
+				for(Rpt rpt_pendente : rpt_pendenti) {
+					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
+					if(GovpayConfig.getInstance().getTimeoutPendentiMins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
+						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
+					}
+				}
+			}
+			
 			// Verifico l'importo
 			if(bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento().compareTo(versamento.getImportoTotale()) != 0)
 				throw new NdpException(FaultPa.PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO, codDominio, "L'importo attivato [" + bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento() + "] non corrisponde all'importo del versamento [" + versamento.getImportoTotale() + "]");
@@ -295,7 +318,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			// Da specifica, le RPT ad iniziativa PSP non possono richiedere firma
 			rpt.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 
-			RptBD rptBD = new RptBD(bd);
+			
 
 			bd.setAutoCommit(false);
 			bd.enableSelectForUpdate();
@@ -536,6 +559,27 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1,e1);
 			} catch (GovPayException e1) {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante la verifica del versamento: " + e1,e1);
+			}
+			
+			RptBD rptBD = new RptBD(bd);
+			if(GovpayConfig.getInstance().isTimeoutPendenti()) {
+				// Controllo che non ci sia un pagamento in corso
+				// Prendo tutte le RPT pendenti
+				RptFilter filter = rptBD.newFilter();
+				filter.setStato(Rpt.stati_pendenti);
+				filter.setIdVersamento(versamento.getId());
+				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
+				
+				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
+				// Altrimenti lancio il fault
+				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiMins() * 60000);
+				
+				for(Rpt rpt_pendente : rpt_pendenti) {
+					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
+					if(GovpayConfig.getInstance().getTimeoutPendentiMins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
+						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
+					}
+				}
 			}
 
 			// Verifico che abbia un solo singolo versamento
