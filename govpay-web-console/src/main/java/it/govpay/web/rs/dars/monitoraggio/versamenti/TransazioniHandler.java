@@ -994,27 +994,27 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 	
 	private void setStatoTransazione(String stato, RptFilter filter) {
 		if(StringUtils.isNotEmpty(stato)) {
-			List<String> listaStati = new ArrayList<String>();
+			List<StatoRpt> listaStati = new ArrayList<StatoRpt>();
 			if(stato.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso"))) {
-				listaStati.add(StatoRpt.INTERNO_NODO.name());
-				listaStati.add(StatoRpt.RPT_ACCETTATA_NODO.name());
-				listaStati.add(StatoRpt.RPT_ACCETTATA_PSP.name());
-				listaStati.add(StatoRpt.RPT_ATTIVATA.name());
-				listaStati.add(StatoRpt.RPT_DECORSI_TERMINI.name());
-				listaStati.add(StatoRpt.RPT_ERRORE_INVIO_A_NODO.name());
-				listaStati.add(StatoRpt.RPT_INVIATA_A_PSP.name());
-				listaStati.add(StatoRpt.RPT_RICEVUTA_NODO.name());
-				listaStati.add(StatoRpt.RT_ACCETTATA_NODO.name());
-				listaStati.add(StatoRpt.RT_ESITO_SCONOSCIUTO_PA.name());
-				listaStati.add(StatoRpt.RT_RICEVUTA_NODO.name());
-				listaStati.add(StatoRpt.RT_RIFIUTATA_NODO.name());
-				listaStati.add(StatoRpt.RT_RIFIUTATA_PA.name());
+				listaStati.add(StatoRpt.INTERNO_NODO);
+				listaStati.add(StatoRpt.RPT_ACCETTATA_NODO);
+				listaStati.add(StatoRpt.RPT_ACCETTATA_PSP);
+				listaStati.add(StatoRpt.RPT_ATTIVATA);
+				listaStati.add(StatoRpt.RPT_DECORSI_TERMINI);
+				listaStati.add(StatoRpt.RPT_ERRORE_INVIO_A_NODO);
+				listaStati.add(StatoRpt.RPT_INVIATA_A_PSP);
+				listaStati.add(StatoRpt.RPT_RICEVUTA_NODO);
+				listaStati.add(StatoRpt.RT_ACCETTATA_NODO);
+				listaStati.add(StatoRpt.RT_ESITO_SCONOSCIUTO_PA);
+				listaStati.add(StatoRpt.RT_RICEVUTA_NODO);
+				listaStati.add(StatoRpt.RT_RIFIUTATA_NODO);
+				listaStati.add(StatoRpt.RT_RIFIUTATA_PA);
 			} else if(stato.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleOk"))) {
-				listaStati.add(StatoRpt.RT_ACCETTATA_PA.name());
+				listaStati.add(StatoRpt.RT_ACCETTATA_PA);
 			} else if(stato.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo"))) {
-				listaStati.add(StatoRpt.RPT_RIFIUTATA_NODO.name());
-				listaStati.add(StatoRpt.RPT_RIFIUTATA_PSP.name());
-				listaStati.add(StatoRpt.RPT_ERRORE_INVIO_A_PSP.name());
+				listaStati.add(StatoRpt.RPT_RIFIUTATA_NODO);
+				listaStati.add(StatoRpt.RPT_RIFIUTATA_PSP);
+				listaStati.add(StatoRpt.RPT_ERRORE_INVIO_A_PSP);
 			} else {
 				// donothing
 			}
