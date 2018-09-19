@@ -80,6 +80,8 @@ public class Versamento extends BasicModel {
 	private boolean daAvvisare;
 	private String codAvvisatura;
 	private Long idTracciatoAvvisatura;
+	private boolean ack;
+	private boolean anomalo;
 	
 	public String getIuvVersamento() {
 		return this.iuvVersamento;
@@ -533,6 +535,20 @@ public class Versamento extends BasicModel {
 
 	public void setIdTracciatoAvvisatura(Long idTracciatoAvvisatura) {
 		this.idTracciatoAvvisatura = idTracciatoAvvisatura;
+	}
+	public boolean isAck() {
+		return this.ack;
+	}
+	public void setAck(boolean ack) {
+		this.ack = ack;
+	}
+
+	public boolean isAnomalo() {
+		return anomalo;
+	}
+
+	public void setAnomalo(boolean anomalo) {
+		this.anomalo = anomalo;
 	}
 	
 }

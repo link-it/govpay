@@ -91,8 +91,9 @@ public class VersamentoUtils {
 		model.setImportoTotale(versamento.getImportoTotale());
 		model.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 		
+		int index = 1;
 		for(it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
-			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, bd));
+			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, index++ ,bd));
 		}
 		
 		model.setTassonomia(versamento.getTassonomia());
@@ -126,10 +127,11 @@ public class VersamentoUtils {
 	}
 
 	
-	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, BasicBD bd) throws ServiceException, GovPayException {
+	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BasicBD bd) throws ServiceException, GovPayException {
 		SingoloVersamento model = new SingoloVersamento();
 		model.setVersamento(versamento);
 		model.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
+		model.setIndiceDati(index);
 		model.setId(null);
 		model.setIdVersamento(0);
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());

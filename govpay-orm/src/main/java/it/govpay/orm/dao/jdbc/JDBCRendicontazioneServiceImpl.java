@@ -21,29 +21,24 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdRendicontazione;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
-
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-
+import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.Rendicontazione;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
  * JDBCRendicontazioneServiceImpl
@@ -104,6 +99,23 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 			}
 		}
 
+		// Object _singoloVersamento
+		Long id_singoloVersamento = null;
+		it.govpay.orm.IdSingoloVersamento idLogic_singoloVersamento = null;
+		idLogic_singoloVersamento = rendicontazione.getIdSingoloVersamento();
+		if(idLogic_singoloVersamento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_singoloVersamento = ((JDBCSingoloVersamentoServiceSearch)(this.getServiceManager().getSingoloVersamentoServiceSearch())).findTableId(idLogic_singoloVersamento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_singoloVersamento = idLogic_singoloVersamento.getId();
+				if(id_singoloVersamento==null || id_singoloVersamento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object rendicontazione
 		sqlQueryObjectInsert.addInsertTable(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()));
@@ -117,6 +129,7 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 		sqlQueryObjectInsert.addInsertField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ANOMALIE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_fr","?");
 		sqlQueryObjectInsert.addInsertField("id_pagamento","?");
+		sqlQueryObjectInsert.addInsertField("id_singolo_versamento","?");
 
 		// Insert rendicontazione
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getRendicontazioneFetch().getKeyGeneratorObject(Rendicontazione.model());
@@ -130,7 +143,8 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getStato(),Rendicontazione.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rendicontazione.getAnomalie(),Rendicontazione.model().ANOMALIE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_fr,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamento,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamento,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_singoloVersamento,Long.class)
 		);
 		rendicontazione.setId(id);
 
@@ -211,6 +225,23 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 			}
 		}
 
+		// Object _rendicontazione_singoloVersamento
+		Long id_rendicontazione_singoloVersamento = null;
+		it.govpay.orm.IdSingoloVersamento idLogic_rendicontazione_singoloVersamento = null;
+		idLogic_rendicontazione_singoloVersamento = rendicontazione.getIdSingoloVersamento();
+		if(idLogic_rendicontazione_singoloVersamento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_rendicontazione_singoloVersamento = ((JDBCSingoloVersamentoServiceSearch)(this.getServiceManager().getSingoloVersamentoServiceSearch())).findTableId(idLogic_rendicontazione_singoloVersamento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_rendicontazione_singoloVersamento = idLogic_rendicontazione_singoloVersamento.getId();
+				if(id_rendicontazione_singoloVersamento==null || id_rendicontazione_singoloVersamento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object rendicontazione
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -240,10 +271,16 @@ public class JDBCRendicontazioneServiceImpl extends JDBCRendicontazioneServiceSe
 			sqlQueryObjectUpdate.addUpdateField("id_pagamento","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_singolo_versamento","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_rendicontazione.add(new JDBCObject(id_rendicontazione_fr, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rendicontazione.add(new JDBCObject(id_rendicontazione_pagamento, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_rendicontazione.add(new JDBCObject(id_rendicontazione_singoloVersamento, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_rendicontazione.add(new JDBCObject(tableId, Long.class));

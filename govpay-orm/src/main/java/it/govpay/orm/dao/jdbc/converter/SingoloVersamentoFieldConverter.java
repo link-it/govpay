@@ -249,6 +249,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "dati_allegati";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().INDICE_DATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".indice_dati";
+			}else{
+				return "indice_dati";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -340,6 +347,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(SingoloVersamento.model().DATI_ALLEGATI)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
+		if(field.equals(SingoloVersamento.model().INDICE_DATI)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -383,6 +393,7 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO)){
 			return "domini";
 		}
+
 
 		return super.toTable(model,returnAlias);
 		

@@ -547,6 +547,9 @@ CREATE TABLE versamenti
 	tipo_pagamento NUMBER,
 	da_avvisare NUMBER NOT NULL,
 	cod_avvisatura VARCHAR2(20 CHAR),
+	ack NUMBER NOT NULL,
+	note CLOB,
+	anomalo NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -595,6 +598,7 @@ CREATE TABLE singoli_versamenti
 	codice_contabilita VARCHAR2(255 CHAR),
 	descrizione VARCHAR2(256 CHAR),
 	dati_allegati CLOB,
+	indice_dati NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -602,7 +606,7 @@ CREATE TABLE singoli_versamenti
 	id_iban_accredito NUMBER,
 	id_iban_appoggio NUMBER,
 	-- unique constraints
-	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
+	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
@@ -1051,9 +1055,11 @@ CREATE TABLE rendicontazioni
 	id NUMBER NOT NULL,
 	id_fr NUMBER NOT NULL,
 	id_pagamento NUMBER,
+	id_singolo_versamento NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
 	CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
+	CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 );
 

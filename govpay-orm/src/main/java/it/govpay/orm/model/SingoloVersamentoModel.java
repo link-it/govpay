@@ -56,6 +56,7 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.CODICE_CONTABILITA = new Field("codiceContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.INDICE_DATI = new Field("indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -78,6 +79,7 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.CODICE_CONTABILITA = new ComplexField(father,"codiceContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -112,6 +114,8 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 	public IField DESCRIZIONE = null;
 	 
 	public IField DATI_ALLEGATI = null;
+	 
+	public IField INDICE_DATI = null;
 	 
 
 	@Override

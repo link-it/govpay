@@ -53,6 +53,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VersamentoIncasso }
+     */
+    public VersamentoIncasso createVersamentoIncasso() {
+        return new VersamentoIncasso();
+    }
+
+    /**
      * Create an instance of {@link IdContoAccredito }
      */
     public IdContoAccredito createIdContoAccredito() {

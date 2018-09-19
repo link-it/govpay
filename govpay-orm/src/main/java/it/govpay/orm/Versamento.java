@@ -80,6 +80,9 @@ import java.io.Serializable;
  * 			&lt;element name="daAvvisare" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codAvvisatura" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idTracciatoAvvisatura" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ack" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="anomalo" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -138,7 +141,10 @@ import java.io.Serializable;
   	"tipoPagamento",
   	"daAvvisare",
   	"codAvvisatura",
-  	"idTracciatoAvvisatura"
+  	"idTracciatoAvvisatura",
+  	"ack",
+  	"note",
+  	"anomalo"
   }
 )
 
@@ -530,6 +536,38 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.idTracciatoAvvisatura = idTracciatoAvvisatura;
   }
 
+  public boolean isAck() {
+    return this.ack;
+  }
+
+  public boolean getAck() {
+    return this.ack;
+  }
+
+  public void setAck(boolean ack) {
+    this.ack = ack;
+  }
+
+  public java.lang.String getNote() {
+    return this.note;
+  }
+
+  public void setNote(java.lang.String note) {
+    this.note = note;
+  }
+
+  public boolean isAnomalo() {
+    return this.anomalo;
+  }
+
+  public boolean getAnomalo() {
+    return this.anomalo;
+  }
+
+  public void setAnomalo(boolean anomalo) {
+    this.anomalo = anomalo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -726,5 +764,17 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   @XmlElement(name="idTracciatoAvvisatura",required=false,nillable=false)
   protected IdTracciato idTracciatoAvvisatura;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="ack",required=true,nillable=false)
+  protected boolean ack;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="note",required=false,nillable=false)
+  protected java.lang.String note;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="anomalo",required=true,nillable=false)
+  protected boolean anomalo;
 
 }

@@ -45,6 +45,7 @@ import java.io.Serializable;
  * 			&lt;element name="anomalie" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idFR" type="{http://www.govpay.it/orm}id-fr" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idPagamento" type="{http://www.govpay.it/orm}id-pagamento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -68,7 +69,8 @@ import java.io.Serializable;
   	"stato",
   	"anomalie",
   	"idFR",
-  	"idPagamento"
+  	"idPagamento",
+  	"idSingoloVersamento"
   }
 )
 
@@ -172,6 +174,14 @@ public class Rendicontazione extends org.openspcoop2.utils.beans.BaseBean implem
     this.idPagamento = idPagamento;
   }
 
+  public IdSingoloVersamento getIdSingoloVersamento() {
+    return this.idSingoloVersamento;
+  }
+
+  public void setIdSingoloVersamento(IdSingoloVersamento idSingoloVersamento) {
+    this.idSingoloVersamento = idSingoloVersamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -229,5 +239,8 @@ public class Rendicontazione extends org.openspcoop2.utils.beans.BaseBean implem
 
   @XmlElement(name="idPagamento",required=false,nillable=false)
   protected IdPagamento idPagamento;
+
+  @XmlElement(name="idSingoloVersamento",required=false,nillable=false)
+  protected IdSingoloVersamento idSingoloVersamento;
 
 }

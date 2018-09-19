@@ -8,6 +8,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 
@@ -16,6 +17,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
@@ -53,11 +55,14 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.IAutorizzato;
 import it.govpay.orm.IdVersamento;
 import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.v2_5.gpprt.GpAvviaTransazionePagamentoResponse;
 
 public class PagamentiPortaleDAO extends BaseDAO {
+	
+	private static final String PATH_NOTA = PendenzeDAO.PATH_NOTA;
 
 	public PagamentiPortaleDAO() {
 	}
@@ -441,7 +446,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 //		}
 //	}
 
-	public LeggiPagamentoPortaleDTOResponse patch(PagamentoPatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiPagamentoPortaleDTOResponse patch(PagamentoPatchDTO patchDTO) 
+			throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException,ValidationException{
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
 		
 		BasicBD bd = null;
@@ -477,13 +483,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			for(PatchOp op: patchDTO.getOp()) {
 				
-				if("/note".equals(op.getPath())) {
+				if(PATH_NOTA.equals(op.getPath())) {
 					switch(op.getOp()) {
-					case ADD: Nota nota = new Nota();
-						nota.setAutore(patchDTO.getUser().getPrincipal());
-						nota.setData(new Date());
-						nota.setTesto((String)op.getValue());
-						pagamentoPortale.getNote().add(nota);
+					case ADD: 
+						this.patchNota(patchDTO.getUser(), pagamentoPortale, op);
 						break;
 					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
 					}
@@ -511,5 +514,20 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(bd != null)
 				bd.closeConnection();
 		}
+	}
+	
+	private void patchNota(IAutorizzato user, PagamentoPortale pagamentoPortale, PatchOp op) throws ValidationException, ServiceException { 
+		String notaVersamento = (String) op.getValue();
+		it.govpay.core.rs.v1.beans.base.Nota notaFromJson = it.govpay.core.rs.v1.beans.base.Nota.parse(notaVersamento);
+		
+		
+		Nota nota = new Nota();
+		nota.setAutore(notaFromJson.getAutore() != null ? notaFromJson.getAutore() : user.getPrincipal());
+		nota.setData(new Date());
+		nota.setTesto(notaFromJson.getTesto());
+		nota.setOggetto(notaFromJson.getOggetto());
+		nota.setTipo(TipoNota.valueOf(notaFromJson.getTipo().toString()));
+				
+		pagamentoPortale.getNote().add(nota);
 	}
 }

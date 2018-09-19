@@ -96,6 +96,7 @@ import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaTributoService;
+import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
@@ -137,9 +138,9 @@ public class BasicBD {
 	private IOperazioneService operazioneService;
 	private IAuditService auditService;
 	private IAvvisoService avvisoService;
+	private IVersamentoIncassoServiceSearch versamentoIncassoServiceSearch;
 	
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
-
 	
 	private String idTransaction;
 	private String idModulo;
@@ -217,6 +218,7 @@ public class BasicBD {
 				this.operazioneService = this.serviceManager.getOperazioneService();
 				this.auditService = this.serviceManager.getAuditService();
 				this.avvisoService = this.serviceManager.getAvvisoService();
+				this.versamentoIncassoServiceSearch = this.serviceManager.getVersamentoIncassoServiceSearch();
 				
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 			} catch(NotImplementedException e) {
@@ -563,6 +565,13 @@ public class BasicBD {
 			return this.father.getRendicontazionePagamentoServiceSearch();
 		}
 		return this.rendicontazionePagamentoServiceSearch;
+	}
+	
+	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() {
+		if(this.father != null) {
+			return this.father.getVersamentoIncassoServiceSearch();
+		}
+		return this.versamentoIncassoServiceSearch;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

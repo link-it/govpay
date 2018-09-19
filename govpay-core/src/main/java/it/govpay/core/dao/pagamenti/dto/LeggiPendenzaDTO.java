@@ -23,6 +23,7 @@ public class LeggiPendenzaDTO extends BasicCreateRequestDTO {
 	private String codPendenza;
 	private String idDominio;
 	private String numeroAvviso;
+	private boolean infoIncasso = false;
 
 	public String getCodA2A() {
 		return this.codA2A;
@@ -47,5 +48,11 @@ public class LeggiPendenzaDTO extends BasicCreateRequestDTO {
 	}
 	public void setNumeroAvviso(String numeroAvviso) {
 		this.numeroAvviso = numeroAvviso;
+	}
+	public boolean isInfoIncasso() {
+		return infoIncasso;
+	}
+	public void setInfoIncasso(boolean infoIncasso) {
+		this.infoIncasso = infoIncasso;
 	}
 }

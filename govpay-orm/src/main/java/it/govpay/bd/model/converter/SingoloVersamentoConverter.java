@@ -19,6 +19,12 @@
  */
 package it.govpay.bd.model.converter;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -26,12 +32,6 @@ import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdVersamento;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class SingoloVersamentoConverter {
 
@@ -67,6 +67,7 @@ public class SingoloVersamentoConverter {
 		dto.setProvinciaResidenza(vo.getProvinciaResidenza());
 		dto.setDatiAllegati(vo.getDatiAllegati());
 		dto.setDescrizione(vo.getDescrizione());
+		dto.setIndiceDati(vo.getIndiceDati()); 
 		return dto;
 	}
 
@@ -108,6 +109,7 @@ public class SingoloVersamentoConverter {
 		vo.setProvinciaResidenza(dto.getProvinciaResidenza());
 		vo.setDatiAllegati(dto.getDatiAllegati());
 		vo.setDescrizione(dto.getDescrizione());
+		vo.setIndiceDati(dto.getIndiceDati());
 		return vo;
 	}
 }

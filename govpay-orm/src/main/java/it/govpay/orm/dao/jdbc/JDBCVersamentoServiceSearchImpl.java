@@ -202,6 +202,9 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().TIPO_PAGAMENTO);
 			fields.add(Versamento.model().DA_AVVISARE);
 			fields.add(Versamento.model().COD_AVVISATURA);
+			fields.add(Versamento.model().ACK);
+			fields.add(Versamento.model().NOTE);
+			fields.add(Versamento.model().ANOMALO);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));
@@ -543,6 +546,10 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			return;
 		}
 		obj.setId(imgSaved.getId());
+		if(obj.getIdDominio()!=null && 
+				imgSaved.getIdDominio()!=null){
+			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
+		}
 		if(obj.getIdUo()!=null && 
 				imgSaved.getIdUo()!=null){
 			obj.getIdUo().setId(imgSaved.getIdUo().getId());
@@ -554,6 +561,18 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		if(obj.getIdApplicazione()!=null && 
 				imgSaved.getIdApplicazione()!=null){
 			obj.getIdApplicazione().setId(imgSaved.getIdApplicazione().getId());
+		}
+		if(obj.getIdPagamentoPortale()!=null && 
+				imgSaved.getIdPagamentoPortale()!=null){
+			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
+		}
+		if(obj.getIuv()!=null && 
+				imgSaved.getIuv()!=null){
+			obj.getIuv().setId(imgSaved.getIuv().getId());
+		}
+		if(obj.getIdTracciatoAvvisatura()!=null && 
+				imgSaved.getIdTracciatoAvvisatura()!=null){
+			obj.getIdTracciatoAvvisatura().setId(imgSaved.getIdTracciatoAvvisatura().getId());
 		}
 
 	}
@@ -664,9 +683,15 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 		// Versamento.model()
 		mapTableToPKColumn.put(converter.toTable(Versamento.model()),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()))
+			));
+
+		// Versamento.model().ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_DOMINIO))
+			));
 
 		// Versamento.model().ID_UO
 		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_UO),
@@ -686,6 +711,23 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 						new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_APPLICAZIONE))
 						));
 
+		// Versamento.model().ID_PAGAMENTO_PORTALE
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_PAGAMENTO_PORTALE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_PAGAMENTO_PORTALE))
+			));
+
+		// Versamento.model().IUV
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().IUV),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().IUV))
+			));
+
+		// Versamento.model().ID_TRACCIATO_AVVISATURA
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_TRACCIATO_AVVISATURA),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_TRACCIATO_AVVISATURA))
+			));
 
 
 		return mapTableToPKColumn;		

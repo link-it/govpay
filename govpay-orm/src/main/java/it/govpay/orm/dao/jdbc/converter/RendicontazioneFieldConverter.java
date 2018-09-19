@@ -221,6 +221,118 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv";
 			}
 		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_ente";
+			}else{
+				return "cod_versamento_ente";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_identificativo";
+			}else{
+				return "debitore_identificativo";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_anagrafica";
+			}else{
+				return "debitore_anagrafica";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_lotto";
+			}else{
+				return "cod_versamento_lotto";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_anno_tributario";
+			}else{
+				return "cod_anno_tributario";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_versamento";
+			}else{
+				return "stato_versamento";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_singolo_versamento_ente";
+			}else{
+				return "cod_singolo_versamento_ente";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.INDICE_DATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".indice_dati";
+			}else{
+				return "indice_dati";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO.COD_TRIBUTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tributo";
+			}else{
+				return "cod_tributo";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.NOTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".note";
+			}else{
+				return "note";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_singolo_versamento";
+			}else{
+				return "stato_singolo_versamento";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_singolo_versamento";
+			}else{
+				return "importo_singolo_versamento";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -300,6 +412,54 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.IUV)){
 			return this.toTable(Rendicontazione.model().ID_PAGAMENTO, returnAlias);
 		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.INDICE_DATI)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO.COD_TRIBUTO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.NOTE)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -327,6 +487,24 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO)){
+			return "singoli_versamenti";
+		}
+		if(model.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO)){
+			return "versamenti";
+		}
+		if(model.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
+		if(model.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO)){
+			return "tributi";
+		}
+		if(model.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO)){
+			return "domini";
+		}
+		if(model.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO)){
+			return "tipi_tributo";
 		}
 
 

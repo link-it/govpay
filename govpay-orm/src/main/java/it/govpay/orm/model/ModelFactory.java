@@ -97,5 +97,7 @@ public class ModelFactory {
 	
 	public static AvvisoModel AVVISO = new AvvisoModel();
 	
+	public static VersamentoIncassoModel VERSAMENTO_INCASSO = new VersamentoIncassoModel();
+	
 
 }

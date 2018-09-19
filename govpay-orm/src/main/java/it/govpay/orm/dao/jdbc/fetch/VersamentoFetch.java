@@ -132,6 +132,12 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "da_avvisare", Versamento.model().DA_AVVISARE.getFieldType()));
 				this.setParameter(object, "setCodAvvisatura", Versamento.model().COD_AVVISATURA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_avvisatura", Versamento.model().COD_AVVISATURA.getFieldType()));
+				setParameter(object, "setAck", Versamento.model().ACK.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ack", Versamento.model().ACK.getFieldType()));
+				setParameter(object, "setNote", Versamento.model().NOTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "note", Versamento.model().NOTE.getFieldType()));
+				setParameter(object, "setAnomalo", Versamento.model().ANOMALO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "anomalo", Versamento.model().ANOMALO.getFieldType()));
 				return object;
 			}
 			
@@ -232,6 +238,12 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"daAvvisare"));
 				this.setParameter(object, "setCodAvvisatura", Versamento.model().COD_AVVISATURA.getFieldType(),
 					this.getObjectFromMap(map,"codAvvisatura"));
+				setParameter(object, "setAck", Versamento.model().ACK.getFieldType(),
+					this.getObjectFromMap(map,"ack"));
+				setParameter(object, "setNote", Versamento.model().NOTE.getFieldType(),
+					this.getObjectFromMap(map,"note"));
+				setParameter(object, "setAnomalo", Versamento.model().ANOMALO.getFieldType(),
+					this.getObjectFromMap(map,"anomalo"));
 				return object;
 			}
 			

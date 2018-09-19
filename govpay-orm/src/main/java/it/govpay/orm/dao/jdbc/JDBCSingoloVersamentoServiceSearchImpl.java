@@ -108,6 +108,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
 		idSingoloVersamento.setIdVersamento(singoloVersamento.getIdVersamento());
 		idSingoloVersamento.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
+		idSingoloVersamento.setIndiceDati(singoloVersamento.getIndiceDati());
 	
 		return idSingoloVersamento;
 	}
@@ -141,6 +142,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE);
+			fields.add(SingoloVersamento.model().INDICE_DATI);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -158,6 +160,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				idSingoloVersamento.setIdVersamento(id_singoloVersamento_versamento);
 
 				idSingoloVersamento.setCodSingoloVersamentoEnte((String) map.get("cod_singolo_versamento_ente"));
+				idSingoloVersamento.setIndiceDati((Integer) map.get("indice_dati"));
         	list.add(idSingoloVersamento);
         }
 		} catch(NotFoundException e) {}
@@ -189,6 +192,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(SingoloVersamento.model().PROVINCIA_RESIDENZA);
 			fields.add(SingoloVersamento.model().DESCRIZIONE);
 			fields.add(SingoloVersamento.model().DATI_ALLEGATI);
+			fields.add(SingoloVersamento.model().INDICE_DATI);
 
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
@@ -216,7 +220,6 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				if(idIbanAppoggioObj instanceof Long) {
 					idIbanAppoggio = (Long) idIbanAppoggioObj;
 				}
-				
 				
 				Long idVersamento = (Long)map.remove("id_versamento");
 
@@ -263,7 +266,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				}
 				id_singoloVersamento_versamento.setId(idVersamento);
 				singoloVersamento.setIdVersamento(id_singoloVersamento_versamento);
-
+				
 				list.add(singoloVersamento);
 			}
 		} catch(NotFoundException e) {}
@@ -562,12 +565,27 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 					imgSaved.getIdTributo().getIdDominio()!=null){
 				obj.getIdTributo().getIdDominio().setId(imgSaved.getIdTributo().getIdDominio().getId());
 			}
+			if(obj.getIdTributo().getIdTipoTributo()!=null && 
+					imgSaved.getIdTributo().getIdTipoTributo()!=null){
+				obj.getIdTributo().getIdTipoTributo().setId(imgSaved.getIdTributo().getIdTipoTributo().getId());
+			}
 		}
 		if(obj.getIdIbanAccredito()!=null && 
 				imgSaved.getIdIbanAccredito()!=null){
 			obj.getIdIbanAccredito().setId(imgSaved.getIdIbanAccredito().getId());
+			if(obj.getIdIbanAccredito().getIdDominio()!=null && 
+					imgSaved.getIdIbanAccredito().getIdDominio()!=null){
+				obj.getIdIbanAccredito().getIdDominio().setId(imgSaved.getIdIbanAccredito().getIdDominio().getId());
+			}
 		}
-
+		if(obj.getIdIbanAppoggio()!=null && 
+				imgSaved.getIdIbanAppoggio()!=null){
+			obj.getIdIbanAppoggio().setId(imgSaved.getIdIbanAppoggio().getId());
+			if(obj.getIdIbanAppoggio().getIdDominio()!=null && 
+					imgSaved.getIdIbanAppoggio().getIdDominio()!=null){
+				obj.getIdIbanAppoggio().getIdDominio().setId(imgSaved.getIdIbanAppoggio().getIdDominio().getId());
+			}
+		}
 	}
 	
 	@Override
@@ -665,6 +683,12 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObject.addWhereCondition(tableName1+".id_iban_accredito="+tableName2+".id");
 		}
 		
+		if(expression.inUseModel(SingoloVersamento.model().ID_IBAN_APPOGGIO,false)){
+			String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+			String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_IBAN_APPOGGIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_iban_appoggio="+tableName2+".id");
+		}
+		
 		if(expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
 			
 			if(!expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO,false)){
@@ -716,6 +740,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
+
 		// SingoloVersamento.model().ID_TRIBUTO
 		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_TRIBUTO),
 			utilities.newList(
@@ -728,12 +753,36 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO))
 			));
 
+		// SingoloVersamento.model().ID_TRIBUTO.ID_TIPO_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_TRIBUTO.ID_TIPO_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_TRIBUTO.ID_TIPO_TRIBUTO))
+			));
+
 		// SingoloVersamento.model().ID_IBAN_ACCREDITO
 		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO))
 			));
 
+		// SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO))
+			));
+
+		// SingoloVersamento.model().ID_IBAN_APPOGGIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO))
+			));
+
+		// SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO))
+			));
+   
         return mapTableToPKColumn;		
 	}
 	
@@ -824,6 +873,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE,true));
 		sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE,true));
 		sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,true));
+		sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().INDICE_DATI,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id=?");
 		sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id_versamento="+this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO)+".id");
@@ -837,6 +887,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		listaFieldIdReturnType_singoloVersamento.add(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType());
 		listaFieldIdReturnType_singoloVersamento.add(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType());
 		listaFieldIdReturnType_singoloVersamento.add(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType());
+		listaFieldIdReturnType_singoloVersamento.add(SingoloVersamento.model().INDICE_DATI.getFieldType());
 		it.govpay.orm.IdSingoloVersamento id_singoloVersamento = null;
 		List<Object> listaFieldId_singoloVersamento = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_singoloVersamento, searchParams_singoloVersamento);
@@ -857,6 +908,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			id_singoloVersamento.setIdVersamento(idVersamento);
 			
 			id_singoloVersamento.setCodSingoloVersamentoEnte((String) listaFieldId_singoloVersamento.get(2));
+			id_singoloVersamento.setIndiceDati((Integer) listaFieldId_singoloVersamento.get(3));
 		}
 		
 		return id_singoloVersamento;
@@ -893,17 +945,19 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_singoloVersamento = null;
 		if(id.getIdVersamento().getId() != null && id.getIdVersamento().getId() > 0) {
-			// Object _tributo
+			// Object _singoloVersamento
 			sqlQueryObjectGet.addFromTable(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model()));
 			sqlQueryObjectGet.addSelectField("id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
 //			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().INDICE_DATI,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition("id_versamento=?");
 
-			// Recupero _tributo
+			// Recupero _singoloVersamento
 			searchParams_singoloVersamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodSingoloVersamentoEnte(),SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIndiceDati(),SingoloVersamento.model().INDICE_DATI.getFieldType()),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getId(),Long.class)
 			};
 		} else {
@@ -917,6 +971,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().INDICE_DATI,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id_versamento="+this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO)+".id");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO)+".id_applicazione="+this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE)+".id");
 
@@ -924,7 +979,8 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			searchParams_singoloVersamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getIdApplicazione().getCodApplicazione(),SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType()),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getCodVersamentoEnte(),SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodSingoloVersamentoEnte(),SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType())
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodSingoloVersamentoEnte(),SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIndiceDati(),SingoloVersamento.model().INDICE_DATI.getFieldType())
 			};
 		}
 

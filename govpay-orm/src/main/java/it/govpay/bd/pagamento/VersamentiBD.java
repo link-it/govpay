@@ -362,22 +362,6 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 
-	public it.govpay.model.SingoloVersamento getSingoloVersamento(long id, String codSingoloVersamentoEnte) throws ServiceException, NotFoundException {
-		try {
-			IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
-			idSingoloVersamento.setCodSingoloVersamentoEnte(codSingoloVersamentoEnte);
-			IdVersamento idVersamento = new IdVersamento();
-			idVersamento.setId(id);
-			idSingoloVersamento.setIdVersamento(idVersamento);
-			it.govpay.orm.SingoloVersamento singoloVersamentoVO = ((IDBSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).get(idSingoloVersamento);
-			return SingoloVersamentoConverter.toDTO(singoloVersamentoVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		}
-	}
-
 	public void updateStatoSingoloVersamento(long idVersamento, StatoSingoloVersamento statoSingoloVersamento) throws ServiceException {
 		try {
 			IdSingoloVersamento idVO = new IdSingoloVersamento();
@@ -393,7 +377,7 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public void annullaVersamento(Versamento versamento, String descrizioneStato) throws VersamentoException,ServiceException{
 
 		try {

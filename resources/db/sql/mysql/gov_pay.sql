@@ -373,6 +373,9 @@ CREATE TABLE versamenti
 	tipo_pagamento INT,
 	da_avvisare BOOLEAN NOT NULL,
 	cod_avvisatura VARCHAR(20),
+	ack BOOLEAN NOT NULL,
+	note LONGTEXT,
+	anomalo BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,
@@ -410,6 +413,7 @@ CREATE TABLE singoli_versamenti
 	codice_contabilita VARCHAR(255),
 	descrizione VARCHAR(256),
 	dati_allegati LONGTEXT,
+	indice_dati INT NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,
@@ -417,7 +421,7 @@ CREATE TABLE singoli_versamenti
 	id_iban_accredito BIGINT,
 	id_iban_appoggio BIGINT,
 	-- unique constraints
-	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
+	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
@@ -427,7 +431,7 @@ CREATE TABLE singoli_versamenti
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- index
-CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente);
+CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
 
 
 
@@ -767,9 +771,11 @@ CREATE TABLE rendicontazioni
 	id BIGINT AUTO_INCREMENT,
 	id_fr BIGINT NOT NULL,
 	id_pagamento BIGINT,
+	id_singolo_versamento BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
 	CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
+	CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 

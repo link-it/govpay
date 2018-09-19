@@ -72,6 +72,8 @@ public class Rendicontazione extends BasicModel {
 	private List<Anomalia> anomalie;
 	private long idFr;
 	private Long idPagamento;
+	private Long idSingoloVersamento;
+	
 	@Override
 	public Long getId() {
 		return this.id;
@@ -202,6 +204,12 @@ public class Rendicontazione extends BasicModel {
 	}
 	public void setIndiceDati(Integer indiceDati) {
 		this.indiceDati = indiceDati;
+	}
+	public Long getIdSingoloVersamento() {
+		return idSingoloVersamento;
+	}
+	public void setIdSingoloVersamento(Long idSingoloVersamento) {
+		this.idSingoloVersamento = idSingoloVersamento;
 	}
 	
 }

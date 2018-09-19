@@ -25,6 +25,12 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.IOException;
+import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -32,6 +38,7 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
@@ -50,6 +57,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient Dominio dominio;
 	private transient UnitaOperativa uo;
 	private transient Iuv iuv;
+	private List<Nota> note;
 	
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
@@ -127,5 +135,31 @@ public class Versamento extends it.govpay.model.Versamento {
 			}
 		}
 		return this.iuv;
+	}
+	
+	public List<Nota> getNote() {
+		if(this.note == null) this.note = new ArrayList<>();
+		return this.note;
+	}
+
+	public String getNoteString() throws IOException {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormat());
+		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+		ListaNote listaNote = new ListaNote();
+		listaNote.setLista(this.note);
+		return serializer.getObject(listaNote);
+	}
+
+	public void setNote(String note) throws IOException {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormat());
+		IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+		ListaNote listaNote = (ListaNote) deserializer.getObject(note, ListaNote.class);
+		this.note = listaNote.getLista();
+	}
+
+	public void setNote(List<Nota> note) {
+		this.note = note;
 	}
 }
