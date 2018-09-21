@@ -2,8 +2,8 @@ package it.govpay.rs.v1.controllers.base;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 
@@ -96,12 +97,16 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setStato(stato);
 			
-			SimpleDateFormat sdf = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti();
-			if(dataDa!=null)
-				listaPagamentiPortaleDTO.setDataDa(sdf.parse(dataDa));
+			if(dataDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
+			}
+				
 			
-			if(dataA!=null)
-				listaPagamentiPortaleDTO.setDataA(sdf.parse(dataA));
+			if(dataA!=null) {
+				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaPagamentiPortaleDTO.setDataA(dataADate);
+			}
 			
 			listaPagamentiPortaleDTO.setVerificato(verificato);
 			

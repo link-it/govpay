@@ -41,7 +41,7 @@ public class PagamentoIndex extends JSONSerializable {
   @JsonProperty("nome")
   private String nome = null;
   
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ")
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
   

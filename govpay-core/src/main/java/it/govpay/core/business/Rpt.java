@@ -73,6 +73,7 @@ public class Rpt extends BasicBD{
 		try {
 			ctx.getPagamentoCtx().setCarrello(true);
 			String codCarrello = RptUtils.buildUUID35();
+			if(pagamentoPortale != null) codCarrello= pagamentoPortale.getIdSessione();
 			ctx.getPagamentoCtx().setCodCarrello(codCarrello);
 			ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
 			ctx.setCorrelationId(codCarrello);
@@ -265,7 +266,7 @@ public class Rpt extends BasicBD{
 								Nota nota = new Nota();
 								nota.setAutore(Nota.UTENTE_SISTEMA);
 								nota.setData(new Date());
-								nota.setOggetto("RPT rifiutata dal Nodo");
+								nota.setOggetto("Richiesta di pagamento rifiutata da pagoPA");
 								nota.setTipo(TipoNota.SISTEMA_FATAL);
 								nota.setTesto(descrizione); 
 								pagamentoPortale.getNote().add(0, nota);
