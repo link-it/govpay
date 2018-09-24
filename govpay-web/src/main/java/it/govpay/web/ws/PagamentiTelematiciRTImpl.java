@@ -354,7 +354,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				}
 
 			}catch(Exception e){
-				log.error(e.getMessage(),e);
+				try { log.error(e.getMessage(),e); } catch(Throwable t) {}
 			}
 
 			if(bd != null) bd.closeConnection();

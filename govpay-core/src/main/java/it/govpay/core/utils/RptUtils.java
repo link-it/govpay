@@ -63,6 +63,7 @@ import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Evento;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.TipoEvento;
@@ -222,10 +223,34 @@ public class RptUtils {
 				return false;
 				
 			case RPT_ATTIVATA:
-				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato non terminale [" + rpt.getStato()+ "]. Eseguo una rispedizione della RPT.");
-				inviaRPTAsync(rpt, bd);
-				return false;
+				// Se modello 3, rispedisco
 				
+				if(rpt.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP)) {
+					log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] iniziativa PSP in stato [" + rpt.getStato()+ "]. Eseguo una rispedizione della RPT.");
+					inviaRPTAsync(rpt, bd);
+					return false;
+				} else {
+					// Se modello 1, spedizione fallita
+					StatoRpt nuovoStato = StatoRpt.RPT_ERRORE_INVIO_A_NODO;
+					log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] iniziativa Ente in stato[" + rpt.getStato()+ "]. Aggiorno in [" + nuovoStato + "].");
+					
+					bd.enableSelectForUpdate();
+					RptBD rptBD = new RptBD(bd);
+					Rpt rpt_attuale = rptBD.getRpt(rpt.getId());
+					if(!stato_originale.equals(rpt_attuale.getStato())) {
+						// Lo stato e' cambiato. Rinuncio all'aggiornamento
+						log.info("Lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] risulta cambiato su GovPay durante l'aggiornamento: " + rpt_attuale.getStato() + ". Operazione di recupero annullata.");
+						bd.disableSelectForUpdate();
+						return false;
+					}
+					log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + ".");
+					rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato aggiornato in fase di recupero pendenti.", null, null);
+					rpt.setStato(nuovoStato);
+					rpt.setDescrizioneStato("Stato aggiornato in fase di recupero pendenti.");
+					bd.disableSelectForUpdate();
+					return true;
+				}
+ 				
 			default:
 				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato non terminale [" + rpt.getStato()+ "]. Eseguo un aggiornamento dello stato con il Nodo dei Pagamenti.");
 
